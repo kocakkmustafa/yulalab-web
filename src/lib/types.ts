@@ -3,7 +3,9 @@ export type LocalizedString = {
   en: string;
 };
 
-export type ProjectStatus = "live" | "beta" | "pre-launch" | "in-development";
+export type Locale = "tr" | "en";
+
+export type ProjectStatus = "live" | "beta" | "coming-soon" | "in-development";
 
 export type ProjectKind = "web" | "mobile" | "platform" | "research";
 
@@ -20,13 +22,15 @@ export type ProjectBrand = {
   foreground: string;
   /** A pre-built CSS gradient string used in hero, buttons, headings. */
   gradient: string;
-  /** Optional Google Font family for headings on this project's page. */
-  fontDisplay?: string;
-  /** Optional Google Font family for body text on this project's page. */
-  fontBody?: string;
-  /** Optional Google Font family for monospace / numerical UI. */
-  fontMono?: string;
-  /** Optional vibe note that influences the visual treatment of the page. */
+  /** Soft brand glow used on the hero card. */
+  glow: string;
+  /** CSS font-family value for the project page display typeface. */
+  fontDisplay: string;
+  /** CSS font-family value for the project page body typeface. */
+  fontBody: string;
+  /** CSS font-family value for the project page mono typeface. */
+  fontMono: string;
+  /** Vibe label that can shape future visual variants. */
   mood?: string;
 };
 
@@ -37,41 +41,46 @@ export type ProjectAsset = {
 };
 
 export type ProjectFeature = {
-  title: string;
-  description: string;
-  /** Lucide icon name; matched dynamically inside the component. */
+  title: LocalizedString;
+  description: LocalizedString;
   icon?: string;
 };
 
 export type ProjectStat = {
-  label: string;
+  /** Big numeric / short value (locale-agnostic by default; localized when needed). */
   value: string;
-  description?: string;
+  /** Caption underneath the value. */
+  label: LocalizedString;
+  /** Optional supporting line. */
+  description?: LocalizedString;
 };
 
-export type ProjectLinks = {
-  website?: string;
-  appStore?: string;
-  playStore?: string;
-  webApp?: string;
-  github?: string;
-  pressKit?: string;
-  documentation?: string;
+export type LinkKind =
+  | "web"
+  | "github"
+  | "appstore"
+  | "playstore"
+  | "x"
+  | "instagram"
+  | "youtube"
+  | "linkedin"
+  | "discord"
+  | "telegram"
+  | "documentation"
+  | "pressKit";
+
+export type ProjectLink = {
+  kind: LinkKind;
+  href: string;
 };
 
-export type ProjectSocials = {
-  twitter?: string;
-  instagram?: string;
-  linkedin?: string;
-  youtube?: string;
-  tiktok?: string;
-  discord?: string;
-  telegram?: string;
-};
+export type ProjectSocials = Partial<Record<LinkKind, string>>;
 
 export type ProjectConfig = {
   slug: string;
   name: string;
+  /** One- or two-letter monogram used in fallback brand panels. */
+  monogram: string;
   kind: ProjectKind[];
   status: ProjectStatus;
   /** Short category badge — e.g. "AI Operating System", "Mobile App". */
@@ -80,8 +89,8 @@ export type ProjectConfig = {
   tagline: LocalizedString;
   /** 2–3 sentence summary; renders directly under the hero. */
   description: LocalizedString;
-  /** 30-second elevator pitch; renders inside the "Ne yapıyor?" section. */
-  pitch: LocalizedString;
+  /** Compact one-paragraph pitch used on the project index card and the showcase "Ne yapıyor?" block. */
+  short: LocalizedString;
 
   brand: ProjectBrand;
 
@@ -94,16 +103,16 @@ export type ProjectConfig = {
   };
 
   features: ProjectFeature[];
-  stats?: ProjectStat[];
+  stats: ProjectStat[];
 
-  vision?: LocalizedString;
-  mission?: LocalizedString;
+  vision: LocalizedString;
+  mission: LocalizedString;
 
   /** Order on the projects index. Lower numbers come first. */
   order: number;
 
-  links: ProjectLinks;
-  socials: ProjectSocials;
+  /** Ordered array of outbound links shown as pills on the showcase. */
+  links: ProjectLink[];
 
   /** Optional contact email shown in the project footer. */
   contactEmail?: string;
@@ -125,4 +134,11 @@ export type CompanyConfig = {
     banner: string;
     favicon?: string;
   };
+};
+
+export const STATUS_KEY: Record<ProjectStatus, string> = {
+  live: "live",
+  beta: "beta",
+  "coming-soon": "comingSoon",
+  "in-development": "inDevelopment",
 };

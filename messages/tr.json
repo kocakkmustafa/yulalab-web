@@ -1,0 +1,128 @@
+{
+  "site": {
+    "title": "YULA Lab — Geleceğin ürünlerini bugün tasarlıyoruz.",
+    "description": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur."
+  },
+  "header": {
+    "home": "Ana Sayfa",
+    "manifesto": "Manifesto",
+    "projects": "Projeler",
+    "contact": "İletişim",
+    "ctaProjects": "Projeleri Keşfet",
+    "menuOpen": "Menü",
+    "menuClose": "Kapat"
+  },
+  "footer": {
+    "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bir girişim stüdyosu.",
+    "location": "İstanbul · 41.0082° N",
+    "projectsHeading": "Projeler",
+    "companyHeading": "Şirket",
+    "founderHeading": "Kurucu",
+    "navManifesto": "Manifesto",
+    "navProjects": "Projeler",
+    "navContact": "İletişim",
+    "rights": "Tüm hakları saklıdır.",
+    "version": "v0.1 · showcase"
+  },
+  "common": {
+    "explore": "Keşfet",
+    "openPage": "Sayfayı aç",
+    "back": "Geri",
+    "home": "Ana sayfa",
+    "showAll": "Hepsini gör",
+    "readManifesto": "Manifestoyu oku",
+    "getInTouch": "İletişime geç",
+    "discoverProjects": "Projeleri keşfet",
+    "manifesto": "Manifesto",
+    "switchLanguage": "TR · EN"
+  },
+  "status": {
+    "live": "Yayında",
+    "beta": "Beta",
+    "comingSoon": "Yakında",
+    "inDevelopment": "Geliştiriliyor"
+  },
+  "landing": {
+    "eyebrow": "Venture Studio · İstanbul",
+    "heroTitle": "Geleceğin ürünlerini bugün tasarlıyoruz.",
+    "heroDescription": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
+    "heroMeta": {
+      "products": "3 ürün",
+      "studio": "1 stüdyo",
+      "place": "İst · 2025"
+    },
+    "bannerCardTopLabel": "YL · 001",
+    "bannerCardBottomLabel": "İstanbul",
+    "bannerWord": "YULA",
+    "bannerCaption": "VENTURE · STUDIO · İSTANBUL",
+    "bannerSpec": "YULA / banner.png · 2400×1400",
+    "bannerDrop": "drop image here →",
+    "visionEyebrow": "Vizyon",
+    "visionBody": "İnsanların hayatını anlamlı şekilde iyileştiren, yapay zekanın en iyi yanlarını gündelik hayata taşıyan bir ürün ailesi kurmak.",
+    "missionEyebrow": "Misyon",
+    "missionBody": "Şeffaf metodoloji, sade tasarım ve gerçek bir kullanıcı yararını birleştiren bir mühendislik kültürü inşa etmek; yapay zekayı abartmadan, doğru yerde kullanmak.",
+    "manifestoNote": "Dört değer üzerine kurulu bir mühendislik kültürü.",
+    "projectsEyebrow": "Şu anda ne inşa ediyoruz",
+    "projectsTitle": "Aile."
+  },
+  "manifesto": {
+    "eyebrow": "Manifesto",
+    "title": "Aceleyle değil, özenle.",
+    "intro": "YULA Lab; trende değil, kanıta yaslanan bir girişim stüdyosu. Üç ürünümüzün her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.",
+    "visionEyebrow": "Vizyon",
+    "missionEyebrow": "Misyon",
+    "valuesEyebrow": "Değerlerimiz",
+    "valuesTitle": "Dört kelime, dört disiplin.",
+    "founderEyebrow": "Kurucu"
+  },
+  "projectsIndex": {
+    "eyebrow": "Projeler",
+    "title": "Aile.",
+    "intro": "Üç ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır."
+  },
+  "showcase": {
+    "back": "Projeler",
+    "pitchEyebrow": "Ne yapıyor?",
+    "featuresEyebrow": "Detaylar",
+    "featuresTitle": "Sade ama derin.",
+    "featuresCount": "06 özellik",
+    "visionEyebrow": "Vizyon",
+    "missionEyebrow": "Misyon",
+    "linksEyebrow": "Projeyi takip et",
+    "linksTitle": "Bağlantılar.",
+    "othersEyebrow": "Diğer projeler",
+    "notFoundTitle": "Proje bulunamadı.",
+    "notFoundCta": "Projeler"
+  },
+  "contact": {
+    "eyebrow": "İletişim",
+    "title": "Konuşalım.",
+    "intro": "Bir fikir, bir geri bildirim, bir basın talebi ya da sadece bir merhaba — bize ulaşmanın en hızlı yolu e-posta. Genelde 48 saat içinde dönüyoruz.",
+    "generalLabel": "Genel",
+    "generalHint": "Ortaklık, iş birliği, ürün ve teknik soruları için bu adres.",
+    "pressLabel": "Basın",
+    "pressHint": "Röportaj, etkinlik daveti ve basın bülteni talepleri.",
+    "locationEyebrow": "Lokasyon",
+    "locationTitle": "İstanbul, Türkiye",
+    "locationNote": "Toplantılar Salı – Perşembe, hibrit."
+  },
+  "notFound": {
+    "title": "Sayfa bulunamadı.",
+    "body": "{path} mevcut değil."
+  },
+  "links": {
+    "web": "Web sitesi",
+    "github": "GitHub",
+    "appstore": "App Store",
+    "playstore": "Google Play",
+    "x": "X",
+    "twitter": "X",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "discord": "Discord",
+    "telegram": "Telegram",
+    "documentation": "Dokümanlar",
+    "pressKit": "Basın kiti"
+  }
+}

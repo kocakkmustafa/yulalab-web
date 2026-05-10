@@ -1,0 +1,47 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { setRequestLocale } from "next-intl/server";
+import { getProjectBySlug, getProjectSlugs, projects } from "@/data/projects";
+import { ProjectShowcase } from "@/components/projects/ProjectShowcase";
+import { routing } from "@/i18n/routing";
+import type { Locale } from "@/lib/types";
+
+type PageProps = {
+  params: Promise<{ locale: string; slug: string }>;
+};
+
+export async function generateStaticParams() {
+  const slugs = getProjectSlugs();
+  return routing.locales.flatMap((locale) =>
+    slugs.map((slug) => ({ locale, slug })),
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const project = getProjectBySlug(slug);
+  if (!project) return {};
+  const lang = locale as Locale;
+  return {
+    title: project.name,
+    description: project.tagline[lang],
+    openGraph: {
+      title: `${project.name} — ${project.tagline[lang]}`,
+      description: project.description[lang],
+      images: project.visuals.ogImage ? [{ url: project.visuals.ogImage }] : undefined,
+    },
+  };
+}
+
+export default async function ProjectPage({ params }: PageProps) {
+  const { locale, slug } = await params;
+  setRequestLocale(locale);
+  const project = getProjectBySlug(slug);
+  if (!project) notFound();
+
+  const others = projects.filter((p) => p.slug !== project.slug);
+
+  return <ProjectShowcase project={project} others={others} />;
+}

@@ -1,19 +1,15 @@
-import Image from "next/image";
-import Link from "next/link";
+"use client";
+
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
+  ArrowLeft,
   ArrowUpRight,
-  ExternalLink,
-  Apple,
-  Smartphone as PlayIcon,
-  Github,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-  MessageCircle,
-} from "lucide-react";
-import type { ProjectConfig } from "@/lib/types";
-import { formatStatus } from "@/lib/utils";
+  LINK_ICON,
+} from "@/components/common/icons";
+import { ProjectMonogram } from "@/components/common/ProjectMonogram";
+import { useReveal } from "@/components/common/useReveal";
+import type { Locale, ProjectConfig, ProjectLink } from "@/lib/types";
 
 type Props = {
   project: ProjectConfig;
@@ -21,463 +17,483 @@ type Props = {
 };
 
 export function ProjectShowcase({ project, others }: Props) {
-  const themeStyle = {
-    "--brand-primary": project.brand.primary,
-    "--brand-secondary": project.brand.secondary,
-    "--brand-accent": project.brand.accent,
-    "--brand-surface": project.brand.background,
-    "--brand-foreground": project.brand.foreground,
-    "--brand-gradient": project.brand.gradient,
-  } as React.CSSProperties;
+  const p = project;
+  const locale = useLocale() as Locale;
+  const t = useTranslations("showcase");
 
   return (
     <div
-      style={themeStyle}
-      className="relative"
-      data-project={project.slug}
+      key={p.slug}
+      className="page-enter relative min-h-screen"
+      style={{
+        background: p.brand.background,
+        color: p.brand.foreground,
+        fontFamily: p.brand.fontBody,
+      }}
     >
-      {/* HERO ─────────────────────────────────────────────────────────── */}
-      <section
-        className="relative overflow-hidden border-b border-border/30"
-        style={{
-          backgroundColor: project.brand.background,
-          color: project.brand.foreground,
-        }}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{ background: project.brand.gradient, filter: "blur(120px)" }}
-        />
-        <div className="container relative pt-20 pb-24 md:pt-28 md:pb-32">
-          <Link
-            href="/projects"
-            className="text-xs uppercase tracking-widest opacity-60 transition hover:opacity-100"
-          >
-            ← Projeler
-          </Link>
+      <ProjectMesh project={p} />
 
-          <div className="mt-8 grid gap-12 md:grid-cols-[1.4fr_1fr] md:items-center">
-            <div>
-              <p className="text-xs uppercase tracking-widest opacity-60">
-                {project.category.tr}
-              </p>
-              <h1
-                className="mt-4 text-5xl font-semibold leading-[1.05] tracking-tight md:text-7xl"
-                style={{
-                  fontFamily: project.brand.fontDisplay
-                    ? `${project.brand.fontDisplay}, var(--font-display)`
-                    : "var(--font-display)",
-                }}
-              >
-                {project.name}
-              </h1>
-              <p className="mt-6 max-w-xl text-lg opacity-80 md:text-xl">
-                {project.tagline.tr}
-              </p>
-              <p className="mt-4 max-w-xl opacity-70">
-                {project.description.tr}
-              </p>
+      {/* HERO */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-32 lg:pt-40 pb-20">
+        <Link
+          href="/projects"
+          className="inline-flex items-center gap-2 text-[13px] font-mono tracking-widest uppercase opacity-60 hover:opacity-100 transition-opacity focusable"
+          style={{ color: p.brand.foreground }}
+        >
+          <ArrowLeft size={14} strokeWidth={2} /> {t("back")}
+        </Link>
 
-              <div className="mt-10 flex flex-wrap items-center gap-3">
-                <span
-                  className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs uppercase tracking-widest"
-                  style={{ borderColor: `${project.brand.foreground}30` }}
-                >
-                  <span
-                    className="size-1.5 rounded-full"
-                    style={{ backgroundColor: project.brand.primary }}
-                  />
-                  {formatStatus(project.status)}
-                </span>
-                {project.links.website ? (
-                  <a
-                    href={project.links.website}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold"
-                    style={{
-                      background: project.brand.gradient,
-                      color: project.brand.background,
-                    }}
-                  >
-                    Siteyi ziyaret et
-                    <ArrowUpRight className="size-4" />
-                  </a>
-                ) : null}
-                {project.links.appStore ? (
-                  <a
-                    href={project.links.appStore}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium"
-                    style={{
-                      borderColor: `${project.brand.foreground}30`,
-                      color: project.brand.foreground,
-                    }}
-                  >
-                    <Apple className="size-4" /> App Store
-                  </a>
-                ) : null}
-                {project.links.playStore ? (
-                  <a
-                    href={project.links.playStore}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium"
-                    style={{
-                      borderColor: `${project.brand.foreground}30`,
-                      color: project.brand.foreground,
-                    }}
-                  >
-                    <PlayIcon className="size-4" /> Google Play
-                  </a>
-                ) : null}
-                {project.links.github ? (
-                  <a
-                    href={project.links.github}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium"
-                    style={{
-                      borderColor: `${project.brand.foreground}30`,
-                      color: project.brand.foreground,
-                    }}
-                  >
-                    <Github className="size-4" /> GitHub
-                  </a>
-                ) : null}
-              </div>
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-[1.4fr_1fr] gap-12 lg:gap-16 items-center">
+          <div>
+            <div
+              className="inline-flex items-center gap-2 rounded-full border pl-2 pr-3 py-1.5 text-[11px] font-mono tracking-widest uppercase"
+              style={{
+                borderColor: p.brand.foreground + "22",
+                color: p.brand.foreground + "CC",
+                background: p.brand.foreground + "06",
+              }}
+            >
+              <span
+                className="w-1.5 h-1.5 rounded-full"
+                style={{ background: p.brand.primary, boxShadow: `0 0 10px ${p.brand.primary}` }}
+              />
+              {p.category[locale]}
             </div>
 
-            <div className="relative">
-              <div
-                className="aspect-square overflow-hidden rounded-3xl border"
-                style={{
-                  borderColor: `${project.brand.foreground}20`,
-                  background: project.brand.gradient,
-                }}
-              >
-                <div className="flex h-full items-center justify-center p-10">
-                  <Image
-                    src={project.visuals.icon ?? project.visuals.logo}
-                    alt={`${project.name} logo`}
-                    width={320}
-                    height={320}
-                    className="drop-shadow-2xl"
-                    priority
-                  />
+            <h1
+              className="mt-7 font-extrabold leading-[0.94] tracking-tightest text-[60px] sm:text-[88px] md:text-[110px] lg:text-[128px]"
+              style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+            >
+              {p.name}
+            </h1>
+
+            <p
+              className="mt-7 text-[20px] md:text-[24px] leading-[1.3] max-w-[28ch]"
+              style={{
+                fontFamily: p.brand.fontDisplay,
+                color: p.brand.foreground,
+                opacity: 0.92,
+                fontWeight: 500,
+              }}
+            >
+              {p.tagline[locale]}
+            </p>
+
+            <p
+              className="mt-5 max-w-[58ch] text-[15.5px] leading-[1.7]"
+              style={{ color: p.brand.foreground + "BB" }}
+            >
+              {p.description[locale]}
+            </p>
+
+            <div className="mt-9 flex flex-wrap items-center gap-2.5">
+              {p.links.slice(0, 1).map((l) => (
+                <BrandPill key={l.kind} link={l} project={p} primary />
+              ))}
+              {p.links.slice(1, 4).map((l) => (
+                <BrandPill key={l.kind} link={l} project={p} />
+              ))}
+            </div>
+          </div>
+
+          <ProjectHeroCard project={p} />
+        </div>
+      </section>
+
+      {/* STATS */}
+      <section className="relative z-10 border-y" style={{ borderColor: p.brand.foreground + "14" }}>
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+          {p.stats.map((s, i) => (
+            <StatBlock key={s.label.tr} stat={s} project={p} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* PITCH */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
+        <div
+          className="font-mono text-[11px] tracking-widest uppercase mb-6"
+          style={{ color: p.brand.foreground + "99" }}
+        >
+          {t("pitchEyebrow")}
+        </div>
+        <p
+          className="max-w-3xl text-[26px] md:text-[34px] leading-[1.25] tracking-tight"
+          style={{
+            fontFamily: p.brand.fontDisplay,
+            color: p.brand.foreground,
+            opacity: 0.92,
+          }}
+        >
+          {p.short[locale]}
+        </p>
+      </section>
+
+      {/* FEATURES */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-8">
+        <div className="flex items-end justify-between gap-6 mb-10">
+          <div>
+            <div
+              className="font-mono text-[11px] tracking-widest uppercase mb-4"
+              style={{ color: p.brand.foreground + "99" }}
+            >
+              {t("featuresEyebrow")}
+            </div>
+            <h2
+              className="font-display text-4xl md:text-5xl font-semibold tracking-tightest"
+              style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+            >
+              {t("featuresTitle")}
+            </h2>
+          </div>
+          <div
+            className="hidden md:block font-mono text-[11px] tracking-widest uppercase"
+            style={{ color: p.brand.foreground + "70" }}
+          >
+            {t("featuresCount")}
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {p.features.map((f, i) => (
+            <FeatureCard key={f.title.tr} feature={f} project={p} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* VISION / MISSION */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
+        <div>
+          <div
+            className="font-mono text-[11px] tracking-widest uppercase mb-5"
+            style={{ color: p.brand.foreground + "99" }}
+          >
+            {t("visionEyebrow")}
+          </div>
+          <p
+            className="font-display text-2xl md:text-3xl leading-[1.3] tracking-tight"
+            style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+          >
+            {p.vision[locale]}
+          </p>
+        </div>
+        <div>
+          <div
+            className="font-mono text-[11px] tracking-widest uppercase mb-5"
+            style={{ color: p.brand.foreground + "99" }}
+          >
+            {t("missionEyebrow")}
+          </div>
+          <p
+            className="font-display text-2xl md:text-3xl leading-[1.3] tracking-tight"
+            style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+          >
+            {p.mission[locale]}
+          </p>
+        </div>
+      </section>
+
+      {/* LINKS */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
+        <div
+          className="font-mono text-[11px] tracking-widest uppercase mb-5"
+          style={{ color: p.brand.foreground + "99" }}
+        >
+          {t("linksEyebrow")}
+        </div>
+        <h2
+          className="font-display text-3xl md:text-4xl font-semibold tracking-tightest mb-8"
+          style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+        >
+          {t("linksTitle")}
+        </h2>
+        <div className="flex flex-wrap gap-2.5">
+          {p.links.map((l) => (
+            <BrandPill key={l.kind} link={l} project={p} />
+          ))}
+        </div>
+      </section>
+
+      {/* OTHER PROJECTS */}
+      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-32">
+        <div
+          className="font-mono text-[11px] tracking-widest uppercase mb-8"
+          style={{ color: p.brand.foreground + "99" }}
+        >
+          {t("othersEyebrow")}
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {others.map((o) => (
+            <Link
+              key={o.slug}
+              href={`/projects/${o.slug}`}
+              className="group flex items-center gap-5 rounded-2xl p-5 transition-all duration-300 focusable"
+              style={{
+                background: p.brand.foreground + "06",
+                border: `1px solid ${p.brand.foreground}12`,
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = o.brand.primary + "55";
+                e.currentTarget.style.transform = "translateY(-2px)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = p.brand.foreground + "12";
+                e.currentTarget.style.transform = "translateY(0)";
+              }}
+            >
+              <ProjectMonogram project={o} size={64} radius={14} />
+              <div className="flex-1 min-w-0">
+                <div
+                  className="font-mono text-[10.5px] tracking-widest uppercase"
+                  style={{ color: p.brand.foreground + "80" }}
+                >
+                  {o.category[locale]}
+                </div>
+                <div
+                  className="mt-1 font-display text-2xl font-semibold tracking-tight truncate"
+                  style={{ fontFamily: o.brand.fontDisplay, color: p.brand.foreground }}
+                >
+                  {o.name}
+                </div>
+                <div
+                  className="text-[13px] mt-0.5 truncate"
+                  style={{ color: p.brand.foreground + "99" }}
+                >
+                  {o.tagline[locale]}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS ──────────────────────────────────────────────────────────── */}
-      {project.stats?.length ? (
-        <section
-          className="border-b border-border/30"
-          style={{
-            backgroundColor: project.brand.background,
-            color: project.brand.foreground,
-          }}
-        >
-          <div className="container py-12">
-            <ul className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-4">
-              {project.stats.map((s) => (
-                <li key={s.label}>
-                  <p
-                    className="text-3xl font-semibold tracking-tight md:text-4xl"
-                    style={{ color: project.brand.primary }}
-                  >
-                    {s.value}
-                  </p>
-                  <p className="mt-1 text-xs uppercase tracking-widest opacity-60">
-                    {s.label}
-                  </p>
-                  {s.description ? (
-                    <p className="mt-1 text-xs opacity-50">{s.description}</p>
-                  ) : null}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ) : null}
-
-      {/* PITCH ─────────────────────────────────────────────────────────── */}
-      <section
-        style={{
-          backgroundColor: project.brand.background,
-          color: project.brand.foreground,
-        }}
-      >
-        <div className="container max-w-3xl py-20 md:py-24">
-          <p className="text-xs uppercase tracking-widest opacity-60">
-            Ne yapıyor?
-          </p>
-          <p className="mt-6 text-2xl leading-relaxed md:text-3xl">
-            {project.pitch.tr}
-          </p>
-        </div>
-      </section>
-
-      {/* FEATURES ──────────────────────────────────────────────────────── */}
-      <section
-        className="border-y border-border/30"
-        style={{
-          backgroundColor: project.brand.background,
-          color: project.brand.foreground,
-        }}
-      >
-        <div className="container py-20 md:py-24">
-          <p className="text-xs uppercase tracking-widest opacity-60">
-            Öne çıkan özellikler
-          </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-            Detaylar
-          </h2>
-
-          <ul className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {project.features.map((f) => (
-              <li
-                key={f.title}
-                className="rounded-2xl border p-6"
+              <span
+                className="inline-flex items-center justify-center w-10 h-10 rounded-full"
                 style={{
-                  borderColor: `${project.brand.foreground}15`,
-                  backgroundColor: `${project.brand.foreground}05`,
+                  border: `1px solid ${p.brand.foreground}20`,
+                  color: o.brand.primary,
                 }}
               >
-                <div
-                  className="mb-4 size-10 rounded-lg"
-                  style={{ background: project.brand.gradient }}
-                />
-                <h3 className="text-lg font-semibold tracking-tight">
-                  {f.title}
-                </h3>
-                <p className="mt-2 text-sm opacity-70">{f.description}</p>
-              </li>
-            ))}
-          </ul>
+                <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
+              </span>
+            </Link>
+          ))}
         </div>
       </section>
-
-      {/* VISION & MISSION ──────────────────────────────────────────────── */}
-      {project.vision || project.mission ? (
-        <section
-          style={{
-            backgroundColor: project.brand.background,
-            color: project.brand.foreground,
-          }}
-        >
-          <div className="container grid gap-10 py-20 md:grid-cols-2 md:py-24">
-            {project.vision ? (
-              <div>
-                <p className="text-xs uppercase tracking-widest opacity-60">
-                  Vizyon
-                </p>
-                <p className="mt-4 text-2xl leading-snug tracking-tight md:text-3xl">
-                  {project.vision.tr}
-                </p>
-              </div>
-            ) : null}
-            {project.mission ? (
-              <div>
-                <p className="text-xs uppercase tracking-widest opacity-60">
-                  Misyon
-                </p>
-                <p className="mt-4 text-2xl leading-snug tracking-tight md:text-3xl">
-                  {project.mission.tr}
-                </p>
-              </div>
-            ) : null}
-          </div>
-        </section>
-      ) : null}
-
-      {/* LINKS & SOCIALS ───────────────────────────────────────────────── */}
-      <section
-        className="border-y border-border/30"
-        style={{
-          backgroundColor: project.brand.background,
-          color: project.brand.foreground,
-        }}
-      >
-        <div className="container py-20 md:py-24">
-          <p className="text-xs uppercase tracking-widest opacity-60">
-            Bağlantılar
-          </p>
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-            {project.name}&apos;i takip et
-          </h2>
-
-          <div className="mt-10 flex flex-wrap gap-3">
-            {project.links.website ? (
-              <LinkPill
-                href={project.links.website}
-                label="Web sitesi"
-                icon={<ExternalLink className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.links.appStore ? (
-              <LinkPill
-                href={project.links.appStore}
-                label="App Store"
-                icon={<Apple className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.links.playStore ? (
-              <LinkPill
-                href={project.links.playStore}
-                label="Google Play"
-                icon={<PlayIcon className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.links.github ? (
-              <LinkPill
-                href={project.links.github}
-                label="GitHub"
-                icon={<Github className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.socials.twitter ? (
-              <LinkPill
-                href={project.socials.twitter}
-                label="X / Twitter"
-                icon={<Twitter className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.socials.instagram ? (
-              <LinkPill
-                href={project.socials.instagram}
-                label="Instagram"
-                icon={<Instagram className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.socials.linkedin ? (
-              <LinkPill
-                href={project.socials.linkedin}
-                label="LinkedIn"
-                icon={<Linkedin className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.socials.youtube ? (
-              <LinkPill
-                href={project.socials.youtube}
-                label="YouTube"
-                icon={<Youtube className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-            {project.socials.discord ? (
-              <LinkPill
-                href={project.socials.discord}
-                label="Discord"
-                icon={<MessageCircle className="size-4" />}
-                color={project.brand.foreground}
-              />
-            ) : null}
-          </div>
-
-          {project.contactEmail ? (
-            <p className="mt-10 text-sm opacity-60">
-              İletişim:{" "}
-              <a
-                href={`mailto:${project.contactEmail}`}
-                className="underline-offset-4 hover:underline"
-              >
-                {project.contactEmail}
-              </a>
-            </p>
-          ) : null}
-        </div>
-      </section>
-
-      {/* OTHER PROJECTS ────────────────────────────────────────────────── */}
-      {others.length ? (
-        <section
-          style={{
-            backgroundColor: project.brand.background,
-            color: project.brand.foreground,
-          }}
-        >
-          <div className="container py-20 md:py-24">
-            <p className="text-xs uppercase tracking-widest opacity-60">
-              Diğer projeler
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-              YULA Lab ailesinde başka neler var?
-            </h2>
-
-            <ul className="mt-10 grid gap-4 md:grid-cols-2">
-              {others.map((o) => (
-                <li key={o.slug}>
-                  <Link
-                    href={`/projects/${o.slug}`}
-                    className="group flex items-center gap-4 rounded-2xl border p-4 transition hover:translate-y-[-1px]"
-                    style={{
-                      borderColor: `${project.brand.foreground}15`,
-                      backgroundColor: `${project.brand.foreground}05`,
-                    }}
-                  >
-                    <div
-                      className="flex size-14 items-center justify-center rounded-xl"
-                      style={{ background: o.brand.gradient }}
-                    >
-                      <Image
-                        src={o.visuals.icon ?? o.visuals.logo}
-                        alt={`${o.name} logo`}
-                        width={32}
-                        height={32}
-                        className="rounded"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-xs uppercase tracking-widest opacity-60">
-                        {o.category.tr}
-                      </p>
-                      <p className="font-semibold">{o.name}</p>
-                    </div>
-                    <ArrowUpRight className="size-4 opacity-40 transition group-hover:opacity-100" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ) : null}
     </div>
   );
 }
 
-function LinkPill({
-  href,
-  label,
-  icon,
-  color,
+/* ─────────── Sub-components ─────────── */
+
+function ProjectMesh({ project: p }: { project: ProjectConfig }) {
+  return (
+    <div aria-hidden className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div
+        className="absolute drift-a"
+        style={{
+          width: "70vw",
+          height: "70vw",
+          left: "-20vw",
+          top: "-20vw",
+          background: `radial-gradient(circle, ${p.brand.primary}26 0%, transparent 60%)`,
+          filter: "blur(120px)",
+        }}
+      />
+      <div
+        className="absolute drift-b"
+        style={{
+          width: "60vw",
+          height: "60vw",
+          right: "-15vw",
+          top: "5vw",
+          background: `radial-gradient(circle, ${p.brand.secondary}1F 0%, transparent 60%)`,
+          filter: "blur(120px)",
+        }}
+      />
+      <div
+        className="absolute drift-c"
+        style={{
+          width: "60vw",
+          height: "60vw",
+          left: "15vw",
+          top: "20vw",
+          background: `radial-gradient(circle, ${p.brand.accent}1F 0%, transparent 60%)`,
+          filter: "blur(140px)",
+        }}
+      />
+    </div>
+  );
+}
+
+function BrandPill({
+  link,
+  project: p,
+  primary = false,
 }: {
-  href: string;
-  label: string;
-  icon: React.ReactNode;
-  color: string;
+  link: ProjectLink;
+  project: ProjectConfig;
+  primary?: boolean;
 }) {
+  const tl = useTranslations("links");
+  const Ic = LINK_ICON[link.kind] ?? ArrowUpRight;
+  const label = tl(link.kind);
+
   return (
     <a
-      href={href}
+      href={link.href}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition hover:bg-white/5"
-      style={{ borderColor: `${color}30`, color }}
+      className={
+        "group inline-flex items-center gap-2.5 rounded-full px-4 py-2.5 text-[13.5px] font-medium transition-all duration-300 focusable border " +
+        (primary ? "" : "hover:bg-white/[0.04]")
+      }
+      style={
+        primary
+          ? {
+              background: p.brand.primary,
+              color: p.brand.background,
+              borderColor: p.brand.primary,
+            }
+          : { borderColor: p.brand.foreground + "22", color: p.brand.foreground }
+      }
     >
-      {icon}
-      {label}
+      <Ic size={15} strokeWidth={1.8} />
+      <span>{label}</span>
+      <ArrowUpRight size={12} strokeWidth={2} className="arrow-nudge opacity-80" />
     </a>
+  );
+}
+
+function StatBlock({
+  stat,
+  project: p,
+  index,
+}: {
+  stat: ProjectConfig["stats"][number];
+  project: ProjectConfig;
+  index: number;
+}) {
+  const locale = useLocale() as Locale;
+  const reveal = useReveal();
+  return (
+    <div
+      ref={reveal.ref as React.RefObject<HTMLDivElement>}
+      className={reveal.className}
+      style={{ transitionDelay: `${index * 60}ms` }}
+    >
+      <div
+        className="font-display font-bold tracking-tightest text-[44px] md:text-[56px] lg:text-[64px] leading-none"
+        style={{ color: p.brand.primary, fontFamily: p.brand.fontDisplay }}
+      >
+        {stat.value}
+      </div>
+      <div
+        className="mt-3 font-mono text-[11px] tracking-widest uppercase"
+        style={{ color: p.brand.foreground + "99" }}
+      >
+        {stat.label[locale]}
+      </div>
+    </div>
+  );
+}
+
+function FeatureCard({
+  feature: f,
+  project: p,
+  index,
+}: {
+  feature: ProjectConfig["features"][number];
+  project: ProjectConfig;
+  index: number;
+}) {
+  const locale = useLocale() as Locale;
+  const reveal = useReveal();
+  return (
+    <div
+      ref={reveal.ref as React.RefObject<HTMLDivElement>}
+      className={"rounded-2xl p-6 transition-all duration-300 " + reveal.className}
+      style={{
+        background: p.brand.foreground + "08",
+        border: `1px solid ${p.brand.foreground}15`,
+        transitionDelay: `${index * 60}ms`,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = p.brand.primary + "55";
+        e.currentTarget.style.transform = "translateY(-2px)";
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = p.brand.foreground + "15";
+        e.currentTarget.style.transform = "translateY(0)";
+      }}
+    >
+      <div
+        className="w-10 h-10 rounded-lg"
+        style={{
+          background: p.brand.gradient,
+          boxShadow:
+            "inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -10px 18px rgba(0,0,0,0.35)",
+        }}
+      />
+      <h4
+        className="mt-5 font-display text-lg font-semibold tracking-tight"
+        style={{ color: p.brand.foreground, fontFamily: p.brand.fontDisplay }}
+      >
+        {f.title[locale]}
+      </h4>
+      <p
+        className="mt-2 text-[14px] leading-relaxed"
+        style={{ color: p.brand.foreground + "B0" }}
+      >
+        {f.description[locale]}
+      </p>
+    </div>
+  );
+}
+
+function ProjectHeroCard({ project: p }: { project: ProjectConfig }) {
+  return (
+    <div className="relative">
+      <div
+        aria-hidden
+        className="absolute -inset-8 rounded-[40px]"
+        style={{ background: p.brand.gradient, opacity: 0.35, filter: "blur(60px)" }}
+      />
+      <div
+        className="relative aspect-square rounded-3xl overflow-hidden border"
+        style={{
+          borderColor: p.brand.foreground + "1A",
+          background: p.brand.background,
+          boxShadow: p.brand.glow,
+        }}
+      >
+        <div
+          className="absolute inset-0"
+          style={{ background: p.brand.gradient, opacity: 0.92 }}
+        />
+        <div className="absolute inset-0 placeholder-stripes opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/40" />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div
+            className="font-display font-extrabold leading-none tracking-tightest select-none"
+            style={{
+              fontSize: "clamp(140px, 22vw, 280px)",
+              color: "rgba(0,0,0,0.55)",
+              fontFamily: p.brand.fontDisplay,
+              textShadow: "0 2px 0 rgba(255,255,255,0.2)",
+            }}
+          >
+            {p.monogram}
+          </div>
+        </div>
+        <div
+          className="absolute top-4 left-4 font-mono text-[10.5px] tracking-widest uppercase"
+          style={{ color: "rgba(0,0,0,0.55)" }}
+        >
+          {p.slug.toUpperCase()}
+        </div>
+        <div
+          className="absolute bottom-4 right-4 font-mono text-[10.5px] tracking-widest uppercase"
+          style={{ color: "rgba(0,0,0,0.55)" }}
+        >
+          {p.monogram}
+        </div>
+      </div>
+    </div>
   );
 }

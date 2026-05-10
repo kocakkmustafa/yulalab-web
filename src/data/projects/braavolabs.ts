@@ -3,36 +3,37 @@ import type { ProjectConfig } from "@/lib/types";
 export const braavolabs: ProjectConfig = {
   slug: "braavolabs",
   name: "Braavolabs",
+  monogram: "B",
   kind: ["platform", "web", "mobile"],
-  status: "pre-launch",
+  status: "beta",
   category: {
     tr: "Otonom AI Şirket İşletim Sistemi",
-    en: "Autonomous AI Company Operating System",
+    en: "Autonomous AI Company OS",
   },
   tagline: {
     tr: "AI şirketin, 10 dakikada kurulur.",
     en: "Your AI company, built in 10 minutes.",
   },
   description: {
-    tr: "Tek bir paragrafla işinizi anlatın; Braavolabs içerik, satış, operasyon ve finans için tam kadrolu bir otonom AI şirketi kurar. Her karar gerekçelendirilir, her harcama onaylanır, her çalışma uçtan uca denetlenir.",
-    en: "Describe your business in plain English. Braavolabs assembles a fully-staffed autonomous AI company across content, sales, ops and finance — every decision reasoned, every spend approved, every run audited end-to-end.",
+    tr: "Braavolabs, küçük ekiplerin kendi otonom AI şirketlerini dakikalar içinde kurmasını sağlayan bir işletim sistemi. 9 primitif, 12 LLM sağlayıcısı, 6 dil — tek panelden.",
+    en: "Braavolabs is an operating system that lets small teams stand up their own autonomous AI companies in minutes. 9 primitives, 12 LLM providers, 6 languages — from a single panel.",
   },
-  pitch: {
-    tr: "Braavolabs, kendi LLM anahtarınızla çalışan, 9 yetkinlik (içerik, satış, operasyon, finans, analitik, hafıza, yönetişim, edinme, teslim) etrafında 9 ajanı orkestrasyon eden bir AI şirket işletim sistemidir. Bulutta kullanın ya da Docker ile kendi sunucunuzda çalıştırın.",
-    en: "Braavolabs is an AI company OS that orchestrates 9 specialized agents around 9 primitives — content, sales, ops, finance, analytics, memory, governance, acquisition, delivery — using your own LLM key. Run in the cloud or self-host with Docker.",
+  short: {
+    tr: "Küçük ekipler için otonom AI şirket OS'i. Primitifler, ajan ağları ve şeffaf maliyet — tek panel.",
+    en: "An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.",
   },
   brand: {
-    primary: "#00d1ff",
-    secondary: "#4060ff",
-    accent: "#6d11ad",
+    primary: "#00D1FF",
+    secondary: "#4060FF",
+    accent: "#6D11AD",
     background: "#050810",
-    foreground: "#e1e2eb",
-    gradient:
-      "linear-gradient(135deg, #00d1ff 0%, #4060ff 50%, #6d11ad 100%)",
-    fontDisplay: "Space Grotesk",
-    fontBody: "Inter",
-    fontMono: "JetBrains Mono",
-    mood: "Linear / Superhuman / Vercel — dark, glass, cobalt rim, animated mesh.",
+    foreground: "#E1E2EB",
+    gradient: "linear-gradient(135deg, #00D1FF 0%, #4060FF 50%, #6D11AD 100%)",
+    glow: "0 0 80px -10px rgba(64,96,255,0.55)",
+    fontDisplay: '"Space Grotesk", Inter, sans-serif',
+    fontBody: "Inter, sans-serif",
+    fontMono: '"JetBrains Mono", ui-monospace, monospace',
+    mood: "linear-superhuman-vercel",
   },
   visuals: {
     logo: "/projects/braavolabs/logo.png",
@@ -42,63 +43,74 @@ export const braavolabs: ProjectConfig = {
   },
   features: [
     {
-      title: "Tek paragrafla şirket kurulumu",
-      description:
-        "İşinizi cümlelerinizle anlatın; Claude 2-3 soruyla anlar, ~10 dakikada çalışır bir AI şirketi teslim eder.",
-      icon: "Sparkles",
-    },
-    {
-      title: "9 Primitif",
-      description:
-        "Edinme · Satış · Teslim · İçerik · Operasyon · Finans · Analitik · Hafıza · Yönetişim — kategoriyi tanımlayan çerçeve.",
+      title: { tr: "Primitive katmanı", en: "Primitive layer" },
+      description: {
+        tr: "Bellek, plan, eylem, gözlem — 9 yeniden kullanılabilir primitif üzerine inşa edilir.",
+        en: "Memory, plan, action, observation — built on 9 reusable primitives.",
+      },
       icon: "LayoutGrid",
     },
     {
-      title: "İnsan onayı kapıları",
-      description:
-        "Her para harcaması ve marka riski insan onayına gelir. Risk Stops döngüleri ve spam'i otomatik durdurur.",
-      icon: "ShieldCheck",
-    },
-    {
-      title: "BYOK · 12 LLM sağlayıcı",
-      description:
-        "Anthropic, OpenAI, Google, Mistral, Groq, OpenRouter, DeepSeek, Kimi, Qwen, Ollama, LM Studio veya kendi modeliniz.",
+      title: { tr: "Çoklu sağlayıcı", en: "Multi-provider" },
+      description: {
+        tr: "OpenAI, Anthropic, Mistral, Gemini ve 8 daha — tek arayüzden, tek faturalama mantığıyla.",
+        en: "OpenAI, Anthropic, Mistral, Gemini and 8 more — one interface, one billing logic.",
+      },
       icon: "KeyRound",
     },
     {
-      title: "Tam denetim kaydı",
-      description:
-        "Her tool çağrısı, her karar, her gerekçe kayıtlı. 'AI bunu neden yaptı?' sorusunun cevabı bir tık ötede.",
+      title: { tr: "Şeffaf maliyet", en: "Transparent cost" },
+      description: {
+        tr: "Her ajan, her token, her saniye — kim ne harcadı, hangi karara mal oldu, açık panelde.",
+        en: "Every agent, every token, every second — who spent what for which decision, in plain view.",
+      },
       icon: "FileSearch",
     },
     {
-      title: "Self-host & cloud",
-      description:
-        "Tek scriptle Docker Compose kurulumu. Kendi sunucunuzda da, bulutta da aynı deneyim.",
-      icon: "Server",
+      title: { tr: "Görev grafiği", en: "Task graph" },
+      description: {
+        tr: "Ajanlar arası bağımlılığı görsel grafikle çiz; insan onayı gereken düğümleri işaretle.",
+        en: "Draw inter-agent dependencies as a visual graph; mark nodes that need human approval.",
+      },
+      icon: "Network",
+    },
+    {
+      title: { tr: "Politika motoru", en: "Policy engine" },
+      description: {
+        tr: "Roller, izinler, kotalar. Bir ajan asla limitin ötesine geçmez — tasarımdan gelir.",
+        en: "Roles, permissions, quotas. Agents can't drift past their limits — by design.",
+      },
+      icon: "ShieldCheck",
+    },
+    {
+      title: { tr: "6 dil, 1 ekip", en: "6 languages, 1 team" },
+      description: {
+        tr: "Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, Arapça — aynı bağlam, aynı bellek.",
+        en: "Turkish, English, German, French, Spanish, Arabic — same context, same memory.",
+      },
+      icon: "Globe",
     },
   ],
   stats: [
-    { label: "Primitif", value: "9", description: "Edinme → Yönetişim" },
-    { label: "LLM Sağlayıcı", value: "12", description: "BYOK" },
-    { label: "Kurulum süresi", value: "~10dk", description: "Sıfırdan çalışır şirket" },
-    { label: "Dil", value: "6", description: "TR · EN · ES · DE · FR · AR" },
+    { value: "9", label: { tr: "Primitif", en: "Primitives" } },
+    { value: "12", label: { tr: "LLM Sağlayıcı", en: "LLM Providers" } },
+    { value: "~10dk", label: { tr: "Kurulum süresi", en: "Setup time" } },
+    { value: "6", label: { tr: "Dil", en: "Languages" } },
   ],
   vision: {
-    tr: "Otonom AI şirketleri, bir paragraf kadar kolay erişilebilir bir meta haline gelsin.",
-    en: "Make autonomous AI companies as accessible as writing a paragraph.",
+    tr: "Her küçük ekibin, kendi otonom dijital iş gücünü onlarca dakika içinde kurabildiği bir dünya.",
+    en: "A world where every small team can stand up their own autonomous digital workforce in minutes.",
   },
   mission: {
-    tr: "Solo kurucular, üreticiler ve küçük ajanslar denetlenebilir, yönetişim altında çalışan AI şirketleri kursun.",
-    en: "Empower solo founders, creators and small agencies to run audited, governed AI companies.",
+    tr: "Ajan tabanlı sistemleri spor salonu jargonundan çıkarıp, gerçekten kullanışlı, ölçülebilir, denetlenebilir bir mühendislik disiplinine çevirmek.",
+    en: "Move agent-based systems out of marketing jargon and into a useful, measurable, auditable engineering discipline.",
   },
   order: 1,
-  links: {
-    website: "https://braavolabs.com",
-    github: "https://github.com/kocakkmustafa/braavolabs",
-  },
-  socials: {
-    twitter: "https://x.com/braavolabs",
-  },
+  links: [
+    { kind: "web", href: "https://braavolabs.com" },
+    { kind: "github", href: "https://github.com/kocakkmustafa/braavolabs" },
+    { kind: "x", href: "https://x.com/braavolabs" },
+    { kind: "linkedin", href: "https://www.linkedin.com/company/braavolabs" },
+  ],
   contactEmail: "hello@braavolabs.com",
 };

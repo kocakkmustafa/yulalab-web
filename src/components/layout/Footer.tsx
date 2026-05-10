@@ -1,83 +1,93 @@
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { YulaMark } from "@/components/common/YulaMark";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
+import type { Locale } from "@/lib/types";
 
 export function Footer() {
+  const t = useTranslations("footer");
+  const locale = useLocale() as Locale;
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border/60 mt-24">
-      <div className="container py-14">
-        <div className="grid gap-10 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <p className="font-display text-lg font-semibold">{company.name}</p>
-            <p className="mt-3 max-w-sm text-sm text-muted-foreground">
-              {company.tagline.tr}
-            </p>
-            <p className="mt-2 max-w-sm text-xs text-muted-foreground">
-              {company.shortDescription.tr}
-            </p>
+    <footer className="border-t border-white/[0.06] mt-32">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
+        <div className="col-span-2 md:col-span-1">
+          <div className="flex items-center gap-2.5">
+            <YulaMark />
+            <span className="font-display font-semibold">YULA Lab</span>
           </div>
-
-          <nav aria-labelledby="footer-projects">
-            <p
-              id="footer-projects"
-              className="mb-3 text-xs uppercase tracking-widest text-muted-foreground"
-            >
-              Projeler
-            </p>
-            <ul className="space-y-2 text-sm">
-              {projects.map((p) => (
-                <li key={p.slug}>
-                  <Link
-                    href={`/projects/${p.slug}`}
-                    className="hover:text-foreground text-muted-foreground"
-                  >
-                    {p.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-labelledby="footer-company">
-            <p
-              id="footer-company"
-              className="mb-3 text-xs uppercase tracking-widest text-muted-foreground"
-            >
-              Şirket
-            </p>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/manifesto" className="text-muted-foreground hover:text-foreground">
-                  Manifesto
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="text-muted-foreground hover:text-foreground">
-                  İletişim
-                </Link>
-              </li>
-              <li>
-                <a
-                  href={`mailto:${company.contact.email}`}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  {company.contact.email}
-                </a>
-              </li>
-            </ul>
-          </nav>
+          <p className="mt-4 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
+            {t("tagline")}
+          </p>
+          <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-400 uppercase">
+            {t("location")}
+          </div>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4 border-t border-border/60 pt-6 text-xs text-muted-foreground md:flex-row md:items-center md:justify-between">
-          <p>
-            © {year} {company.legalName}. Tüm hakları saklıdır.
-          </p>
-          <p>
-            Kurucu —{" "}
-            <span className="text-foreground/80">{company.founder.name}</span>
-          </p>
+        <div>
+          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+            {t("projectsHeading")}
+          </div>
+          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
+            {projects.map((p) => (
+              <li key={p.slug}>
+                <Link
+                  href={`/projects/${p.slug}`}
+                  className="link-wipe hover:text-ink-50"
+                >
+                  {p.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+            {t("companyHeading")}
+          </div>
+          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
+            <li>
+              <Link href="/manifesto" className="link-wipe">
+                {t("navManifesto")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/projects" className="link-wipe">
+                {t("navProjects")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="link-wipe">
+                {t("navContact")}
+              </Link>
+            </li>
+            <li>
+              <a href={`mailto:${company.contact.email}`} className="link-wipe">
+                {company.contact.email}
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+            {t("founderHeading")}
+          </div>
+          <div className="text-sm text-ink-200">{company.founder.name}</div>
+          <div className="text-sm text-ink-400 mt-1">
+            {company.founder.role[locale]}
+          </div>
+        </div>
+      </div>
+      <div className="border-t border-white/[0.04]">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex items-center justify-between text-[12px] text-ink-400">
+          <div>
+            © {year} {company.legalName}. {t("rights")}
+          </div>
+          <div className="font-mono tracking-widest uppercase">{t("version")}</div>
         </div>
       </div>
     </footer>

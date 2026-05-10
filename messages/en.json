@@ -1,0 +1,128 @@
+{
+  "site": {
+    "title": "YULA Lab — We design tomorrow's products today.",
+    "description": "YULA Lab is a venture studio building AI-native, data-driven products that simplify everyday life."
+  },
+  "header": {
+    "home": "Home",
+    "manifesto": "Manifesto",
+    "projects": "Projects",
+    "contact": "Contact",
+    "ctaProjects": "Explore Projects",
+    "menuOpen": "Menu",
+    "menuClose": "Close"
+  },
+  "footer": {
+    "tagline": "A venture studio that uses AI in the right place at the right time, without overstating it.",
+    "location": "Istanbul · 41.0082° N",
+    "projectsHeading": "Projects",
+    "companyHeading": "Company",
+    "founderHeading": "Founder",
+    "navManifesto": "Manifesto",
+    "navProjects": "Projects",
+    "navContact": "Contact",
+    "rights": "All rights reserved.",
+    "version": "v0.1 · showcase"
+  },
+  "common": {
+    "explore": "Explore",
+    "openPage": "Open page",
+    "back": "Back",
+    "home": "Home",
+    "showAll": "View all",
+    "readManifesto": "Read the manifesto",
+    "getInTouch": "Get in touch",
+    "discoverProjects": "Discover projects",
+    "manifesto": "Manifesto",
+    "switchLanguage": "EN · TR"
+  },
+  "status": {
+    "live": "Live",
+    "beta": "Beta",
+    "comingSoon": "Coming soon",
+    "inDevelopment": "In development"
+  },
+  "landing": {
+    "eyebrow": "Venture Studio · Istanbul",
+    "heroTitle": "We design tomorrow's products today.",
+    "heroDescription": "YULA Lab is a venture studio that designs AI-native, data-driven products that simplify everyday life. Every project is built at the intersection of aesthetics, ethics, and impact.",
+    "heroMeta": {
+      "products": "3 products",
+      "studio": "1 studio",
+      "place": "IST · 2025"
+    },
+    "bannerCardTopLabel": "YL · 001",
+    "bannerCardBottomLabel": "Istanbul",
+    "bannerWord": "YULA",
+    "bannerCaption": "VENTURE · STUDIO · ISTANBUL",
+    "bannerSpec": "YULA / banner.png · 2400×1400",
+    "bannerDrop": "drop image here →",
+    "visionEyebrow": "Vision",
+    "visionBody": "Build a family of products that meaningfully improves human life by bringing the best of AI into everyday hands.",
+    "missionEyebrow": "Mission",
+    "missionBody": "Build an engineering culture that combines transparent methodology, minimal design and real user value — using AI exactly where it helps, never just because it can.",
+    "manifestoNote": "An engineering culture built on four values.",
+    "projectsEyebrow": "What we're building right now",
+    "projectsTitle": "The family."
+  },
+  "manifesto": {
+    "eyebrow": "Manifesto",
+    "title": "With craft, not haste.",
+    "intro": "YULA Lab is a venture studio that leans on evidence, not trends. Each of our three products is a different face of the same discipline: making a measurable difference in human life through restrained, transparent design.",
+    "visionEyebrow": "Vision",
+    "missionEyebrow": "Mission",
+    "valuesEyebrow": "Our values",
+    "valuesTitle": "Four words, four disciplines.",
+    "founderEyebrow": "Founder"
+  },
+  "projectsIndex": {
+    "eyebrow": "Projects",
+    "title": "The family.",
+    "intro": "Three products, one discipline. Each speaks its own design language; underneath, the same engineering culture, the same transparency, the same calm user experience."
+  },
+  "showcase": {
+    "back": "Projects",
+    "pitchEyebrow": "What it does",
+    "featuresEyebrow": "Details",
+    "featuresTitle": "Quiet but deep.",
+    "featuresCount": "06 features",
+    "visionEyebrow": "Vision",
+    "missionEyebrow": "Mission",
+    "linksEyebrow": "Follow this project",
+    "linksTitle": "Links.",
+    "othersEyebrow": "Other projects",
+    "notFoundTitle": "Project not found.",
+    "notFoundCta": "Projects"
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Let's talk.",
+    "intro": "An idea, a piece of feedback, a press request, or just hello — email is the fastest way to reach us. We usually reply within 48 hours.",
+    "generalLabel": "General",
+    "generalHint": "For partnerships, collaborations, product and technical questions.",
+    "pressLabel": "Press",
+    "pressHint": "Interviews, event invitations and press release requests.",
+    "locationEyebrow": "Location",
+    "locationTitle": "Istanbul, Türkiye",
+    "locationNote": "Meetings Tuesday – Thursday, hybrid."
+  },
+  "notFound": {
+    "title": "Page not found.",
+    "body": "{path} doesn't exist."
+  },
+  "links": {
+    "web": "Website",
+    "github": "GitHub",
+    "appstore": "App Store",
+    "playstore": "Google Play",
+    "x": "X",
+    "twitter": "X",
+    "instagram": "Instagram",
+    "youtube": "YouTube",
+    "linkedin": "LinkedIn",
+    "discord": "Discord",
+    "telegram": "Telegram",
+    "documentation": "Documentation",
+    "pressKit": "Press kit"
+  }
+}

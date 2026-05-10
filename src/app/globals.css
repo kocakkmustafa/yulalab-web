@@ -2,52 +2,216 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ──────────────────────────────────────────────────────────────────────
- * YULA Lab — root tokens
- * Per-project pages override these on a wrapper element via inline style.
- * ────────────────────────────────────────────────────────────────────── */
 :root {
-  --background: 0 0% 4%;
-  --foreground: 0 0% 96%;
-  --muted: 0 0% 14%;
-  --muted-foreground: 0 0% 65%;
-  --border: 0 0% 18%;
-  --accent: 0 0% 90%;
-  --accent-foreground: 0 0% 8%;
-
-  --font-display: "Manrope", "Inter", system-ui, sans-serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
-}
-
-* {
-  border-color: hsl(var(--border));
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 html,
 body {
-  background-color: hsl(var(--background));
-  color: hsl(var(--foreground));
-  font-family: var(--font-sans);
+  background: #0a0a0b;
+  color: #f4f4f5;
+}
+
+body {
+  font-family: var(--font-sans), Inter, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 ::selection {
-  background-color: hsl(var(--foreground));
-  color: hsl(var(--background));
+  background: rgba(255, 255, 255, 0.18);
 }
 
-/* Utility — shows brand gradient as text fill. */
-.brand-text-gradient {
-  background-image: var(--brand-gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* hide scrollbars on horizontal pill rows */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
 }
 
-/* Utility — soft glow under hero element using brand-primary. */
-.brand-glow {
-  box-shadow: 0 0 80px -20px var(--brand-primary, rgba(255, 255, 255, 0.4));
+/* IntersectionObserver-driven reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 600ms var(--ease-soft),
+    transform 600ms var(--ease-soft);
+}
+.reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* word stagger reveal */
+.word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.4em);
+  transition:
+    opacity 600ms var(--ease-soft),
+    transform 600ms var(--ease-soft);
+}
+.word.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* page transition */
+.page-enter {
+  animation: pageIn 500ms var(--ease-soft) both;
+}
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* drift blobs */
+@keyframes driftA {
+  0%,
+  100% {
+    transform: translate3d(-10%, -8%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(8%, 6%, 0) scale(1.1);
+  }
+}
+@keyframes driftB {
+  0%,
+  100% {
+    transform: translate3d(8%, 4%, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(-6%, -10%, 0) scale(1);
+  }
+}
+@keyframes driftC {
+  0%,
+  100% {
+    transform: translate3d(-4%, 6%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(10%, -4%, 0) scale(1.15);
+  }
+}
+.drift-a {
+  animation: driftA 38s var(--ease-soft) infinite;
+}
+.drift-b {
+  animation: driftB 44s var(--ease-soft) infinite;
+}
+.drift-c {
+  animation: driftC 32s var(--ease-soft) infinite;
+}
+
+/* logo subtle hover */
+.logo-mark {
+  transition: transform 300ms var(--ease-soft);
+}
+.logo-mark:hover {
+  transform: rotate(3deg) scale(1.05);
+}
+
+/* link underline wipe */
+.link-wipe {
+  position: relative;
+}
+.link-wipe::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 350ms var(--ease-soft);
+}
+.link-wipe:hover::after {
+  transform: scaleX(1);
+}
+
+/* card hover */
+.card-hover {
+  transition:
+    transform 250ms var(--ease-soft),
+    border-color 250ms var(--ease-soft),
+    background-color 250ms var(--ease-soft);
+}
+.card-hover:hover {
+  transform: translateY(-2px);
+}
+
+/* arrow nudge */
+.arrow-nudge {
+  display: inline-block;
+  transition: transform 250ms var(--ease-soft);
+}
+.group:hover .arrow-nudge,
+a:hover .arrow-nudge,
+button:hover .arrow-nudge {
+  transform: translate(2px, -2px);
+}
+
+/* focus ring helper */
+.focusable:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* dotted grid backdrop */
+.dot-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+/* hero mesh (default site) */
+.mesh-default::before,
+.mesh-default::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(120px);
+}
+.mesh-default::before {
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.05), transparent 60%);
+  animation: driftA 40s var(--ease-soft) infinite;
+}
+.mesh-default::after {
+  background: radial-gradient(circle at 70% 70%, rgba(180, 200, 255, 0.04), transparent 60%);
+  animation: driftB 50s var(--ease-soft) infinite;
+}
+
+/* tilt */
+.tilt-r {
+  transform: rotate(1.5deg);
+}
+
+/* mobile menu */
+.mm-overlay {
+  backdrop-filter: blur(12px);
+}
+
+/* image-slot-style banner placeholder stripes */
+.placeholder-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.04) 0 1px,
+    transparent 1px 18px
+  );
 }

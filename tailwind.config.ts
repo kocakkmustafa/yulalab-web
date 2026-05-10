@@ -6,52 +6,60 @@ const config: Config = {
   theme: {
     container: {
       center: true,
-      padding: { DEFAULT: "1.25rem", sm: "1.5rem", lg: "2rem" },
-      screens: { "2xl": "1280px" },
+      padding: { DEFAULT: "1.5rem", lg: "2.5rem" },
+      screens: { "2xl": "80rem" },
     },
     extend: {
       colors: {
-        // Per-page theming reads from CSS vars; these are the YULA Lab base.
-        background: "hsl(var(--background) / <alpha-value>)",
-        foreground: "hsl(var(--foreground) / <alpha-value>)",
-        muted: {
-          DEFAULT: "hsl(var(--muted) / <alpha-value>)",
-          foreground: "hsl(var(--muted-foreground) / <alpha-value>)",
-        },
-        border: "hsl(var(--border) / <alpha-value>)",
-        accent: {
-          DEFAULT: "hsl(var(--accent) / <alpha-value>)",
-          foreground: "hsl(var(--accent-foreground) / <alpha-value>)",
-        },
-        // Per-project theme tokens — overridden inside ProjectShowcase via inline style.
-        brand: {
-          primary: "var(--brand-primary, #ffffff)",
-          secondary: "var(--brand-secondary, #cccccc)",
-          accent: "var(--brand-accent, #888888)",
-          surface: "var(--brand-surface, #0a0a0a)",
+        ink: {
+          900: "#0A0A0B",
+          850: "#0E0E10",
+          800: "#131316",
+          700: "#1A1A1E",
+          600: "#26262C",
+          500: "#3A3A42",
+          400: "#6B6B75",
+          300: "#9A9AA3",
+          200: "#C5C5CC",
+          100: "#E5E5EA",
+          50: "#F4F4F5",
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "system-ui", "sans-serif"],
-        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Manrope", "Inter", "sans-serif"],
+        grotesk: ["var(--font-grotesk)", "Space Grotesk", "Inter", "sans-serif"],
+        mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },
-      backgroundImage: {
-        "brand-gradient": "var(--brand-gradient, linear-gradient(135deg, #fff, #888))",
+      letterSpacing: {
+        tightest: "-0.04em",
+      },
+      transitionTimingFunction: {
+        soft: "cubic-bezier(0.16, 1, 0.3, 1)",
       },
       keyframes: {
-        "fade-in": {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
+        pageIn: {
+          from: { opacity: "0", transform: "translateY(6px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
         },
-        shimmer: {
-          "0%": { backgroundPosition: "200% 0" },
-          "100%": { backgroundPosition: "-200% 0" },
+        driftA: {
+          "0%, 100%": { transform: "translate3d(-10%, -8%, 0) scale(1)" },
+          "50%": { transform: "translate3d(8%, 6%, 0) scale(1.1)" },
+        },
+        driftB: {
+          "0%, 100%": { transform: "translate3d(8%, 4%, 0) scale(1.05)" },
+          "50%": { transform: "translate3d(-6%, -10%, 0) scale(1)" },
+        },
+        driftC: {
+          "0%, 100%": { transform: "translate3d(-4%, 6%, 0) scale(1)" },
+          "50%": { transform: "translate3d(10%, -4%, 0) scale(1.15)" },
         },
       },
       animation: {
-        "fade-in": "fade-in 600ms cubic-bezier(0.16, 1, 0.3, 1) both",
-        shimmer: "shimmer 2.5s linear infinite",
+        "page-enter": "pageIn 500ms cubic-bezier(0.16, 1, 0.3, 1) both",
+        "drift-a": "driftA 38s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "drift-b": "driftB 44s cubic-bezier(0.16, 1, 0.3, 1) infinite",
+        "drift-c": "driftC 32s cubic-bezier(0.16, 1, 0.3, 1) infinite",
       },
     },
   },

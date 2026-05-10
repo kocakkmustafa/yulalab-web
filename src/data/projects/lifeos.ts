@@ -3,8 +3,9 @@ import type { ProjectConfig } from "@/lib/types";
 export const lifeos: ProjectConfig = {
   slug: "lifeos",
   name: "LifeOS",
+  monogram: "L",
   kind: ["mobile"],
-  status: "pre-launch",
+  status: "coming-soon",
   category: {
     tr: "Kişisel Yaşam İşletim Sistemi",
     en: "Personal Life Operating System",
@@ -14,12 +15,12 @@ export const lifeos: ProjectConfig = {
     en: "Run your life like a system.",
   },
   description: {
-    tr: "Sağlık, finans, eğitim, yaşam ve araç — tüm hayatınızı tek bir çevrim dışı uygulamada birleştirir. Verileriniz cihazınızda AES-256 ile şifrelenir; yapay zeka rehberiniz size günde 5 dakikada anlamlı içgörüler sunar.",
-    en: "LifeOS unifies five life domains — health, finance, education, life and vehicle — into one privacy-first mobile app. AES-256 on-device encryption; a Gemini-powered companion delivers a 5-minute daily debrief with cross-domain insights.",
+    tr: "LifeOS, hayatın 5 alanını (sağlık, finans, ilişkiler, kariyer, anlam) tek bir yerel-öncelikli OS'te yöneten, AES-256 cihaz-üstü şifrelemeli bir kişisel yaşam aracı.",
+    en: "LifeOS unifies five life domains (health, finance, relationships, career, meaning) in a single offline-first OS with AES-256 on-device encryption.",
   },
-  pitch: {
-    tr: "HRV, FSRS, Monte Carlo, PERMA, SWLS gibi kanıta dayalı algoritmalarla beslenen LifeOS, beş hayat alanını ortak bir grafikte birleştirir. AI yoldaşınız Z-Raporu ile günü 5 dakikada özetler, alanlar arası bağlantıları (uyku → stres → harcama) Türkçe hikaye olarak anlatır.",
-    en: "Powered by validated algorithms (HRV norms, FSRS, Monte Carlo, PERMA, SWLS), LifeOS unifies five life domains in one chart. Its companion produces a 5-minute daily debrief and connects cross-domain dots (sleep → stress → spending) as a readable story.",
+  short: {
+    tr: "Yerel-öncelikli, AES-256 ile cihaz üstünde şifrelenen kişisel yaşam OS'i. 5 alan, 9+ algoritma.",
+    en: "Offline-first, AES-256 on-device encrypted personal life OS. 5 domains, 9+ validated algorithms.",
   },
   brand: {
     primary: "#C3F400",
@@ -27,11 +28,12 @@ export const lifeos: ProjectConfig = {
     accent: "#FFB3B5",
     background: "#000000",
     foreground: "#FFFFFF",
-    gradient:
-      "linear-gradient(135deg, #C3F400 0%, #E9B3FF 60%, #FFB3B5 100%)",
-    fontDisplay: "Manrope",
-    fontBody: "Inter",
-    mood: "Night Pulse — siyah, neon lime + electric violet, glassmorphism, animated rings.",
+    gradient: "linear-gradient(135deg, #C3F400 0%, #E9B3FF 60%, #FFB3B5 100%)",
+    glow: "0 0 80px -10px rgba(195,244,0,0.45)",
+    fontDisplay: "Manrope, Inter, sans-serif",
+    fontBody: "Inter, sans-serif",
+    fontMono: '"JetBrains Mono", ui-monospace, monospace',
+    mood: "night-pulse",
   },
   visuals: {
     logo: "/projects/lifeos/icon.png",
@@ -40,55 +42,75 @@ export const lifeos: ProjectConfig = {
   },
   features: [
     {
-      title: "5 hayat alanı, tek panel",
-      description: "Sağlık, finans, eğitim, yaşam ve araç tek dashboardda; her modülün kendi rengi var.",
+      title: { tr: "Beş alan, tek panel", en: "Five domains, one panel" },
+      description: {
+        tr: "Sağlık, finans, ilişkiler, kariyer, anlam. Her alan, kanıta dayalı bir ölçüm setiyle.",
+        en: "Health, finance, relationships, career, meaning. Each with an evidence-based measurement set.",
+      },
       icon: "LayoutDashboard",
     },
     {
-      title: "AI yoldaş + Z-Raporu",
-      description: "Sesli ya da yazılı 5 dakikalık günlük özet; AI veriyi doğru modüle otomatik yönlendirir.",
-      icon: "Mic",
+      title: { tr: "Yerel-öncelikli", en: "Offline-first" },
+      description: {
+        tr: "Veriniz cihazınızda kalır. AES-256 ile şifrelenir, senkron isteğe bağlıdır.",
+        en: "Your data stays on-device. AES-256 encrypted, sync is opt-in.",
+      },
+      icon: "Lock",
     },
     {
-      title: "Energy Score",
-      description: "Uyku · aktivite · stres · iyileşme · beslenme bileşik 0-100 puanı.",
-      icon: "Activity",
+      title: { tr: "AI koç (özel)", en: "AI coach (private)" },
+      description: {
+        tr: "Modeller cihaz üzerinde çalışır. Hassas veri sunucularımıza asla gönderilmez.",
+        en: "Models run on-device. Sensitive data never leaves your phone.",
+      },
+      icon: "Cpu",
     },
     {
-      title: "Bilimsel temel",
-      description: "HRV, VO2max, FSRS spaced repetition, PSQI, SWLS, PERMA — kanıta dayalı algoritmalar.",
+      title: { tr: "Bilimsel algoritmalar", en: "Scientific algorithms" },
+      description: {
+        tr: "CBT, IFS, atomik alışkanlıklar, İkigai, FIRE — 9+ doğrulanmış çerçeve.",
+        en: "CBT, IFS, atomic habits, Ikigai, FIRE — 9+ validated frameworks.",
+      },
       icon: "Microscope",
     },
     {
-      title: "Cross-Domain Insights",
-      description: "Pearson korelasyon zincirleri (uyku → stres → harcama) Türkçe anlatımla.",
-      icon: "GitBranch",
+      title: { tr: "Anlamlı raporlar", en: "Meaningful reports" },
+      description: {
+        tr: "Skor değil — hikaye. Bu hafta nerede ilerlediniz, nerede yavaşladınız.",
+        en: "Stories, not scores. Where you moved this week, where you slowed down.",
+      },
+      icon: "FileText",
     },
     {
-      title: "Gizlilik öncelikli",
-      description: "Hive AES-256 + Drift SQLCipher, opt-in Supabase senkron, reklam yok, takip yok.",
-      icon: "Lock",
+      title: { tr: "Sıfır reklam", en: "Zero ads" },
+      description: {
+        tr: "Tek model: ödeme yapan kullanıcı. Sizi ürün haline getirmiyoruz.",
+        en: "Single model: paying users. You're not the product.",
+      },
+      icon: "Sparkles",
     },
   ],
   stats: [
-    { label: "Hayat alanı", value: "5", description: "Sağlık · Finans · Eğitim · Yaşam · Araç" },
-    { label: "Bilimsel algoritma", value: "9+", description: "HRV · FSRS · Monte Carlo · PERMA …" },
-    { label: "Şifreleme", value: "AES-256", description: "Cihaz üstü" },
-    { label: "Reklam", value: "0", description: "Hiç olmayacak" },
+    { value: "5", label: { tr: "Hayat alanı", en: "Life domains" } },
+    { value: "9+", label: { tr: "Bilimsel algoritma", en: "Scientific algorithms" } },
+    { value: "AES-256", label: { tr: "Cihaz üstü şifreleme", en: "On-device encryption" } },
+    { value: "0", label: { tr: "Reklam", en: "Ads" } },
   ],
   vision: {
-    tr: "Hayatını anlayan, planlayan ve kullanıcısının yanında büyüyen sade bir kişisel işletim sistemi.",
-    en: "A calm personal OS that understands, plans, and grows alongside the user.",
+    tr: "Bir insanın hayatının kalitesini, cihazının dışına bilgi sızdırmadan, ölçebileceği ve geliştirebileceği bir özel OS.",
+    en: "A private OS where a person can measure and improve life quality without leaking a single byte off-device.",
   },
   mission: {
-    tr: "Bilimsel doğrulanmış yöntemleri kullanıcının cebine taşımak; AI'yı abartmadan, gizliliği bozmadan, gerçek bir hayat yardımı sunmak.",
-    en: "Bring scientifically validated methods to the user's pocket — calm AI, real privacy, real life help.",
+    tr: "Veriyi sahibine geri vermek; gizliliği bir özellik değil, başlangıç koşulu yapmak; sade ve bilimsel araçlarla insana dürüst aynayı tutmak.",
+    en: "Give data back to its owner; make privacy a starting condition, not a feature; hold up an honest, scientific mirror with calm tools.",
   },
   order: 3,
-  links: {
-    website: "https://kocakkmustafa.github.io/lifeos-policies/",
-    documentation: "https://kocakkmustafa.github.io/lifeos-policies/support.html",
-  },
-  socials: {},
+  links: [
+    { kind: "web", href: "https://kocakkmustafa.github.io/lifeos-policies/" },
+    { kind: "appstore", href: "#" },
+    { kind: "playstore", href: "#" },
+    { kind: "x", href: "#" },
+    { kind: "instagram", href: "#" },
+  ],
   contactEmail: "kocakmkaan@gmail.com",
 };

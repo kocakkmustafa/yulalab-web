@@ -3,8 +3,9 @@ import type { ProjectConfig } from "@/lib/types";
 export const burunfarki: ProjectConfig = {
   slug: "burunfarki",
   name: "Burun Farkı",
+  monogram: "BF",
   kind: ["web", "mobile"],
-  status: "pre-launch",
+  status: "live",
   category: {
     tr: "Şeffaf AI At Yarışı Analiz Platformu",
     en: "Transparent AI Horse Racing Analytics",
@@ -14,12 +15,12 @@ export const burunfarki: ProjectConfig = {
     en: "Numbers over hunches.",
   },
   description: {
-    tr: "Türkiye Jokey Kulübü'nün 2 yıllık resmi verisini 12 parametreli yapay zeka modeliyle analiz eder, doğruluk oranını şeffaf yayınlar. Bahis sitesi değildir; sistemli yaklaşım için analiz platformudur.",
-    en: "Burun Farkı turns 2 years of official Turkish Jockey Club data into calibrated win-probabilities with a 12-parameter ensemble model. It is an analytics platform, not a sportsbook.",
+    tr: "Burun Farkı, Türkiye at yarışlarının ilk açık ve şeffaf veri-odaklı analiz platformu. 130 binden fazla koşucu, 13 binden fazla yarış — modelin neden tahmin ettiğini gizlemiyor.",
+    en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. 130k+ runners, 13k+ races — and the model never hides why it predicted what it did.",
   },
-  pitch: {
-    tr: "13.587 yarış ve 130.930 koşucudan eğitilen ensemble modelimiz, her tahmininin arkasındaki ağırlıkları (piyasa, form, jokey sinerjisi, hız, mesafe uyumu, yük, dinlenme…) açıkça gösterir. 611 yarışlık testte %40,8 Top-1 ve %72,2 Top-3 doğruluk.",
-    en: "Our ensemble — trained on 13,587 races and 130,930 runners — exposes the feature weights behind every prediction (market, form, jockey synergy, speed, surface fit, weight, rest…). 40.8% Top-1 and 72.2% Top-3 on 611 out-of-sample races.",
+  short: {
+    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-1 doğruluğu %40,8.",
+    en: "Open, transparent, data-driven analytics for Turkish horse racing. 40.8% Top-1 accuracy.",
   },
   brand: {
     primary: "#FAB81F",
@@ -27,12 +28,12 @@ export const burunfarki: ProjectConfig = {
     accent: "#D4AF37",
     background: "#080C16",
     foreground: "#EDE9E0",
-    gradient:
-      "linear-gradient(135deg, #FAB81F 0%, #FCD25F 50%, #8F6D24 100%)",
-    fontDisplay: "Inter",
-    fontBody: "Inter",
-    fontMono: "JetBrains Mono",
-    mood: "Bloomberg Terminal × premium yarış kulübü — siyah üzerine altın, soft gold glow.",
+    gradient: "linear-gradient(135deg, #FAB81F 0%, #FCD25F 50%, #8F6D24 100%)",
+    glow: "0 0 60px -10px rgba(250,184,31,0.35)",
+    fontDisplay: "Inter, sans-serif",
+    fontBody: "Inter, sans-serif",
+    fontMono: '"JetBrains Mono", ui-monospace, monospace',
+    mood: "bloomberg-x-club",
   },
   visuals: {
     logo: "/projects/burunfarki/logo.png",
@@ -48,63 +49,74 @@ export const burunfarki: ProjectConfig = {
   },
   features: [
     {
-      title: "Şeffaf metodoloji",
-      description:
-        "Her tahmin, kendi feature ağırlıklarını gösterir. Kara kutu yok; her satır izlenebilir.",
+      title: { tr: "Açık özellik seti", en: "Open feature set" },
+      description: {
+        tr: "Modelin gördüğü tüm özellikleri — pist, mesafe, jokey, antrenör — açıkça listeleriz.",
+        en: "Every feature the model sees — track, distance, jockey, trainer — listed in plain view.",
+      },
       icon: "Eye",
     },
     {
-      title: "12 parametreli ensemble",
-      description:
-        "Piyasa oranları, form, jokey sinerjisi, hız, yüzey/mesafe uyumu, yük, dinlenme, sınıf, antrenör, momentum…",
-      icon: "Cpu",
-    },
-    {
-      title: "Doğrulanmış performans",
-      description:
-        "611 yarış out-of-sample test: Top-1 %40,8 · Top-3 %72,2 · Brier 0,098.",
+      title: { tr: "Karar gerekçesi", en: "Decision rationale" },
+      description: {
+        tr: "Her tahminin yanında, en etkili 3 faktör ve katkı oranı — gizli kara kutu yok.",
+        en: "Each prediction shows its top 3 factors and weights — no hidden black box.",
+      },
       icon: "BadgeCheck",
     },
     {
-      title: "Value Betting & Kelly",
-      description:
-        "Modelin tahmini AGF oranlarına göre pozitif beklenen değerli koşuları öne çıkarır.",
+      title: { tr: "Tarihsel arşiv", en: "Historical archive" },
+      description: {
+        tr: "13.587 koşuda, 130.930 koşucuda — modelin geçmişte nerede yanıldığını da görürsün.",
+        en: "13,587 races, 130,930 runners — including where the model has been wrong.",
+      },
+      icon: "Database",
+    },
+    {
+      title: { tr: "Backtest paneli", en: "Backtest panel" },
+      description: {
+        tr: "Son 12 ayın gerçek sonuçları üzerinde, modelin getirisini gün gün izle.",
+        en: "Track the model's day-by-day performance against the past 12 months of real results.",
+      },
       icon: "TrendingUp",
     },
     {
-      title: "Web + iOS + Android",
-      description:
-        "React + Vite web platformu ve Flutter mobil uygulama, ortak Supabase backend ile senkron.",
-      icon: "Smartphone",
+      title: { tr: "Disiplin önerileri", en: "Discipline tools" },
+      description: {
+        tr: "Bahis değil — bütçe yönetimi, varyans, durma kuralları üzerine eğitsel araçlar.",
+        en: "Not betting — educational tools for budget management, variance and stop-rules.",
+      },
+      icon: "ShieldAlert",
     },
     {
-      title: "Sorumlu kullanım",
-      description:
-        "18+ kapısı, KVKK uyumu, Yeşilay 182 yardım hattı her sayfada görünür. Bahis değil, analiz.",
-      icon: "ShieldAlert",
+      title: { tr: "Açıklama önerileri", en: "Explainability" },
+      description: {
+        tr: "Hangi koşucu için neden — ML açıklayıcılığı (SHAP) yarış-spesifik dilde anlatılır.",
+        en: "Why this runner, why now — SHAP explainability translated into race-specific language.",
+      },
+      icon: "Microscope",
     },
   ],
   stats: [
-    { label: "Top-1 doğruluk", value: "%40,8", description: "611 yarış testi" },
-    { label: "Top-3 doğruluk", value: "%72,2" },
-    { label: "Eğitim verisi", value: "13.587", description: "yarış · 2 yıl resmi TJK verisi" },
-    { label: "Koşucu", value: "130.930" },
+    { value: "%40,8", label: { tr: "Top-1 doğruluk", en: "Top-1 accuracy" } },
+    { value: "%72,2", label: { tr: "Top-3 doğruluk", en: "Top-3 accuracy" } },
+    { value: "13.587", label: { tr: "yarış", en: "races" } },
+    { value: "130.930", label: { tr: "koşucu", en: "runners" } },
   ],
   vision: {
-    tr: "Türk at yarışı topluluğunda 'tahmin' yerine 'analiz' kültürünü kurmak.",
-    en: "Replace tipster culture with transparent analytics in Turkish horse racing.",
+    tr: "At yarışını duygusal bir kumardan, denetlenebilir bir kantitatif disipline çeviren açık bir araç ekosistemi.",
+    en: "An open ecosystem that turns horse racing from emotional gambling into an auditable quantitative discipline.",
   },
   mission: {
-    tr: "Şeffaf metodoloji, doğrulanmış performans ve sorumlu kullanım çerçevesinde, herkesin anlayabileceği bir analiz platformu sunmak.",
-    en: "Deliver an analytics platform that combines transparent methodology, verified performance and responsible use.",
+    tr: "Spor verisini hak ettiği şeffaflıkta sunmak; insanın sezgisinden vazgeçmeden, veriyi yanına bir analist olarak koymak.",
+    en: "Present sports data with the transparency it deserves — without abandoning intuition, just placing data alongside it as an analyst.",
   },
   order: 2,
-  links: {
-    website: "https://burunfark.com",
-    pressKit: "https://burunfark.com/press-kit",
-  },
-  socials: {
-    twitter: "https://x.com/burunfarki",
-  },
+  links: [
+    { kind: "web", href: "https://burunfark.com" },
+    { kind: "x", href: "https://x.com/burunfarki" },
+    { kind: "instagram", href: "https://instagram.com/burunfarki" },
+    { kind: "youtube", href: "https://youtube.com/@burunfarki" },
+  ],
   contactEmail: "press@burunfark.com",
 };
