@@ -37,6 +37,13 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+function siteOrigin(): string {
+  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (explicit) return explicit.replace(/\/$/, "");
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "https://yulalab.com";
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -45,9 +52,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "site" });
   return {
-    metadataBase: new URL(
-      process.env.NEXT_PUBLIC_SITE_URL ?? "https://yulalab.com",
-    ),
+    metadataBase: new URL(siteOrigin()),
     title: {
       default: t("title"),
       template: "%s · YULA Lab",
@@ -76,6 +81,11 @@ export async function generateMetadata({
         en: "/en",
       },
     },
+    icons: {
+      icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+      apple: [{ url: "/apple-icon.svg", type: "image/svg+xml" }],
+    },
+    manifest: "/manifest.webmanifest",
   };
 }
 
