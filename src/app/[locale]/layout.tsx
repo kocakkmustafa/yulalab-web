@@ -66,13 +66,13 @@ export async function generateMetadata({
       siteName: company.name,
       title: t("title"),
       description: t("description"),
-      images: [{ url: company.brand.banner, width: 1920, height: 1080 }],
+      images: [{ url: "/opengraph-image", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
       title: t("title"),
       description: t("description"),
-      images: [company.brand.banner],
+      images: ["/opengraph-image"],
     },
     alternates: {
       canonical: locale === "tr" ? "/" : `/${locale}`,
