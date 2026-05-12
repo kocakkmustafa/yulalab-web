@@ -6,6 +6,7 @@
   "header": {
     "home": "Home",
     "manifesto": "Manifesto",
+    "transparency": "Transparency",
     "projects": "Projects",
     "contact": "Contact",
     "ctaProjects": "Explore Projects",
@@ -19,6 +20,7 @@
     "companyHeading": "Company",
     "founderHeading": "Founder",
     "navManifesto": "Manifesto",
+    "navTransparency": "Transparency",
     "navProjects": "Projects",
     "navContact": "Contact",
     "rights": "All rights reserved.",
@@ -93,6 +95,65 @@
     "othersEyebrow": "Other projects",
     "notFoundTitle": "Project not found.",
     "notFoundCta": "Projects"
+  },
+  "transparency": {
+    "eyebrow": "Transparency",
+    "title": "No black boxes. Ever.",
+    "intro": "At YULA Lab, transparency isn't a feature — it's the default. Every product makes the same promise: the model, the cost and the data are visible to you. You are using an AI product; you should not have to close your eyes.",
+    "promiseEyebrow": "Our promise",
+    "promiseBody": "Every decision you take, every token you spend, every row we store — you can see it. Nothing ships unless we can explain it.",
+    "pillarsEyebrow": "Three products, three transparency mechanics",
+    "pillarsTitle": "We don't claim it — we prove it.",
+    "readMore": "Read more on",
+    "pillars": {
+      "braavolabs": {
+        "label": "Transparent cost",
+        "title": "Every agent, every token, every second.",
+        "claim": "Every pipeline run shows which agent called which tool, how many tokens it spent and which decision it cost — in plain view. No surprise bills.",
+        "proof": "→ 9 primitives · 12 LLM providers · BYOK",
+        "detailLabel": "Audit trail",
+        "detailBody": "Every tool call and decision is a separate row; money-touching actions require an explicit human approval. Export the full run as CSV / JSON and reconcile against your own accounting."
+      },
+      "burunfarki": {
+        "label": "Open methodology",
+        "title": "Top 3 factors for every prediction.",
+        "claim": "We don't hide why the model picked that horse. SHAP-based explanations show the top 3 factors and their weight in race-specific language.",
+        "proof": "→ 40.8% Top-1 · 72.2% Top-3 · Brier 0.098",
+        "detailLabel": "Backtest panel",
+        "detailBody": "611 races over the past 12 months; winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns one click away."
+      },
+      "lifeos": {
+        "label": "On-device privacy",
+        "title": "Your data stays on your device.",
+        "claim": "Personal data is never sent to our servers. SQLCipher + AES-256 encrypts on-device, models run on your phone, cloud sync is opt-in.",
+        "proof": "→ AES-256 · Offline-first · 0 ads",
+        "detailLabel": "On-device AI",
+        "detailBody": "Health, finance, relationship and goal data never leaves your device. When you opt into cloud sync, only an encrypted bundle moves; YULA Lab cannot read it and cannot use it for training."
+      }
+    },
+    "guaranteeEyebrow": "What you never give up",
+    "guaranteeTitle": "Transparency means four guarantees.",
+    "guarantees": {
+      "dataOwnership": {
+        "title": "Your data belongs to you.",
+        "body": "One click to download all of your data in a machine-readable format, one click to delete it. Beyond what KVKK and GDPR require — permanent and self-serve."
+      },
+      "noTraining": {
+        "title": "Your data is not used for model training.",
+        "body": "We do not derive models from customer content. With BYOK your data goes to the provider you chose; we are a router, not a backup."
+      },
+      "noAds": {
+        "title": "No ads, no tracking.",
+        "body": "Our only revenue model is paying users. We don't harvest your data to resell it; analytics is minimal and consent-gated."
+      },
+      "exitRight": {
+        "title": "The exit door is always open.",
+        "body": "Cancel in one click. Export in one click. Delete the account in one click. No 90-day contract lock-in; the moment you stop liking the product you leave."
+      }
+    },
+    "ctaEyebrow": "Have a deeper question?",
+    "ctaTitle": "We're open to deeper technical conversation.",
+    "ctaBody": "Contact"
   },
   "contact": {
     "eyebrow": "Contact",

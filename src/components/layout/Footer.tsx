@@ -55,6 +55,11 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/transparency" className="link-wipe">
+                {t("navTransparency")}
+              </Link>
+            </li>
+            <li>
               <Link href="/projects" className="link-wipe">
                 {t("navProjects")}
               </Link>

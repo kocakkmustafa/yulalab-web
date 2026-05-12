@@ -6,6 +6,7 @@
   "header": {
     "home": "Ana Sayfa",
     "manifesto": "Manifesto",
+    "transparency": "Şeffaflık",
     "projects": "Projeler",
     "contact": "İletişim",
     "ctaProjects": "Projeleri Keşfet",
@@ -19,6 +20,7 @@
     "companyHeading": "Şirket",
     "founderHeading": "Kurucu",
     "navManifesto": "Manifesto",
+    "navTransparency": "Şeffaflık",
     "navProjects": "Projeler",
     "navContact": "İletişim",
     "rights": "Tüm hakları saklıdır.",
@@ -93,6 +95,65 @@
     "othersEyebrow": "Diğer projeler",
     "notFoundTitle": "Proje bulunamadı.",
     "notFoundCta": "Projeler"
+  },
+  "transparency": {
+    "eyebrow": "Şeffaflık",
+    "title": "Kara kutu değil. Hiçbir zaman.",
+    "intro": "YULA Lab'te şeffaflık bir özellik değil — varsayılan. Her ürünümüz aynı söze sahip: modeli, maliyeti, veriyi nasıl tuttuğumuzu açıkça gösteririz. Bir AI ürününü kullanıyorsunuz; gözünüzü kapatmak zorunda değilsiniz.",
+    "promiseEyebrow": "Verdiğimiz söz",
+    "promiseBody": "Aldığınız her kararı, harcadığınız her token'ı, sakladığımız her satırı görebilirsiniz. Açıklayamadığımız hiçbir şey ürüne girmez.",
+    "pillarsEyebrow": "Üç ürün, üç farklı şeffaflık mekaniği",
+    "pillarsTitle": "Söylemek değil, kanıtlamak.",
+    "readMore": "Detay:",
+    "pillars": {
+      "braavolabs": {
+        "label": "Şeffaf maliyet",
+        "title": "Her ajan, her token, her saniye.",
+        "claim": "Her pipeline run; hangi ajanın hangi tool'u çağırdığını, kaç token harcadığını ve hangi karara mâl olduğunu açık panelde gösterir. Sürpriz fatura yok.",
+        "proof": "→ 9 primitif · 12 LLM sağlayıcı · BYOK",
+        "detailLabel": "Audit trail",
+        "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; para harcayan aksiyonlar insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
+      },
+      "burunfarki": {
+        "label": "Açık metodoloji",
+        "title": "Her tahmin için ilk 3 etken.",
+        "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. SHAP açıklayıcılığıyla en etkili 3 faktörü ve katkı oranlarını yarış-spesifik dilde anlatıyoruz.",
+        "proof": "→ %40,8 Top-1 · %72,2 Top-3 · Brier 0.098",
+        "detailLabel": "Backtest paneli",
+        "detailBody": "Son 12 ayın 611 yarışı üstünde modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
+      },
+      "lifeos": {
+        "label": "Cihaz üstü gizlilik",
+        "title": "Veriniz cihazınızda kalır.",
+        "claim": "Kişisel veri sunucularımıza gönderilmez. SQLCipher + AES-256 ile cihaz üstünde şifrelenir, modeller cihazınızda çalışır, bulut senkronu opt-in'dir.",
+        "proof": "→ AES-256 · Offline-first · 0 reklam",
+        "detailLabel": "On-device AI",
+        "detailBody": "Sağlık, finans, ilişki ve hedef verileriniz cihazınızdan dışarı çıkmaz. Bulut senkronunu açtığınızda bile sadece şifreli bundle; YULA Lab okuyamaz, eğitim için kullanamaz."
+      }
+    },
+    "guaranteeEyebrow": "Vazgeçmediğiniz şeyler",
+    "guaranteeTitle": "Şeffaflık dört garanti demek.",
+    "guarantees": {
+      "dataOwnership": {
+        "title": "Veriniz size aittir.",
+        "body": "Tek bir tıkla tüm verinizi makine-okunur formatta indirebilir veya silebilirsiniz. KVKK ve GDPR'nin gerektirdiğinin ötesinde, kalıcı ve self-servis."
+      },
+      "noTraining": {
+        "title": "Veriniz model eğitiminde kullanılmaz.",
+        "body": "Müşteri içeriklerinizden model çıkarmıyoruz. BYOK akışında verileriniz seçtiğiniz sağlayıcıya gider; biz aracıyız, yedek değil."
+      },
+      "noAds": {
+        "title": "Reklam yok, izleme yok.",
+        "body": "Tek gelir modelimiz ödeme yapan kullanıcı. Sizden veri toplayıp üçüncü tarafa satmıyoruz; analitik bile minimumda ve onay-gated."
+      },
+      "exitRight": {
+        "title": "Çıkış kapısı her zaman açık.",
+        "body": "İptal tek tık. Veri export tek tık. Hesap silme tek tık. Sözleşmeye 90 günlük kilit yok; ürünü beğenmediğiniz anda gidersiniz."
+      }
+    },
+    "ctaEyebrow": "Sorularınız mı var?",
+    "ctaTitle": "Daha derin teknik detay isteyenler için kapımız açık.",
+    "ctaBody": "İletişim"
   },
   "contact": {
     "eyebrow": "İletişim",

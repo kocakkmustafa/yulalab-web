@@ -14,6 +14,13 @@ import {
   Linkedin,
   FileText,
   Send,
+  Eye,
+  Lock,
+  Cpu,
+  Microscope,
+  ShieldCheck,
+  Sparkles,
+  Receipt,
   type LucideIcon,
 } from "lucide-react";
 import type { LinkKind } from "@/lib/types";
@@ -80,4 +87,11 @@ export {
   Youtube,
   Linkedin,
   FileText,
+  Eye,
+  Lock,
+  Cpu,
+  Microscope,
+  ShieldCheck,
+  Sparkles,
+  Receipt,
 };

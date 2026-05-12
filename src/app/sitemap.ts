@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { projects } from "@/data/projects";
 
-const STATIC_PATHS = ["/", "/manifesto", "/projects", "/contact"];
+const STATIC_PATHS = ["/", "/manifesto", "/transparency", "/projects", "/contact"];
 
 function siteOrigin(): string {
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (path === "/") return 1.0;
       if (path === "/projects") return 0.9;
       if (path.startsWith("/projects/")) return 0.8;
+      if (path === "/transparency") return 0.8;
       return 0.7;
     })();
     return isDefaultLocale ? base : Math.max(0.5, base - 0.1);
