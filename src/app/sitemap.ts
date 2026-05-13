@@ -5,9 +5,14 @@ import { projects } from "@/data/projects";
 const STATIC_PATHS = ["/", "/manifesto", "/transparency", "/projects", "/contact"];
 
 function siteOrigin(): string {
+  // Custom domain takes precedence (set as NEXT_PUBLIC_SITE_URL in Vercel).
+  // If absent, fall straight back to the hard-coded canonical — never use the
+  // raw VERCEL_URL alias here, otherwise sitemap.xml on a production deploy
+  // that was built before NEXT_PUBLIC_SITE_URL was wired keeps emitting the
+  // long `yulalab-XXXX-kocakmkaan-4179s-projects.vercel.app` host instead of
+  // the apex everyone actually visits.
   const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (explicit) return explicit.replace(/\/$/, "");
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return "https://yulalab.com";
 }
 
