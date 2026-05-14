@@ -23,6 +23,9 @@
     "navTransparency": "Transparency",
     "navProjects": "Projects",
     "navContact": "Contact",
+    "navPrivacy": "Privacy",
+    "navSupport": "Support",
+    "legalHeading": "Legal",
     "rights": "All rights reserved.",
     "version": "v0.1 · showcase"
   },

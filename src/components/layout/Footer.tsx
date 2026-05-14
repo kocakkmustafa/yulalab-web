@@ -12,7 +12,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-white/[0.06] mt-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-4 gap-10">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2.5">
             <YulaMark />
@@ -73,6 +73,24 @@ export function Footer() {
               <a href={`mailto:${company.contact.email}`} className="link-wipe">
                 {company.contact.email}
               </a>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+            {t("legalHeading")}
+          </div>
+          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
+            <li>
+              <Link href="/privacy" className="link-wipe">
+                {t("navPrivacy")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/support" className="link-wipe">
+                {t("navSupport")}
+              </Link>
             </li>
           </ul>
         </div>
