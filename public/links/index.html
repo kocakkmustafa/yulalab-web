@@ -383,8 +383,8 @@ const BRANDS = {
     tagline: "A small studio shipping AI-first products. Three brands, one workbench.",
     url: 'yulalab.com',
     color: '#E8EAF0',
-    handles: { instagram: 'yulalabai' },
-    active: ['tiktok','instagram','x','youtube','linkedin'],
+    handles: { instagram: 'yulalabai', github: 'kocakkmustafa/YULA-Lab' },
+    active: ['tiktok','instagram','x','youtube','reddit','linkedin','github'],
   },
   bl: {
     short: 'Bl',
@@ -398,7 +398,7 @@ const BRANDS = {
     stats: ['9 Primitives','12 LLMs','6 Languages','Beta'],
     type: 'B2B SaaS · Beta',
     handles: { github: 'kocakkmustafa/braavolabs' },
-    active: ['tiktok','instagram','x','youtube','linkedin','github'],
+    active: ['tiktok','instagram','x','youtube','reddit','linkedin','github'],
   },
   bf: {
     short: 'BF',
@@ -414,8 +414,10 @@ const BRANDS = {
       tiktok: 'burunfark.com',
       instagram: 'burunfark',
       x: 'burunfarkk',
+      reddit: 'burunfark',
+      github: 'kocakkmustafa/burunfark-web',
     },
-    active: ['tiktok','instagram','x','youtube'],
+    active: ['tiktok','instagram','x','youtube','reddit','github'],
     legal: '18+ · Burun Farkı bir analitik platformudur, bahis sitesi değildir.',
   },
   lo: {
@@ -428,8 +430,8 @@ const BRANDS = {
     color: '#C3F400',
     stats: ['Health','Finance','Education','Vehicle'],
     type: 'B2C · Coming Soon',
-    handles: {},
-    active: ['tiktok','instagram','x','youtube'],
+    handles: { reddit: 'lifeosyula', github: 'kocakkmustafa/lifeos' },
+    active: ['tiktok','instagram','x','youtube','reddit','github'],
     soonProduct: true,
   },
 };
@@ -440,7 +442,7 @@ const SOCIALS = [
   { key:'instagram', name:'Instagram', handle:s=>'@'+s,             url:s=>'https://instagram.com/'+s },
   { key:'x',         name:'X',         handle:s=>'@'+s,             url:s=>'https://x.com/'+s },
   { key:'youtube',   name:'YouTube',   handle:s=>'@'+s,             url:s=>'https://youtube.com/@'+s },
-  { key:'reddit',    name:'Reddit',    handle:s=>'r/'+s,            url:s=>'https://reddit.com/r/'+s },
+  { key:'reddit',    name:'Reddit',    handle:s=>'u/'+s,            url:s=>'https://reddit.com/u/'+s },
   { key:'facebook',  name:'Facebook',  handle:s=>'/'+s,             url:s=>'https://facebook.com/'+s },
   { key:'discord',   name:'Discord',   handle:s=>'discord.gg/'+s,   url:s=>'https://discord.gg/'+s },
   { key:'telegram',  name:'Telegram',  handle:s=>'t.me/'+s,         url:s=>'https://t.me/'+s },
@@ -449,9 +451,9 @@ const SOCIALS = [
 ];
 
 const STAMP_BRAND_META = {
-  bl: { num:'01', title:['BRAAVO','LABS.'], urlSub:'Platform · Demo · Free plan' },
-  bf: { num:'02', title:['BURUN','FARKI.'], urlSub:'Main platform · Free tier · 18+' },
-  lo: { num:'03', title:['LIFE','OS.'],     urlSub:'Coming soon · Waitlist' },
+  lo: { num:'01', title:['LIFE','OS.'],     urlSub:'Coming soon · Waitlist' },
+  bl: { num:'02', title:['BRAAVO','LABS.'], urlSub:'Platform · Demo · Free plan' },
+  bf: { num:'03', title:['BURUN','FARKI.'], urlSub:'Main platform · Free tier · 18+' },
 };
 
 // ─── HELPERS ──────────────────────────────────────────────────────────
@@ -492,7 +494,8 @@ function gridHTML(brand){
 
 // ─── HOLDING PAGE ────────────────────────────────────────────────────
 function holdingHTML(){
-  const products = [BRANDS.bl, BRANDS.bf, BRANDS.lo];
+  // Portfolio order: 01 LifeOS · 02 Braavolabs · 03 Burun Farkı
+  const products = [BRANDS.lo, BRANDS.bl, BRANDS.bf];
   return `<div class="sb-root">
     <div class="sb-band">
       <span>● YULA / LAB</span>
@@ -505,7 +508,19 @@ function holdingHTML(){
         <p class="sb-tag">${esc(BRANDS.yula.tagline)}</p>
       </div>
 
-      <div class="sb-section"><span class="sb-num">01</span><span>Portfolio</span><span class="sb-rule"></span></div>
+      <div class="sb-section"><span class="sb-num">01</span><span>Channels</span><span class="sb-rule"></span></div>
+
+      <a class="sb-url" href="https://yulalab.com" target="_blank" rel="noopener" aria-label="yulalab.com">
+        <div>
+          <div class="sb-url-name">yulalab.com</div>
+          <div class="sb-url-sub">Home · Manifesto · Portfolio</div>
+        </div>
+        <span style="font-size:22px" aria-hidden="true">→</span>
+      </a>
+
+      ${gridHTML(BRANDS.yula)}
+
+      <div class="sb-section"><span class="sb-num">02</span><span>Portfolio</span><span class="sb-rule"></span></div>
 
       ${products.map((p, i) => {
         const slug = p === BRANDS.bl ? 'braavolabs' : p === BRANDS.bf ? 'burunfarki' : 'lifeos';
@@ -524,18 +539,6 @@ function holdingHTML(){
           </div>
         </a>`;
       }).join('')}
-
-      <div class="sb-section"><span class="sb-num">02</span><span>Channels</span><span class="sb-rule"></span></div>
-
-      <a class="sb-url" href="https://yulalab.com" target="_blank" rel="noopener" aria-label="yulalab.com">
-        <div>
-          <div class="sb-url-name">yulalab.com</div>
-          <div class="sb-url-sub">Home · Manifesto · Portfolio</div>
-        </div>
-        <span style="font-size:22px" aria-hidden="true">→</span>
-      </a>
-
-      ${gridHTML(BRANDS.yula)}
     </div>
     <div class="sb-foot">
       <span>© 2026</span>
