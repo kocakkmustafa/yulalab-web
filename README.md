@@ -120,8 +120,10 @@ public/
 ## Deployment
 
 Pushed to `main` → automatic Vercel production deploy. PR branches get a
-preview URL per push. The full ops checklist (DNS, email forwarding,
-Search Console submission) lives in [`DEPLOY.md`](./DEPLOY.md).
+preview URL per push. Production is live at
+[yulalab.com](https://yulalab.com); apex + `www` both point to Vercel
+(`A 76.76.21.21`, `CNAME cname.vercel-dns.com`). MX records are reserved
+for Google Workspace and live alongside the web records.
 
 ## License
 

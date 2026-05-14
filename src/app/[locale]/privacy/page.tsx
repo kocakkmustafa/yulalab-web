@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { setRequestLocale, getTranslations } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
