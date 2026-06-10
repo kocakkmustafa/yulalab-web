@@ -71,7 +71,8 @@ export type LinkKind =
 
 export type ProjectLink = {
   kind: LinkKind;
-  href: string;
+  /** Absolute URL. `null` marks a placeholder that must not render. */
+  href: string | null;
 };
 
 export type ProjectSocials = Partial<Record<LinkKind, string>>;
@@ -130,7 +131,6 @@ export type CompanyConfig = {
   contact: { email: string; press?: string };
   socials: ProjectSocials;
   brand: {
-    logo: string;
     banner: string;
     favicon?: string;
   };

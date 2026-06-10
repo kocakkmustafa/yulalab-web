@@ -106,11 +106,12 @@ export const lifeos: ProjectConfig = {
   },
   order: 3,
   links: [
-    { kind: "web", href: "https://kocakkmustafa.github.io/lifeos-policies/" },
-    { kind: "appstore", href: "#" },
-    { kind: "playstore", href: "#" },
-    { kind: "x", href: "#" },
-    { kind: "instagram", href: "#" },
+    { kind: "web", href: "https://lifeos-legal.vercel.app" },
+    // Placeholders — hidden until the store/social pages go live.
+    { kind: "appstore", href: null },
+    { kind: "playstore", href: null },
+    { kind: "x", href: null },
+    { kind: "instagram", href: null },
   ],
   contactEmail: "kocakmkaan@gmail.com",
 };

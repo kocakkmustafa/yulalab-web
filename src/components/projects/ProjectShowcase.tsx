@@ -16,8 +16,18 @@ type Props = {
   others: ProjectConfig[];
 };
 
+type LiveLink = ProjectLink & { href: string };
+
+/** Keep only real outbound links — drop null/empty/"#" placeholders. */
+function liveLinks(links: ProjectLink[]): LiveLink[] {
+  return links.filter(
+    (l): l is LiveLink => typeof l.href === "string" && l.href.trim() !== "" && l.href !== "#"
+  );
+}
+
 export function ProjectShowcase({ project, others }: Props) {
   const p = project;
+  const links = liveLinks(p.links);
   const locale = useLocale() as Locale;
   const t = useTranslations("showcase");
 
@@ -87,10 +97,10 @@ export function ProjectShowcase({ project, others }: Props) {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center gap-2.5">
-              {p.links.slice(0, 1).map((l) => (
+              {links.slice(0, 1).map((l) => (
                 <BrandPill key={l.kind} link={l} project={p} primary />
               ))}
-              {p.links.slice(1, 4).map((l) => (
+              {links.slice(1, 4).map((l) => (
                 <BrandPill key={l.kind} link={l} project={p} />
               ))}
             </div>
@@ -194,25 +204,27 @@ export function ProjectShowcase({ project, others }: Props) {
       </section>
 
       {/* LINKS */}
-      <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
-        <div
-          className="font-mono text-[11px] tracking-widest uppercase mb-5"
-          style={{ color: p.brand.foreground + "99" }}
-        >
-          {t("linksEyebrow")}
-        </div>
-        <h2
-          className="font-display text-3xl md:text-4xl font-semibold tracking-tightest mb-8"
-          style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
-        >
-          {t("linksTitle")}
-        </h2>
-        <div className="flex flex-wrap gap-2.5">
-          {p.links.map((l) => (
-            <BrandPill key={l.kind} link={l} project={p} />
-          ))}
-        </div>
-      </section>
+      {links.length > 0 && (
+        <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
+          <div
+            className="font-mono text-[11px] tracking-widest uppercase mb-5"
+            style={{ color: p.brand.foreground + "99" }}
+          >
+            {t("linksEyebrow")}
+          </div>
+          <h2
+            className="font-display text-3xl md:text-4xl font-semibold tracking-tightest mb-8"
+            style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
+          >
+            {t("linksTitle")}
+          </h2>
+          <div className="flex flex-wrap gap-2.5">
+            {links.map((l) => (
+              <BrandPill key={l.kind} link={l} project={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* OTHER PROJECTS */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-32">
@@ -326,7 +338,7 @@ function BrandPill({
   project: p,
   primary = false,
 }: {
-  link: ProjectLink;
+  link: LiveLink;
   project: ProjectConfig;
   primary?: boolean;
 }) {

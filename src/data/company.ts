@@ -64,7 +64,6 @@ export const company: CompanyConfig = {
     instagram: "https://instagram.com/yulalab",
   },
   brand: {
-    logo: "/brand/yulalab-logo.png",
     banner: "/brand/yulalab-banner.png",
   },
 };
