@@ -108,6 +108,7 @@ export const braavolabs: ProjectConfig = {
   order: 1,
   links: [
     { kind: "web", href: "https://braavolabs.com" },
+    { kind: "appstore", href: "https://apps.apple.com/us/app/braavolabs/id6771440905" },
     { kind: "x", href: "https://x.com/braavolabs" },
     { kind: "linkedin", href: "https://www.linkedin.com/company/braavolabs" },
   ],
