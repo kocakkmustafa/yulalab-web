@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   LINK_ICON,
+  FEATURE_ICON,
 } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { useReveal } from "@/components/common/useReveal";
@@ -100,7 +101,7 @@ export function ProjectShowcase({ project, others }: Props) {
               {links.slice(0, 1).map((l) => (
                 <BrandPill key={l.kind} link={l} project={p} primary />
               ))}
-              {links.slice(1, 4).map((l) => (
+              {links.slice(1).map((l) => (
                 <BrandPill key={l.kind} link={l} project={p} />
               ))}
             </div>
@@ -203,26 +204,17 @@ export function ProjectShowcase({ project, others }: Props) {
         </div>
       </section>
 
-      {/* LINKS */}
-      {links.length > 0 && (
-        <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
-          <div
-            className="font-mono text-[11px] tracking-widest uppercase mb-5"
-            style={{ color: p.brand.foreground + "99" }}
+      {/* RESPONSIBLE PLAY (Burun Farkı only) */}
+      {p.slug === "burunfarki" && (
+        <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-8 pb-4">
+          <p
+            className="font-mono text-[11px] tracking-widest uppercase"
+            style={{ color: p.brand.foreground + "80" }}
           >
-            {t("linksEyebrow")}
-          </div>
-          <h2
-            className="font-display text-3xl md:text-4xl font-semibold tracking-tightest mb-8"
-            style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
-          >
-            {t("linksTitle")}
-          </h2>
-          <div className="flex flex-wrap gap-2.5">
-            {links.map((l) => (
-              <BrandPill key={l.kind} link={l} project={p} />
-            ))}
-          </div>
+            {locale === "tr"
+              ? "18+ · Analiz aracı, bahis değildir · Sorumlu oyun: Yeşilay 182 · yesilay.org.tr"
+              : "18+ · Analytics tool, not betting · Responsible play: Yeşilay 182 · yesilay.org.tr"}
+          </p>
         </section>
       )}
 
@@ -390,8 +382,8 @@ function StatBlock({
       style={{ transitionDelay: `${index * 60}ms` }}
     >
       <div
-        className="font-display font-bold tracking-tightest text-[44px] md:text-[56px] lg:text-[64px] leading-none"
-        style={{ color: p.brand.primary, fontFamily: p.brand.fontDisplay }}
+        className="font-display font-bold tracking-tightest text-[44px] md:text-[56px] lg:text-[64px] leading-none tabular-nums"
+        style={{ color: p.brand.foreground, fontFamily: p.brand.fontDisplay }}
       >
         {stat.value}
       </div>
@@ -416,6 +408,7 @@ function FeatureCard({
 }) {
   const locale = useLocale() as Locale;
   const reveal = useReveal();
+  const Ic = FEATURE_ICON[f.icon ?? "Sparkles"];
   return (
     <div
       ref={reveal.ref as React.RefObject<HTMLDivElement>}
@@ -435,13 +428,14 @@ function FeatureCard({
       }}
     >
       <div
-        className="w-10 h-10 rounded-lg"
+        className="inline-flex items-center justify-center w-10 h-10 rounded-lg"
         style={{
-          background: p.brand.gradient,
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.25), inset 0 -10px 18px rgba(0,0,0,0.35)",
+          background: p.brand.foreground + "08",
+          border: `1px solid ${p.brand.foreground}12`,
         }}
-      />
+      >
+        <Ic size={19} strokeWidth={1.6} style={{ color: p.brand.foreground, opacity: 0.85 }} />
+      </div>
       <h4
         className="mt-5 font-display text-lg font-semibold tracking-tight"
         style={{ color: p.brand.foreground, fontFamily: p.brand.fontDisplay }}
@@ -478,7 +472,6 @@ function ProjectHeroCard({ project: p }: { project: ProjectConfig }) {
           className="absolute inset-0"
           style={{ background: p.brand.gradient, opacity: 0.92 }}
         />
-        <div className="absolute inset-0 placeholder-stripes opacity-30" />
         <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-black/40" />
         <div className="absolute inset-0 flex items-center justify-center">
           <div

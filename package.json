@@ -2,7 +2,7 @@
   "name": "yulalab.com",
   "version": "0.1.0",
   "private": true,
-  "description": "YULA Lab \u2014 umbrella corporate site showcasing the company's ventures.",
+  "description": "YULA Lab — umbrella corporate site showcasing the company's ventures.",
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
@@ -14,6 +14,7 @@
     "deploy:preview": "vercel"
   },
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.468.0",
     "next": "^15.1.4",

@@ -9,6 +9,7 @@ const STATIC_PATHS = [
   "/projects",
   "/contact",
   "/support",
+  "/terms",
   "/privacy",
   "/privacy/lifeos",
   "/privacy/braavolabs",
@@ -52,7 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (path === "/projects") return 0.9;
       if (path.startsWith("/projects/")) return 0.8;
       if (path === "/transparency") return 0.8;
-      if (path === "/privacy" || path === "/support") return 0.5;
+      if (path === "/privacy" || path === "/support" || path === "/terms") return 0.5;
       if (path.startsWith("/privacy/")) return 0.4;
       return 0.7;
     })();

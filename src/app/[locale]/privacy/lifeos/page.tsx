@@ -183,7 +183,7 @@ function LifeosPrivacy() {
               <p>
                 {isTR ? "Veri Sorumlusu" : "Data Controller"}: YULA Lab — Mustafa Kaan Koçak<br />
                 {isTR ? "E-posta" : "Email"}: <a href="mailto:merhaba@yulalab.com" className="link-wipe text-ink-50">merhaba@yulalab.com</a><br />
-                {isTR ? "Konum" : "Location"}: {isTR ? "İstanbul, Türkiye" : "Istanbul, Turkey"}
+                {isTR ? "Konum" : "Location"}: Türkiye
               </p>
             </Section>
           </div>
