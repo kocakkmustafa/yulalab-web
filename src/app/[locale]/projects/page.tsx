@@ -3,7 +3,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
-import { BigProjectCard } from "@/components/projects/BigProjectCard";
+import { ProjectCard } from "@/components/landing/ProjectCard";
 import { projects } from "@/data/projects";
 
 export async function generateMetadata({
@@ -48,9 +48,10 @@ function ProjectsIndex() {
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6">
         {projects.map((p, i) => (
-          <BigProjectCard
+          <ProjectCard
             key={p.slug}
             project={p}
+            variant="big"
             index={i}
             total={projects.length}
           />

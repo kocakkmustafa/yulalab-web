@@ -10,8 +10,10 @@ import {
   FEATURE_ICON,
 } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
+import { SectionHeader } from "@/components/common/SectionHeader";
 import { useReveal } from "@/components/common/useReveal";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
+import { ALPHA } from "@/lib/color";
 import type { Locale, ProjectConfig, ProjectLink } from "@/lib/types";
 
 type Props = {
@@ -61,9 +63,9 @@ export function ProjectShowcase({ project, others }: Props) {
             <div
               className="inline-flex items-center gap-2 rounded-full border pl-2 pr-3 py-1.5 text-[11px] font-mono tracking-widest uppercase"
               style={{
-                borderColor: p.brand.foreground + "22",
-                color: p.brand.foreground + "CC",
-                background: p.brand.foreground + "06",
+                borderColor: p.brand.foreground + ALPHA.medium,
+                color: p.brand.foreground + ALPHA.almost,
+                background: p.brand.foreground + ALPHA.faint,
               }}
             >
               <span
@@ -94,7 +96,7 @@ export function ProjectShowcase({ project, others }: Props) {
 
             <p
               className="mt-5 max-w-[58ch] text-[15.5px] leading-[1.7]"
-              style={{ color: p.brand.foreground + "BB" }}
+              style={{ color: p.brand.foreground + ALPHA.near }}
             >
               {p.description[locale]}
             </p>
@@ -114,7 +116,7 @@ export function ProjectShowcase({ project, others }: Props) {
       </section>
 
       {/* STATS */}
-      <section className="relative z-10 border-y" style={{ borderColor: p.brand.foreground + "14" }}>
+      <section className="relative z-10 border-y" style={{ borderColor: p.brand.foreground + ALPHA.moderate }}>
         <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
           {p.stats.map((s, i) => (
             <StatBlock key={s.label.tr} stat={s} project={p} index={i} />
@@ -124,12 +126,11 @@ export function ProjectShowcase({ project, others }: Props) {
 
       {/* PITCH */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8">
-        <div
-          className="font-mono text-[11px] tracking-widest uppercase mb-6"
-          style={{ color: p.brand.foreground + "99" }}
-        >
-          {t("pitchEyebrow")}
-        </div>
+        <SectionHeader
+          eyebrow={t("pitchEyebrow")}
+          color={p.brand.foreground}
+          eyebrowClassName="font-mono text-[11px] tracking-widest uppercase mb-6"
+        />
         <p
           className="max-w-3xl text-[26px] md:text-[34px] leading-[1.25] tracking-tight"
           style={{
@@ -145,23 +146,17 @@ export function ProjectShowcase({ project, others }: Props) {
       {/* FEATURES */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-8">
         <div className="flex items-end justify-between gap-6 mb-10">
-          <div>
-            <div
-              className="font-mono text-[11px] tracking-widest uppercase mb-4"
-              style={{ color: p.brand.foreground + "99" }}
-            >
-              {t("featuresEyebrow")}
-            </div>
-            <h2
-              className="font-display text-4xl md:text-5xl font-semibold tracking-tightest"
-              style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
-            >
-              {t("featuresTitle")}
-            </h2>
-          </div>
+          <SectionHeader
+            eyebrow={t("featuresEyebrow")}
+            title={t("featuresTitle")}
+            color={p.brand.foreground}
+            fontFamily={p.brand.fontDisplay}
+            eyebrowClassName="font-mono text-[11px] tracking-widest uppercase mb-4"
+            titleClassName="font-display text-4xl md:text-5xl font-semibold tracking-tightest"
+          />
           <div
             className="hidden md:block font-mono text-[11px] tracking-widest uppercase"
-            style={{ color: p.brand.foreground + "70" }}
+            style={{ color: p.brand.foreground + ALPHA.bold }}
           >
             {t("featuresCount")}
           </div>
@@ -177,12 +172,7 @@ export function ProjectShowcase({ project, others }: Props) {
       {/* VISION / MISSION */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-8 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20">
         <div>
-          <div
-            className="font-mono text-[11px] tracking-widest uppercase mb-5"
-            style={{ color: p.brand.foreground + "99" }}
-          >
-            {t("visionEyebrow")}
-          </div>
+          <SectionHeader eyebrow={t("visionEyebrow")} color={p.brand.foreground} />
           <p
             className="font-display text-2xl md:text-3xl leading-[1.3] tracking-tight"
             style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
@@ -191,12 +181,7 @@ export function ProjectShowcase({ project, others }: Props) {
           </p>
         </div>
         <div>
-          <div
-            className="font-mono text-[11px] tracking-widest uppercase mb-5"
-            style={{ color: p.brand.foreground + "99" }}
-          >
-            {t("missionEyebrow")}
-          </div>
+          <SectionHeader eyebrow={t("missionEyebrow")} color={p.brand.foreground} />
           <p
             className="font-display text-2xl md:text-3xl leading-[1.3] tracking-tight"
             style={{ fontFamily: p.brand.fontDisplay, color: p.brand.foreground }}
@@ -211,7 +196,7 @@ export function ProjectShowcase({ project, others }: Props) {
         <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-8 pb-4">
           <p
             className="font-mono text-[11px] tracking-widest uppercase"
-            style={{ color: p.brand.foreground + "80" }}
+            style={{ color: p.brand.foreground + ALPHA.bold }}
           >
             {locale === "tr"
               ? "18+ · Analiz aracı, bahis değildir · Sorumlu oyun: Yeşilay 182 · yesilay.org.tr"
@@ -222,12 +207,11 @@ export function ProjectShowcase({ project, others }: Props) {
 
       {/* OTHER PROJECTS */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-28 pb-32">
-        <div
-          className="font-mono text-[11px] tracking-widest uppercase mb-8"
-          style={{ color: p.brand.foreground + "99" }}
-        >
-          {t("othersEyebrow")}
-        </div>
+        <SectionHeader
+          eyebrow={t("othersEyebrow")}
+          color={p.brand.foreground}
+          eyebrowClassName="font-mono text-[11px] tracking-widest uppercase mb-8"
+        />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {others.map((o) => (
             <Link
@@ -235,15 +219,15 @@ export function ProjectShowcase({ project, others }: Props) {
               href={`/projects/${o.slug}`}
               className="group flex items-center gap-5 rounded-2xl p-5 transition-all duration-300 focusable"
               style={{
-                background: p.brand.foreground + "06",
-                border: `1px solid ${p.brand.foreground}12`,
+                background: p.brand.foreground + ALPHA.faint,
+                border: `1px solid ${p.brand.foreground}${ALPHA.soft}`,
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = o.brand.primary + "55";
+                e.currentTarget.style.borderColor = o.brand.primary + ALPHA.heavy;
                 e.currentTarget.style.transform = "translateY(-2px)";
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = p.brand.foreground + "12";
+                e.currentTarget.style.borderColor = p.brand.foreground + ALPHA.soft;
                 e.currentTarget.style.transform = "translateY(0)";
               }}
             >
@@ -251,7 +235,7 @@ export function ProjectShowcase({ project, others }: Props) {
               <div className="flex-1 min-w-0">
                 <div
                   className="font-mono text-[10.5px] tracking-widest uppercase"
-                  style={{ color: p.brand.foreground + "80" }}
+                  style={{ color: p.brand.foreground + ALPHA.bold }}
                 >
                   {o.category[locale]}
                 </div>
@@ -263,7 +247,7 @@ export function ProjectShowcase({ project, others }: Props) {
                 </div>
                 <div
                   className="text-[13px] mt-0.5 truncate"
-                  style={{ color: p.brand.foreground + "99" }}
+                  style={{ color: p.brand.foreground + ALPHA.solid }}
                 >
                   {o.tagline[locale]}
                 </div>
@@ -271,7 +255,7 @@ export function ProjectShowcase({ project, others }: Props) {
               <span
                 className="inline-flex items-center justify-center w-10 h-10 rounded-full"
                 style={{
-                  border: `1px solid ${p.brand.foreground}20`,
+                  border: `1px solid ${p.brand.foreground}${ALPHA.medium}`,
                   color: o.brand.primary,
                 }}
               >
@@ -356,7 +340,7 @@ function BrandPill({
               color: p.brand.background,
               borderColor: p.brand.primary,
             }
-          : { borderColor: p.brand.foreground + "22", color: p.brand.foreground }
+          : { borderColor: p.brand.foreground + ALPHA.medium, color: p.brand.foreground }
       }
     >
       <Ic size={15} strokeWidth={1.8} />
@@ -391,7 +375,7 @@ function StatBlock({
       </div>
       <div
         className="mt-3 font-mono text-[11px] tracking-widest uppercase"
-        style={{ color: p.brand.foreground + "99" }}
+        style={{ color: p.brand.foreground + ALPHA.solid }}
       >
         {stat.label[locale]}
       </div>
@@ -414,10 +398,10 @@ function FeatureCard({
     <motion.div
       className="rounded-2xl p-6"
       style={{
-        background: p.brand.foreground + "08",
+        background: p.brand.foreground + ALPHA.subtle,
         borderWidth: 1,
         borderStyle: "solid",
-        borderColor: p.brand.foreground + "15",
+        borderColor: p.brand.foreground + ALPHA.moderate,
       }}
       initial={{ opacity: 0, y: 8 }}
       whileInView={{
@@ -426,13 +410,13 @@ function FeatureCard({
         transition: { duration: 0.6, ease: EASE_OUT, delay: Math.min(index, 5) * 0.06 },
       }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
-      whileHover={{ y: -3, borderColor: p.brand.primary + "55", transition: HOVER_SPRING }}
+      whileHover={{ y: -3, borderColor: p.brand.primary + ALPHA.heavy, transition: HOVER_SPRING }}
     >
       <div
         className="inline-flex items-center justify-center w-10 h-10 rounded-lg"
         style={{
-          background: p.brand.foreground + "08",
-          border: `1px solid ${p.brand.foreground}12`,
+          background: p.brand.foreground + ALPHA.subtle,
+          border: `1px solid ${p.brand.foreground}${ALPHA.soft}`,
         }}
       >
         <Ic size={19} strokeWidth={1.6} style={{ color: p.brand.foreground, opacity: 0.85 }} />
@@ -445,7 +429,7 @@ function FeatureCard({
       </h4>
       <p
         className="mt-2 text-[14px] leading-relaxed"
-        style={{ color: p.brand.foreground + "B0" }}
+        style={{ color: p.brand.foreground + ALPHA.near }}
       >
         {f.description[locale]}
       </p>
@@ -464,7 +448,7 @@ function ProjectHeroCard({ project: p }: { project: ProjectConfig }) {
       <div
         className="relative aspect-square rounded-3xl overflow-hidden border"
         style={{
-          borderColor: p.brand.foreground + "1A",
+          borderColor: p.brand.foreground + ALPHA.moderate,
           background: p.brand.background,
           boxShadow: p.brand.glow,
         }}

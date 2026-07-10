@@ -1,9 +1,12 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { YulaMark } from "@/components/common/YulaMark";
+import { XLogo, Linkedin, Instagram } from "@/components/common/icons";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import type { Locale } from "@/lib/types";
+
+const SOCIAL_ICON = { x: XLogo, linkedin: Linkedin, instagram: Instagram } as const;
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -23,6 +26,26 @@ export function Footer() {
           </p>
           <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-400 uppercase">
             {t("location")}
+          </div>
+          <div className="mt-5 flex items-center gap-3">
+            {(Object.entries(company.socials) as [keyof typeof SOCIAL_ICON, string][]).map(
+              ([key, href]) => {
+                const Icon = SOCIAL_ICON[key];
+                if (!Icon) return null;
+                return (
+                  <a
+                    key={key}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={key}
+                    className="text-ink-400 hover:text-ink-50 transition-colors focusable"
+                  >
+                    <Icon size={16} />
+                  </a>
+                );
+              },
+            )}
           </div>
         </div>
 
@@ -62,6 +85,11 @@ export function Footer() {
             <li>
               <Link href="/projects" className="link-wipe">
                 {t("navProjects")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/notes" className="link-wipe">
+                {t("navNotes")}
               </Link>
             </li>
             <li>

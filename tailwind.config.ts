@@ -24,6 +24,18 @@ const config: Config = {
           100: "#E5E5EA",
           50: "#F4F4F5",
         },
+        // Named surface/hairline scale — the alternative to hand-rolled
+        // white/[0.04]-style opacity values scattered across ~80 call sites.
+        // Each name is a decision made once instead of re-guessed per card.
+        surface: {
+          DEFAULT: "rgba(255,255,255,0.02)", // resting card/tile fill
+          raised: "rgba(255,255,255,0.04)", // hover fill
+          inset: "rgba(255,255,255,0.015)", // recessed panel (info boxes)
+        },
+        hairline: {
+          DEFAULT: "rgba(255,255,255,0.10)", // default 1px border
+          strong: "rgba(255,255,255,0.20)", // hover / active border
+        },
       },
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
