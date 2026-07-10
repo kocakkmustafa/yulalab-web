@@ -8,6 +8,7 @@
     "manifesto": "Manifesto",
     "transparency": "Şeffaflık",
     "projects": "Projeler",
+    "notes": "Notlar",
     "contact": "İletişim",
     "ctaProjects": "Projeleri Keşfet",
     "menuOpen": "Menü",
@@ -22,6 +23,7 @@
     "navManifesto": "Manifesto",
     "navTransparency": "Şeffaflık",
     "navProjects": "Projeler",
+    "navNotes": "Notlar",
     "navContact": "İletişim",
     "navPrivacy": "Gizlilik",
     "navTerms": "Kullanım Şartları",
@@ -176,6 +178,11 @@
   "notFound": {
     "title": "Sayfa bulunamadı.",
     "body": "{path} mevcut değil."
+  },
+  "notes": {
+    "eyebrow": "Notlar",
+    "title": "Yaptıklarımız, olduğu gibi.",
+    "intro": "Şeffaflık burada da geçerli — ürünlerimizde ne değişti, ne düzeldi, ne canlandı; kısa ve dürüst notlar."
   },
   "links": {
     "web": "Web sitesi",

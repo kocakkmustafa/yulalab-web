@@ -7,6 +7,7 @@ const STATIC_PATHS = [
   "/manifesto",
   "/transparency",
   "/projects",
+  "/notes",
   "/contact",
   "/support",
   "/terms",
@@ -53,6 +54,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (path === "/projects") return 0.9;
       if (path.startsWith("/projects/")) return 0.8;
       if (path === "/transparency") return 0.8;
+      if (path === "/notes") return 0.6;
       if (path === "/privacy" || path === "/support" || path === "/terms") return 0.5;
       if (path.startsWith("/privacy/")) return 0.4;
       return 0.7;

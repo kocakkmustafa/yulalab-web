@@ -8,6 +8,7 @@
     "manifesto": "Manifesto",
     "transparency": "Transparency",
     "projects": "Projects",
+    "notes": "Notes",
     "contact": "Contact",
     "ctaProjects": "Explore Projects",
     "menuOpen": "Menu",
@@ -22,6 +23,7 @@
     "navManifesto": "Manifesto",
     "navTransparency": "Transparency",
     "navProjects": "Projects",
+    "navNotes": "Notes",
     "navContact": "Contact",
     "navPrivacy": "Privacy",
     "navTerms": "Terms",
@@ -176,6 +178,11 @@
   "notFound": {
     "title": "Page not found.",
     "body": "{path} doesn't exist."
+  },
+  "notes": {
+    "eyebrow": "Notes",
+    "title": "What we did, as it happened.",
+    "intro": "Transparency applies here too — short, honest notes on what changed, what got fixed, what came alive in our products."
   },
   "links": {
     "web": "Website",

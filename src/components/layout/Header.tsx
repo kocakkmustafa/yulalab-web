@@ -8,10 +8,10 @@ import { ArrowUpRight, Menu, X } from "@/components/common/icons";
 import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
-type NavKey = "home" | "manifesto" | "transparency" | "projects" | "contact";
+type NavKey = "home" | "manifesto" | "transparency" | "projects" | "notes" | "contact";
 type NavItem = {
   key: NavKey;
-  href: "/" | "/manifesto" | "/transparency" | "/projects" | "/contact";
+  href: "/" | "/manifesto" | "/transparency" | "/projects" | "/notes" | "/contact";
 };
 
 const NAV: NavItem[] = [
@@ -19,6 +19,7 @@ const NAV: NavItem[] = [
   { key: "manifesto", href: "/manifesto" },
   { key: "transparency", href: "/transparency" },
   { key: "projects", href: "/projects" },
+  { key: "notes", href: "/notes" },
   { key: "contact", href: "/contact" },
 ];
 
