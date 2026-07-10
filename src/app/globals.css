@@ -215,3 +215,27 @@ button:hover .arrow-nudge {
     transparent 1px 18px
   );
 }
+
+/* Reduce-motion: keep the meaning (state still changes), drop the motion.
+   Continuous/automatic animation stops outright; one-shot reveals resolve
+   to their end state instantly instead of easing there. */
+@media (prefers-reduced-motion: reduce) {
+  .drift-a,
+  .drift-b,
+  .drift-c,
+  .mesh-default::before,
+  .mesh-default::after {
+    animation: none;
+  }
+  .page-enter {
+    animation-duration: 1ms;
+  }
+  .reveal,
+  .word,
+  .card-hover,
+  .logo-mark,
+  .link-wipe::after,
+  .arrow-nudge {
+    transition-duration: 1ms !important;
+  }
+}

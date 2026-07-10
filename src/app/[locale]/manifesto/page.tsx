@@ -19,6 +19,9 @@ export async function generateMetadata({
   return {
     title: t("title"),
     description: t("intro"),
+    alternates: {
+      canonical: locale === "tr" ? "/manifesto" : `/${locale}/manifesto`,
+    },
   };
 }
 
@@ -58,6 +61,20 @@ function Manifesto() {
           {t("intro")}
         </p>
       </article>
+
+      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-4 pb-4">
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-7">
+          <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-4">
+            {t("nameEyebrow")}
+          </div>
+          <p className="font-display text-xl md:text-2xl font-semibold tracking-tight text-ink-50 max-w-[24ch]">
+            {t("nameTitle")}
+          </p>
+          <p className="mt-4 max-w-[58ch] text-[15px] leading-[1.7] text-ink-300">
+            {t("nameBody")}
+          </p>
+        </div>
+      </section>
 
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-12">
         <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-5">
