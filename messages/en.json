@@ -15,7 +15,7 @@
   },
   "footer": {
     "tagline": "A venture studio that uses AI in the right place at the right time, without overstating it.",
-    "location": "Istanbul · 41.0082° N",
+    "location": "Türkiye",
     "projectsHeading": "Projects",
     "companyHeading": "Company",
     "founderHeading": "Founder",
@@ -24,6 +24,7 @@
     "navProjects": "Projects",
     "navContact": "Contact",
     "navPrivacy": "Privacy",
+    "navTerms": "Terms",
     "navSupport": "Support",
     "legalHeading": "Legal",
     "rights": "All rights reserved.",
@@ -48,20 +49,19 @@
     "inDevelopment": "In development"
   },
   "landing": {
-    "eyebrow": "Venture Studio · Istanbul",
+    "eyebrow": "Venture Studio · Türkiye",
     "heroTitle": "We design tomorrow's products today.",
     "heroDescription": "YULA Lab is a venture studio that designs AI-native, data-driven products that simplify everyday life. Every project is built at the intersection of aesthetics, ethics, and impact.",
     "heroMeta": {
       "products": "3 products",
       "studio": "1 studio",
-      "place": "IST · 2025"
+      "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
-    "bannerCardBottomLabel": "Istanbul",
+    "bannerCardBottomLabel": "Türkiye",
     "bannerWord": "YULA",
-    "bannerCaption": "VENTURE · STUDIO · ISTANBUL",
+    "bannerCaption": "VENTURE · STUDIO · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
-    "bannerDrop": "drop image here →",
     "visionEyebrow": "Vision",
     "visionBody": "Build a family of products that meaningfully improves human life by bringing the best of AI into everyday hands.",
     "missionEyebrow": "Mission",
@@ -167,7 +167,7 @@
     "pressLabel": "Press",
     "pressHint": "Interviews, event invitations and press release requests.",
     "locationEyebrow": "Location",
-    "locationTitle": "Istanbul, Türkiye",
+    "locationTitle": "Türkiye",
     "locationNote": "Meetings Tuesday – Thursday, hybrid."
   },
   "notFound": {

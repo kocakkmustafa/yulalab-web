@@ -40,10 +40,32 @@ export type ProjectAsset = {
   caption?: string;
 };
 
+/** Names allowed for a feature icon — every value must exist in FEATURE_ICON
+ *  (see components/common/icons.tsx). An unknown name fails typecheck, so a
+ *  mistyped icon breaks the build instead of rendering a blank tile. */
+export type FeatureIconName =
+  | "LayoutDashboard"
+  | "Lock"
+  | "Cpu"
+  | "Microscope"
+  | "FileText"
+  | "Sparkles"
+  | "Eye"
+  | "BadgeCheck"
+  | "Database"
+  | "TrendingUp"
+  | "ShieldAlert"
+  | "LayoutGrid"
+  | "KeyRound"
+  | "FileSearch"
+  | "Network"
+  | "ShieldCheck"
+  | "Globe";
+
 export type ProjectFeature = {
   title: LocalizedString;
   description: LocalizedString;
-  icon?: string;
+  icon?: FeatureIconName;
 };
 
 export type ProjectStat = {

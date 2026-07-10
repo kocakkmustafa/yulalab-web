@@ -21,9 +21,18 @@ import {
   ShieldCheck,
   Sparkles,
   Receipt,
+  LayoutDashboard,
+  LayoutGrid,
+  BadgeCheck,
+  Database,
+  TrendingUp,
+  ShieldAlert,
+  KeyRound,
+  FileSearch,
+  Network,
   type LucideIcon,
 } from "lucide-react";
-import type { LinkKind } from "@/lib/types";
+import type { LinkKind, FeatureIconName } from "@/lib/types";
 
 /** Twitter/X logo — lucide's `X` is a close-icon, not the logo, so we draw our own. */
 export function XLogo({ size = 16, className = "" }: { size?: number; className?: string }) {
@@ -70,6 +79,28 @@ export const LINK_ICON: Record<LinkKind, LucideIcon | typeof XLogo> = {
   telegram: Send,
   documentation: FileText,
   pressKit: FileText,
+};
+
+/** Feature icon registry — maps a project feature's `icon` name to a Lucide glyph.
+ *  Keyed by FeatureIconName so an unknown name fails typecheck (and the build). */
+export const FEATURE_ICON: Record<FeatureIconName, LucideIcon> = {
+  LayoutDashboard,
+  Lock,
+  Cpu,
+  Microscope,
+  FileText,
+  Sparkles,
+  Eye,
+  BadgeCheck,
+  Database,
+  TrendingUp,
+  ShieldAlert,
+  LayoutGrid,
+  KeyRound,
+  FileSearch,
+  Network,
+  ShieldCheck,
+  Globe,
 };
 
 export {

@@ -5,7 +5,7 @@ export const lifeos: ProjectConfig = {
   name: "LifeOS",
   monogram: "L",
   kind: ["mobile"],
-  status: "coming-soon",
+  status: "live",
   category: {
     tr: "Kişisel Yaşam İşletim Sistemi",
     en: "Personal Life Operating System",
@@ -106,9 +106,10 @@ export const lifeos: ProjectConfig = {
   },
   order: 3,
   links: [
+    // iOS live on the App Store (verified 2026-07-10). Android still in closed
+    // testing → Play link stays hidden until the production track goes live.
+    { kind: "appstore", href: "https://apps.apple.com/app/id6771527233" },
     { kind: "web", href: "https://lifeos-legal.vercel.app" },
-    // Placeholders — hidden until the store/social pages go live.
-    { kind: "appstore", href: null },
     { kind: "playstore", href: null },
     { kind: "x", href: null },
     { kind: "instagram", href: null },

@@ -15,7 +15,7 @@
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bir girişim stüdyosu.",
-    "location": "İstanbul · 41.0082° N",
+    "location": "Türkiye",
     "projectsHeading": "Projeler",
     "companyHeading": "Şirket",
     "founderHeading": "Kurucu",
@@ -24,6 +24,7 @@
     "navProjects": "Projeler",
     "navContact": "İletişim",
     "navPrivacy": "Gizlilik",
+    "navTerms": "Kullanım Şartları",
     "navSupport": "Destek",
     "legalHeading": "Yasal",
     "rights": "Tüm hakları saklıdır.",
@@ -48,20 +49,19 @@
     "inDevelopment": "Geliştiriliyor"
   },
   "landing": {
-    "eyebrow": "Venture Studio · İstanbul",
+    "eyebrow": "Venture Studio · Türkiye",
     "heroTitle": "Geleceğin ürünlerini bugün tasarlıyoruz.",
     "heroDescription": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
     "heroMeta": {
       "products": "3 ürün",
       "studio": "1 stüdyo",
-      "place": "İst · 2025"
+      "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
-    "bannerCardBottomLabel": "İstanbul",
+    "bannerCardBottomLabel": "Türkiye",
     "bannerWord": "YULA",
-    "bannerCaption": "VENTURE · STUDIO · İSTANBUL",
+    "bannerCaption": "VENTURE · STUDIO · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
-    "bannerDrop": "drop image here →",
     "visionEyebrow": "Vizyon",
     "visionBody": "İnsanların hayatını anlamlı şekilde iyileştiren, yapay zekanın en iyi yanlarını gündelik hayata taşıyan bir ürün ailesi kurmak.",
     "missionEyebrow": "Misyon",
@@ -167,7 +167,7 @@
     "pressLabel": "Basın",
     "pressHint": "Röportaj, etkinlik daveti ve basın bülteni talepleri.",
     "locationEyebrow": "Lokasyon",
-    "locationTitle": "İstanbul, Türkiye",
+    "locationTitle": "Türkiye",
     "locationNote": "Toplantılar Salı – Perşembe, hibrit."
   },
   "notFound": {

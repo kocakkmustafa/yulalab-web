@@ -79,9 +79,9 @@ function Contact() {
             <div className="text-[14px] text-ink-400 mt-1">{t("locationNote")}</div>
           </div>
           <div className="flex items-center gap-3 text-[12px] font-mono tracking-widest uppercase text-ink-400">
-            <span>41.0082° N</span>
+            <span>Türkiye</span>
             <span className="w-px h-3 bg-white/10" />
-            <span>28.9784° E</span>
+            <span>GMT+3</span>
           </div>
         </div>
       </section>

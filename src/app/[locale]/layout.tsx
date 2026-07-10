@@ -4,8 +4,10 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Manrope, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "../globals.css";
+import { Analytics } from "@vercel/analytics/react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
 import { company } from "@/data/company";
 
@@ -108,11 +110,13 @@ export default async function LocaleLayout({
       className={`${inter.variable} ${manrope.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
     >
       <body className="bg-ink-900 text-ink-50 antialiased">
+        <JsonLd />
         <NextIntlClientProvider>
           <Header />
           <main>{children}</main>
           <Footer />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   );

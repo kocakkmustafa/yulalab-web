@@ -13,7 +13,7 @@ export const alt = "YULA Lab — venture studio";
  */
 export default function LandingOgImage() {
   const heroTitle = "Geleceğin ürünlerini bugün tasarlıyoruz.";
-  const eyebrow = "Venture Studio · İstanbul";
+  const eyebrow = "Venture Studio · Türkiye";
 
   return new ImageResponse(
     (
