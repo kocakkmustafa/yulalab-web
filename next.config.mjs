@@ -73,6 +73,19 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      // links.yulalab.com is the single canonical linktree surface — this
+      // used to be a byte-identical copy in public/links/, manually kept in
+      // sync (and drifting). One source now; short links (/bf, /lo, ...)
+      // live entirely on links.yulalab.com's own vercel.json.
+      {
+        source: "/links",
+        destination: "https://links.yulalab.com",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);
