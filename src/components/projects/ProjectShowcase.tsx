@@ -10,6 +10,7 @@ import {
   FEATURE_ICON,
 } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
+import { ProductShot } from "@/components/common/ProductShot";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { useReveal } from "@/components/common/useReveal";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
@@ -35,6 +36,10 @@ export function ProjectShowcase({ project, others }: Props) {
   const links = liveLinks(p.links);
   const locale = useLocale() as Locale;
   const t = useTranslations("showcase");
+  // Status-gate: only a screenshot explicitly labeled "product" can appear
+  // as proof. Atmosphere/marketing imagery (stock photos, mood shots) never
+  // qualifies — see ProjectAsset.kind in lib/types.ts.
+  const productShots = p.visuals.screenshots.filter((s) => s.kind === "product");
 
   return (
     <div
@@ -111,7 +116,7 @@ export function ProjectShowcase({ project, others }: Props) {
             </div>
           </div>
 
-          <ProjectHeroCard project={p} />
+          <ProjectHeroCard project={p} shot={productShots[0]} />
         </div>
       </section>
 
@@ -142,6 +147,21 @@ export function ProjectShowcase({ project, others }: Props) {
           {p.short[locale]}
         </p>
       </section>
+
+      {/* EVIDENCE STRIP — only when there's more than one real product shot;
+          a single shot already lives in the hero, so this avoids showing
+          the same image twice. */}
+      {productShots.length > 1 && (
+        <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-4 pb-8">
+          <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 lg:-mx-10 lg:px-10">
+            {productShots.map((shot) => (
+              <div key={shot.src} className="shrink-0 snap-start" style={{ width: p.kind.length === 1 && p.kind[0] === "mobile" ? 220 : 420 }}>
+                <ProductShot asset={shot} kind={p.kind} brand={p.brand} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* FEATURES */}
       <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-8">
@@ -437,7 +457,20 @@ function FeatureCard({
   );
 }
 
-function ProjectHeroCard({ project: p }: { project: ProjectConfig }) {
+function ProjectHeroCard({
+  project: p,
+  shot,
+}: {
+  project: ProjectConfig;
+  shot?: ProjectConfig["visuals"]["screenshots"][number];
+}) {
+  // Status-gate: a real product screenshot replaces the placeholder; until
+  // one exists for this project, the monogram card is the honest choice —
+  // it reads as "not yet" instead of faking a screen that doesn't exist.
+  if (shot) {
+    return <ProductShot asset={shot} kind={p.kind} brand={p.brand} priority />;
+  }
+
   return (
     <div className="relative">
       <div

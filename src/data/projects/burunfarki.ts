@@ -41,9 +41,13 @@ export const burunfarki: ProjectConfig = {
     ogImage: "/projects/burunfarki/og.png",
     banner: "/projects/burunfarki/hero.jpg",
     screenshots: [
+      // Atmosphere, not proof — a stock racing photo, not an app screen.
+      // Never eligible for ProductShot until replaced with a real
+      // decision-rationale/SHAP dashboard capture (see FABLE_PLAN §8.4.4).
       {
         src: "/projects/burunfarki/hero.jpg",
         alt: "Türkiye'de bir yarış parkurunda dörtnala koşan atlar.",
+        kind: "atmosphere",
       },
     ],
   },

@@ -38,6 +38,12 @@ export type ProjectAsset = {
   src: string;
   alt: string;
   caption?: string;
+  /** "product" = an actual screen from the shipped app/site — eligible for
+   *  the hero/evidence-strip ProductShot. "atmosphere" = mood/marketing
+   *  imagery (e.g. a stock photo) — never rendered as product proof. This
+   *  keeps the honesty promise mechanical instead of a code-review habit:
+   *  an unlabeled or atmosphere asset simply cannot reach ProductShot. */
+  kind: "product" | "atmosphere";
 };
 
 /** Names allowed for a feature icon — every value must exist in FEATURE_ICON
