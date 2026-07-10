@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
@@ -10,6 +11,7 @@ import {
 } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { useReveal } from "@/components/common/useReveal";
+import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import type { Locale, ProjectConfig, ProjectLink } from "@/lib/types";
 
 type Props = {
@@ -407,25 +409,24 @@ function FeatureCard({
   index: number;
 }) {
   const locale = useLocale() as Locale;
-  const reveal = useReveal();
   const Ic = FEATURE_ICON[f.icon ?? "Sparkles"];
   return (
-    <div
-      ref={reveal.ref as React.RefObject<HTMLDivElement>}
-      className={"rounded-2xl p-6 transition-all duration-300 " + reveal.className}
+    <motion.div
+      className="rounded-2xl p-6"
       style={{
         background: p.brand.foreground + "08",
-        border: `1px solid ${p.brand.foreground}15`,
-        transitionDelay: `${index * 60}ms`,
+        borderWidth: 1,
+        borderStyle: "solid",
+        borderColor: p.brand.foreground + "15",
       }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = p.brand.primary + "55";
-        e.currentTarget.style.transform = "translateY(-2px)";
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.6, ease: EASE_OUT, delay: Math.min(index, 5) * 0.06 },
       }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = p.brand.foreground + "15";
-        e.currentTarget.style.transform = "translateY(0)";
-      }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      whileHover={{ y: -3, borderColor: p.brand.primary + "55", transition: HOVER_SPRING }}
     >
       <div
         className="inline-flex items-center justify-center w-10 h-10 rounded-lg"
@@ -448,7 +449,7 @@ function FeatureCard({
       >
         {f.description[locale]}
       </p>
-    </div>
+    </motion.div>
   );
 }
 

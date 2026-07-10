@@ -1,36 +1,30 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatusPill } from "@/components/common/StatusPill";
-import { useReveal } from "@/components/common/useReveal";
+import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import type { Locale, ProjectConfig } from "@/lib/types";
+
+const MotionLink = motion.create(Link);
 
 export function ProjectCard({ project }: { project: ProjectConfig }) {
   const t = useTranslations("common");
   const locale = useLocale() as Locale;
-  const reveal = useReveal();
 
   return (
-    <Link
+    <MotionLink
       href={`/projects/${project.slug}`}
-      ref={reveal.ref as React.RefObject<HTMLAnchorElement>}
-      className={
-        "group card-hover relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:bg-white/[0.04] focusable " +
-        reveal.className
-      }
-      style={{
-        transition:
-          "transform 250ms var(--ease-soft), border-color 250ms var(--ease-soft), background-color 250ms var(--ease-soft), opacity 600ms var(--ease-soft)",
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.borderColor = project.brand.primary + "4D";
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.borderColor = "";
-      }}
+      className="group relative flex flex-col rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:bg-white/[0.04] focusable"
+      style={{ borderColor: "rgba(255,255,255,0.1)" }}
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      whileHover={{ y: -4, borderColor: project.brand.primary + "4D", transition: HOVER_SPRING }}
+      whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
     >
       <div className="flex items-start justify-between">
         <ProjectMonogram project={project} size={56} radius={12} />
@@ -59,6 +53,6 @@ export function ProjectCard({ project }: { project: ProjectConfig }) {
           <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
         </span>
       </div>
-    </Link>
+    </MotionLink>
   );
 }

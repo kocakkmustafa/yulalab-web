@@ -7,6 +7,7 @@ import "../globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { PageTransition } from "@/components/layout/PageTransition";
 import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
 import { company } from "@/data/company";
@@ -113,7 +114,9 @@ export default async function LocaleLayout({
         <JsonLd />
         <NextIntlClientProvider>
           <Header />
-          <main>{children}</main>
+          <main>
+            <PageTransition>{children}</PageTransition>
+          </main>
           <Footer />
         </NextIntlClientProvider>
         <Analytics />

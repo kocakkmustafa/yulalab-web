@@ -1,28 +1,34 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
 import { StatusPill } from "@/components/common/StatusPill";
-import { useReveal } from "@/components/common/useReveal";
+import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import type { Locale, ProjectConfig } from "@/lib/types";
+
+const MotionLink = motion.create(Link);
 
 type Props = { project: ProjectConfig; index: number; total: number };
 
 export function BigProjectCard({ project: p, index, total }: Props) {
   const locale = useLocale() as Locale;
   const tc = useTranslations("common");
-  const reveal = useReveal();
 
   return (
-    <Link
+    <MotionLink
       href={`/projects/${p.slug}`}
-      ref={reveal.ref as React.RefObject<HTMLAnchorElement>}
-      className={
-        "group block rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 bg-white/[0.02] focusable card-hover " +
-        reveal.className
-      }
-      style={{ transitionDelay: `${index * 80}ms` }}
+      className="group block rounded-3xl overflow-hidden border border-white/10 hover:border-white/20 bg-white/[0.02] focusable"
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.6, ease: EASE_OUT, delay: Math.min(index, 5) * 0.08 },
+      }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      whileHover={{ y: -4, transition: HOVER_SPRING }}
+      whileTap={{ scale: 0.99, transition: { duration: 0.1 } }}
     >
       <div
         className="relative aspect-[16/10] overflow-hidden"
@@ -86,6 +92,6 @@ export function BigProjectCard({ project: p, index, total }: Props) {
           </div>
         </div>
       </div>
-    </Link>
+    </MotionLink>
   );
 }
