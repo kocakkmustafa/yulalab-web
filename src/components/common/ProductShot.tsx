@@ -1,5 +1,7 @@
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { ALPHA } from "@/lib/color";
+import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import type { ProjectAsset, ProjectBrand, ProjectKind } from "@/lib/types";
 
 type Props = {
@@ -9,6 +11,9 @@ type Props = {
   kind: ProjectKind[];
   brand: ProjectBrand;
   priority?: boolean;
+  /** Stagger delay (seconds) for entrance — set by the caller from index
+   *  when rendering a row of shots; omitted for the single hero shot. */
+  delay?: number;
 };
 
 /** One elevation language for both frames: hairline border + an ambient
@@ -98,12 +103,27 @@ function BrowserFrame({ asset, brand, priority }: { asset: ProjectAsset; brand: 
  * the project's `kind`. Callers must pre-filter `asset.kind === "product"` —
  * this component doesn't gate on it, so it never silently downgrades an
  * atmosphere photo into "proof".
+ *
+ * Entrance is the same restrained fade+rise every other showcase element
+ * uses (see FeatureCard) — never a flashy reveal, since this is proof, not
+ * decoration. Hover lifts a couple pixels and turns up the ambient glow —
+ * enough to read as interactive, not enough to distract from the shot.
  */
-export function ProductShot({ asset, kind, brand, priority }: Props) {
+export function ProductShot({ asset, kind, brand, priority, delay = 0 }: Props) {
   const isMobileOnly = kind.length === 1 && kind[0] === "mobile";
-  return isMobileOnly ? (
-    <PhoneFrame asset={asset} brand={brand} priority={priority} />
-  ) : (
-    <BrowserFrame asset={asset} brand={brand} priority={priority} />
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT, delay } }}
+      viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+      whileHover={{ y: -4, transition: HOVER_SPRING }}
+      className="group"
+    >
+      {isMobileOnly ? (
+        <PhoneFrame asset={asset} brand={brand} priority={priority} />
+      ) : (
+        <BrowserFrame asset={asset} brand={brand} priority={priority} />
+      )}
+    </motion.div>
   );
 }

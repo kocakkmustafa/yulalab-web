@@ -148,15 +148,14 @@ export function ProjectShowcase({ project, others }: Props) {
         </p>
       </section>
 
-      {/* EVIDENCE STRIP — only when there's more than one real product shot;
-          a single shot already lives in the hero, so this avoids showing
-          the same image twice. */}
+      {/* EVIDENCE STRIP — shot[0] already lives in the hero, so this shows
+          the rest; only renders when there's at least one more. */}
       {productShots.length > 1 && (
         <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-4 pb-8">
           <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 lg:-mx-10 lg:px-10">
-            {productShots.map((shot) => (
+            {productShots.slice(1).map((shot, i) => (
               <div key={shot.src} className="shrink-0 snap-start" style={{ width: p.kind.length === 1 && p.kind[0] === "mobile" ? 220 : 420 }}>
-                <ProductShot asset={shot} kind={p.kind} brand={p.brand} />
+                <ProductShot asset={shot} kind={p.kind} brand={p.brand} delay={i * 0.08} />
               </div>
             ))}
           </div>

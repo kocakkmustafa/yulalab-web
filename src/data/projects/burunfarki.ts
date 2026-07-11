@@ -49,6 +49,20 @@ export const burunfarki: ProjectConfig = {
         alt: "Türkiye'de bir yarış parkurunda dörtnala koşan atlar.",
         kind: "atmosphere",
       },
+      // Real captures from the live product (burunfark.com/dogruluk), not
+      // mockups — harvested 2026-07-11 via headless browser, cropped to the
+      // UI itself. This is the decision-rationale evidence FABLE_PLAN §8.4.4
+      // asked for instead of the stock photo above.
+      {
+        src: "/projects/burunfarki/screenshot-honest-stats.png",
+        alt: "Burun Farkı'nın dürüst performans çerçevesi: Top-1/Top-3 isabet oranları, son 7/30/90 gün.",
+        kind: "product",
+      },
+      {
+        src: "/projects/burunfarki/screenshot-daily-history.png",
+        alt: "Burun Farkı günlük AI tahmin geçmişi: her günün Top-1/Top-3 isabet detayı.",
+        kind: "product",
+      },
     ],
   },
   features: [
