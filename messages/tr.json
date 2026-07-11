@@ -126,7 +126,7 @@
         "label": "Açık metodoloji",
         "title": "Her tahmin için ilk 3 etken.",
         "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. SHAP açıklayıcılığıyla en etkili 3 faktörü ve katkı oranlarını yarış-spesifik dilde anlatıyoruz.",
-        "proof": "→ %40,8 Top-1 · %72,2 Top-3 · Brier 0.098",
+        "proof": "→ ~%69 Top-3 · dürüst (leak-free) backtest · piyasa favorisiyle (AGF) başa baş ham isabette",
         "detailLabel": "Backtest paneli",
         "detailBody": "Son 12 ayın 611 yarışı üstünde modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
       },

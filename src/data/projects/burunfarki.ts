@@ -19,8 +19,8 @@ export const burunfarki: ProjectConfig = {
     en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. 130k+ runners, 13k+ races — and the model never hides why it predicted what it did.",
   },
   short: {
-    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-1 doğruluğu %40,8.",
-    en: "Open, transparent, data-driven analytics for Turkish horse racing. 40.8% Top-1 accuracy.",
+    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-3 doğruluğu ~%69, dürüst (leak-free) backtest.",
+    en: "Open, transparent, data-driven analytics for Turkish horse racing. ~69% Top-3 accuracy, honest leak-free backtest.",
   },
   brand: {
     primary: "#FAB81F",
@@ -112,8 +112,8 @@ export const burunfarki: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "%40,8", label: { tr: "Top-1 doğruluk", en: "Top-1 accuracy" } },
-    { value: "%72,2", label: { tr: "Top-3 doğruluk", en: "Top-3 accuracy" } },
+    { value: "~%35", label: { tr: "Top-1 doğruluk", en: "Top-1 accuracy" } },
+    { value: "~%69", label: { tr: "Top-3 doğruluk", en: "Top-3 accuracy" } },
     { value: "13.587", label: { tr: "yarış", en: "races" } },
     { value: "130.930", label: { tr: "koşucu", en: "runners" } },
   ],

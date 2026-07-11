@@ -126,7 +126,7 @@
         "label": "Open methodology",
         "title": "Top 3 factors for every prediction.",
         "claim": "We don't hide why the model picked that horse. SHAP-based explanations show the top 3 factors and their weight in race-specific language.",
-        "proof": "→ 40.8% Top-1 · 72.2% Top-3 · Brier 0.098",
+        "proof": "→ ~69% Top-3 · honest leak-free backtest · matches the market favorite (AGF) on raw hit-rate",
         "detailLabel": "Backtest panel",
         "detailBody": "611 races over the past 12 months; winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns one click away."
       },
