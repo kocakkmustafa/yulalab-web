@@ -29,6 +29,41 @@ function AmbientGlow({ color }: { color: string }) {
   );
 }
 
+/**
+ * The zoomed-out-desktop trick, CSS-only (no JS/ResizeObserver needed): the
+ * iframe's wrapper is sized at 250% of its parent and scaled down by 0.4,
+ * so the live page renders at a real ~desktop viewport width and shrinks to
+ * fit whatever the frame's actual size is — same ratio at any breakpoint.
+ */
+function LiveEmbed({ url, alt }: { url: string; alt: string }) {
+  return (
+    <div style={{ width: "250%", height: "250%", transform: "scale(0.4)", transformOrigin: "top left" }}>
+      <iframe
+        src={url}
+        title={alt}
+        loading="lazy"
+        style={{ width: "100%", height: "100%", border: 0 }}
+      />
+    </div>
+  );
+}
+
+function FrameContent({ asset, priority }: { asset: ProjectAsset; priority?: boolean }) {
+  if (asset.kind === "live") {
+    return <LiveEmbed url={asset.url} alt={asset.alt} />;
+  }
+  return (
+    <Image
+      src={asset.src}
+      alt={asset.alt}
+      fill
+      priority={priority}
+      sizes="(min-width: 1024px) 560px, 90vw"
+      className="object-cover"
+    />
+  );
+}
+
 function PhoneFrame({ asset, brand, priority }: { asset: ProjectAsset; brand: ProjectBrand; priority?: boolean }) {
   return (
     <div className="relative mx-auto" style={{ maxWidth: 280 }}>
@@ -44,14 +79,7 @@ function PhoneFrame({ asset, brand, priority }: { asset: ProjectAsset; brand: Pr
           className="relative overflow-hidden rounded-[30px]"
           style={{ aspectRatio: "9 / 19.5" }}
         >
-          <Image
-            src={asset.src}
-            alt={asset.alt}
-            fill
-            priority={priority}
-            sizes="280px"
-            className="object-cover"
-          />
+          <FrameContent asset={asset} priority={priority} />
         </div>
         <div
           aria-hidden
@@ -84,14 +112,7 @@ function BrowserFrame({ asset, brand, priority }: { asset: ProjectAsset; brand: 
           ))}
         </div>
         <div className="relative overflow-hidden" style={{ aspectRatio: "16 / 10" }}>
-          <Image
-            src={asset.src}
-            alt={asset.alt}
-            fill
-            priority={priority}
-            sizes="(min-width: 1024px) 560px, 90vw"
-            className="object-cover"
-          />
+          <FrameContent asset={asset} priority={priority} />
         </div>
       </div>
     </div>

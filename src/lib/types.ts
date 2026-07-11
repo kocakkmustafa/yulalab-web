@@ -34,17 +34,19 @@ export type ProjectBrand = {
   mood?: string;
 };
 
-export type ProjectAsset = {
-  src: string;
-  alt: string;
-  caption?: string;
-  /** "product" = an actual screen from the shipped app/site — eligible for
-   *  the hero/evidence-strip ProductShot. "atmosphere" = mood/marketing
-   *  imagery (e.g. a stock photo) — never rendered as product proof. This
-   *  keeps the honesty promise mechanical instead of a code-review habit:
-   *  an unlabeled or atmosphere asset simply cannot reach ProductShot. */
-  kind: "product" | "atmosphere";
-};
+/**
+ * "product" = a real screenshot from the shipped app/site — eligible for
+ * the hero/evidence-strip ProductShot. "atmosphere" = mood/marketing
+ * imagery (e.g. a stock photo) — never rendered as product proof.
+ * "live" = the actual site embedded in an iframe (requires the target's
+ * CSP to allow framing by this origin — see burunfark-web's vercel.json).
+ * The discriminant keeps the honesty promise mechanical: an unlabeled or
+ * atmosphere asset simply cannot reach ProductShot, and only a "live"
+ * asset carries a `url` instead of a static `src`.
+ */
+export type ProjectAsset =
+  | { kind: "product" | "atmosphere"; src: string; alt: string; caption?: string }
+  | { kind: "live"; url: string; alt: string; caption?: string };
 
 /** Names allowed for a feature icon — every value must exist in FEATURE_ICON
  *  (see components/common/icons.tsx). An unknown name fails typecheck, so a

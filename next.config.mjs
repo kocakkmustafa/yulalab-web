@@ -41,6 +41,11 @@ const securityHeaders = [
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
       "connect-src 'self' https://vitals.vercel-insights.com https://vercel.live wss://vercel.live",
+      // Burun Farkı's own CSP scopes frame-ancestors to this site
+      // specifically (see burunfark-web vercel.json) — this is the other
+      // half of that handshake, letting us embed its live /dogruluk page
+      // as product proof instead of a static screenshot.
+      "frame-src https://burunfark.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
