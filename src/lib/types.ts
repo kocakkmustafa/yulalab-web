@@ -45,7 +45,8 @@ export type ProjectBrand = {
  * asset carries a `url` instead of a static `src`.
  */
 export type ProjectAsset =
-  | { kind: "product" | "atmosphere"; src: string; alt: string; caption?: string }
+  | { kind: "product"; src: string; alt: string; caption?: string }
+  | { kind: "atmosphere"; src: string; alt: string; caption?: string }
   | { kind: "live"; url: string; alt: string; caption?: string };
 
 /** Names allowed for a feature icon — every value must exist in FEATURE_ICON

@@ -1,4 +1,7 @@
+"use client";
+
 import { ALPHA } from "@/lib/color";
+import { useReveal } from "./useReveal";
 
 type Props = {
   eyebrow: string;
@@ -27,8 +30,12 @@ export function SectionHeader({
   className,
   eyebrowClassName,
 }: Props) {
+  const reveal = useReveal();
   return (
-    <div className={className}>
+    <div
+      ref={reveal.ref as React.RefObject<HTMLDivElement>}
+      className={`${reveal.className}${className ? ` ${className}` : ""}`}
+    >
       <div
         className={
           eyebrowClassName ?? "font-mono text-[11px] tracking-widest uppercase mb-5"

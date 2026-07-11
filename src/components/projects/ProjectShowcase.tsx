@@ -154,7 +154,7 @@ export function ProjectShowcase({ project, others }: Props) {
         <section className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10 pt-4 pb-8">
           <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-2 -mx-6 px-6 lg:-mx-10 lg:px-10">
             {productShots.slice(1).map((shot, i) => (
-              <div key={shot.kind === "live" ? shot.url : shot.src} className="shrink-0 snap-start" style={{ width: p.kind.length === 1 && p.kind[0] === "mobile" ? 220 : 420 }}>
+              <div key={shot.src} className="shrink-0 snap-start" style={{ width: p.kind.length === 1 && p.kind[0] === "mobile" ? 220 : 420 }}>
                 <ProductShot asset={shot} kind={p.kind} brand={p.brand} delay={i * 0.08} />
               </div>
             ))}

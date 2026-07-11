@@ -35,27 +35,29 @@ html {
   scrollbar-width: none;
 }
 
-/* IntersectionObserver-driven reveal */
+/* IntersectionObserver-driven reveal — deliberately larger than a
+   micro-nudge: this is the "something just arrived" signal for section
+   headers and stat blocks, not a hover-level detail. */
 .reveal {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(28px) scale(0.98);
   transition:
-    opacity 600ms var(--ease-soft),
-    transform 600ms var(--ease-soft);
+    opacity 700ms var(--ease-soft),
+    transform 700ms var(--ease-soft);
 }
 .reveal.is-in {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
 }
 
 /* word stagger reveal */
 .word {
   display: inline-block;
   opacity: 0;
-  transform: translateY(0.4em);
+  transform: translateY(0.6em);
   transition:
-    opacity 600ms var(--ease-soft),
-    transform 600ms var(--ease-soft);
+    opacity 650ms var(--ease-soft),
+    transform 650ms var(--ease-soft);
 }
 .word.is-in {
   opacity: 1;
@@ -106,13 +108,13 @@ html {
   }
 }
 .drift-a {
-  animation: driftA 38s var(--ease-soft) infinite;
+  animation: driftA 22s var(--ease-soft) infinite;
 }
 .drift-b {
-  animation: driftB 44s var(--ease-soft) infinite;
+  animation: driftB 26s var(--ease-soft) infinite;
 }
 .drift-c {
-  animation: driftC 32s var(--ease-soft) infinite;
+  animation: driftC 18s var(--ease-soft) infinite;
 }
 
 /* logo subtle hover */

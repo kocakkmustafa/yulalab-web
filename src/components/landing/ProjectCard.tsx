@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
@@ -8,7 +9,12 @@ import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import { ALPHA, HAIRLINE } from "@/lib/color";
-import type { Locale, ProjectConfig } from "@/lib/types";
+import type { Locale, ProjectAsset, ProjectConfig } from "@/lib/types";
+
+type ProductAsset = Extract<ProjectAsset, { kind: "product" }>;
+function isProductShot(asset: ProjectAsset): asset is ProductAsset {
+  return asset.kind === "product";
+}
 
 const MotionLink = motion.create(Link);
 
@@ -84,6 +90,10 @@ function BigCard({
 }) {
   const locale = useLocale() as Locale;
   const tc = useTranslations("common");
+  // Status-gate: only a screenshot explicitly labeled "product" can replace
+  // the monogram placeholder — same rule as the showcase hero (ProductShot).
+  // A project with no real screen yet (LifeOS) keeps the honest monogram.
+  const productShot = p.visuals.screenshots.find(isProductShot);
 
   return (
     <MotionLink
@@ -103,28 +113,42 @@ function BigCard({
         className="relative aspect-[16/10] overflow-hidden"
         style={{ background: p.brand.background }}
       >
-        <div
-          className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
-          style={{
-            background: p.brand.gradient,
-            opacity: 0.85,
-            transition: "transform 800ms var(--ease-soft)",
-          }}
-        />
+        {productShot ? (
+          <Image
+            src={productShot.src}
+            alt={productShot.alt}
+            fill
+            priority={index === 0}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+            style={{ transitionTimingFunction: "var(--ease-soft)" }}
+          />
+        ) : (
+          <>
+            <div
+              className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
+              style={{
+                background: p.brand.gradient,
+                opacity: 0.85,
+                transition: "transform 800ms var(--ease-soft)",
+              }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div
+                className="font-display font-extrabold tracking-tightest leading-none select-none"
+                style={{
+                  color: "rgba(0,0,0,0.55)",
+                  fontSize: "clamp(120px, 20vw, 220px)",
+                  fontFamily: p.brand.fontDisplay,
+                  textShadow: "0 1px 0 rgba(255,255,255,0.18)",
+                }}
+              >
+                {p.monogram}
+              </div>
+            </div>
+          </>
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div
-            className="font-display font-extrabold tracking-tightest leading-none select-none"
-            style={{
-              color: "rgba(0,0,0,0.55)",
-              fontSize: "clamp(120px, 20vw, 220px)",
-              fontFamily: p.brand.fontDisplay,
-              textShadow: "0 1px 0 rgba(255,255,255,0.18)",
-            }}
-          >
-            {p.monogram}
-          </div>
-        </div>
         <div className="absolute top-5 left-5">
           <StatusPill status={p.status} />
         </div>

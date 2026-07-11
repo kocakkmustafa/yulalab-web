@@ -5,6 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Inter, Manrope, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "../globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import { MotionConfig } from "framer-motion";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
@@ -113,11 +114,20 @@ export default async function LocaleLayout({
       <body className="bg-ink-900 text-ink-50 antialiased">
         <JsonLd />
         <NextIntlClientProvider>
-          <Header />
-          <main>
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <Footer />
+          {/* reducedMotion="user" makes every Framer Motion animation on the
+              site (LandingHero, ProductShot, FeatureCard, ProjectCard, page
+              transitions) respect prefers-reduced-motion automatically —
+              transform/scale animations resolve instantly, opacity still
+              cross-fades. The CSS-only .reveal/.word system has its own
+              @media (prefers-reduced-motion) rule in globals.css; this is
+              the Framer Motion half of the same promise. */}
+          <MotionConfig reducedMotion="user">
+            <Header />
+            <main>
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <Footer />
+          </MotionConfig>
         </NextIntlClientProvider>
         <Analytics />
       </body>
