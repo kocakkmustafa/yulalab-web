@@ -26,7 +26,7 @@ The site is fully **server-rendered, statically generated** for every project ro
 | ------------- | -------------------------- | -------- | ---------------------------------------------------- |
 | `braavolabs`  | Autonomous AI Company OS   | Beta     | 9 primitives, 12 LLM providers, transparent cost     |
 | `burunfarki`  | Transparent racing AI      | Live     | 13,587 races, %40.8 Top‑1, SHAP explainability       |
-| `lifeos`     | Personal life OS (mobile)  | Soon     | Offline‑first, AES‑256 on‑device, 5 life domains     |
+| `lifeos`     | Personal life OS (mobile)  | Live     | Offline‑first, AES‑256 on‑device, 5 life domains     |
 
 Each project is configured in [`src/data/projects/<slug>.ts`](./src/data/projects/) and rendered through the shared [`<ProjectShowcase>`](./src/components/projects/ProjectShowcase.tsx) component, which adapts colors, gradients and typography from per-project brand tokens.
 
