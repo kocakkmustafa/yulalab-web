@@ -36,3 +36,4 @@ Y1 PR onayı · Y-004 hesap durumu bilgisi (hangi sosyal hesaplar gerçekten aç
 
 ## İlerleme Kaydı
 - 2026-07-22 — Program kuruldu (Fable, holding kuruluş oturumu). Henüz başlanmadı.
+- 2026-07-23 — **Y1 tutarlılık kapandı, mühürlü.** Branch `y1-tutarlilik-2026-07-23` (commit `8ddf46a`+`ff21e10`). Y-001/003/004/005/006 hepsi kapandı (DEFTER kanıtlı). Opus seal-denetimi 1 gerçek kaçak buldu (README bayat BF %40.8 rakamı) → aynı branch'te düzeltildi, ikinci geçişte PASS. Typecheck temiz, dev preview'da footer socials (x/instagram kaldı, linkedin kalktı) canlı doğrulandı. **Main'e merge kurucu onayı bekliyor.**
