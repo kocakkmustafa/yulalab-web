@@ -59,8 +59,9 @@ export const company: CompanyConfig = {
     press: "press@yulalab.com",
   },
   socials: {
+    // linkedin: temporarily removed — the /company/yulalab page 404s
+    // (verified 2026-07-23, DEFTER Y-004). Restore once it's live.
     x: "https://x.com/yulalab",
-    linkedin: "https://www.linkedin.com/company/yulalab",
     instagram: "https://instagram.com/yulalab",
   },
   brand: {
