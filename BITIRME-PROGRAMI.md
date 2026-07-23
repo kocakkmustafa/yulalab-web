@@ -21,10 +21,12 @@ Repo: `kocakkmustafa/YULA-Lab`, main senkron+temiz, 32 commit, son 2026-07-11. N
 - [x] Footer sosyal linklerinin hedef hesapları canlı mı? (x/linkedin/instagram @yulalab) — değilse footer'dan geçici kaldır, hesap canlanınca geri (Y-004) — x✅ instagram✅ linkedin❌(404) → linkedin footer'dan kaldırıldı.
 - Mühür: PR diff + canlı sayfa kontrolü + kurucu onayı. **Branch `y1-tutarlilik-2026-07-23` hazır, main'e merge kurucu onayı bekliyor.**
 
-### Y2 — Görsel varlıklar
-- [ ] LifeOS gerçek ekran görüntüleri: simülatörden set üret (flutter-skill/mobile-mcp), `visuals.screenshots`'a bağla (Y-002). Seçim: visual-polish-critic merceği.
-- [ ] Braavolabs showcase tazeleme — **BR2 (Braavolabs UI seansı) SONRASI ideali**; ara çözüm: canlı braavolabs.com'dan yeniden hasat (Y-007). Y-DONE'u bloklamaz.
+### Y2 — Görsel varlıklar — ⏸️ BEKLETİLİYOR (kurucu kararı 2026-07-23)
+**Kurucu:** "proje arayüzleri kesinleşene kadar bekleyelim." LifeOS + Braavolabs'ın UI'ları henüz kesinleşmediği için ekran görüntüsü hasadı şimdi yapılırsa kesinleşme sonrası tekrar hasat gerekir — bu loop, ilgili ürünlerin UI seansları bitene kadar AÇILMAYACAK. Y3'ü bloklamıyor (Y-DONE tanımı "gerçek görsel" şartını Y2 tamamlanana kadar erteler).
+- [ ] LifeOS gerçek ekran görüntüleri: simülatörden set üret (flutter-skill/mobile-mcp), `visuals.screenshots`'a bağla (Y-002). Seçim: visual-polish-critic merceği. **Ön koşul: LifeOS UI kesinleşmesi.**
+- [ ] Braavolabs showcase tazeleme — **BR2 (Braavolabs UI seansı) SONRASI ideali**; ara çözüm: canlı braavolabs.com'dan yeniden hasat (Y-007). **Ön koşul: Braavolabs UI seansı.**
 - Mühür: görseller canlı sitede + retina/mobil kontrol.
+- **Yeniden açılış tetikleyicisi:** LifeOS veya Braavolabs UI seansı kapandığında bu bölümü kontrol et.
 
 ### Y3 — Kapanış
 - [ ] Lighthouse + a11y hızlı denetimi (skorlar kayda).
@@ -36,4 +38,5 @@ Y1 PR onayı · Y-004 hesap durumu bilgisi (hangi sosyal hesaplar gerçekten aç
 
 ## İlerleme Kaydı
 - 2026-07-22 — Program kuruldu (Fable, holding kuruluş oturumu). Henüz başlanmadı.
-- 2026-07-23 — **Y1 tutarlılık kapandı, mühürlü.** Branch `y1-tutarlilik-2026-07-23` (commit `8ddf46a`+`ff21e10`). Y-001/003/004/005/006 hepsi kapandı (DEFTER kanıtlı). Opus seal-denetimi 1 gerçek kaçak buldu (README bayat BF %40.8 rakamı) → aynı branch'te düzeltildi, ikinci geçişte PASS. Typecheck temiz, dev preview'da footer socials (x/instagram kaldı, linkedin kalktı) canlı doğrulandı. **Main'e merge kurucu onayı bekliyor.**
+- 2026-07-23 — **Y1 tutarlılık kapandı, mühürlü, main'e merge+push edildi (`066df93`).** Y-001/003/004/005/006 hepsi kapandı (DEFTER kanıtlı). Opus seal-denetimi 1 gerçek kaçak buldu (README bayat BF %40.8 rakamı) → aynı branch'te düzeltildi, ikinci geçişte PASS.
+- 2026-07-23 — **Y2 bekletiliyor (kurucu kararı):** proje arayüzleri (LifeOS + Braavolabs) kesinleşene kadar görsel hasadı yapılmayacak — erken hasat kesinleşme sonrası tekrar iş demek. Sıradaki açık iş **Y3**'ün Y2'ye bağımsız maddeleri (Lighthouse/a11y, artboard kararı) veya Y2'nin yeniden açılışını bekleme.
