@@ -5,6 +5,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { ProjectCard } from "@/components/landing/ProjectCard";
 import { projects } from "@/data/projects";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -35,7 +36,9 @@ export default async function ProjectsIndexPage({
 function ProjectsIndex() {
   const t = useTranslations("projectsIndex");
   return (
-    <div className="page-enter">
+    <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-32 lg:pt-40 pb-12">
         <EyebrowChip>{t("eyebrow")}</EyebrowChip>
         <h1 className="mt-7 font-display font-extrabold text-ink-50 leading-[0.96] tracking-tightest text-[44px] sm:text-[60px] md:text-[80px]">

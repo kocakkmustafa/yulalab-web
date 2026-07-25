@@ -8,6 +8,7 @@ import { StaggerWords } from "@/components/common/StaggerWords";
 import { ValueCard } from "@/components/manifesto/ValueCard";
 import { company } from "@/data/company";
 import type { Locale } from "@/lib/types";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -42,6 +43,8 @@ function Manifesto() {
 
   return (
     <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <div aria-hidden className="absolute inset-x-0 top-0 h-[60vh] pointer-events-none">
         <div
           className="absolute inset-0"
@@ -63,7 +66,7 @@ function Manifesto() {
       </article>
 
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-4 pb-4">
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-7">
+        <div className="glass p-7">
           <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-4">
             {t("nameEyebrow")}
           </div>
@@ -114,7 +117,7 @@ function Manifesto() {
       </section>
 
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-24 pb-8">
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div className="glass p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <div>
             <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-2">
               {t("founderEyebrow")}

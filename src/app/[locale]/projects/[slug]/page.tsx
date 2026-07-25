@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
-import { getProjectBySlug, getProjectSlugs, projects } from "@/data/projects";
-import { ProjectShowcase } from "@/components/projects/ProjectShowcase";
+import { getProjectBySlug, getProjectSlugs } from "@/data/projects";
+import { ProductPage } from "@/components/projects/ProductPage";
 import { routing } from "@/i18n/routing";
 import type { Locale } from "@/lib/types";
 
@@ -49,7 +49,5 @@ export default async function ProjectPage({ params }: PageProps) {
   const project = getProjectBySlug(slug);
   if (!project) notFound();
 
-  const others = projects.filter((p) => p.slug !== project.slug);
-
-  return <ProjectShowcase project={project} others={others} />;
+  return <ProductPage project={project} />;
 }
