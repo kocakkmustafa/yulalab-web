@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, ArrowRight } from "@/components/common/icons";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
+import { StatusPill } from "@/components/common/StatusPill";
 import { YulaEmblem } from "@/components/common/YulaEmblem";
 import { SceneRail } from "@/components/landing/SceneRail";
 import { company } from "@/data/company";
@@ -203,18 +204,27 @@ function Landing() {
                 }
               >
                 <div>
-                  <div className="flex items-center gap-3 mb-5">
+                  <div className="flex items-center gap-3 mb-5 flex-wrap">
                     <span
                       aria-hidden
                       className="w-1.5 h-1.5 rounded-full"
                       style={{
-                        background: p.status === "beta" ? "#4FA8B8" : "#7FD8DC",
-                        boxShadow: "0 0 9px rgba(127,216,220,0.6)",
+                        background:
+                          p.status === "live"
+                            ? "#7FD8DC"
+                            : p.status === "beta"
+                            ? "#4FA8B8"
+                            : "#5B6472",
+                        boxShadow:
+                          p.status === "live" || p.status === "beta"
+                            ? "0 0 9px rgba(127,216,220,0.6)"
+                            : "none",
                       }}
                     />
                     <span className="font-mono text-[10.5px] tracking-[0.2em] uppercase text-ink-300">
                       {String(i + 1).padStart(2, "0")} · {p.category[locale]}
                     </span>
+                    {p.status !== "live" ? <StatusPill status={p.status} /> : null}
                   </div>
                   <h3 className="font-display font-light text-[clamp(32px,4.2vw,56px)] leading-[1.06] tracking-tightest mb-4">
                     {p.name}
