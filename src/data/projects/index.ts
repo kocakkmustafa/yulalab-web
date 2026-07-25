@@ -6,11 +6,12 @@ import { gravita } from "./gravita";
 import { lissom } from "./lissom";
 import { jablab } from "./jablab";
 import { ostinato } from "./ostinato";
+import { choreia } from "./choreia";
 
-// Order field keeps the three live/beta products first; the four
-// "coming-soon" products (gravita/lissom/jablab/ostinato, order 4-7) sort
-// after them everywhere this array is consumed (homepage, /projects grid,
-// footer, sitemap) — see ProjectConfig.order doc comment.
+// Order field keeps the three live/beta products first; the five
+// "coming-soon" products (gravita/lissom/jablab/ostinato/choreia, order 4-8)
+// sort after them everywhere this array is consumed (homepage, /projects
+// grid, footer, sitemap) — see ProjectConfig.order doc comment.
 export const projects: ProjectConfig[] = [
   braavolabs,
   burunfarki,
@@ -19,6 +20,7 @@ export const projects: ProjectConfig[] = [
   lissom,
   jablab,
   ostinato,
+  choreia,
 ].sort((a, b) => a.order - b.order);
 
 export function getProjectBySlug(slug: string): ProjectConfig | undefined {

@@ -8,7 +8,7 @@ export const ostinato: ProjectConfig = {
   status: "coming-soon",
   category: {
     tr: "Enstrüman Pratik Koçu",
-    en: "Instrument Practice Coach",
+    en: "Instrument & Music Practice Coach",
   },
   tagline: {
     tr: "Öğretmensiz pratik, artık ölçülebilir.",
