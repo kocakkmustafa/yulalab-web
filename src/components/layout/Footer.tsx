@@ -24,7 +24,7 @@ export function Footer() {
           <p className="mt-4 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
             {t("tagline")}
           </p>
-          <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-400 uppercase">
+          <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-300 uppercase">
             {t("location")}
           </div>
           <div className="mt-5 flex items-center gap-3">
@@ -39,7 +39,7 @@ export function Footer() {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={key}
-                    className="text-ink-400 hover:text-ink-50 transition-colors focusable"
+                    className="text-ink-300 hover:text-ink-50 transition-colors focusable"
                   >
                     <Icon size={16} />
                   </a>
@@ -50,7 +50,7 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+          <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("projectsHeading")}
           </div>
           <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
@@ -68,7 +68,7 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+          <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("companyHeading")}
           </div>
           <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
@@ -106,7 +106,7 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+          <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("legalHeading")}
           </div>
           <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
@@ -129,17 +129,17 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="font-mono text-[11px] tracking-widest text-ink-400 uppercase mb-4">
+          <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("founderHeading")}
           </div>
           <div className="text-sm text-ink-200">{company.founder.name}</div>
-          <div className="text-sm text-ink-400 mt-1">
+          <div className="text-sm text-ink-300 mt-1">
             {company.founder.role[locale]}
           </div>
         </div>
       </div>
       <div className="border-t border-white/[0.04]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex items-center justify-between text-[12px] text-ink-400">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex items-center justify-between text-[12px] text-ink-300">
           <div>
             © {year} {company.legalName}. {t("rights")}
           </div>

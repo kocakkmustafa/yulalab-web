@@ -150,7 +150,8 @@
   "projectsIndex": {
     "eyebrow": "Projects",
     "title": "The family.",
-    "intro": "Seven products, one discipline. Each speaks its own design language; underneath, the same engineering culture, the same transparency, the same calm user experience."
+    "intro": "Seven products, one discipline. Each speaks its own design language; underneath, the same engineering culture, the same transparency, the same calm user experience.",
+    "gridHeading": "All projects"
   },
   "showcase": {
     "back": "Projects",

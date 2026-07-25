@@ -50,6 +50,7 @@ function ProjectsIndex() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <h2 className="sr-only">{t("gridHeading")}</h2>
         {projects.map((p, i) => (
           <ProjectCard
             key={p.slug}

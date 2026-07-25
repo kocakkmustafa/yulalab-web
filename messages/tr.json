@@ -150,7 +150,8 @@
   "projectsIndex": {
     "eyebrow": "Projeler",
     "title": "Aile.",
-    "intro": "Yedi ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır."
+    "intro": "Yedi ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır.",
+    "gridHeading": "Tüm projeler"
   },
   "showcase": {
     "back": "Projeler",

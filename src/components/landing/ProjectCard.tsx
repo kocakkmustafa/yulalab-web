@@ -53,7 +53,7 @@ function CompactCard({ project }: { project: ProjectConfig }) {
         <StatusPill status={project.status} />
       </div>
 
-      <div className="mt-7 font-mono text-[11px] tracking-widest uppercase text-ink-400">
+      <div className="mt-7 font-mono text-[11px] tracking-widest uppercase text-ink-300">
         {project.category[locale]}
       </div>
       <h3
@@ -158,7 +158,7 @@ function BigCard({
       </div>
 
       <div className="p-7 lg:p-9">
-        <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
+        <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300">
           {p.category[locale]}
         </div>
         <h3
@@ -168,7 +168,7 @@ function BigCard({
           {p.name}
         </h3>
         <p className="mt-2 text-[15.5px] text-ink-200">{p.tagline[locale]}</p>
-        <p className="mt-4 text-[14.5px] text-ink-400 leading-relaxed max-w-[60ch]">
+        <p className="mt-4 text-[14.5px] text-ink-300 leading-relaxed max-w-[60ch]">
           {p.short[locale]}
         </p>
 
@@ -180,7 +180,7 @@ function BigCard({
             <span className="arrow-nudge inline-flex">{tc("openPage")}</span>
             <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
           </span>
-          <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
+          <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300">
             / projects / {p.slug}
           </div>
         </div>

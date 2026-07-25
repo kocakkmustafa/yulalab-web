@@ -27,6 +27,13 @@ export async function generateMetadata({
   return {
     title: project.name,
     description: project.tagline[lang],
+    alternates: {
+      canonical: locale === "tr" ? `/projects/${slug}` : `/${locale}/projects/${slug}`,
+      languages: {
+        tr: `/projects/${slug}`,
+        en: `/en/projects/${slug}`,
+      },
+    },
     openGraph: {
       title: `${project.name} — ${project.tagline[lang]}`,
       description: project.description[lang],
