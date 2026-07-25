@@ -54,7 +54,10 @@ export function SceneRail({ scenes, label }: { scenes: Scene[]; label: string })
           >
             <span
               className={
-                "hidden lg:block font-mono text-[10px] tracking-[0.16em] uppercase transition-opacity duration-300 ease-soft " +
+                // `xl`, matching the `xl:pr-32` gutter the sections reserve.
+                // Revealing labels at `lg` put them over section copy in the
+                // 1024–1280 band, where no gutter exists yet.
+                "hidden xl:block font-mono text-[10px] tracking-[0.16em] uppercase transition-opacity duration-300 ease-soft " +
                 (on ? "opacity-100" : "opacity-45 group-hover:opacity-80")
               }
             >

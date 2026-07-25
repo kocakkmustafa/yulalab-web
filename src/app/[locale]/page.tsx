@@ -5,7 +5,6 @@ import { ArrowUpRight, ArrowRight } from "@/components/common/icons";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { YulaEmblem } from "@/components/common/YulaEmblem";
-import { ScrollFilm } from "@/components/landing/ScrollFilm";
 import { SceneRail } from "@/components/landing/SceneRail";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
@@ -21,8 +20,10 @@ export default async function LandingPage({
   return <Landing />;
 }
 
-const SECTION = "max-w-7xl mx-auto px-6 lg:px-10";
-const KICKER = "font-mono text-[11px] tracking-[0.22em] uppercase text-ink-400";
+// `xl:pr-32` reserves a gutter for the fixed SceneRail: without it the
+// rail's labels land on top of section copy at wide viewports.
+const SECTION = "max-w-7xl mx-auto px-6 lg:px-10 xl:pr-32";
+const KICKER = "font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300";
 const ROMAN = ["I", "II", "III", "IV"] as const;
 
 function Landing() {
@@ -37,16 +38,17 @@ function Landing() {
   const principles = [1, 2, 3, 4, 5, 6] as const;
 
   return (
-    <div className="page-enter relative">
-      {/* The scroll narrative is carried by the film, not by the earlier
-          hand-built SVG field (src/components/landing/FilamentField.tsx,
-          kept but unmounted): the clip is the real emblem artwork in
-          motion, and scrubbing it costs one seek per frame instead of
-          ninety animated paths. */}
-      <ScrollFilm />
-      <GlassSheen />
+    <>
+      {/* Ambient ground sits outside `.page-enter`: that class animates
+          with `fill-mode: both`, so its final transform sticks around and
+          any transform makes the element a containing block for fixed
+          descendants — nested inside, this layer would stretch to the
+          full document height instead of the viewport. */}
       <div className="ambient" aria-hidden />
-      <SceneRail scenes={scenes} label={t("railLabel")} />
+
+      <div className="page-enter relative">
+        <GlassSheen />
+        <SceneRail scenes={scenes} label={t("railLabel")} />
 
       <div className="relative z-10">
         {/* ── 01 intro ─────────────────────────────────────────────── */}
@@ -122,7 +124,7 @@ function Landing() {
         <section id="degerler" className={`${SECTION} py-28 scroll-mt-24`}>
           <Reveal className="flex items-baseline justify-between flex-wrap gap-4 mb-10">
             <p className={KICKER}>{t("valuesKicker")}</p>
-            <p className="text-[13.5px] text-ink-400">{t("valuesNote")}</p>
+            <p className="text-[13.5px] text-ink-300">{t("valuesNote")}</p>
           </Reveal>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {values.map((n, i) => (
@@ -145,7 +147,7 @@ function Landing() {
         <section id="manifesto" className={`${SECTION} py-28 scroll-mt-24`}>
           <Reveal className="flex items-baseline justify-between flex-wrap gap-4 mb-10">
             <p className={KICKER}>{t("manifestoKicker")}</p>
-            <p className="text-[13.5px] text-ink-400">{t("manifestoNoteNew")}</p>
+            <p className="text-[13.5px] text-ink-300">{t("manifestoNoteNew")}</p>
           </Reveal>
           <Reveal delay={80}>
             <h2 className="font-display font-light text-[clamp(30px,4.2vw,58px)] leading-[1.1] tracking-tightest max-w-[20ch] mb-14 text-pretty">
@@ -300,12 +302,11 @@ function Landing() {
                 emblem, so the scene shows nothing of its own. When the film
                 isn't running — reduced motion, a metered connection — the
                 static mark takes its place (see [data-film] in globals). */}
-            <div id="yl-orb" className="film-fallback mx-auto mb-8 w-[clamp(180px,24vw,300px)]">
+            <div className="mx-auto mb-8 w-[clamp(180px,24vw,300px)]">
               <Reveal>
                 <YulaEmblem size={300} className="w-full h-auto" title={company.name} />
               </Reveal>
             </div>
-            <div className="film-spacer hidden h-[clamp(200px,30vh,340px)]" aria-hidden />
             <Reveal delay={120}>
               <h2 className="font-display font-light text-[clamp(30px,4vw,54px)] leading-[1.08] tracking-[0.06em] mb-4">
                 {t("closingTitleA")}
@@ -341,7 +342,8 @@ function Landing() {
             </Reveal>
           </div>
         </section>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -6,49 +6,6 @@
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ---------------------------------------------------------------------
-   Filament field driving variables.
-
-   `@property` registration is what makes the whole effect cheap: an
-   unregistered custom property is an untyped token stream and cannot be
-   interpolated, so each filament would need its own animation. Registered
-   as <number>, a single animation on the container animates --p/--s and
-   all ~90 filament paths read them through calc(). One animation, not
-   ninety.
-
-   --p  scene progress, 0 (scattered) → 1 (converged on the emblem)
-   --s  scatter amount, driven inversely to --p with an eased falloff
-   --------------------------------------------------------------------- */
-@property --p {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0;
-}
-@property --s {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 1;
-}
-
-@keyframes ylFilament {
-  0% {
-    --p: 0;
-    --s: 1;
-  }
-  35% {
-    --p: 0.35;
-    --s: 0.72;
-  }
-  70% {
-    --p: 0.7;
-    --s: 0.3;
-  }
-  100% {
-    --p: 1;
-    --s: 0;
-  }
-}
-
 html,
 body {
   background: #0a0a0b;
@@ -71,19 +28,21 @@ html {
 }
 
 /* ---------------------------------------------------------------------
-   Glass surface — the scene panels sit above a moving filament field, so
-   a flat fill would either hide the threads or let them fight the text.
-   A blurred, faintly saturated pane keeps the motion legible behind the
-   copy while holding contrast for the type.
+   Glass surface — the panels that carry section copy.
    --------------------------------------------------------------------- */
 .glass {
   position: relative;
-  background: linear-gradient(
-    152deg,
-    rgba(255, 255, 255, 0.085) 0%,
-    rgba(255, 255, 255, 0.028) 44%,
-    rgba(255, 255, 255, 0.06) 100%
-  );
+  /* Light sheen gradient over a dark base. The base is what guarantees
+     text contrast: a purely light-tinted pane is only transparent, and
+     whatever sits behind it bleeds straight into the type. */
+  background:
+    linear-gradient(
+      152deg,
+      rgba(255, 255, 255, 0.085) 0%,
+      rgba(255, 255, 255, 0.028) 44%,
+      rgba(255, 255, 255, 0.06) 100%
+    ),
+    rgba(10, 10, 11, 0.66);
   backdrop-filter: blur(22px) saturate(150%);
   -webkit-backdrop-filter: blur(22px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -101,8 +60,8 @@ html {
    comes in through --mx/--my custom properties, so a pointer move only
    changes two numbers and repaints one compositable layer. Rewriting
    `background-image` on a backdrop-filtered box (which is what the source
-   design did) forces the blur to re-resolve on every mouse event, which is
-   exactly where the scroll jank came from. */
+   design did) forces the blur to re-resolve on every mouse event — the
+   jank that approach is known for. */
 .glass::before {
   content: "";
   position: absolute;
@@ -129,12 +88,14 @@ html {
 
 /* product panels pick up a trace of their own accent */
 .glass-accent {
-  background: linear-gradient(
-    152deg,
-    color-mix(in srgb, var(--accent, #7fd8dc) 11%, transparent) 0%,
-    rgba(255, 255, 255, 0.028) 46%,
-    rgba(255, 255, 255, 0.065) 100%
-  );
+  background:
+    linear-gradient(
+      152deg,
+      color-mix(in srgb, var(--accent, #7fd8dc) 11%, transparent) 0%,
+      rgba(255, 255, 255, 0.028) 46%,
+      rgba(255, 255, 255, 0.065) 100%
+    ),
+    rgba(10, 10, 11, 0.66);
 }
 
 /* ---------------------------------------------------------------------
@@ -162,16 +123,6 @@ html {
       transparent 72%
     ),
     radial-gradient(40% 32% at 50% 50%, rgba(255, 255, 255, 0.022) 0%, transparent 70%);
-}
-
-/* When the scroll film is running it already ends on the emblem, so the
-   closing scene drops its own static mark and simply leaves room for the
-   background to show through. Without the film, the reverse. */
-[data-film="on"] .film-fallback {
-  display: none;
-}
-[data-film="on"] .film-spacer {
-  display: block;
 }
 
 /* hide scrollbars on horizontal pill rows */

@@ -40,8 +40,6 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
-      // the closing scene's emblem film is served from /public/media
-      "media-src 'self'",
       "connect-src 'self' https://vitals.vercel-insights.com https://vercel.live wss://vercel.live",
       // Burun Farkı's own CSP scopes frame-ancestors to this site
       // specifically (see burunfark-web vercel.json) — this is the other
