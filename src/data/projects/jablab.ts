@@ -8,7 +8,7 @@ export const jablab: ProjectConfig = {
   status: "coming-soon",
   category: {
     tr: "Solo Boks Koçu",
-    en: "Solo Boxing Coach",
+    en: "Solo Boxing & Shadow Training Coach",
   },
   tagline: {
     tr: "Gölgeyle çalış, gerçeğini duy.",

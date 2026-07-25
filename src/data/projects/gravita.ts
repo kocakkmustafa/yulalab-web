@@ -8,7 +8,7 @@ export const gravita: ProjectConfig = {
   status: "coming-soon",
   category: {
     tr: "Handstand & Vücut Becerileri Koçu",
-    en: "Handstand & Bodyweight Skills Coach",
+    en: "Handstand, Bodyweight Skills & Strength Coach",
   },
   tagline: {
     tr: "Telefonun, en önemli hatanı görsün.",

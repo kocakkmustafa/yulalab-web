@@ -120,7 +120,7 @@
     "m6Body": "Tarih için değil, hazır olduğu için çıkarılır. Bir ürünü sürdürebileceğimizden emin olmadan büyütmeyiz.",
     "manifestoReadAll": "Manifestonun tamamını oku",
     "projectsKicker": "04 — Projeler",
-    "projectsCount": "7 ürün · 2 yayında · 1 beta · 4 yakında",
+    "projectsCount": "8 ürün · 2 yayında · 1 beta · 5 yakında",
     "specHeading": "Teknik künye",
     "inspect": "İncele",
     "visualsNote": "Arayüz kesinleşiyor · görseller ürün sayfasında",
@@ -150,7 +150,7 @@
   "projectsIndex": {
     "eyebrow": "Projeler",
     "title": "Aile.",
-    "intro": "Yedi ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır.",
+    "intro": "Sekiz ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır.",
     "gridHeading": "Tüm projeler"
   },
   "showcase": {
@@ -441,6 +441,31 @@
       "ctaPrimary": "Yakında",
       "ctaSecondary": "Haberdar ol",
       "disclaimer": "Ostinato bir müzik öğretmeninin yerini almaz; pratik saatlerini ölçülebilir kılan bir yardımcı araçtır."
+    },
+    "choreia": {
+      "eyebrow": "Ürün 08 · Yakında · Dans koçu",
+      "lede": "Telefon kamerasıyla tam vücut hareketini izleyen bir dans koçu. Adımlarını, zamanlamanı ve formunu analiz eder; dans hocan yanındaymış gibi sesli yönlendirmeler vererek dünyanın her yerinden dansları öğrenmeni sağlar.",
+      "s1Kicker": "01 — Ne yapar",
+      "a1Title": "Adımını izler, formunu anlar.",
+      "a1Body": "Kamera tüm vücudunu izler; adımını, zamanlamanı ve formunu ayrı ayrı değerlendirir — genel bir izlenim değil, ölçülebilir bir kırılım.",
+      "a2Title": "Hocan yanındaymış gibi seslenir.",
+      "a2Body": "Ekrana bakmadan, hareket sırasında sesli düzeltme alırsın — sanki gerçek bir dans hocası yanında duruyormuş gibi.",
+      "s2Kicker": "02 — Yöntem",
+      "r1k": "Girdi",
+      "r1v": "Telefon kamerası · tam vücut",
+      "r2k": "Analiz",
+      "r2v": "Adım · zamanlama · form",
+      "r3k": "Geri bildirim",
+      "r3v": "Sesli · gerçek zamanlı",
+      "r4k": "Durum",
+      "r4v": "Yakında · geliştirme aşamasında",
+      "note": "",
+      "interfaceNote": "Ürün geliştirme aşamasında; var olmayan bir ekranı çizmiyoruz. Arayüz kesinleşince gerçek görüntüler burada olacak.",
+      "ctaTitle": "Yakında telefonunuzda.",
+      "ctaBody": "Choreia şu anda geliştiriliyor. Lansmandan haberdar olmak isterseniz yazın.",
+      "ctaPrimary": "Yakında",
+      "ctaSecondary": "Haberdar ol",
+      "disclaimer": "Choreia bir dans eğitmeni sertifikası veya fizik tedavi aracı değildir; gerçek bir dans hocasının yerini almaz."
     }
   }
 }
