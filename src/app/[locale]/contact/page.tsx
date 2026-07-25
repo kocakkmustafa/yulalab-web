@@ -5,6 +5,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { MailCard } from "@/components/contact/MailCard";
 import { company } from "@/data/company";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -36,6 +37,8 @@ function Contact() {
   const t = useTranslations("contact");
   return (
     <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <div aria-hidden className="absolute inset-x-0 top-0 h-[60vh] pointer-events-none">
         <div
           className="absolute inset-0"
@@ -74,7 +77,7 @@ function Contact() {
       </section>
 
       <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-12 pb-16">
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div className="glass p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <div>
             <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-2">
               {t("locationEyebrow")}

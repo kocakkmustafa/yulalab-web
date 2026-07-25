@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { projects } from "@/data/projects";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -39,7 +40,9 @@ function PrivacyIndex() {
   const isTR = locale === "tr";
 
   return (
-    <div className="page-enter">
+    <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <section className="relative pt-32 pb-16 lg:pt-40">
         <div className="max-w-4xl mx-auto px-6 lg:px-10">
           <EyebrowChip>{isTR ? "Gizlilik" : "Privacy"}</EyebrowChip>
@@ -59,7 +62,7 @@ function PrivacyIndex() {
               <Link
                 key={p.slug}
                 href={`/privacy/${p.slug}`}
-                className="group block rounded-2xl border border-white/10 hover:border-white/25 hover:bg-white/[0.03] p-6 transition-colors focusable"
+                className="glass group block p-6 transition-colors focusable"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] tracking-widest uppercase text-ink-400">

@@ -4,6 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { company } from "@/data/company";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 const LAST_UPDATED = "2026-07-10";
 
@@ -40,7 +41,9 @@ function Terms() {
   const isTR = locale === "tr";
 
   return (
-    <div className="page-enter">
+    <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <section className="relative pt-32 pb-16 lg:pt-40">
         <div className="max-w-3xl mx-auto px-6 lg:px-10">
           <Link

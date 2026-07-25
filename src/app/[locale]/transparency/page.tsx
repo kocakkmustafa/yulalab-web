@@ -16,6 +16,7 @@ import { StaggerWords } from "@/components/common/StaggerWords";
 import { getProjectBySlug } from "@/data/projects";
 import { company } from "@/data/company";
 import type { Locale, ProjectConfig } from "@/lib/types";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -70,6 +71,8 @@ function Transparency() {
 
   return (
     <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <div aria-hidden className="absolute inset-x-0 top-0 h-[60vh] pointer-events-none">
         <div
           className="absolute inset-0"
@@ -146,7 +149,7 @@ function Transparency() {
             (key) => (
               <li
                 key={key}
-                className="flex items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.015] p-5"
+                className="glass flex items-start gap-3 p-5"
               >
                 <span
                   className="mt-0.5 inline-flex items-center justify-center w-7 h-7 rounded-md"
@@ -173,7 +176,7 @@ function Transparency() {
 
       {/* CTA */}
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-20 pb-32">
-        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.015] p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+        <div className="glass p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
           <div>
             <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-2">
               {t("ctaEyebrow")}
@@ -225,7 +228,7 @@ function PillarCard({
   const DetailIcon = PILLAR_DETAIL_ICONS[slug];
   return (
     <div
-      className="group rounded-2xl border border-white/[0.07] bg-white/[0.015] p-6 flex flex-col"
+      className="glass group p-6 flex flex-col"
       style={{ borderColor: `${p.brand.primary}1F` }}
     >
       <div className="flex items-center justify-between">
@@ -254,7 +257,7 @@ function PillarCard({
 
       <p className="mt-5 text-[15.5px] leading-relaxed text-ink-200">{claim}</p>
 
-      <div className="mt-5 rounded-xl border border-white/[0.05] bg-white/[0.02] p-4">
+      <div className="glass mt-5 p-4">
         <div className="flex items-start gap-2.5">
           <DetailIcon
             size={15}

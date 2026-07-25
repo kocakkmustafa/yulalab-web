@@ -5,6 +5,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { notes } from "@/data/notes";
 import type { Locale } from "@/lib/types";
+import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
   params,
@@ -37,7 +38,9 @@ function Notes() {
   const locale = useLocale() as Locale;
 
   return (
-    <div className="page-enter">
+    <div className="page-enter relative">
+      <GlassSheen />
+      <div className="ambient" aria-hidden />
       <section className="max-w-3xl mx-auto px-6 lg:px-10 pt-32 lg:pt-40 pb-12">
         <EyebrowChip>{t("eyebrow")}</EyebrowChip>
         <h1 className="mt-7 font-display font-extrabold text-ink-50 leading-[0.96] tracking-tightest text-[40px] sm:text-[56px] md:text-[68px]">
