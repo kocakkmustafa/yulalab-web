@@ -35,6 +35,13 @@ export default async function PrivacyIndexPage({
   return <PrivacyIndex />;
 }
 
+// Only products with a dedicated /privacy/<slug> route belong here — a
+// "coming-soon" product hasn't launched and collects no data yet, so
+// linking to a policy page that doesn't exist would be a dead link. Filter
+// stays semantic (not a slug allow-list) so a future product automatically
+// joins this index the moment it ships its own policy page and status.
+const projectsWithPrivacyPolicy = projects.filter((p) => p.status !== "coming-soon");
+
 function PrivacyIndex() {
   const locale = useLocale();
   const isTR = locale === "tr";
@@ -58,7 +65,7 @@ function PrivacyIndex() {
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {projects.map((p) => (
+            {projectsWithPrivacyPolicy.map((p) => (
               <Link
                 key={p.slug}
                 href={`/privacy/${p.slug}`}
