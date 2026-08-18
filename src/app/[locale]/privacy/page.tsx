@@ -60,8 +60,8 @@ function PrivacyIndex() {
 
           <p className="mt-7 max-w-[52ch] text-[16.5px] md:text-[17.5px] leading-[1.6] text-ink-300">
             {isTR
-              ? "YULA Lab'in üç ürününün her biri farklı bir gizlilik mekaniğine sahiptir; ancak hepsi aynı dört garantiye dayanır: verinize sahip olursunuz, modeller eğitilirken kullanılmaz, reklam yok, çıkış kapısı her zaman açık. Aşağıdan ilgili ürünün politikasını seçin."
-              : "Each of YULA Lab's three products has a different privacy mechanic; all share the same four guarantees: you own your data, it's never used for model training, no ads, and you can leave at any time. Pick a product below."}
+              ? "YULA Lab ürünlerinin her biri farklı bir gizlilik mekaniğine sahiptir; ancak hepsi aynı dört garantiye dayanır: verinize sahip olursunuz, modeller eğitilirken kullanılmaz, reklam yok, çıkış kapısı her zaman açık. Aşağıdan ilgili ürünün politikasını seçin."
+              : "Each YULA Lab product has a different privacy mechanic; all share the same four guarantees: you own your data, it's never used for model training, no ads, and you can leave at any time. Pick a product below."}
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -89,6 +89,38 @@ function PrivacyIndex() {
                 </div>
               </Link>
             ))}
+
+            {/* Motion is the one exception to the per-slug rule above: five
+                applications (Choreia, Lissom, Gravita, JabLab, Ostinato) share
+                a single policy because they share one privacy mechanic — the
+                camera never leaves the device. Five identical pages would be
+                five things to keep in sync, so the family gets one route
+                (/privacy/motion) instead of five. The apps are still
+                "coming-soon" and therefore correctly absent from the filtered
+                list above; this card is what App Store Connect points at. */}
+            <Link
+              href="/privacy/motion"
+              className="glass group block p-6 transition-colors focusable"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
+                  motion
+                </span>
+                <ArrowUpRight
+                  size={14}
+                  strokeWidth={2}
+                  className="arrow-nudge text-ink-400 group-hover:text-ink-100"
+                />
+              </div>
+              <div className="mt-6 font-display font-bold text-[22px] text-ink-50">
+                {isTR ? "Motion uygulamaları" : "Motion apps"}
+              </div>
+              <div className="mt-2 text-sm text-ink-300 leading-relaxed">
+                {isTR
+                  ? "Choreia · Lissom · Gravita · JabLab · Ostinato — ortak politika →"
+                  : "Choreia · Lissom · Gravita · JabLab · Ostinato — shared policy →"}
+              </div>
+            </Link>
           </div>
 
           <div className="mt-16 pt-10 border-t border-white/10">
@@ -97,8 +129,8 @@ function PrivacyIndex() {
             </div>
             <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
               {isTR
-                ? "Bütün ürünlerimiz KVKK (6698) ve GDPR kapsamındadır. Her ürünün politikası; toplanan veri kategorileri, üçüncü taraflar, saklama süresi, kullanıcı hakları ve iletişim bilgilerini ayrıntılı listeler."
-                : "All products are compliant with Turkey's KVKK (Law 6698) and the EU GDPR. Each product's policy itemises the data categories collected, third parties, retention periods, user rights, and contact information."}
+                ? "Her ürünümüzün gizlilik politikası, KVKK (6698) ve GDPR'nin öngördüğü temel unsurları kapsar: toplanan veri kategorileri, üçüncü taraflar, saklama süresi, kullanıcı hakları ve iletişim bilgileri."
+                : "Every product's privacy policy addresses the core elements required by Turkey's KVKK (Law 6698) and the EU GDPR: the data categories collected, third parties, retention periods, user rights, and contact information."}
             </p>
             <div className="mt-6">
               <Link

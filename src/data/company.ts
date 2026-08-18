@@ -8,8 +8,8 @@ export const company: CompanyConfig = {
     en: "We design tomorrow's products today.",
   },
   shortDescription: {
-    tr: "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
-    en: "YULA Lab is a venture studio designing AI-native, data-driven products that simplify everyday life — each crafted at the intersection of aesthetics, ethics, and impact.",
+    tr: "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
+    en: "YULA Lab is an independent product lab designing AI-native, data-driven products that simplify everyday life — each crafted at the intersection of aesthetics, ethics, and impact.",
   },
   vision: {
     tr: "İnsanların hayatını anlamlı şekilde iyileştiren, yapay zekanın en iyi yanlarını gündelik hayata taşıyan bir ürün ailesi kurmak.",
@@ -51,7 +51,7 @@ export const company: CompanyConfig = {
   ],
   founder: {
     name: "Mustafa Kaan Koçak",
-    role: { tr: "Kurucu & Stüdyo Lideri", en: "Founder & Studio Lead" },
+    role: { tr: "Kurucu & Laboratuvar Lideri", en: "Founder & Lab Lead" },
     email: "kocakmkaan@gmail.com",
   },
   contact: {

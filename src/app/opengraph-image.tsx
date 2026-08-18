@@ -3,17 +3,17 @@ import { ImageResponse } from "next/og";
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "YULA Lab — venture studio";
+export const alt = "YULA Lab — product lab";
 
 /**
  * Default OpenGraph image for the umbrella landing page. Lives at the
  * top of the app tree (not inside [locale]) so the Next.js metadata
  * router doesn't fight the next-intl `as-needed` rewrite. Content is
- * in Turkish — the studio's default voice — and stays readable in EN.
+ * in Turkish — the lab's default voice — and stays readable in EN.
  */
 export default function LandingOgImage() {
   const heroTitle = "Geleceğin ürünlerini bugün tasarlıyoruz.";
-  const eyebrow = "Venture Studio · Türkiye";
+  const eyebrow = "Product Lab · Türkiye";
 
   return new ImageResponse(
     (

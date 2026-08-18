@@ -19,8 +19,8 @@ export const burunfarki: ProjectConfig = {
     en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. 130k+ runners, 13k+ races — and the model never hides why it predicted what it did.",
   },
   short: {
-    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-3 doğruluğu ~%69, dürüst (leak-free) backtest.",
-    en: "Open, transparent, data-driven analytics for Turkish horse racing. ~69% Top-3 accuracy, honest leak-free backtest.",
+    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-3 doğruluğu ~%61, canlı yayın-sonrası dürüst takip (burunfark.com/model-performance, 2026-07-23). Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü.",
+    en: "Open, transparent, data-driven analytics for Turkish horse racing. ~61% Top-3 accuracy, honest live post-deployment tracking (burunfark.com/model-performance, 2026-07-23). A separate training-time backtest measured ~69% Top-3.",
   },
   brand: {
     primary: "#FAB81F",
@@ -43,7 +43,7 @@ export const burunfarki: ProjectConfig = {
     screenshots: [
       // Atmosphere, not proof — a stock racing photo, not an app screen.
       // Never eligible for ProductShot until replaced with a real
-      // decision-rationale/SHAP dashboard capture (see FABLE_PLAN §8.4.4).
+      // decision-rationale dashboard capture (see FABLE_PLAN §8.4.4).
       {
         src: "/projects/burunfarki/hero.jpg",
         alt: "Türkiye'de bir yarış parkurunda dörtnala koşan atlar.",
@@ -80,8 +80,8 @@ export const burunfarki: ProjectConfig = {
     {
       title: { tr: "Karar gerekçesi", en: "Decision rationale" },
       description: {
-        tr: "Her tahminin yanında, en etkili 3 faktör ve katkı oranı — gizli kara kutu yok.",
-        en: "Each prediction shows its top 3 factors and weights — no hidden black box.",
+        tr: "Her tahminin yanında, en etkili 3 faktör sıralı gösterilir — gizli kara kutu yok.",
+        en: "Each prediction shows its top 3 factors in ranked order — no hidden black box.",
       },
       icon: "BadgeCheck",
     },
@@ -94,7 +94,7 @@ export const burunfarki: ProjectConfig = {
       icon: "Database",
     },
     {
-      title: { tr: "Backtest paneli", en: "Backtest panel" },
+      title: { tr: "Canlı takip paneli", en: "Live tracking panel" },
       description: {
         tr: "Son 12 ayın gerçek sonuçları üzerinde, modelin getirisini gün gün izle.",
         en: "Track the model's day-by-day performance against the past 12 months of real results.",
@@ -112,15 +112,21 @@ export const burunfarki: ProjectConfig = {
     {
       title: { tr: "Açıklama önerileri", en: "Explainability" },
       description: {
-        tr: "Hangi koşucu için neden — ML açıklayıcılığı (SHAP) yarış-spesifik dilde anlatılır.",
-        en: "Why this runner, why now — SHAP explainability translated into race-specific language.",
+        tr: "Hangi koşucu için neden — kural-tabanlı katkı sıralaması yarış-spesifik dilde anlatılır.",
+        en: "Why this runner, why now — a rule-based contribution ranking translated into race-specific language.",
       },
       icon: "Microscope",
     },
   ],
+  // Honest live (post-deployment) walk-forward accuracy, not training-time
+  // backtest. Source: burunfark.com/model-performance, verified 2026-08-19
+  // (BF DEFTER B-021 / FABLE_PLAN.md:171). Training-time backtest separately
+  // measured ~69% Top-3 — see the `short` field above for that distinction.
+  // TODO(Y-P0-003): move source/verifiedAt/expiresAt into the public
+  // registry schema once it exists; this comment is a stopgap until then.
   stats: [
-    { value: "~%35", label: { tr: "Top-1 doğruluk", en: "Top-1 accuracy" } },
-    { value: "~%69", label: { tr: "Top-3 doğruluk", en: "Top-3 accuracy" } },
+    { value: "~%30", label: { tr: "Top-1 (canlı takip)", en: "Top-1 (live tracking)" } },
+    { value: "~%61", label: { tr: "Top-3 (canlı takip)", en: "Top-3 (live tracking)" } },
     { value: "13.587", label: { tr: "yarış", en: "races" } },
     { value: "130.930", label: { tr: "koşucu", en: "runners" } },
   ],

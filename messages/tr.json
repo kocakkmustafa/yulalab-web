@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "YULA Lab — Geleceğin ürünlerini bugün tasarlıyoruz.",
-    "description": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur."
+    "description": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır."
   },
   "header": {
     "home": "Ana Sayfa",
@@ -15,7 +15,7 @@
     "menuClose": "Kapat"
   },
   "footer": {
-    "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bir girişim stüdyosu.",
+    "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
     "location": "Türkiye",
     "projectsHeading": "Projeler",
     "companyHeading": "Şirket",
@@ -51,18 +51,18 @@
     "inDevelopment": "Geliştiriliyor"
   },
   "landing": {
-    "eyebrow": "Venture Studio · Türkiye",
+    "eyebrow": "Ürün Laboratuvarı · Türkiye",
     "heroTitle": "Geleceğin ürünlerini bugün tasarlıyoruz.",
-    "heroDescription": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bir girişim stüdyosudur. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
+    "heroDescription": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
     "heroMeta": {
-      "products": "3 ürün",
-      "studio": "1 stüdyo",
+      "products": "8 ürün",
+      "studio": "1 laboratuvar",
       "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
     "bannerCardBottomLabel": "Türkiye",
     "bannerWord": "YULA",
-    "bannerCaption": "VENTURE · STUDIO · TÜRKİYE",
+    "bannerCaption": "PRODUCT · LAB · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Vizyon",
     "visionBody": "İnsanın kendi verisiyle çalışan araçlar, o veriyi kimseye teslim etmeden çalışabilir. YULA Lab bunun yalnız teknik olarak değil, ticari olarak da mümkün olduğunu göstermek için var.",
@@ -81,7 +81,7 @@
       "seffaflik": "Şeffaflık",
       "birlesme": "YULA Lab"
     },
-    "heroEyebrow": "Tek kişilik AI girişim stüdyosu · Türkiye",
+    "heroEyebrow": "Tek kişilik AI ürün laboratuvarı · Türkiye",
     "heroTitleA": "Az sayıda ürün.",
     "heroTitleB": "Uzun süre üzerinde düşünülmüş.",
     "heroLede": "YULA Lab; kişisel veriyi cihazda tutan, iddiasını sayıyla açan ve karmaşıklığı kullanıcıya yıkmayan yazılımlar kurar. Ajans değil, danışmanlık değil — kendi ürünlerini yayına alır ve sürdürür.",
@@ -101,7 +101,7 @@
     "value3Title": "Gizlilik",
     "value3Body": "Veri varsayılan olarak cihazda kalır. Sunucuya gitmeyen veri sızmaz.",
     "value4Title": "Bilim",
-    "value4Body": "Model çıktısı açıklanabilir olmalı. SHAP değerleri kullanıcıdan saklanmaz.",
+    "value4Body": "Model çıktısı açıklanabilir olmalı. Karar gerekçesi kullanıcıdan saklanmaz.",
     "manifestoKicker": "03 — Manifesto",
     "manifestoNoteNew": "Altı madde. Hepsi uygulanıyor ya da yazılmıyor.",
     "manifestoTitleA": "Nasıl çalıştığımızı ",
@@ -137,7 +137,7 @@
   "manifesto": {
     "eyebrow": "Manifesto",
     "title": "Aceleyle değil, özenle.",
-    "intro": "YULA Lab; trende değil, kanıta yaslanan bir girişim stüdyosu. Üç ürünümüzün her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.",
+    "intro": "YULA Lab; trende değil, kanıta yaslanan bağımsız bir ürün laboratuvarı. Ürünlerimizin her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.",
     "nameEyebrow": "İsim",
     "nameTitle": "Yula: yol gösteren ışık.",
     "nameBody": "Yula, karanlıkta yön gösteren küçük ama güvenilir ışığın adı. Lab ise onun tam karşılığı bir disiplin: deney, ölçüm, tekrar. İki kelime bir araya gelince ortaya çıkan şey budur — sıcaklığı olan ama abartmayan, ışık tutan ama gösteriş yapmayan bir çalışma biçimi.",
@@ -173,7 +173,7 @@
     "intro": "YULA Lab'te şeffaflık bir özellik değil — varsayılan. Her ürünümüz aynı söze sahip: modeli, maliyeti, veriyi nasıl tuttuğumuzu açıkça gösteririz. Bir AI ürününü kullanıyorsunuz; gözünüzü kapatmak zorunda değilsiniz.",
     "promiseEyebrow": "Verdiğimiz söz",
     "promiseBody": "Aldığınız her kararı, harcadığınız her token'ı, sakladığımız her satırı görebilirsiniz. Açıklayamadığımız hiçbir şey ürüne girmez.",
-    "pillarsEyebrow": "Üç ürün, üç farklı şeffaflık mekaniği",
+    "pillarsEyebrow": "Üç temel ürün, üç farklı şeffaflık mekaniği",
     "pillarsTitle": "Söylemek değil, kanıtlamak.",
     "readMore": "Detay:",
     "pillars": {
@@ -188,9 +188,9 @@
       "burunfarki": {
         "label": "Açık metodoloji",
         "title": "Her tahmin için ilk 3 etken.",
-        "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. SHAP açıklayıcılığıyla en etkili 3 faktörü ve katkı oranlarını yarış-spesifik dilde anlatıyoruz.",
-        "proof": "→ ~%69 Top-3 · dürüst (leak-free) backtest · piyasa favorisiyle (AGF) başa baş ham isabette",
-        "detailLabel": "Backtest paneli",
+        "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. Kural-tabanlı ağırlıklandırmayla en etkili 3 faktörü yarış-spesifik dilde anlatıyoruz.",
+        "proof": "→ ~%61 Top-3 · canlı yayın-sonrası dürüst takip · burunfark.com/model-performance, 2026-07-23",
+        "detailLabel": "Canlı takip paneli",
         "detailBody": "Son 12 ayın 611 yarışı üstünde modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
       },
       "lifeos": {
@@ -299,14 +299,14 @@
       "a1Title": "Yarışı okur, kupon vermez.",
       "a1Body": "Platform bir yarışın verisini alır, modelin sıralamasını ve bu sıralamayı oluşturan etkenleri gösterir. Bahis oranı üretmez, kupon önermez, garanti vermez. Karar kullanıcıdadır.",
       "a2Title": "Her tahmin gerekçesiyle gelir.",
-      "a2Body": "SHAP katkıları her at için ayrı listelenir: hangi değişken sıralamayı yukarı çekti, hangisi aşağı bastırdı. Model beğenmediğiniz bir sonuç verdiğinde nedenini görebilirsiniz.",
+      "a2Body": "Kural-tabanlı katkı faktörleri her at için ayrı listelenir: hangi değişken sıralamayı yukarı çekti, hangisi aşağı bastırdı. Model beğenmediğiniz bir sonuç verdiğinde nedenini görebilirsiniz.",
       "s2Kicker": "02 — Yöntem",
       "r1k": "Değerlendirme",
       "r1v": "Zaman sıralı ayrım · geçmişe bakmaz",
       "r2k": "Metrikler",
       "r2v": "Top-1 / Top-3 isabet",
       "r3k": "Açıklama",
-      "r3v": "SHAP · her tahmin için",
+      "r3v": "Kural-tabanlı · her tahmin için",
       "r4k": "Yayın",
       "r4v": "Sonuçlar geriye dönük düzeltilmez",
       "note": "Backtest, modelin eğitiminde görmediği ileri tarihli yarışlar üzerinde çalıştırılır. Dışlanan yarışlar ve veri aralığı yöntem notunda listelenir.",
@@ -321,7 +321,7 @@
       "eyebrow": "Ürün 03 · Beta · kapalı davet",
       "lede": "Ajan ve otomasyon komuta merkezi. Dokuz primitif, on iki LLM sağlayıcısı ve her çalıştırmanın kuruşunu gösteren bir maliyet defteri. Hangi modelin ne harcadığı tahmin edilmez, okunur.",
       "s1Kicker": "01 — Ne yapar",
-      "a1Title": "Dokuz primitif, sınırsız birleşim.",
+      "a1Title": "Dokuz primitif, geniş (şablonsuz) birleşim uzayı.",
       "a1Body": "Otomasyonlar hazır şablonlardan değil, birkaç temel yapı taşından kurulur. Her taş tek bir işi yapar; akış bu taşların dizilişinden doğar ve okunabilir kalır.",
       "a2Title": "Maliyet sürpriz değildir.",
       "a2Body": "Her çalıştırmanın hangi sağlayıcıda kaç token harcadığı ve karşılığındaki tutar defterde durur. Sağlayıcı değiştirmek bir ayar; yeniden yazım gerekmez.",

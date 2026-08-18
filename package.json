@@ -10,6 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
+    "verify:claims:local": "node scripts/verify-claims-local.mjs",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel"
   },

@@ -16,8 +16,8 @@ export async function generateMetadata({
   return {
     title: isTR ? "Destek · YULA Lab" : "Support · YULA Lab",
     description: isTR
-      ? "Braavolabs, Burun Farkı ve LifeOS için destek ve sıkça sorulan sorular."
-      : "Support and FAQ for Braavolabs, Burun Farkı, and LifeOS.",
+      ? "Braavolabs, Burun Farkı, LifeOS ve Motion uygulamaları için destek ve sıkça sorulan sorular."
+      : "Support and FAQ for Braavolabs, Burun Farkı, LifeOS, and the Motion apps.",
     alternates: {
       canonical: isTR ? "/support" : `/${locale}/support`,
     },
@@ -52,8 +52,8 @@ function Support() {
 
           <p className="mt-7 max-w-[52ch] text-[16.5px] md:text-[17.5px] leading-[1.6] text-ink-300">
             {isTR
-              ? "Üç ürünümüzün tüm destek talepleri merhaba@yulalab.com adresine gelir. Mesajlarınıza genellikle 48 saat içinde dönüyoruz; acil bir konu olduğunda satır başına 'ACIL' yazmanız yeterli."
-              : "All support requests for our three products go to merhaba@yulalab.com. We usually respond within 48 hours; for urgent matters, lead your message with 'URGENT'."}
+              ? "Tüm ürünlerimizin destek talepleri merhaba@yulalab.com adresine gelir. Mesajlarınıza genellikle 48 saat içinde dönüyoruz; acil bir konu olduğunda satır başına 'ACIL' yazmanız yeterli."
+              : "Support requests for all our products go to merhaba@yulalab.com. We usually respond within 48 hours; for urgent matters, lead your message with 'URGENT'."}
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -95,6 +95,19 @@ function Support() {
               {isTR ? "Sıkça sorulanlar" : "Frequently asked"}
             </div>
             <div className="space-y-8">
+              {/* Placed first on purpose: the subscription and account-deletion
+                  answers below describe Braavolabs/LifeOS/Burun Farkı. The five
+                  Motion apps have neither accounts nor purchases, so a Motion
+                  user following those steps would look for a screen that does
+                  not exist. Stating the exception before the rule prevents that. */}
+              <FAQ
+                q={isTR
+                  ? "Motion uygulamaları (Choreia · Lissom · Gravita · JabLab · Ostinato) için de bunlar geçerli mi?"
+                  : "Do these apply to the Motion apps (Choreia · Lissom · Gravita · JabLab · Ostinato)?"}
+                a={isTR
+                  ? "Kısmen. Motion uygulamalarında hesap yoktur, giriş yapmazsınız ve şu an satın alınacak bir şey yoktur — dolayısıyla aşağıdaki abonelik, hesap silme ve geri ödeme adımları bu beş uygulama için geçerli değildir. Verinizin tamamı cihazınızda durur; uygulamayı silmek onu da siler. Kamera görüntüsü telefonunuzdan hiç çıkmaz. Ayrıntı: /privacy/motion"
+                  : "Partly. The Motion apps have no accounts, no sign-in, and nothing to purchase right now — so the subscription, account-deletion, and refund steps below do not apply to these five. All of your data stays on your device; deleting the app deletes it. The camera image never leaves your phone. Details: /privacy/motion"}
+              />
               <FAQ
                 q={isTR ? "Aboneliğimi nasıl iptal ederim?" : "How do I cancel my subscription?"}
                 a={isTR
@@ -116,8 +129,8 @@ function Support() {
               <FAQ
                 q={isTR ? "Verim güvende mi?" : "Is my data safe?"}
                 a={isTR
-                  ? "Üç ürünün de detaylı gizlilik politikalarını /privacy adresinden okuyabilirsiniz. Kısa cevap: iletişim TLS ile şifrelenir; LifeOS özelinde cihaz verisi SQLCipher + AES-256 ile şifrelenir; reklam yok, model eğitimi için kullanılmıyor."
-                  : "You can read detailed privacy policies for all three products at /privacy. Short answer: traffic is TLS-encrypted; LifeOS specifically encrypts on-device data with SQLCipher + AES-256; no ads, no use for model training."}
+                  ? "Her ürünün detaylı gizlilik politikasını /privacy adresinden okuyabilirsiniz. Kısa cevap: iletişim TLS ile şifrelenir; LifeOS özelinde cihaz verisi SQLCipher + AES-256 ile şifrelenir; Motion uygulamalarında kamera görüntüsü cihazdan hiç çıkmaz; reklam yok, model eğitimi için kullanılmıyor."
+                  : "You can read each product's detailed privacy policy at /privacy. Short answer: traffic is TLS-encrypted; LifeOS specifically encrypts on-device data with SQLCipher + AES-256; in the Motion apps the camera image never leaves your device; no ads, no use for model training."}
               />
               <FAQ
                 q={isTR ? "Bir hata buldum, nereye bildiririm?" : "I found a bug — where do I report it?"}

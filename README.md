@@ -2,7 +2,7 @@
 
 # YULA Lab — Umbrella Site
 
-**[yulalab.com](https://yulalab.com)** · The public marketing and showcase site for YULA Lab — a venture studio designing AI-native, data-driven products that simplify everyday life.
+**[yulalab.com](https://yulalab.com)** · The public marketing and showcase site for YULA Lab — an independent product lab designing AI-native, data-driven products that simplify everyday life.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
@@ -22,11 +22,18 @@ The site is fully **server-rendered, statically generated** for every project ro
 
 ## The ventures we showcase
 
-| Slug          | Project                    | Status   | Highlight                                            |
-| ------------- | -------------------------- | -------- | ---------------------------------------------------- |
-| `braavolabs`  | Autonomous AI Company OS   | Beta     | 9 primitives, 12 LLM providers, transparent cost     |
-| `burunfarki`  | Transparent racing AI      | Live     | 13,587 races, ~%35 Top‑1, ~%69 Top‑3, SHAP explainability |
-| `lifeos`     | Personal life OS (mobile)  | Live     | Offline‑first, AES‑256 on‑device, 5 life domains     |
+Eight products total — three shipped (live/beta), five coming soon.
+
+| Slug          | Project                    | Status      | Highlight                                              |
+| ------------- | -------------------------- | ----------- | ------------------------------------------------------- |
+| `braavolabs`  | Autonomous AI Company OS   | Beta        | 9 primitives, 12 LLM providers, transparent cost         |
+| `burunfarki`  | Transparent racing AI      | Live        | 13,587 races, ~30% Top‑1 / ~61% Top‑3 (live tracking)    |
+| `lifeos`      | Personal life OS (mobile)  | Live        | Offline‑first, AES‑256 on‑device, 5 life domains         |
+| `gravita`     | Skills & strength coach    | Coming soon | Handstand & bodyweight skills, on-device pose tracking   |
+| `lissom`      | Mobility & flexibility coach | Coming soon | On-device pose tracking, zero cloud                    |
+| `jablab`      | Solo boxing coach          | Coming soon | Shadow training, on-device pose tracking                 |
+| `ostinato`    | Music practice coach       | Coming soon | On-device pose tracking, zero cloud                      |
+| `choreia`     | Global dance coach         | Coming soon | On-device pose tracking, zero cloud                      |
 
 Each project is configured in [`src/data/projects/<slug>.ts`](./src/data/projects/) and rendered through the shared [`<ProjectShowcase>`](./src/components/projects/ProjectShowcase.tsx) component, which adapts colors, gradients and typography from per-project brand tokens.
 

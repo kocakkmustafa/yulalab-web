@@ -33,8 +33,8 @@ export const notes: Note[] = [
       en: "Added a Terms of Service page",
     },
     body: {
-      tr: "Üç ürünümüz için ortak bir kullanım şartları / EULA sayfası yayında — footer'dan erişilebilir.",
-      en: "A shared terms of service / EULA page for all three products is live — reachable from the footer.",
+      tr: "Ürünlerimiz için ortak bir kullanım şartları / EULA sayfası yayında — footer'dan erişilebilir.",
+      en: "A shared terms of service / EULA page for our products is live — reachable from the footer.",
     },
   },
   {

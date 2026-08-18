@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "YULA Lab — We design tomorrow's products today.",
-    "description": "YULA Lab is a venture studio building AI-native, data-driven products that simplify everyday life."
+    "description": "YULA Lab is an independent product lab building AI-native, data-driven products that simplify everyday life."
   },
   "header": {
     "home": "Home",
@@ -15,7 +15,7 @@
     "menuClose": "Close"
   },
   "footer": {
-    "tagline": "A venture studio that uses AI in the right place at the right time, without overstating it.",
+    "tagline": "An independent product lab that uses AI in the right place at the right time, without overstating it.",
     "location": "Türkiye",
     "projectsHeading": "Projects",
     "companyHeading": "Company",
@@ -51,18 +51,18 @@
     "inDevelopment": "In development"
   },
   "landing": {
-    "eyebrow": "Venture Studio · Türkiye",
+    "eyebrow": "Product Lab · Türkiye",
     "heroTitle": "We design tomorrow's products today.",
-    "heroDescription": "YULA Lab is a venture studio that designs AI-native, data-driven products that simplify everyday life. Every project is built at the intersection of aesthetics, ethics, and impact.",
+    "heroDescription": "YULA Lab is an independent product lab that designs AI-native, data-driven products that simplify everyday life. Every project is built at the intersection of aesthetics, ethics, and impact.",
     "heroMeta": {
-      "products": "3 products",
-      "studio": "1 studio",
+      "products": "8 products",
+      "studio": "1 lab",
       "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
     "bannerCardBottomLabel": "Türkiye",
     "bannerWord": "YULA",
-    "bannerCaption": "VENTURE · STUDIO · TÜRKİYE",
+    "bannerCaption": "PRODUCT · LAB · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Vision",
     "visionBody": "Tools that run on your own data can run without handing that data to anyone. YULA Lab exists to show this is possible not only technically, but commercially.",
@@ -81,7 +81,7 @@
       "seffaflik": "Transparency",
       "birlesme": "YULA Lab"
     },
-    "heroEyebrow": "A one-person AI venture studio · Türkiye",
+    "heroEyebrow": "A one-person AI product lab · Türkiye",
     "heroTitleA": "Few products.",
     "heroTitleB": "Thought about for a long time.",
     "heroLede": "YULA Lab builds software that keeps personal data on the device, backs its claims with numbers, and refuses to push complexity onto the user. Not an agency, not a consultancy — we ship and maintain our own products.",
@@ -101,7 +101,7 @@
     "value3Title": "Privacy",
     "value3Body": "Data stays on the device by default. Data that never reaches a server cannot leak from one.",
     "value4Title": "Science",
-    "value4Body": "A model's output has to be explainable. SHAP values are not hidden from the user.",
+    "value4Body": "A model's output has to be explainable. Decision rationale is not hidden from the user.",
     "manifestoKicker": "03 — Manifesto",
     "manifestoNoteNew": "Six principles. Each one is practised or it isn't written down.",
     "manifestoTitleA": "We wrote down ",
@@ -137,7 +137,7 @@
   "manifesto": {
     "eyebrow": "Manifesto",
     "title": "With craft, not haste.",
-    "intro": "YULA Lab is a venture studio that leans on evidence, not trends. Each of our three products is a different face of the same discipline: making a measurable difference in human life through restrained, transparent design.",
+    "intro": "YULA Lab is an independent product lab that leans on evidence, not trends. Each of our products is a different face of the same discipline: making a measurable difference in human life through restrained, transparent design.",
     "nameEyebrow": "The name",
     "nameTitle": "Yula: a light that shows the way.",
     "nameBody": "Yula is the word for a small, steady light that guides you through the dark. Lab is its counterpart — a discipline of experiment, measurement, repetition. Put together, that's the whole method: warmth without excess, guidance without spectacle.",
@@ -173,7 +173,7 @@
     "intro": "At YULA Lab, transparency isn't a feature — it's the default. Every product makes the same promise: the model, the cost and the data are visible to you. You are using an AI product; you should not have to close your eyes.",
     "promiseEyebrow": "Our promise",
     "promiseBody": "Every decision you take, every token you spend, every row we store — you can see it. Nothing ships unless we can explain it.",
-    "pillarsEyebrow": "Three products, three transparency mechanics",
+    "pillarsEyebrow": "Three core products, three transparency mechanics",
     "pillarsTitle": "We don't claim it — we prove it.",
     "readMore": "Read more on",
     "pillars": {
@@ -188,9 +188,9 @@
       "burunfarki": {
         "label": "Open methodology",
         "title": "Top 3 factors for every prediction.",
-        "claim": "We don't hide why the model picked that horse. SHAP-based explanations show the top 3 factors and their weight in race-specific language.",
-        "proof": "→ ~69% Top-3 · honest leak-free backtest · matches the market favorite (AGF) on raw hit-rate",
-        "detailLabel": "Backtest panel",
+        "claim": "We don't hide why the model picked that horse. A rule-based weighting shows the top 3 factors in race-specific language.",
+        "proof": "→ ~61% Top-3 · honest live post-deployment tracking · burunfark.com/model-performance, 2026-07-23",
+        "detailLabel": "Live tracking panel",
         "detailBody": "611 races over the past 12 months; winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns one click away."
       },
       "lifeos": {
@@ -299,14 +299,14 @@
       "a1Title": "It reads the race; it doesn't hand you a slip.",
       "a1Body": "The platform takes a race's data and shows the model's ranking along with the factors that produced it. It generates no odds, recommends no bets, guarantees nothing. The decision is the user's.",
       "a2Title": "Every prediction comes with its reasoning.",
-      "a2Body": "SHAP contributions are listed per horse: which variable pushed the ranking up, which pushed it down. When the model returns something you dislike, you can see why.",
+      "a2Body": "Rule-based contribution factors are listed per horse: which variable pushed the ranking up, which pushed it down. When the model returns something you dislike, you can see why.",
       "s2Kicker": "02 — Method",
       "r1k": "Evaluation",
       "r1v": "Time-ordered split · no lookahead",
       "r2k": "Metrics",
       "r2v": "Top-1 / Top-3 hit rate",
       "r3k": "Explanation",
-      "r3v": "SHAP · per prediction",
+      "r3v": "Rule-based · per prediction",
       "r4k": "Publishing",
       "r4v": "Results are never revised after the fact",
       "note": "The backtest runs on later-dated races the model never saw in training. Excluded races and the data range are listed in the method note.",
@@ -321,7 +321,7 @@
       "eyebrow": "Product 03 · Beta · closed invite",
       "lede": "An agent and automation command centre. Nine primitives, twelve LLM providers, and a cost ledger that shows what every run spent. What a model costs isn't estimated — it's read.",
       "s1Kicker": "01 — What it does",
-      "a1Title": "Nine primitives, unlimited combinations.",
+      "a1Title": "Nine primitives, an open-ended combination space.",
       "a1Body": "Automations are built from a handful of building blocks rather than canned templates. Each block does one job; the flow emerges from how they're arranged, and stays readable.",
       "a2Title": "Cost is never a surprise.",
       "a2Body": "How many tokens each run spent with which provider — and what that came to — sits in the ledger. Switching provider is a setting, not a rewrite.",

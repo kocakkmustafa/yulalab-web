@@ -11,9 +11,9 @@ import type { Locale, ProjectConfig } from "@/lib/types";
  *
  * Deliberately not `project.brand.primary`: those are each product's own
  * app-store identity (Burun Farkı's is a saturated gold, for instance), and
- * three unrelated saturated hues side by side make the umbrella site look
- * like a directory. These are muted siblings tuned to sit together against
- * black while still telling the three products apart.
+ * unrelated saturated hues side by side make the umbrella site look like a
+ * directory. These are muted siblings tuned to sit together against black
+ * while still telling the products apart.
  */
 const ACCENT: Record<string, string> = {
   lifeos: "#8FB8E8",
