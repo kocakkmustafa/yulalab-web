@@ -52,7 +52,21 @@ function migrationColumns(sql: string): string[] {
 }
 
 const root = path.resolve(import.meta.dirname, "..");
-const read = (relative: string) => readFileSync(path.resolve(root, relative), "utf8");
+function read(relative: string): string {
+  const absolute = path.resolve(root, relative);
+  try {
+    return readFileSync(absolute, "utf8");
+  } catch {
+    // Deliberately a failure, not a skip: this claim spans two repos, and a
+    // check that quietly disappears when one is missing is how the earlier
+    // forbidden-pattern scan reported "0 hits" while scanning nothing. CI
+    // clones the links hub as a sibling for exactly this reason.
+    throw new Error(
+      `${relative} not found at ${absolute}. This test needs the links hub checked out ` +
+        `alongside the site (CI clones kocakkmustafa/yulalab-links into ../links).`,
+    );
+  }
+}
 
 /**
  * Comments stripped before matching. Without this, moving a disclosure

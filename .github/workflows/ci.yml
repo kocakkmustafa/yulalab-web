@@ -37,6 +37,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # The privacy-claim anchor and the forbidden-pattern scan both span
+      # BOTH repos: the page states collection is off, and the links hub is
+      # where it would actually be switched on. Without the sibling checkout
+      # that cross-repo check cannot run — and the first version of this
+      # workflow shipped a test that simply crashed with ENOENT here, which
+      # is at least louder than the silent skip it replaced, but is not a
+      # check. yulalab-links is public, so no credentials are needed.
+      - name: Check out the links hub as a sibling
+        run: git clone --depth 1 --branch develop https://github.com/kocakkmustafa/yulalab-links.git ../links
+
       - uses: pnpm/action-setup@v4
         with:
           version: 10

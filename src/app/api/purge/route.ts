@@ -16,8 +16,19 @@ export const dynamic = "force-dynamic";
  * unconditional present tense while nothing deleted anything. A green test
  * for a job that never runs is the most convincing kind of nothing.
  *
- * Scheduled by `vercel.json` and authenticated with CRON_SECRET, which
- * Vercel Cron sends as a bearer token. Without the secret set the route
+ * Scheduled by `vercel.json` (daily, 04:00) and authenticated with
+ * CRON_SECRET, which Vercel Cron sends as a bearer token. That schedule is
+ * what makes the "raw records are deleted after 30 days" sentence on
+ * /privacy true; `tests/purge-route.test.ts` asserts the cron entry exists
+ * and is daily, because the failure this route was written for was a purge
+ * function nothing called.
+ *
+ * The rationale lives here rather than in vercel.json because JSON has no
+ * comments AND Vercel's deploy-time validator rejects unknown keys inside a
+ * cron entry — a `"comment"` field failed the build with `crons[0] should
+ * NOT have additional property comment`, even though the published
+ * openapi.vercel.sh schema leaves additionalProperties undefined there. The
+ * published schema is not the validator. Without the secret set the route
  * refuses rather than running unauthenticated — a public endpoint that
  * deletes rows is not something to leave open, even when the deletion is
  * one we want.
