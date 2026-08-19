@@ -101,7 +101,12 @@ function parse(input: unknown): Parsed {
 
   // The honeypot is checked first and reported as success, so a bot learns
   // nothing about which field caught it.
-  const honeypot = typeof body.website === "string" && body.website.trim() !== "";
+  // ANY presence is the signal, not just a non-empty string. Checking
+  // `typeof === "string"` let a bot send `"website": 1` and skip the trap
+  // entirely, and the field is in ALLOWED_FIELDS so the lead stored.
+  const honeypot =
+    "website" in body &&
+    !(typeof body.website === "string" && body.website.trim() === "");
 
   const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
   const name = str(body.name);

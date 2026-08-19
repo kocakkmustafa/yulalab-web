@@ -2,7 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { purgeExpiredAttributions } from "@/server/attribution";
-import { purgeExpiredLeads } from "@/server/leads";
+import { purgeExpiredLeads, purgeExpiredOutbox } from "@/server/leads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -90,12 +90,20 @@ export async function GET(request: Request): Promise<Response> {
       console.error("lead purge failed", error instanceof Error ? error.name : "unknown");
     }
 
+    let purgedOutbox: number | null = null;
+    try {
+      purgedOutbox = await purgeExpiredOutbox(pool, now);
+    } catch (error) {
+      failures.push("outbox");
+      console.error("outbox purge failed", error instanceof Error ? error.name : "unknown");
+    }
+
     if (failures.length > 0) {
       // 503 so a monitor sees it, with the counts that DID run — a retention
       // job that half-worked must not report success.
-      return NextResponse.json({ purged, purgedLeads, failed: failures }, { status: 503 });
+      return NextResponse.json({ purged, purgedLeads, purgedOutbox, failed: failures }, { status: 503 });
     }
-    return NextResponse.json({ purged, purgedLeads }, { status: 200 });
+    return NextResponse.json({ purged, purgedLeads, purgedOutbox }, { status: 200 });
   } catch (error) {
     console.error("purge failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ purged: null, reason: "purge_failed" }, { status: 503 });

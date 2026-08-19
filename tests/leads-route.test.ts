@@ -258,3 +258,43 @@ describe("the notice version is ours, not the caller's", () => {
     expect(rows[0].notice_version).toBe(CURRENT_NOTICE_VERSION);
   });
 });
+
+describe("the honeypot cannot be sidestepped by type", () => {
+  it.each([
+    ["a number", 1],
+    ["a boolean", true],
+    ["an array", ["x"]],
+    ["an object", { a: 1 }],
+  ])("treats a non-string %s in the honeypot field as a trap", async (_label, value) => {
+    // `typeof body.website === "string"` meant a bot sending a number skipped
+    // the honeypot entirely — the field is in ALLOWED_FIELDS, so the lead
+    // stored. Any presence at all is the signal; only an empty string is a
+    // human leaving it alone.
+    const res = await post(body({ website: value }));
+    expect(res.status).toBe(201);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it("still accepts the empty string a real form submits", async () => {
+    const res = await post(body({ website: "" }));
+    expect(res.status).toBe(201);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+  });
+});
+
+describe("the rate-limit key identifies a client, not everyone", () => {
+  it("does not throttle a second client because a first one flooded", async () => {
+    // Mutating clientKey to a constant made one IP throttle the whole world
+    // and passed the existing flood test, which only asserted limited > 0.
+    const { resetRateLimit } = await import("@/server/rate-limit");
+    resetRateLimit();
+    for (let i = 0; i < 40; i += 1) {
+      await post(body({ message: `flood ${i}` }), { "x-forwarded-for": "203.0.113.9" });
+    }
+    const other = await post(body({ message: "a different person" }), {
+      "x-forwarded-for": "198.51.100.4",
+    });
+    expect(other.status).toBe(201);
+    resetRateLimit();
+  });
+});

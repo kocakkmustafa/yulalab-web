@@ -42,7 +42,18 @@ CREATE TABLE IF NOT EXISTS leads (
     -- 180 days is the roadmap's unqualified-lead retention; a lead that
     -- becomes an active conversation gets extended deliberately, under legal
     -- review, rather than by defaulting to forever.
-    retention_until timestamptz NOT NULL DEFAULT (now() + interval '180 days'),
+    -- Derived from created_at by a trigger, not defaulted from now().
+    --
+    -- The application used to compute this too, and the two disagreed by an
+    -- hour across a DST boundary (JS `now + 180*24h` is elapsed time; SQL
+    -- `interval '180 days'` is calendar arithmetic) — two sources for one
+    -- date, the drift this task has hit repeatedly. Removing the app half
+    -- then exposed the rest of the problem: a DEFAULT cannot see created_at,
+    -- so a backdated row got an expiry 180 days from the INSERT rather than
+    -- from when the lead actually arrived. A GENERATED column is rejected
+    -- here ("generation expression is not immutable" — timestamptz + interval
+    -- depends on the session timezone), so a trigger owns it.
+    retention_until timestamptz NOT NULL,
 
     -- sha256 of (email | message | intent | submission date), computed by the
     -- application. UNIQUE, so a double-click or a retried request is resolved
@@ -87,7 +98,14 @@ CREATE TABLE IF NOT EXISTS event_outbox (
     attempts      integer     NOT NULL DEFAULT 0 CHECK (attempts >= 0),
     delivered_at  timestamptz NULL,
     created_at    timestamptz NOT NULL DEFAULT now(),
-    CONSTRAINT delivered_after_creation CHECK (delivered_at IS NULL OR delivered_at >= created_at)
+    -- The outbox row outlives nothing. It carries a receipt id and a route,
+    -- which is less than the lead holds — but the reasoning used to justify
+    -- keeping the message body OUT of this table ("a second home with its
+    -- own retention story to get wrong") applies to the row itself. Without
+    -- this, purging a lead left its outbox rows behind forever.
+    purge_at      timestamptz NOT NULL,
+    CONSTRAINT delivered_after_creation CHECK (delivered_at IS NULL OR delivered_at >= created_at),
+    CONSTRAINT outbox_purge_after_creation CHECK (purge_at > created_at)
 );
 
 CREATE TABLE IF NOT EXISTS data_requests (
@@ -107,7 +125,33 @@ CREATE TABLE IF NOT EXISTS data_requests (
     CONSTRAINT completed_after_creation CHECK (completed_at IS NULL OR completed_at >= created_at)
 );
 
+-- One place, in the database, derived from the row it belongs to.
+CREATE OR REPLACE FUNCTION set_lead_retention() RETURNS trigger AS $$
+BEGIN
+    NEW.retention_until := NEW.created_at + interval '180 days';
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS leads_set_retention ON leads;
+CREATE TRIGGER leads_set_retention
+    BEFORE INSERT ON leads
+    FOR EACH ROW EXECUTE FUNCTION set_lead_retention();
+
 CREATE INDEX IF NOT EXISTS leads_retention_idx      ON leads (retention_until);
 CREATE INDEX IF NOT EXISTS leads_created_idx        ON leads (created_at DESC);
 CREATE INDEX IF NOT EXISTS outbox_undelivered_idx   ON event_outbox (created_at) WHERE delivered_at IS NULL;
+CREATE OR REPLACE FUNCTION set_outbox_purge() RETURNS trigger AS $$
+BEGIN
+    NEW.purge_at := NEW.created_at + interval '30 days';
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS outbox_set_purge ON event_outbox;
+CREATE TRIGGER outbox_set_purge
+    BEFORE INSERT ON event_outbox
+    FOR EACH ROW EXECUTE FUNCTION set_outbox_purge();
+
+CREATE INDEX IF NOT EXISTS outbox_purge_idx         ON event_outbox (purge_at);
 CREATE INDEX IF NOT EXISTS data_requests_email_idx  ON data_requests (email, created_at DESC);

@@ -128,8 +128,14 @@ export async function createLead(
     // 503 from a unique violation for a lead that HAD been stored. The
     // database resolves the race; the application does not try to.
     const inserted = await db.query(
-      `INSERT INTO leads (name, email, company, intent, product_slug, message, locale, dedupe_key, created_at, retention_until)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      // retention_until is omitted deliberately: the schema default owns it.
+      // Computing it here too meant two sources for one date, and they
+      // disagreed by an hour across a DST boundary — `now + 180*24h` in JS
+      // versus `now() + interval '180 days'` in Postgres, which is calendar
+      // arithmetic. Same class as every other "two lists drift" defect in
+      // this task; the fix is to delete one, not to reconcile them.
+      `INSERT INTO leads (name, email, company, intent, product_slug, message, locale, dedupe_key, created_at)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
        ON CONFLICT (dedupe_key) DO NOTHING
        RETURNING id`,
       [
@@ -142,7 +148,6 @@ export async function createLead(
         input.locale,
         key,
         now,
-        new Date(now.getTime() + 180 * 24 * 60 * 60 * 1000),
       ],
     );
     if (!inserted.rowCount || !inserted.rows[0]) {
@@ -207,6 +212,20 @@ export async function createLead(
  */
 export async function purgeExpiredLeads(db: Queryable, now: Date): Promise<number> {
   const result = await db.query("DELETE FROM leads WHERE retention_until <= $1", [now]);
+  return result.rowCount ?? 0;
+}
+
+/**
+ * Deletes outbox rows past their own retention.
+ *
+ * Separate from the lead purge because an outbox row is not owned by a lead
+ * — `aggregate_id` also points at data requests, so there is no single
+ * foreign key to cascade from. Without this, purging a lead left its queue
+ * rows behind indefinitely, which is exactly the "second home with its own
+ * retention story" the payload design was written to avoid.
+ */
+export async function purgeExpiredOutbox(db: Queryable, now: Date): Promise<number> {
+  const result = await db.query("DELETE FROM event_outbox WHERE purge_at <= $1", [now]);
   return result.rowCount ?? 0;
 }
 

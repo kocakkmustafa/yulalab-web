@@ -191,8 +191,31 @@ describe("the database refuses bad leads even when the application does not", ()
     await expect(insert({ intent: "product", product_slug: "lifeos" })).resolves.toBeTruthy();
   });
 
-  it("rejects a row with no retention date in the future", async () => {
-    await expect(insert({ retention_until: new Date("2000-01-01") })).rejects.toThrow();
+  it("cannot be given a wrong retention date at all", async () => {
+    // Stronger than rejecting one: the trigger derives it from created_at,
+    // so a supplied value is overwritten rather than trusted. A row with an
+    // expiry in the past — which would be invisible to the funnel yet still
+    // present — is unrepresentable.
+    await insert({ retention_until: new Date("2000-01-01") });
+    const { rows } = await pool.query(
+      "SELECT (retention_until::date - created_at::date) AS days FROM leads",
+    );
+    expect(rows[0].days).toBe(180);
+  });
+
+  it("derives retention from created_at, not from insert time", async () => {
+    // A DEFAULT cannot see created_at, so a backdated row used to get an
+    // expiry 180 days from the INSERT rather than from when the lead arrived
+    // — which silently extended retention for exactly the oldest records.
+    await pool.query(
+      `INSERT INTO leads (name, email, intent, message, locale, dedupe_key, created_at)
+       VALUES ('K','a@b.co','studio','old','tr',$1, now() - interval '100 days')`,
+      ["c".repeat(64)],
+    );
+    const { rows } = await pool.query(
+      "SELECT (retention_until::date - created_at::date) AS days FROM leads WHERE message = 'old'",
+    );
+    expect(rows[0].days).toBe(180);
   });
 
   it("rejects consent whose notice version is not a date", async () => {

@@ -76,7 +76,7 @@ describe("GET /api/purge", () => {
 
     const res = await get("Bearer cron-secret-for-tests");
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0 });
+    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0, purgedOutbox: 0 });
 
     const { rows } = await pool.query("SELECT count(*)::int AS n FROM attributions");
     expect(rows[0].n).toBe(1);
@@ -113,6 +113,7 @@ describe("both retentions run, not just the first one", () => {
     );
     expect(route).toContain("purgeExpiredLeads");
     expect(route).toContain("purgeExpiredAttributions");
+    expect(route).toContain("purgeExpiredOutbox");
   });
 
   it("reports both counts so a silent no-op is visible", async () => {
@@ -148,5 +149,32 @@ describe("the schedule is actually wired", () => {
     expect([dom, month, dow]).toEqual(["*", "*", "*"]);
     expect(minute).toMatch(/^\d{1,2}$/);
     expect(hour).toMatch(/^\d{1,2}$/);
+  });
+});
+
+describe("outbox rows do not outlive their retention", () => {
+  it("purges an aged outbox row even though no lead owns it", async () => {
+    // aggregate_id points at leads AND at data requests, so there is no
+    // single foreign key to cascade from. Before this, purging a lead left
+    // its queue rows behind indefinitely — the "second home with its own
+    // retention story" the payload design exists to avoid.
+    await pool.query(
+      `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, created_at)
+       VALUES ('lead_receipt', gen_random_uuid(), '{}'::jsonb, now() - interval '40 days')`,
+    );
+    const res = await get("Bearer cron-secret-for-tests");
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ purgedOutbox: 1 });
+    expect((await pool.query("SELECT * FROM event_outbox")).rowCount).toBe(0);
+  });
+
+  it("leaves a fresh outbox row alone", async () => {
+    await pool.query(
+      `INSERT INTO event_outbox (event_type, aggregate_id, payload_json)
+       VALUES ('lead_receipt', gen_random_uuid(), '{}'::jsonb)`,
+    );
+    const res = await get("Bearer cron-secret-for-tests");
+    await expect(res.json()).resolves.toMatchObject({ purgedOutbox: 0 });
+    expect((await pool.query("SELECT * FROM event_outbox")).rowCount).toBe(1);
   });
 });
