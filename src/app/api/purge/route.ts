@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { purgeExpiredAttributions } from "@/server/attribution";
 import { purgeExpiredLeads, purgeExpiredOutbox } from "@/server/leads";
+import { purgeExpiredVerifications } from "@/server/data-requests";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -98,12 +99,20 @@ export async function GET(request: Request): Promise<Response> {
       console.error("outbox purge failed", error instanceof Error ? error.name : "unknown");
     }
 
+    let expiredVerifications: number | null = null;
+    try {
+      expiredVerifications = await purgeExpiredVerifications(pool, now);
+    } catch (error) {
+      failures.push("verifications");
+      console.error("verification expiry failed", error instanceof Error ? error.name : "unknown");
+    }
+
     if (failures.length > 0) {
       // 503 so a monitor sees it, with the counts that DID run — a retention
       // job that half-worked must not report success.
-      return NextResponse.json({ purged, purgedLeads, purgedOutbox, failed: failures }, { status: 503 });
+      return NextResponse.json({ purged, purgedLeads, purgedOutbox, expiredVerifications, failed: failures }, { status: 503 });
     }
-    return NextResponse.json({ purged, purgedLeads, purgedOutbox }, { status: 200 });
+    return NextResponse.json({ purged, purgedLeads, purgedOutbox, expiredVerifications }, { status: 200 });
   } catch (error) {
     console.error("purge failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ purged: null, reason: "purge_failed" }, { status: 503 });

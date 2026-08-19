@@ -17,6 +17,12 @@ beforeAll(async () => {
       "utf8",
     ),
   );
+  await pool.query(
+    readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0003_data_request_verification.sql"),
+      "utf8",
+    ),
+  );
 });
 
 afterAll(async () => {
@@ -76,7 +82,7 @@ describe("GET /api/purge", () => {
 
     const res = await get("Bearer cron-secret-for-tests");
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0, purgedOutbox: 0 });
+    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0, purgedOutbox: 0, expiredVerifications: 0 });
 
     const { rows } = await pool.query("SELECT count(*)::int AS n FROM attributions");
     expect(rows[0].n).toBe(1);
@@ -114,6 +120,7 @@ describe("both retentions run, not just the first one", () => {
     expect(route).toContain("purgeExpiredLeads");
     expect(route).toContain("purgeExpiredAttributions");
     expect(route).toContain("purgeExpiredOutbox");
+    expect(route).toContain("purgeExpiredVerifications");
   });
 
   it("reports both counts so a silent no-op is visible", async () => {
