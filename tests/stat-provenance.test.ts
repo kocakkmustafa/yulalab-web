@@ -89,6 +89,71 @@ describe("stats that restate a registry claim must be linked to it", () => {
   });
 });
 
+describe("a linked stat must actually be the figure its claim asserts", () => {
+  /**
+   * The drift guard opened with `if (stat.claimId) continue;` — it inspected
+   * only the UNLINKED set and skipped exactly the set that linking made
+   * risky. Measured: change "~%30" to "~%42" while keeping the claimId and
+   * the whole suite stayed green, while the page rendered ~%42 in 42px type
+   * with "verified 2026-07-23" beneath it and the claim card below said
+   * ~30%. Before linking, a drifted value was merely unsourced; linking gave
+   * it an authoritative stamp, which is roadmap §1.4 inverted.
+   */
+  // Pairs whose figure is genuinely absent from the claim TEXT, with the
+  // reason. Asserted below to contain nothing that would pass anyway, so it
+  // cannot be used to wave through a real drift.
+  const SPELLED_OUT: Array<[slug: string, claimId: string, why: string]> = [
+    [
+      "braavolabs",
+      "braavolabs-primitive-count",
+      'the claim spells the number out ("Nine primitives" / "Dokuz primitif"), so there is no digit to match',
+    ],
+  ];
+
+  function digits(value: string): string {
+    return value.replace(/[^0-9]/g, "");
+  }
+
+  it("finds every linked figure inside the claim it points at", () => {
+    const mismatches: string[] = [];
+    for (const project of projects) {
+      const record = publicRegistry.find((r) => r.slug === project.slug);
+      for (const stat of project.stats ?? []) {
+        if (!stat.claimId) continue;
+        const claim = record?.claims.find((c) => c.id === stat.claimId);
+        if (!claim) continue; // covered by the resolution test above
+        const excused = SPELLED_OUT.some(([s, c]) => s === project.slug && c === stat.claimId);
+        if (excused) continue;
+        const needle = digits(stat.value);
+        const found =
+          needle.length > 0 &&
+          (claim.statementTr.includes(needle) || claim.statementEn.includes(needle));
+        if (!found) {
+          mismatches.push(
+            `${project.slug}: stat "${stat.value}" claims provenance from ${stat.claimId}, which does not assert that figure`,
+          );
+        }
+      }
+    }
+    expect(mismatches).toEqual([]);
+  });
+
+  it("keeps the exception list honest — every entry must genuinely fail the check", () => {
+    // Prevents the list becoming a place to silence real drift.
+    for (const [slug, claimId, why] of SPELLED_OUT) {
+      const project = projects.find((p) => p.slug === slug)!;
+      const record = publicRegistry.find((r) => r.slug === slug)!;
+      const stat = project.stats.find((s) => s.claimId === claimId)!;
+      const claim = record.claims.find((c) => c.id === claimId)!;
+      const needle = digits(stat.value);
+      const wouldPass =
+        needle.length > 0 &&
+        (claim.statementTr.includes(needle) || claim.statementEn.includes(needle));
+      expect(wouldPass, `${slug}/${claimId} no longer needs an exception: ${why}`).toBe(false);
+    }
+  });
+});
+
 describe("the remaining unsourced numbers are counted, not hidden", () => {
   it("reports them as a known set rather than letting the number drift upward", () => {
     // Not asserted to be zero: several of these are structural product facts

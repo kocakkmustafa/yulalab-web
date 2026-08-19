@@ -71,12 +71,17 @@ test("a product with no claims renders no claims section at all", async ({ page 
  * with it — otherwise a lapsed claim is flagged in the small print and still
  * asserted as current in 42px type directly above.
  */
-test("a stat backed by a claim shows its verification date", async ({ page }) => {
+test("a stat backed by a claim carries provenance, fresh or lapsed", async ({ page }) => {
+  // Either form, deliberately. Asserting only "verified <date>" made this
+  // test fail the day the claim expired — 2026-08-22 for this one — and the
+  // quickest way to green it would have been bumping expiresAt, which is the
+  // single thing this site must never do casually. A lapsed claim is a
+  // correct state, not a broken test.
   await page.goto("/en/projects/burunfarki");
   const top3 = page.getByText("~%61", { exact: true }).first();
   await expect(top3).toBeVisible();
   const card = top3.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
-  await expect(card).toContainText(/verified \d{4}-\d{2}-\d{2}/i);
+  await expect(card).toContainText(/verified \d{4}-\d{2}-\d{2}|needs re-verification/i);
 });
 
 test("a stat with no claim behind it carries no invented provenance", async ({ page }) => {

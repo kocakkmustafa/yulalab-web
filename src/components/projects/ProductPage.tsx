@@ -117,6 +117,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
         {/* Extracted so it can be rendered in a test; see StatCards. */}
         <Reveal>
           <StatCards
+            slug={project.slug}
             stats={project.stats}
             record={registryRecord}
             locale={locale}

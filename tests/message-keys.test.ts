@@ -24,6 +24,13 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["product", "claimsHeading"],
   ["product", "claimsLapsedHeading"],
   ["product", "claimsLapsedNote"],
+  // Rendered only on a stat whose claim has lapsed — true for no product
+  // today, so nothing else touches them. Measured: moving
+  // statNeedsReverification to the wrong namespace left the suite green AND
+  // `next build` exit 0, while the TR page shipped the literal
+  // "product.statNeedsReverification" under its two biggest numbers.
+  ["product", "statVerified"],
+  ["product", "statNeedsReverification"],
   ["product", "back"],
   ["product", "interfaceKicker"],
   ["projectsIndex", "shippedHeading"],

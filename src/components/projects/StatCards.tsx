@@ -1,5 +1,6 @@
 import type { ProductPublicRecord, ProjectStat, Locale } from "@/lib/types";
 import { isExpired } from "@/lib/public-registry";
+import { linkedClaimFor } from "@/lib/stat-provenance";
 
 /**
  * The big numbers at the top of a product page.
@@ -21,12 +22,14 @@ import { isExpired } from "@/lib/public-registry";
  * outright.
  */
 export function StatCards({
+  slug,
   stats,
   record,
   locale,
   now,
   labels,
 }: {
+  slug: string;
   stats: ProjectStat[];
   record: ProductPublicRecord | undefined;
   locale: Locale;
@@ -38,9 +41,12 @@ export function StatCards({
   return (
     <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 pb-24">
       {stats.map((stat) => {
-        const claim = stat.claimId
-          ? record?.claims.find((c) => c.id === stat.claimId)
-          : undefined;
+        // Via the shared helper, not a second inline lookup. The tests
+        // exercised linkedClaimFor while this component re-implemented it —
+        // so the function under test was not the function that shipped, and
+        // a reviewer gutted this resolution (`record?.claims[0]`) with the
+        // whole suite still green.
+        const claim = linkedClaimFor(slug, stat, record ? [record] : []);
         const stale = claim ? isExpired(claim.expiresAt, now) : false;
 
         return (
