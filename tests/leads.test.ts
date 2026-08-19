@@ -43,6 +43,38 @@ beforeEach(async () => {
   await pool.query("TRUNCATE leads, lead_consents, event_outbox, data_requests CASCADE");
 });
 
+
+/**
+ * A pool whose client fails on the first statement matching `failOn`.
+ *
+ * The patch is UNDONE on release. Patching a pooled client and leaving it
+ * patched poisons the connection for every later test that happens to get it
+ * back — which is what made these tests fail with timeouts that looked like a
+ * connection leak in the implementation. The implementation was fine; the
+ * test was mutating shared state.
+ */
+function poolFailingOn(pool: Pool, failOn: string) {
+  return {
+    connect: async () => {
+      const client = await pool.connect();
+      const realQuery = client.query.bind(client);
+      const realRelease = client.release.bind(client);
+      client.query = (async (sql: unknown, params?: unknown[]) => {
+        if (typeof sql === "string" && sql.includes(failOn)) {
+          throw new Error(`${failOn} unavailable`);
+        }
+        return realQuery(sql as string, params as never);
+      }) as typeof client.query;
+      client.release = ((err?: Error | boolean) => {
+        client.query = realQuery;
+        client.release = realRelease;
+        return realRelease(err as never);
+      }) as typeof client.release;
+      return client;
+    },
+  };
+}
+
 describe("a valid lead", () => {
   it("stores the lead, its consent and its outbox rows in ONE transaction", async () => {
     const { receiptId } = await createLead(pool, VALID, { now: new Date("2026-08-19T10:00:00Z") });
@@ -86,16 +118,10 @@ describe("the transaction is real", () => {
   it("writes NOTHING when the outbox insert fails", async () => {
     // A mail provider outage must not lose the lead, and a failed write must
     // not leave a lead with no receipt queued. Both go together or neither.
-    const failing = {
-      query: vi.fn(async (sql: string, params?: unknown[]) => {
-        if (typeof sql === "string" && sql.includes("event_outbox")) {
-          throw new Error("outbox unavailable");
-        }
-        return pool.query(sql, params as never);
-      }),
-    } as unknown as Pool;
 
-    await expect(createLead(failing, VALID, { now: new Date() })).rejects.toThrow();
+    await expect(
+      createLead(poolFailingOn(pool, "event_outbox"), VALID, { now: new Date() }),
+    ).rejects.toThrow();
     // The real pool sees nothing, because the whole thing rolled back.
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
     expect((await pool.query("SELECT * FROM lead_consents")).rowCount).toBe(0);
@@ -195,5 +221,105 @@ describe("retention", () => {
     await createLead(pool, VALID, { now: new Date("2026-01-01T10:00:00Z") });
     await purgeExpiredLeads(pool, new Date("2026-08-19T10:00:00Z"));
     expect((await pool.query("SELECT * FROM lead_consents")).rowCount).toBe(0);
+  });
+});
+
+describe("the transaction is real under concurrency, not just when idle", () => {
+  it("rolls back even while other connections are busy", async () => {
+    // The defect this pins: pool.query() takes a connection per statement,
+    // so BEGIN and the INSERT can land on different ones and the INSERT
+    // autocommits. Measured before the fix — a row inserted between BEGIN
+    // and ROLLBACK survived the rollback. Sequential queries on an idle pool
+    // reuse one connection, which is exactly why the earlier rollback test
+    // passed against broken code.
+    const busy = [
+      pool.query("SELECT pg_sleep(0.25)"),
+      pool.query("SELECT pg_sleep(0.25)"),
+    ];
+
+
+    await expect(
+      createLead(poolFailingOn(pool, "lead_consents"), VALID, { now: new Date() }),
+    ).rejects.toThrow();
+    await Promise.all(busy);
+
+    // No orphaned lead: a person's details must never be stored without the
+    // consent row that gives us a basis to store them.
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it("returns the connection to the pool even when the write fails", () => {
+    // A leaked client exhausts the pool after a handful of failures and the
+    // next legitimate submission hangs. Asserted on the pool's own counters
+    // rather than by timing, so a slow machine cannot make it flake.
+    expect(pool.idleCount).toBeGreaterThan(0);
+    expect(pool.waitingCount).toBe(0);
+  });
+});
+
+describe("the pool survives repeated failures", () => {
+  it("neither leaks nor stays busy after several failed writes", async () => {
+    for (let i = 0; i < 4; i += 1) {
+      await expect(
+        createLead(poolFailingOn(pool, "event_outbox"), { ...VALID, message: `try ${i}` }, { now: new Date() }),
+      ).rejects.toThrow();
+    }
+    expect(pool.waitingCount).toBe(0);
+    // And it still works.
+    const { receiptId } = await createLead(pool, VALID, { now: new Date() });
+    expect(receiptId).toMatch(/^YL-[0-9A-F]{8}$/);
+  });
+});
+
+describe("the whole transaction runs on ONE dedicated connection", () => {
+  it("issues every statement, BEGIN through COMMIT, on the client it acquired", async () => {
+    // This is the test that can actually tell the fix from the bug.
+    //
+    // "Roll back while other connections are busy" CANNOT: createLead's
+    // statements are sequential and awaited, so pg hands back the same idle
+    // connection either way and a pool.query() implementation passes. Proven
+    // by mutating the code back to pool.query — all 19 tests stayed green.
+    //
+    // What distinguishes them is WHERE the statements land. With pool.query
+    // the acquired client never sees them at all.
+    const seen: string[] = [];
+    const recording = {
+      connect: async () => {
+        const client = await pool.connect();
+        const realQuery = client.query.bind(client);
+        const realRelease = client.release.bind(client);
+        client.query = (async (sql: unknown, params?: unknown[]) => {
+          if (typeof sql === "string") seen.push(sql.trim().split(/\s+/).slice(0, 3).join(" "));
+          return realQuery(sql as string, params as never);
+        }) as typeof client.query;
+        client.release = ((err?: Error | boolean) => {
+          client.query = realQuery;
+          client.release = realRelease;
+          return realRelease(err as never);
+        }) as typeof client.release;
+        return client;
+      },
+    };
+
+    await createLead(recording, VALID, { now: new Date() });
+
+    expect(seen[0]).toBe("BEGIN");
+    expect(seen[seen.length - 1]).toBe("COMMIT");
+    // Every write in between arrived on the same acquired client.
+    expect(seen.some((q) => q.startsWith("INSERT INTO leads"))).toBe(true);
+    expect(seen.some((q) => q.startsWith("INSERT INTO lead_consents"))).toBe(true);
+    expect(seen.filter((q) => q.startsWith("INSERT INTO event_outbox"))).toHaveLength(2);
+  });
+
+  it("acquires exactly one connection per call", async () => {
+    let connects = 0;
+    const counting = {
+      connect: async () => {
+        connects += 1;
+        return pool.connect();
+      },
+    };
+    await createLead(counting, { ...VALID, message: "counted" }, { now: new Date() });
+    expect(connects).toBe(1);
   });
 });

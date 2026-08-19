@@ -68,7 +68,10 @@ export function routeFor(intent: LeadIntent): string {
   }
 }
 
-type Queryable = Pick<Pool | PoolClient, "query">;
+type Queryable = Pick<PoolClient, "query">;
+
+/** Just enough of a Pool to be swapped in a test. */
+export type Connectable = { connect: () => Promise<PoolClient> };
 
 /**
  * Writes the lead, its consent and both outbox rows atomically.
@@ -80,11 +83,24 @@ type Queryable = Pick<Pool | PoolClient, "query">;
  * hold the request open.
  */
 export async function createLead(
-  db: Queryable,
+  pool: Connectable,
   input: LeadInput,
   { now }: { now: Date },
 ): Promise<LeadResult> {
   const key = dedupeKey(input, now);
+
+  // A DEDICATED connection, not pool.query().
+  //
+  // pool.query() acquires a connection per statement and releases it, so
+  // BEGIN can land on one connection and the INSERT on another — the INSERT
+  // then autocommits and the transaction is fiction. Measured against a real
+  // Postgres with max:5 and one connection held busy: a row inserted between
+  // BEGIN and ROLLBACK SURVIVED the rollback. Sequential queries on an idle
+  // pool reuse the same connection, which is why a test can pass while
+  // production, under concurrent submissions, splits a lead from its consent.
+  const db: Queryable & { release: () => void } = (await pool.connect()) as PoolClient & {
+    release: () => void;
+  };
 
   await db.query("BEGIN");
   try {
@@ -146,6 +162,8 @@ export async function createLead(
       /* the original error is the one worth surfacing */
     });
     throw error;
+  } finally {
+    db.release();
   }
 }
 

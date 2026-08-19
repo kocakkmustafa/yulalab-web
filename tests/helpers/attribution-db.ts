@@ -35,7 +35,10 @@ export function migrationSql(): string {
 
 /** Fresh schema + migration. Throws if PostgreSQL is unreachable — never skips. */
 export async function createIsolatedSchema(schema: string): Promise<Pool> {
-  const pool = new Pool({ connectionString: testDatabaseUrl(schema), max: 2 });
+  // max 6 so a test can hold connections busy — proving a transaction is
+  // real under concurrency needs spare capacity, and max:2 made those tests
+  // measure pool exhaustion instead.
+  const pool = new Pool({ connectionString: testDatabaseUrl(schema), max: 6 });
   await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
   await pool.query(`CREATE SCHEMA ${schema}`);
   await pool.query(migrationSql());
