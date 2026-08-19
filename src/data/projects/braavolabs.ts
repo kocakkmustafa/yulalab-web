@@ -105,8 +105,16 @@ export const braavolabs: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "9", label: { tr: "Primitif", en: "Primitives" } },
-    { value: "14", label: { tr: "LLM Sağlayıcı", en: "LLM Providers" } },
+    {
+      value: "9",
+      label: { tr: "Primitif", en: "Primitives" },
+      claimId: "braavolabs-primitive-count",
+    },
+    {
+      value: "14",
+      label: { tr: "LLM Sağlayıcı", en: "LLM Providers" },
+      claimId: "braavolabs-provider-count",
+    },
     { value: "~10dk", label: { tr: "Kurulum süresi", en: "Setup time" } },
     { value: "6", label: { tr: "Dil", en: "Languages" } },
   ],

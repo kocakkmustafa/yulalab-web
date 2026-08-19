@@ -93,7 +93,11 @@ export const lifeos: ProjectConfig = {
   stats: [
     { value: "5", label: { tr: "Hayat alanı", en: "Life domains" } },
     { value: "9+", label: { tr: "Bilimsel algoritma", en: "Scientific algorithms" } },
-    { value: "AES-256", label: { tr: "Cihaz üstü şifreleme", en: "On-device encryption" } },
+    {
+      value: "AES-256",
+      label: { tr: "Cihaz üstü şifreleme", en: "On-device encryption" },
+      claimId: "lifeos-on-device-encryption",
+    },
     { value: "0", label: { tr: "Reklam", en: "Ads" } },
   ],
   vision: {

@@ -4,6 +4,7 @@ import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
 import { ClaimsSection } from "@/components/projects/ClaimsSection";
+import { StatCards } from "@/components/projects/StatCards";
 import { publicRegistry } from "@/data/public-registry";
 import { presentClaims } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
@@ -113,20 +114,18 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </header>
 
-        {/* stat cards — values come from the project data, not this file */}
+        {/* Extracted so it can be rendered in a test; see StatCards. */}
         <Reveal>
-          <section className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 pb-24">
-            {project.stats.map((s) => (
-              <div key={s.label[locale]} className="glass glass-accent p-6 lg:p-8">
-                <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-400 mb-3.5">
-                  {s.label[locale]}
-                </div>
-                <div className="font-display font-extralight text-[clamp(26px,3vw,42px)] leading-none tracking-tightest">
-                  {s.value}
-                </div>
-              </div>
-            ))}
-          </section>
+          <StatCards
+            stats={project.stats}
+            record={registryRecord}
+            locale={locale}
+            now={now}
+            labels={{
+              verified: t("statVerified"),
+              needsReverification: t("statNeedsReverification"),
+            }}
+          />
         </Reveal>
 
         {/* 01 — what it does */}

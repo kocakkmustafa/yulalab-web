@@ -84,6 +84,19 @@ export type ProjectStat = {
   label: LocalizedString;
   /** Optional supporting line. */
   description?: LocalizedString;
+  /**
+   * The registry claim that already asserts this figure, if one does.
+   *
+   * When set, the card inherits that claim's source and verification date
+   * and goes visibly stale with it. Without the link the same number
+   * appeared twice — once marked and once as a giant unmarked figure — so a
+   * lapsed claim was flagged in the small print and still asserted as
+   * current in 42px type directly above.
+   *
+   * Explicit rather than matched by value: a rule that guesses is right for
+   * one product and quietly wrong for the next.
+   */
+  claimId?: string;
 };
 
 export type LinkKind =

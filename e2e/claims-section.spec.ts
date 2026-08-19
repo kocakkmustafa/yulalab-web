@@ -64,3 +64,24 @@ test("a product with no claims renders no claims section at all", async ({ page 
   await page.goto("/en/projects/choreia");
   await expect(page.getByRole("heading", { name: "Verified claims" })).toHaveCount(0);
 });
+
+/**
+ * Stat cards are the largest numbers on the page. One that restates a
+ * registry claim must carry that claim's verification date and go stale
+ * with it — otherwise a lapsed claim is flagged in the small print and still
+ * asserted as current in 42px type directly above.
+ */
+test("a stat backed by a claim shows its verification date", async ({ page }) => {
+  await page.goto("/en/projects/burunfarki");
+  const top3 = page.getByText("~%61", { exact: true }).first();
+  await expect(top3).toBeVisible();
+  const card = top3.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
+  await expect(card).toContainText(/verified \d{4}-\d{2}-\d{2}/i);
+});
+
+test("a stat with no claim behind it carries no invented provenance", async ({ page }) => {
+  await page.goto("/en/projects/burunfarki");
+  const races = page.getByText("13.587", { exact: true }).first();
+  const card = races.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
+  await expect(card).not.toContainText(/verified/i);
+});

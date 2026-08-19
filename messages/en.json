@@ -473,6 +473,8 @@
     },
     "claimsHeading": "Verified claims",
     "claimsLapsedHeading": "Needs re-verification",
-    "claimsLapsedNote": "These claims have outrun their verification window. That does not mean they are wrong — only that nobody has re-checked them recently, so they do not count as current."
+    "claimsLapsedNote": "These claims have outrun their verification window. That does not mean they are wrong — only that nobody has re-checked them recently, so they do not count as current.",
+    "statVerified": "verified",
+    "statNeedsReverification": "needs re-verification"
   }
 }

@@ -473,6 +473,8 @@
     },
     "claimsHeading": "Doğrulanmış iddialar",
     "claimsLapsedHeading": "Yeniden doğrulanmalı",
-    "claimsLapsedNote": "Bu iddiaların doğrulama süresi doldu. Yanlış oldukları anlamına gelmez — yalnızca kimsenin yakın zamanda yeniden kontrol etmediği anlamına gelir, bu yüzden güncel sayılmıyorlar."
+    "claimsLapsedNote": "Bu iddiaların doğrulama süresi doldu. Yanlış oldukları anlamına gelmez — yalnızca kimsenin yakın zamanda yeniden kontrol etmediği anlamına gelir, bu yüzden güncel sayılmıyorlar.",
+    "statVerified": "doğrulama",
+    "statNeedsReverification": "yeniden doğrulanmalı"
   }
 }

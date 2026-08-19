@@ -125,8 +125,16 @@ export const burunfarki: ProjectConfig = {
   // TODO(Y-P0-003): move source/verifiedAt/expiresAt into the public
   // registry schema once it exists; this comment is a stopgap until then.
   stats: [
-    { value: "~%30", label: { tr: "Top-1 (canlı takip)", en: "Top-1 (live tracking)" } },
-    { value: "~%61", label: { tr: "Top-3 (canlı takip)", en: "Top-3 (live tracking)" } },
+    {
+      value: "~%30",
+      label: { tr: "Top-1 (canlı takip)", en: "Top-1 (live tracking)" },
+      claimId: "burunfarki-topk-accuracy",
+    },
+    {
+      value: "~%61",
+      label: { tr: "Top-3 (canlı takip)", en: "Top-3 (live tracking)" },
+      claimId: "burunfarki-topk-accuracy",
+    },
     { value: "13.587", label: { tr: "yarış", en: "races" } },
     { value: "130.930", label: { tr: "koşucu", en: "runners" } },
   ],
