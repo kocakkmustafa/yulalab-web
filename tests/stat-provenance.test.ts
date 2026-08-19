@@ -138,21 +138,39 @@ describe("a linked stat must be a figure its claim declares", () => {
     // warrant", but opened the opposite hole: nothing tied figures back to
     // the sentence, so `figures: ["~%99"]` beside a statement saying ~61%
     // would have passed. The pairing is deliberately asymmetric —
-    // containment in the statement is NECESSARY (a figure cannot be
-    // invented) but not SUFFICIENT (being present is what ~69% already was).
+    // containment is NECESSARY (a figure cannot be invented) but not
+    // SUFFICIENT (being present is exactly what ~69% already was).
+    //
+    // Spelled-out numerals are handled by a DECLARED word form, never by
+    // sniffing the prose. The sniff version used `on\b` with no leading
+    // boundary, so "The on-device database…" matched and exempted the LifeOS
+    // encryption claim wholesale — `figures: ["AES-512"]` then passed while
+    // the statement said AES-256.
     const missing: string[] = [];
     for (const record of publicRegistry) {
       for (const claim of record.claims) {
         for (const figure of claim.figures ?? []) {
+          const word = claim.figureWords?.[figure];
+          if (word) {
+            // Justified by the word form actually being there.
+            if (!claim.statementTr.includes(word.tr) || !claim.statementEn.includes(word.en)) {
+              missing.push(
+                `${record.slug}/${claim.id}: declares "${figure}" as spelled out (${word.tr}/${word.en}) but the statements do not contain those words`,
+              );
+            }
+            continue;
+          }
           const digits = figure.replace(/[^0-9]/g, "");
-          if (digits.length === 0) continue; // e.g. a spelled-out or symbolic figure
+          if (digits.length === 0) continue;
+          // Same normalisation as the round-4 fix: ISO dates removed, because
+          // every claim carries one and "19" matches inside "2026-08-19".
+          const searchable = (text: string) =>
+            text.replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/[.,\u00a0]/g, "");
           const boundary = new RegExp(`(?<![0-9])${digits}(?![0-9])`);
-          const inStatement =
-            boundary.test(claim.statementTr.replace(/[.,\u00a0]/g, "")) ||
-            boundary.test(claim.statementEn.replace(/[.,\u00a0]/g, ""));
-          // Spelled-out numerals legitimately have no digit in the text.
-          const spelledOut = /nine|dokuz|ten|on\b|eight|sekiz/i.test(claim.statementEn + claim.statementTr);
-          if (!inStatement && !spelledOut) {
+          if (
+            !boundary.test(searchable(claim.statementTr)) &&
+            !boundary.test(searchable(claim.statementEn))
+          ) {
             missing.push(
               `${record.slug}/${claim.id}: declares figure "${figure}" but neither statement contains it`,
             );
@@ -161,6 +179,17 @@ describe("a linked stat must be a figure its claim declares", () => {
       }
     }
     expect(missing).toEqual([]);
+  });
+
+  it("does not let a date in the statement justify a figure", () => {
+    // Regression guard for the round-4 fix that the containment check
+    // dropped: figures ["14","19"] passed via "2026-08-19".
+    const searchable = (text: string) =>
+      text.replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/[.,\u00a0]/g, "");
+    const br = publicRegistry.find((r) => r.slug === "braavolabs")!;
+    const claim = br.claims.find((c) => c.id === "braavolabs-provider-count")!;
+    expect(claim.statementEn).toMatch(/2026-08-19/);
+    expect(/(?<![0-9])19(?![0-9])/.test(searchable(claim.statementEn))).toBe(false);
   });
 
   it("the matcher itself behaves", () => {

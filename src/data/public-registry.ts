@@ -59,6 +59,7 @@ export const publicRegistry: ProductPublicRecord[] = [
       {
         id: "braavolabs-primitive-count",
         figures: ["9"],
+        figureWords: { "9": { tr: "Dokuz", en: "Nine" } },
         statementTr: "Dokuz primitif: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
         statementEn: "Nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
         evidenceKind: "source-code-verified",

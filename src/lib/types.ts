@@ -301,6 +301,19 @@ export type ProductClaim = {
    * Omit for a qualitative claim that asserts no figure.
    */
   figures?: string[];
+  /**
+   * Word forms for figures the statement spells out instead of writing as a
+   * digit, keyed by the figure.
+   *
+   * Declared, never sniffed. The first attempt detected spelled-out numbers
+   * with a regex over the statement — and `on\b`, lacking a leading
+   * boundary, matched the tail of any word ending in "-on", so "The
+   * on-device database…" exempted the LifeOS encryption claim from the check
+   * entirely. Declaring `figures: ["AES-512"]` beside a statement saying
+   * AES-256 then passed, and the page stamped a cipher strength the claim
+   * contradicts as verified.
+   */
+  figureWords?: Record<string, { tr: string; en: string }>;
   /** Which venture/team owns re-verifying this claim. */
   owner: string;
   verifiedAt: string;

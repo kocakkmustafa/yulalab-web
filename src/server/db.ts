@@ -12,7 +12,20 @@ import { Pool } from "pg";
  * pool is how a small Postgres runs out of connections under mild traffic.
  * Throughput comes from instance count, not from per-instance pool size.
  */
-let pool: Pool | null = null;
+/**
+ * Pools keyed by connection string, not one bare singleton.
+ *
+ * A single cached pool served whichever DATABASE_URL happened to be set when
+ * it was first created, so two test files driving routes against different
+ * schemas raced: 2, 4, 7 and 9 failures across four consecutive full runs
+ * while each file passed alone. Serialising the files would have hidden that
+ * rather than removed it — the same call the schema isolation faced earlier.
+ *
+ * It is also more correct in production: a configuration change should never
+ * be served by a pool built for the previous one. In practice exactly one
+ * entry exists, because the URL never changes there.
+ */
+const pools = new Map<string, Pool>();
 
 function isLocalHost(connectionString: string): boolean {
   try {
@@ -40,8 +53,11 @@ export function getPool(): Pool {
   if (!url) {
     throw new Error("DATABASE_URL is not configured");
   }
-  if (!pool) {
-    pool = new Pool({
+  const existing = pools.get(url);
+  if (existing) return existing;
+
+  {
+    const pool = new Pool({
       connectionString: url,
       max: 1,
       idleTimeoutMillis: 10_000,
@@ -56,16 +72,27 @@ export function getPool(): Pool {
       // and sent those very credentials in the clear.
       ssl: isLocalHost(url) ? undefined : { rejectUnauthorized: true },
     });
+    pools.set(url, pool);
+    return pool;
   }
-  return pool;
 }
 
 /** Test-only: drop the cached pool so a suite can point at another database. */
+/**
+ * Test-only: drop the cached pool for the CURRENT DATABASE_URL so a suite
+ * can point at another database.
+ *
+ * Scoped to one URL on purpose. Closing every pool would tear down a pool
+ * another test file is mid-query on — the cross-file destruction this map
+ * was introduced to prevent, reintroduced by the cleanup.
+ */
 export async function resetPool(): Promise<void> {
-  if (pool) {
-    await pool.end();
-    pool = null;
-  }
+  const url = databaseUrl();
+  if (!url) return;
+  const pool = pools.get(url);
+  if (!pool) return;
+  pools.delete(url);
+  await pool.end();
 }
 
 /** Test-only export of the TLS host decision. */
