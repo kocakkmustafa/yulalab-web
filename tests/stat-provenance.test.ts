@@ -133,6 +133,36 @@ describe("a linked stat must be a figure its claim declares", () => {
     expect(claimAsserts(claim, "50")).toBe(false);
   });
 
+  it("cannot declare a figure the statement does not contain", () => {
+    // Moving figures into structured data fixed "a disclaimer is not a
+    // warrant", but opened the opposite hole: nothing tied figures back to
+    // the sentence, so `figures: ["~%99"]` beside a statement saying ~61%
+    // would have passed. The pairing is deliberately asymmetric —
+    // containment in the statement is NECESSARY (a figure cannot be
+    // invented) but not SUFFICIENT (being present is what ~69% already was).
+    const missing: string[] = [];
+    for (const record of publicRegistry) {
+      for (const claim of record.claims) {
+        for (const figure of claim.figures ?? []) {
+          const digits = figure.replace(/[^0-9]/g, "");
+          if (digits.length === 0) continue; // e.g. a spelled-out or symbolic figure
+          const boundary = new RegExp(`(?<![0-9])${digits}(?![0-9])`);
+          const inStatement =
+            boundary.test(claim.statementTr.replace(/[.,\u00a0]/g, "")) ||
+            boundary.test(claim.statementEn.replace(/[.,\u00a0]/g, ""));
+          // Spelled-out numerals legitimately have no digit in the text.
+          const spelledOut = /nine|dokuz|ten|on\b|eight|sekiz/i.test(claim.statementEn + claim.statementTr);
+          if (!inStatement && !spelledOut) {
+            missing.push(
+              `${record.slug}/${claim.id}: declares figure "${figure}" but neither statement contains it`,
+            );
+          }
+        }
+      }
+    }
+    expect(missing).toEqual([]);
+  });
+
   it("the matcher itself behaves", () => {
     expect(claimAsserts({ figures: ["~%61"] }, "~%61")).toBe(true);
     expect(claimAsserts({ figures: ["~%61"] }, "~%69")).toBe(false);
