@@ -1,4 +1,5 @@
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
+import { randomBytes } from "node:crypto";
 import type { Pool } from "pg";
 import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/attribution-db";
 
@@ -205,19 +206,83 @@ describe("requests without an Origin header", () => {
 });
 
 describe("rate limiting", () => {
-  it("stops a single session from flooding the table", async () => {
+  async function flood(count: number, options: { ip?: string; rotateSession: boolean }) {
     const { resetRateLimit } = await import("@/server/rate-limit");
     resetRateLimit();
-    const session = "f".repeat(32);
+    const { POST } = await import("@/app/api/events/route");
     let limited = 0;
-    for (let i = 0; i < 40; i += 1) {
-      const res = await post(body({ session }));
+    for (let i = 0; i < count; i += 1) {
+      const headers: Record<string, string> = {
+        "content-type": "application/json",
+        origin: ORIGIN,
+      };
+      if (options.ip) headers["x-forwarded-for"] = options.ip;
+      const session = options.rotateSession
+        ? randomBytes(16).toString("hex")
+        : "f".repeat(32);
+      const res = await POST(
+        new Request(`${ORIGIN}/api/events`, {
+          method: "POST",
+          headers,
+          body: JSON.stringify(body({ session })),
+        }),
+      );
+      if (res.status === 429) limited += 1;
+    }
+    return limited;
+  }
+
+  it("stops a flood even when the caller rotates the session token", async () => {
+    // The bucket was originally keyed on `session`, which the caller
+    // chooses: rotating it blocked exactly 0 of 200 requests, so the limiter
+    // delivered none of what its own docstring promised. Keyed on client IP,
+    // one machine cannot vary it.
+    expect(await flood(60, { ip: "203.0.113.9", rotateSession: true })).toBeGreaterThan(0);
+  });
+
+  it("still limits when the session is held constant", async () => {
+    expect(await flood(60, { ip: "203.0.113.9", rotateSession: false })).toBeGreaterThan(0);
+  });
+
+  it("gives a different client its own budget", async () => {
+    await flood(60, { ip: "203.0.113.9", rotateSession: true });
+    const { POST } = await import("@/app/api/events/route");
+    const res = await POST(
+      new Request(`${ORIGIN}/api/events`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: ORIGIN,
+          "x-forwarded-for": "198.51.100.4",
+        },
+        body: JSON.stringify(body()),
+      }),
+    );
+    expect(res.status).toBe(202);
+  });
+
+  it("reads only the first x-forwarded-for hop", async () => {
+    // Later hops are attacker-appendable; trusting them would restore the
+    // rotate-to-bypass hole with a different field.
+    const { resetRateLimit } = await import("@/server/rate-limit");
+    resetRateLimit();
+    const { POST } = await import("@/app/api/events/route");
+    let limited = 0;
+    for (let i = 0; i < 60; i += 1) {
+      const res = await POST(
+        new Request(`${ORIGIN}/api/events`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            origin: ORIGIN,
+            "x-forwarded-for": `203.0.113.9, 10.0.0.${i}`,
+          },
+          body: JSON.stringify(body({ session: randomBytes(16).toString("hex") })),
+        }),
+      );
       if (res.status === 429) limited += 1;
     }
     expect(limited).toBeGreaterThan(0);
-    const { rows } = await pool.query("SELECT count(*)::int AS n FROM attributions");
-    expect(rows[0].n).toBeLessThan(40);
-    resetRateLimit();
   });
 });
 
@@ -263,22 +328,48 @@ describe("value-level PII rejection (not just unknown fields)", () => {
     expect(rows[0].target_category).toBe("store");
   });
 
-  it("refuses an oversized body before buffering it", async () => {
+  it("stops pulling an oversized body instead of buffering it whole", async () => {
+    // The previous version of this test supplied an explicit content-length
+    // — the one case the early return handled — so it passed even with that
+    // check deleted, and said nothing about the general case. This one
+    // counts the bytes the handler actually pulls from the stream, with NO
+    // content-length header, which is exactly the path that used to buffer
+    // 8 MB before refusing.
     const { resetRateLimit } = await import("@/server/rate-limit");
     resetRateLimit();
     const { POST } = await import("@/app/api/events/route");
-    const huge = JSON.stringify(body({ campaign: "a".repeat(50_000) }));
+
+    let pulled = 0;
+    let cancelled = false;
+    const chunk = new TextEncoder().encode("a".repeat(64 * 1024));
+    const stream = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        if (pulled >= 8 * 1024 * 1024) {
+          controller.close();
+          return;
+        }
+        pulled += chunk.byteLength;
+        controller.enqueue(chunk);
+      },
+      cancel() {
+        cancelled = true;
+      },
+    });
+
     const res = await POST(
       new Request(`${ORIGIN}/api/events`, {
         method: "POST",
-        headers: {
-          "content-type": "application/json",
-          origin: ORIGIN,
-          "content-length": String(Buffer.byteLength(huge)),
-        },
-        body: huge,
+        headers: { "content-type": "application/json", origin: ORIGIN },
+        body: stream,
+        // @ts-expect-error -- required by undici for a streaming body
+        duplex: "half",
       }),
     );
+
     expect(res.status).toBe(413);
+    expect(cancelled, "the handler must cancel the stream, not drain it").toBe(true);
+    // One chunk over the 2 KB cap is enough to decide; anything near the
+    // full 8 MB means it drained the body first.
+    expect(pulled).toBeLessThan(1024 * 1024);
   });
 });

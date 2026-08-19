@@ -13,6 +13,46 @@ export const dynamic = "force-dynamic";
 const MAX_BODY_BYTES = 2_048;
 
 /**
+ * Reads the body, stopping the moment it exceeds the cap.
+ *
+ * Two earlier versions were both wrong in the same direction. The first
+ * called `request.text()` and checked afterwards, so a 20 MB body was fully
+ * buffered before being refused — the limit amplified memory use instead of
+ * bounding it. The second checked `content-length` first, which helps only
+ * when that header exists: `Number(null)` is `0` and `Number("abc")` is
+ * `NaN`, so a chunked or header-less POST skipped the check and 8 MB was
+ * still pulled from the stream (measured).
+ *
+ * Reading incrementally and cancelling makes the bound true regardless of
+ * what the client declares. Byte length, not string length: the cap is in
+ * bytes, and 2 000 multi-byte characters are ~4 KB.
+ */
+async function readBounded(request: Request, maxBytes: number): Promise<string | null> {
+  const body = request.body;
+  if (!body) {
+    // A Request with no stream (some synthesized ones). Nothing to bound
+    // incrementally, so measure what we get.
+    const text = await request.text();
+    return Buffer.byteLength(text, "utf8") > maxBytes ? null : text;
+  }
+
+  const reader = body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  for (;;) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > maxBytes) {
+      await reader.cancel();
+      return null;
+    }
+    chunks.push(value);
+  }
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+/**
  * Same-origin only. The site and the links hub are the two first-party
  * surfaces that emit events (roadmap: "main and links use the same event
  * contract"); anything else posting here is either a mistake or an attempt
@@ -43,8 +83,17 @@ function allowedOrigin(request: Request): boolean {
   const origin = request.headers.get("origin");
 
   if (!origin) {
-    // Browser-set and unforgeable by page script. `same-origin` covers the
-    // main site's own fetch fallback; `none` covers a direct navigation.
+    // A cheap filter, NOT an authentication check. The forbidden-header rule
+    // that stops page script from setting Sec-Fetch-Site binds browsers; it
+    // binds nothing else, and `curl -H 'sec-fetch-site: none'` sails
+    // straight through. An earlier comment here claimed this header "cannot
+    // be forged", which was simply wrong.
+    //
+    // What this actually buys: a browser on a hostile page cannot reach the
+    // endpoint, and a naive script has to know to add the header. Scripted
+    // writes are held down by the rate limiter below, keyed on client IP —
+    // that is the real defence, and it is a floor, not a wall. This endpoint
+    // is anonymously writable by design; see src/server/rate-limit.ts.
     const site = request.headers.get("sec-fetch-site");
     return site === "same-origin" || site === "none";
   }
@@ -72,6 +121,23 @@ function vercelOrigin(): string | undefined {
 }
 
 /**
+ * The rate-limit bucket key.
+ *
+ * First hop of x-forwarded-for is the client address on Vercel; later hops
+ * are attacker-controllable, so only the first is read. Falls back to the
+ * session token when no proxy header exists (local development), which is
+ * weak but is the only identifier available there.
+ */
+function clientKey(request: Request, session: string): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const first = forwarded?.split(",")[0]?.trim();
+  if (first) return `ip:${first}`;
+  const realIp = request.headers.get("x-real-ip")?.trim();
+  if (realIp) return `ip:${realIp}`;
+  return `session:${session}`;
+}
+
+/**
  * Records one funnel event.
  *
  * Response contract, and why it is shaped this way:
@@ -95,19 +161,8 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ stored: false, reason: "origin" }, { status: 403 });
   }
 
-  // Checked BEFORE reading, so a 20 MB body is refused rather than fully
-  // buffered and then refused — the earlier order made the size limit a
-  // memory amplifier instead of a defence.
-  const declared = Number(request.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
-    return NextResponse.json({ stored: false, reason: "too_large" }, { status: 413 });
-  }
-
-  const raw = await request.text();
-  // String length counts UTF-16 units; the cap is in bytes. A body of 2 000
-  // multi-byte characters is ~4 KB, so measuring the wrong one let roughly
-  // four times the declared limit through.
-  if (Buffer.byteLength(raw, "utf8") > MAX_BODY_BYTES) {
+  const raw = await readBounded(request, MAX_BODY_BYTES);
+  if (raw === null) {
     return NextResponse.json({ stored: false, reason: "too_large" }, { status: 413 });
   }
 
@@ -125,7 +180,10 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ stored: false, reason: parsed.reason }, { status: 400 });
   }
 
-  if (!allowRequest(parsed.value.session)) {
+  // Keyed on the client IP, NOT on the session token. The session is a
+  // field the caller chooses: a script that minted a fresh 32-hex value per
+  // request was limited to exactly zero, which made the limiter decorative.
+  if (!allowRequest(clientKey(request, parsed.value.session))) {
     return NextResponse.json({ stored: false, reason: "rate_limited" }, { status: 429 });
   }
 

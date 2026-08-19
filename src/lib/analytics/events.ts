@@ -36,7 +36,12 @@ export const EVENT_VERSION = 1;
 export const LOCALES = ["tr", "en"] as const;
 export type EventLocale = (typeof LOCALES)[number];
 
-export const TARGET_CATEGORIES = ["store", "web", "demo", "support", "internal"] as const;
+// Exactly the three values categoryForHost() can return. "demo" and
+// "support" were carried over from the roadmap's prose and were
+// unreachable: the enum accepted them, the CHECK accepted them, and nothing
+// could ever produce them — a vocabulary wider than the code is a vocabulary
+// that invites a hand-written value back in.
+export const TARGET_CATEGORIES = ["store", "web", "internal"] as const;
 export type TargetCategory = (typeof TARGET_CATEGORIES)[number];
 
 /** Events that are meaningless without somewhere they sent the visitor. */
@@ -78,7 +83,7 @@ const PAGE_PATTERN = /^\/[A-Za-z0-9/_.-]{0,127}$/;
 /** Generous for a real store/product URL, far below anything worth storing. */
 const MAX_TARGET_LENGTH = 512;
 
-const ALLOWED_FIELDS = new Set([
+export const ALLOWED_FIELDS = new Set([
   "v",
   "event",
   "locale",
@@ -104,6 +109,28 @@ export type EventPayload = {
   campaign?: string;
   content?: string;
 };
+
+/**
+ * The one rule for a stored outbound URL, shared with the database.
+ *
+ * `db/migrations/0001_attribution.sql` carries this pattern character for
+ * character, and `tests/target-rule-parity.test.ts` fails if the two ever
+ * drift. They already had: the app accepted `@` in a path while the CHECK
+ * rejected it, so a perfectly real repo URL
+ * (`https://youtube.com/@burunfarki`) would have passed validation and then
+ * died as a 503 on a constraint violation. Two copies of a rule is one rule
+ * and one bug waiting.
+ *
+ * `%` and `+` are excluded deliberately. Stripping the query string closed
+ * the obvious leak, but the PATH was still verbatim — so
+ * `/%73%6f%6d%65%6f%6e%65%40...` decoded to an email address and stored,
+ * which is the same defect one encoding layer down. `@` goes too: it is
+ * what makes `/kaan@example.com` a path. Handle-style URLs
+ * (`youtube.com/@name`) are therefore not trackable, which costs nothing —
+ * social links are deliberately outside the funnel — and now fails as a
+ * clean 400 rather than a database error.
+ */
+export const TARGET_URL_PATTERN = "^https://[A-Za-z0-9.-]+(/[A-Za-z0-9/_.~-]*)?$";
 
 /** Origin + pathname, discarding query and fragment. */
 export function normaliseTarget(raw: string): string {
@@ -215,6 +242,10 @@ export function parseEventPayload(input: unknown): ParseResult {
   if (body.page.includes("//")) {
     return fail("page must not contain a protocol-relative prefix");
   }
+  if (body.page.includes("..")) {
+    // Never a real route, and cheap to refuse.
+    return fail("page must not contain a traversal segment");
+  }
 
   if (body.product !== undefined) {
     if (typeof body.product !== "string" || !PRODUCT_SLUGS.has(body.product)) {
@@ -256,6 +287,14 @@ export function parseEventPayload(input: unknown): ParseResult {
     if (!outboundHostAllowlist().has(url.host)) {
       return fail("target host is not published in the public registry");
     }
+    // Checked against the value that will actually be STORED, not against
+    // what arrived — otherwise the rule describes a string the database
+    // never sees.
+    const normalised = normaliseTarget(body.target);
+    if (!new RegExp(TARGET_URL_PATTERN).test(normalised)) {
+      return fail("target path may only contain route characters");
+    }
+    if (normalised.length > MAX_TARGET_LENGTH) return fail("target too long");
     if (
       typeof body.targetCategory !== "string" ||
       !(TARGET_CATEGORIES as readonly string[]).includes(body.targetCategory)

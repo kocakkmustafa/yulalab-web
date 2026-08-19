@@ -80,9 +80,15 @@ CREATE TABLE IF NOT EXISTS attributions (
     -- Origin + path, never a query string. Storing the outbound URL verbatim
     -- would have re-opened the leak page_path closes: `?ref=a@b.co` is just
     -- as much personal data on an outbound link as on an internal one.
+    -- CHARACTER-IDENTICAL to TARGET_URL_PATTERN in src/lib/analytics/events.ts.
+    -- tests/target-rule-parity.test.ts reads both and fails if they drift.
+    -- They already had: the app allowed '@' and the CHECK did not, so a real
+    -- repo URL (youtube.com/@burunfarki) passed validation and then died
+    -- here as a 503. The earlier class also admitted '%' and '+', which made
+    -- the path a free-text channel in hex.
     target_url      text        NULL CHECK (
                         target_url IS NULL
-                        OR (target_url ~ '^https://[A-Za-z0-9.-]+(/[A-Za-z0-9/_.~%+-]*)?$'
+                        OR (target_url ~ '^https://[A-Za-z0-9.-]+(/[A-Za-z0-9/_.~-]*)?$'
                             AND length(target_url) <= 512)),
     target_category text        NULL CHECK (target_category IS NULL OR target_category IN
                         ('store', 'web', 'demo', 'support', 'internal')),

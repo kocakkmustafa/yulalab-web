@@ -13,6 +13,13 @@
  * from "free" to "needs distribution" is worth the twenty lines even though
  * a determined flood still gets through.
  *
+ * The KEY matters more than the limit. The first version keyed on the
+ * session token, which is a field the caller chooses — a script minting a
+ * fresh 32-hex value per request was blocked exactly zero times out of two
+ * hundred, so the limiter delivered none of the above. It is now keyed on
+ * the client IP (see clientKey in the events route), which a single machine
+ * cannot vary.
+ *
  * The durable, shared limiter belongs with the lead endpoint in Y-P1-002
  * (roadmap §7.2 `src/server/rate-limit.ts` — this file, extended). Until
  * then this is a floor, not the plan.

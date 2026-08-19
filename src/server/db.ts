@@ -17,7 +17,9 @@ let pool: Pool | null = null;
 function isLocalHost(connectionString: string): boolean {
   try {
     const { hostname } = new URL(connectionString);
-    return hostname === "localhost" || hostname === "127.0.0.1" || hostname === "::1";
+    // URL.hostname returns an IPv6 literal WITH its brackets, so a bare
+    // "::1" comparison never matched and that branch was dead.
+    return ["localhost", "127.0.0.1", "::1", "[::1]"].includes(hostname);
   } catch {
     // Unparseable connection string: assume remote and keep TLS on. Failing
     // towards encryption is the safe direction.

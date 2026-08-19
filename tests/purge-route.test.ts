@@ -81,9 +81,13 @@ describe("GET /api/purge", () => {
 
   it("refuses to run at all when CRON_SECRET is unset", async () => {
     // A public endpoint that deletes rows must not be reachable just
-    // because someone forgot to configure it.
+    // because someone forgot to configure it — and it answers exactly as it
+    // does for a wrong secret, so a caller cannot probe whether the deploy
+    // is configured.
     delete process.env.CRON_SECRET;
-    expect((await get("Bearer anything")).status).toBe(503);
+    const res = await get("Bearer anything");
+    expect(res.status).toBe(401);
+    await expect(res.json()).resolves.toEqual({ purged: null, reason: "unauthorized" });
   });
 });
 
@@ -98,6 +102,11 @@ describe("the schedule is actually wired", () => {
     ) as { crons?: Array<{ path: string; schedule: string }> };
     const cron = config.crons?.find((c) => c.path === "/api/purge");
     expect(cron, "no cron entry points at /api/purge").toBeTruthy();
-    expect(cron?.schedule).toMatch(/^\S+ \S+ \S+ \S+ \S+$/);
+    // Daily, not merely "five fields": a schedule of "0 4 1 1 *" would pass
+    // a shape check and run once a year while the page promises 30 days.
+    const [minute, hour, dom, month, dow] = (cron?.schedule ?? "").split(" ");
+    expect([dom, month, dow]).toEqual(["*", "*", "*"]);
+    expect(minute).toMatch(/^\d{1,2}$/);
+    expect(hour).toMatch(/^\d{1,2}$/);
   });
 });

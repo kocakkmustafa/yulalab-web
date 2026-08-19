@@ -1,3 +1,4 @@
+import { categoryForHost } from "./events";
 import type { EventName, EventLocale, TargetCategory } from "./events";
 
 /**
@@ -175,25 +176,18 @@ export function track(input: TrackInput): void {
   }
 }
 
+
 /**
- * Derives the target category from the destination rather than trusting a
- * hand-set prop.
- *
- * Measured reason: the LifeOS CTA was tagged `targetCategory="web"` at the
- * call site, and when its destination was corrected to the App Store the
- * literal stayed behind — producing a store click filed as a web click.
- * Hand-maintained labels drift away from the URLs they describe in exactly
- * the way the hardcoded store URLs did before Y-P0-003. An explicit prop
- * still wins when a caller genuinely knows better.
+ * Client-side view of the target category, using the SAME function the
+ * server decides with. It was briefly a second implementation of the same
+ * rule living in TrackedLink — the exact duplication that let the
+ * hand-written `targetCategory="web"` drift away from an App Store
+ * destination in the first place. The value is only a hint: the server
+ * re-derives it and its answer wins.
  */
 export function categoriseTarget(href: string): TargetCategory {
   try {
-    const { host } = new URL(href);
-    if (host === "apps.apple.com" || host === "play.google.com") return "store";
-    if (host === "yulalab.com" || host === "www.yulalab.com" || host === "links.yulalab.com") {
-      return "internal";
-    }
-    return "web";
+    return categoryForHost(new URL(href).host);
   } catch {
     return "web";
   }

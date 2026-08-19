@@ -71,7 +71,7 @@ describe("track()", () => {
     expect(window.sessionStorage.length).toBe(0);
   });
 
-  it("never throws, even when storage and sendBeacon are hostile", () => {
+  it("never throws when sendBeacon is hostile", () => {
     Object.defineProperty(window.navigator, "sendBeacon", {
       configurable: true,
       value: () => {
@@ -80,6 +80,29 @@ describe("track()", () => {
     });
     // A funnel that can throw is a funnel that can break a visitor's click.
     expect(() => track({ event: "product_view", product: "lifeos" })).not.toThrow();
+  });
+
+  it("never throws when storage itself is hostile", () => {
+    // Safari in Lockdown/private mode throws on sessionStorage access rather
+    // than returning null. The previous version of this test claimed to
+    // cover "storage and sendBeacon" but only ever broke the beacon.
+    const throwing = {
+      getItem() {
+        throw new Error("storage blocked");
+      },
+      setItem() {
+        throw new Error("storage blocked");
+      },
+      get length(): number {
+        throw new Error("storage blocked");
+      },
+    };
+    const original = Object.getOwnPropertyDescriptor(window, "sessionStorage");
+    Object.defineProperty(window, "sessionStorage", { configurable: true, value: throwing });
+    expect(() => track({ event: "product_view", product: "lifeos" })).not.toThrow();
+    // Still reports: a visitor with storage disabled is ungrouped, not invisible.
+    expect(beacons).toHaveLength(1);
+    if (original) Object.defineProperty(window, "sessionStorage", original);
   });
 
   it("carries UTM from the landing URL through later events", async () => {

@@ -39,6 +39,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   const others = projects.filter((o) => o.slug !== project.slug);
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
+  // The same click must carry the same event name on both surfaces. The hub
+  // already reports a store destination as `store_outbound`; this page
+  // hardcoded `product_primary_cta`, so "how many people did we send to the
+  // App Store" needed a union query split by surface to answer.
+  const ctaEvent =
+    ctaKind === "appstore" || ctaKind === "playstore" ? "store_outbound" : "product_primary_cta";
 
   return (
     <div
@@ -190,7 +196,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                 {web ? (
                   <TrackedLink
                     href={web}
-                    event="product_primary_cta"
+                    event={ctaEvent}
                     product={project.slug}
                     target="_blank"
                     rel="noreferrer"
