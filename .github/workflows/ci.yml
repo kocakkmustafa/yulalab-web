@@ -9,6 +9,10 @@ jobs:
   build-and-test:
     name: lint, typecheck, test, build, e2e, audit
     runs-on: ubuntu-latest
+    # Without this, a stuck step (measured: "Install Playwright browsers"
+    # hung 3.5h+ on 2026-08-19, run 32210132669 — GitHub's own default is
+    # 360 minutes) burns Actions minutes silently instead of failing loud.
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
