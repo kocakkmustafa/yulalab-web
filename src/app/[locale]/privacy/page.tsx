@@ -152,8 +152,40 @@ function PrivacyIndex() {
             </p>
           </div>
 
+          {/* Contact data. Written from the schema, column by column — every
+              field named here exists in db/migrations/0002, and every column
+              that migration creates is named here. tests/privacy-lead-anchor
+              fails if the two drift. This section had to exist BEFORE
+              LEADS_ENABLED could ever be set: the page described the funnel
+              record in detail and said nothing at all about contact data. */}
           <div className="mt-16 pt-10 border-t border-white/10">
-            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-3">
+            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300 mb-3">
+              {isTR ? "Bize yazdığınızda" : "When you write to us"}
+            </div>
+            <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Şu an sitede bir iletişim formu YOK: /iletişim sayfası doğrudan e-posta adreslerimizi gösterir, yani bize yazdığınızda mesajınız sıradan bir e-posta olarak gelir ve bu sitenin bir veritabanına girmez. Aşağıdaki bölüm, form açıldığında ne olacağını önceden anlatır — açılmadan yazılmıştır, çünkü toplamaya başladıktan sonra anlatmak geç olurdu."
+                : "There is no contact form on the site today: the contact page shows our email addresses directly, so writing to us means an ordinary email that never enters a database here. The section below describes what will happen when a form does open — written before it opens, because describing it afterwards would be too late."}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Form açıldığında saklanacak alanların tam listesi şudur: adınız, e-posta adresiniz, isterseniz şirket adınız, hangi konuda yazdığınız (ürün, birlikte çalışma, ortaklık, basın, veri talebi), ürün konusuysa hangi ürün, mesajınızın kendisi, sayfanın dili, talebin bizdeki durumu, kaydın oluşturulma tarihi, silineceği tarih, rastgele bir kayıt numarası ve aynı mesajı iki kez göndermenizin iki kayıt oluşturmasını engelleyen bir eşleştirme değeri."
+                : "When a form does open, the complete list of what is stored is: your name, your email address, your company if you choose to give one, what you are writing about (product, working together, partnership, press, or a data request), which product if it is about one, your message itself, the page language, the status of the request on our side, the date the record was created, the date it will be deleted, a random record identifier, and a matching value that stops sending the same message twice from creating two records."}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Rızanız ayrı bir kayıt olarak tutulur: hangi tarihli bildirim metnini kabul ettiğiniz, ne zaman kabul ettiğiniz ve hukuki dayanağı. Bunu bir 'onayladı' kutucuğu yerine böyle saklıyoruz çünkü kutucuk 'neye onay verdiniz' sorusunu yanıtlayamaz — sonradan bu sayfayı düzenlemek, gerçekte kabul ettiğiniz şeyi geriye dönük yeniden tarif ederdi."
+                : "Your consent is kept as its own record: which dated version of the notice you accepted, when you accepted it, and the lawful basis. We store it this way rather than as a 'consented' checkbox because a checkbox cannot answer what you consented TO — editing this page later would retroactively re-describe what you actually agreed to."}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Size makbuz göndermek ve mesajınızı doğru kişiye yönlendirmek için ayrı bir gönderim kuyruğu kullanılır. O kuyruk mesajınızın metnini TAŞIMAZ — yalnızca kayıt numarası, hangi konu olduğu ve nereye yönlendirileceği. Kuyruk kayıtları 30 gün sonra silinir; iletişim kayıtlarının kendisi 180 gün sonra silinir ve bu tarih her kaydın üzerinde yazılıdır. Silme günlük çalışan bir işle yapılır."
+                : "A separate delivery queue is used to send you a receipt and route your message to the right person. That queue does NOT carry the text of your message — only the record number, what the enquiry is about, and where it should go. Queue records are deleted after 30 days; the contact records themselves are deleted after 180 days, and that date is written on every record. Deletion runs as a daily job."}
+            </p>
+          </div>
+
+          <div className="mt-16 pt-10 border-t border-white/10">
+            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300 mb-3">
               {isTR ? "Ortak Çerçeve" : "Shared Framework"}
             </div>
             <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
