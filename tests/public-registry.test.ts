@@ -120,7 +120,8 @@ describe("validateRecord — structural fail-closed rules (roadmap §6)", () => 
           statementEn: "",
           evidenceKind: "measured",
           source: "x",
-          scope: "x",
+          scopeTr: "x",
+          scopeEn: "x",
           owner: "x",
           verifiedAt: "2026-08-19",
           expiresAt: "2026-09-18",
@@ -139,7 +140,8 @@ describe("validateRecord — structural fail-closed rules (roadmap §6)", () => 
           statementEn: "A claim",
           evidenceKind: "measured",
           source: "",
-          scope: "",
+          scopeTr: "",
+          scopeEn: "",
           owner: "",
           verifiedAt: "",
           expiresAt: "",
@@ -161,7 +163,8 @@ describe("validateRecord — structural fail-closed rules (roadmap §6)", () => 
           statementEn: "A claim",
           evidenceKind: "measured",
           source: "x",
-          scope: "x",
+          scopeTr: "x",
+          scopeEn: "x",
           owner: "x",
           verifiedAt: "2026-08-19",
           expiresAt: "2026-09-18",
@@ -238,7 +241,8 @@ describe("freshness (runtime-only, per TASARIM-RISKI-STORE-EXPIRY-BUILD.md — n
           statementEn: "y",
           evidenceKind: "measured",
           source: "s",
-          scope: "s",
+          scopeTr: "s",
+          scopeEn: "s",
           owner: "s",
           verifiedAt: "2026-07-01",
           expiresAt: "2026-07-31",
@@ -259,49 +263,26 @@ describe("freshness (runtime-only, per TASARIM-RISKI-STORE-EXPIRY-BUILD.md — n
   // for Y-P1-001 alongside the ProjectConfig/registry sync gap below —
   // this test exists so the gap stays visible in test output instead of
   // living only in a comment nobody re-reads.
-  it("has a runtime layer that actually consumes the freshness functions", async () => {
-    // Closes the Y-P1-001 todo left here by Y-P0-003. isExpired/
-    // getSurfaceFreshness existed and NOTHING called them, which is the
-    // shape of a feature that looks finished and does nothing.
+  it("has a runtime layer that actually distinguishes fresh from lapsed", async () => {
+    // Closes the Y-P1-001 todo left by Y-P0-003: isExpired/
+    // getSurfaceFreshness existed and NOTHING called them.
     //
-    // Behaviour is asserted where it belongs — tests/proof-presentation.test.ts
-    // for the rule, tests/proof-card.test.tsx for the rendered words. This
-    // one guards the wiring itself: the page must go through the
-    // presentation layer, not read record.claims directly.
-    const { presentClaims, countLapsed } = await import("@/lib/proof");
-    const { readFileSync } = await import("node:fs");
-    const path = await import("node:path");
-    const page = readFileSync(
-      path.resolve(import.meta.dirname, "../src/components/projects/ProductPage.tsx"),
-      "utf8",
-    );
-    expect(page, "ProductPage must render claims through the freshness layer").toContain(
-      "presentClaims",
-    );
-    // Specifically the CLAIM counter. Folding stale surfaces into a heading
-    // that says "Verified claims" produced a permanent false warning on real
-    // data (LifeOS, 2026-08-19: one fine claim, one day-old store status).
-    // A source-level check because ProductPage is a server component with
-    // next-intl hooks — it guards the wiring, and behaviour is covered in
-    // tests/proof-presentation.test.ts.
-    expect(page).toContain("countLapsedClaims");
-    expect(
-      /countLapsed\((?!Claims)/.test(page.replace(/countLapsedClaims/g, "")),
-      "the claims heading must not use the combined claim+surface counter",
-    ).toBe(false);
-
-    // And the layer must actually distinguish the two states on real data.
-    const stale = publicRegistry.map((r) => ({
-      slug: r.slug,
-      lapsed: countLapsed(r, new Date("2099-01-01")),
-      claims: presentClaims(r, new Date("2099-01-01")),
-    }));
-    for (const s of stale) {
-      // Far in the future everything with an expiry must read as lapsed —
-      // if this stays 0, the mechanism is inert.
-      if (s.claims.length > 0) {
-        expect(s.lapsed, `${s.slug} should report lapsed claims in 2099`).toBeGreaterThan(0);
-      }
+    // This asserts the LAYER, on real data. What the page does with it is
+    // asserted by rendering it — tests/claims-section.test.tsx — after a
+    // reviewer showed that the source-level grep which used to live here
+    // survived deleting the whole rendered section, spelling the miscount
+    // without the banned token, and filtering lapsed claims out entirely.
+    // It also false-fired on a comment that merely mentioned the function.
+    // A grep for "does the page render X" is a proxy; rendering it is not.
+    const { presentClaims, countLapsedClaims } = await import("@/lib/proof");
+    const future = new Date("2099-01-01T12:00:00+03:00");
+    for (const record of publicRegistry) {
+      const presented = presentClaims(record, future);
+      if (presented.length === 0) continue;
+      expect(
+        countLapsedClaims(record, future),
+        `${record.slug} should report lapsed claims in 2099 — if this is 0 the mechanism is inert`,
+      ).toBe(presented.length);
     }
   });
 });

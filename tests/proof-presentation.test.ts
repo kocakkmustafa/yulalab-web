@@ -32,7 +32,8 @@ function claim(id: string, expiresAt: string) {
     statementEn: `EN ${id}`,
     evidenceKind: "measured" as const,
     source: "https://example.com/proof",
-    scope: "scope",
+    scopeTr: "kapsam",
+    scopeEn: "scope",
     owner: "owner",
     verifiedAt: "2026-07-01",
     expiresAt,
@@ -70,10 +71,12 @@ describe("claim presentation", () => {
   });
 
   it("treats the expiry boundary as still-valid on the day itself", () => {
-    const [presented] = presentClaims(
-      record({ claims: [claim("a", "2026-08-19T23:59:59Z")] }),
-      NOW,
-    );
+    // Date-only, which is the ONLY shape the registry contains. The first
+    // version of this test passed a timestamp ("2026-08-19T23:59:59Z"); with
+    // a real date-only value it returned lapsed, so the property in the test
+    // name was not one the code had. Boundary detail now lives in
+    // tests/expiry-boundary.test.ts.
+    const [presented] = presentClaims(record({ claims: [claim("a", "2026-08-19")] }), NOW);
     expect(presented.kind).toBe("verified");
   });
 

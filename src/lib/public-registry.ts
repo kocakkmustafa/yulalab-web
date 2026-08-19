@@ -7,8 +7,8 @@ import type { ProductPublicRecord } from "./types";
  * build-blocking one. Mixing the two turns "nobody re-verified a claim in
  * 24 hours" into "the build is broken", which breaks CI on days nobody
  * touches this repo even though no code regressed. See
- * workspace/Y-P0-002-CSP-NONCE-SCOPE-KARARI.md and
- * workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md for the same reasoning
+ * ../workspace/Y-P0-002-CSP-NONCE-SCOPE-KARARI.md and
+ * ../workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md for the same reasoning
  * applied to CSP and to this registry respectively.
  */
 export function validateRecord(record: ProductPublicRecord): string[] {
@@ -51,7 +51,10 @@ export function validateRecord(record: ProductPublicRecord): string[] {
     // carry its full provenance, not just its TR/EN text.
     if (hasTr || hasEn) {
       if (!claim.source) errors.push(where(`claim ${claim.id} missing source`));
-      if (!claim.scope) errors.push(where(`claim ${claim.id} missing scope`));
+      // Both languages, like the statement itself. A caveat present only in
+      // Turkish is a caveat an English reader cannot use.
+      if (!claim.scopeTr) errors.push(where(`claim ${claim.id} missing scopeTr`));
+      if (!claim.scopeEn) errors.push(where(`claim ${claim.id} missing scopeEn`));
       if (!claim.owner) errors.push(where(`claim ${claim.id} missing owner`));
       if (!claim.verifiedAt) errors.push(where(`claim ${claim.id} missing verifiedAt`));
       if (!claim.expiresAt) errors.push(where(`claim ${claim.id} missing expiresAt`));
@@ -91,8 +94,39 @@ export function getDefaultVisibleProducts(
  * injected (not read internally) so this stays pure and testable; callers
  * pass `new Date()` at render/script time.
  */
+/**
+ * The zone every `verifiedAt`/`expiresAt` date is authored and judged in.
+ *
+ * Declared rather than implicit: the first version compared timestamps, so
+ * the verdict silently depended on the server's TZ and the same claim could
+ * be lapsed for the build machine and fresh for the reader.
+ */
+export const SITE_TIME_ZONE = "Europe/Istanbul";
+
+/** The calendar date at `instant`, in the site's zone, as YYYY-MM-DD. */
+export function siteDate(instant: Date): string {
+  // en-CA formats as YYYY-MM-DD, which is exactly the registry's shape and
+  // sorts lexicographically.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: SITE_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(instant);
+}
+
+/**
+ * `expiresAt` is "the date after which this must be re-confirmed" (see
+ * types.ts), so it is valid THROUGH its own day.
+ *
+ * Compared as dates, not timestamps. `new Date("2026-08-22")` parses as UTC
+ * midnight — 03:00 in Istanbul — so the old comparison made a claim stale at
+ * 3am ON its expiry date, turning every documented 30-day window into 29
+ * days and 3 hours here and less further west. Comparing YYYY-MM-DD strings
+ * in a declared zone leaves no arithmetic to get wrong.
+ */
 export function isExpired(expiresAt: string, now: Date): boolean {
-  return new Date(expiresAt).getTime() < now.getTime();
+  return siteDate(now) > expiresAt;
 }
 
 export type SurfaceFreshness = {

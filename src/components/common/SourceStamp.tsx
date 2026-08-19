@@ -36,7 +36,7 @@ export function SourceStamp({
   const external = /^https?:\/\//.test(source);
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-400">
+    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-300">
       <span>{KIND[evidenceKind][isTR ? "tr" : "en"]}</span>
       <span aria-hidden>·</span>
       <span>
@@ -80,7 +80,7 @@ export function SourceStamp({
               the footer's contact address, introduced in the same session
               that fixed it. `anywhere` rather than `break-word` because only
               `anywhere` shrinks min-content width. */}
-          <span className="normal-case tracking-normal text-ink-400/80 [overflow-wrap:anywhere]">
+          <span className="normal-case tracking-normal text-ink-300 [overflow-wrap:anywhere]">
             {isTR ? "iç kayıt" : "internal record"}: {source}
           </span>
         </>
@@ -88,7 +88,7 @@ export function SourceStamp({
       {scope ? (
         <>
           <span aria-hidden>·</span>
-          <span className="normal-case tracking-normal text-ink-400/80 [overflow-wrap:anywhere]">
+          <span className="normal-case tracking-normal text-ink-300 [overflow-wrap:anywhere]">
             {scope}
           </span>
         </>

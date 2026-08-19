@@ -261,8 +261,16 @@ export type ProductClaim = {
   evidenceKind: EvidenceKind;
   /** File path, URL, or dated note the claim traces back to. */
   source: string;
-  /** What the claim does and does NOT cover — the exact boundary of the number. */
-  scope: string;
+  /**
+   * What the claim does and does not cover.
+   *
+   * Bilingual like statementTr/statementEn, and for the same reason: it was
+   * a single Turkish string, so an English reader got the caveat — the part
+   * that stops a number being over-read — in a language they may not read.
+   * A caveat nobody can read is not a caveat.
+   */
+  scopeTr: string;
+  scopeEn: string;
   /** Which venture/team owns re-verifying this claim. */
   owner: string;
   verifiedAt: string;

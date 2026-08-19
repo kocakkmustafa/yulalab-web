@@ -47,7 +47,18 @@ describe("the real registry", () => {
   it("stores every public source with a scheme so it can be followed", () => {
     // burunfark.com/model-performance was stored without https://, so the
     // one genuinely public source on the site rendered as dead text.
-    const looksLikeDomain = /^[a-z0-9-]+\.[a-z]{2,}(\/|$)/i;
+    //
+    // The first version of this pattern only matched apex domains, so
+    // www.burunfark.com/x, docs.yulalab.com/x, apps.apple.com/app/id… and
+    // play.google.com/store/… all slipped through — each would render as
+    // "internal record: apps.apple.com/…", a public URL labelled internal,
+    // which is the mirror image of the bug this test exists to prevent.
+    const looksLikeDomain = /^(?!https?:\/\/)([a-z0-9-]+\.)+[a-z]{2,}(\/|\?|$)/i;
+    // Guard the guard: a pattern that matches nothing passes vacuously.
+    expect(looksLikeDomain.test("apps.apple.com/app/id1")).toBe(true);
+    expect(looksLikeDomain.test("www.burunfark.com/x")).toBe(true);
+    expect(looksLikeDomain.test("https://burunfark.com/x")).toBe(false);
+    expect(looksLikeDomain.test("ventures/lifeos/app/lib/x.dart")).toBe(false);
     for (const record of publicRegistry) {
       for (const claim of record.claims) {
         expect(
@@ -62,5 +73,43 @@ describe("the real registry", () => {
         ).toBe(false);
       }
     }
+  });
+});
+
+describe("the caveat reaches both readerships", () => {
+  it("gives every claim a scope in both languages", () => {
+    // scope was a single Turkish string, so an English reader received the
+    // caveat — the part that stops a number being over-read — in a language
+    // they may not read. A caveat nobody can read is not a caveat.
+    for (const record of publicRegistry) {
+      for (const claim of record.claims) {
+        expect(claim.scopeTr.trim(), `${record.slug}/${claim.id} has no Turkish scope`).not.toBe("");
+        expect(claim.scopeEn.trim(), `${record.slug}/${claim.id} has no English scope`).not.toBe("");
+      }
+    }
+  });
+
+  it("does not leave the English scope as a copy of the Turkish one", () => {
+    // A lazy fix would satisfy the test above by duplicating the string.
+    // Allow it only where the text is genuinely language-neutral.
+    const neutral = /^[\d\s\p{P}A-Za-z-]*$/u;
+    for (const record of publicRegistry) {
+      for (const claim of record.claims) {
+        if (claim.scopeTr === claim.scopeEn) {
+          expect(
+            neutral.test(claim.scopeTr),
+            `${record.slug}/${claim.id}: scopeEn duplicates Turkish prose`,
+          ).toBe(true);
+        }
+      }
+    }
+  });
+
+  it("renders the reader's language, not the author's", async () => {
+    const { ProofCard } = await import("@/components/common/ProofCard");
+    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
+    const claim = bf.claims[0];
+    render(<ProofCard presented={{ kind: "verified", claim }} locale="en" />);
+    expect(screen.getByText(new RegExp(claim.scopeEn.slice(0, 25).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeTruthy();
   });
 });

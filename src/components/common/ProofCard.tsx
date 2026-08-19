@@ -34,7 +34,7 @@ export function ProofCard({
         evidenceKind={claim.evidenceKind}
         verifiedAt={claim.verifiedAt}
         source={claim.source}
-        scope={claim.scope}
+        scope={locale === "tr" ? claim.scopeTr : claim.scopeEn}
         locale={locale}
         expiredOn={lapsed ? presented.expiredOn : undefined}
       />
