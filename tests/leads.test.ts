@@ -323,3 +323,52 @@ describe("the whole transaction runs on ONE dedicated connection", () => {
     expect(connects).toBe(1);
   });
 });
+
+describe("concurrent identical submissions", () => {
+  it("gives BOTH callers the same receipt, not one of them a 503", async () => {
+    // The defect: SELECT-then-INSERT is only atomic when something happens
+    // to serialise it. Measured before the fix — with a pool wide enough for
+    // real concurrency, or across two serverless instances, one submitter got
+    // a unique-violation 503 for a lead that HAD been stored.
+    const now = new Date("2026-08-19T10:00:00Z");
+    const [a, b] = await Promise.all([
+      createLead(pool, VALID, { now }),
+      createLead(pool, VALID, { now }),
+    ]);
+    expect(a.receiptId).toBe(b.receiptId);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+  });
+
+  it("survives a wider burst of the same submission", async () => {
+    const now = new Date("2026-08-19T11:00:00Z");
+    const results = await Promise.all(
+      Array.from({ length: 5 }, () => createLead(pool, { ...VALID, message: "burst" }, { now })),
+    );
+    expect(new Set(results.map((r) => r.receiptId)).size).toBe(1);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+  });
+});
+
+describe("atomicity, not merely statement order", () => {
+  it("leaves no outbox row when the lead itself never lands", async () => {
+    // A transaction-free implementation that mints the id in the app and
+    // writes the outbox FIRST passes an order-based test while being wrong.
+    // This asserts the invariant instead: an outbox row may never reference
+    // a lead that does not exist.
+    await expect(
+      createLead(poolFailingOn(pool, "INSERT INTO leads"), VALID, { now: new Date() }),
+    ).rejects.toThrow();
+    expect((await pool.query("SELECT * FROM event_outbox")).rowCount).toBe(0);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it("never leaves an outbox row pointing at a missing lead", async () => {
+    await createLead(pool, VALID, { now: new Date() });
+    const { rows } = await pool.query(
+      `SELECT count(*)::int AS orphans FROM event_outbox o
+       LEFT JOIN leads l ON l.id = o.aggregate_id
+       WHERE l.id IS NULL`,
+    );
+    expect(rows[0].orphans).toBe(0);
+  });
+});

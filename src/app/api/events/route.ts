@@ -3,6 +3,7 @@ import { parseEventPayload } from "@/lib/analytics/events";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { recordAttribution } from "@/server/attribution";
 import { allowRequest } from "@/server/rate-limit";
+import { readBounded } from "@/server/http";
 
 // pg needs the Node.js runtime; the edge runtime has no TCP sockets.
 export const runtime = "nodejs";
@@ -12,45 +13,6 @@ export const dynamic = "force-dynamic";
 /** Well above any legitimate event, well below anything worth parsing. */
 const MAX_BODY_BYTES = 2_048;
 
-/**
- * Reads the body, stopping the moment it exceeds the cap.
- *
- * Two earlier versions were both wrong in the same direction. The first
- * called `request.text()` and checked afterwards, so a 20 MB body was fully
- * buffered before being refused — the limit amplified memory use instead of
- * bounding it. The second checked `content-length` first, which helps only
- * when that header exists: `Number(null)` is `0` and `Number("abc")` is
- * `NaN`, so a chunked or header-less POST skipped the check and 8 MB was
- * still pulled from the stream (measured).
- *
- * Reading incrementally and cancelling makes the bound true regardless of
- * what the client declares. Byte length, not string length: the cap is in
- * bytes, and 2 000 multi-byte characters are ~4 KB.
- */
-async function readBounded(request: Request, maxBytes: number): Promise<string | null> {
-  const body = request.body;
-  if (!body) {
-    // A Request with no stream (some synthesized ones). Nothing to bound
-    // incrementally, so measure what we get.
-    const text = await request.text();
-    return Buffer.byteLength(text, "utf8") > maxBytes ? null : text;
-  }
-
-  const reader = body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  for (;;) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > maxBytes) {
-      await reader.cancel();
-      return null;
-    }
-    chunks.push(value);
-  }
-  return Buffer.concat(chunks).toString("utf8");
-}
 
 /**
  * Same-origin only. The site and the links hub are the two first-party

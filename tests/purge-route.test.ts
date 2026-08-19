@@ -9,6 +9,14 @@ let pool: Pool;
 
 beforeAll(async () => {
   pool = await createIsolatedSchema(SCHEMA);
+  const { readFileSync } = await import("node:fs");
+  const path = await import("node:path");
+  await pool.query(
+    readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0002_leads_consents_outbox.sql"),
+      "utf8",
+    ),
+  );
 });
 
 afterAll(async () => {
@@ -16,7 +24,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  await pool.query("TRUNCATE attributions");
+  await pool.query("TRUNCATE attributions, leads, lead_consents, event_outbox, data_requests CASCADE");
   process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
   process.env.CRON_SECRET = "cron-secret-for-tests";
 });
@@ -68,7 +76,7 @@ describe("GET /api/purge", () => {
 
     const res = await get("Bearer cron-secret-for-tests");
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ purged: 1 });
+    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0 });
 
     const { rows } = await pool.query("SELECT count(*)::int AS n FROM attributions");
     expect(rows[0].n).toBe(1);
@@ -88,6 +96,38 @@ describe("GET /api/purge", () => {
     const res = await get("Bearer anything");
     expect(res.status).toBe(401);
     await expect(res.json()).resolves.toEqual({ purged: null, reason: "unauthorized" });
+  });
+});
+
+describe("both retentions run, not just the first one", () => {
+  it("the purge route calls the lead purge too", async () => {
+    // purgeExpiredLeads shipped with NO production caller — the exact defect
+    // this route was created to atone for, one file away, while its own
+    // docstring claimed the count existed "so a scheduled run can be observed
+    // rather than assumed".
+    const { readFileSync } = await import("node:fs");
+    const path = await import("node:path");
+    const route = readFileSync(
+      path.resolve(import.meta.dirname, "../src/app/api/purge/route.ts"),
+      "utf8",
+    );
+    expect(route).toContain("purgeExpiredLeads");
+    expect(route).toContain("purgeExpiredAttributions");
+  });
+
+  it("reports both counts so a silent no-op is visible", async () => {
+    const { createLead } = await import("@/server/leads");
+    await createLead(pool, {
+      name: "Kaan",
+      email: "a@b.co",
+      intent: "studio",
+      message: "old lead",
+      locale: "tr",
+    }, { now: new Date(Date.now() - 200 * 24 * 60 * 60 * 1000) });
+
+    const res = await get("Bearer cron-secret-for-tests");
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ purgedLeads: 1 });
   });
 });
 

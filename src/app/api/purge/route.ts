@@ -2,6 +2,7 @@ import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { purgeExpiredAttributions } from "@/server/attribution";
+import { purgeExpiredLeads } from "@/server/leads";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -58,8 +59,43 @@ export async function GET(request: Request): Promise<Response> {
   try {
     // Returned rather than logged-and-forgotten: a purge that silently does
     // nothing looks exactly like one that works.
-    const purged = await purgeExpiredAttributions(getPool(), new Date());
-    return NextResponse.json({ purged }, { status: 200 });
+    // Both retentions run here. purgeExpiredLeads shipped with NO caller —
+    // the exact defect this route was created to atone for, one file away,
+    // while its own docstring said the count existed "so a scheduled run can
+    // be observed rather than assumed". There was no scheduled run.
+    //
+    // Independently, because chaining them created a new coupling: if 0002
+    // has not been applied to a database, a missing `leads` table would take
+    // the ATTRIBUTION purge down with it — and that one enforces a retention
+    // promise already published on /privacy. Each runs; a failure in one is
+    // reported loudly rather than silently swallowed, and never cancels the
+    // other.
+    const now = new Date();
+    const pool = getPool();
+    const failures: string[] = [];
+
+    let purged: number | null = null;
+    try {
+      purged = await purgeExpiredAttributions(pool, now);
+    } catch (error) {
+      failures.push("attributions");
+      console.error("attribution purge failed", error instanceof Error ? error.name : "unknown");
+    }
+
+    let purgedLeads: number | null = null;
+    try {
+      purgedLeads = await purgeExpiredLeads(pool, now);
+    } catch (error) {
+      failures.push("leads");
+      console.error("lead purge failed", error instanceof Error ? error.name : "unknown");
+    }
+
+    if (failures.length > 0) {
+      // 503 so a monitor sees it, with the counts that DID run — a retention
+      // job that half-worked must not report success.
+      return NextResponse.json({ purged, purgedLeads, failed: failures }, { status: 503 });
+    }
+    return NextResponse.json({ purged, purgedLeads }, { status: 200 });
   } catch (error) {
     console.error("purge failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ purged: null, reason: "purge_failed" }, { status: 503 });

@@ -1,12 +1,32 @@
 import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { allowRequest } from "@/server/rate-limit";
-import { createLead, type LeadIntent } from "@/server/leads";
+import {
+  createLead,
+  redactWriteFailure,
+  CURRENT_NOTICE_VERSION,
+  type LeadIntent,
+} from "@/server/leads";
+import { readBounded } from "@/server/http";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MAX_BODY_BYTES = 16_384;
+
+/**
+ * The collection surface, closed by default.
+ *
+ * Not publishing the FORM does not unpublish the SINK: middleware excludes
+ * /api, so this route answers on the public internet the moment main
+ * deploys, and the origin check is satisfied by any client that sets the
+ * header. Until the legal review and SendGrid DNS land — and until /privacy
+ * describes lead data, which today it does not — the only correct answer
+ * here is that we are not collecting.
+ */
+function leadsEnabled(): boolean {
+  return process.env.LEADS_ENABLED === "1";
+}
 
 const ALLOWED_ORIGINS = new Set([
   "https://yulalab.com",
@@ -16,7 +36,6 @@ const ALLOWED_ORIGINS = new Set([
 const INTENTS: readonly LeadIntent[] = ["product", "studio", "partnership", "press", "privacy"];
 /** Deliberately permissive on the local part; the schema holds the real rule. */
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const NOTICE_VERSION = /^\d{4}-\d{2}-\d{2}$/;
 
 const ALLOWED_FIELDS = new Set([
   "name",
@@ -26,7 +45,10 @@ const ALLOWED_FIELDS = new Set([
   "productSlug",
   "message",
   "locale",
-  "noticeVersion",
+  // noticeVersion is deliberately NOT here. The server decides it, and
+  // silently ignoring a field the caller believed mattered is the same
+  // failure the events contract rejects: they get a 201 and assume it was
+  // honoured. Sending it is a loud 400.
   "consent",
   "website",
 ]);
@@ -85,14 +107,12 @@ function parse(input: unknown): Parsed {
   const name = str(body.name);
   const email = str(body.email);
   const message = str(body.message);
-  const noticeVersion = str(body.noticeVersion);
 
   if (name.length < 1 || name.length > 120) return { ok: false, reason: "name" };
   if (!EMAIL.test(email) || email.length > 254) return { ok: false, reason: "email" };
   if (message.length < 1 || message.length > 4000) return { ok: false, reason: "message" };
   if (!INTENTS.includes(body.intent as LeadIntent)) return { ok: false, reason: "intent" };
   if (body.locale !== "tr" && body.locale !== "en") return { ok: false, reason: "locale" };
-  if (!NOTICE_VERSION.test(noticeVersion)) return { ok: false, reason: "noticeVersion" };
   if (body.consent !== true) return { ok: false, reason: "consent" };
 
   const company = str(body.company);
@@ -114,23 +134,28 @@ function parse(input: unknown): Parsed {
       productSlug: productSlug || undefined,
       message,
       locale: body.locale,
-      noticeVersion,
+      // Server-decided, never the caller's.
+      noticeVersion: CURRENT_NOTICE_VERSION,
     },
   };
 }
 
 export async function POST(request: Request): Promise<Response> {
+  if (!leadsEnabled()) {
+    // Stated plainly rather than accepting and discarding: a 201 here would
+    // be the "thank you while storing nothing" this route exists to avoid.
+    return NextResponse.json({ error: "not_accepting_submissions" }, { status: 503 });
+  }
   if (!allowedOrigin(request)) {
     return NextResponse.json({ error: "origin" }, { status: 403 });
   }
 
-  const declared = Number(request.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
-    return NextResponse.json({ error: "too_large" }, { status: 413 });
-  }
-
-  const raw = await request.text();
-  if (Buffer.byteLength(raw, "utf8") > MAX_BODY_BYTES) {
+  // readBounded, not request.text(). Number(null) is 0, so a chunked or
+  // header-less POST skipped the content-length check entirely and 8 MB was
+  // pulled for a 16 KB cap (measured). /api/events documents this exact bug
+  // being got wrong twice; the fix was sitting one file away, unused.
+  const raw = await readBounded(request, MAX_BODY_BYTES);
+  if (raw === null) {
     return NextResponse.json({ error: "too_large" }, { status: 413 });
   }
 
@@ -169,10 +194,7 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     // Only the failure SHAPE. Everything in the payload is personal data,
     // and a stack trace or an echoed row is the easiest way to leak it.
-    console.error(
-      "lead write failed",
-      error instanceof Error ? error.constructor.name : "unknown",
-    );
+    console.error("lead write failed", redactWriteFailure(error));
     return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
   }
 }
