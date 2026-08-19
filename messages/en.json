@@ -476,5 +476,42 @@
     "claimsLapsedNote": "These claims have outrun their verification window. That does not mean they are wrong — only that nobody has re-checked them recently, so they do not count as current.",
     "statVerified": "verified",
     "statNeedsReverification": "needs re-verification"
+  },
+  "leadForm": {
+    "name": "Name",
+    "email": "Email",
+    "company": "Company (optional)",
+    "intent": "Subject",
+    "intents": {
+      "product": "About a product",
+      "studio": "Studio work",
+      "partnership": "Partnership",
+      "press": "Press",
+      "privacy": "Privacy / data request"
+    },
+    "product": "Which product?",
+    "productAny": "No preference",
+    "message": "Message",
+    "website": "Website",
+    "consent": "I have read the privacy notice dated {version}, and agree to my message being stored so you can reply.",
+    "consentLink": "Read the privacy notice",
+    "submit": "Send",
+    "sending": "Sending…",
+    "sentEyebrow": "Received",
+    "sentBody": "Your message has been recorded. We do not send automatic email yet, so it is worth keeping the reference below.",
+    "reference": "Reference",
+    "errors": {
+      "closed": "The form is closed right now. The email addresses on this page still reach us.",
+      "rateLimited": "Too many attempts in a short time. Try again in a minute.",
+      "unavailable": "We cannot record your message right now. Please use email instead.",
+      "tooLarge": "That message is too long.",
+      "offline": "We could not reach the server. Check your connection and try again.",
+      "email": "That email address does not look valid.",
+      "consent": "You need to accept the privacy notice to continue.",
+      "message": "The message cannot be empty, and must be under 4000 characters.",
+      "name": "Please give a name.",
+      "generic": "That did not send. Could you check the details and try again?"
+    },
+    "sentBodyMailed": "Your message has been recorded. We have emailed you a copy along with the reference below."
   }
 }

@@ -4,6 +4,10 @@
     {
       "path": "/api/purge",
       "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/mail",
+      "schedule": "0 5 * * *"
     }
   ]
 }

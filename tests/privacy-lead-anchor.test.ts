@@ -115,11 +115,31 @@ describe("the queue and the retentions are described accurately", () => {
     expect(privacy).toMatch(/30 days/);
   });
 
-  it("does not claim a form exists while collection is closed", () => {
-    // The route refuses unless LEADS_ENABLED is exactly "1"; .env.example must
-    // not ship it on, and the page must not describe a form as present.
-    expect(read("src/app/api/leads/route.ts")).toContain('process.env.LEADS_ENABLED === "1"');
+  it("keeps one switch for the sink, the form and this page", () => {
+    // The switch moved out of the route so the contact page could read it
+    // too; it must not grow a second copy on the way. Only the exact string
+    // "1" opens it, and .env.example must not ship it on.
+    expect(read("src/server/lead-surface.ts")).toContain('process.env.LEADS_ENABLED === "1"');
+    expect(read("src/app/api/leads/route.ts")).toContain(
+      'from "@/server/lead-surface"',
+    );
+    expect(read("src/app/[locale]/contact/page.tsx")).toContain(
+      'from "@/server/lead-surface"',
+    );
     expect(read(".env.example")).not.toMatch(/^LEADS_ENABLED=1$/m);
-    expect(privacy).toMatch(/iletişim formu YOK|no contact form on the site today/);
+  });
+
+  it("lets that switch decide whether a form is described, rather than a sentence", () => {
+    // "There is no contact form" is a statement in a privacy notice. It was
+    // true when written and stays written after a form appears, describing
+    // a site other than the one in front of the reader. Both sentences now
+    // exist and `formOpen` picks between them, so the page cannot fall out
+    // of step with the deployment.
+    expect(privacy).toMatch(/iletişim formu YOK/);
+    expect(privacy).toMatch(/no contact form on the site today/);
+    expect(privacy).toMatch(/Sitede bir iletişim formu var/);
+    expect(privacy).toMatch(/There is a contact form on the site/);
+    expect(privacy).toMatch(/formOpen\s*\?/);
+    expect(privacy).toContain("leadsEnabled()");
   });
 });

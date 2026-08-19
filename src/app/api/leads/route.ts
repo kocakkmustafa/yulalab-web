@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { leadsEnabled } from "@/server/lead-surface";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { allowRequest } from "@/server/rate-limit";
 import {
@@ -20,14 +21,12 @@ const MAX_BODY_BYTES = 16_384;
  * Not publishing the FORM does not unpublish the SINK: middleware excludes
  * /api, so this route answers on the public internet the moment main
  * deploys, and the origin check is satisfied by any client that sets the
- * header. Until the legal review and SendGrid DNS land — and until /privacy
- * describes lead data, which today it does not — the only correct answer
- * here is that we are not collecting.
+ * header. /privacy now describes what a lead record holds, column by
+ * column, so that precondition is met; the legal review and the mail DNS are
+ * not, and until they are the only correct answer here is that we are not
+ * collecting. The switch itself lives in `@/server/lead-surface` so the
+ * contact page cannot disagree with this route about it.
  */
-function leadsEnabled(): boolean {
-  return process.env.LEADS_ENABLED === "1";
-}
-
 const ALLOWED_ORIGINS = new Set([
   "https://yulalab.com",
   "https://www.yulalab.com",

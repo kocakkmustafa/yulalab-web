@@ -5,6 +5,11 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { MailCard } from "@/components/contact/MailCard";
 import { company } from "@/data/company";
+import { LeadForm } from "@/components/contact/LeadForm";
+import { leadsEnabled } from "@/server/lead-surface";
+import { mailTransport } from "@/server/mail";
+import { publicRegistry } from "@/data/public-registry";
+import { partitionForIndex } from "@/lib/product-index";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
@@ -30,10 +35,14 @@ export default async function ContactPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <Contact />;
+  // Evaluated here, on the server, and baked in at build — see
+  // `leadsEnabled`. The mail links below stay whether or not the form does:
+  // they work today, they need no consent record, and they are the fallback
+  // the form's own "closed" message points at.
+  return <Contact enabled={leadsEnabled()} mailConfigured={mailTransport().configured} />;
 }
 
-function Contact() {
+function Contact({ enabled, mailConfigured }: { enabled: boolean; mailConfigured: boolean }) {
   const t = useTranslations("contact");
   return (
     <div className="page-enter relative">
@@ -58,6 +67,18 @@ function Contact() {
           {t("intro")}
         </p>
       </section>
+
+      {enabled ? (
+        <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-6 pb-4">
+          <LeadForm
+            mailConfigured={mailConfigured}
+            products={partitionForIndex(publicRegistry).primary.map((record) => ({
+              slug: record.slug,
+              name: record.name,
+            }))}
+          />
+        </section>
+      ) : null}
 
       <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-6 pb-12 grid grid-cols-1 md:grid-cols-2 gap-5">
         <MailCard

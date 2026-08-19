@@ -476,5 +476,42 @@
     "claimsLapsedNote": "Bu iddiaların doğrulama süresi doldu. Yanlış oldukları anlamına gelmez — yalnızca kimsenin yakın zamanda yeniden kontrol etmediği anlamına gelir, bu yüzden güncel sayılmıyorlar.",
     "statVerified": "doğrulama",
     "statNeedsReverification": "yeniden doğrulanmalı"
+  },
+  "leadForm": {
+    "name": "Ad",
+    "email": "E-posta",
+    "company": "Şirket (isteğe bağlı)",
+    "intent": "Konu",
+    "intents": {
+      "product": "Bir ürün hakkında",
+      "studio": "Stüdyo işi",
+      "partnership": "Ortaklık",
+      "press": "Basın",
+      "privacy": "Gizlilik / veri talebi"
+    },
+    "product": "Hangi ürün?",
+    "productAny": "Farketmez",
+    "message": "Mesaj",
+    "website": "Web sitesi",
+    "consent": "{version} tarihli gizlilik bildirimini okudum; mesajımın bana dönüş yapmak için saklanmasını kabul ediyorum.",
+    "consentLink": "Gizlilik bildirimini oku",
+    "submit": "Gönder",
+    "sending": "Gönderiliyor…",
+    "sentEyebrow": "Alındı",
+    "sentBody": "Mesajın kaydedildi. Şu anda otomatik e-posta göndermiyoruz, bu yüzden aşağıdaki referans numarasını saklaman işine yarar.",
+    "reference": "Referans",
+    "errors": {
+      "closed": "Form şu anda kapalı. Bu sayfadaki e-posta adreslerinden bize ulaşabilirsin.",
+      "rateLimited": "Kısa sürede çok fazla deneme oldu. Bir dakika sonra tekrar dene.",
+      "unavailable": "Mesajı şu anda kaydedemiyoruz. Lütfen e-posta ile ulaş.",
+      "tooLarge": "Mesaj fazla uzun.",
+      "offline": "Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
+      "email": "E-posta adresi geçerli görünmüyor.",
+      "consent": "Devam etmek için gizlilik bildirimini onaylaman gerekiyor.",
+      "message": "Mesaj boş olamaz; en fazla 4000 karakter.",
+      "name": "Ad alanı gerekli.",
+      "generic": "Gönderilemedi. Bilgileri kontrol edip tekrar dener misin?"
+    },
+    "sentBodyMailed": "Mesajın kaydedildi. Aşağıdaki referans numarasıyla birlikte e-posta ile de bir kopyasını gönderdik."
   }
 }

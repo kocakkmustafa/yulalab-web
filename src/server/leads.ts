@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { Pool, PoolClient } from "pg";
+import type { PoolClient } from "pg";
 
 /**
  * Lead capture.
@@ -21,7 +21,8 @@ import type { Pool, PoolClient } from "pg";
  * would record consent to a notice that never existed. It is pinned here and
  * tied to the /privacy copy; whatever the client sends is ignored.
  */
-export const CURRENT_NOTICE_VERSION = "2026-08-19";
+export { CURRENT_NOTICE_VERSION } from "@/lib/consent";
+import { CURRENT_NOTICE_VERSION } from "@/lib/consent";
 
 export type LeadIntent = "product" | "studio" | "partnership" | "press" | "privacy";
 

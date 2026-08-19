@@ -1,9 +1,9 @@
-import { timingSafeEqual } from "node:crypto";
 import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { purgeExpiredAttributions } from "@/server/attribution";
 import { purgeExpiredLeads, purgeExpiredOutbox } from "@/server/leads";
 import { purgeExpiredVerifications } from "@/server/data-requests";
+import { authorisedByCronSecret } from "@/server/cron-auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -35,22 +35,10 @@ export const dynamic = "force-dynamic";
  * deletes rows is not something to leave open, even when the deletion is
  * one we want.
  */
-function authorised(request: Request, secret: string): boolean {
-  const presented = request.headers.get("authorization") ?? "";
-  const expected = `Bearer ${secret}`;
-  // Length differences still leak through the early return, which is
-  // unavoidable without padding and irrelevant against a random 32-byte
-  // token; the byte comparison itself is constant-time.
-  const a = Buffer.from(presented);
-  const b = Buffer.from(expected);
-  return a.length === b.length && timingSafeEqual(a, b);
-}
-
 export async function GET(request: Request): Promise<Response> {
   // One answer for "no secret configured" and "wrong secret", so an
   // anonymous caller cannot learn which it is.
-  const secret = process.env.CRON_SECRET;
-  if (!secret || !authorised(request, secret)) {
+  if (!authorisedByCronSecret(request)) {
     return NextResponse.json({ purged: null, reason: "unauthorized" }, { status: 401 });
   }
   if (!isDatabaseConfigured()) {

@@ -6,6 +6,7 @@ import { ArrowUpRight } from "@/components/common/icons";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { projects } from "@/data/projects";
 import { GlassSheen } from "@/components/common/GlassSheen";
+import { leadsEnabled } from "@/server/lead-surface";
 
 export async function generateMetadata({
   params,
@@ -32,7 +33,8 @@ export default async function PrivacyIndexPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <PrivacyIndex />;
+  // The form's own switch, not a sentence written once. See below.
+  return <PrivacyIndex formOpen={leadsEnabled()} />;
 }
 
 // Only products with a dedicated /privacy/<slug> route belong here — a
@@ -42,7 +44,7 @@ export default async function PrivacyIndexPage({
 // joins this index the moment it ships its own policy page and status.
 const projectsWithPrivacyPolicy = projects.filter((p) => p.status !== "coming-soon");
 
-function PrivacyIndex() {
+function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
   const locale = useLocale();
   const isTR = locale === "tr";
 
@@ -162,15 +164,29 @@ function PrivacyIndex() {
             <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300 mb-3">
               {isTR ? "Bize yazdığınızda" : "When you write to us"}
             </div>
+            {/* Which of these two sentences is true is decided by the SAME
+                switch that renders the form, not by remembering to edit a
+                paragraph. "There is no contact form" is a statement in a
+                privacy notice; leaving it written down means it survives the
+                day a form appears, and a notice that describes a site other
+                than the one in front of you is worse than no notice. */}
             <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
-              {isTR
-                ? "Şu an sitede bir iletişim formu YOK: /iletişim sayfası doğrudan e-posta adreslerimizi gösterir, yani bize yazdığınızda mesajınız sıradan bir e-posta olarak gelir ve bu sitenin bir veritabanına girmez. Aşağıdaki bölüm, form açıldığında ne olacağını önceden anlatır — açılmadan yazılmıştır, çünkü toplamaya başladıktan sonra anlatmak geç olurdu."
-                : "There is no contact form on the site today: the contact page shows our email addresses directly, so writing to us means an ordinary email that never enters a database here. The section below describes what will happen when a form does open — written before it opens, because describing it afterwards would be too late."}
+              {formOpen
+                ? isTR
+                  ? "Sitede bir iletişim formu var ve gönderdiğiniz bilgiler aşağıda anlatılan kayda girer. /iletişim sayfasındaki e-posta adresleri de çalışmaya devam eder; onlara yazdığınızda mesajınız sıradan bir e-posta olarak gelir ve bu veritabanına girmez."
+                  : "There is a contact form on the site, and what you send through it enters the record described below. The email addresses on the contact page keep working too; writing to those means an ordinary email that never enters this database."
+                : isTR
+                  ? "Şu an sitede bir iletişim formu YOK: /iletişim sayfası doğrudan e-posta adreslerimizi gösterir, yani bize yazdığınızda mesajınız sıradan bir e-posta olarak gelir ve bu sitenin bir veritabanına girmez. Aşağıdaki bölüm, form açıldığında ne olacağını önceden anlatır — açılmadan yazılmıştır, çünkü toplamaya başladıktan sonra anlatmak geç olurdu."
+                  : "There is no contact form on the site today: the contact page shows our email addresses directly, so writing to us means an ordinary email that never enters a database here. The section below describes what will happen when a form does open — written before it opens, because describing it afterwards would be too late."}
             </p>
             <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
               {isTR
-                ? "Form açıldığında saklanacak alanların tam listesi şudur: adınız, e-posta adresiniz, isterseniz şirket adınız, hangi konuda yazdığınız (ürün, birlikte çalışma, ortaklık, basın, veri talebi), ürün konusuysa hangi ürün, mesajınızın kendisi, sayfanın dili, talebin bizdeki durumu, kaydın oluşturulma tarihi, silineceği tarih, rastgele bir kayıt numarası ve aynı mesajı iki kez göndermenizin iki kayıt oluşturmasını engelleyen bir eşleştirme değeri."
-                : "When a form does open, the complete list of what is stored is: your name, your email address, your company if you choose to give one, what you are writing about (product, working together, partnership, press, or a data request), which product if it is about one, your message itself, the page language, the status of the request on our side, the date the record was created, the date it will be deleted, a random record identifier, and a matching value that stops sending the same message twice from creating two records."}
+                ? formOpen
+                  ? "Saklanan alanların tam listesi şudur: adınız, e-posta adresiniz, isterseniz şirket adınız, hangi konuda yazdığınız (ürün, birlikte çalışma, ortaklık, basın, veri talebi), ürün konusuysa hangi ürün, mesajınızın kendisi, sayfanın dili, talebin bizdeki durumu, kaydın oluşturulma tarihi, silineceği tarih, rastgele bir kayıt numarası ve aynı mesajı iki kez göndermenizin iki kayıt oluşturmasını engelleyen bir eşleştirme değeri."
+                  : "Form açıldığında saklanacak alanların tam listesi şudur: adınız, e-posta adresiniz, isterseniz şirket adınız, hangi konuda yazdığınız (ürün, birlikte çalışma, ortaklık, basın, veri talebi), ürün konusuysa hangi ürün, mesajınızın kendisi, sayfanın dili, talebin bizdeki durumu, kaydın oluşturulma tarihi, silineceği tarih, rastgele bir kayıt numarası ve aynı mesajı iki kez göndermenizin iki kayıt oluşturmasını engelleyen bir eşleştirme değeri."
+                : formOpen
+                  ? "The complete list of what is stored is: your name, your email address, your company if you choose to give one, what you are writing about (product, working together, partnership, press, or a data request), which product if it is about one, your message itself, the page language, the status of the request on our side, the date the record was created, the date it will be deleted, a random record identifier, and a matching value that stops sending the same message twice from creating two records."
+                  : "When a form does open, the complete list of what is stored is: your name, your email address, your company if you choose to give one, what you are writing about (product, working together, partnership, press, or a data request), which product if it is about one, your message itself, the page language, the status of the request on our side, the date the record was created, the date it will be deleted, a random record identifier, and a matching value that stops sending the same message twice from creating two records."}
             </p>
             <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
               {isTR
