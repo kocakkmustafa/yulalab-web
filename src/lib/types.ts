@@ -284,6 +284,23 @@ export type ProductClaim = {
    */
   scopeTr: string;
   scopeEn: string;
+  /**
+   * The figures this claim ASSERTS, exactly as a stat card would print them.
+   *
+   * Structured because recovering them from the statement by regex could not
+   * tell an asserted number from a disclaimed one. The Burun Farkı claim
+   * reads "Top-1 ~30%, Top-3 ~61% — a separate training-time backtest
+   * measured ~69% (a different measurement)", so a prose matcher accepted
+   * ~69% as warranted — the very figure Y-P0-001 had to correct, present in
+   * the sentence precisely to warn readers off it. A disclaimer is not a
+   * warrant.
+   *
+   * Every other part of a claim (source, scope, owner, dates) is already
+   * structured; this was the one thing being guessed at.
+   *
+   * Omit for a qualitative claim that asserts no figure.
+   */
+  figures?: string[];
   /** Which venture/team owns re-verifying this claim. */
   owner: string;
   verifiedAt: string;

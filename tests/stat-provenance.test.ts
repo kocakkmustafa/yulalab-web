@@ -15,53 +15,28 @@ import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenanc
  * freshness mechanism decorative on the surface people actually read.
  */
 /**
- * Claim text with ISO dates removed and thousands separators normalised.
+ * A stat's figure must be one the claim DECLARES, compared as structured
+ * data rather than recovered from the sentence.
  *
- * Dates go because every claim carries one and a two-digit stat would match
- * it: "19" is a word-boundary match inside "2026-08-19". Separators go from
- * BOTH sides because the registry writes "13.587 yarış" / "13,587 races"
- * while the stat writes "13.587" — without this the next legitimate link
- * (races, runners) fails, and the cheapest way out would be adding an
- * exception, routing future work straight into the one mechanism that has
- * already hidden a drift.
- */
-function searchable(text: string): string {
-  return text.replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/[.,\u00a0]/g, "");
-}
-
-function figureOf(value: string): string {
-  return value.replace(/[.,\u00a0]/g, "").replace(/[^0-9]/g, "");
-}
-
-function claimAsserts(claim: { statementTr: string; statementEn: string }, figure: string): boolean {
-  if (figure.length < 2) return false; // single digits match almost any prose
-  const boundary = new RegExp(`(?<![0-9])${figure}(?![0-9])`);
-  return boundary.test(searchable(claim.statementTr)) || boundary.test(searchable(claim.statementEn));
-}
-
-/**
- * Links whose figure is written out in words in the claim, so no digit
- * exists to match.
+ * Prose matching could not tell an asserted figure from a disclaimed one.
+ * The Burun Farkı claim contains "~69%" precisely to warn readers that the
+ * training-time backtest is a different measurement — and the regex read it
+ * as a warrant, so promoting Top-3 to ~%69 passed the honesty guard. That is
+ * the exact figure Y-P0-001 existed to correct. The Braavolabs
+ * combination-space claim likewise accepted "50", a config constant sitting
+ * inside a limitation caveat.
  *
- * The value is PINNED and the word form is asserted to be PRESENT. The
- * earlier version keyed only on (slug, claimId), which excused that link for
- * any value — changing "9" to "12" kept the whole suite green while the page
- * asserted twelve primitives under a stamp from a claim saying nine. Its
- * companion "honesty" test asked whether the entry would pass the digit
- * check anyway, which is false by construction for every possible value: the
- * entry exists BECAUSE there is no digit. The one guard written to keep this
- * list honest could never fire.
+ * Comparing against claim.figures also retires the spelled-out exception
+ * list entirely — the mechanism that carried the previous two blockers.
+ * "Nine primitives" needs no exception when the claim simply declares ["9"].
  */
-const SPELLED_OUT = [
-  {
-    slug: "braavolabs",
-    claimId: "braavolabs-primitive-count",
-    statValue: "9",
-    wordTr: "Dokuz",
-    wordEn: "Nine",
-    why: "the claim spells the count out rather than writing a digit",
-  },
-] as const;
+function normalise(figure: string): string {
+  return figure.trim().toLocaleLowerCase("en");
+}
+
+function claimAsserts(claim: { figures?: string[] }, value: string): boolean {
+  return (claim.figures ?? []).some((f) => normalise(f) === normalise(value));
+}
 
 describe("stats that restate a registry claim must be linked to it", () => {
   it("every claimId on a stat resolves to a real claim", () => {
@@ -85,31 +60,45 @@ describe("stats that restate a registry claim must be linked to it", () => {
   });
 
   it("links exactly the stats that are supposed to be linked", () => {
-    // Keyed on the STAT VALUE too. A sorted list of (slug, claimId) pairs is
-    // identity under permutation, so swapping Braavolabs' two claimIds
-    // between "9" and "14" left it green — each stat then stamped by the
-    // other's claim, invisible today only because both claims happen to carry
-    // the same dates.
+    // Keyed on the LABEL as well as the value. Every other guard reasons
+    // about stat.value, so swapping the label objects on Top-1 and Top-3
+    // shipped "Top-3 ~%30 / Top-1 ~%61" — the headline metric doubled and
+    // stamped as verified — with no test edit anywhere. A bare number means
+    // nothing without its label; the pair is the claim.
     const EXPECTED = [
-      ["braavolabs", "9", "braavolabs-primitive-count"],
-      ["braavolabs", "14", "braavolabs-provider-count"],
-      ["burunfarki", "~%30", "burunfarki-topk-accuracy"],
-      ["burunfarki", "~%61", "burunfarki-topk-accuracy"],
-      ["lifeos", "AES-256", "lifeos-on-device-encryption"],
+      ["braavolabs", "Primitives", "9", "braavolabs-primitive-count"],
+      ["braavolabs", "LLM Providers", "14", "braavolabs-provider-count"],
+      ["burunfarki", "Top-1 (live tracking)", "~%30", "burunfarki-topk-accuracy"],
+      ["burunfarki", "Top-3 (live tracking)", "~%61", "burunfarki-topk-accuracy"],
+      ["lifeos", "On-device encryption", "AES-256", "lifeos-on-device-encryption"],
     ] as const;
 
     const actual = projects
-      .flatMap((p) => (p.stats ?? []).map((s) => [p.slug, s.value, s.claimId] as const))
-      .filter((t): t is readonly [string, string, string] => Boolean(t[2]))
-      .map(([slug, value, id]) => `${slug}|${value}|${id}`)
+      .flatMap((p) => (p.stats ?? []).map((s) => [p.slug, s.label.en, s.value, s.claimId] as const))
+      .filter((t): t is readonly [string, string, string, string] => Boolean(t[3]))
+      .map(([slug, label, value, id]) => `${slug}|${label}|${value}|${id}`)
       .sort();
 
-    expect(actual).toEqual(EXPECTED.map(([s, v, i]) => `${s}|${v}|${i}`).sort());
+    expect(actual).toEqual(EXPECTED.map(([s, l, v, i]) => `${s}|${l}|${v}|${i}`).sort());
   });
 });
 
-describe("a linked stat must actually be the figure its claim asserts", () => {
-  it("finds every linked figure inside the claim it points at", () => {
+describe("a linked stat must be a figure its claim declares", () => {
+  it("declares figures on every claim a stat links to", () => {
+    for (const project of projects) {
+      const record = publicRegistry.find((r) => r.slug === project.slug);
+      for (const stat of project.stats ?? []) {
+        if (!stat.claimId) continue;
+        const claim = record?.claims.find((c) => c.id === stat.claimId);
+        expect(
+          claim?.figures?.length,
+          `${stat.claimId} is linked from a stat but declares no figures`,
+        ).toBeGreaterThan(0);
+      }
+    }
+  });
+
+  it("finds every linked figure among the ones its claim declares", () => {
     const mismatches: string[] = [];
     for (const project of projects) {
       const record = publicRegistry.find((r) => r.slug === project.slug);
@@ -117,13 +106,9 @@ describe("a linked stat must actually be the figure its claim asserts", () => {
         if (!stat.claimId) continue;
         const claim = record?.claims.find((c) => c.id === stat.claimId);
         if (!claim) continue;
-        const excused = SPELLED_OUT.some(
-          (e) => e.slug === project.slug && e.claimId === stat.claimId && e.statValue === stat.value,
-        );
-        if (excused) continue;
-        if (!claimAsserts(claim, figureOf(stat.value))) {
+        if (!claimAsserts(claim, stat.value)) {
           mismatches.push(
-            `${project.slug}: stat "${stat.value}" claims provenance from ${stat.claimId}, which does not assert that figure`,
+            `${project.slug}: stat "${stat.value}" claims provenance from ${stat.claimId}, which declares [${(claim.figures ?? []).join(", ")}]`,
           );
         }
       }
@@ -131,37 +116,28 @@ describe("a linked stat must actually be the figure its claim asserts", () => {
     expect(mismatches).toEqual([]);
   });
 
-  it("justifies each exception by what the claim DOES say, not by what it lacks", () => {
-    for (const e of SPELLED_OUT) {
-      const project = projects.find((p) => p.slug === e.slug)!;
-      const record = publicRegistry.find((r) => r.slug === e.slug)!;
-      const claim = record.claims.find((c) => c.id === e.claimId)!;
+  it("refuses a figure the claim only mentions in order to disclaim it", () => {
+    // The failure mode a prose matcher had no case for: PRESENT but not
+    // asserted. ~69% appears in the Burun Farkı statement solely to mark the
+    // training-time backtest as a different measurement.
+    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
+    const claim = bf.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+    expect(claim.statementEn).toContain("69");
+    expect(claimAsserts(claim, "~%69")).toBe(false);
+    expect(claimAsserts(claim, "~%61")).toBe(true);
+  });
 
-      // The value is pinned: change the stat and the exception stops applying.
-      const stat = project.stats.find((s) => s.claimId === e.claimId);
-      expect(stat?.value, `${e.slug}/${e.claimId}: exception records "${e.statValue}" but the stat is "${stat?.value}"`).toBe(e.statValue);
-
-      // And the claim must POSITIVELY contain the word form. Asserting only
-      // "no digit is present" is true for every value, which is why the
-      // previous version of this test could never fail.
-      expect(claim.statementTr, `${e.claimId}: Turkish claim must contain "${e.wordTr}"`).toContain(e.wordTr);
-      expect(claim.statementEn, `${e.claimId}: English claim must contain "${e.wordEn}"`).toContain(e.wordEn);
-    }
+  it("refuses a config constant buried in a limitation caveat", () => {
+    const br = publicRegistry.find((r) => r.slug === "braavolabs")!;
+    const claim = br.claims.find((c) => c.id === "braavolabs-combination-space")!;
+    expect(claimAsserts(claim, "50")).toBe(false);
   });
 
   it("the matcher itself behaves", () => {
-    // Guarding the guard: a matcher that always returns true would make the
-    // mismatch test vacuous, and one that always returns false would block
-    // every future link.
-    const c = (tr: string, en: string) => ({ statementTr: tr, statementEn: en });
-    expect(claimAsserts(c("Top-3 ~%61", "Top-3 ~61%"), "61")).toBe(true);
-    expect(claimAsserts(c("13.587 yarış", "13,587 races"), "13587")).toBe(true);
-    expect(claimAsserts(c("AES-256 ile şifreli", "encrypted with AES-256"), "256")).toBe(true);
-    expect(claimAsserts(c("Top-3 ~%61", "Top-3 ~61%"), "42")).toBe(false);
-    // A date in the claim must not satisfy a stat.
-    expect(claimAsserts(c("2026-08-19 itibarıyla", "as of 2026-08-19"), "19")).toBe(false);
-    // Single digits are never enough.
-    expect(claimAsserts(c("Dokuz primitif", "Nine primitives"), "9")).toBe(false);
+    expect(claimAsserts({ figures: ["~%61"] }, "~%61")).toBe(true);
+    expect(claimAsserts({ figures: ["~%61"] }, "~%69")).toBe(false);
+    expect(claimAsserts({ figures: [] }, "9")).toBe(false);
+    expect(claimAsserts({}, "9")).toBe(false);
   });
 });
 

@@ -58,6 +58,7 @@ export const publicRegistry: ProductPublicRecord[] = [
     claims: [
       {
         id: "braavolabs-primitive-count",
+        figures: ["9"],
         statementTr: "Dokuz primitif: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
         statementEn: "Nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
         evidenceKind: "source-code-verified",
@@ -70,6 +71,7 @@ export const publicRegistry: ProductPublicRecord[] = [
       },
       {
         id: "braavolabs-provider-count",
+        figures: ["14"],
         statementTr: "14 LLM sağlayıcısı (BYOK) — 2026-08-19 itibarıyla.",
         statementEn: "14 LLM providers (BYOK) — as of 2026-08-19.",
         evidenceKind: "source-code-verified",
@@ -131,6 +133,7 @@ export const publicRegistry: ProductPublicRecord[] = [
     claims: [
       {
         id: "burunfarki-topk-accuracy",
+        figures: ["~%30", "~%61"],
         statementTr: "Top-1 ~%30, Top-3 ~%61 — canlı yayın-sonrası dürüst takip. Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü (farklı ölçüm).",
         statementEn: "Top-1 ~30%, Top-3 ~61% — honest live post-deployment tracking. A separate training-time backtest measured ~69% Top-3 (a different measurement).",
         evidenceKind: "measured",
@@ -185,6 +188,7 @@ export const publicRegistry: ProductPublicRecord[] = [
     claims: [
       {
         id: "lifeos-on-device-encryption",
+        figures: ["AES-256"],
         statementTr: "Cihaz-üstü veritabanı AES-256 ile şifrelenir (256-bit anahtar, güvenli rastgele üretim); bulut senkronu varsayılan kapalı, isteğe bağlı.",
         statementEn: "The on-device database is encrypted with AES-256 (256-bit key, cryptographically secure generation); cloud sync defaults to off and is opt-in.",
         evidenceKind: "source-code-verified",
