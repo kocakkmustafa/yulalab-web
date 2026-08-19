@@ -149,7 +149,7 @@ describe("validateRecord — structural fail-closed rules (roadmap §6)", () => 
       ],
     });
     const errors = validateRecord(r);
-    for (const field of ["source", "scope", "owner", "verifiedAt", "expiresAt"]) {
+    for (const field of ["source", "scopeTr", "scopeEn", "owner", "verifiedAt", "expiresAt"]) {
       expect(errors.some((e) => e.includes(field)), `expected an error mentioning "${field}"`).toBe(true);
     }
   });

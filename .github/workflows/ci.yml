@@ -82,6 +82,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # After the build, because it reads the build output. The unit guard
+      # reads the source (what Next parses) and runs earlier; this observes
+      # the artifact, which is the only place the effect is directly visible.
+      - name: Product pages revalidate (claim freshness is not frozen at build)
+        run: pnpm verify:render-mode
+
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium
 

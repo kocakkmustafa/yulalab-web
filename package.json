@@ -17,7 +17,8 @@
     "verify:links": "tsx scripts/verify-public-links.ts",
     "verify:claims:local": "node scripts/verify-claims-local.mjs",
     "deploy": "vercel --prod",
-    "deploy:preview": "vercel"
+    "deploy:preview": "vercel",
+    "verify:render-mode": "node scripts/verify-render-mode.mjs"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",

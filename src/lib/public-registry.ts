@@ -11,6 +11,23 @@ import type { ProductPublicRecord } from "./types";
  * ../workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md for the same reasoning
  * applied to CSP and to this registry respectively.
  */
+
+/**
+ * Canonical, zero-padded ISO date. Enforced because freshness compares
+ * these lexicographically: `"2026-9-18"` — one missing zero — sorts below
+ * every real date, so the claim never expires until the year rolls over.
+ * Measured: with only a presence check, that typo left the whole suite
+ * green and validateRegistry empty while an expired claim stayed published
+ * under "Verified claims" for three extra months.
+ */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+function dateErrors(label: string, value: string | undefined): string[] {
+  if (!value) return [`${label} missing`];
+  if (!ISO_DATE.test(value)) return [`${label} must be a canonical YYYY-MM-DD date`];
+  return [];
+}
+
 export function validateRecord(record: ProductPublicRecord): string[] {
   const errors: string[] = [];
   const where = (msg: string) => `${record.slug}: ${msg}`;
@@ -25,8 +42,12 @@ export function validateRecord(record: ProductPublicRecord): string[] {
     // claiming to be live or beta right now must prove it.
     if (surface.status === "live" || surface.status === "beta") {
       if (!surface.source) errors.push(where(`${surface.kind} surface missing source`));
-      if (!surface.verifiedAt) errors.push(where(`${surface.kind} surface missing verifiedAt`));
-      if (!surface.expiresAt) errors.push(where(`${surface.kind} surface missing expiresAt`));
+      for (const e of dateErrors(`${surface.kind} surface verifiedAt`, surface.verifiedAt)) {
+        errors.push(where(e));
+      }
+      for (const e of dateErrors(`${surface.kind} surface expiresAt`, surface.expiresAt)) {
+        errors.push(where(e));
+      }
     }
   }
 
@@ -56,8 +77,12 @@ export function validateRecord(record: ProductPublicRecord): string[] {
       if (!claim.scopeTr) errors.push(where(`claim ${claim.id} missing scopeTr`));
       if (!claim.scopeEn) errors.push(where(`claim ${claim.id} missing scopeEn`));
       if (!claim.owner) errors.push(where(`claim ${claim.id} missing owner`));
-      if (!claim.verifiedAt) errors.push(where(`claim ${claim.id} missing verifiedAt`));
-      if (!claim.expiresAt) errors.push(where(`claim ${claim.id} missing expiresAt`));
+      for (const e of dateErrors(`claim ${claim.id} verifiedAt`, claim.verifiedAt)) {
+        errors.push(where(e));
+      }
+      for (const e of dateErrors(`claim ${claim.id} expiresAt`, claim.expiresAt)) {
+        errors.push(where(e));
+      }
     }
   }
 

@@ -91,11 +91,16 @@ describe("the caveat reaches both readerships", () => {
 
   it("does not leave the English scope as a copy of the Turkish one", () => {
     // A lazy fix would satisfy the test above by duplicating the string.
-    // Allow it only where the text is genuinely language-neutral.
-    const neutral = /^[\d\s\p{P}A-Za-z-]*$/u;
+    // Allow it only where the text contains NO letters at all — the earlier
+    // version allowed any ASCII-letter prose, so a diacritic-free Turkish
+    // sentence ("Model performans metrikleri; test verisi 2026.") passed and
+    // the check only bit when the text happened to contain ç/ğ/ı/ö/ş/ü.
+    const neutral = /^[^\p{L}]*$/u;
     for (const record of publicRegistry) {
       for (const claim of record.claims) {
         if (claim.scopeTr === claim.scopeEn) {
+          // Sanity-check the heuristic itself, so it cannot pass vacuously.
+          expect(neutral.test("Model performans metrikleri; test verisi 2026.")).toBe(false);
           expect(
             neutral.test(claim.scopeTr),
             `${record.slug}/${claim.id}: scopeEn duplicates Turkish prose`,
@@ -111,5 +116,39 @@ describe("the caveat reaches both readerships", () => {
     const claim = bf.claims[0];
     render(<ProofCard presented={{ kind: "verified", claim }} locale="en" />);
     expect(screen.getByText(new RegExp(claim.scopeEn.slice(0, 25).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeTruthy();
+  });
+});
+
+describe("a URL behind a login is not a source", () => {
+  it("rejects known-authenticated hosts in the registry", () => {
+    // https:// makes a source render as a followable link, but scheme is not
+    // access: an App Store Connect or Play Console deep link, a private
+    // GitHub blob or a Supabase dashboard URL all pass the shape check and
+    // would sit under the word "source" with a login wall behind them —
+    // provenance theatre with a padlock. The proper fix is an explicit
+    // sourceKind field (Y-P1-001's registry-driven IA slice); this is the
+    // deny-list that holds the line until then.
+    const AUTHENTICATED = [
+      "appstoreconnect.apple.com",
+      "play.google.com/console",
+      "vercel.com/dashboard",
+      "supabase.com/dashboard",
+      "console.cloud.google.com",
+      "github.com/kocakkmustafa",
+    ];
+    for (const record of publicRegistry) {
+      const sources = [
+        ...record.claims.map((c) => c.source),
+        ...record.surfaces.map((sf) => sf.source),
+      ];
+      for (const source of sources) {
+        for (const host of AUTHENTICATED) {
+          expect(
+            source.includes(host),
+            `${record.slug}: "${source}" points behind a login but is presented as a source`,
+          ).toBe(false);
+        }
+      }
+    }
   });
 });

@@ -19,9 +19,17 @@ import path from "node:path";
 const root = path.resolve(import.meta.dirname, "..");
 const ROUTE = "src/app/[locale]/projects/[slug]/page.tsx";
 
+function stripComments(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, "").replace(/^\s*\/\/.*$/gm, "");
+}
+
 describe("product detail route rendering mode", () => {
   it("declares a bounded revalidate window", () => {
-    const source = readFileSync(path.resolve(root, ROUTE), "utf8");
+    // Comments stripped FIRST. Without this, `// export const revalidate =
+    // 900;` satisfied the guard — and commenting a line out to "check
+    // something quickly" is exactly how this regresses, far more likely than
+    // deleting it. Deleting was caught; commenting was not.
+    const source = stripComments(readFileSync(path.resolve(root, ROUTE), "utf8"));
     const match = source.match(/export const revalidate\s*=\s*(\d+)/);
     const forceDynamic = /export const dynamic\s*=\s*["']force-dynamic["']/.test(source);
 
@@ -63,5 +71,25 @@ describe("product detail route rendering mode", () => {
         `${route} was prerendered with no revalidation — freshness runs once, at build`,
       ).not.toBe(false);
     }
+  });
+});
+
+describe("the guard itself", () => {
+  it("is not satisfied by a commented-out declaration", () => {
+    // Guarding the guard: this is the mutation that previously passed.
+    const commented = stripComments(`
+      // export const revalidate = 900;
+      /* export const revalidate = 900; */
+      export default function Page() { return null; }
+    `);
+    expect(/export const revalidate\s*=\s*(\d+)/.test(commented)).toBe(false);
+  });
+
+  it("still sees a real declaration next to comments", () => {
+    const real = stripComments(`
+      // revalidate is set below because the route is prerendered
+      export const revalidate = 900;
+    `);
+    expect(real.match(/export const revalidate\s*=\s*(\d+)/)?.[1]).toBe("900");
   });
 });
