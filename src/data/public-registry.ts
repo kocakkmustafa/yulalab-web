@@ -131,7 +131,7 @@ export const publicRegistry: ProductPublicRecord[] = [
         statementTr: "Top-1 ~%30, Top-3 ~%61 — canlı yayın-sonrası dürüst takip. Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü (farklı ölçüm).",
         statementEn: "Top-1 ~30%, Top-3 ~61% — honest live post-deployment tracking. A separate training-time backtest measured ~69% Top-3 (a different measurement).",
         evidenceKind: "measured",
-        source: "burunfark.com/model-performance",
+        source: "https://burunfark.com/model-performance",
         scope: "Canlı yayın-sonrası walk-forward doğruluk; eğitim-zamanı backtest ile karıştırılmamalı.",
         owner: "burun-farki",
         verifiedAt: "2026-07-23",

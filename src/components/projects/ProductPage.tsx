@@ -3,6 +3,9 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
+import { ProofCard } from "@/components/common/ProofCard";
+import { publicRegistry } from "@/data/public-registry";
+import { presentClaims, countLapsedClaims } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -38,6 +41,17 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   const accent = ACCENT[project.slug] ?? "#7FD8DC";
 
   const others = projects.filter((o) => o.slug !== project.slug);
+
+  // Freshness is evaluated at render time, not at build time: a claim nobody
+  // re-checked for 24 hours is not a code regression, and failing the build
+  // on days nobody deploys would train everyone to ignore the gate. See
+  // workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md.
+  const registryRecord = publicRegistry.find((r) => r.slug === project.slug);
+  const now = new Date();
+  const presented = registryRecord ? presentClaims(registryRecord, now) : [];
+  // Claims only — a stale store status is not a stale claim, and this
+  // heading is about claims. See countLapsedClaims.
+  const lapsedCount = registryRecord ? countLapsedClaims(registryRecord, now) : 0;
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
   // The same click must carry the same event name on both surfaces. The hub
@@ -161,6 +175,34 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             </div>
           </Reveal>
         </section>
+
+        {/* Verified claims — the runtime half of Y-P0-003's freshness split.
+            Registry-driven, so this section and the JSON the links hub
+            fetches cannot disagree; a claim whose verification window has
+            closed still renders, marked, rather than vanishing. */}
+        {presented.length > 0 ? (
+          <section className="pb-24" aria-labelledby="verified-claims">
+            <Reveal className="flex items-baseline justify-between flex-wrap gap-4 mb-10">
+              <p className={KICKER} id="verified-claims">
+                {locale === "tr" ? "Doğrulanmış iddialar" : "Verified claims"}
+              </p>
+              {lapsedCount > 0 ? (
+                <p className="text-[13px] text-amber-300/90 max-w-[52ch]">
+                  {locale === "tr"
+                    ? `${lapsedCount} iddianın doğrulama süresi doldu — aşağıda işaretli. Yeniden doğrulanana kadar güncel sayılmazlar.`
+                    : `${lapsedCount} of these have outrun their verification window — marked below. They do not count as current until re-checked.`}
+                </p>
+              ) : null}
+            </Reveal>
+            <Reveal>
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
+                {presented.map((item) => (
+                  <ProofCard key={item.claim.id} presented={item} locale={locale} />
+                ))}
+              </ul>
+            </Reveal>
+          </section>
+        ) : null}
 
         {/* 03 — interface: an honest empty state, never a fabricated shot */}
         <section className="pb-24">
