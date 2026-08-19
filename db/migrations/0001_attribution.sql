@@ -28,10 +28,14 @@ CREATE TABLE IF NOT EXISTS attributions (
     -- of the same funnel step apart instead of averaging them together.
     event_version   integer     NOT NULL CHECK (event_version >= 1),
 
-    -- Reserved for Y-P1-002: an attribution row may later be tied to a lead
-    -- that the same session submitted. Nullable and unconstrained for now —
-    -- the foreign key arrives with the leads table in 0002.
-    lead_id         uuid        NULL,
+    -- NOTE: there is deliberately no lead_id column yet. It was here,
+    -- always NULL, "reserved for Y-P1-002" — but an unused column still has
+    -- to be disclosed, and the day it is populated BOTH "no name, email,
+    -- message or in-product data can enter this record" and "does not link
+    -- two different days together" on /privacy stop being true. A column
+    -- that arms a future privacy claim while doing nothing today is worse
+    -- than no column: it adds it in 0002, alongside the leads table and the
+    -- privacy rewrite it forces.
 
     -- HMAC-SHA256 hex of the client session token under a daily-rotating
     -- key. 64 hex chars, enforced here so a raw token can never be written
@@ -73,9 +77,12 @@ CREATE TABLE IF NOT EXISTS attributions (
     -- column. The regex is now the same rule the validator applies: slug
     -- characters, slashes and dots. A sentence, an email address, a forged
     -- log line and a NUL byte are all unrepresentable here.
+    -- CHARACTER-IDENTICAL to PAGE_PATTERN in src/lib/analytics/events.ts,
+    -- same as target_url below; tests/target-rule-parity.test.ts checks both.
     page_path       text        NOT NULL CHECK (
                         page_path ~ '^/[A-Za-z0-9/_.-]{0,127}$'
-                        AND page_path NOT LIKE '%//%'),
+                        AND page_path NOT LIKE '%//%'
+                        AND page_path NOT LIKE '%..%'),
 
     -- Origin + path, never a query string. Storing the outbound URL verbatim
     -- would have re-opened the leak page_path closes: `?ref=a@b.co` is just

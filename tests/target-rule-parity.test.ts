@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { TARGET_URL_PATTERN, parseEventPayload } from "@/lib/analytics/events";
+import { PAGE_PATTERN, TARGET_URL_PATTERN, parseEventPayload } from "@/lib/analytics/events";
 
 /**
  * The application rule and the database rule for a stored outbound URL must
@@ -9,15 +9,30 @@ import { TARGET_URL_PATTERN, parseEventPayload } from "@/lib/analytics/events";
  * rejected it, so a legitimate URL passed validation and then failed as a
  * 503 at write time — the worst place to discover a disagreement.
  */
-describe("target URL rule parity", () => {
-  it("uses the exact same pattern in the validator and the CHECK constraint", () => {
-    const migration = readFileSync(
-      path.resolve(import.meta.dirname, "../db/migrations/0001_attribution.sql"),
-      "utf8",
-    );
-    const match = migration.match(/target_url ~ '([^']+)'/);
-    expect(match, "no target_url regex found in the migration").toBeTruthy();
-    expect(match?.[1]).toBe(TARGET_URL_PATTERN);
+const migration = readFileSync(
+  path.resolve(import.meta.dirname, "../db/migrations/0001_attribution.sql"),
+  "utf8",
+);
+
+describe("validator and CHECK constraint share one rule per column", () => {
+  // Looped over both columns on purpose. The first version of this guard
+  // covered target_url only, so when the `..` rule was added to the page
+  // validator the CHECK silently fell behind — the same drift, in the
+  // sibling column, under a test written to prevent exactly it.
+  it.each([
+    ["page_path", PAGE_PATTERN],
+    ["target_url", TARGET_URL_PATTERN],
+  ])("%s", (column, pattern) => {
+    const match = migration.match(new RegExp(`${column} ~ '([^']+)'`));
+    expect(match, `no ${column} regex found in the migration`).toBeTruthy();
+    expect(match?.[1]).toBe(pattern);
+  });
+
+  it("also carries the page rules the regex cannot express", () => {
+    // `//` and `..` are checked separately in the validator, so the CHECK
+    // needs them separately too.
+    expect(migration).toContain("page_path NOT LIKE '%//%'");
+    expect(migration).toContain("page_path NOT LIKE '%..%'");
   });
 });
 

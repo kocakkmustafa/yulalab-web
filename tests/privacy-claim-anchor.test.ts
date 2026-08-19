@@ -13,40 +13,107 @@ import { ALLOWED_FIELDS } from "@/lib/analytics/events";
  * twelve things. That is the same failure as the storage test it was
  * written to replace: a test whose title is the only thing being asserted.
  *
- * The list below is now the disclosure contract itself. Every field the
- * event contract can carry must appear here with the wording that discloses
- * it, in BOTH languages — so adding a field to ALLOWED_FIELDS without
- * disclosing it fails at the first assertion, and deleting a sentence from
- * the page fails at the second.
+ * The list below is now the disclosure contract itself. It is keyed on the
+ * DATABASE COLUMNS, not on the fields the browser sends — the page's claim
+ * is about what is stored, and the two sets are not the same. Walking
+ * ALLOWED_FIELDS alone missed `id` and `purge_at`, which are stored and
+ * were undisclosed, and would not have gone red when a column was added.
  */
 const DISCLOSURE: Record<string, { tr: string; en: string }> = {
-  v: { tr: "olay sürüm numarası", en: "event version number" },
-  event: { tr: "olay adı", en: "event name" },
+  id: { tr: "rastgele bir kayıt numarası", en: "a random record identifier" },
+  event_version: { tr: "olay sürüm numarası", en: "event version number" },
+  session_id_hash: { tr: "takma ad", en: "pseudonym" },
+  event_name: { tr: "olay adı", en: "event name" },
+  product_slug: { tr: "ürün kısa adı", en: "product short name" },
   locale: { tr: "dil", en: "language" },
-  page: { tr: "sayfa yolu", en: "page path" },
-  product: { tr: "ürün kısa adı", en: "product short name" },
-  target: { tr: "dış bağlantının adresi", en: "address of the outbound link" },
-  targetCategory: { tr: "o bağlantının sınıfı", en: "that link's class" },
   source: { tr: "utm_source", en: "utm_source" },
   medium: { tr: "utm_source/medium/campaign/content", en: "utm_source/medium/campaign/content" },
   campaign: { tr: "utm_source/medium/campaign/content", en: "utm_source/medium/campaign/content" },
   content: { tr: "utm_source/medium/campaign/content", en: "utm_source/medium/campaign/content" },
-  // Not in the field list: disclosed separately as the rotating pseudonym.
-  session: { tr: "takma ad", en: "pseudonym" },
+  page_path: { tr: "sayfa yolu", en: "page path" },
+  target_url: { tr: "dış bağlantının adresi", en: "address of the outbound link" },
+  target_category: { tr: "o bağlantının sınıfı", en: "that link's class" },
+  created_at: { tr: "zaman damgası", en: "timestamp" },
+  purge_at: { tr: "silineceği tarih", en: "the date it will be deleted" },
 };
+
+/** Column names declared by the migration, in order. */
+function migrationColumns(sql: string): string[] {
+  const body = sql.slice(sql.indexOf("CREATE TABLE"), sql.indexOf("CREATE INDEX"));
+  const columns: string[] = [];
+  for (const line of body.split("\n")) {
+    const stripped = line.replace(/--.*$/, "").trim();
+    const match = stripped.match(
+      /^([a-z_]+)\s+(uuid|text|integer|timestamptz)\b/,
+    );
+    if (match) columns.push(match[1]);
+  }
+  return columns;
+}
 
 const root = path.resolve(import.meta.dirname, "..");
 const read = (relative: string) => readFileSync(path.resolve(root, relative), "utf8");
-const privacy = read("src/app/[locale]/privacy/page.tsx");
+
+/**
+ * Comments stripped before matching. Without this, moving a disclosure
+ * sentence into a comment — deleting it from the rendered page — still
+ * satisfied every assertion here.
+ */
+function renderedText(source: string): string {
+  return source.replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
+}
+
+const privacy = renderedText(read("src/app/[locale]/privacy/page.tsx"));
 const claimsOff = /currently OFF|şu an KAPALI/.test(privacy);
 
-describe("every storable field is disclosed", () => {
-  it("has a disclosure entry for every field the contract accepts", () => {
-    for (const field of ALLOWED_FIELDS) {
+const columns = migrationColumns(read("db/migrations/0001_attribution.sql"));
+
+describe("every stored column is disclosed", () => {
+  it("finds the migration's columns at all", () => {
+    // Guards the parser: a silently-empty column list would make the next
+    // assertion vacuously true, which is the failure mode this whole file
+    // has now had twice.
+    expect(columns.length).toBeGreaterThan(10);
+    expect(columns).toContain("session_id_hash");
+    expect(columns).toContain("purge_at");
+  });
+
+  it("has a disclosure entry for every column the table stores", () => {
+    for (const column of columns) {
       expect(
-        DISCLOSURE[field],
-        `${field} can be stored but has no disclosure wording — add it to the privacy page and to this table`,
+        DISCLOSURE[column],
+        `${column} is stored but has no disclosure wording — add it to the privacy page and to this table`,
       ).toBeTruthy();
+    }
+  });
+
+  it("names no column that the table does not actually have", () => {
+    for (const column of Object.keys(DISCLOSURE)) {
+      expect(columns, `${column} is disclosed but no longer exists`).toContain(column);
+    }
+  });
+
+  it("keeps every wire field mapped to a disclosed column", () => {
+    // The browser's field names differ from the column names; this is the
+    // bridge, so a new wire field cannot slip through either.
+    const wireToColumn: Record<string, string> = {
+      v: "event_version",
+      event: "event_name",
+      locale: "locale",
+      page: "page_path",
+      product: "product_slug",
+      target: "target_url",
+      targetCategory: "target_category",
+      session: "session_id_hash",
+      source: "source",
+      medium: "medium",
+      campaign: "campaign",
+      content: "content",
+    };
+    for (const field of ALLOWED_FIELDS) {
+      const column = wireToColumn[field];
+      expect(column, `wire field ${field} maps to no column`).toBeTruthy();
+      expect(DISCLOSURE[column], `${field} -> ${column} is not disclosed`).toBeTruthy();
     }
   });
 

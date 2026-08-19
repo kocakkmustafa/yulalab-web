@@ -2,6 +2,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
+import { categoriseTarget } from "@/lib/analytics/client";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -43,8 +44,13 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
   // App Store" needed a union query split by surface to answer.
-  const ctaEvent =
-    ctaKind === "appstore" || ctaKind === "playstore" ? "store_outbound" : "product_primary_cta";
+  //
+  // Derived from the destination HOST rather than from the declared link
+  // kind — the server derives target_category the same way, and deciding
+  // the two from different sources is how a `web` link pointing at a store
+  // would produce `product_primary_cta` alongside `target_category:store`.
+  // That is the hand-maintained-label drift this task already fixed once.
+  const ctaEvent = web && categoriseTarget(web) === "store" ? "store_outbound" : "product_primary_cta";
 
   return (
     <div

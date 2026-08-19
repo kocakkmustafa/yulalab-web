@@ -143,7 +143,16 @@ export type ProjectConfig = {
   /** Order on the projects index. Lower numbers come first. */
   order: number;
 
-  /** Ordered array of outbound links shown as pills on the showcase. */
+  /**
+   * Ordered array of the product's outbound URLs.
+   *
+   * Not rendered anywhere today: only ProductPage's CTA lookup, JsonLd and
+   * the analytics host allowlist read it. That makes the allowlist wider
+   * than anything the funnel can actually emit (it pulls in x.com,
+   * instagram.com, youtube.com, www.linkedin.com from here) — harmless,
+   * since a host being permitted is not a host being sent, but worth
+   * knowing before anyone treats the allowlist as a description of traffic.
+   */
   links: ProjectLink[];
   /**
    * Which of `links` the product page's primary CTA points at.

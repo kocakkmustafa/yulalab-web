@@ -20,6 +20,22 @@
  * the client IP (see clientKey in the events route), which a single machine
  * cannot vary.
  *
+ * Three limits it does NOT have, named so nobody reads more into it:
+ *
+ * 1. Eviction resets it. When the map is full, sweep() drops the 5 000
+ *    oldest buckets — including real clients sitting at their cap, who are
+ *    then allowed again. Reaching that state needs 10 000 distinct source
+ *    IPs, i.e. an attacker who could already outrun the limiter by volume.
+ * 2. It cannot help against a slow client. The body is read before this
+ *    runs, so a caller trickling bytes under the cap and never closing
+ *    holds an instance until the platform timeout, unthrottled.
+ * 3. Its key is only trustworthy on Vercel. Vercel overwrites
+ *    x-forwarded-for and does not forward external values
+ *    (https://vercel.com/docs/headers/request-headers), so the first hop is
+ *    the real client. Behind any other proxy, self-hosted, or with
+ *    Enterprise trusted-proxy on, a caller can set that header freely and
+ *    this stops limiting anything — silently, with no error.
+ *
  * The durable, shared limiter belongs with the lead endpoint in Y-P1-002
  * (roadmap §7.2 `src/server/rate-limit.ts` — this file, extended). Until
  * then this is a floor, not the plan.

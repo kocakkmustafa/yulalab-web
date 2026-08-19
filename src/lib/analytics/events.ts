@@ -78,7 +78,7 @@ const SESSION_PATTERN = /^[a-f0-9]{32}$/;
  * address, a forged log line or a NUL byte cannot be a page path. 128 chars
  * is comfortably longer than the deepest route the site generates.
  */
-const PAGE_PATTERN = /^\/[A-Za-z0-9/_.-]{0,127}$/;
+export const PAGE_PATTERN = "^/[A-Za-z0-9/_.-]{0,127}$";
 
 /** Generous for a real store/product URL, far below anything worth storing. */
 const MAX_TARGET_LENGTH = 512;
@@ -236,7 +236,7 @@ export function parseEventPayload(input: unknown): ParseResult {
   // `page: "/kaan@example.com is my email"` was accepted and stored while
   // the privacy page claimed such data "technically cannot" enter. A route
   // path is a machine token; anything that is not one is not a page.
-  if (typeof body.page !== "string" || !PAGE_PATTERN.test(body.page)) {
+  if (typeof body.page !== "string" || !new RegExp(PAGE_PATTERN).test(body.page)) {
     return fail("page must be a site-relative route path");
   }
   if (body.page.includes("//")) {
