@@ -173,3 +173,91 @@ export const STATUS_KEY: Record<ProjectStatus, string> = {
   "coming-soon": "comingSoon",
   "in-development": "inDevelopment",
 };
+
+// ---------------------------------------------------------------------------
+// Public registry (Y-P0-003) — single source of truth for sanitised public
+// claim/status/source data, consumed by both the main site and
+// links.yulalab.com. See ventures/yulalab-com/site/src/data/public-registry.ts
+// for the data and src/lib/public-registry.ts for the read/validation layer.
+//
+// ProductLifecycle is deliberately its own enum, not ProjectStatus: the
+// registry's public-facing vocabulary ("research" for anything without a
+// shippable UI yet) differs from the internal ProjectConfig.status used to
+// drive the existing showcase pages. See public-registry.ts for the mapping.
+// ---------------------------------------------------------------------------
+
+export type ProductLifecycle = "live" | "beta" | "research" | "archived";
+
+/**
+ * How a claim/surface was established. Not a quality ranking — a scope
+ * label so a reader (or a future stricter gate) can tell "I read the
+ * runtime code and counted" apart from "the product's own copy says so and
+ * nobody independently re-checked it this session."
+ */
+export type EvidenceKind =
+  | "measured"
+  | "source-code-verified"
+  | "self-reported"
+  | "third-party-verified";
+
+export type SurfaceKind = "web" | "ios" | "android" | "desktop" | "cli";
+
+export type SurfaceStatus = "live" | "beta" | "coming-soon" | "unavailable";
+
+export type ProductSurface = {
+  kind: SurfaceKind;
+  url: string;
+  status: SurfaceStatus;
+  /** Where this status was confirmed — a URL, a dated code comment, an ASC/Play console screenshot, etc. */
+  source: string;
+  /** ISO date the status was last confirmed true. */
+  verifiedAt: string;
+  /** ISO date after which this status must be re-confirmed before being trusted. */
+  expiresAt: string;
+};
+
+export type ProductPrimaryCta = {
+  labelTr: string;
+  labelEn: string;
+  url: string;
+};
+
+export type ProductScreenshot = {
+  path: string;
+  /** Commit SHA, build tag, or harvest method (e.g. "headless browser capture") the image came from. */
+  sourceBuild: string;
+  /** ISO date the screenshot was captured. */
+  capturedAt: string;
+  altTr: string;
+  altEn: string;
+};
+
+export type ProductClaim = {
+  /** Stable id — used as a React key and to diff claims across registry exports. */
+  id: string;
+  statementTr: string;
+  statementEn: string;
+  evidenceKind: EvidenceKind;
+  /** File path, URL, or dated note the claim traces back to. */
+  source: string;
+  /** What the claim does and does NOT cover — the exact boundary of the number. */
+  scope: string;
+  /** Which venture/team owns re-verifying this claim. */
+  owner: string;
+  verifiedAt: string;
+  expiresAt: string;
+};
+
+export type ProductPublicRecord = {
+  slug: string;
+  name: string;
+  lifecycle: ProductLifecycle;
+  surfaces: ProductSurface[];
+  primaryCta: ProductPrimaryCta;
+  screenshots: ProductScreenshot[];
+  claims: ProductClaim[];
+  privacyUrl: string;
+  supportUrl: string;
+  /** ISO date this record itself was last edited (not per-field verifiedAt). */
+  updatedAt: string;
+};

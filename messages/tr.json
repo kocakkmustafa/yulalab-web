@@ -181,7 +181,7 @@
         "label": "Şeffaf maliyet",
         "title": "Her ajan, her token, her saniye.",
         "claim": "Her pipeline run; hangi ajanın hangi tool'u çağırdığını, kaç token harcadığını ve hangi karara mâl olduğunu açık panelde gösterir. Sürpriz fatura yok.",
-        "proof": "→ 9 primitif · 12 LLM sağlayıcı · BYOK",
+        "proof": "→ 9 primitif · 14 LLM sağlayıcı · BYOK",
         "detailLabel": "Audit trail",
         "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; para harcayan aksiyonlar insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
       },

@@ -181,7 +181,7 @@
         "label": "Transparent cost",
         "title": "Every agent, every token, every second.",
         "claim": "Every pipeline run shows which agent called which tool, how many tokens it spent and which decision it cost — in plain view. No surprise bills.",
-        "proof": "→ 9 primitives · 12 LLM providers · BYOK",
+        "proof": "→ 9 primitives · 14 LLM providers · BYOK",
         "detailLabel": "Audit trail",
         "detailBody": "Every tool call and decision is a separate row; money-touching actions require an explicit human approval. Export the full run as CSV / JSON and reconcile against your own accounting."
       },
@@ -319,7 +319,7 @@
     },
     "braavolabs": {
       "eyebrow": "Product 03 · Beta · closed invite",
-      "lede": "An agent and automation command centre. Nine primitives, twelve LLM providers, and a cost ledger that shows what every run spent. What a model costs isn't estimated — it's read.",
+      "lede": "An agent and automation command centre. Nine primitives, fourteen LLM providers, and a cost ledger that shows what every run spent. What a model costs isn't estimated — it's read.",
       "s1Kicker": "01 — What it does",
       "a1Title": "Nine primitives, an open-ended combination space.",
       "a1Body": "Automations are built from a handful of building blocks rather than canned templates. Each block does one job; the flow emerges from how they're arranged, and stays readable.",

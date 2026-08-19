@@ -5,6 +5,7 @@ import { describe, expect, it, beforeAll } from "vitest";
 // Vitest's default NODE_ENV is "test", not "development", so importing
 // it here exercises the same (stricter) CSP that ships to production.
 let headerList: { key: string; value: string }[];
+let registryJsonHeaders: { key: string; value: string }[];
 
 beforeAll(async () => {
   const config = (await import("../next.config.mjs")).default;
@@ -13,6 +14,8 @@ beforeAll(async () => {
   }
   const headerEntries = await config.headers();
   headerList = headerEntries[0].headers ?? [];
+  const registryEntry = headerEntries.find((e) => e.source === "/portfolio-registry.json");
+  registryJsonHeaders = registryEntry?.headers ?? [];
 });
 
 function header(key: string) {
@@ -83,5 +86,19 @@ describe("security headers (Y-P0-002 — Apple/Google reviewers + Lighthouse che
     it("upgrades insecure requests", () => {
       expect(csp).toContain("upgrade-insecure-requests");
     });
+  });
+});
+
+describe("portfolio-registry.json CORS (Y-P0-003 — links.yulalab.com fetches this cross-origin)", () => {
+  function registryHeader(key: string) {
+    return registryJsonHeaders.find((h) => h.key === key)?.value;
+  }
+
+  it("allows links.yulalab.com specifically, not a wildcard", () => {
+    expect(registryHeader("Access-Control-Allow-Origin")).toBe("https://links.yulalab.com");
+  });
+
+  it("allows only GET", () => {
+    expect(registryHeader("Access-Control-Allow-Methods")).toBe("GET");
   });
 });

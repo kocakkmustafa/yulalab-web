@@ -12,6 +12,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "export:registry": "tsx scripts/export-public-registry.ts",
+    "verify:claims": "tsx scripts/verify-public-registry.ts",
+    "verify:links": "tsx scripts/verify-public-links.ts",
     "verify:claims:local": "node scripts/verify-claims-local.mjs",
     "deploy": "vercel --prod",
     "deploy:preview": "vercel"
@@ -36,6 +39,7 @@
     "eslint-config-next": "^15.1.4",
     "postcss": "^8.5.26",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.12",
     "typescript": "^5.7.2",
     "vercel": "^53.3.1",
     "vitest": "^4.1.11"

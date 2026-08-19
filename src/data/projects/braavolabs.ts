@@ -15,8 +15,8 @@ export const braavolabs: ProjectConfig = {
     en: "Your AI company, built in 10 minutes.",
   },
   description: {
-    tr: "Braavolabs, küçük ekiplerin kendi otonom AI şirketlerini dakikalar içinde kurmasını sağlayan bir işletim sistemi. 9 primitif, 12 LLM sağlayıcısı, 6 dil — tek panelden.",
-    en: "Braavolabs is an operating system that lets small teams stand up their own autonomous AI companies in minutes. 9 primitives, 12 LLM providers, 6 languages — from a single panel.",
+    tr: "Braavolabs, küçük ekiplerin kendi otonom AI şirketlerini dakikalar içinde kurmasını sağlayan bir işletim sistemi. 9 primitif, 14 LLM sağlayıcısı, 6 dil — tek panelden.",
+    en: "Braavolabs is an operating system that lets small teams stand up their own autonomous AI companies in minutes. 9 primitives, 14 LLM providers, 6 languages — from a single panel.",
   },
   short: {
     tr: "Küçük ekipler için otonom AI şirket OS'i. Primitifler, ajan ağları ve şeffaf maliyet — tek panel.",
@@ -66,8 +66,8 @@ export const braavolabs: ProjectConfig = {
     {
       title: { tr: "Çoklu sağlayıcı", en: "Multi-provider" },
       description: {
-        tr: "OpenAI, Anthropic, Mistral, Gemini ve 8 daha — tek arayüzden, tek faturalama mantığıyla.",
-        en: "OpenAI, Anthropic, Mistral, Gemini and 8 more — one interface, one billing logic.",
+        tr: "OpenAI, Anthropic, Mistral, Gemini ve 10 daha — tek arayüzden, tek faturalama mantığıyla.",
+        en: "OpenAI, Anthropic, Mistral, Gemini and 10 more — one interface, one billing logic.",
       },
       icon: "KeyRound",
     },
@@ -106,7 +106,7 @@ export const braavolabs: ProjectConfig = {
   ],
   stats: [
     { value: "9", label: { tr: "Primitif", en: "Primitives" } },
-    { value: "12", label: { tr: "LLM Sağlayıcı", en: "LLM Providers" } },
+    { value: "14", label: { tr: "LLM Sağlayıcı", en: "LLM Providers" } },
     { value: "~10dk", label: { tr: "Kurulum süresi", en: "Setup time" } },
     { value: "6", label: { tr: "Dil", en: "Languages" } },
   ],

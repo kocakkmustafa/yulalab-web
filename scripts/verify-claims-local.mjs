@@ -1,9 +1,13 @@
 #!/usr/bin/env node
-// Y-P0-001 stopgap claim/content check. Plain Node (no deps, no build step)
-// so it runs today, before Y-P0-002 adds vitest and Y-P0-003 adds the
-// registry-driven scripts/verify-public-registry.ts + verify-public-links.ts.
-// Once both exist and cover TR/EN parity + forbidden-pattern scanning, this
-// file can be retired — don't let it silently duplicate them forever.
+// Y-P0-001 claim/content check — permanent, not a stopgap (decision made in
+// Y-P0-003). Plain Node (no deps, no build step). Distinct role from
+// scripts/verify-public-registry.ts (`verify:claims`, Y-P0-003): that one
+// checks the registry OBJECT's structural shape (required fields, TR/EN
+// pairs, lifecycle rules); this one greps rendered TEXT across the whole
+// site+links tree for specific historically-false patterns (see FORBIDDEN
+// below) that a structurally-valid registry entry could still repeat in
+// prose elsewhere (a manifesto sentence, a README, a code comment). Neither
+// script subsumes the other — both stay in ci.yml.
 //
 // Usage: node scripts/verify-claims-local.mjs
 
@@ -57,6 +61,9 @@ const FORBIDDEN = [
   { pattern: /sınırsız birleşim/i, note: "Braavolabs has a finite step/depth cap — 'sınırsız' is not accurate" },
   { pattern: /compliant with[^.]*(kvkk|gdpr)/i, note: "blanket compliance-certification language roadmap §1.1 forbids" },
   { pattern: /bütün ürünler(?:imiz)?[^.]*(kvkk|gdpr)[^.]*kapsamındadır/i, note: "blanket categorical KVKK/GDPR claim roadmap §1.1 forbids" },
+  { pattern: /\b12 LLM\b/i, note: "Braavolabs has 14 LLM providers as of 2026-08-19 (ai-client.ts) — '12' is the pre-Y-P0-003 stale count" },
+  { pattern: /\bIFS\b.{0,40}(çerçeve|framework)/i, note: "IFS was searched for across ventures/lifeos/ and not found (verified 2026-08-19) — do not cite it as a shipped framework" },
+  { pattern: /İkigai|Ikigai/i, note: "Ikigai was searched for across ventures/lifeos/ and not found (verified 2026-08-19) — do not cite it as a shipped framework" },
 ];
 
 // links/index.html and links/README.md live in a SEPARATE git repo

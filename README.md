@@ -26,7 +26,7 @@ Eight products total — three shipped (live/beta), five coming soon.
 
 | Slug          | Project                    | Status      | Highlight                                              |
 | ------------- | -------------------------- | ----------- | ------------------------------------------------------- |
-| `braavolabs`  | Autonomous AI Company OS   | Beta        | 9 primitives, 12 LLM providers, transparent cost         |
+| `braavolabs`  | Autonomous AI Company OS   | Beta        | 9 primitives, 14 LLM providers, transparent cost         |
 | `burunfarki`  | Transparent racing AI      | Live        | 13,587 races, ~30% Top‑1 / ~61% Top‑3 (live tracking)    |
 | `lifeos`      | Personal life OS (mobile)  | Live        | Offline‑first, AES‑256 on‑device, 5 life domains         |
 | `gravita`     | Skills & strength coach    | Coming soon | Handstand & bodyweight skills, on-device pose tracking   |

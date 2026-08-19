@@ -76,6 +76,17 @@ const nextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      {
+        // links.yulalab.com (a separate origin) fetches this at runtime
+        // (Y-P0-003) — CORS must be explicit and public-GET-only, scoped to
+        // just this one static artifact rather than opened site-wide.
+        source: "/portfolio-registry.json",
+        headers: [
+          { key: "Access-Control-Allow-Origin", value: "https://links.yulalab.com" },
+          { key: "Access-Control-Allow-Methods", value: "GET" },
+          { key: "Cache-Control", value: "public, max-age=300, must-revalidate" },
+        ],
+      },
     ];
   },
   async redirects() {

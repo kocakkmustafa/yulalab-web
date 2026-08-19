@@ -36,6 +36,12 @@ jobs:
       - name: Public claim / forbidden-pattern scan
         run: pnpm verify:claims:local
 
+      - name: Public registry structural validation (Y-P0-003)
+        run: pnpm verify:claims
+
+      - name: Public link well-formedness + reachability (informational unless --strict)
+        run: pnpm verify:links
+
       - name: Build
         run: pnpm build
 

@@ -68,8 +68,8 @@ export const lifeos: ProjectConfig = {
     {
       title: { tr: "Bilimsel algoritmalar", en: "Scientific algorithms" },
       description: {
-        tr: "CBT, IFS, atomik alışkanlıklar, İkigai, FIRE — 9+ doğrulanmış çerçeve.",
-        en: "CBT, IFS, atomic habits, Ikigai, FIRE — 9+ validated frameworks.",
+        tr: "CBT, PERMA, atomik alışkanlıklar, FIRE — 9+ doğrulanmış çerçeve.",
+        en: "CBT, PERMA, atomic habits, FIRE — 9+ validated frameworks.",
       },
       icon: "Microscope",
     },
