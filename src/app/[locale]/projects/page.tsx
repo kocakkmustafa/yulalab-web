@@ -73,7 +73,7 @@ function ProjectsIndex() {
         <h2 className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
           {t("shippedHeading")}
         </h2>
-        <p className="mt-3 max-w-[58ch] text-[14.5px] leading-[1.65] text-ink-400">
+        <p className="mt-3 max-w-[58ch] text-[14.5px] leading-[1.65] text-ink-300">
           {t("shippedNote")}
         </p>
         <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,7 +104,7 @@ function ProjectsIndex() {
           <h2 className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
             {t("researchHeading")}
           </h2>
-          <p className="mt-3 max-w-[62ch] text-[14.5px] leading-[1.7] text-ink-400">
+          <p className="mt-3 max-w-[62ch] text-[14.5px] leading-[1.7] text-ink-300">
             {t("researchNote")}
           </p>
           <details className="glass mt-8 p-6 lg:p-8">
