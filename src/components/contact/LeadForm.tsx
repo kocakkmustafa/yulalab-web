@@ -64,6 +64,16 @@ export function LeadForm({
     event.preventDefault();
     if (state.kind === "sending") return;
     const data = new FormData(event.currentTarget);
+
+    // Checked here, not left to `required`. The form sets noValidate, so the
+    // browser enforces nothing — the box could be left unticked and the
+    // submission posted, and only the server's 400 stopped it. Consent is
+    // the lawful basis for the whole record; it does not get to depend on a
+    // round trip.
+    if (data.get("consent") !== "on") {
+      setState({ kind: "error", code: "consent" });
+      return;
+    }
     setState({ kind: "sending" });
 
     const payload: Record<string, unknown> = {
@@ -72,6 +82,13 @@ export function LeadForm({
       intent,
       message: String(data.get("message") ?? "").trim(),
       locale,
+      // Read from the field, never asserted. Hardcoding `true` here is
+      // currently EQUIVALENT — the guard above returns before this line
+      // whenever the box is unticked, so no test can tell the difference.
+      // It stays a read anyway: the guard is the only thing making it
+      // equivalent, and if that is ever relaxed this is what stops a
+      // lead_consents row claiming someone agreed to a notice they never
+      // saw. Deleting the guard DOES fail the suite.
       consent: data.get("consent") === "on",
       // Present but empty on a real submission. The server treats any value
       // as a bot and answers 201 anyway, so nothing here reveals the trap.

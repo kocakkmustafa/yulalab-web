@@ -35,6 +35,11 @@ afterAll(async () => {
 beforeEach(async () => {
   await pool.query("TRUNCATE leads, event_outbox, data_requests CASCADE");
   process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
+  // A type is deliverable only once it has BOTH an address and its
+  // templates, so the fixture has to supply them like a real deployment.
+  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
+  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+  process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
 });
 
 let seq = 0;
@@ -115,11 +120,20 @@ describe("delivery", () => {
     // with `SET delivered_at = $2, [new Date()]`, the very thing it was
     // supposed to forbid.
     //
-    // What IS checkable is that there is no clock to inject: drainOutbox
-    // takes (pool, transport) and nothing else, so reintroducing an
-    // `options: { now }` parameter breaks this line rather than sailing
-    // past a comment.
-    expect(drainOutbox.length).toBe(2);
+    // The first attempt at this asserted `drainOutbox.length === 2`, which
+    // was theatre: a default parameter does not count toward `.length`, so
+    // `options: { now?: Date } = {}` reintroduces the injected clock and
+    // sails past. What follows is a source-shape guard and is honest about
+    // being one — the stamp must come from now() in SQL, never from a bound
+    // parameter. The ordering assertion below is real but weak: it fails
+    // only when insert and delivery land in the same millisecond, which is
+    // why it caught the caller-clock mutation nondeterministically.
+    const source = readFileSync(
+      path.resolve(import.meta.dirname, "../src/server/mail.ts"),
+      "utf8",
+    ).replace(/\/\*[\s\S]*?\*\//g, " ").replace(/^\s*\/\/.*$/gm, " ");
+    expect(source).toMatch(/SET delivered_at = now\(\)/);
+    expect(source).not.toMatch(/SET delivered_at = \$/);
 
     const before = new Date();
     await queueReceipt();
@@ -181,16 +195,24 @@ describe("a lead that has been deleted", () => {
     expect(result.delivered).toBe(0);
   });
 
-  it("does not re-examine the dropped row on every later run", async () => {
+  it("removes the row rather than leaving a pointer to an erased person", async () => {
+    // Two reasons it is deleted instead of retired by spending its attempts.
+    // The row carries a pointer to a lead we promised to forget, and leaving
+    // it for purge_at keeps that pointer thirty more days. And a row retired
+    // with attempts = MAX is indistinguishable from one the provider refused
+    // five times, which would make every honoured deletion inflate the count
+    // of genuinely-failed deliveries.
     const leadId = await queueReceipt();
     await pool.query("DELETE FROM leads WHERE id = $1", [leadId]);
     await drainOutbox(pool, transportThat("succeeds"));
+
+    const { rows } = await pool.query("SELECT count(*)::int AS n FROM event_outbox");
+    expect(rows[0].n).toBe(0);
+
     const again = await drainOutbox(pool, transportThat("succeeds"));
     expect(again.dropped).toBe(0);
-
-    // ...and it is still not recorded as delivered, because it was not.
-    const { rows } = await pool.query("SELECT delivered_at FROM event_outbox");
-    expect(rows[0].delivered_at).toBeNull();
+    // Never recorded as delivered along the way, because it was not.
+    expect(again.dead).toBe(0);
   });
 });
 
@@ -398,5 +420,157 @@ describe("where an internal notification actually goes", () => {
     await drainOutbox(pool, transport);
     const internal = transport.sent.find((m) => m.eventType === "lead_internal_route");
     expect(internal?.to).toBe("studio@yulalab.com");
+  });
+});
+
+describe("a queue that has permanently failed", () => {
+  it("does not report perfect health once every retry is spent", async () => {
+    // `remaining` carries the claim query's `attempts < MAX_ATTEMPTS` filter,
+    // so it falls to zero at the exact moment failure becomes permanent.
+    // Without a separate count, two people who will never get a receipt look
+    // identical to an empty queue: {delivered:0, failed:0, remaining:0}.
+    await queueReceipt();
+    await queueReceipt();
+    for (let i = 0; i < MAX_ATTEMPTS; i += 1) {
+      await drainOutbox(pool, transportThat("fails"));
+    }
+    const result = await drainOutbox(pool, transportThat("succeeds"));
+    expect(result.remaining).toBe(0);
+    expect(result.dead).toBe(2);
+  });
+
+  it("counts an honoured deletion as dropped, never as a failed delivery", async () => {
+    // The two used to be the same row state. If a deletion registered as a
+    // dead delivery, every erasure request would raise a false alarm about
+    // receipts nobody was owed.
+    const leadId = await queueReceipt();
+    await pool.query("DELETE FROM leads WHERE id = $1", [leadId]);
+    const result = await drainOutbox(pool, transportThat("succeeds"));
+    expect(result.dropped).toBe(1);
+    expect(result.dead).toBe(0);
+    // Measured, not arithmetic. Deriving it as `before - delivered` leaves a
+    // permanent non-zero floor equal to the number of rows ever dropped.
+    expect(result.remaining).toBe(0);
+  });
+
+  it("says which env var is holding a blocked type back", async () => {
+    // A queue reporting `blocked: N` with no way to learn why is how an
+    // operator concludes the consumer is broken.
+    delete process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN;
+    await queueReceipt();
+    const result = await drainOutbox(pool, transportThat("succeeds"));
+    expect(result.delivered).toBe(0);
+    expect(result.blocked).toBe(1);
+    expect(result.missingConfig).toContain("SENDGRID_TEMPLATE_LEAD_RECEIPT_EN");
+  });
+});
+
+describe("when the database goes away mid-run", () => {
+  it("reports the work that did happen instead of discarding it", async () => {
+    // The likeliest reason a drain aborts is the database — which is also
+    // when the final count fails. Throwing there meant a run that delivered
+    // 99 and then lost the connection reported nothing at all.
+    await queueReceipt();
+    await queueReceipt();
+    await queueReceipt();
+
+    // A pool that hands out one connection and then refuses, rather than
+    // DROPping the table: the drain holds a row lock on event_outbox, so a
+    // DROP waits on ACCESS EXCLUSIVE and the test hangs instead of failing.
+    //
+    // Only connect() fails. Breaking query() too would let the CLOSING
+    // measurement's own catch set `aborted`, and this test would pass with
+    // the connect guard deleted.
+    let delivered = 0;
+    const failing = {
+      connect: async () => {
+        if (delivered >= 1) throw new Error("connection terminated");
+        return pool.connect();
+      },
+      query: pool.query.bind(pool),
+    } as unknown as typeof pool;
+
+    const transport = transportThat("succeeds");
+    const result = await drainOutbox(failing, {
+      configured: true,
+      async send(message) {
+        await transport.send(message);
+        delivered += 1;
+      },
+    });
+
+    expect(result.aborted).toBe(true);
+    expect(result.delivered).toBe(1);
+    // The database still answers, so the counts are real: two rows queued,
+    // one delivered, one still waiting.
+    expect(result.remaining).toBe(2);
+  });
+});
+
+describe("an error inside the transaction, not just at connect time", () => {
+  it("marks the run aborted and keeps the deliveries it already made", async () => {
+    // The earlier abort test fails at pool.connect(), which is a different
+    // branch. Nothing exercised the catch around the transaction itself, so
+    // `result.aborted = true` there could be deleted with the suite green.
+    await queueReceipt();
+    await queueReceipt();
+    let stamps = 0;
+    const brittle = {
+      query: pool.query.bind(pool),
+      connect: async () => {
+        const client = await pool.connect();
+        const original = client.query.bind(client);
+        // Restored on release. A patched client goes back into the POOL, and
+        // the next test to borrow it inherits the fault — the failure looks
+        // exactly like a leak and is nothing of the sort.
+        const originalRelease = client.release.bind(client);
+        client.release = ((...args: unknown[]) => {
+          client.query = original as typeof client.query;
+          client.release = originalRelease;
+          return (originalRelease as (...a: unknown[]) => unknown)(...args);
+        }) as typeof client.release;
+        client.query = ((...args: unknown[]) => {
+          const sql = typeof args[0] === "string" ? args[0] : "";
+          if (sql.startsWith("UPDATE event_outbox SET delivered_at")) {
+            stamps += 1;
+            // The first row goes through; the connection dies on the second.
+            if (stamps > 1) throw new Error("connection terminated mid-transaction");
+          }
+          return original(...(args as Parameters<typeof original>));
+        }) as typeof client.query;
+        return client;
+      },
+    } as unknown as typeof pool;
+
+    const result = await drainOutbox(brittle, transportThat("succeeds"));
+
+    expect(result.aborted).toBe(true);
+    expect(result.delivered).toBe(1);
+  });
+
+  it("says so when only the closing measurement fails", async () => {
+    // Everything delivered fine; the count at the end did not. Reporting
+    // remaining: 0 here would claim an empty queue on no evidence.
+    await queueReceipt();
+    let counts = 0;
+    const realQuery = pool.query.bind(pool);
+    const brittle = {
+      connect: pool.connect.bind(pool),
+      query: (...args: unknown[]) => {
+        const sql = typeof args[0] === "string" ? args[0] : "";
+        if (sql.includes("count(*)")) {
+          counts += 1;
+          // 1st = the opening measurement; 2nd = the closing one.
+          if (counts > 1) throw new Error("connection terminated");
+        }
+        return realQuery(...(args as Parameters<typeof realQuery>));
+      },
+    } as unknown as typeof pool;
+
+    const result = await drainOutbox(brittle, transportThat("succeeds"));
+    expect(result.delivered).toBe(1);
+    expect(result.aborted).toBe(true);
+    expect(result.remaining).toBeNull();
+    expect(result.dead).toBeNull();
   });
 });

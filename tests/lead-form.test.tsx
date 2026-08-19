@@ -13,24 +13,28 @@ interface Copy {
     email: string;
     message: string;
     submit: string;
+    company: string;
     sentBody: string;
     sentBodyMailed: string;
-    errors: { closed: string; offline: string };
+    errors: Record<string, string>;
   };
 }
 
-const messages = JSON.parse(
-  readFileSync(path.resolve(import.meta.dirname, "../messages/tr.json"), "utf8"),
-) as Copy & Record<string, unknown>;
+const load = (locale: string) =>
+  JSON.parse(readFileSync(path.resolve(import.meta.dirname, `../messages/${locale}.json`), "utf8")) as
+    Copy & Record<string, unknown>;
+
+const messages = load("tr");
+const english = load("en");
 
 afterEach(() => {
   cleanup();
   vi.unstubAllGlobals();
 });
 
-function renderForm(mailConfigured = false) {
+function renderForm(mailConfigured = false, locale = "tr") {
   return render(
-    <NextIntlClientProvider locale="tr" messages={messages}>
+    <NextIntlClientProvider locale={locale} messages={locale === "en" ? english : messages}>
       <LeadForm products={[{ slug: "lifeos", name: "LifeOS" }]} mailConfigured={mailConfigured} />
     </NextIntlClientProvider>,
   );
@@ -74,10 +78,35 @@ describe("the consent the person is actually giving", () => {
     expect(screen.getByText(new RegExp(CURRENT_NOTICE_VERSION))).toBeTruthy();
   });
 
-  it("cannot be submitted without ticking it", () => {
+  it("is not posted at all when the box is left unticked", async () => {
+    // `required` is not the guard: the form sets noValidate, so the browser
+    // enforces nothing and the submission used to go out with consent:false
+    // for the server to reject. Consent is the lawful basis for the record.
+    const fetchMock = stubFetch(201, { receiptId: "YL-1" });
     renderForm();
-    const consent = screen.getByRole("checkbox") as HTMLInputElement;
-    expect(consent.required).toBe(true);
+    fireEvent.change(screen.getByLabelText(messages.leadForm.name), {
+      target: { value: "Ada" },
+    });
+    fireEvent.change(screen.getByLabelText(messages.leadForm.email), {
+      target: { value: "ada@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(messages.leadForm.message), {
+      target: { value: "merhaba" },
+    });
+    fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
+    await screen.findByText(messages.leadForm.errors.consent as string);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("posts the tick as it was actually given", async () => {
+    // Hardcoding true here leaves every other test green while writing a
+    // lead_consents row for a notice nobody saw.
+    const fetchMock = stubFetch(201, { receiptId: "YL-1" });
+    renderForm();
+    fill();
+    fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(postedBody(fetchMock).consent).toBe(true);
   });
 });
 
@@ -90,6 +119,18 @@ describe("the honeypot", () => {
     expect(trap.closest("[aria-hidden='true']")).toBeTruthy();
     // display:none would be skipped by a bot that reads computed styles.
     expect(trap.closest("div")!.style.display).not.toBe("none");
+  });
+
+  it("is actually off-screen, not merely labelled as a trap", async () => {
+    // Without the positioning this is a visible field labelled "Website"
+    // that a real person fills in — and the route answers 201 with a
+    // receipt id while discarding the message. That is the worst outcome
+    // this feature can produce, and tabIndex/aria-hidden do not prevent it.
+    renderForm();
+    const wrapper = (document.querySelector('input[name="website"]') as HTMLInputElement)
+      .closest("div")!;
+    expect(wrapper.style.position).toBe("absolute");
+    expect(parseInt(wrapper.style.left, 10)).toBeLessThan(-1000);
   });
 });
 
@@ -110,6 +151,48 @@ describe("what is posted", () => {
     );
     expect(body.consent).toBe(true);
     expect(body.website).toBe("");
+  });
+
+  it("puts each answer in the field it belongs to", async () => {
+    // The key SET was asserted and the values were not, so swapping name and
+    // message — storing someone's message as their name in a table whose
+    // migration header calls both out as personal data — was invisible.
+    const fetchMock = stubFetch(201, { receiptId: "YL-1" });
+    renderForm();
+    fill();
+    fireEvent.change(screen.getByLabelText(messages.leadForm.company), {
+      target: { value: "Yula" },
+    });
+    fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(postedBody(fetchMock)).toMatchObject({
+      name: "Ada",
+      email: "ada@example.com",
+      message: "merhaba",
+      company: "Yula",
+      // Hardcoding this records an English visitor's lead as Turkish, and
+      // later mails them the Turkish template.
+      locale: "tr",
+    });
+  });
+
+  it("records the language the person actually wrote in", async () => {
+    // Every other test renders Turkish, so hardcoding "tr" was invisible —
+    // and an English visitor's lead would be stored as Turkish and later
+    // mailed the Turkish template.
+    const fetchMock = stubFetch(201, { receiptId: "YL-1" });
+    renderForm(false, "en");
+    fireEvent.change(screen.getByLabelText(english.leadForm.name), { target: { value: "Ada" } });
+    fireEvent.change(screen.getByLabelText(english.leadForm.email), {
+      target: { value: "ada@example.com" },
+    });
+    fireEvent.change(screen.getByLabelText(english.leadForm.message), {
+      target: { value: "hello" },
+    });
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.submit(screen.getByRole("button", { name: english.leadForm.submit }));
+    await waitFor(() => expect(fetchMock).toHaveBeenCalled());
+    expect(postedBody(fetchMock).locale).toBe("en");
   });
 
   it("omits productSlug unless the subject is a product", async () => {

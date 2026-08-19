@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { mailTransport, missingTemplates, sendgridTransport, type MailMessage } from "@/server/mail";
+import {
+  deliverableEventTypes,
+  mailTransport,
+  missingTemplates,
+  sendgridTransport,
+  type MailMessage,
+} from "@/server/mail";
 
 const message: MailMessage = {
   outboxId: "11111111-1111-1111-1111-111111111111",
@@ -76,39 +82,44 @@ describe("which transport this deployment gets", () => {
     expect(mailTransport().configured).toBe(false);
   });
 
-  it("is unconfigured when a template is missing, and says which", () => {
-    // With a key and a sender but no template, `configured` would be true,
-    // SendGrid rejects an empty template_id, and on a daily schedule
-    // MAX_ATTEMPTS retires every receipt within five days — permanent loss,
-    // reported as ordinary provider failures.
+  it("is configured once the transport itself is, and names what is still missing", () => {
+    // Templates do NOT gate the transport. They gate one event type at a
+    // time, so a missing one blocks that type and leaves the rest
+    // delivering — see the next test for why that distinction matters.
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
     process.env.MAIL_FROM = "hello@yulalab.com";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-    expect(mailTransport().configured).toBe(false);
-    expect(missingTemplates()).toEqual(["SENDGRID_TEMPLATE_LEAD_RECEIPT_EN"]);
+    expect(mailTransport().configured).toBe(true);
+    expect(missingTemplates()).toEqual([
+      "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
+      "SENDGRID_TEMPLATE_LEAD_RECEIPT_EN",
+    ]);
   });
 
-  it("asks for an internal-route template only once that route has an address", () => {
-    process.env.LEADS_ENABLED = "1";
-    process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
+  it("does not let an internal-route address stop customer receipts", () => {
+    // Setting LEADS_INTERNAL_ADDRESS is a small, low-risk change. It used to
+    // make the whole transport report itself unconfigured until its template
+    // was added too — silently stopping every customer receipt.
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
-    expect(missingTemplates()).toEqual([]);
+    expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
 
     process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
     expect(missingTemplates()).toEqual(["SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR"]);
-    expect(mailTransport().configured).toBe(false);
+    expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
+
+    process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
+    expect(missingTemplates()).toEqual([]);
+    expect(deliverableEventTypes()).toEqual(["lead_receipt", "lead_internal_route"]);
   });
 
-  it("is configured only when the whole chain is present", () => {
+  it("never treats the unaddressable verification event as deliverable", () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
     process.env.MAIL_FROM = "hello@yulalab.com";
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
-    expect(mailTransport().configured).toBe(true);
+    expect(deliverableEventTypes()).not.toContain("data_request_verification");
   });
 });
 

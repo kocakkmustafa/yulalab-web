@@ -78,7 +78,9 @@ export interface DrainResult {
   /** This consumer cannot address the message; see `resolveRecipient`. */
   blocked: number;
   /**
-   * Deliverable rows still waiting when the run ended.
+   * Deliverable rows still waiting when the run ended. `null` when the run
+   * could not measure it — reporting 0 for "I do not know" is the failure
+   * this whole file is about.
    *
    * Without it a run that hits BATCH_LIMIT returns the healthiest-looking
    * body possible — {delivered: 100, failed: 0} — while the queue grows
@@ -86,13 +88,35 @@ export interface DrainResult {
    * days. Same argument as the whole-backlog `blocked` count: a number
    * capped by the batch size reads as steady exactly while it gets worse.
    */
-  remaining: number;
+  remaining: number | null;
+  /**
+   * Rows that exhausted MAX_ATTEMPTS and will never be retried.
+   *
+   * Without it a permanently dead queue reports perfect health: `remaining`
+   * carries the same `attempts < MAX_ATTEMPTS` filter as the claim query, so
+   * it falls to zero at the exact moment failure becomes permanent. Two
+   * people who will never receive a receipt, and every counter clean.
+   *
+   * Unambiguous only because a dropped row is now DELETED rather than
+   * retired by spending its attempts — otherwise an honoured deletion would
+   * be counted here as a delivery failure.
+   */
+  dead: number | null;
   /**
    * The run stopped early on an unexpected error. The counts above are what
    * DID happen and are reported rather than discarded — a job that
    * half-worked must not report success, and must not report zero either.
    */
   aborted: boolean;
+  /**
+   * Environment variables that are absent and are holding event types back.
+   *
+   * Returned rather than merely computed. `missingTemplates()` used to exist
+   * "so an operator can see which one is missing" while its only caller was
+   * `mailTransport()`, so nothing ever surfaced it: a queue would report
+   * `blocked: N` with no way to learn why.
+   */
+  missingConfig: string[];
 }
 
 type Resolution =
@@ -115,7 +139,7 @@ interface OutboxRow {
  * and the drift is silent in the worst direction, because a type the query
  * claims but the resolver blocks is a row that costs a batch slot forever.
  */
-const ADDRESSABLE: Record<OutboxEventType, () => boolean> = {
+const HAS_ADDRESS: Record<OutboxEventType, () => boolean> = {
   lead_receipt: () => true,
   lead_internal_route: () => Boolean(process.env.LEADS_INTERNAL_ADDRESS?.trim()),
   // See resolveRecipient: the verification token is sha256 at rest, so the
@@ -123,8 +147,36 @@ const ADDRESSABLE: Record<OutboxEventType, () => boolean> = {
   data_request_verification: () => false,
 };
 
+/**
+ * Can this event type be delivered right now?
+ *
+ * An address AND the templates it needs. Per TYPE rather than globally: the
+ * missing internal-route template used to make the whole transport report
+ * itself unconfigured, so setting LEADS_INTERNAL_ADDRESS — a small, low-risk
+ * change — silently stopped every customer receipt. A type that is missing
+ * something is `blocked`: not sent, not stamped, and no attempt spent, so it
+ * resumes the moment the variable is set.
+ */
+function isDeliverable(type: OutboxEventType): boolean {
+  return HAS_ADDRESS[type]() && missingTemplatesFor(type).length === 0;
+}
+
 export function deliverableEventTypes(): OutboxEventType[] {
-  return (Object.keys(ADDRESSABLE) as OutboxEventType[]).filter((t) => ADDRESSABLE[t]());
+  return (Object.keys(HAS_ADDRESS) as OutboxEventType[]).filter(isDeliverable);
+}
+
+/**
+ * Env vars that are absent and are holding an addressed event type back.
+ *
+ * Surfaced through DrainResult, not just consulted here — the previous
+ * version documented itself as being "so an operator can see WHICH one is
+ * missing" while its only caller was `mailTransport()`, so a queue reported
+ * `blocked: N` and no way to find out why.
+ */
+export function missingTemplates(): string[] {
+  return (Object.keys(HAS_ADDRESS) as OutboxEventType[])
+    .filter((type) => HAS_ADDRESS[type]())
+    .flatMap(missingTemplatesFor);
 }
 
 /**
@@ -137,7 +189,7 @@ export function deliverableEventTypes(): OutboxEventType[] {
  * still have left a live address sitting in a queue for thirty days.
  */
 async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolution> {
-  if (!ADDRESSABLE[row.event_type]()) return { kind: "blocked" };
+  if (!isDeliverable(row.event_type)) return { kind: "blocked" };
 
   if (row.event_type === "lead_receipt") {
     const { rows } = await db.query<{ email: string; locale: "tr" | "en" }>(
@@ -159,14 +211,14 @@ async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolut
     const { rowCount } = await db.query("SELECT 1 FROM leads WHERE id = $1", [row.aggregate_id]);
     if (!rowCount) return { kind: "dropped" };
 
-    // ADDRESSABLE has already established the address is set; absent
+    // isDeliverable has already established the address is set; absent
     // configuration is `blocked` rather than `failed` because there is no
     // provider outage to retry against, and burning attempts would silently
     // discard the notification once the address is finally set.
     return { kind: "send", to: process.env.LEADS_INTERNAL_ADDRESS!.trim(), locale: "tr" };
   }
 
-  // data_request_verification, unreachable via ADDRESSABLE and kept as the
+  // data_request_verification, unreachable via isDeliverable and kept as the
   // explanation for why.
   //
   // Blocked BY DESIGN, and this is the honest outcome rather than a gap left
@@ -211,21 +263,30 @@ export async function drainOutbox(
     skipped: 0,
     dropped: 0,
     blocked: 0,
-    remaining: 0,
+    remaining: null,
+    dead: null,
     aborted: false,
+    missingConfig: [],
   };
 
   const deliverable = deliverableEventTypes();
   const pending = async () => {
-    const { rows } = await pool.query<{ n: number }>(
+    const { rows } = await pool.query<{
+      deliverable: number;
+      unaddressable: number;
+      dead: number;
+    }>(
       `SELECT
-         count(*) FILTER (WHERE event_type = ANY($2::text[]))::int      AS deliverable,
-         count(*) FILTER (WHERE NOT (event_type = ANY($2::text[])))::int AS unaddressable
+         count(*) FILTER (
+           WHERE attempts < $1 AND event_type = ANY($2::text[]))::int      AS deliverable,
+         count(*) FILTER (
+           WHERE attempts < $1 AND NOT (event_type = ANY($2::text[])))::int AS unaddressable,
+         count(*) FILTER (WHERE attempts >= $1)::int                        AS dead
        FROM event_outbox
-       WHERE delivered_at IS NULL AND attempts < $1`,
+       WHERE delivered_at IS NULL`,
       [MAX_ATTEMPTS, deliverable],
     );
-    return rows[0] as unknown as { deliverable: number; unaddressable: number };
+    return rows[0];
   };
 
   // The whole backlog, not the handful that fitted in one batch.
@@ -236,9 +297,11 @@ export async function drainOutbox(
   // meant real receipts were never reached, not on that run and not on any
   // later run either, because the backlog does not move. The claim query
   // excludes them in SQL instead: the batch bounds WORK DONE, not rows
-  // looked at.
+  // looked at. `deliverable` is read ONCE here rather than per row, so the
+  // SQL filter and the resolver cannot disagree mid-run.
   const before = await pending();
   result.blocked = before.unaddressable;
+  result.missingConfig = missingTemplates();
 
   if (!transport.configured) {
     // Only the rows credentials would actually help. Counting the
@@ -246,6 +309,7 @@ export async function drainOutbox(
     // that means "mail is waiting on the founder gate".
     result.skipped = before.deliverable;
     result.remaining = before.deliverable;
+    result.dead = before.dead;
     return result;
   }
 
@@ -256,7 +320,17 @@ export async function drainOutbox(
   const handled: string[] = [];
 
   for (let i = 0; i < BATCH_LIMIT; i += 1) {
-    const db = (await pool.connect()) as PoolClient;
+    // Acquired inside its own guard, not as a bare `await` in the loop
+    // header. A pool that cannot hand out a connection is the same class of
+    // failure as one that fails mid-transaction, and letting it throw past
+    // here discarded every count the run had already earned.
+    let db: PoolClient;
+    try {
+      db = (await pool.connect()) as PoolClient;
+    } catch {
+      result.aborted = true;
+      break;
+    }
     let poisoned = false;
     try {
       await db.query("BEGIN");
@@ -282,7 +356,7 @@ export async function drainOutbox(
       const resolution = await resolveRecipient(db, row);
 
       if (resolution.kind === "blocked") {
-        // Unreachable while ADDRESSABLE and the claim query agree, which is
+        // Unreachable while isDeliverable and the claim query agree, which is
         // the point of them sharing one declaration. Left in because the
         // alternative to refusing here is sending to an address we do not
         // have; counted, not silently skipped.
@@ -292,14 +366,17 @@ export async function drainOutbox(
       }
 
       if (resolution.kind === "dropped") {
-        // Retire it without claiming it was delivered — because it was not.
-        // `delivered_at` stays NULL so the row never counts as sent; the
-        // attempt budget is spent so no later run keeps looking for a record
-        // that no longer exists. The row itself still purges on schedule.
-        await db.query("UPDATE event_outbox SET attempts = $1 WHERE id = $2", [
-          MAX_ATTEMPTS,
-          row.id,
-        ]);
+        // DELETED, not retired by spending its attempts.
+        //
+        // Two reasons, and the second only became visible once `dead` was
+        // counted. First: the row points at a lead that has been erased, so
+        // an outbox row carrying that pointer is residual data about a
+        // person we promised to forget — leaving it for `purge_at` keeps it
+        // thirty more days. Second: retiring it with attempts = MAX made it
+        // indistinguishable from a row the provider refused five times, so
+        // any count of genuinely-failed deliveries would have been inflated
+        // by every honoured deletion.
+        await db.query("DELETE FROM event_outbox WHERE id = $1", [row.id]);
         await db.query("COMMIT");
         result.dropped += 1;
         continue;
@@ -352,7 +429,17 @@ export async function drainOutbox(
     if (result.aborted) break;
   }
 
-  result.remaining = (await pending()).deliverable;
+  try {
+    const after = await pending();
+    result.remaining = after.deliverable;
+    result.dead = after.dead;
+  } catch {
+    // The likeliest reason a drain aborts is the database, which is exactly
+    // when this measurement fails too. Throwing here discarded the counts
+    // of work that DID happen — the run that delivered 99 and then lost the
+    // connection reported nothing at all. They stay null: unknown, not zero.
+    result.aborted = true;
+  }
   return result;
 }
 
@@ -424,28 +511,30 @@ const TEMPLATE_LOCALES: Record<OutboxEventType, readonly ("tr" | "en")[]> = {
 };
 
 /**
- * Env vars a deliverable event type needs and does not have.
+ * Template env vars this event type needs and does not have.
  *
- * Exported so an operator can see WHICH one is missing. Without this the
- * failure is silent and expensive: with a key and a sender but no template,
- * `configured` would be true, SendGrid rejects an empty `template_id`, and
- * on a daily schedule MAX_ATTEMPTS retires every receipt in five days —
- * permanent loss, reported as ordinary provider failures.
+ * Feeds `isDeliverable`, so a type with no template is BLOCKED rather than
+ * attempted. Without that, `configured` was true, SendGrid rejects an empty
+ * `template_id`, and on a daily schedule MAX_ATTEMPTS retires every receipt
+ * in five days — permanent loss reported as ordinary provider failures.
+ *
+ * All locales of a type, not one: the claim query filters by event_type, so
+ * that is the granularity at which a type can be held back. A receipt with
+ * a Turkish template and no English one would otherwise deliver to some
+ * people and burn the retries of others.
  */
-export function missingTemplates(): string[] {
-  return deliverableEventTypes().flatMap((type) =>
-    TEMPLATE_LOCALES[type]
-      .filter((locale) => !templateFor(type, locale))
-      .map((locale) => templateKey(type, locale)),
-  );
+function missingTemplatesFor(type: OutboxEventType): string[] {
+  return TEMPLATE_LOCALES[type]
+    .filter((locale) => !templateFor(type, locale))
+    .map((locale) => templateKey(type, locale));
 }
 
 /**
  * The transport this deployment actually has.
  *
- * Unconfigured unless the whole chain is present — key, sender AND the
- * templates every deliverable event needs. `LEADS_ENABLED` is in the
- * condition on purpose: the surface that WRITES leads is closed until legal
+ * Unconfigured unless the transport chain is present: key and sender.
+ * Templates gate individual event types, not this. `LEADS_ENABLED` is in
+ * the condition on purpose: the surface that WRITES leads is closed until legal
  * review, and a consumer that would send mail for a form nobody can submit
  * is a way to discover, later and by accident, that one of the two switches
  * was flipped alone.
@@ -454,7 +543,8 @@ export function mailTransport(fetchImpl: typeof fetch = fetch): MailTransport {
   const apiKey = process.env.SENDGRID_API_KEY?.trim();
   const from = process.env.MAIL_FROM?.trim();
   if (process.env.LEADS_ENABLED !== "1" || !apiKey || !from) return unconfiguredTransport();
-  // The templates are part of the chain, not a detail. See missingTemplates.
-  if (missingTemplates().length > 0) return unconfiguredTransport();
+  // Templates are NOT checked here. They gate one event type at a time via
+  // isDeliverable, so a missing template blocks that type and leaves the
+  // others delivering, rather than taking the whole transport down.
   return sendgridTransport(apiKey, from, fetchImpl);
 }

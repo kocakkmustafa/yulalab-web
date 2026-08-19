@@ -125,3 +125,50 @@ describe("when the scheduler actually calls it", () => {
     }
   });
 });
+
+describe("a queue with rows nothing will ever retry", () => {
+  const SCHEMA = "t_mail_route_dead";
+
+  it("answers 503 with the counts, not 200 with a clean-looking body", async () => {
+    // A row past MAX_ATTEMPTS is a person who will never receive a receipt
+    // and nothing will try again. `remaining` carries the same attempts
+    // filter as the claim query, so it reads 0 exactly when that becomes
+    // permanent — the body looks like an empty, healthy queue.
+    const pool = await createIsolatedSchema(SCHEMA);
+    try {
+      for (const file of [
+        "../db/migrations/0002_leads_consents_outbox.sql",
+        "../db/migrations/0003_data_request_verification.sql",
+      ]) {
+        await pool.query(readFileSync(path.resolve(import.meta.dirname, file), "utf8"));
+      }
+      const { rows } = await pool.query(
+        `INSERT INTO leads (name, email, intent, message, locale, dedupe_key)
+         VALUES ('Ada', 'ada@example.com', 'studio', 'hello', 'tr', repeat('c', 64))
+         RETURNING id`,
+      );
+      await pool.query(
+        `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, attempts)
+         VALUES ('lead_receipt', $1, '{"receiptId":"YL-1","locale":"tr"}'::jsonb, 5)`,
+        [rows[0].id],
+      );
+
+      process.env.CRON_SECRET = "s3cret";
+      process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+      process.env.LEADS_ENABLED = "1";
+      process.env.SENDGRID_API_KEY = "SG.key";
+      process.env.MAIL_FROM = "hello@yulalab.com";
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+      vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 202 })));
+
+      const response = await GET(get("Bearer s3cret"));
+      expect(response.status).toBe(503);
+      expect(await response.json()).toMatchObject({ dead: 1, remaining: 0, delivered: 0 });
+    } finally {
+      vi.unstubAllGlobals();
+      await resetPool();
+      await dropSchema(pool, SCHEMA);
+    }
+  });
+});

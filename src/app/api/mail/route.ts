@@ -30,7 +30,15 @@ export async function GET(request: Request): Promise<Response> {
 
   try {
     const result = await drainOutbox(getPool(), mailTransport());
-    if (result.aborted) {
+    if (result.aborted || (result.dead ?? 0) > 0) {
+      /* A non-zero `dead` count means rows exhausted every retry: people who
+         will never receive a receipt, and nothing will ever try again. That
+         is the precise failure this feature exists to avoid, so it is worth
+         a status a monitor notices, not a line in a 200 body.
+
+         It stays red until those rows purge, up to thirty days. Accepted
+         deliberately: reaching it takes five provider refusals of the same
+         message, and the remedy is to look at why, not to wait it out. */
       // 503 so a monitor sees it, WITH the counts that did happen. The
       // sibling purge route makes the same argument: a job that half-worked
       // must not report success — and must not report zero either, which is
