@@ -74,7 +74,13 @@ export function SourceStamp({
               "source" invites them to go check something they have no access
               to — provenance theatre. Naming it an internal record keeps the
               provenance and drops the false invitation. */}
-          <span className="normal-case tracking-normal text-ink-400/80">
+          {/* A repo path is one long unbreakable token — measured at 401px
+              for LifeOS's encryption_key_manager.dart, which pushed the
+              product page 132px past a 320px viewport. Same defect class as
+              the footer's contact address, introduced in the same session
+              that fixed it. `anywhere` rather than `break-word` because only
+              `anywhere` shrinks min-content width. */}
+          <span className="normal-case tracking-normal text-ink-400/80 [overflow-wrap:anywhere]">
             {isTR ? "iç kayıt" : "internal record"}: {source}
           </span>
         </>
@@ -82,7 +88,9 @@ export function SourceStamp({
       {scope ? (
         <>
           <span aria-hidden>·</span>
-          <span className="normal-case tracking-normal text-ink-400/80">{scope}</span>
+          <span className="normal-case tracking-normal text-ink-400/80 [overflow-wrap:anywhere]">
+            {scope}
+          </span>
         </>
       ) : null}
     </div>

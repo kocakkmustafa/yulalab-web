@@ -98,7 +98,17 @@ export function Footer() {
               </Link>
             </li>
             <li>
-              <a href={`mailto:${company.contact.email}`} className="link-wipe">
+              {/* `overflow-wrap: anywhere`, not Tailwind's `break-words`
+                  (`break-word`): only `anywhere` also shrinks the element's
+                  min-content width, which is what a fixed-width grid column
+                  measures. Measured at 320px — this 19-character address
+                  needed 152px inside a 116px column and pushed the whole
+                  document 12px wide, so every page scrolled sideways on the
+                  narrowest supported viewport. */}
+              <a
+                href={`mailto:${company.contact.email}`}
+                className="link-wipe [overflow-wrap:anywhere]"
+              >
                 {company.contact.email}
               </a>
             </li>

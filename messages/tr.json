@@ -151,7 +151,11 @@
     "eyebrow": "Projeler",
     "title": "Aile.",
     "intro": "Sekiz ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır.",
-    "gridHeading": "Tüm projeler"
+    "shippedHeading": "Yayında olanlar",
+    "shippedNote": "İndirilebilen ya da bugün kullanılabilen ürünler.",
+    "researchHeading": "Araştırma aşamasındakiler",
+    "researchNote": "Henüz yayınlanmadılar: mağaza sayfaları, indirme bağlantıları ve doğrulanmış rakamları yok. Aşağıda ayrı tutuluyorlar çünkü yayındaki ürünlerle aynı ağırlıkta gösterilmeleri onları oldukları şeyden fazlası gibi gösterirdi.",
+    "researchToggle": "Araştırma aşamasındaki {count} ürünü göster"
   },
   "showcase": {
     "back": "Projeler",

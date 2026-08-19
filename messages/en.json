@@ -151,7 +151,11 @@
     "eyebrow": "Projects",
     "title": "The family.",
     "intro": "Eight products, one discipline. Each speaks its own design language; underneath, the same engineering culture, the same transparency, the same calm user experience.",
-    "gridHeading": "All projects"
+    "shippedHeading": "Shipped",
+    "shippedNote": "Products you can download or use today.",
+    "researchHeading": "In research",
+    "researchNote": "Not released yet: no store pages, no download links, no verified numbers. They are kept separate below because giving them the same weight as shipped products would make them look like more than they are.",
+    "researchToggle": "Show {count} products in research"
   },
   "showcase": {
     "back": "Projects",
