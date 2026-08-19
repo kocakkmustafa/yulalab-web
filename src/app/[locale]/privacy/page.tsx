@@ -123,6 +123,35 @@ function PrivacyIndex() {
             </Link>
           </div>
 
+          {/* This site's OWN measurement, as distinct from the products'.
+              Written from the code rather than from a template: every field
+              named below is a field that actually exists in
+              src/lib/analytics/events.ts, and every field absent from that
+              contract is named here as absent. Two separate streams are
+              described separately on purpose — summing an aggregate
+              page-view provider with a first-party funnel would double-count
+              the same visit. */}
+          <div className="mt-16 pt-10 border-t border-white/10">
+            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-3">
+              {isTR ? "Bu sitenin kendi ölçümü" : "This site's own measurement"}
+            </div>
+            <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Bu bölüm hem yulalab.com'u hem links.yulalab.com'u kapsar. yulalab.com'da bugün tek bir ölçüm aracı çalışıyor: Vercel Analytics. Sayfa görüntülemelerini toplu (kişiye indirgenemez) biçimde sayar; çerez kullanmaz ve ziyaretçileri siteler arasında izlemez. links.yulalab.com'da bu araç yoktur."
+                : "This section covers both yulalab.com and links.yulalab.com. One measurement tool runs on yulalab.com today: Vercel Analytics. It counts page views in aggregate (not reducible to an individual), sets no cookies, and does not track visitors across sites. It does not run on links.yulalab.com."}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Buna ek olarak, hangi ürün sayfasının kaç kişiyi ürünün kendi mağazasına ya da sitesine gönderdiğini ölçen kendi huni kaydımızı yazdık — her iki site de aynı kaydı kullanır. Bu kayıt şu an KAPALI: hiçbir olay saklanmıyor, hiçbir tanımlayıcı üretilmiyor. Açıldığında toplanacak alanların tam listesi şudur: olay adı (sabit bir listeden), olay sürüm numarası, ürün kısa adı, dil, sorgu dizesi olmadan sayfa yolu, varsa kampanya etiketleri (utm_source/medium/campaign/content), tıklanan dış bağlantının adresi (sorgu dizesi ve çapa kaldırılmış hâliyle), o bağlantının sınıfı (mağaza / web / site-içi) ve zaman damgası. Bu on bir alanın dışında hiçbir şey saklanmaz."
+                : "On top of that we have written our own funnel record, measuring how many people a product page sends on to that product's own store or site; both sites use the same record. It is currently OFF: no events are stored and no identifier is generated. When enabled, the complete list of fields collected is: event name (from a fixed list), event version number, product short name, language, page path without any query string, campaign tags if present (utm_source/medium/campaign/content), the address of the outbound link clicked (with its query string and fragment removed), that link's class (store / web / internal), and a timestamp. Nothing outside those eleven fields is stored."}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {isTR
+                ? "Toplanmayanlar da aynı ölçüde bağlayıcıdır: IP adresi ve tarayıcı kimliği saklanmaz; ad, e-posta, mesaj ya da herhangi bir ürün içi veri bu kayda giremez. Hem alan listesi hem de her alanın kabul edilen biçimi zorunludur — önce uygulamada, sonra bir kez daha veritabanında — bu yüzden serbest metnin gidecek bir yeri yoktur. Ziyaretçiyi tanımlayan tek değer, sekmeniz kapanınca silinen rastgele bir jetondan türetilen ve her gün yenilenen takma addır; geriye çevrilemez ve iki farklı günü birbirine bağlamaz. Ham kayıtlar günlük çalışan bir temizlik işiyle 30 gün sonra silinir."
+                : "What is not collected is equally binding: no IP address or browser fingerprint is stored, and no name, email, message or in-product data can enter this record. Both the field list and the accepted format of every field are enforced, in the application and again in the database, so free-form text has nowhere to go. The only value identifying a visitor is a pseudonym derived from a random token that is erased when your tab closes, re-derived daily; it is not reversible and does not link two different days together. Raw records are deleted after 30 days by a scheduled daily job."}
+            </p>
+          </div>
+
           <div className="mt-16 pt-10 border-t border-white/10">
             <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-3">
               {isTR ? "Ortak Çerçeve" : "Shared Framework"}

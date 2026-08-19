@@ -105,6 +105,8 @@ export const lifeos: ProjectConfig = {
     en: "Give data back to its owner; make privacy a starting condition, not a feature; hold up an honest, scientific mirror with calm tools.",
   },
   order: 3,
+  // The CTA copy says "Open in the App Store"; this is what makes it true.
+  primaryCtaKind: "appstore" as const,
   links: [
     // iOS live on the App Store (verified 2026-07-10). Android still in closed
     // testing → Play link stays hidden until the production track goes live.

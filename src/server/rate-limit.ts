@@ -1,0 +1,60 @@
+/**
+ * Best-effort write limiter for /api/events.
+ *
+ * Honest about what this is: an in-memory token bucket, per serverless
+ * instance. Vercel runs many instances and recycles them, so the effective
+ * ceiling is (limit × live instances) and a cold start resets it. It is not
+ * a security boundary and must not be described as one.
+ *
+ * It exists because the endpoint is unauthenticated and writes one row per
+ * request into a table holding KVKK-scope data. With no limiter at all, a
+ * single script can fill that table — and a table anyone can fill makes the
+ * attribution-completeness number it feeds meaningless. Raising the cost
+ * from "free" to "needs distribution" is worth the twenty lines even though
+ * a determined flood still gets through.
+ *
+ * The durable, shared limiter belongs with the lead endpoint in Y-P1-002
+ * (roadmap §7.2 `src/server/rate-limit.ts` — this file, extended). Until
+ * then this is a floor, not the plan.
+ */
+
+const WINDOW_MS = 60_000;
+/** A real visitor emits a handful of funnel events a minute, not sixty. */
+const MAX_PER_WINDOW = 30;
+/** Bounds memory: a flood of unique keys cannot grow the map without limit. */
+const MAX_TRACKED_KEYS = 10_000;
+
+type Bucket = { count: number; resetAt: number };
+const buckets = new Map<string, Bucket>();
+
+export function allowRequest(key: string, now: number = Date.now()): boolean {
+  const existing = buckets.get(key);
+
+  if (!existing || existing.resetAt <= now) {
+    if (buckets.size >= MAX_TRACKED_KEYS) sweep(now);
+    buckets.set(key, { count: 1, resetAt: now + WINDOW_MS });
+    return true;
+  }
+
+  if (existing.count >= MAX_PER_WINDOW) return false;
+  existing.count += 1;
+  return true;
+}
+
+function sweep(now: number): void {
+  for (const [key, bucket] of buckets) {
+    if (bucket.resetAt <= now) buckets.delete(key);
+  }
+  // Still full of live buckets — drop the oldest rather than grow forever.
+  if (buckets.size >= MAX_TRACKED_KEYS) {
+    const oldest = [...buckets.entries()].sort((a, b) => a[1].resetAt - b[1].resetAt);
+    for (const [key] of oldest.slice(0, Math.floor(MAX_TRACKED_KEYS / 2))) {
+      buckets.delete(key);
+    }
+  }
+}
+
+/** Test-only. */
+export function resetRateLimit(): void {
+  buckets.clear();
+}

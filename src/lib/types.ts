@@ -145,6 +145,18 @@ export type ProjectConfig = {
 
   /** Ordered array of outbound links shown as pills on the showcase. */
   links: ProjectLink[];
+  /**
+   * Which of `links` the product page's primary CTA points at.
+   *
+   * Explicit rather than inferred, because inferring it went wrong on the
+   * live site: the CTA fell back to the `web` link for every product, so
+   * LifeOS — whose button reads "Open in the App Store" — sent visitors to
+   * its legal microsite while its real App Store URL sat unused two lines
+   * away in the same array. A priority rule ("prefer appstore") would have
+   * broken Braavolabs, whose button correctly promises its own beta queue.
+   * The destination is per-product data, so it is stated as data.
+   */
+  primaryCtaKind?: LinkKind;
 
   /** Optional contact email shown in the project footer. */
   contactEmail?: string;

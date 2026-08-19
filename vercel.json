@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "comment": "30-day raw attribution retention (roadmap §7.3). Without this the retention sentence on /privacy is unenforced.",
+      "path": "/api/purge",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}

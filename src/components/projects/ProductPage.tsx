@@ -1,6 +1,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
+import { TrackedLink } from "@/components/common/TrackedLink";
+import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
@@ -35,13 +37,18 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   const accent = ACCENT[project.slug] ?? "#7FD8DC";
 
   const others = projects.filter((o) => o.slug !== project.slug);
-  const web = project.links.find((l) => l.kind === "web")?.href;
+  const ctaKind = project.primaryCtaKind ?? "web";
+  const web = project.links.find((l) => l.kind === ctaKind)?.href;
 
   return (
     <div
       className="page-enter relative min-h-screen"
       style={{ ["--accent" as string]: accent }}
     >
+      {/* Funnel step 1 of 2: the view this page's outbound CTA is
+          measured against. Without it "product view → outbound" has no
+          denominator. */}
+      <TrackView event="product_view" product={project.slug} />
       <GlassSheen />
       <div className="ambient" aria-hidden />
 
@@ -181,8 +188,10 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                 {/* the primary action only renders when there is a real
                     destination — a dead CTA is worse than none */}
                 {web ? (
-                  <a
+                  <TrackedLink
                     href={web}
+                    event="product_primary_cta"
+                    product={project.slug}
                     target="_blank"
                     rel="noreferrer"
                     className="inline-flex items-center gap-2.5 px-6 py-4 text-sm rounded-[10px] focusable transition-colors"
@@ -193,7 +202,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                   >
                     {p.ctaPrimary}
                     <ArrowUpRight size={13} strokeWidth={2} className="arrow-nudge" />
-                  </a>
+                  </TrackedLink>
                 ) : null}
                 <a
                   href={`mailto:${project.contactEmail ?? "merhaba@yulalab.com"}`}

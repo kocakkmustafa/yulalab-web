@@ -13,6 +13,27 @@ jobs:
     # hung 3.5h+ on 2026-08-19, run 32210132669 — GitHub's own default is
     # 360 minutes) burns Actions minutes silently instead of failing loud.
     timeout-minutes: 15
+
+    # A REAL PostgreSQL, on purpose. The attribution schema pushes its
+    # rules (no raw session token, no free-text UTM, no query string in a
+    # page path) down into CHECK constraints, and a stub store would
+    # cheerfully accept every row those constraints exist to refuse. Running
+    # the suite against a fake would turn "the database protects this data"
+    # into an untested claim while the suite stayed green.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: yula_attribution_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - uses: actions/checkout@v4
 
@@ -34,8 +55,10 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
-      - name: Unit tests (vitest)
+      - name: Unit tests (vitest, incl. real-Postgres attribution suite)
         run: pnpm test
+        env:
+          ATTRIBUTION_TEST_DATABASE_URL: postgres://postgres:postgres@localhost:5432/yula_attribution_test
 
       - name: Public claim / forbidden-pattern scan
         run: pnpm verify:claims:local

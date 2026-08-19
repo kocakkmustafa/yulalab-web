@@ -1,6 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { TrackedLink } from "@/components/common/TrackedLink";
 import { ArrowUpRight, ArrowRight } from "@/components/common/icons";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -78,13 +79,14 @@ function Landing() {
               </p>
             </Reveal>
             <Reveal delay={280} className="flex flex-col gap-3.5">
-              <a
+              <TrackedLink
                 href="#projeler"
+                event="home_primary_cta"
                 className="glass inline-flex items-center justify-between gap-4 px-5 py-4 text-sm hover:border-white/35 transition-colors focusable"
               >
                 <span>{t("heroCta")}</span>
                 <span className="font-mono text-[11px] text-ink-300">03</span>
-              </a>
+              </TrackedLink>
               <span className="font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400">
                 {t("scrollHint")}
               </span>
