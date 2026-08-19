@@ -36,10 +36,40 @@ describe("stats that restate a registry claim must be linked to it", () => {
     expect(claim?.id).toBe("burunfarki-topk-accuracy");
   });
 
-  it("finds no stat whose figure a claim already asserts but which is left unlinked", () => {
-    // The drift guard. A future edit that adds "~%72 Top-3" as a stat while
-    // the claim still says ~%61 — or that restates ~%61 without linking —
-    // fails here rather than on the live page.
+  it("links exactly the stats that are supposed to be linked", () => {
+    // An EXPLICIT ledger, not a heuristic.
+    //
+    // The first version matched a stat's digits against the claim text and
+    // skipped values shorter than two characters. Measured: unlinking
+    // Braavolabs' "9" was invisible to it — and the substring approach could
+    // never have caught that one anyway, because the claim spells the number
+    // out ("Nine primitives" / "Dokuz primitif"). Only the count ratchet
+    // noticed, incidentally, and removing any other unsourced stat in the
+    // same edit hid it completely: all five tests passed with a claimed
+    // figure back on the page as an unmarked number.
+    //
+    // Linking is a claim-honesty decision, so changing this list should
+    // require deliberately editing a test rather than being inferred.
+    const EXPECTED: Array<[slug: string, claimId: string]> = [
+      ["braavolabs", "braavolabs-primitive-count"],
+      ["braavolabs", "braavolabs-provider-count"],
+      ["burunfarki", "burunfarki-topk-accuracy"],
+      ["burunfarki", "burunfarki-topk-accuracy"],
+      ["lifeos", "lifeos-on-device-encryption"],
+    ];
+
+    const actual = projects
+      .flatMap((p) => (p.stats ?? []).map((s) => [p.slug, s.claimId] as const))
+      .filter((pair): pair is readonly [string, string] => Boolean(pair[1]))
+      .map(([slug, id]) => `${slug}|${id}`)
+      .sort();
+
+    expect(actual).toEqual(EXPECTED.map(([slug, id]) => `${slug}|${id}`).sort());
+  });
+
+  it("still catches a NEW stat that restates a claimed figure without linking", () => {
+    // The heuristic is kept as a second net for the case it does cover: a
+    // future edit adding "~%72 Top-3" while the claim says ~%61.
     const orphans: string[] = [];
     for (const project of projects) {
       const record = publicRegistry.find((r) => r.slug === project.slug);
@@ -48,11 +78,11 @@ describe("stats that restate a registry claim must be linked to it", () => {
         if (stat.claimId) continue;
         if (!/[0-9]/.test(stat.value)) continue;
         const bare = stat.value.replace(/[~%\s]/g, "");
-        if (bare.length < 2) continue; // "9" alone matches far too much
+        if (bare.length < 2) continue;
         const restated = record.claims.some(
           (c) => c.statementTr.includes(bare) || c.statementEn.includes(bare),
         );
-        if (restated) orphans.push(`${project.slug}: "${stat.value}" is asserted by a claim but the stat is unlinked`);
+        if (restated) orphans.push(`${project.slug}: "${stat.value}" is asserted by a claim but unlinked`);
       }
     }
     expect(orphans).toEqual([]);
