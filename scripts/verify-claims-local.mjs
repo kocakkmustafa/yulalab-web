@@ -59,6 +59,12 @@ const FORBIDDEN = [
   { pattern: /bütün ürünler(?:imiz)?[^.]*(kvkk|gdpr)[^.]*kapsamındadır/i, note: "blanket categorical KVKK/GDPR claim roadmap §1.1 forbids" },
 ];
 
+// links/index.html and links/README.md live in a SEPARATE git repo
+// (kocakkmustafa/yulalab-links). They only exist here when this script runs
+// from the local multi-repo workspace layout (ventures/yulalab-com/{site,
+// links}/) — a standalone checkout of this repo (e.g. GitHub Actions) will
+// never have them. Missing targets are reported below, not silently
+// skipped — a "0 forbidden-pattern hits" result must say what it covered.
 const SCAN_TARGETS = [
   join(ROOT, "src"),
   join(ROOT, "messages"),
@@ -69,10 +75,14 @@ const SCAN_TARGETS = [
 ];
 
 const TEXT_EXT = new Set([".ts", ".tsx", ".json", ".md", ".html", ""]);
+const missingTargets = [];
 
 function walk(path, out) {
   const st = statSync(path, { throwIfNoEntry: false });
-  if (!st) return;
+  if (!st) {
+    missingTargets.push(path);
+    return;
+  }
   if (st.isDirectory()) {
     if (path.includes("node_modules") || path.includes(`${path.sep ?? "/"}.next`)) return;
     for (const entry of readdirSync(path)) walk(join(path, entry), out);
@@ -94,13 +104,21 @@ for (const file of files) {
 }
 
 // -----------------------------------------------------------------------
+if (missingTargets.length) {
+  console.warn(`verify-claims-local: ${missingTargets.length} scan target(s) not present, skipped:`);
+  for (const t of missingTargets) console.warn(`  ⚠ ${t}`);
+  console.warn(
+    "  (expected for links/* outside the local multi-repo workspace layout — e.g. CI)",
+  );
+}
+
 if (failures.length) {
-  console.error(`verify-claims-local: ${failures.length} issue(s) found\n`);
+  console.error(`\nverify-claims-local: ${failures.length} issue(s) found\n`);
   for (const f of failures) console.error(`  ✗ ${f}`);
   process.exit(1);
 } else {
   console.log(
-    `verify-claims-local: OK — ${trKeys.size} TR keys / ${enKeys.size} EN keys in parity, ${files.length} files scanned, 0 forbidden-pattern hits.`,
+    `\nverify-claims-local: OK — ${trKeys.size} TR keys / ${enKeys.size} EN keys in parity, ${files.length} files scanned (${missingTargets.length} target(s) unavailable), 0 forbidden-pattern hits.`,
   );
   process.exit(0);
 }
