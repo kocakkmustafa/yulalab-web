@@ -14,6 +14,55 @@ import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenanc
  * unmarked copy keeps asserting it as current, which makes the whole
  * freshness mechanism decorative on the surface people actually read.
  */
+/**
+ * Claim text with ISO dates removed and thousands separators normalised.
+ *
+ * Dates go because every claim carries one and a two-digit stat would match
+ * it: "19" is a word-boundary match inside "2026-08-19". Separators go from
+ * BOTH sides because the registry writes "13.587 yarış" / "13,587 races"
+ * while the stat writes "13.587" — without this the next legitimate link
+ * (races, runners) fails, and the cheapest way out would be adding an
+ * exception, routing future work straight into the one mechanism that has
+ * already hidden a drift.
+ */
+function searchable(text: string): string {
+  return text.replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/[.,\u00a0]/g, "");
+}
+
+function figureOf(value: string): string {
+  return value.replace(/[.,\u00a0]/g, "").replace(/[^0-9]/g, "");
+}
+
+function claimAsserts(claim: { statementTr: string; statementEn: string }, figure: string): boolean {
+  if (figure.length < 2) return false; // single digits match almost any prose
+  const boundary = new RegExp(`(?<![0-9])${figure}(?![0-9])`);
+  return boundary.test(searchable(claim.statementTr)) || boundary.test(searchable(claim.statementEn));
+}
+
+/**
+ * Links whose figure is written out in words in the claim, so no digit
+ * exists to match.
+ *
+ * The value is PINNED and the word form is asserted to be PRESENT. The
+ * earlier version keyed only on (slug, claimId), which excused that link for
+ * any value — changing "9" to "12" kept the whole suite green while the page
+ * asserted twelve primitives under a stamp from a claim saying nine. Its
+ * companion "honesty" test asked whether the entry would pass the digit
+ * check anyway, which is false by construction for every possible value: the
+ * entry exists BECAUSE there is no digit. The one guard written to keep this
+ * list honest could never fire.
+ */
+const SPELLED_OUT = [
+  {
+    slug: "braavolabs",
+    claimId: "braavolabs-primitive-count",
+    statValue: "9",
+    wordTr: "Dokuz",
+    wordEn: "Nine",
+    why: "the claim spells the count out rather than writing a digit",
+  },
+] as const;
+
 describe("stats that restate a registry claim must be linked to it", () => {
   it("every claimId on a stat resolves to a real claim", () => {
     for (const project of projects) {
@@ -32,88 +81,34 @@ describe("stats that restate a registry claim must be linked to it", () => {
   it("resolves a linked stat back to its claim", () => {
     const bf = projects.find((p) => p.slug === "burunfarki")!;
     const stat = bf.stats.find((s) => s.value === "~%61")!;
-    const claim = linkedClaimFor("burunfarki", stat);
-    expect(claim?.id).toBe("burunfarki-topk-accuracy");
+    expect(linkedClaimFor("burunfarki", stat)?.id).toBe("burunfarki-topk-accuracy");
   });
 
   it("links exactly the stats that are supposed to be linked", () => {
-    // An EXPLICIT ledger, not a heuristic.
-    //
-    // The first version matched a stat's digits against the claim text and
-    // skipped values shorter than two characters. Measured: unlinking
-    // Braavolabs' "9" was invisible to it — and the substring approach could
-    // never have caught that one anyway, because the claim spells the number
-    // out ("Nine primitives" / "Dokuz primitif"). Only the count ratchet
-    // noticed, incidentally, and removing any other unsourced stat in the
-    // same edit hid it completely: all five tests passed with a claimed
-    // figure back on the page as an unmarked number.
-    //
-    // Linking is a claim-honesty decision, so changing this list should
-    // require deliberately editing a test rather than being inferred.
-    const EXPECTED: Array<[slug: string, claimId: string]> = [
-      ["braavolabs", "braavolabs-primitive-count"],
-      ["braavolabs", "braavolabs-provider-count"],
-      ["burunfarki", "burunfarki-topk-accuracy"],
-      ["burunfarki", "burunfarki-topk-accuracy"],
-      ["lifeos", "lifeos-on-device-encryption"],
-    ];
+    // Keyed on the STAT VALUE too. A sorted list of (slug, claimId) pairs is
+    // identity under permutation, so swapping Braavolabs' two claimIds
+    // between "9" and "14" left it green — each stat then stamped by the
+    // other's claim, invisible today only because both claims happen to carry
+    // the same dates.
+    const EXPECTED = [
+      ["braavolabs", "9", "braavolabs-primitive-count"],
+      ["braavolabs", "14", "braavolabs-provider-count"],
+      ["burunfarki", "~%30", "burunfarki-topk-accuracy"],
+      ["burunfarki", "~%61", "burunfarki-topk-accuracy"],
+      ["lifeos", "AES-256", "lifeos-on-device-encryption"],
+    ] as const;
 
     const actual = projects
-      .flatMap((p) => (p.stats ?? []).map((s) => [p.slug, s.claimId] as const))
-      .filter((pair): pair is readonly [string, string] => Boolean(pair[1]))
-      .map(([slug, id]) => `${slug}|${id}`)
+      .flatMap((p) => (p.stats ?? []).map((s) => [p.slug, s.value, s.claimId] as const))
+      .filter((t): t is readonly [string, string, string] => Boolean(t[2]))
+      .map(([slug, value, id]) => `${slug}|${value}|${id}`)
       .sort();
 
-    expect(actual).toEqual(EXPECTED.map(([slug, id]) => `${slug}|${id}`).sort());
-  });
-
-  it("still catches a NEW stat that restates a claimed figure without linking", () => {
-    // The heuristic is kept as a second net for the case it does cover: a
-    // future edit adding "~%72 Top-3" while the claim says ~%61.
-    const orphans: string[] = [];
-    for (const project of projects) {
-      const record = publicRegistry.find((r) => r.slug === project.slug);
-      if (!record) continue;
-      for (const stat of project.stats ?? []) {
-        if (stat.claimId) continue;
-        if (!/[0-9]/.test(stat.value)) continue;
-        const bare = stat.value.replace(/[~%\s]/g, "");
-        if (bare.length < 2) continue;
-        const restated = record.claims.some(
-          (c) => c.statementTr.includes(bare) || c.statementEn.includes(bare),
-        );
-        if (restated) orphans.push(`${project.slug}: "${stat.value}" is asserted by a claim but unlinked`);
-      }
-    }
-    expect(orphans).toEqual([]);
+    expect(actual).toEqual(EXPECTED.map(([s, v, i]) => `${s}|${v}|${i}`).sort());
   });
 });
 
 describe("a linked stat must actually be the figure its claim asserts", () => {
-  /**
-   * The drift guard opened with `if (stat.claimId) continue;` — it inspected
-   * only the UNLINKED set and skipped exactly the set that linking made
-   * risky. Measured: change "~%30" to "~%42" while keeping the claimId and
-   * the whole suite stayed green, while the page rendered ~%42 in 42px type
-   * with "verified 2026-07-23" beneath it and the claim card below said
-   * ~30%. Before linking, a drifted value was merely unsourced; linking gave
-   * it an authoritative stamp, which is roadmap §1.4 inverted.
-   */
-  // Pairs whose figure is genuinely absent from the claim TEXT, with the
-  // reason. Asserted below to contain nothing that would pass anyway, so it
-  // cannot be used to wave through a real drift.
-  const SPELLED_OUT: Array<[slug: string, claimId: string, why: string]> = [
-    [
-      "braavolabs",
-      "braavolabs-primitive-count",
-      'the claim spells the number out ("Nine primitives" / "Dokuz primitif"), so there is no digit to match',
-    ],
-  ];
-
-  function digits(value: string): string {
-    return value.replace(/[^0-9]/g, "");
-  }
-
   it("finds every linked figure inside the claim it points at", () => {
     const mismatches: string[] = [];
     for (const project of projects) {
@@ -121,14 +116,12 @@ describe("a linked stat must actually be the figure its claim asserts", () => {
       for (const stat of project.stats ?? []) {
         if (!stat.claimId) continue;
         const claim = record?.claims.find((c) => c.id === stat.claimId);
-        if (!claim) continue; // covered by the resolution test above
-        const excused = SPELLED_OUT.some(([s, c]) => s === project.slug && c === stat.claimId);
+        if (!claim) continue;
+        const excused = SPELLED_OUT.some(
+          (e) => e.slug === project.slug && e.claimId === stat.claimId && e.statValue === stat.value,
+        );
         if (excused) continue;
-        const needle = digits(stat.value);
-        const found =
-          needle.length > 0 &&
-          (claim.statementTr.includes(needle) || claim.statementEn.includes(needle));
-        if (!found) {
+        if (!claimAsserts(claim, figureOf(stat.value))) {
           mismatches.push(
             `${project.slug}: stat "${stat.value}" claims provenance from ${stat.claimId}, which does not assert that figure`,
           );
@@ -138,19 +131,37 @@ describe("a linked stat must actually be the figure its claim asserts", () => {
     expect(mismatches).toEqual([]);
   });
 
-  it("keeps the exception list honest — every entry must genuinely fail the check", () => {
-    // Prevents the list becoming a place to silence real drift.
-    for (const [slug, claimId, why] of SPELLED_OUT) {
-      const project = projects.find((p) => p.slug === slug)!;
-      const record = publicRegistry.find((r) => r.slug === slug)!;
-      const stat = project.stats.find((s) => s.claimId === claimId)!;
-      const claim = record.claims.find((c) => c.id === claimId)!;
-      const needle = digits(stat.value);
-      const wouldPass =
-        needle.length > 0 &&
-        (claim.statementTr.includes(needle) || claim.statementEn.includes(needle));
-      expect(wouldPass, `${slug}/${claimId} no longer needs an exception: ${why}`).toBe(false);
+  it("justifies each exception by what the claim DOES say, not by what it lacks", () => {
+    for (const e of SPELLED_OUT) {
+      const project = projects.find((p) => p.slug === e.slug)!;
+      const record = publicRegistry.find((r) => r.slug === e.slug)!;
+      const claim = record.claims.find((c) => c.id === e.claimId)!;
+
+      // The value is pinned: change the stat and the exception stops applying.
+      const stat = project.stats.find((s) => s.claimId === e.claimId);
+      expect(stat?.value, `${e.slug}/${e.claimId}: exception records "${e.statValue}" but the stat is "${stat?.value}"`).toBe(e.statValue);
+
+      // And the claim must POSITIVELY contain the word form. Asserting only
+      // "no digit is present" is true for every value, which is why the
+      // previous version of this test could never fail.
+      expect(claim.statementTr, `${e.claimId}: Turkish claim must contain "${e.wordTr}"`).toContain(e.wordTr);
+      expect(claim.statementEn, `${e.claimId}: English claim must contain "${e.wordEn}"`).toContain(e.wordEn);
     }
+  });
+
+  it("the matcher itself behaves", () => {
+    // Guarding the guard: a matcher that always returns true would make the
+    // mismatch test vacuous, and one that always returns false would block
+    // every future link.
+    const c = (tr: string, en: string) => ({ statementTr: tr, statementEn: en });
+    expect(claimAsserts(c("Top-3 ~%61", "Top-3 ~61%"), "61")).toBe(true);
+    expect(claimAsserts(c("13.587 yarış", "13,587 races"), "13587")).toBe(true);
+    expect(claimAsserts(c("AES-256 ile şifreli", "encrypted with AES-256"), "256")).toBe(true);
+    expect(claimAsserts(c("Top-3 ~%61", "Top-3 ~61%"), "42")).toBe(false);
+    // A date in the claim must not satisfy a stat.
+    expect(claimAsserts(c("2026-08-19 itibarıyla", "as of 2026-08-19"), "19")).toBe(false);
+    // Single digits are never enough.
+    expect(claimAsserts(c("Dokuz primitif", "Nine primitives"), "9")).toBe(false);
   });
 });
 

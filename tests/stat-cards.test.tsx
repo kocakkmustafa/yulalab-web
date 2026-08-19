@@ -68,31 +68,96 @@ describe("a stat backed by a claim", () => {
 });
 
 describe("resolving the right claim, not just any claim", () => {
-  // Braavolabs' "14" links to its SECOND claim. Every earlier test rendered
-  // burunfarki, where both linked stats point at claims[0] — so replacing
-  // the lookup with `record.claims[0]` passed the entire suite.
-  const { record } = product("braavolabs");
-  const providerClaim = record.claims.find((c) => c.id === "braavolabs-provider-count")!;
-  const primitiveClaim = record.claims.find((c) => c.id === "braavolabs-primitive-count")!;
+  /**
+   * A PURPOSE-BUILT fixture, not the real registry.
+   *
+   * The previous version rendered Braavolabs and asserted that its provider
+   * claim is not claims[0] — but its two claims carry identical dates, so
+   * `record.claims[0]` rendered the same string and passed. The separating
+   * test guarded itself behind `if (earliest === latest) return;`, which
+   * fired every run: replacing its body with a deliberately failing
+   * assertion left 10/10 green. A test that depends on the real data
+   * happening to be distinguishable is a test that stops working the moment
+   * it isn't.
+   */
+  const FIXTURE_RECORD = {
+    slug: "fixture",
+    name: "Fixture",
+    lifecycle: "live" as const,
+    surfaces: [],
+    primaryCta: { labelTr: "x", labelEn: "x", url: "/x" },
+    screenshots: [],
+    claims: [
+      {
+        id: "first-claim",
+        statementTr: "İlk",
+        statementEn: "First",
+        evidenceKind: "measured" as const,
+        source: "https://example.com/a",
+        scopeTr: "kapsam",
+        scopeEn: "scope",
+        owner: "o",
+        verifiedAt: "2026-01-01",
+        expiresAt: "2026-02-01",
+      },
+      {
+        id: "second-claim",
+        statementTr: "İkinci",
+        statementEn: "Second",
+        evidenceKind: "measured" as const,
+        source: "https://example.com/b",
+        scopeTr: "kapsam",
+        scopeEn: "scope",
+        owner: "o",
+        verifiedAt: "2026-06-15",
+        expiresAt: "2026-07-15",
+      },
+    ],
+    privacyUrl: "/p",
+    supportUrl: "/s",
+    updatedAt: "2026-01-01",
+  };
 
-  it("is not claims[0]", () => {
-    expect(record.claims[0].id).not.toBe("braavolabs-provider-count");
+  const FIXTURE_STATS = [
+    { value: "111", label: { tr: "Bir", en: "One" }, claimId: "second-claim" },
+    { value: "222", label: { tr: "İki", en: "Two" }, claimId: "first-claim" },
+  ];
+
+  function renderFixture(now: Date) {
+    return render(
+      <StatCards
+        slug="fixture"
+        stats={FIXTURE_STATS}
+        record={FIXTURE_RECORD}
+        locale="en"
+        now={now}
+        labels={LABELS}
+      />,
+    );
+  }
+
+  it("shows each stat its OWN claim's date, not the first claim's", () => {
+    // The stat listed first links to the SECOND claim, so claims[0] would
+    // print 2026-01-01 under it.
+    renderFixture(new Date("2026-01-20T12:00:00+03:00"));
+    const one = screen.getByText("111").closest("div")!.parentElement!;
+    expect(one.textContent).toContain("verified 2026-06-15");
+    expect(one.textContent).not.toContain("2026-01-01");
   });
 
-  it("uses each stat's own claim date", () => {
-    renderFor("braavolabs", onExpiryDay(providerClaim.expiresAt));
-    expect(screen.getAllByText(new RegExp(`verified ${providerClaim.verifiedAt}`)).length).toBeGreaterThan(0);
-  });
-
-  it("stales each linked stat on its own claim's schedule", () => {
-    // If the lookup collapsed to claims[0], both cards would flip together.
-    const dates = [primitiveClaim.expiresAt, providerClaim.expiresAt];
-    const earliest = dates.slice().sort()[0];
-    const latest = dates.slice().sort()[1];
-    if (earliest === latest) return; // same schedule today; nothing to separate
-
-    renderFor("braavolabs", dayAfterExpiry(earliest));
+  it("stales each stat on its own claim's schedule", () => {
+    // 2026-02-02: the first claim has lapsed, the second has not.
+    renderFixture(new Date("2026-02-02T12:00:00+03:00"));
+    const one = screen.getByText("111").closest("div")!.parentElement!;
+    const two = screen.getByText("222").closest("div")!.parentElement!;
+    expect(one.textContent).toContain("verified 2026-06-15");
+    expect(two.textContent).toContain("needs re-verification");
     expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(1);
+  });
+
+  it("stales the other one later, on its own date", () => {
+    renderFixture(new Date("2026-07-16T12:00:00+03:00"));
+    expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(2);
   });
 });
 
