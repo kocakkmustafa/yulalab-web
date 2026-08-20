@@ -49,9 +49,6 @@ importers:
       three:
         specifier: ^0.185.1
         version: 0.185.1
-      troika-three-text:
-        specifier: ^0.52.5
-        version: 0.52.5(three@0.185.1)
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.13.0
