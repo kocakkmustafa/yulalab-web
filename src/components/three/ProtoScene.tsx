@@ -18,7 +18,7 @@ import {
   ChromaticAberration,
 } from "@react-three/postprocessing";
 import { AdditiveBlending, CanvasTexture, Color, Vector2, Vector3 } from "three";
-import type { Mesh, PerspectiveCamera, PointLight } from "three";
+import type { Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PointLight } from "three";
 import type { PortfolioCard } from "@/lib/three/portfolio-cards";
 
 const CA_OFFSET = new Vector2(0.0006, 0.0004);
@@ -109,8 +109,80 @@ function HeroWordMesh({ texture }: { texture: CanvasTexture }) {
   });
   return (
     <mesh ref={mesh} position={[0, 0, -0.6]}>
-      <planeGeometry args={[9.2, 9.2 * (640 / 2048)]} />
+      <planeGeometry args={[10.6, 10.6 * (640 / 2048)]} />
       <meshBasicMaterial map={texture} transparent toneMapped={false} />
+    </mesh>
+  );
+}
+
+/** The reference hero's signature: a wall of glowing blue mosaic tiles,
+ *  randomly lit, behind the type. Baked once; bright tiles are pushed past
+ *  1.0-ish luminance via pure saturated fills so Bloom picks them up. */
+function bakeMosaic(): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = 1024;
+  c.height = 512;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "#04050C";
+  ctx.fillRect(0, 0, 1024, 512);
+  const cols = 44;
+  const rows = 22;
+  const tw = 1024 / cols;
+  const th = 512 / rows;
+  // deterministic pseudo-random so re-bakes look identical
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const palette = ["#060818", "#0A1030", "#101C4E", "#16266B", "#1E349A", "#2B4AD8", "#3A5EFF"];
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      const r = rnd();
+      // mostly dark, a scatter of bright tiles like the reel
+      const idx = r > 0.97 ? 6 : r > 0.92 ? 5 : r > 0.82 ? 4 : r > 0.66 ? 3 : r > 0.46 ? 2 : r > 0.24 ? 1 : 0;
+      ctx.fillStyle = palette[idx];
+      ctx.fillRect(x * tw + 1, y * th + 1, tw - 2, th - 2);
+    }
+  }
+  // grid lines over the tiles
+  ctx.strokeStyle = "rgba(90,120,255,0.28)";
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= cols; x++) {
+    ctx.beginPath();
+    ctx.moveTo(x * tw, 0);
+    ctx.lineTo(x * tw, 512);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= rows; y++) {
+    ctx.beginPath();
+    ctx.moveTo(0, y * th);
+    ctx.lineTo(1024, y * th);
+    ctx.stroke();
+  }
+  // Edge falloff baked in — the reel's wall burns bright at center and
+  // dies into black at the frame edges.
+  const vg = ctx.createRadialGradient(512, 256, 120, 512, 256, 620);
+  vg.addColorStop(0, "rgba(0,0,0,0)");
+  vg.addColorStop(1, "rgba(0,0,0,0.92)");
+  ctx.fillStyle = vg;
+  ctx.fillRect(0, 0, 1024, 512);
+  return c;
+}
+
+/** Hero backdrop wall; fades out as the camera flies into the works room. */
+function MosaicWall({ progress }: { progress: React.RefObject<SceneProgress> }) {
+  const texture = useMemo(() => {
+    const t = new CanvasTexture(bakeMosaic());
+    t.anisotropy = 4;
+    return t;
+  }, []);
+  const mat = useRef<MeshBasicMaterial>(null);
+  useFrame(() => {
+    const fly = progress.current?.fly ?? 0;
+    if (mat.current) mat.current.opacity = Math.max(0, 1 - fly * 1.6);
+  });
+  return (
+    <mesh position={[0, 0.4, -7.3]}>
+      <planeGeometry args={[34, 17]} />
+      <meshBasicMaterial ref={mat} map={texture} transparent toneMapped={false} />
     </mesh>
   );
 }
@@ -205,7 +277,7 @@ const TUNE = {
   prismLerp: 2.2,
   cameraLerp: 2.6,
   prismSwing: 0.25,
-  cameraDrift: 0.55,
+  cameraDrift: 0.95,
   /** World-units between card centers on the band. */
   cardSpacing: 4.4,
   /** Band depth — sits just in front of the back wall (z=-7). */
@@ -214,37 +286,53 @@ const TUNE = {
   bandCamZ: -0.9,
 };
 
+/** Shared glass recipe — hero shard and the works' floating fragments. */
+function GlassMaterial() {
+  return (
+    <MeshTransmissionMaterial
+      transmission={1}
+      thickness={1.2}
+      roughness={0.05}
+      ior={1.5}
+      chromaticAberration={0.4}
+      anisotropicBlur={0.3}
+      distortion={0.3}
+      distortionScale={0.5}
+      temporalDistortion={0.12}
+      backside
+    />
+  );
+}
+
 function PrismRig({ progress }: { progress: React.RefObject<SceneProgress> }) {
-  const mesh = useRef<Mesh>(null);
+  const mesh = useRef<Group>(null);
   useFrame((state, delta) => {
     const m = mesh.current;
     if (!m) return;
+    const t = state.clock.elapsedTime;
     const k = Math.min(1, delta * TUNE.prismLerp);
-    m.position.x += (state.pointer.x * TUNE.prismFollowX - m.position.x) * k;
+    m.position.x += (state.pointer.x * TUNE.prismFollowX - 0.6 - m.position.x) * k;
     m.position.y += (state.pointer.y * TUNE.prismFollowY - m.position.y) * k;
-    m.rotation.z = Math.PI + Math.sin(state.clock.elapsedTime * TUNE.prismSwing) * 0.35;
-    m.scale.setScalar(layout.scale);
-    // The camera flies PAST the prism into the room — once it's behind the
-    // lens its transmission pass is wasted work; park it.
+    // Continuous tumble like the reel's fragment — not a pendulum.
+    m.rotation.y = t * 0.5;
+    m.rotation.z = 0.35 + Math.sin(t * 0.3) * 0.25;
+    m.rotation.x = Math.sin(t * 0.22) * 0.2;
+    // Intro: the shard grows into the scene over the first beats.
+    const intro = Math.min(1, t / 1.4);
+    const ease = 1 - Math.pow(1 - intro, 3);
+    m.scale.setScalar(layout.scale * ease);
     m.visible = (progress.current?.fly ?? 0) < 0.85;
   });
   return (
-    <mesh ref={mesh} position={[0, 0, 2.2]} rotation={[Math.PI / 2, 0, Math.PI]}>
-      <cylinderGeometry args={[1.55, 1.55, 1.15, 3, 1]} />
-      <MeshTransmissionMaterial
-        transmission={1}
-        thickness={1.4}
-        roughness={0.06}
-        ior={1.45}
-        chromaticAberration={0.35}
-        anisotropicBlur={0.25}
-        distortion={0.28}
-        distortionScale={0.5}
-        temporalDistortion={0.12}
-        backside
-      />
-      <Edges threshold={20} color="#8A8A96" />
-    </mesh>
+    // Elongated octahedron = tall angular glass shard (the reel's fragment
+    // silhouette), replacing the earlier equilateral prism.
+    <group ref={mesh} position={[-0.6, 0, 2.2]} scale={0.001}>
+      <mesh scale={[0.62, 2.7, 0.4]}>
+        <octahedronGeometry args={[1, 0]} />
+        <GlassMaterial />
+        <Edges threshold={20} color="#9AA6C8" />
+      </mesh>
+    </group>
   );
 }
 
@@ -346,6 +434,60 @@ function TypographicCard({ card }: { card: PortfolioCard }) {
   );
 }
 
+/** Two small tumbling glass fragments that ride with the focused card —
+ *  the reel frames every project with refracting shards. */
+function WorksShards({
+  progress,
+  cardCount,
+}: {
+  progress: React.RefObject<SceneProgress>;
+  cardCount: number;
+}) {
+  const a = useRef<Group>(null);
+  const b = useRef<Group>(null);
+  useFrame((state, delta) => {
+    const { fly, band } = progress.current ?? { fly: 0, band: 0 };
+    const t = state.clock.elapsedTime;
+    const sc = layout.scale;
+    const camX = band * TUNE.cardSpacing * sc * Math.max(0, cardCount - 1);
+    const k = Math.min(1, delta * 2.2);
+    const on = fly >= 1;
+    const pair: [typeof a, number, number, number][] = [
+      [a, -1.7, 0.5, 0.9],
+      [b, 1.75, -0.75, 1.15],
+    ];
+    for (const [ref, ox, oy, oz] of pair) {
+      const g = ref.current;
+      if (!g) continue;
+      g.visible = on;
+      g.position.x += (camX + ox * sc + state.pointer.x * 0.4 - g.position.x) * k;
+      g.position.y += (oy * sc + state.pointer.y * 0.3 - g.position.y) * k;
+      g.position.z = TUNE.bandZ + oz;
+      g.rotation.y = t * (ox < 0 ? 0.55 : -0.45);
+      g.rotation.z = Math.sin(t * 0.4 + ox) * 0.5;
+      g.scale.setScalar(sc * 0.55);
+    }
+  });
+  return (
+    <>
+      <group ref={a} visible={false}>
+        <mesh scale={[0.5, 1.9, 0.32]}>
+          <octahedronGeometry args={[1, 0]} />
+          <GlassMaterial />
+          <Edges threshold={20} color="#9AA6C8" />
+        </mesh>
+      </group>
+      <group ref={b} visible={false}>
+        <mesh scale={[0.4, 1.4, 0.28]}>
+          <octahedronGeometry args={[1, 0]} />
+          <GlassMaterial />
+          <Edges threshold={20} color="#9AA6C8" />
+        </mesh>
+      </group>
+    </>
+  );
+}
+
 function BandCard({
   card,
   index,
@@ -368,7 +510,7 @@ function BandCard({
     // Focused card leans out of the wall and brightens; neighbours recede.
     const focus = Math.max(0, 1 - dist);
     const k = Math.min(1, delta * 3);
-    const targetScale = (0.9 + focus * 0.22) * sc;
+    const targetScale = (0.86 + focus * 0.42) * sc;
     g.scale.x += (targetScale - g.scale.x) * k;
     g.scale.y += (targetScale - g.scale.y) * k;
     g.position.x += (index * TUNE.cardSpacing * sc - g.position.x) * k;
@@ -380,7 +522,7 @@ function BandCard({
     const fly = progress.current?.fly ?? 0;
     const targetY = fly > 0.6 ? 0 : -9;
     g.position.y += (targetY - g.position.y) * Math.min(1, delta * 2.2);
-    g.position.z += (TUNE.bandZ + focus * 0.7 - g.position.z) * k;
+    g.position.z += (TUNE.bandZ - 0.9 + focus * 1.7 - g.position.z) * k;
     g.rotation.y += ((index * TUNE.cardSpacing * layout.scale - camX) * -0.06 - g.rotation.y) * k;
   });
   return (
@@ -416,13 +558,15 @@ export default function ProtoScene({
       dpr={[1, 2]}
       gl={{ antialias: true, powerPreference: "high-performance" }}
     >
-      <color attach="background" args={["#0A0A0B"]} />
-      <fog attach="fog" args={["#08080A", 11, 34]} />
+      <color attach="background" args={["#05060C"]} />
+      <fog attach="fog" args={["#070A16", 11, 34]} />
 
+      <MosaicWall progress={progress} />
       <HeroWord onReady={onTextReady} />
 
       <ResponsiveRig />
       <PrismRig progress={progress} />
+      <WorksShards progress={progress} cardCount={cards.length} />
       <CameraRig progress={progress} cardCount={cards.length} />
       <StageLight progress={progress} cards={cards} />
 
@@ -442,10 +586,10 @@ export default function ProtoScene({
         position={[0, -2.5, 0]}
         cellSize={0.9}
         cellThickness={0.6}
-        cellColor="#232329"
+        cellColor="#1C2238"
         sectionSize={4.5}
         sectionThickness={1}
-        sectionColor="#34343E"
+        sectionColor="#2C3A66"
         fadeDistance={28}
         fadeStrength={2.5}
         infiniteGrid
@@ -455,10 +599,10 @@ export default function ProtoScene({
         rotation={[Math.PI / 2, 0, 0]}
         cellSize={0.9}
         cellThickness={0.6}
-        cellColor="#1D1D23"
+        cellColor="#161B30"
         sectionSize={4.5}
         sectionThickness={1}
-        sectionColor="#2B2B33"
+        sectionColor="#25305A"
         fadeDistance={30}
         fadeStrength={2.2}
         infiniteGrid
@@ -468,6 +612,7 @@ export default function ProtoScene({
         <Lightformer intensity={3.6} position={[5, 4, 6]} scale={[7, 0.6, 1]} rotation-y={-0.6} />
         <Lightformer intensity={2.4} position={[-6, 2, 4]} scale={[6, 0.5, 1]} rotation-y={0.7} />
         <Lightformer intensity={1.6} position={[0, -4, 5]} scale={[8, 0.4, 1]} rotation-x={0.8} color="#B8C4FF" />
+        <Lightformer intensity={2.2} position={[3, -2, 7]} scale={[2.4, 0.5, 1]} rotation-y={-0.4} color="#FFB37A" />
       </Environment>
 
       <EffectComposer>

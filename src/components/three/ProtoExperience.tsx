@@ -183,35 +183,46 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
           {/* Focused-card panel: real DOM, updates with the same index the
               scene lights. Content comes from the registry mapping, so a
               research product can never present itself as shipped here. */}
+          {/* Reference layout: date line, BIG title, tag chips bottom-left;
+              "all works" bottom-right. */}
           <div
-            className="mb-11 ml-6 mr-6 flex max-w-md flex-col gap-2 transition-opacity duration-500 md:ml-12"
+            className="mb-10 ml-6 mr-6 flex max-w-xl flex-col gap-3 transition-opacity duration-500 md:ml-12"
             style={{ opacity: bandOn && active ? 1 : 0 }}
             aria-hidden={!bandOn}
           >
-            <div className="flex items-baseline gap-3">
-              <span className="font-grotesk text-2xl font-bold tracking-tightest text-ink-50">
-                {active?.name}
-              </span>
+            <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-300">
+              {active?.capturedAt ? `${active.capturedAt} · gerçek ekran görüntüsü` : "kayıt: ekran görüntüsü yok"}
+            </div>
+            <div className="font-grotesk text-4xl font-bold leading-none tracking-tightest text-ink-50 md:text-5xl">
+              {active?.name}
+            </div>
+            <p className="max-w-md font-display text-sm font-light leading-normal text-ink-200">
+              {active?.shortTr}
+            </p>
+            <div className="flex flex-wrap gap-2 pt-1">
               <span
-                className="font-mono text-[10px] uppercase tracking-[0.14em]"
-                style={{ color: active?.lifecycle === "research" ? "#9A9AA3" : active?.brandPrimary }}
+                className="rounded-full border px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em]"
+                style={{
+                  color: active?.lifecycle === "research" ? "#9A9AA3" : active?.brandPrimary,
+                  borderColor: active?.lifecycle === "research" ? "rgba(255,255,255,0.25)" : `${active?.brandPrimary}66`,
+                }}
               >
                 {active?.statusTr}
               </span>
+              <span className="rounded-full border border-hairline px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-300">
+                {active?.screenshot ? "kayıtlı ekran" : active?.lifecycle === "research" ? "gerçek ekran yok" : "tipografik kart"}
+              </span>
+              <span className="rounded-full border border-hairline px-3 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-300">
+                {String(activeIdx + 1).padStart(2, "0")} / {String(cards.length).padStart(2, "0")}
+              </span>
             </div>
-            <p className="font-display text-sm font-light leading-normal text-ink-200">
-              {active?.shortTr}
-            </p>
-            <div className="font-mono text-[9px] uppercase tracking-[0.12em] text-ink-300">
-              {active?.screenshot
-                ? `gerçek ekran görüntüsü · ${active.capturedAt}`
-                : active?.lifecycle === "research"
-                  ? "araştırma — gerçek ekran görüntüsü yok"
-                  : "kayıtlı ekran görüntüsü yok — tipografik kart"}
-            </div>
-            <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
-              {String(activeIdx + 1).padStart(2, "0")} / {String(cards.length).padStart(2, "0")}
-            </div>
+          </div>
+          <div
+            className="absolute bottom-10 right-6 font-mono text-[11px] uppercase tracking-[0.16em] text-ink-100 transition-opacity duration-500 md:right-12"
+            style={{ opacity: bandOn ? 1 : 0 }}
+            aria-hidden={!bandOn}
+          >
+            Tüm ürünler ↗
           </div>
         </div>
       </section>
