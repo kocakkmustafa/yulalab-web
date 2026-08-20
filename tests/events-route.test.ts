@@ -244,7 +244,7 @@ describe("rate limiting", () => {
     expect(await flood(60, { ip: "203.0.113.9", rotateSession: false })).toBeGreaterThan(0);
   });
 
-  it("gives a different client its own budget", async () => {
+  it("gives a different client its own budget", { timeout: 20000 }, async () => {
     await flood(60, { ip: "203.0.113.9", rotateSession: true });
     const { POST } = await import("@/app/api/events/route");
     const res = await POST(

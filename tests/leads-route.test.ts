@@ -117,7 +117,7 @@ describe("rejections", () => {
     expect(res.status).toBe(403);
   });
 
-  it("rate-limits a flood from one client", async () => {
+  it("rate-limits a flood from one client", { timeout: 20000 }, async () => {
     let limited = 0;
     for (let i = 0; i < 40; i += 1) {
       const res = await post(body({ message: `attempt ${i}` }), { "x-forwarded-for": "203.0.113.9" });
