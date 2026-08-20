@@ -36,7 +36,21 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://vercel.live https://va.vercel-scripts.com`,
+      // blob: in script-src + the worker-src directive exist for
+      // troika-three-text (the WebGL hero's SDF text engine): it spawns a
+      // blob: worker (worker-src) whose module code loads via a blob:
+      // script inside that worker (script-src-elem falls back to
+      // script-src). Without both, the worker request stalls the scene for
+      // 10-15s before troika's main-thread fallback kicks in (measured on
+      // /proto). Threat surface: blob code can only be constructed by
+      // script already executing under script-src — which already admits
+      // 'unsafe-inline' — so neither grant hands an attacker execution
+      // they don't already have. If 'unsafe-inline' is ever replaced by
+      // nonces (Y-P0-002-CSP-NONCE-SCOPE-KARARI.md), these two MUST be
+      // re-evaluated in the same pass.
+      // ⚠️ Security-class change: flag in the pre-merge independent review.
+      `script-src 'self' 'unsafe-inline' blob:${isDev ? " 'unsafe-eval'" : ""} https://vercel.live https://va.vercel-scripts.com`,
+      "worker-src 'self' blob:",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' data: https://fonts.gstatic.com",
       "img-src 'self' data: blob: https:",
