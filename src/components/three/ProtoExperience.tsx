@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useProgress } from "@react-three/drei";
 import { canRunScene } from "@/lib/three/capability";
 import { activeCardIndex, type PortfolioCard } from "@/lib/three/portfolio-cards";
@@ -151,7 +152,7 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
 
       {/* Scroll body — real DOM content, canvas is scenery behind it. */}
       <section ref={heroRef} className="relative z-10 h-screen">
-        <div className="absolute bottom-11 left-6 flex max-w-sm flex-col gap-3 md:left-12">
+        <div className="absolute bottom-11 left-6 right-6 flex max-w-sm flex-col gap-3 md:left-12 md:right-auto">
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
             Ürün Laboratuvarı · Türkiye
           </div>
@@ -164,7 +165,7 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
           <span>8 ürün · 1 laboratuvar</span>
           <span>TR · 2025</span>
         </div>
-        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
+        <div className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300 md:block">
           Kaydır
         </div>
       </section>
@@ -183,7 +184,7 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
               scene lights. Content comes from the registry mapping, so a
               research product can never present itself as shipped here. */}
           <div
-            className="mb-11 ml-6 flex max-w-md flex-col gap-2 transition-opacity duration-500 md:ml-12"
+            className="mb-11 ml-6 mr-6 flex max-w-md flex-col gap-2 transition-opacity duration-500 md:ml-12"
             style={{ opacity: bandOn && active ? 1 : 0 }}
             aria-hidden={!bandOn}
           >
@@ -215,11 +216,94 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
         </div>
       </section>
 
-      <section className="relative z-10 flex h-[50vh] items-center justify-center">
-        <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
-          prototip sonu — tüm ürünler /projects altında
-        </span>
+      {/* The white cut — the reel's sudden light "about" beat. Pure DOM over
+          the canvas: content identical to the live /manifesto page, no new
+          copy authored here. */}
+      <section className="relative z-20 bg-ink-50 px-6 py-24 text-ink-900 md:px-12 md:py-32">
+        <div className="mx-auto flex max-w-5xl flex-col gap-10">
+          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">
+            Manifesto
+          </div>
+          <h2 className="font-grotesk text-5xl font-medium leading-none tracking-tightest md:text-7xl">
+            Aceleyle değil,
+            <br />
+            özenle.
+          </h2>
+          <p className="max-w-2xl font-display text-lg font-light leading-relaxed text-ink-600 md:text-xl">
+            YULA Lab; trende değil, kanıta yaslanan bağımsız bir ürün laboratuvarı.
+            Ürünlerimizin her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir
+            bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.
+          </p>
+          <div className="grid gap-8 md:grid-cols-3">
+            <div className="flex flex-col gap-2">
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">İsim</div>
+              <p className="font-display text-sm leading-normal text-ink-600">
+                Yula: yol gösteren ışık. Karanlıkta yön gösteren küçük ama güvenilir ışığın adı.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">Disiplin</div>
+              <p className="font-display text-sm leading-normal text-ink-600">
+                Lab: deney, ölçüm, tekrar. Işık tutan ama gösteriş yapmayan bir çalışma biçimi.
+              </p>
+            </div>
+            <div className="flex flex-col gap-2">
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-500">Söz</div>
+              <p className="font-display text-sm leading-normal text-ink-600">
+                Sitedeki her rakam kaynağını ve doğrulanma tarihini taşır; süresi dolan iddia
+                &quot;doğrulanmış&quot; gibi gösterilmez.
+              </p>
+            </div>
+          </div>
+          <Link href="/manifesto" className="font-mono text-[11px] uppercase tracking-[0.14em] text-ink-900 underline underline-offset-4">
+            Manifestonun tamamı ↗
+          </Link>
+        </div>
       </section>
+
+      <footer className="relative z-20 border-t border-hairline bg-[#050506] px-6 pb-10 pt-20 md:px-12">
+        <div className="mx-auto flex max-w-6xl flex-col gap-14">
+          <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
+            <div className="flex flex-col gap-4">
+              <span
+                className="select-none font-grotesk text-7xl font-bold leading-none tracking-tightest md:text-9xl"
+                style={{ color: "transparent", WebkitTextStroke: "1.5px rgba(244,244,245,0.6)" }}
+              >
+                YULA
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
+                yol gösteren ışık · İstanbul
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-10 md:grid-cols-3">
+              <div className="flex flex-col gap-3">
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">Ürünler</div>
+                <Link className="font-display text-sm text-ink-200" href="/projects/braavolabs">Braavolabs</Link>
+                <Link className="font-display text-sm text-ink-200" href="/projects/burunfarki">Burun Farkı</Link>
+                <Link className="font-display text-sm text-ink-200" href="/projects/lifeos">LifeOS</Link>
+                <Link className="font-display text-sm text-ink-300" href="/projects">Tüm ürünler</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">Site</div>
+                <Link className="font-display text-sm text-ink-200" href="/manifesto">Manifesto</Link>
+                <Link className="font-display text-sm text-ink-200" href="/transparency">Şeffaflık</Link>
+                <Link className="font-display text-sm text-ink-200" href="/notes">Notlar</Link>
+                <Link className="font-display text-sm text-ink-200" href="/support">Destek</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-400">Hukuk</div>
+                <Link className="font-display text-sm text-ink-200" href="/privacy">Gizlilik</Link>
+                <Link className="font-display text-sm text-ink-200" href="/terms">Şartlar</Link>
+                <Link className="font-display text-sm text-ink-200" href="/contact">İletişim</Link>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-col gap-2 border-t border-hairline pt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300 md:flex-row md:justify-between">
+            <span>© 2026 YULA Lab · merhaba@yulalab.com</span>
+            <span>kanıtsız iddia yayınlamayız</span>
+          </div>
+        </div>
+      </footer>
     </>
   );
 }

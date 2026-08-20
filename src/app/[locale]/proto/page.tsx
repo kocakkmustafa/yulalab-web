@@ -39,7 +39,7 @@ export default async function ProtoPage({
 
       <h1 className="sr-only">YULA Lab — bağımsız AI ürün laboratuvarı</h1>
 
-      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 md:px-12 md:py-7">
+      <header className="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-6 mix-blend-difference md:px-12 md:py-7">
         <div className="flex items-baseline gap-2.5">
           <span className="font-grotesk text-xl font-bold tracking-tightest">YULA</span>
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">LAB</span>

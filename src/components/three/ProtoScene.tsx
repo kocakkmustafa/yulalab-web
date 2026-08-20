@@ -17,7 +17,7 @@ import {
   Vignette,
   ChromaticAberration,
 } from "@react-three/postprocessing";
-import { CanvasTexture, Color, Vector2, Vector3 } from "three";
+import { AdditiveBlending, CanvasTexture, Color, Vector2, Vector3 } from "three";
 import type { Mesh, PerspectiveCamera, PointLight } from "three";
 import type { PortfolioCard } from "@/lib/three/portfolio-cards";
 
@@ -99,25 +99,70 @@ function HeroWord({ onReady }: { onReady?: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- bake once
   }, []);
   if (!texture) return null;
+  return <HeroWordMesh texture={texture} />;
+}
+
+function HeroWordMesh({ texture }: { texture: CanvasTexture }) {
+  const mesh = useRef<Mesh>(null);
+  useFrame(() => {
+    mesh.current?.scale.setScalar(layout.scale);
+  });
   return (
-    <mesh position={[0, 0, -0.6]}>
+    <mesh ref={mesh} position={[0, 0, -0.6]}>
       <planeGeometry args={[9.2, 9.2 * (640 / 2048)]} />
       <meshBasicMaterial map={texture} transparent toneMapped={false} />
     </mesh>
   );
 }
 
-function bakeCardLabel(card: PortfolioCard, kind: "typographic" | "strip"): HTMLCanvasElement {
+/** Soft radial brand glow, baked once per color. The band's card materials
+ *  are unlit (baked/basic), so a point light alone reads as nothing — this
+ *  additive plane IS the visible "stage takes the product's color" beat,
+ *  with the point light kept for any lit material that joins later. */
+const glowCache = new Map<string, HTMLCanvasElement>();
+function bakeGlow(color: string): HTMLCanvasElement {
+  const hit = glowCache.get(color);
+  if (hit) return hit;
+  const c = document.createElement("canvas");
+  c.width = 256;
+  c.height = 256;
+  const ctx = c.getContext("2d")!;
+  const g = ctx.createRadialGradient(128, 128, 8, 128, 128, 128);
+  g.addColorStop(0, color);
+  g.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, 256, 256);
+  glowCache.set(color, c);
+  return c;
+}
+
+function FocusGlow({ card }: { card: PortfolioCard }) {
+  const texture = useMemo(() => new CanvasTexture(bakeGlow(card.brandPrimary)), [card]);
+  return (
+    <mesh position={[0, -0.1, -0.9]} frustumCulled={false}>
+      <planeGeometry args={[7.5, 5.2]} />
+      <meshBasicMaterial
+        map={texture}
+        transparent
+        opacity={0.27}
+        blending={AdditiveBlending}
+        depthWrite={false}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
+function bakeCardLabel(card: PortfolioCard): HTMLCanvasElement {
   const w = 512;
-  const h = kind === "typographic" ? 340 : 64;
+  const h = 340;
   const canvas = document.createElement("canvas");
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext("2d")!;
   const mono = "500 17px 'JetBrains Mono', ui-monospace, monospace";
-  const grotesk = "700 34px 'Space Grotesk', Inter, sans-serif";
 
-  if (kind === "typographic") {
+  {
     ctx.fillStyle = "#131316";
     ctx.fillRect(0, 0, w, h);
     ctx.fillStyle = card.brandPrimary;
@@ -132,17 +177,6 @@ function bakeCardLabel(card: PortfolioCard, kind: "typographic" | "strip"): HTML
       w / 2,
       h - 34,
     );
-  } else {
-    ctx.clearRect(0, 0, w, h);
-    ctx.textBaseline = "middle";
-    ctx.font = grotesk;
-    ctx.fillStyle = "#F4F4F5";
-    ctx.textAlign = "left";
-    ctx.fillText(card.name, 4, h / 2);
-    ctx.font = mono;
-    ctx.fillStyle = card.lifecycle === "research" ? "#9A9AA3" : card.brandPrimary;
-    ctx.textAlign = "right";
-    ctx.fillText(card.statusTr.toUpperCase(), w - 4, h / 2);
   }
   return canvas;
 }
@@ -150,6 +184,20 @@ function bakeCardLabel(card: PortfolioCard, kind: "typographic" | "strip"): HTML
 /** Scroll progress the DOM writes and the scene reads every frame — a ref,
  *  not state, so scrolling never re-renders React. */
 export type SceneProgress = { fly: number; band: number };
+
+/** Aspect-driven world scale so the fixed-size band/word survive portrait
+ *  viewports (a 2.9-unit card in a 1.5-unit-wide mobile frustum was pure
+ *  crop). Written once per resize by ResponsiveRig, read per frame. */
+const layout = { scale: 1 };
+
+function ResponsiveRig() {
+  useFrame((state) => {
+    const aspect = state.size.width / state.size.height;
+    // 16:9 → 1.0, narrow portrait → ~0.5; clamped so desktop never shrinks.
+    layout.scale = Math.min(1, Math.max(0.42, 0.32 + 0.62 * (aspect / 1.78)));
+  });
+  return null;
+}
 
 const TUNE = {
   prismFollowX: 2.4,
@@ -175,6 +223,7 @@ function PrismRig({ progress }: { progress: React.RefObject<SceneProgress> }) {
     m.position.x += (state.pointer.x * TUNE.prismFollowX - m.position.x) * k;
     m.position.y += (state.pointer.y * TUNE.prismFollowY - m.position.y) * k;
     m.rotation.z = Math.PI + Math.sin(state.clock.elapsedTime * TUNE.prismSwing) * 0.35;
+    m.scale.setScalar(layout.scale);
     // The camera flies PAST the prism into the room — once it's behind the
     // lens its transmission pass is wasted work; park it.
     m.visible = (progress.current?.fly ?? 0) < 0.85;
@@ -215,7 +264,7 @@ function CameraRig({
     // Segment 1 — hero hold with pointer drift; Segment 2 — dolly through
     // the room, rising slightly so the lens clears the type; Segment 3 —
     // lateral track along the band.
-    const bandX = band * TUNE.cardSpacing * Math.max(0, cardCount - 1);
+    const bandX = band * TUNE.cardSpacing * layout.scale * Math.max(0, cardCount - 1);
     const tx = fly < 1 ? state.pointer.x * TUNE.cameraDrift : bandX + state.pointer.x * 0.35;
     const ty =
       fly < 1
@@ -256,7 +305,7 @@ function StageLight({
     target.set(cards[idx].brandPrimary);
     const k = Math.min(1, delta * 2.5);
     l.color.lerp(target, k);
-    const x = idx * TUNE.cardSpacing;
+    const x = idx * TUNE.cardSpacing * layout.scale;
     l.position.x += (x - l.position.x) * k;
     // Only burns once the band is on stage.
     l.intensity += ((fly >= 1 ? 26 : 0) - l.intensity) * k;
@@ -284,7 +333,7 @@ function ScreenshotCard({ card }: { card: PortfolioCard }) {
 /** A product with no recorded capture: typographic, never a fake screen. */
 function TypographicCard({ card }: { card: PortfolioCard }) {
   const texture = useMemo(() => {
-    const t = new CanvasTexture(bakeCardLabel(card, "typographic"));
+    const t = new CanvasTexture(bakeCardLabel(card));
     t.anisotropy = 4;
     return t;
   }, [card]);
@@ -293,21 +342,6 @@ function TypographicCard({ card }: { card: PortfolioCard }) {
       <planeGeometry args={[2.9, 1.93]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
       <Edges color={card.brandPrimary} threshold={80} />
-    </mesh>
-  );
-}
-
-function LabelStrip({ card }: { card: PortfolioCard }) {
-  const texture = useMemo(() => {
-    const t = new CanvasTexture(bakeCardLabel(card, "strip"));
-    t.anisotropy = 4;
-    return t;
-  }, [card]);
-  // 512x64 canvas at 2.9 world-units wide keeps the strip's aspect.
-  return (
-    <mesh position={[0, 1.12, 0]} frustumCulled={false}>
-      <planeGeometry args={[2.9, 2.9 * (64 / 512)]} />
-      <meshBasicMaterial map={texture} transparent toneMapped={false} />
     </mesh>
   );
 }
@@ -328,14 +362,16 @@ function BandCard({
     const g = group.current;
     if (!g) return;
     const { band } = progress.current ?? { fly: 0, band: 0 };
-    const camX = band * TUNE.cardSpacing * Math.max(0, cardCount - 1);
-    const dist = Math.abs(camX - index * TUNE.cardSpacing) / TUNE.cardSpacing;
+    const sc = layout.scale;
+    const camX = band * TUNE.cardSpacing * sc * Math.max(0, cardCount - 1);
+    const dist = Math.abs(camX - index * TUNE.cardSpacing * sc) / (TUNE.cardSpacing * sc);
     // Focused card leans out of the wall and brightens; neighbours recede.
     const focus = Math.max(0, 1 - dist);
     const k = Math.min(1, delta * 3);
-    const targetScale = 0.9 + focus * 0.22;
+    const targetScale = (0.9 + focus * 0.22) * sc;
     g.scale.x += (targetScale - g.scale.x) * k;
     g.scale.y += (targetScale - g.scale.y) * k;
+    g.position.x += (index * TUNE.cardSpacing * sc - g.position.x) * k;
     // Below the stage during the hero, rising as the fly-through completes.
     // Never `visible=false`: toggling visibility at scroll time meant eight
     // uncompiled materials hitting the GPU in one frame (context lost,
@@ -345,10 +381,11 @@ function BandCard({
     const targetY = fly > 0.6 ? 0 : -9;
     g.position.y += (targetY - g.position.y) * Math.min(1, delta * 2.2);
     g.position.z += (TUNE.bandZ + focus * 0.7 - g.position.z) * k;
-    g.rotation.y += ((index * TUNE.cardSpacing - camX) * -0.06 - g.rotation.y) * k;
+    g.rotation.y += ((index * TUNE.cardSpacing * layout.scale - camX) * -0.06 - g.rotation.y) * k;
   });
   return (
     <mesh ref={group} position={[index * TUNE.cardSpacing, -9, TUNE.bandZ]} frustumCulled={false}>
+      <FocusGlow card={card} />
       <Suspense
         fallback={
           <mesh>
@@ -359,7 +396,6 @@ function BandCard({
       >
         {card.screenshot ? <ScreenshotCard card={card} /> : <TypographicCard card={card} />}
       </Suspense>
-      <LabelStrip card={card} />
     </mesh>
   );
 }
@@ -385,6 +421,7 @@ export default function ProtoScene({
 
       <HeroWord onReady={onTextReady} />
 
+      <ResponsiveRig />
       <PrismRig progress={progress} />
       <CameraRig progress={progress} cardCount={cards.length} />
       <StageLight progress={progress} cards={cards} />
