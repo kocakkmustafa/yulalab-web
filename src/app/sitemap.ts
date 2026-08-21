@@ -8,6 +8,8 @@ const STATIC_PATHS = [
   "/transparency",
   "/projects",
   "/notes",
+  "/case-studies",
+  "/operating-system",
   "/contact",
   "/support",
   "/terms",

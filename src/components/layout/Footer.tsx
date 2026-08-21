@@ -93,6 +93,16 @@ export function Footer() {
               </Link>
             </li>
             <li>
+              <Link href="/case-studies" className="link-wipe">
+                {t("navCaseStudies")}
+              </Link>
+            </li>
+            <li>
+              <Link href="/operating-system" className="link-wipe">
+                {t("navOperatingSystem")}
+              </Link>
+            </li>
+            <li>
               <Link href="/contact" className="link-wipe">
                 {t("navContact")}
               </Link>

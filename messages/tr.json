@@ -30,7 +30,9 @@
     "navSupport": "Destek",
     "legalHeading": "Yasal",
     "rights": "Tüm hakları saklıdır.",
-    "version": "v0.1 · showcase"
+    "version": "v0.1 · showcase",
+    "navCaseStudies": "Vaka çalışmaları",
+    "navOperatingSystem": "Nasıl çalışıyoruz"
   },
   "common": {
     "explore": "Keşfet",

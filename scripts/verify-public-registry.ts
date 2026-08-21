@@ -6,11 +6,19 @@
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { publicRegistry } from "../src/data/public-registry";
+import { caseStudies } from "../src/data/case-studies";
+import { validateCaseStudies } from "../src/lib/case-studies";
 import { validateRegistry } from "../src/lib/public-registry";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
-const errors = validateRegistry(publicRegistry);
+const errors = [
+  ...validateRegistry(publicRegistry),
+  // Case studies ride the same gate: the strongest claim on the site must
+  // fail the BUILD, not merely a test, when it cannot prove itself
+  // (roadmap Y-P1-003).
+  ...validateCaseStudies(caseStudies, publicRegistry),
+];
 if (errors.length) {
   console.error(`verify-public-registry: ${errors.length} issue(s) found\n`);
   for (const e of errors) console.error(`  ✗ ${e}`);
@@ -30,5 +38,5 @@ try {
 }
 
 console.log(
-  `verify-public-registry: OK — ${publicRegistry.length} products, 0 structural issues, generated artifact current.`,
+  `verify-public-registry: OK — ${publicRegistry.length} products, ${caseStudies.length} case studies, 0 structural issues, generated artifact current.`,
 );

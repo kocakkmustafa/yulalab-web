@@ -30,7 +30,9 @@
     "navSupport": "Support",
     "legalHeading": "Legal",
     "rights": "All rights reserved.",
-    "version": "v0.1 · showcase"
+    "version": "v0.1 · showcase",
+    "navCaseStudies": "Case studies",
+    "navOperatingSystem": "How we work"
   },
   "common": {
     "explore": "Explore",
