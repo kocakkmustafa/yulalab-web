@@ -6,7 +6,9 @@ import Link from "next/link";
 import { useProgress } from "@react-three/drei";
 import { canRunScene } from "@/lib/three/capability";
 import { activeCardIndex, type PortfolioCard } from "@/lib/three/portfolio-cards";
+import { notes } from "@/data/notes";
 import type { SceneProgress } from "./ProtoScene";
+import { MaterialHud, QuaternionHud, ScrambleText, ScrollRuler } from "./SceneHud";
 
 const ProtoScene = dynamic(() => import("./ProtoScene"), { ssr: false });
 
@@ -35,21 +37,43 @@ function LoaderOverlay({ textReady }: { textReady: boolean }) {
   return (
     <div
       aria-hidden
-      className="fixed inset-0 z-30 flex flex-col items-center justify-center gap-[18px] bg-[#050506] transition-opacity duration-500"
+      className="fixed inset-0 z-30 flex flex-col items-center justify-center bg-[#050506] transition-opacity duration-500"
       style={{ opacity: active || !textOk ? 1 : 0, pointerEvents: "none" }}
     >
+      {/* The reference opens by CONSTRUCTING its mark out of technical
+          drafting lines around a glowing core, not by spinning a spinner —
+          the loader is the first proof that this is a built thing. */}
+      <svg viewBox="0 0 600 600" className="h-[62vmin] w-[62vmin]" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g stroke="rgba(244,244,245,0.16)" strokeWidth="1">
+          <circle cx="300" cy="300" r="232" />
+          <circle cx="300" cy="300" r="150" />
+          <path d="M0 300 H600 M300 0 V600" />
+          <path d="M60 540 L300 30 L540 540" />
+          <path d="M118 470 L300 118 L482 470" />
+          <path d="M0 470 H600 M0 118 H600" />
+        </g>
+        {/* the Y mark, drawn as a construction */}
+        <g stroke="rgba(244,244,245,0.85)" strokeWidth="3" strokeLinecap="square">
+          <path d="M186 176 L300 330 L414 176" />
+          <path d="M300 330 V452" />
+        </g>
+        <g stroke="rgba(160,190,255,0.5)" strokeWidth="1" strokeDasharray="3 9">
+          <circle cx="300" cy="300" r="284" />
+        </g>
+      </svg>
       <div
+        className="pointer-events-none absolute"
         style={{
-          width: 120,
-          height: 120,
+          width: "16vmin",
+          height: "16vmin",
           borderRadius: "50%",
           background:
-            "radial-gradient(circle at 44% 40%, rgba(244,244,245,0.95) 0%, rgba(170,150,255,0.7) 26%, rgba(90,110,235,0.5) 48%, rgba(0,0,0,0) 74%)",
+            "radial-gradient(circle at 44% 40%, rgba(244,244,245,0.95) 0%, rgba(170,150,255,0.72) 24%, rgba(90,110,235,0.5) 46%, rgba(0,0,0,0) 74%)",
           filter: "blur(1px)",
           animation: "yl-breathe 2.2s ease-in-out infinite",
         }}
       />
-      <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-300">
+      <div className="absolute bottom-[14vh] font-mono text-[11px] uppercase tracking-[0.2em] text-ink-300">
         {active ? `%${Math.round(progress)} — ` : ""}sahne yükleniyor
       </div>
       <style>{`@keyframes yl-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }`}</style>
@@ -97,6 +121,8 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
   const [textReady, setTextReady] = useState(false);
   const [activeIdx, setActiveIdx] = useState(0);
   const [bandOn, setBandOn] = useState(false);
+  const [pageProgress, setPageProgress] = useState(0);
+  const [section, setSection] = useState("GİRİŞ");
   const progress = useRef<SceneProgress>({ fly: 0, band: 0 });
   const bandRef = useRef<HTMLElement | null>(null);
   const heroRef = useRef<HTMLElement | null>(null);
@@ -124,6 +150,10 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
         progress.current.band = bandP;
         setActiveIdx(activeCardIndex(bandP, cards.length));
         setBandOn(fly >= 1);
+        const max = document.documentElement.scrollHeight - vh;
+        const pp = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+        setPageProgress(pp);
+        setSection(fly < 0.6 ? "GİRİŞ" : pp > 0.86 ? "MANİFESTO" : "ÜRÜNLER");
       });
     };
     onScroll();
@@ -146,26 +176,48 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
           <ProtoScene cards={cards} progress={progress} onTextReady={() => setTextReady(true)} />
           <LoaderOverlay textReady={textReady} />
         </div>
+      ) : null}
+      {ready ? (
+        <>
+          <ScrollRuler label={section} progress={pageProgress} />
+          <QuaternionHud />
+          <MaterialHud visible={!bandOn} />
+        </>
       ) : (
         <StaticFallback cards={cards} />
       )}
 
       {/* Scroll body — real DOM content, canvas is scenery behind it. */}
       <section ref={heroRef} className="relative z-10 h-screen">
-        <div className="absolute bottom-11 left-6 right-6 flex max-w-sm flex-col gap-3 md:left-12 md:right-auto">
-          <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
+        {/* Hero layout follows the reference: instrumentation bottom-left
+            (MaterialHud), a dated NEWS column on the right, and the copy
+            centered under the mark — nothing competing for bottom-left. */}
+        <div className="absolute left-1/2 top-[70%] w-[min(88vw,540px)] -translate-x-1/2 text-center">
+          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-300">
             Ürün Laboratuvarı · Türkiye
           </div>
-          <p className="font-display text-[15px] font-light leading-normal text-ink-200 md:text-[17px]">
+          <p className="mt-3 font-display text-[15px] font-light leading-normal text-ink-200">
             Yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan
             bağımsız bir ürün laboratuvarıdır.
           </p>
         </div>
-        <div className="absolute bottom-11 right-12 hidden flex-col items-end gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300 md:flex">
-          <span>8 ürün · 1 laboratuvar</span>
-          <span>TR · 2025</span>
+
+        <div className="absolute bottom-24 right-6 hidden w-[300px] flex-col gap-4 md:flex md:right-12">
+          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-300">Notlar</div>
+          {notes.slice(0, 3).map((n) => (
+            <div key={n.slug} className="flex flex-col gap-1">
+              <span className="font-mono text-[9px] tracking-[0.12em] text-ink-400">
+                {n.date.replace(/-/g, ".")}
+              </span>
+              <span className="font-display text-[13px] leading-snug text-ink-200">{n.title.tr}</span>
+            </div>
+          ))}
         </div>
-        <div className="absolute bottom-7 left-1/2 hidden -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300 md:block">
+
+        <div className="absolute bottom-11 right-6 hidden font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300 md:block md:right-12">
+          8 ürün · 1 laboratuvar · TR 2025
+        </div>
+        <div className="absolute bottom-7 left-1/2 -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.16em] text-ink-300">
           Kaydır
         </div>
       </section>
@@ -236,9 +288,9 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
             Manifesto
           </div>
           <h2 className="font-grotesk text-5xl font-medium leading-none tracking-tightest md:text-7xl">
-            Aceleyle değil,
+            <ScrambleText text="Aceleyle değil," />
             <br />
-            özenle.
+            <ScrambleText text="özenle." />
           </h2>
           <p className="max-w-2xl font-display text-lg font-light leading-relaxed text-ink-600 md:text-xl">
             YULA Lab; trende değil, kanıta yaslanan bağımsız bir ürün laboratuvarı.
@@ -272,8 +324,22 @@ export default function ProtoExperience({ cards }: { cards: PortfolioCard[] }) {
         </div>
       </section>
 
-      <footer className="relative z-20 border-t border-hairline bg-[#050506] px-6 pb-10 pt-20 md:px-12">
-        <div className="mx-auto flex max-w-6xl flex-col gap-14">
+      <footer className="relative z-20 overflow-hidden border-t border-hairline bg-[#050506] px-6 pb-10 pt-20 md:px-12">
+        {/* Hanging drop-lines from the top edge — the reel's closing frame. */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-56">
+          {[6, 11, 14, 19, 27, 33, 38, 46, 52, 58, 63, 71, 78, 84, 91].map((left, i) => (
+            <span
+              key={left}
+              className="absolute top-0 w-[1px]"
+              style={{
+                left: `${left}%`,
+                height: `${40 + ((i * 37) % 60)}%`,
+                background: "linear-gradient(to bottom, rgba(244,244,245,0.42), rgba(244,244,245,0))",
+              }}
+            />
+          ))}
+        </div>
+        <div className="relative mx-auto flex max-w-6xl flex-col gap-14">
           <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
             <div className="flex flex-col gap-4">
               <span

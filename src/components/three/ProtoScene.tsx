@@ -17,7 +17,7 @@ import {
   Vignette,
   ChromaticAberration,
 } from "@react-three/postprocessing";
-import { AdditiveBlending, CanvasTexture, Color, Vector2, Vector3 } from "three";
+import { AdditiveBlending, BackSide, CanvasTexture, Color, RepeatWrapping, Vector2, Vector3 } from "three";
 import type { Group, Mesh, MeshBasicMaterial, PerspectiveCamera, PointLight } from "three";
 import type { PortfolioCard } from "@/lib/three/portfolio-cards";
 
@@ -192,6 +192,91 @@ function MosaicWall({ progress }: { progress: React.RefObject<SceneProgress> }) 
  *  additive plane IS the visible "stage takes the product's color" beat,
  *  with the point light kept for any lit material that joins later. */
 const glowCache = new Map<string, HTMLCanvasElement>();
+/** Grid texture for the wrap-around room shell. The reference's space is a
+ *  CURVED grid cylinder around the camera, not flat planes — that curvature
+ *  is what makes panels read as standing in a room. */
+function bakeRoomGrid(): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = 2048;
+  c.height = 1024;
+  const ctx = c.getContext("2d")!;
+  ctx.fillStyle = "#05060C";
+  ctx.fillRect(0, 0, 2048, 1024);
+  ctx.strokeStyle = "rgba(120,150,255,0.20)";
+  ctx.lineWidth = 2;
+  for (let x = 0; x <= 2048; x += 64) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, 1024);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= 1024; y += 64) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(2048, y);
+    ctx.stroke();
+  }
+  // sparse "+" registration marks, as in the reel
+  ctx.strokeStyle = "rgba(160,190,255,0.5)";
+  ctx.lineWidth = 2;
+  for (let x = 32; x < 2048; x += 256) {
+    for (let y = 32; y < 1024; y += 256) {
+      ctx.beginPath();
+      ctx.moveTo(x - 7, y);
+      ctx.lineTo(x + 7, y);
+      ctx.moveTo(x, y - 7);
+      ctx.lineTo(x, y + 7);
+      ctx.stroke();
+    }
+  }
+  return c;
+}
+
+function CurvedRoom() {
+  const texture = useMemo(() => {
+    const t = new CanvasTexture(bakeRoomGrid());
+    t.wrapS = RepeatWrapping;
+    t.wrapT = RepeatWrapping;
+    t.repeat.set(3, 1.6);
+    t.anisotropy = 4;
+    return t;
+  }, []);
+  return (
+    <mesh position={[0, 0, -2]} rotation={[0, 0, 0]}>
+      <cylinderGeometry args={[16, 16, 20, 64, 1, true]} />
+      <meshBasicMaterial map={texture} side={BackSide} transparent opacity={0.75} toneMapped={false} />
+    </mesh>
+  );
+}
+
+/** Giant ghosted section word behind the panels ("WORK" in the reel). */
+function GhostWord({ progress }: { progress: React.RefObject<SceneProgress> }) {
+  const texture = useMemo(() => {
+    const c = document.createElement("canvas");
+    c.width = 2048;
+    c.height = 512;
+    const ctx = c.getContext("2d")!;
+    ctx.clearRect(0, 0, 2048, 512);
+    ctx.fillStyle = "rgba(244,244,245,0.14)";
+    ctx.font = `700 340px ${groteskFamily()}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("ÜRÜNLER", 1024, 268);
+    return new CanvasTexture(c);
+  }, []);
+  const mat = useRef<MeshBasicMaterial>(null);
+  useFrame(() => {
+    const fly = progress.current?.fly ?? 0;
+    if (mat.current) mat.current.opacity = Math.max(0, Math.min(1, (fly - 0.6) * 2.4));
+  });
+  return (
+    <mesh position={[0, 0.55, TUNE.bandZ - 2.4]} scale={1.75}>
+      <planeGeometry args={[9, 9 * (512 / 2048)]} />
+      <meshBasicMaterial ref={mat} map={texture} transparent opacity={0} toneMapped={false} />
+    </mesh>
+  );
+}
+
 function bakeGlow(color: string): HTMLCanvasElement {
   const hit = glowCache.get(color);
   if (hit) return hit;
@@ -212,7 +297,7 @@ function FocusGlow({ card }: { card: PortfolioCard }) {
   const texture = useMemo(() => new CanvasTexture(bakeGlow(card.brandPrimary)), [card]);
   return (
     <mesh position={[0, -0.1, -0.9]} frustumCulled={false}>
-      <planeGeometry args={[7.5, 5.2]} />
+      <planeGeometry args={[12, 8]} />
       <meshBasicMaterial
         map={texture}
         transparent
@@ -262,6 +347,21 @@ export type SceneProgress = { fly: number; band: number };
  *  crop). Written once per resize by ResponsiveRig, read per frame. */
 const layout = { scale: 1 };
 
+/**
+ * Live scene telemetry the DOM HUD mirrors (the reference keeps a running
+ * quaternion/material readout on screen). A plain mutable object, read in
+ * a rAF loop by the HUD — putting this in React state would re-render the
+ * tree every frame.
+ */
+export const telemetry = {
+  qx: 0,
+  qy: 0,
+  qz: 0,
+  qw: 1,
+  roughness: 0.05,
+  ior: 1.5,
+};
+
 function ResponsiveRig() {
   useFrame((state) => {
     const aspect = state.size.width / state.size.height;
@@ -279,11 +379,11 @@ const TUNE = {
   prismSwing: 0.25,
   cameraDrift: 0.95,
   /** World-units between card centers on the band. */
-  cardSpacing: 4.4,
+  cardSpacing: 6.2,
   /** Band depth — sits just in front of the back wall (z=-7). */
-  bandZ: -6,
+  bandZ: -5.2,
   /** Camera's resting distance from the band. */
-  bandCamZ: -0.9,
+  bandCamZ: 5.0,
 };
 
 /** Shared glass recipe — hero shard and the works' floating fragments. */
@@ -304,31 +404,66 @@ function GlassMaterial() {
   );
 }
 
-function PrismRig({ progress }: { progress: React.RefObject<SceneProgress> }) {
-  const mesh = useRef<Group>(null);
+/**
+ * ONE glass object for the whole page — the reference never spawns a second
+ * one: the same body tumbles through every beat, changing silhouette
+ * (hero wedge → works pyramid → the mark itself) and riding the pointer.
+ * Keeping it single is also why the scene stays cheap: transmission is the
+ * most expensive material here.
+ */
+function MorphGlass({ progress }: { progress: React.RefObject<SceneProgress> }) {
+  const group = useRef<Group>(null);
+  const wedge = useRef<Mesh>(null);
+  const pyramid = useRef<Mesh>(null);
+
   useFrame((state, delta) => {
-    const m = mesh.current;
-    if (!m) return;
+    const g = group.current;
+    if (!g) return;
     const t = state.clock.elapsedTime;
+    const { fly, band } = progress.current ?? { fly: 0, band: 0 };
     const k = Math.min(1, delta * TUNE.prismLerp);
-    m.position.x += (state.pointer.x * TUNE.prismFollowX - 0.6 - m.position.x) * k;
-    m.position.y += (state.pointer.y * TUNE.prismFollowY - m.position.y) * k;
-    // Continuous tumble like the reel's fragment — not a pendulum.
-    m.rotation.y = t * 0.5;
-    m.rotation.z = 0.35 + Math.sin(t * 0.3) * 0.25;
-    m.rotation.x = Math.sin(t * 0.22) * 0.2;
-    // Intro: the shard grows into the scene over the first beats.
+    const sc = layout.scale;
+
+    // Beat: hero (fly<1) holds center-left; works rides beside the focused
+    // panel, tracking the same camX the band uses.
+    const camX = band * TUNE.cardSpacing * sc * Math.max(0, 7);
+    const homeX = fly < 1 ? -0.6 : camX - 2.35;
+    const homeZ = fly < 1 ? 2.2 : TUNE.bandZ + 2.4;
+
+    g.position.x += (homeX + state.pointer.x * TUNE.prismFollowX * (fly < 1 ? 1 : 0.35) - g.position.x) * k;
+    g.position.y += (state.pointer.y * TUNE.prismFollowY * (fly < 1 ? 1 : 0.4) - g.position.y) * k;
+    g.position.z += (homeZ - g.position.z) * Math.min(1, delta * 1.6);
+
+    g.rotation.y = t * 0.5;
+    g.rotation.z = 0.35 + Math.sin(t * 0.3) * 0.25;
+    g.rotation.x = Math.sin(t * 0.22) * 0.2;
+
     const intro = Math.min(1, t / 1.4);
     const ease = 1 - Math.pow(1 - intro, 3);
-    m.scale.setScalar(layout.scale * ease);
-    m.visible = (progress.current?.fly ?? 0) < 0.85;
+    g.scale.setScalar(sc * ease * (fly < 1 ? 1 : 0.85));
+
+    // Silhouette cross-fade: wedge in the hero, pyramid over the works.
+    const toPyramid = Math.min(1, Math.max(0, (fly - 0.55) * 2.2));
+    if (wedge.current) wedge.current.scale.set(0.62 * (1 - toPyramid), 2.7 * (1 - toPyramid) + 0.001, 0.4 * (1 - toPyramid));
+    if (pyramid.current) pyramid.current.scale.setScalar(1.35 * toPyramid + 0.001);
+
+    // Publish orientation for the on-screen HUD (the reel keeps a live
+    // quaternion readout beside the logo).
+    telemetry.qx = g.quaternion.x;
+    telemetry.qy = g.quaternion.y;
+    telemetry.qz = g.quaternion.z;
+    telemetry.qw = g.quaternion.w;
   });
+
   return (
-    // Elongated octahedron = tall angular glass shard (the reel's fragment
-    // silhouette), replacing the earlier equilateral prism.
-    <group ref={mesh} position={[-0.6, 0, 2.2]} scale={0.001}>
-      <mesh scale={[0.62, 2.7, 0.4]}>
+    <group ref={group} position={[-0.6, 0, 2.2]} scale={0.001}>
+      <mesh ref={wedge} scale={[0.62, 2.7, 0.4]}>
         <octahedronGeometry args={[1, 0]} />
+        <GlassMaterial />
+        <Edges threshold={20} color="#9AA6C8" />
+      </mesh>
+      <mesh ref={pyramid} scale={0.001} rotation={[0, Math.PI / 4, 0]}>
+        <coneGeometry args={[1.15, 2.3, 4, 1]} />
         <GlassMaterial />
         <Edges threshold={20} color="#9AA6C8" />
       </mesh>
@@ -407,8 +542,8 @@ function ScreenshotCard({ card }: { card: PortfolioCard }) {
   const aspect = texture.image
     ? (texture.image as HTMLImageElement).width / (texture.image as HTMLImageElement).height
     : 16 / 10;
-  const w = 2.9;
-  const h = Math.min(2.2, w / aspect);
+  const w = 5.0;
+  const h = Math.min(3.2, w / aspect);
   return (
     <mesh frustumCulled={false}>
       <planeGeometry args={[w, h]} />
@@ -427,64 +562,10 @@ function TypographicCard({ card }: { card: PortfolioCard }) {
   }, [card]);
   return (
     <mesh frustumCulled={false}>
-      <planeGeometry args={[2.9, 1.93]} />
+      <planeGeometry args={[5.0, 3.15]} />
       <meshBasicMaterial map={texture} toneMapped={false} />
       <Edges color={card.brandPrimary} threshold={80} />
     </mesh>
-  );
-}
-
-/** Two small tumbling glass fragments that ride with the focused card —
- *  the reel frames every project with refracting shards. */
-function WorksShards({
-  progress,
-  cardCount,
-}: {
-  progress: React.RefObject<SceneProgress>;
-  cardCount: number;
-}) {
-  const a = useRef<Group>(null);
-  const b = useRef<Group>(null);
-  useFrame((state, delta) => {
-    const { fly, band } = progress.current ?? { fly: 0, band: 0 };
-    const t = state.clock.elapsedTime;
-    const sc = layout.scale;
-    const camX = band * TUNE.cardSpacing * sc * Math.max(0, cardCount - 1);
-    const k = Math.min(1, delta * 2.2);
-    const on = fly >= 1;
-    const pair: [typeof a, number, number, number][] = [
-      [a, -1.7, 0.5, 0.9],
-      [b, 1.75, -0.75, 1.15],
-    ];
-    for (const [ref, ox, oy, oz] of pair) {
-      const g = ref.current;
-      if (!g) continue;
-      g.visible = on;
-      g.position.x += (camX + ox * sc + state.pointer.x * 0.4 - g.position.x) * k;
-      g.position.y += (oy * sc + state.pointer.y * 0.3 - g.position.y) * k;
-      g.position.z = TUNE.bandZ + oz;
-      g.rotation.y = t * (ox < 0 ? 0.55 : -0.45);
-      g.rotation.z = Math.sin(t * 0.4 + ox) * 0.5;
-      g.scale.setScalar(sc * 0.55);
-    }
-  });
-  return (
-    <>
-      <group ref={a} visible={false}>
-        <mesh scale={[0.5, 1.9, 0.32]}>
-          <octahedronGeometry args={[1, 0]} />
-          <GlassMaterial />
-          <Edges threshold={20} color="#9AA6C8" />
-        </mesh>
-      </group>
-      <group ref={b} visible={false}>
-        <mesh scale={[0.4, 1.4, 0.28]}>
-          <octahedronGeometry args={[1, 0]} />
-          <GlassMaterial />
-          <Edges threshold={20} color="#9AA6C8" />
-        </mesh>
-      </group>
-    </>
   );
 }
 
@@ -510,7 +591,7 @@ function BandCard({
     // Focused card leans out of the wall and brightens; neighbours recede.
     const focus = Math.max(0, 1 - dist);
     const k = Math.min(1, delta * 3);
-    const targetScale = (0.86 + focus * 0.42) * sc;
+    const targetScale = (0.82 + focus * 0.3) * sc;
     g.scale.x += (targetScale - g.scale.x) * k;
     g.scale.y += (targetScale - g.scale.y) * k;
     g.position.x += (index * TUNE.cardSpacing * sc - g.position.x) * k;
@@ -520,18 +601,18 @@ function BandCard({
     // measured) — parked meshes with frustumCulled off still compile and
     // draw from frame one, they just sit under the floor.
     const fly = progress.current?.fly ?? 0;
-    const targetY = fly > 0.6 ? 0 : -9;
+    const targetY = fly > 0.6 ? 0 : -18;
     g.position.y += (targetY - g.position.y) * Math.min(1, delta * 2.2);
     g.position.z += (TUNE.bandZ - 0.9 + focus * 1.7 - g.position.z) * k;
     g.rotation.y += ((index * TUNE.cardSpacing * layout.scale - camX) * -0.06 - g.rotation.y) * k;
   });
   return (
-    <mesh ref={group} position={[index * TUNE.cardSpacing, -9, TUNE.bandZ]} frustumCulled={false}>
+    <mesh ref={group} position={[index * TUNE.cardSpacing, -18, TUNE.bandZ]} frustumCulled={false}>
       <FocusGlow card={card} />
       <Suspense
         fallback={
           <mesh>
-            <planeGeometry args={[2.9, 1.9]} />
+            <planeGeometry args={[5.0, 3.15]} />
             <meshStandardMaterial color="#0E0E10" roughness={0.9} />
           </mesh>
         }
@@ -561,12 +642,13 @@ export default function ProtoScene({
       <color attach="background" args={["#05060C"]} />
       <fog attach="fog" args={["#070A16", 11, 34]} />
 
+      <CurvedRoom />
+      <GhostWord progress={progress} />
       <MosaicWall progress={progress} />
       <HeroWord onReady={onTextReady} />
 
       <ResponsiveRig />
-      <PrismRig progress={progress} />
-      <WorksShards progress={progress} cardCount={cards.length} />
+      <MorphGlass progress={progress} />
       <CameraRig progress={progress} cardCount={cards.length} />
       <StageLight progress={progress} cards={cards} />
 
