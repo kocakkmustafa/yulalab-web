@@ -133,6 +133,17 @@ html {
   scrollbar-width: none;
 }
 
+/* The immersive homepage supplies its own fixed navigation and a closing
+   trust footer. Keep the shared chrome server-rendered for every other route,
+   then suppress only those two explicitly marked instances when the
+   experience root is present. `:has()` is evaluated during the first style
+   pass, so there is no client-side double-header flash. */
+body:has([data-yula-experience="true"]) [data-site-header="true"],
+body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"],
+body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+  display: none;
+}
+
 /* IntersectionObserver-driven reveal — deliberately larger than a
    micro-nudge: this is the "something just arrived" signal for section
    headers and stat blocks, not a hover-level detail. */

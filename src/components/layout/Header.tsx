@@ -42,6 +42,7 @@ export function Header() {
   return (
     <>
       <header
+        data-site-header="true"
         className={
           "fixed top-0 inset-x-0 z-40 transition-all duration-500 " +
           (scrolled
@@ -103,6 +104,9 @@ export function Header() {
 
       {/* Mobile slide panel */}
       <div
+        data-site-mobile-drawer="true"
+        aria-hidden={!mobile}
+        inert={!mobile}
         className={
           "fixed inset-0 z-50 md:hidden transition-opacity duration-400 " +
           (mobile ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0")

@@ -515,5 +515,77 @@
       "generic": "That did not send. Could you check the details and try again?"
     },
     "sentBodyMailed": "Your message has been recorded. We have emailed you a copy along with the reference below."
+  },
+  "experience": {
+    "navigation": {
+      "home": "Home",
+      "projects": "Projects",
+      "manifesto": "Manifesto",
+      "transparency": "Transparency",
+      "contact": "Contact",
+      "soundOn": "Sound on",
+      "soundOff": "Sound off"
+    },
+    "loader": {
+      "geometry": "Resolving spatial axes",
+      "registry": "Validating the public product registry",
+      "material": "Calibrating glass and light field",
+      "ready": "YULA experience ready"
+    },
+    "hero": {
+      "eyebrow": "YULA LAB · INDEPENDENT PRODUCT LAB",
+      "title": "Few products. Thought about for a long time.",
+      "lede": "YULA Lab is an independent product lab that keeps personal data on the device, publishes claims with their sources, and ships and maintains its own products.",
+      "notice": "{liveCount} products live · {betaCount} beta · {researchCount} research directions",
+      "scroll": "Scroll to continue"
+    },
+    "portfolio": {
+      "kicker": "PORTFOLIO · 01—08",
+      "liveAction": "Explore",
+      "researchAction": "Read research brief",
+      "noPublicBuild": "NO PUBLIC BUILD",
+      "productCounter": "Product"
+    },
+    "proof": {
+      "kicker": "PROOF LEDGER",
+      "title": "Every claim, together with its limit and source.",
+      "source": "Source",
+      "scope": "Scope",
+      "verified": "Verified",
+      "stale": "Reverification due",
+      "freshnessPending": "Freshness check pending",
+      "refreshDue": "Valid through / refresh"
+    },
+    "mission": {
+      "kicker": "MISSION",
+      "title": "Ship few products, and measure what they claim."
+    },
+    "vision": {
+      "kicker": "VISION",
+      "title": "The default for personal software should be the device, not the cloud."
+    },
+    "values": {
+      "kicker": "VALUES · 01—04",
+      "title": "Four decision filters."
+    },
+    "closing": {
+      "kicker": "TRUST · CONTACT · LEGAL",
+      "title": "Real products. Open methods. Long life.",
+      "body": "Write briefly about a product, partnership, or technical method and we will answer directly.",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "support": "Support",
+      "rights": "All rights reserved."
+    },
+    "fallback": {
+      "label": "Linear experience",
+      "reason": "When motion or the 3D layer is unavailable, the same products, evidence, and links remain complete in this view."
+    },
+    "lifecycle": {
+      "live": "Live",
+      "beta": "Beta",
+      "research": "Research",
+      "archived": "Archived"
+    }
   }
 }

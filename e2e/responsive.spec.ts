@@ -9,7 +9,15 @@ import { test, expect } from "@playwright/test";
  * site-wide and had shipped. One narrow-viewport assertion would have
  * caught it at any point.
  */
-const ROUTES = ["/", "/projects", "/projects/lifeos", "/privacy", "/transparency", "/contact"];
+const ROUTES = [
+  "/",
+  "/en",
+  "/projects",
+  "/projects/lifeos",
+  "/privacy",
+  "/transparency",
+  "/contact",
+];
 const WIDTHS = [320, 375, 768, 1440];
 
 for (const width of WIDTHS) {

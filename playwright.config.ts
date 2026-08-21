@@ -25,6 +25,10 @@ export default defineConfig({
     // rebuilding here avoids paying for the ~400-page SSG build twice per
     // CI run. Run `pnpm build` yourself first for local `pnpm test:e2e`.
     command: "pnpm exec next start -p 4173",
+    // Keep the readiness probe on the public default-locale entry point.
+    // Do not bind `next start` to 127.0.0.1: Next 15 normalizes loopback
+    // rewrites to localhost, which can turn next-intl's internal /tr rewrite
+    // into a local-only redirect loop (vercel/next.js#94745).
     url: "http://127.0.0.1:4173",
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,

@@ -515,5 +515,77 @@
       "generic": "Gönderilemedi. Bilgileri kontrol edip tekrar dener misin?"
     },
     "sentBodyMailed": "Mesajın kaydedildi. Aşağıdaki referans numarasıyla birlikte e-posta ile de bir kopyasını gönderdik."
+  },
+  "experience": {
+    "navigation": {
+      "home": "Ana sayfa",
+      "projects": "Projeler",
+      "manifesto": "Manifesto",
+      "transparency": "Şeffaflık",
+      "contact": "İletişim",
+      "soundOn": "Sesi aç",
+      "soundOff": "Sesi kapat"
+    },
+    "loader": {
+      "geometry": "Mekânsal eksenler çözümleniyor",
+      "registry": "Kamusal ürün kaydı doğrulanıyor",
+      "material": "Cam ve ışık alanı kalibre ediliyor",
+      "ready": "YULA deneyimi hazır"
+    },
+    "hero": {
+      "eyebrow": "YULA LAB · BAĞIMSIZ ÜRÜN LABORATUVARI",
+      "title": "Az sayıda ürün. Uzun süre düşünülmüş.",
+      "lede": "YULA Lab; kişisel veriyi cihazda tutan, iddiasını kaynağıyla açan ve kendi ürünlerini yayına alıp sürdüren bağımsız bir ürün laboratuvarıdır.",
+      "notice": "{liveCount} ürün yayında · {betaCount} beta · {researchCount} araştırma yönü",
+      "scroll": "Kaydırarak ilerleyin"
+    },
+    "portfolio": {
+      "kicker": "PORTFÖY · 01—08",
+      "liveAction": "Ürünü incele",
+      "researchAction": "Araştırma notunu oku",
+      "noPublicBuild": "PUBLIC BUILD YOK",
+      "productCounter": "Ürün"
+    },
+    "proof": {
+      "kicker": "KANIT DEFTERİ",
+      "title": "Her iddia, sınırı ve kaynağıyla birlikte.",
+      "source": "Kaynak",
+      "scope": "Kapsam",
+      "verified": "Doğrulandı",
+      "stale": "Yeniden doğrulanmalı",
+      "freshnessPending": "Güncellik kontrolü bekleniyor",
+      "refreshDue": "Geçerlilik / yenileme"
+    },
+    "mission": {
+      "kicker": "Misyon",
+      "title": "Az sayıda ürünü, iddiasını ölçerek yayına almak."
+    },
+    "vision": {
+      "kicker": "Vizyon",
+      "title": "Kişisel yazılımın varsayılanı bulut değil, cihaz olsun."
+    },
+    "values": {
+      "kicker": "DEĞERLER · 01—04",
+      "title": "Dört karar filtresi."
+    },
+    "closing": {
+      "kicker": "GÜVEN · İLETİŞİM · YASAL",
+      "title": "Gerçek ürün. Açık yöntem. Uzun ömür.",
+      "body": "Bir ürün, ortaklık ya da teknik yöntem hakkında konuşmak için kısa yazın; doğrudan yanıtlayalım.",
+      "privacy": "Gizlilik",
+      "terms": "Kullanım şartları",
+      "support": "Destek",
+      "rights": "Tüm hakları saklıdır."
+    },
+    "fallback": {
+      "label": "Doğrusal deneyim",
+      "reason": "Hareket ya da 3D katman kullanılmadığında aynı ürünler, kanıtlar ve bağlantılar eksiksiz olarak bu görünümde yer alır."
+    },
+    "lifecycle": {
+      "live": "Yayında",
+      "beta": "Beta",
+      "research": "Araştırma",
+      "archived": "Arşiv"
+    }
   }
 }
