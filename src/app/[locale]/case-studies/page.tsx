@@ -7,7 +7,16 @@ import { GlassSheen } from "@/components/common/GlassSheen";
 import { caseStudies } from "@/data/case-studies";
 import { publicRegistry } from "@/data/public-registry";
 import { publishableCaseStudies } from "@/lib/case-studies";
+import { registryFigure } from "@/lib/figure-match";
 import type { Locale } from "@/lib/types";
+
+/**
+ * Time-dependent: publishableCaseStudies() withdraws a case whose own
+ * verification window has closed, or whose source claim has lapsed. Frozen
+ * at build, that gate would never fire in production — a withdrawn case
+ * would stay published until somebody happened to deploy.
+ */
+export const revalidate = 900;
 
 export async function generateMetadata({
   params,
@@ -125,7 +134,13 @@ function Index() {
                   {tr ? study.titleTr : study.titleEn}
                 </h2>
                 <p className="mt-2 text-[15px] leading-relaxed text-ink-300">
-                  {tr ? study.outcome.statementTr : study.outcome.statementEn}
+                  {tr ? study.outcome.metricTr : study.outcome.metricEn} —{" "}
+                  {registryFigure(
+                    publicRegistry
+                      .find((r) => r.slug === study.productSlug)
+                      ?.claims.find((c) => c.id === study.outcome.claimId),
+                    study.outcome.figure,
+                  )}
                 </p>
               </Link>
             ))}

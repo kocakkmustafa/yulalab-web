@@ -1,12 +1,14 @@
 import { describe, it, expect } from "vitest";
 import {
   EVIDENCE_LEVELS,
+  forbiddenPatternCount,
   evidenceCounts,
   lapsedSurfaceCount,
   lifecycleRows,
   portfolioCounts,
 } from "@/lib/operating-system";
 import { publicRegistry } from "@/data/public-registry";
+import type { EvidenceKind } from "@/lib/types";
 
 /**
  * The Operating System page describes how this site stays honest, which
@@ -23,15 +25,59 @@ describe("operating-system figures", () => {
     expect(summed).toBe(actual);
   });
 
-  it("declares an evidence level for every evidenceKind the registry can hold", () => {
-    // A claim whose kind has no level would render as an unlabelled number.
-    const declared = new Set(EVIDENCE_LEVELS.map((l) => l.kind));
+  it("declares each evidenceKind exactly once, exhaustively", () => {
+    /**
+     * Checked against the TYPE's full set, not against the kinds the
+     * registry happens to hold today. Iterating the registry made this
+     * vacuous for precisely the two kinds the page makes claims about
+     * (self-reported and third-party-verified are both empty), and a
+     * mutation pointing K0 at "measured" — leaving one kind undeclared and
+     * another double-counted — left the whole suite green.
+     */
+    const allKinds: EvidenceKind[] = [
+      "self-reported",
+      "source-code-verified",
+      "measured",
+      "third-party-verified",
+    ];
+    const declared = EVIDENCE_LEVELS.map((l) => l.kind);
+    expect([...declared].sort()).toEqual([...allKinds].sort());
+    expect(new Set(declared).size, "a kind is declared twice").toBe(declared.length);
     for (const record of publicRegistry) {
       for (const claim of record.claims) {
-        expect(declared, `no evidence level declares "${claim.evidenceKind}"`).toContain(
-          claim.evidenceKind,
-        );
+        expect(allKinds).toContain(claim.evidenceKind);
       }
+    }
+  });
+
+  it("counts each level against its OWN kind", () => {
+    // Guards the mislabel directly: every level's rendered count must equal
+    // the number of claims actually carrying that kind.
+    const counts = evidenceCounts();
+    for (const level of EVIDENCE_LEVELS) {
+      const actual = publicRegistry.reduce(
+        (n, r) => n + r.claims.filter((c) => c.evidenceKind === level.kind).length,
+        0,
+      );
+      expect(counts[level.kind], `${level.level} miscounts ${level.kind}`).toBe(actual);
+    }
+  });
+
+  it("states the prose-scanner pattern count from the scanner's own array", async () => {
+    /**
+     * Anchored to the ARRAY the scanner actually iterates, not to a re-parse
+     * of its source text. The previous version re-implemented the same
+     * parsing and asserted the two agreed — which cannot catch a wrong
+     * parser, proven live: a real 13th pattern at a different indentation
+     * left the scanner at 13, the page printing 12, and the suite green.
+     */
+    const mod = await import("../scripts/forbidden-patterns.mjs");
+    expect(forbiddenPatternCount(mod.FORBIDDEN)).toBe(mod.FORBIDDEN.length);
+    expect(mod.FORBIDDEN.length).toBeGreaterThan(0);
+    for (const entry of mod.FORBIDDEN) {
+      // Each entry must actually be a usable pattern — a count of malformed
+      // entries would still "agree" with itself.
+      expect(entry.pattern instanceof RegExp).toBe(true);
     }
   });
 

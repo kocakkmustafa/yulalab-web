@@ -19,6 +19,14 @@ export function generateStaticParams() {
   );
 }
 
+/**
+ * Time-dependent: publishableCaseStudies() withdraws a case whose own
+ * verification window has closed, or whose source claim has lapsed. Frozen
+ * at build, that gate would never fire in production — a withdrawn case
+ * would stay published until somebody happened to deploy.
+ */
+export const revalidate = 900;
+
 export const dynamicParams = false;
 
 export async function generateMetadata({
@@ -32,7 +40,7 @@ export async function generateMetadata({
   const tr = locale === "tr";
   return {
     title: tr ? study.titleTr : study.titleEn,
-    description: tr ? study.outcome.statementTr : study.outcome.statementEn,
+    description: `${tr ? study.outcome.metricTr : study.outcome.metricEn} — ${study.outcome.figure}`,
     alternates: {
       canonical: tr ? `/case-studies/${slug}` : `/${locale}/case-studies/${slug}`,
     },
@@ -48,11 +56,17 @@ export default async function CaseStudyRoute({
   setRequestLocale(locale);
   const study = publishableCaseStudies(caseStudies, publicRegistry).find((s) => s.slug === slug);
   if (!study) notFound();
+  // publishableCaseStudies has already proven this exists and is unlapsed;
+  // re-deriving it here keeps the component's required prop honest.
+  const claim = publicRegistry
+    .find((r) => r.slug === study.productSlug)
+    ?.claims.find((c) => c.id === study.outcome.claimId);
+  if (!claim) notFound();
   return (
     <div className="page-enter relative">
       <GlassSheen />
       <div className="ambient" aria-hidden />
-      <CaseStudyPage study={study} />
+      <CaseStudyPage study={study} claim={claim} />
     </div>
   );
 }

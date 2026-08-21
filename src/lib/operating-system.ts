@@ -60,10 +60,8 @@ export const EVIDENCE_LEVELS: {
     kind: "third-party-verified",
     labelTr: "Üçüncü tarafça doğrulandı",
     labelEn: "Third-party verified",
-    meaningTr:
-      "Bizim dışımızda biri doğruladı. Portföyde henüz bu seviyede iddia yok — boş olması da bir bilgidir.",
-    meaningEn:
-      "Confirmed by someone outside YULA. No claim in the portfolio sits here yet — the emptiness is information too.",
+    meaningTr: "Bizim dışımızda biri doğruladı.",
+    meaningEn: "Confirmed by someone outside YULA.",
   },
 ];
 
@@ -131,9 +129,9 @@ export function lifecycleRows(): LifecycleRow[] {
       labelTr: "Arşiv",
       labelEn: "Archived",
       effectTr:
-        "Varsayılan ürün dizininden düşer; kaydı durur ama vitrinde yer almaz. Bugün bu durumda ürün yok.",
+        "Varsayılan ürün dizininden düşer; kaydı durur ama vitrinde yer almaz.",
       effectEn:
-        "Drops out of the default product index; the record survives, the shelf space does not. No product sits here today.",
+        "Drops out of the default product index; the record survives, the shelf space does not.",
       count: count("archived"),
     },
   ];
@@ -153,6 +151,18 @@ export function lapsedSurfaceCount(now: Date): number {
       n + record.surfaces.filter((s) => s.expiresAt && isExpired(s.expiresAt, now)).length,
     0,
   );
+}
+
+/**
+ * The page states how many named false-statement patterns the prose scanner
+ * watches for. Takes the ARRAY, not a re-parse of the file: the first
+ * version re-implemented the scanner's own text parsing and then asserted
+ * the two agreed, which cannot detect a wrong parser — proven by adding a
+ * real 13th pattern at a different indentation, after which the scanner had
+ * 13, the page printed 12, and every test stayed green.
+ */
+export function forbiddenPatternCount(patterns: readonly unknown[]): number {
+  return patterns.length;
 }
 
 export function portfolioCounts() {

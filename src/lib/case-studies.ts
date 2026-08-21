@@ -1,4 +1,12 @@
 import type { ProductPublicRecord } from "./types";
+import {
+  assertsFigure,
+  figureTokens,
+  figureTokensWithDates,
+  spelledMagnitudes,
+  stripLabelTokens,
+} from "./figure-match";
+import { isExpired } from "./public-registry";
 
 /**
  * Case studies — the strongest claim this site can make.
@@ -53,18 +61,44 @@ export type CaseArtifact = {
 };
 
 export type CaseDecision = {
-  dateTr: string;
+  /**
+   * ISO, not a localised string. It was `dateTr`, and the detail page
+   * rendered that same Turkish text to English readers — "Temmuz 2026"
+   * shipped to /en. Locale formatting belongs at the render, the record
+   * stores one machine-checkable value.
+   */
+  date: string;
   summaryTr: string;
   summaryEn: string;
 };
 
+/**
+ * The measured outcome — COMPOSED, not authored.
+ *
+ * Four review rounds killed four different versions of "let the author write
+ * a sentence, then prove things about the prose": exact figure matching was
+ * evaded by the claim's own disclaimer, then by declared label digits, then
+ * by pointing a 'label' at the measurement itself. Each fix added a
+ * declaration channel and each channel became the next bypass, because
+ * proving properties of arbitrary text is unbounded.
+ *
+ * So the case no longer supplies a number at all. It names WHICH of the
+ * registry claim's declared figures it reports, plus a digit-free label for
+ * what was measured; the numeral rendered to the reader is read out of the
+ * registry string. There is no sentence to scan, and by construction the
+ * only reader-facing figure on the page is one the registry verified.
+ *
+ * Narrative did not disappear — it lives in baseline / constraint / failure
+ * / changedAfter, which are free prose and are not presented as measurement.
+ */
 export type CaseOutcome = {
-  /** Figures the outcome asserts, exactly as rendered. */
-  figures: string[];
-  statementTr: string;
-  statementEn: string;
-  /** The registry claim that already carries this outcome. */
+  /** The registry claim this outcome rests on. */
   claimId: string;
+  /** Exactly one of that claim's declared figures. The renderer prints THIS. */
+  figure: string;
+  /** What was measured. Digit-free: the number comes from the registry. */
+  metricTr: string;
+  metricEn: string;
 };
 
 export type CaseStudy = {
@@ -92,11 +126,8 @@ export type CaseStudy = {
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-/** Same normalisation the stat drift guard uses: thousands separators and
- *  spacing must not decide whether a figure "matches". */
-function searchable(value: string): string {
-  return value.replace(/[.\s ]/g, "").toLowerCase();
-}
+/** The only grantor a self-owned case may name. */
+const SELF_OWNER = "YULA Lab";
 
 function bothLanguages(label: string, tr: string, en: string): string[] {
   const errors: string[] = [];
@@ -131,6 +162,19 @@ export function validateCaseStudy(
       errors.push(where("permission grantedAt must be a canonical YYYY-MM-DD date"));
     }
     for (const e of bothLanguages("permission scope", p.scopeTr, p.scopeEn)) errors.push(where(e));
+    // "self-owned" renders as "a YULA-owned product — our own work". A case
+    // claiming that while crediting someone else's organisation is exactly
+    // the mislabel the third-party branch exists to prevent.
+    // Exact, not a prefix: "/^YULA/i" accepted both "YULA Lab & Acme Bank"
+    // and "Yulalab Musteri Hizmetleri A.S.", each of which then rendered as
+    // "a YULA-owned product — this case describes our own work".
+    if (p.kind === "self-owned" && p.grantedBy?.trim() !== SELF_OWNER) {
+      errors.push(
+        where(
+          `self-owned permission is granted by "${p.grantedBy}" — a case naming another party must use written-third-party`,
+        ),
+      );
+    }
     if (p.kind === "written-third-party" && !p.grantReference?.trim()) {
       errors.push(
         where("third-party permission needs grantReference — an unfiled grant cannot be checked later"),
@@ -149,6 +193,16 @@ export function validateCaseStudy(
   if (!study.decisions?.length) {
     errors.push(where("decision log is empty — a case with no decisions explains nothing"));
   }
+  // Every other field runs through bothLanguages(); the decision log did not,
+  // so blank rows rendered as empty bullets under "Decision log".
+  for (const [i, d] of (study.decisions ?? []).entries()) {
+    if (!ISO_DATE.test(d.date ?? "")) {
+      errors.push(where(`decision ${i + 1} needs a canonical YYYY-MM-DD date`));
+    }
+    for (const e of bothLanguages(`decision ${i + 1} summary`, d.summaryTr, d.summaryEn)) {
+      errors.push(where(e));
+    }
+  }
 
   // ---- artifacts ----
   if (!study.artifacts?.length) {
@@ -163,29 +217,100 @@ export function validateCaseStudy(
     }
   }
 
-  // ---- outcome, checked against the registry ----
+  // ---- outcome: composed from the registry, not authored ----
   const o = study.outcome;
   if (!o) {
     errors.push(where("outcome missing — a case study with no measured result is a story"));
   } else {
-    for (const e of bothLanguages("outcome statement", o.statementTr, o.statementEn)) {
-      errors.push(where(e));
-    }
+    for (const e of bothLanguages("outcome metric", o.metricTr, o.metricEn)) errors.push(where(e));
+
     const claim = product?.claims.find((c) => c.id === o.claimId);
     if (!claim) {
       errors.push(
         where(`outcome claimId "${o.claimId}" is not a claim of product "${study.productSlug}"`),
       );
-    } else {
-      const haystack = searchable(`${claim.statementTr} ${claim.statementEn} ${(claim.figures ?? []).join(" ")}`);
-      for (const figure of o.figures ?? []) {
-        if (!searchable(figure) || !haystack.includes(searchable(figure))) {
-          errors.push(
-            where(
-              `outcome figure "${figure}" is not carried by claim "${o.claimId}" — a case may not assert a number the registry has not verified`,
-            ),
-          );
-        }
+    } else if (!assertsFigure(claim, o.figure)) {
+      // Exact equality against the claim's DECLARED figures. Its prose is
+      // never consulted: "~69%" lives in the Burun Farkı statement solely to
+      // disclaim it, and every version that read the sentence republished it.
+      errors.push(
+        where(
+          `outcome figure "${o.figure}" is not one of claim "${o.claimId}"'s declared figures`,
+        ),
+      );
+    }
+
+    // The metric is a LABEL, so it may not carry a quantity of its own —
+    // neither as digits nor as a word. Short and label-shaped by contract,
+    // which is what makes this check total rather than a race against prose.
+    for (const [lang, text] of [
+      ["tr", o.metricTr],
+      ["en", o.metricEn],
+    ] as const) {
+      // Label-shaped identifiers ("Top-3") are what a metric name legitimately
+      // contains; anything else numeric in this field is a measurement the
+      // registry did not supply.
+      const scannable = stripLabelTokens(text ?? "");
+      const digits = figureTokensWithDates(scannable);
+      if (digits.length) {
+        errors.push(
+          where(
+            `outcome metric (${lang}) contains the number "${digits[0]}" — the figure is read from the registry, the metric names what was measured`,
+          ),
+        );
+      }
+      const words = spelledMagnitudes(scannable, lang);
+      if (words.length) {
+        errors.push(
+          where(
+            `outcome metric (${lang}) uses the magnitude word(s) ${words
+              .map((w) => `"${w}"`)
+              .join(", ")} — a metric names a quantity, it does not assert one`,
+          ),
+        );
+      }
+    }
+  }
+
+  // ---- fields that function as claims rather than narrative ----
+  //
+  // A review found nine author-written fields rendering unchecked, and put
+  // "95%" into the <h1>, the <title> and the meta description — beside a
+  // correct registry figure, in larger type. Title and "what changed after"
+  // are assertions about the product; baseline, constraint, decision
+  // summaries, artifact labels, permission scope and the failure lesson are
+  // narrative, where a number is ordinary ("we started with three
+  // engineers") and are deliberately left free. That split is stated
+  // verbatim on /operating-system rather than left for a reader to discover.
+  const claimLike: [string, string, string][] = [
+    ["title", study.titleTr, study.titleEn],
+    ["changedAfter", study.changedAfterTr, study.changedAfterEn],
+  ];
+  for (const [field, tr, en] of claimLike) {
+    for (const [lang, text] of [
+      ["tr", tr],
+      ["en", en],
+    ] as const) {
+      const scannable = stripLabelTokens(text ?? "");
+      // Prose fields, so dates are context: "The 2026 rebuild" and "Rolled
+      // out on 2026-08-19" are ordinary sentences. Only the metric LABEL
+      // treats a date as a number (T2), because a label has no context to
+      // give. A guard that refuses honest prose gets switched off.
+      const digits = figureTokens(scannable);
+      if (digits.length) {
+        errors.push(
+          where(
+            `${field} (${lang}) states the number "${digits[0]}" — this field is read as a claim, so a figure here must go through the registry`,
+          ),
+        );
+      }
+      const words = spelledMagnitudes(scannable, lang);
+      if (words.length) {
+        errors.push(
+          where(
+            `${field} (${lang}) uses the magnitude word(s) ${words.map((w) => `"${w}"`).join(", ")}`,
+          ),
+        );
       }
     }
   }
@@ -196,6 +321,18 @@ export function validateCaseStudy(
   }
   if (!ISO_DATE.test(study.expiresAt ?? "")) {
     errors.push(where("expiresAt must be a canonical YYYY-MM-DD date"));
+  }
+  // Shape alone accepted verifiedAt AFTER expiresAt — a window that was
+  // never open — and a permission granted in 2099.
+  if (ISO_DATE.test(study.verifiedAt ?? "") && ISO_DATE.test(study.expiresAt ?? "")) {
+    if (study.expiresAt <= study.verifiedAt) {
+      errors.push(where("expiresAt must be after verifiedAt — otherwise the window never opened"));
+    }
+  }
+  if (p && ISO_DATE.test(p.grantedAt ?? "") && ISO_DATE.test(study.verifiedAt ?? "")) {
+    if (p.grantedAt > study.verifiedAt) {
+      errors.push(where("permission grantedAt is after verifiedAt — a grant cannot post-date the case"));
+    }
   }
 
   return errors;
@@ -218,16 +355,30 @@ export function validateCaseStudies(
 /**
  * Cases that may actually appear on the public index.
  *
- * Passing the structural gate is necessary but not sufficient: the roadmap
- * (§5.4) also puts SOURCE-PRODUCT preconditions on the first two cases, and
- * those are business facts, not code facts. Rather than encode a guess, the
- * rule here is mechanical and conservative — a case renders only when its
- * product's own registry record still stands behind it, i.e. the linked
- * claim exists and its verification window has not lapsed.
+ * Passing the structural gate is necessary but not sufficient. Two temporal
+ * conditions decide whether a case still stands TODAY, and both were
+ * previously only described in this comment while the body just re-ran the
+ * validator — an independent review deleted the body down to
+ * `return studies` and the whole suite stayed green, because the only test
+ * fed it an empty array where filtering and not filtering are identical.
+ *
+ *  1. the case's own verification window is still open;
+ *  2. the registry claim its outcome rests on is still verified — a case
+ *     may not outlive the claim that gives it its number.
  */
 export function publishableCaseStudies(
   studies: CaseStudy[],
   registry: ProductPublicRecord[],
+  now: Date = new Date(),
 ): CaseStudy[] {
-  return studies.filter((s) => validateCaseStudy(s, registry).length === 0);
+  return studies.filter((study) => {
+    if (validateCaseStudy(study, registry).length > 0) return false;
+    if (study.expiresAt && isExpired(study.expiresAt, now)) return false;
+    const claim = registry
+      .find((r) => r.slug === study.productSlug)
+      ?.claims.find((c) => c.id === study.outcome?.claimId);
+    if (!claim) return false;
+    if (claim.expiresAt && isExpired(claim.expiresAt, now)) return false;
+    return true;
+  });
 }

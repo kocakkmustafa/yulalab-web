@@ -8,10 +8,14 @@ import { StaggerWords } from "@/components/common/StaggerWords";
 import {
   EVIDENCE_LEVELS,
   evidenceCounts,
+  forbiddenPatternCount,
   lapsedSurfaceCount,
   lifecycleRows,
   portfolioCounts,
 } from "@/lib/operating-system";
+// The scanner's own array — the count cannot disagree with the scanner.
+import { FORBIDDEN } from "../../../../scripts/forbidden-patterns.mjs";
+import { RAW_RETENTION_DAYS } from "@/lib/analytics/session-hash";
 import type { Locale } from "@/lib/types";
 
 /**
@@ -69,6 +73,11 @@ function OperatingSystem() {
   // Read at render time (the route revalidates), so this figure ages with
   // the data instead of with the deploy.
   const lapsed = lapsedSurfaceCount(new Date());
+  // Read from the scanner source itself. Stating this as a literal was
+  // wrong in both directions: the page could name a number the scanner did
+  // not have, and the scanner could gain a pattern the page never mentioned.
+  const forbiddenCount = forbiddenPatternCount(FORBIDDEN);
+  const lifecycleCount = lifecycles.length;
 
   return (
     <div className="page-enter relative">
@@ -82,8 +91,8 @@ function OperatingSystem() {
         </h1>
         <p className="mt-7 max-w-[58ch] text-[16.5px] leading-[1.65] text-ink-300">
           {tr
-            ? "Bu sayfa süreç anlatmıyor; çalışan mekanizmaları anlatıyor. Aşağıdaki her sayı, sitenin geri kalanının okuduğu kayıttan hesaplanıyor — elle yazılmıyor, dolayısıyla bayatlayamıyor."
-            : "This page is not a description of process; it lists mechanisms that run. Every number below is computed from the same record the rest of the site renders from — nothing here is typed by hand, so nothing here can go stale."}
+            ? "Bu sayfa süreç anlatmıyor; çalışan mekanizmaları anlatıyor. Buradaki sayımlar — ürün, iddia, kanıt seviyesi, durum ve bayatlamış yüzey — sitenin geri kalanının okuduğu kayıttan hesaplanıyor; elle yazılan eşik ve süreler ise ilgili yapılandırmada tanımlı."
+            : "This page is not a description of process; it lists mechanisms that run. The counts here — products, claims, evidence levels, states and lapsed surfaces — are computed from the same record the rest of the site renders from; the thresholds and windows named below live in the configuration they describe."}
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
@@ -141,8 +150,8 @@ function OperatingSystem() {
         title={tr ? "Ürün durum makinesi" : "Product state machine"}
         intro={
           tr
-            ? "Dört durum var ve her biri mekanik olarak bir şeyi değiştirir. Hiçbir şeyi değiştirmeyen bir durum etikettir; onu burada aşama diye listelemek tam olarak kaçındığımız şey olurdu."
-            : "Four states, each of which mechanically changes something. A state that changes nothing is a label — listing it here as a stage would be the theatre this page exists to avoid."
+            ? `${lifecycleCount} durum var ve her biri mekanik olarak bir şeyi değiştirir. Hiçbir şeyi değiştirmeyen bir durum etikettir; onu burada aşama diye listelemek tam olarak kaçındığımız şey olurdu.`
+            : `${lifecycleCount} states, each of which mechanically changes something. A state that changes nothing is a label — listing it here as a stage would be the theatre this page exists to avoid.`
         }
       >
         <div className="space-y-3">
@@ -182,7 +191,7 @@ function OperatingSystem() {
                   "Süre dolması build'i DÜŞÜRMEZ, sayfayı değiştirir: bayat iddia yanlış değil, doğrulanmamıştır — silinmez, 'yeniden doğrulama bekliyor' olarak gösterilir.",
                   "Bir istatistik kartı, bağlandığı iddianın metninde geçmeyen bir rakamı basamaz.",
                   "Yayınlanmamış ürün sahte ekran görüntüsü gösteremez; her ekran görüntüsü hangi build'den, hangi tarihte alındığını taşır.",
-                  "Metin taraması, geçmişte yanlış çıkmış 12 ifadeyi adıyla arar ve dönmelerini engeller.",
+                  `Metin taraması, geçmişte yanlış çıkmış ${forbiddenCount} ifadeyi adıyla arar ve dönmelerini engeller.`,
                   "Vaka çalışması kapısı: izin, başlangıç, artefakt, ölçülmüş sonuç, başarısızlık dersi ve geçerlilik tarihi olmadan bir vaka yayınlanamaz.",
                 ]
               : [
@@ -191,7 +200,7 @@ function OperatingSystem() {
                   "Expiry does NOT fail the build, it changes the page: a lapsed claim is not false, it is unverified — never deleted, shown as awaiting re-verification.",
                   "A stat card may not print a figure the claim it links to does not contain.",
                   "An unreleased product may not show a fabricated screen; every screenshot carries the build it came from and the date it was taken.",
-                  "A prose scan looks for 12 statements that turned out false in the past, by name, and stops them coming back.",
+                  `A prose scan looks for ${forbiddenCount} statements that turned out false in the past, by name, and stops them coming back.`,
                   "The case-study gate: no permission, baseline, artifact, measured outcome, failure lesson and validity date — no case.",
                 ]
           }
@@ -213,14 +222,14 @@ function OperatingSystem() {
               ? [
                   "İletişim formu ve e-posta kuyruğu kodu tamamlandı ama TEK bir anahtarla kapalı; kapalıyken uç nokta 503 döner ve gizlilik metni de bu gerçeği aynı anahtardan okur.",
                   "Rıza bir kutucuk değil, tarihli bildirim sürümüyle kendi kaydıdır — 'onayladı' bilgisi 'neye onayladı' sorusunu yanıtlayamaz.",
-                  "Huni ölçümü serbest metin kabul etmez: alan adı bile bilinse değeri kısıtlıdır, sayfa yolundan sorgu dizesi düşürülür, saklama 30 gündür ve silme işi gerçekten koşar.",
+                  `Huni ölçümü serbest metin kabul etmez: alan adı bile bilinse değeri kısıtlıdır, sayfa yolundan sorgu dizesi düşürülür, saklama ${RAW_RETENTION_DAYS} gündür ve silme işi gerçekten koşar.`,
                   "Kişisel veri talepleri (erişim, düzeltme, silme) adres kanıtıyla işler ve onurlandırılan bir silme, kişiye ait bekleyen bildirimleri de düşürür.",
                   "Tarayıcıya gönderilen içerik sıkı bir CSP altında çalışır; çerçeveleme kapalı, yalnız açıkça anlaşılmış tek bir dış kaynak gömülebilir.",
                 ]
               : [
                   "The contact form and mail queue are complete but held behind ONE switch; while it is off the endpoint returns 503, and the privacy page reads that same switch rather than describing a different site.",
                   "Consent is not a checkbox but its own record, stamped with a dated notice version — knowing someone agreed cannot answer what they agreed to.",
-                  "Funnel measurement refuses free text: even a known field's value is constrained, query strings are stripped from the page path, retention is 30 days, and the deletion job actually runs.",
+                  `Funnel measurement refuses free text: even a known field's value is constrained, query strings are stripped from the page path, retention is ${RAW_RETENTION_DAYS} days, and the deletion job actually runs.`,
                   "Data requests (access, correction, deletion) require proof of address, and an honoured deletion also drops that person's pending notifications.",
                   "Everything served runs under a strict CSP; framing is off, and exactly one external surface is embeddable by explicit agreement.",
                 ]
@@ -270,6 +279,8 @@ function OperatingSystem() {
           items={
             tr
               ? [
+                  "Metin taraması her build'de koşuyor, ama depo-dışı hedefleri yalnız yerelde ve CI'da var — bu sayfayı sunan deploy taramanın daha dar bir sürümünü çalıştırıyor.",
+                  "Vaka çalışması kendi rakamını yazmaz: kayıtlı bir iddianın doğrulanmış figürlerinden hangisini raporladığını söyler, ekranda gördüğünüz sayı kayıttan okunur. Aynı kural başlığı, ölçüm etiketini ve 'sonrasında ne değişti' bölümünü de kapsar — çünkü bunlar iddia gibi okunur. Başlangıç durumu, kısıt, karar özetleri, artefakt etiketleri, izin kapsamı ve başarısızlık dersi serbest metindir; oralarda rakam olağandır. Bilinen sınır: 'Doğruluk-95' gibi tanımlayıcı biçimli bir dize etiket olarak kabul edilir.",
                   `Yüzey tazeliği hesaplanıyor ama hiçbir sayfaya bağlı değil. Şu anda kayıttaki ${lapsed} mağaza/erişim yüzeyinin doğrulama penceresi kapanmış durumda; kartlardaki durum rozeti ise kayıttan değil ikinci bir kaynaktan geliyor ve hiç tarih taşımıyor. İki kaynağın birleştirilmesi sıradaki iş kaleminde.`,
                   "Bağlantı erişilebilirliği CI'da engelleyici değil: bozuk bir mağaza adresi uyarı üretir, boru hattını düşürmez.",
                   "Sürekli entegrasyon şu anda faturalandırma nedeniyle koşamıyor; kapılar yerelde çalıştırılıyor ve kanıtı kayda yazılıyor.",
@@ -277,6 +288,8 @@ function OperatingSystem() {
                   "İletişim makbuzu hedefi 60 saniyeydi; kuyruk günde bir kez boşaltılıyor. Yayınlanan hiçbir metin daha hızlısını vaat etmiyor, ama hedef karşılanmıyor.",
                 ]
               : [
+                  "The prose scan runs on every build, but its cross-repository targets exist only locally and in CI — the deploy that serves this page runs a narrower version of it.",
+                  "A case study does not supply its own number: it names which of a registry claim's verified figures it reports, and the numeral you see is read from the registry. The same rule covers the title, the metric label and the 'what changed after' section, because those read as claims. Baseline, constraint, decision summaries, artifact labels, the permission scope and the failure lesson stay free prose — a number is ordinary there. The known edge: an identifier-shaped string such as 'Accuracy-95' is accepted as a label.",
                   `Surface freshness is computed but wired to no page. Right now ${lapsed} store/availability surfaces in the record have passed their verification window; meanwhile the status badge on a card comes from a second source that carries no date at all. Merging the two sources is the next scheduled item.`,
                   "Link reachability is not blocking in CI: a dead store URL raises a warning, it does not fail the pipeline.",
                   "Continuous integration cannot currently run for billing reasons; the gates are run locally and the evidence is written to the record.",

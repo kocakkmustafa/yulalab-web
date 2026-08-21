@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
-    "build": "next build",
+    "build": "pnpm verify:claims && pnpm verify:claims:local && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",

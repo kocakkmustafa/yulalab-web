@@ -14,8 +14,8 @@ import type { CaseStudy } from "@/lib/case-studies";
  *                 RESULT exists. There is no paid pilot; the portfolio's
  *                 only recurring revenue today is elsewhere.
  *
- * Burun Farkı's case is gated behind its model-contribution/SHAP language
- * being fully corrected at the source product.
+ *   Burun Farkı's case is gated behind its per-prediction explainability
+ *   wording being fully corrected at the source product.
  *
  * The machinery (schema, validator, routes, tests) is complete and the
  * surface renders its own emptiness honestly — the same pattern as the lead
