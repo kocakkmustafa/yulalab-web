@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type ElementType } from "react";
+import { createElement, useEffect, useRef, useState, type ElementType } from "react";
 
 type Props = {
   text: string;
@@ -40,18 +40,18 @@ export function StaggerWords({
 
   const words = text.split(" ");
 
-  return (
-    <Tag ref={ref} className={className}>
-      {words.map((word, i) => (
-        <span
-          key={i}
-          className={"word" + (seen ? " is-in" : "")}
-          style={{ transitionDelay: `${delay + i * stagger}ms` }}
-        >
-          {word}
-          {i < words.length - 1 ? " " : ""}
-        </span>
-      ))}
-    </Tag>
+  return createElement(
+    Tag,
+    { ref, className },
+    words.map((word, i) => (
+      <span
+        key={i}
+        className={"word" + (seen ? " is-in" : "")}
+        style={{ transitionDelay: `${delay + i * stagger}ms` }}
+      >
+        {word}
+        {i < words.length - 1 ? " " : ""}
+      </span>
+    )),
   );
 }

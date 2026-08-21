@@ -1,5 +1,23 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+
+async function expectNoBlockingViolations(page: Page, label: string) {
+  const results = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+
+  const blocking = results.violations.filter(
+    (violation) => violation.impact === "serious" || violation.impact === "critical",
+  );
+  const summary = blocking
+    .map(
+      (violation) =>
+        `${violation.impact}: ${violation.id} — ${violation.help} (${violation.nodes.length} node(s))`,
+    )
+    .join("\n");
+
+  expect(summary, `${label}\n${summary}`).toBe("");
+}
 
 /**
  * Roadmap §10/§17: accessibility 100 on core routes, zero critical issues.
@@ -26,21 +44,33 @@ const ROUTES = [
 for (const [label, path] of ROUTES) {
   test(`no serious or critical accessibility violations: ${label}`, async ({ page }) => {
     await page.goto(path);
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-
-    const blocking = results.violations.filter(
-      (v) => v.impact === "serious" || v.impact === "critical",
-    );
-
-    // Named in the failure so a regression says WHAT broke, not just a count.
-    const summary = blocking
-      .map((v) => `${v.impact}: ${v.id} — ${v.help} (${v.nodes.length} node(s))`)
-      .join("\n");
-    expect(summary, `${path}\n${summary}`).toBe("");
+    await expectNoBlockingViolations(page, path);
   });
 }
+
+for (const [label, progress] of [
+  ["hero", 0],
+  ["proof", 0.54],
+  ["closing", 0.98],
+] as const) {
+  test(`3D homepage ${label} stage has no serious or critical violations`, async ({ page }) => {
+    await page.goto(`/?capture=1&progress=${progress}&tier=high`);
+    const experience = page.locator('[data-yula-experience="true"]');
+    await expect(experience).toHaveAttribute("data-experience-ready", "true", {
+      timeout: 30_000,
+    });
+    await expectNoBlockingViolations(page, `homepage capture: ${label}`);
+  });
+}
+
+test("reduced-motion homepage document has no serious or critical violations", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce", locale: "tr-TR" });
+  const page = await context.newPage();
+  await page.goto("/");
+  await expect(page.locator('[data-experience-static="true"]')).toBeAttached();
+  await expectNoBlockingViolations(page, "homepage reduced-motion document");
+  await context.close();
+});
 
 test("the claims section survives a keyboard-only path to its source link", async ({ page }) => {
   // The proof surface is the point of the site; it has to be reachable
