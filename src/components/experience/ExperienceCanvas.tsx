@@ -38,9 +38,10 @@ const IMMUTABLE_GL_OPTIONS = {
   toneMapping: ACESFilmicToneMapping,
 };
 
-// PerformanceMonitor needs a bounded sample window. After it, the demand loop
-// sleeps until React props or loaded assets explicitly invalidate the scene.
+// PerformanceMonitor gets a bounded visible-frame warmup. Afterwards the
+// progress-driven scene sleeps until scroll, resize, tier or visibility wakes it.
 const PERFORMANCE_WARMUP_SECONDS = 2.5;
+const PORTFOLIO_MEDIA_ENTRY_PROGRESS = 0.065;
 const TRANSMISSION_RESOLUTION_SCALE: Record<QualityTier, number> = {
   high: 0.5,
   medium: 0.35,
@@ -64,6 +65,7 @@ function CanvasLifecycle({
   const invalidate = useThree((state) => state.invalidate);
   const readySent = useRef(false);
   const postAssetsFrameSeen = useRef(false);
+  const visibleWarmupElapsed = useRef(0);
   const onReadyRef = useRef(onReady);
   const onContextLostRef = useRef(onContextLost);
 
@@ -90,6 +92,17 @@ function CanvasLifecycle({
   }, [invalidate, mode, progress, tier]);
 
   useEffect(() => {
+    const wakeVisibleCanvas = () => {
+      if (document.visibilityState === "visible") invalidate();
+    };
+
+    document.addEventListener("visibilitychange", wakeVisibleCanvas);
+    return () => {
+      document.removeEventListener("visibilitychange", wakeVisibleCanvas);
+    };
+  }, [invalidate]);
+
+  useEffect(() => {
     renderer.transmissionResolutionScale = TRANSMISSION_RESOLUTION_SCALE[tier];
     invalidate();
   }, [invalidate, renderer, tier]);
@@ -99,8 +112,14 @@ function CanvasLifecycle({
     if (assetsSettled) invalidate();
   }, [assetsSettled, invalidate]);
 
-  useFrame((state) => {
-    if (state.clock.elapsedTime < PERFORMANCE_WARMUP_SECONDS) invalidate();
+  useFrame((_state, delta) => {
+    if (
+      document.visibilityState === "visible"
+      && visibleWarmupElapsed.current < PERFORMANCE_WARMUP_SECONDS
+    ) {
+      visibleWarmupElapsed.current += Math.min(1 / 15, Math.max(0, delta));
+      invalidate();
+    }
 
     if (!assetsSettled || readySent.current) return;
     if (!postAssetsFrameSeen.current) {
@@ -111,15 +130,6 @@ function CanvasLifecycle({
     readySent.current = true;
     onReadyRef.current();
   }, -100);
-
-  // Camera, theme, transmission and portal passes all settle before this one
-  // deterministic screen composite. A positive priority transfers R3F's
-  // automatic render ownership to this callback, so the root is still drawn
-  // exactly once for every requested frame.
-  useFrame((state) => {
-    state.gl.setRenderTarget(null);
-    state.gl.render(state.scene, state.camera);
-  }, 100);
 
   return null;
 }
@@ -141,7 +151,12 @@ export function ExperienceCanvas({
     key: "",
     settled: false,
   });
-  const assetsSettled = assetState.key === assetKey && assetState.settled;
+  // The hero deliberately requests no portfolio screenshots. Its readiness
+  // therefore depends only on a committed WebGL frame; later capture points
+  // still wait for every media asset that PortfolioField actually requests.
+  const heroDefersPortfolioMedia = progress < PORTFOLIO_MEDIA_ENTRY_PROGRESS;
+  const assetsSettled = heroDefersPortfolioMedia
+    || (assetState.key === assetKey && assetState.settled);
 
   const requestDowngrade = useCallback(() => {
     const nextTier = downgradeTier(tier);

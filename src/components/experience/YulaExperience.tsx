@@ -12,6 +12,7 @@ import {
 import { createAmbientAudio, type AmbientAudioController } from "./audio";
 import { ExperienceErrorBoundary } from "./ExperienceErrorBoundary";
 import { ExperienceLoader } from "./ExperienceLoader";
+import { resolveVisibleFrameDelta } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
@@ -50,11 +51,10 @@ type YulaExperienceProps = {
 
 type WebGLState = "checking" | "available" | "unavailable";
 
-const LOADER_SESSION_KEY = "yula-experience-loader-v2";
-const LOADER_DRAW_DURATION_MS = 1_800;
-const LOADER_EXIT_DURATION_MS = 800;
+const LOADER_DRAW_DURATION_MS = 3_600;
+const LOADER_EXIT_DURATION_MS = 900;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
-const LOADER_HOLD_PROGRESS = 0.78;
+const LOADER_HOLD_PROGRESS = 0.9;
 const TIER_ORDER: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
 
 function useMediaQuery(query: string): boolean {
@@ -75,7 +75,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const mobile = useMediaQuery("(max-width: 767px)");
-  const compactViewport = useMediaQuery("(max-height: 600px)");
+  const compactViewport = useMediaQuery("(max-width: 767px) and (max-height: 600px)");
   const [webgl, setWebgl] = useState<WebGLState>("checking");
   const [canvasFailed, setCanvasFailed] = useState(false);
   const [canvasReady, setCanvasReady] = useState(false);
@@ -123,6 +123,29 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   }, []);
 
   useEffect(() => {
+    if (!mounted || capture.enabled || !loaderVisible) return;
+
+    const root = document.documentElement;
+    const previousOverflow = root.style.overflow;
+    const previousOverscroll = root.style.overscrollBehavior;
+    const previousRestoration = window.history.scrollRestoration;
+    const resetOpeningScroll = () => window.scrollTo(0, 0);
+
+    window.history.scrollRestoration = "manual";
+    root.style.overflow = "hidden";
+    root.style.overscrollBehavior = "none";
+    resetOpeningScroll();
+    window.addEventListener("pageshow", resetOpeningScroll);
+
+    return () => {
+      window.removeEventListener("pageshow", resetOpeningScroll);
+      root.style.overflow = previousOverflow;
+      root.style.overscrollBehavior = previousOverscroll;
+      window.history.scrollRestoration = previousRestoration;
+    };
+  }, [capture.enabled, loaderVisible, mounted]);
+
+  useEffect(() => {
     if (!mounted) return;
 
     if (
@@ -143,37 +166,31 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       return;
     }
 
-    try {
-      if (window.sessionStorage.getItem(LOADER_SESSION_KEY) === "1") {
-        setLoaderVisible(false);
-        setLoaderProgress(1);
-        return;
-      }
-    } catch {
-      // Storage denial only means this visit may see the loader again.
-    }
-
     let animationFrame = 0;
-    const startedAt = performance.now();
-    let lastFrameAt = startedAt;
-    let activeElapsed = 0;
+    let previousTimestamp: number | null = null;
+    let visibleElapsed = 0;
     let exitStartedAt: number | null = null;
     setLoaderVisible(true);
     setLoaderProgress(0);
 
     const tick = (now: number) => {
-      activeElapsed += Math.min(100, Math.max(0, now - lastFrameAt));
-      lastFrameAt = now;
+      visibleElapsed += resolveVisibleFrameDelta(
+        now,
+        previousTimestamp,
+        document.visibilityState,
+      );
+      previousTimestamp = now;
+      const elapsed = visibleElapsed;
       const drawProgress = Math.min(
         1,
-        Math.max(0, activeElapsed / LOADER_DRAW_DURATION_MS),
+        elapsed / LOADER_DRAW_DURATION_MS,
       );
       let next = drawProgress * LOADER_HOLD_PROGRESS;
 
       if (
         drawProgress >= 1 &&
         !canvasReadyRef.current &&
-        activeElapsed >= LOADER_CANVAS_TIMEOUT_MS
+        elapsed >= LOADER_CANVAS_TIMEOUT_MS
       ) {
         // A broken or exceptionally slow GPU must never turn the opening into
         // an interaction gate. Fall back to the complete linear document.
@@ -184,10 +201,10 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       }
 
       if (drawProgress >= 1 && canvasReadyRef.current) {
-        exitStartedAt ??= activeElapsed;
+        exitStartedAt ??= elapsed;
         const exitProgress = Math.min(
           1,
-          Math.max(0, (activeElapsed - exitStartedAt) / LOADER_EXIT_DURATION_MS),
+          Math.max(0, (elapsed - exitStartedAt) / LOADER_EXIT_DURATION_MS),
         );
         next = LOADER_HOLD_PROGRESS + exitProgress * (1 - LOADER_HOLD_PROGRESS);
       }
@@ -198,11 +215,6 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         return;
       }
 
-      try {
-        window.sessionStorage.setItem(LOADER_SESSION_KEY, "1");
-      } catch {
-        // The loader remains non-blocking when storage is unavailable.
-      }
       setLoaderVisible(false);
     };
 

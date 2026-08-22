@@ -8,6 +8,10 @@ import { createAmbientAudio } from "@/components/experience/audio";
 import { ExperienceCanvas } from "@/components/experience/ExperienceCanvas";
 import { ExperienceErrorBoundary } from "@/components/experience/ExperienceErrorBoundary";
 import {
+  resolveLoaderFrame,
+  resolveVisibleFrameDelta,
+} from "@/components/experience/loader";
+import {
   QUALITY,
   detectInitialTier,
   downgradeTier,
@@ -29,7 +33,7 @@ const experienceCanvasHarness = vi.hoisted(() => ({
         setRenderTarget: ReturnType<typeof vi.fn>;
       };
       scene: object;
-    }) => void;
+    }, delta?: number) => void;
     priority: number;
   }>,
   invalidate: vi.fn(),
@@ -59,14 +63,14 @@ vi.mock("@react-three/fiber", () => ({
       clock: { elapsedTime: number };
       gl: typeof experienceCanvasHarness.renderer;
       scene: object;
-    }) => void,
+    }, delta?: number) => void,
     priority = 0,
   ) => {
     experienceCanvasHarness.frameCallbacks.push({
-      callback: (state) => callback({
+      callback: (state, delta = 1 / 60) => callback({
         ...state,
         gl: experienceCanvasHarness.renderer,
-      }),
+      }, delta),
       priority,
     });
   },
@@ -163,7 +167,7 @@ function resetExperienceCanvasHarness() {
   experienceCanvasHarness.worldProps = undefined;
 }
 
-function runCanvasFrame(priority: number, elapsedTime: number) {
+function runCanvasFrame(priority: number, elapsedTime: number, delta = 1 / 60) {
   const entry = experienceCanvasHarness.frameCallbacks.findLast(
     (frame) => frame.priority === priority,
   );
@@ -175,8 +179,15 @@ function runCanvasFrame(priority: number, elapsedTime: number) {
     clock: { elapsedTime },
     gl: experienceCanvasHarness.renderer,
     scene,
-  });
+  }, delta);
   return { camera, scene };
+}
+
+function finishCanvasWarmup() {
+  for (let frame = 0; frame < 40; frame += 1) {
+    runCanvasFrame(-100, frame / 15, 1 / 15);
+  }
+  experienceCanvasHarness.invalidate.mockClear();
 }
 
 function installAnimationFrames() {
@@ -281,11 +292,11 @@ describe("experience quality policy", () => {
 });
 
 describe("experience Canvas runtime contract", () => {
-  it("applies the real quality settings and sleeps after a bounded demand warmup", () => {
+  it("applies real quality settings and sleeps after a bounded warmup", () => {
     resetExperienceCanvasHarness();
     const baseProps = {
       products: [],
-      progress: 0,
+      progress: 0.24,
       mode: "desktop" as const,
       tier: "high" as const,
       onTierChange: vi.fn(),
@@ -307,16 +318,17 @@ describe("experience Canvas runtime contract", () => {
     });
 
     experienceCanvasHarness.invalidate.mockClear();
-    act(() => runCanvasFrame(-100, 0.5));
+    act(() => runCanvasFrame(-100, 0.5, 1 / 60));
     expect(experienceCanvasHarness.invalidate).toHaveBeenCalledTimes(1);
 
-    experienceCanvasHarness.invalidate.mockClear();
+    act(() => finishCanvasWarmup());
     act(() => runCanvasFrame(-100, 3));
     expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
 
-    const { camera, scene } = runCanvasFrame(100, 3);
-    expect(experienceCanvasHarness.renderer.setRenderTarget).toHaveBeenCalledWith(null);
-    expect(experienceCanvasHarness.renderer.render).toHaveBeenCalledWith(scene, camera);
+    expect(
+      experienceCanvasHarness.frameCallbacks.some((frame) => frame.priority > 0),
+    ).toBe(false);
+    expect(experienceCanvasHarness.renderer.render).not.toHaveBeenCalled();
 
     view.rerender(
       createElement(ExperienceCanvas, {
@@ -333,6 +345,7 @@ describe("experience Canvas runtime contract", () => {
     });
     expect(experienceCanvasHarness.canvasProps?.gl).toBe(immutableGl);
     expect(experienceCanvasHarness.invalidate).toHaveBeenCalled();
+
   });
 
   it("waits for assets plus a committed frame and keeps performance downgrades live", () => {
@@ -349,6 +362,8 @@ describe("experience Canvas runtime contract", () => {
       onContextLost: vi.fn(),
     };
     const view = render(createElement(ExperienceCanvas, baseProps));
+
+    act(() => finishCanvasWarmup());
 
     act(() => runCanvasFrame(-100, 3));
     expect(onReady).not.toHaveBeenCalled();
@@ -382,6 +397,25 @@ describe("experience Canvas runtime contract", () => {
       ?.onDecline as (() => void) | undefined;
     act(() => lowDecline?.());
     expect(onTierChange).toHaveBeenCalledTimes(1);
+  });
+
+  it("commits the hero without waiting for deliberately deferred portfolio media", () => {
+    resetExperienceCanvasHarness();
+    const onReady = vi.fn();
+    render(createElement(ExperienceCanvas, {
+      products: [],
+      progress: 0,
+      mode: "desktop",
+      tier: "low",
+      onTierChange: vi.fn(),
+      onReady,
+      onContextLost: vi.fn(),
+    }));
+
+    act(() => runCanvasFrame(-100, 0, 1 / 60));
+    expect(onReady).not.toHaveBeenCalled();
+    act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
+    expect(onReady).toHaveBeenCalledTimes(1);
   });
 });
 
@@ -434,6 +468,42 @@ describe("deterministic capture parameters", () => {
   });
 });
 
+describe("opening loader choreography", () => {
+  it("orders construction, refraction and the late handoff deterministically", () => {
+    const construction = resolveLoaderFrame(0.35);
+    expect(construction.flat).toBeGreaterThan(0.75);
+    expect(construction.depth).toBeGreaterThan(0);
+    expect(construction.flash).toBe(0);
+    expect(construction.exit).toBe(0);
+
+    const refraction = resolveLoaderFrame(0.68);
+    expect(refraction.reveal).toBeGreaterThan(0.8);
+    expect(refraction.flash).toBeGreaterThan(0.9);
+    expect(refraction.exit).toBe(0);
+
+    const held = resolveLoaderFrame(0.88);
+    expect(held.flash).toBeGreaterThan(0);
+    expect(held.exit).toBe(0);
+
+    const complete = resolveLoaderFrame(1);
+    expect(complete.reveal).toBe(1);
+    expect(complete.flash).toBe(0);
+    expect(complete.exit).toBe(1);
+  });
+
+  it("clamps malformed loader progress before deriving visual phases", () => {
+    expect(resolveLoaderFrame(Number.NaN).progress).toBe(0);
+    expect(resolveLoaderFrame(-4)).toEqual(resolveLoaderFrame(0));
+    expect(resolveLoaderFrame(9)).toEqual(resolveLoaderFrame(1));
+  });
+
+  it("does not charge a hidden-tab gap to the loader readiness timeout", () => {
+    expect(resolveVisibleFrameDelta(120, 100, "visible")).toBe(20);
+    expect(resolveVisibleFrameDelta(12_000, 100, "hidden")).toBe(0);
+    expect(resolveVisibleFrameDelta(12_000, 100, "visible")).toBe(100);
+  });
+});
+
 describe("the single experience progress loop", () => {
   it("reads normalized document scroll in one RAF chain and critically damps it", () => {
     window.history.replaceState({}, "", "/");
@@ -457,6 +527,25 @@ describe("the single experience progress loop", () => {
 
     unmount();
     expect(frames.cancel).toHaveBeenCalledTimes(1);
+  });
+
+  it("stops requesting frames after the damped value reaches its target", () => {
+    window.history.replaceState({}, "", "/");
+    setScrollGeometry(0);
+    const frames = installAnimationFrames();
+    const { unmount } = renderHook(() => useExperienceProgress(true));
+
+    expect(frames.callbacks.size).toBe(1);
+    frames.runNext(16);
+    expect(frames.callbacks.size).toBe(0);
+
+    act(() => window.dispatchEvent(new Event("scroll")));
+    expect(frames.callbacks.size).toBe(1);
+    frames.runNext(32);
+    expect(frames.callbacks.size).toBe(0);
+
+    unmount();
+    expect(frames.cancel).not.toHaveBeenCalled();
   });
 
   it("does not schedule document reads while the immersive timeline is disabled", () => {

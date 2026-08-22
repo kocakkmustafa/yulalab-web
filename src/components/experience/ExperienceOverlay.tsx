@@ -64,10 +64,33 @@ function stageIs(frame: TimelineFrame, stage: ExperienceStage): boolean {
   return frame.stage === stage;
 }
 
+const SEMANTIC_VISIBILITY_THRESHOLD = 0.01;
+
+function stageSemanticActive(
+  frame: TimelineFrame,
+  stage: ExperienceStage,
+  opacity: number,
+): boolean {
+  return stageIs(frame, stage) && opacity > SEMANTIC_VISIBILITY_THRESHOLD;
+}
+
 function visualFocus(distance: number): number {
   const clamped = Math.min(1, Math.max(0, Math.abs(distance)));
   const eased = clamped * clamped * (3 - 2 * clamped);
   return 1 - eased;
+}
+
+function exclusivePanelFocus(
+  index: number,
+  activeIndex: number,
+  slotProgress: number,
+): number {
+  if (index !== activeIndex) return 0;
+  const edge = 0.14;
+  const enter = Math.min(1, Math.max(0, slotProgress / edge));
+  const exit = Math.min(1, Math.max(0, (1 - slotProgress) / edge));
+  const focus = Math.min(enter, exit);
+  return focus * focus * (3 - 2 * focus);
 }
 
 /** Europe/Istanbul is the registry's documented freshness boundary. */
@@ -100,9 +123,12 @@ export function ExperienceHeader({
 
   return (
     <header className={styles.experienceHeader}>
-      <a className={styles.experienceBrand} href="#experience-hero" aria-label={copy.navigation.home}>
-        <span className={styles.brandGlyph} aria-hidden="true">Y</span>
-        <span>YULA LAB</span>
+      <a
+        className={styles.experienceBrand}
+        href="#experience-hero"
+        aria-label={`YULALAB — ${copy.navigation.home}`}
+      >
+        <span>YULALAB</span>
       </a>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>
@@ -127,7 +153,7 @@ export function ExperienceHeader({
           <button
             type="button"
             className={styles.linearButton}
-            aria-label={copy.fallback.label}
+            aria-label={`2D — ${copy.fallback.label}`}
             title={copy.fallback.label}
             onClick={onLinearView}
           >
@@ -139,7 +165,7 @@ export function ExperienceHeader({
           locale={nextLocale}
           hrefLang={nextLocale}
           className={styles.localeLink}
-          aria-label={nextLocale === "tr" ? "Türkçe" : "English"}
+          aria-label={`${nextLocale.toUpperCase()} — ${nextLocale === "tr" ? "Türkçe" : "English"}`}
         >
           {nextLocale.toUpperCase()}
         </Link>
@@ -166,9 +192,10 @@ type ProofLedgerProps = {
   copy: ExperienceCopy;
   product: ExperienceProduct;
   today: string | null;
+  compact?: boolean;
 };
 
-export function ProofLedger({ copy, product, today }: ProofLedgerProps) {
+export function ProofLedger({ copy, product, today, compact = false }: ProofLedgerProps) {
   if (product.claims.length === 0) {
     return (
       <p className={styles.noPublicBuild}>
@@ -179,7 +206,7 @@ export function ProofLedger({ copy, product, today }: ProofLedgerProps) {
 
   return (
     <ol className={styles.claimList}>
-      {product.claims.map((claim) => {
+      {(compact ? product.claims.slice(0, 1) : product.claims).map((claim) => {
         const freshness = today === null
           ? "unknown"
           : today > claim.expiresAt
@@ -268,7 +295,34 @@ export function ExperienceOverlay({
 }: ExperienceOverlayProps) {
   const closingInteractive =
     stageIs(frame, "closing") && frame.world.closingContent >= 0.2;
+  const heroActive = stageSemanticActive(frame, "hero", frame.overlay.hero);
+  const portfolioActive = stageSemanticActive(
+    frame,
+    "portfolio",
+    frame.overlay.portfolio,
+  );
+  const proofActive = stageSemanticActive(frame, "proof", frame.overlay.proof);
+  const crossingActive = stageSemanticActive(
+    frame,
+    "crossing",
+    frame.overlay.crossing,
+  );
+  const missionActive = stageSemanticActive(frame, "mission", frame.overlay.mission);
+  const visionActive = stageSemanticActive(frame, "vision", frame.overlay.vision);
+  const valuesActive = stageSemanticActive(frame, "values", frame.overlay.values);
   const today = useExperienceSiteDate();
+  const proofProducts = products.filter((product) => product.claims.length > 0);
+  const proofScaled = Math.min(
+    proofProducts.length,
+    frame.stageProgress * proofProducts.length,
+  );
+  const proofProductIndex = Math.min(
+    Math.max(0, proofProducts.length - 1),
+    Math.floor(proofScaled),
+  );
+  const proofProductProgress = proofProductIndex === proofProducts.length - 1 && proofScaled === proofProducts.length
+    ? 1
+    : proofScaled - proofProductIndex;
 
   return (
     <div className={styles.overlay} style={overlayStyle(frame.world.themeMix)}>
@@ -288,9 +342,11 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.heroStage}`}
+        data-active={heroActive ? "true" : "false"}
+        data-experience-stage="hero"
         style={stageStyle(frame.overlay.hero)}
-        aria-hidden={!stageIs(frame, "hero")}
-        inert={!stageIs(frame, "hero")}
+        aria-hidden={!heroActive}
+        inert={!heroActive}
       >
         <div className={styles.heroCopy}>
           <p className={styles.kicker}>{copy.hero.eyebrow}</p>
@@ -306,9 +362,11 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.portfolioStage}`}
+        data-active={portfolioActive ? "true" : "false"}
+        data-experience-stage="portfolio"
         style={stageStyle(frame.overlay.portfolio)}
-        aria-hidden={!stageIs(frame, "portfolio")}
-        inert={!stageIs(frame, "portfolio")}
+        aria-hidden={!portfolioActive}
+        inert={!portfolioActive}
         aria-label={copy.portfolio.kicker}
       >
         <div className={styles.worksBackdrop} aria-hidden="true">
@@ -332,10 +390,18 @@ export function ExperienceOverlay({
         </div>
 
         {products.map((product, index) => {
-          const active = stageIs(frame, "portfolio") && index === frame.productIndex;
+          const panelOpacity = exclusivePanelFocus(
+            index,
+            frame.productIndex,
+            frame.productProgress,
+          );
+          const active =
+            stageIs(frame, "portfolio") &&
+            index === frame.productIndex &&
+            panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
           const distance = index - frame.productFloat;
           const panelStyle: PanelStyle = {
-            "--panel-opacity": visualFocus(distance),
+            "--panel-opacity": panelOpacity,
             "--panel-offset": Math.max(-1, Math.min(1, distance)),
           };
           return (
@@ -385,44 +451,65 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.proofStage}`}
+        data-active={proofActive ? "true" : "false"}
+        data-experience-stage="proof"
         style={stageStyle(frame.overlay.proof)}
-        aria-hidden={!stageIs(frame, "proof")}
-        inert={!stageIs(frame, "proof")}
+        aria-hidden={!proofActive}
+        inert={!proofActive}
         aria-labelledby="experience-proof-title"
       >
         <div className={styles.proofHeading}>
           <p className={styles.kicker}>{copy.proof.kicker}</p>
           <h2 id="experience-proof-title">{copy.proof.title}</h2>
         </div>
-        <div
-          className={styles.proofGrid}
-          role="region"
-          tabIndex={0}
-          aria-label={`${copy.proof.kicker}: ${copy.proof.source}`}
-        >
-          {products.filter((product) => product.claims.length > 0).map((product) => (
-            <article key={product.slug} className={styles.proofProduct}>
+        <div className={styles.proofGrid} aria-label={`${copy.proof.kicker}: ${copy.proof.source}`}>
+          {proofProducts.map((product, index) => {
+            const panelOpacity = exclusivePanelFocus(
+              index,
+              proofProductIndex,
+              proofProductProgress,
+            );
+            const active =
+              stageIs(frame, "proof") &&
+              index === proofProductIndex &&
+              panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
+            const style: PanelStyle = {
+              "--panel-opacity": panelOpacity,
+              "--panel-offset": index - proofProductIndex,
+            };
+            return (
+            <article
+              key={product.slug}
+              className={styles.proofProduct}
+              aria-hidden={!active}
+              inert={!active}
+              data-active={active ? "true" : "false"}
+              style={style}
+            >
               <h3>{product.name}</h3>
-              <ProofLedger copy={copy} product={product} today={today} />
+              <ProofLedger compact copy={copy} product={product} today={today} />
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 
       <section
         className={`${styles.stage} ${styles.crossingStage}`}
+        data-active={crossingActive ? "true" : "false"}
+        data-experience-stage="crossing"
         style={stageStyle(frame.overlay.crossing)}
-        aria-hidden={!stageIs(frame, "crossing")}
-        inert={!stageIs(frame, "crossing")}
-      >
-        <p>{copy.proof.kicker}</p>
-      </section>
+        aria-hidden={!crossingActive}
+        inert={!crossingActive}
+      />
 
       <section
         className={`${styles.stage} ${styles.manifestoStage}`}
+        data-active={missionActive ? "true" : "false"}
+        data-experience-stage="mission"
         style={stageStyle(frame.overlay.mission)}
-        aria-hidden={!stageIs(frame, "mission")}
-        inert={!stageIs(frame, "mission")}
+        aria-hidden={!missionActive}
+        inert={!missionActive}
         aria-labelledby="experience-mission-title"
       >
         <p className={styles.kicker}>{copy.mission.kicker}</p>
@@ -432,9 +519,11 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.manifestoStage} ${styles.visionStage}`}
+        data-active={visionActive ? "true" : "false"}
+        data-experience-stage="vision"
         style={stageStyle(frame.overlay.vision)}
-        aria-hidden={!stageIs(frame, "vision")}
-        inert={!stageIs(frame, "vision")}
+        aria-hidden={!visionActive}
+        inert={!visionActive}
         aria-labelledby="experience-vision-title"
       >
         <p className={styles.kicker}>{copy.vision.kicker}</p>
@@ -444,9 +533,11 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.valuesStage}`}
+        data-active={valuesActive ? "true" : "false"}
+        data-experience-stage="values"
         style={stageStyle(frame.overlay.values)}
-        aria-hidden={!stageIs(frame, "values")}
-        inert={!stageIs(frame, "values")}
+        aria-hidden={!valuesActive}
+        inert={!valuesActive}
         aria-labelledby="experience-values-title"
       >
         <div className={styles.valuesHeading}>
@@ -455,10 +546,18 @@ export function ExperienceOverlay({
         </div>
         <div className={styles.valuePanels}>
           {copy.values.items.map((value, index) => {
-            const active = stageIs(frame, "values") && index === frame.valueIndex;
+            const panelOpacity = exclusivePanelFocus(
+              index,
+              frame.valueIndex,
+              frame.valueProgress,
+            );
+            const active =
+              stageIs(frame, "values") &&
+              index === frame.valueIndex &&
+              panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
             const distance = index - frame.valueFloat;
             const panelStyle: PanelStyle = {
-              "--panel-opacity": visualFocus(distance),
+              "--panel-opacity": panelOpacity,
               "--panel-offset": Math.max(-1, Math.min(1, distance)),
             };
             return (
@@ -482,6 +581,8 @@ export function ExperienceOverlay({
       <section
         className={`${styles.stage} ${styles.closingStage}`}
         data-interactive={closingInteractive ? "true" : "false"}
+        data-active={closingInteractive ? "true" : "false"}
+        data-experience-stage="closing"
         style={{
           ...stageStyle(frame.overlay.closing),
           "--closing-content": frame.world.closingContent,

@@ -37,7 +37,7 @@ export const CAMERA_TRACKS: Record<ExperienceMode, readonly CameraKey[]> = {
     { progress: 0.32, position: [1.65, 0.15, 0.3], target: [-0.15, 0, -4.5], fov: 35 },
     { progress: 0.43, position: [-1.25, 0.6, -4.3], target: [0.1, 0.1, -8], fov: 35 },
     { progress: 0.505, position: [0, 0.7, -7.8], target: [0, 0.15, -11], fov: 37 },
-    { progress: 0.575, position: [0, 0.1, -10.8], target: [0, -0.1, -14.2], fov: 40 },
+    { progress: 0.575, position: [0, 0.1, -8.8], target: [0, -0.1, -14.2], fov: 44 },
     { progress: 0.69, position: [0, 0.85, -15], target: [0, 0.2, -19], fov: 42 },
     { progress: 0.765, position: [1.25, 0.45, -18.4], target: [0, 0.15, -22], fov: 41 },
     { progress: 0.835, position: [-1.1, 0.55, -21.8], target: [0, 0.1, -25.5], fov: 40 },
@@ -52,7 +52,7 @@ export const CAMERA_TRACKS: Record<ExperienceMode, readonly CameraKey[]> = {
     { progress: 0.32, position: [0.65, 0.85, 0.9], target: [0, -0.25, -4.2], fov: 49 },
     { progress: 0.43, position: [-0.5, 1.05, -3.7], target: [0, -0.2, -7.8], fov: 49 },
     { progress: 0.505, position: [0, 1.15, -7], target: [0, -0.15, -10.7], fov: 51 },
-    { progress: 0.575, position: [0, 0.55, -10], target: [0, -0.35, -14], fov: 54 },
+    { progress: 0.575, position: [0, 0.55, -7.8], target: [0, -0.35, -14], fov: 57 },
     { progress: 0.69, position: [0, 1.35, -14.9], target: [0, 0, -18.7], fov: 55 },
     { progress: 0.765, position: [0.45, 1.15, -17.7], target: [0, -0.1, -21.8], fov: 54 },
     { progress: 0.835, position: [-0.4, 1.2, -21.2], target: [0, -0.15, -25.2], fov: 53 },
@@ -196,7 +196,7 @@ const GLYPH_POSITION: readonly VecKey[] = [
   { progress: 0, value: [0, 0, 0] },
   { progress: 0.085, value: [0, 0, -0.6] },
   { progress: 0.505, value: [0, 0, -10.4] },
-  { progress: 0.575, value: [0, -0.9, -13.16] },
+  { progress: 0.575, value: [0, 0, -13.16] },
   { progress: 0.69, value: [0, 0.2, -18.9] },
   { progress: 0.835, value: [0, 0, -25.3] },
   { progress: 0.955, value: [-1.8, 0.1, -34.5] },
@@ -218,7 +218,7 @@ const GLYPH_SCALE: readonly NumberKey[] = [
   { progress: 0, value: 2.08 },
   { progress: 0.085, value: 2.05 },
   { progress: 0.505, value: 2.4 },
-  { progress: 0.575, value: 2.1 },
+  { progress: 0.575, value: 1.1 },
   { progress: 0.69, value: 0.95 },
   { progress: 0.765, value: 0.75 },
   { progress: 0.805, value: 0.75 },
@@ -239,14 +239,18 @@ function stageAt(progress: number): ExperienceStage {
 function bandOpacity(progress: number, start: number, end: number): number {
   const duration = end - start;
   const edge = Math.min(0.014, duration * 0.18);
-  const fadeIn = start === 0 ? 1 : smoothstep(segmentProgress(progress, start - edge, start + edge));
-  const fadeOut = end === 1 ? 1 : 1 - smoothstep(segmentProgress(progress, end - edge, end + edge));
+  const fadeIn = start === 0 ? 1 : smoothstep(segmentProgress(progress, start, start + edge));
+  const fadeOut = end === 1 ? 1 : 1 - smoothstep(segmentProgress(progress, end - edge, end));
   return clamp01(Math.min(fadeIn, fadeOut));
 }
 
 function slotFrame(progress: number, range: readonly [number, number], count: number) {
   const local = segmentProgress(progress, range[0], range[1]);
-  const scaled = local * count;
+  const rawScaled = local * count;
+  const nearestBoundary = Math.round(rawScaled);
+  const scaled = Math.abs(rawScaled - nearestBoundary) <= 1e-10
+    ? nearestBoundary
+    : rawScaled;
   const index = Math.min(count - 1, Math.floor(scaled));
   const within = index === count - 1 && local === 1 ? 1 : scaled - index;
   return {
@@ -353,7 +357,7 @@ export function evaluateTimeline(
   const worksBackdropMix =
     smoothstep(segmentProgress(p, 0.072, 0.11)) *
     (1 - smoothstep(segmentProgress(p, 0.475, 0.515)));
-  const visionPortal = smoothstep(segmentProgress(p, 0.785, 0.835));
+  const visionPortal = smoothstep(segmentProgress(p, 0.78, 0.815));
   const servicePortalOpacity =
     smoothstep(segmentProgress(p, 0.79, 0.805)) *
     (1 - smoothstep(segmentProgress(p, 0.84, 0.855)));
@@ -401,7 +405,11 @@ export function evaluateTimeline(
       roomOpacity: lerp(1, 0.62, themeMix),
       wordmarkOpacity:
         p < STAGES.proof[0]
-          ? lerp(0.92, 0.28, smoothstep(segmentProgress(p, STAGES.portfolio[0], STAGES.portfolio[1])))
+          ? lerp(
+            mode === "mobile" ? 0.46 : 0.94,
+            0.28,
+            smoothstep(segmentProgress(p, STAGES.portfolio[0], STAGES.portfolio[1])),
+          )
           : 0.18 * (1 - themeMix),
       proofMorph,
       closingDraw,

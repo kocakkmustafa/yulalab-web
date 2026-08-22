@@ -119,9 +119,10 @@ export function useExperienceProgress(enabled: boolean): {
 
     let animationFrame = 0;
     let previousTimestamp: number | null = null;
+    let target = readDocumentProgress();
 
     const tick = (timestamp: number) => {
-      const target = readDocumentProgress();
+      animationFrame = 0;
       const elapsed =
         previousTimestamp === null ? 1 / 60 : (timestamp - previousTimestamp) / 1_000;
       const deltaSeconds = Math.min(1 / 15, Math.max(1 / 240, elapsed));
@@ -137,11 +138,37 @@ export function useExperienceProgress(enabled: boolean): {
       setProgress((current) =>
         Math.abs(current - position.current) < 0.000001 ? current : position.current,
       );
+      if (next.position !== target || next.velocity !== 0) {
+        animationFrame = requestAnimationFrame(tick);
+      } else {
+        previousTimestamp = null;
+      }
+    };
+
+    const wake = () => {
+      target = readDocumentProgress();
+      if (animationFrame !== 0) return;
+      previousTimestamp = null;
       animationFrame = requestAnimationFrame(tick);
     };
 
-    animationFrame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(animationFrame);
+    const resizeObserver = typeof ResizeObserver === "undefined"
+      ? null
+      : new ResizeObserver(wake);
+
+    window.addEventListener("scroll", wake, { passive: true });
+    window.addEventListener("resize", wake);
+    window.addEventListener("pageshow", wake);
+    resizeObserver?.observe(document.documentElement);
+    wake();
+
+    return () => {
+      window.removeEventListener("scroll", wake);
+      window.removeEventListener("resize", wake);
+      window.removeEventListener("pageshow", wake);
+      resizeObserver?.disconnect();
+      if (animationFrame !== 0) cancelAnimationFrame(animationFrame);
+    };
   }, [capture.enabled, capture.progress, enabled]);
 
   return {

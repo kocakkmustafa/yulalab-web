@@ -77,8 +77,8 @@ const SERVICE_PANEL_FRAGMENT_SHADER = `
     color += uPrimary * scan * 0.025;
     color *= 0.92 + vWave * 0.08;
 
-    float edge = smoothstep(0.0, 0.035, vUv.x) * smoothstep(0.0, 0.035, 1.0 - vUv.x)
-      * smoothstep(0.0, 0.045, vUv.y) * smoothstep(0.0, 0.045, 1.0 - vUv.y);
+    float edge = smoothstep(0.0, 0.16, vUv.x) * smoothstep(0.0, 0.16, 1.0 - vUv.x)
+      * smoothstep(0.0, 0.18, vUv.y) * smoothstep(0.0, 0.18, 1.0 - vUv.y);
     gl_FragColor = vec4(color, uOpacity * edge * 0.96);
   }
 `;
@@ -94,11 +94,13 @@ function CurvedServicePanel({
   index,
   motion,
   opacity,
+  showFrame,
   tier,
 }: {
   index: number;
   motion: number;
   opacity: number;
+  showFrame: boolean;
   tier: QualityTier;
 }) {
   const palette = SERVICE_PALETTES[index];
@@ -160,26 +162,30 @@ function CurvedServicePanel({
           vertexShader={SERVICE_PANEL_VERTEX_SHADER}
         />
       </mesh>
-      <mesh geometry={geometry} position={[0, 0, 0.012]} scale={1.008}>
-        <meshBasicMaterial
-          color={palette.accent}
-          depthWrite={false}
-          opacity={opacity * 0.12}
-          toneMapped={false}
-          transparent
-          wireframe
-        />
-      </mesh>
-      <mesh position={[0, -1.46, 0.16]}>
-        <planeGeometry args={[4.7, 0.018]} />
-        <meshBasicMaterial
-          color={palette.primary}
-          depthWrite={false}
-          opacity={opacity * 0.7}
-          toneMapped={false}
-          transparent
-        />
-      </mesh>
+      {showFrame ? (
+        <>
+          <mesh geometry={geometry} position={[0, 0, 0.012]} scale={1.008}>
+            <meshBasicMaterial
+              color={palette.accent}
+              depthWrite={false}
+              opacity={opacity * 0.12}
+              toneMapped={false}
+              transparent
+              wireframe
+            />
+          </mesh>
+          <mesh position={[0, -1.46, 0.16]}>
+            <planeGeometry args={[4.7, 0.018]} />
+            <meshBasicMaterial
+              color={palette.primary}
+              depthWrite={false}
+              opacity={opacity * 0.7}
+              toneMapped={false}
+              transparent
+            />
+          </mesh>
+        </>
+      ) : null}
     </group>
   );
 }
@@ -459,13 +465,13 @@ export function ServiceCorridorVisual({
         const difference = index - frame.valueFloat;
         const distance = Math.abs(difference);
         const focus = 1 - smoothstep(clamp01(distance));
-        const opacity = journeyOpacity * (0.08 + focus * 0.92);
+        const opacity = journeyOpacity * (0.025 + focus * 0.915);
         const ribbonPhase = difference * 0.82;
         const focusDepth = -25.4 - frame.valueFloat * 2.25;
         const showcase = index === components.length - 1
           ? smoothstep(segmentProgress(frame.progress, 0.925, 0.955))
           : 0;
-        const scale = (0.72 + focus * 0.28) * (1 + showcase * 0.62);
+        const scale = (0.62 + focus * 0.23) * (1 + showcase * 0.48);
         const position: Vec3 = [
           Math.sin(ribbonPhase) * 3.2 * (1 - showcase),
           Math.sin(ribbonPhase * 1.65) * 0.58 * (1 - showcase),
@@ -487,10 +493,11 @@ export function ServiceCorridorVisual({
               index={index}
               motion={frame.progress * 18 + index * 0.7}
               opacity={opacity}
+              showFrame={withDioramas}
               tier={tier}
             />
             {withDioramas ? (
-              <group position={[0, 0.04, 0.34]} scale={0.66}>
+              <group position={[0, 0.04, 0.34]} scale={0.45}>
                 <Diorama opacity={opacity} tier={tier} />
               </group>
             ) : null}

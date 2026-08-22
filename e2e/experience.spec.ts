@@ -158,12 +158,56 @@ for (const [index, slug] of PRODUCT_ORDER.entries()) {
   });
 }
 
+for (const viewport of [
+  { width: 320, height: 700 },
+  { width: 390, height: 667 },
+] as const) {
+  for (const [index, slug] of [
+    [1, "burunfarki"],
+    [7, "choreia"],
+  ] as const) {
+    const progress = 0.085 + ((index + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085);
+    test(`${slug} CTA stays inside its ${viewport.width}x${viewport.height} product card`, async ({ page }) => {
+      await page.setViewportSize(viewport);
+      await openCapture(page, progress);
+      const panel = page.locator(`[data-product="${slug}"]`);
+      await expect(panel).toHaveAttribute("data-active", "true");
+      const bounds = await panel.evaluate((element) => {
+        const panelRect = element.getBoundingClientRect();
+        const linkRect = element.querySelector("a")?.getBoundingClientRect();
+        return {
+          panelBottom: panelRect.bottom,
+          panelTop: panelRect.top,
+          linkBottom: linkRect?.bottom ?? Number.POSITIVE_INFINITY,
+          linkTop: linkRect?.top ?? Number.NEGATIVE_INFINITY,
+          viewportHeight: window.innerHeight,
+        };
+      });
+      expect(bounds.panelTop).toBeGreaterThanOrEqual(0);
+      expect(bounds.panelBottom).toBeLessThanOrEqual(bounds.viewportHeight);
+      expect(bounds.linkTop).toBeGreaterThanOrEqual(bounds.panelTop);
+      expect(bounds.linkBottom).toBeLessThanOrEqual(bounds.panelBottom);
+    });
+  }
+}
+
 test("hero keeps one semantic product-lab H1", async ({ page }) => {
   await openCapture(page, 0);
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("body")).toContainText(/product lab|ürün laboratuvarı/i);
   await expect(page.locator('[data-site-header="true"]')).toBeHidden();
   await expect(page.locator('[data-site-footer="true"]')).toBeHidden();
+});
+
+test("hero status panel leaves the centered glass-Y zone clear", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openCapture(page, 0);
+  const panel = page.locator('[class*="heroCopy"]');
+  const bounds = await panel.boundingBox();
+  expect(bounds).not.toBeNull();
+  expect(bounds!.x).toBeGreaterThanOrEqual(1280 * 0.7);
+  expect(bounds!.x).toBeGreaterThan(1280 * 0.65);
+  expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(1280);
 });
 
 test("hero defers portfolio screenshot requests until a card approaches focus", async ({ page }) => {
@@ -253,6 +297,7 @@ for (const viewport of LOADER_VIEWPORTS) {
             horizontalOverflow: document.documentElement.scrollWidth - window.innerWidth,
             viewportAriaHidden: viewportLayer.getAttribute("aria-hidden"),
             viewportInert: viewportLayer.hasAttribute("inert"),
+            viewportOpacity: Number(getComputedStyle(viewportLayer).opacity),
             tabbableCount,
           };
         });
@@ -265,6 +310,7 @@ for (const viewport of LOADER_VIEWPORTS) {
         expect(metrics!.blueprintHeight).toBeLessThanOrEqual(viewport.height * 0.73);
         expect(metrics!.viewportAriaHidden).toBe("true");
         expect(metrics!.viewportInert).toBe(true);
+        expect(metrics!.viewportOpacity).toBe(0);
         expect(metrics!.tabbableCount).toBe(0);
         await context.close();
       }
@@ -274,7 +320,7 @@ for (const viewport of LOADER_VIEWPORTS) {
   });
 }
 
-test("adjacent stages dissolve instead of hard-cutting at their boundary", async ({ page }) => {
+test("adjacent semantic stages hand off through one neutral boundary frame", async ({ page }) => {
   await openCapture(page, 0.085);
   const crossfade = await page.locator('section[class*="stage"]').evaluateAll((sections) =>
     sections
@@ -288,33 +334,96 @@ test("adjacent stages dissolve instead of hard-cutting at their boundary", async
       .filter((stage) => stage.opacity > 0.01),
   );
 
-  expect(crossfade).toHaveLength(2);
-  expect(crossfade.every((stage) => stage.visibility === "visible")).toBe(true);
-  expect(crossfade.every((stage) => stage.opacity > 0.45 && stage.opacity < 0.55)).toBe(true);
+  expect(crossfade).toHaveLength(0);
 
   const firstProduct = page.locator('[class*="productPanel"]').first();
   await expect(firstProduct).toHaveCSS("visibility", "visible");
-  expect(Number(await firstProduct.evaluate((element) => getComputedStyle(element).opacity))).toBeGreaterThan(0.98);
+  expect(Number(await firstProduct.evaluate((element) => getComputedStyle(element).opacity))).toBe(0);
 });
 
-test("product descriptions crossfade between focus slots", async ({ page }) => {
+const SEMANTIC_STAGE_BOUNDARIES = [
+  ["proof", "incoming", 0.505],
+  ["proof", "outgoing", 0.575],
+  ["mission", "incoming", 0.69],
+  ["mission", "outgoing", 0.765],
+  ["vision", "incoming", 0.765],
+  ["vision", "outgoing", 0.835],
+  ["values", "incoming", 0.835],
+  ["values", "outgoing", 0.955],
+] as const;
+
+for (const [stageName, edge, progress] of SEMANTIC_STAGE_BOUNDARIES) {
+  test(`${stageName} ${edge} boundary is visually and semantically neutral`, async ({ page }) => {
+    await openCapture(page, progress);
+    const stage = page.locator(`[data-experience-stage="${stageName}"]`);
+    await expect(stage).toHaveAttribute("data-active", "false");
+    await expect(stage).toHaveAttribute("aria-hidden", "true");
+    expect(await stage.evaluate((element) => element.hasAttribute("inert"))).toBe(true);
+    expect(
+      await stage.evaluate((element) => Number(getComputedStyle(element).opacity)),
+    ).toBeLessThanOrEqual(0.01);
+    expect(await stage.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe("none");
+    await expect(stage.getByRole("heading")).toHaveCount(0);
+
+    const effectiveTabStops = await stage
+      .locator('a[href], button, input, select, textarea, [tabindex]')
+      .evaluateAll((elements) => elements.filter((element) => {
+        const control = element as HTMLElement;
+        return control.tabIndex >= 0 && !control.closest("[inert]");
+      }).length);
+    expect(effectiveTabStops).toBe(0);
+  });
+}
+
+test("product descriptions have one exclusive owner at focus-slot boundaries", async ({ page }) => {
   const productBoundary = 0.085 + (1 / 8) * (0.505 - 0.085);
   await openCapture(page, productBoundary);
-  const productOpacities = await page.locator('[class*="productPanel"]').evaluateAll((panels) =>
-    panels.map((panel) => Number(getComputedStyle(panel).opacity)).filter((opacity) => opacity > 0.01),
+  const panels = page.locator('[class*="productPanel"]');
+  const productOpacities = await panels.evaluateAll((elements) =>
+    elements.map((panel) => Number(getComputedStyle(panel).opacity)).filter((opacity) => opacity > 0.01),
   );
-  expect(productOpacities).toHaveLength(2);
-  expect(productOpacities.every((opacity) => opacity > 0.45 && opacity < 0.55)).toBe(true);
+  expect(productOpacities).toHaveLength(0);
+  await expect(page.locator('[class*="productPanel"][data-active="true"]')).toHaveCount(0);
+
+  const boundaryPanel = panels.nth(1);
+  await expect(boundaryPanel).toHaveAttribute("aria-hidden", "true");
+  expect(await boundaryPanel.evaluate((element) => element.hasAttribute("inert"))).toBe(true);
+  await expect(boundaryPanel.locator("a")).toHaveAttribute("tabindex", "-1");
 });
 
-test("service descriptions crossfade between focus slots", async ({ page }) => {
+test("service descriptions have one exclusive owner at focus-slot boundaries", async ({ page }) => {
   const valueBoundary = 0.835 + (1 / 4) * (0.955 - 0.835);
   await openCapture(page, valueBoundary);
-  const valueOpacities = await page.locator('article[class*="valuePanel"]').evaluateAll((panels) =>
-    panels.map((panel) => Number(getComputedStyle(panel).opacity)).filter((opacity) => opacity > 0.01),
+  const panels = page.locator('article[class*="valuePanel"]');
+  const valueOpacities = await panels.evaluateAll((elements) =>
+    elements.map((panel) => Number(getComputedStyle(panel).opacity)).filter((opacity) => opacity > 0.01),
   );
-  expect(valueOpacities).toHaveLength(2);
-  expect(valueOpacities.every((opacity) => opacity > 0.45 && opacity < 0.55)).toBe(true);
+  expect(valueOpacities).toHaveLength(0);
+  await expect(page.locator('article[class*="valuePanel"][data-active="true"]')).toHaveCount(0);
+
+  const boundaryPanel = panels.nth(1);
+  await expect(boundaryPanel).toHaveAttribute("aria-hidden", "true");
+  expect(await boundaryPanel.evaluate((element) => element.hasAttribute("inert"))).toBe(true);
+});
+
+test("proof descriptions are semantically neutral at focus-slot boundaries", async ({ page }) => {
+  const proofCount = await openCapture(page, 0.54).then(async () =>
+    page.locator('article[class*="proofProduct"]').count(),
+  );
+  expect(proofCount).toBeGreaterThan(1);
+
+  const proofBoundary = 0.505 + (1 / proofCount) * (0.575 - 0.505);
+  await openCapture(page, proofBoundary);
+  const panels = page.locator('article[class*="proofProduct"]');
+  const proofOpacities = await panels.evaluateAll((elements) =>
+    elements.map((panel) => Number(getComputedStyle(panel).opacity)).filter((opacity) => opacity > 0.01),
+  );
+  expect(proofOpacities).toHaveLength(0);
+  await expect(page.locator('article[class*="proofProduct"][data-active="true"]')).toHaveCount(0);
+
+  const boundaryPanel = panels.nth(1);
+  await expect(boundaryPanel).toHaveAttribute("aria-hidden", "true");
+  expect(await boundaryPanel.evaluate((element) => element.hasAttribute("inert"))).toBe(true);
 });
 
 test("research is written as research and never as a shipped build", async ({ page }) => {
@@ -526,25 +635,118 @@ test("mobile header keeps the journey navigation reachable", async ({ page }) =>
   await expect(page.locator('[data-site-mobile-drawer="true"]')).toBeHidden();
 });
 
-test("proof ledger accepts keyboard focus and scroll input", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+test("proof ledger leaves wheel ownership with the document", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
   await openCapture(page, 0.54);
-  const ledger = page.locator('[role="region"][tabindex="0"]');
-  await ledger.focus();
-  await expect(ledger).toBeFocused();
+  const ledger = page.locator('[class*="proofGrid"]');
   const dimensions = await ledger.evaluate((element) => ({
     clientHeight: element.clientHeight,
     scrollHeight: element.scrollHeight,
   }));
-  expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
-  await page.keyboard.press("PageDown");
-  await expect.poll(() => ledger.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+  expect(dimensions.scrollHeight).toBeLessThanOrEqual(dimensions.clientHeight);
+  const before = await page.evaluate(() => window.scrollY);
+  const bounds = await ledger.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.move(bounds!.x + bounds!.width / 2, bounds!.y + bounds!.height / 2);
+  await page.mouse.wheel(0, 640);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(before);
+  expect(await ledger.evaluate((element) => element.scrollTop)).toBe(0);
 });
 
-test("short viewports use the complete linear layout instead of clipping stages", async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 560 });
-  const root = await openCapture(page, 0.98);
-  await expect(root.locator('[data-experience-static="true"]')).toBeAttached();
-  await expect(page.locator("canvas")).toHaveCount(0);
-  await expect(page.locator('a[href^="mailto:"]').first()).toBeVisible();
-});
+for (const viewport of [
+  { width: 1280, height: 560 },
+  { width: 1366, height: 600 },
+  { width: 1366, height: 601 },
+] as const) {
+  test(`short desktop ${viewport.width}x${viewport.height} retains the immersive journey`, async ({ page }) => {
+    test.setTimeout(120_000);
+    await page.setViewportSize(viewport);
+
+    for (const [progress, stageName, contentSelector] of [
+      [0.49, "portfolio", '[data-active="true"][data-product]'],
+      [0.54, "proof", '[class*="proofGrid"]'],
+      [0.9, "values", 'article[class*="valuePanel"][data-active="true"]'],
+    ] as const) {
+      const stageRoot = await openCapture(page, progress);
+      await expect(stageRoot).toHaveAttribute("data-stage", stageName);
+      const stage = page.locator(`[data-experience-stage="${stageName}"]`);
+      const content = stage.locator(contentSelector);
+      await expect(stage).toHaveAttribute("data-active", "true");
+      await expect(content).toBeVisible();
+
+      const fit = await stage.evaluate((element, selector) => {
+        const contentElement = element.querySelector<HTMLElement>(selector);
+        if (!contentElement) return null;
+        const stageElement = element as HTMLElement;
+        const rect = contentElement.getBoundingClientRect();
+        return {
+          contentBottom: rect.bottom,
+          contentLeft: rect.left,
+          contentRight: rect.right,
+          contentTop: rect.top,
+          contentNoClip: contentElement.scrollHeight <= contentElement.clientHeight + 1,
+          stageNoClip: stageElement.scrollHeight <= stageElement.clientHeight + 1,
+          viewportHeight: window.innerHeight,
+          viewportWidth: window.innerWidth,
+        };
+      }, contentSelector);
+
+      expect(fit).not.toBeNull();
+      expect(fit!.contentLeft).toBeGreaterThanOrEqual(-1);
+      expect(fit!.contentRight).toBeLessThanOrEqual(fit!.viewportWidth + 1);
+      expect(fit!.contentTop).toBeGreaterThanOrEqual(-1);
+      expect(fit!.contentBottom).toBeLessThanOrEqual(fit!.viewportHeight + 1);
+      expect(fit!.contentNoClip).toBe(true);
+      if (stageName === "proof") expect(fit!.stageNoClip).toBe(true);
+    }
+
+    const root = await openCapture(page, 0.98);
+    await expect(root.locator('[data-experience-static="true"]')).toHaveCount(0);
+    await expect(page.locator("canvas")).toHaveCount(1, { timeout: 45_000 });
+    await expect(root).toHaveAttribute("data-experience-ready", "true", {
+      timeout: 45_000,
+    });
+    await expect(root).toHaveAttribute("data-stage", "closing");
+
+    const closing = page.locator('[data-experience-stage="closing"]');
+    const content = closing.locator('[class*="closingContent"]');
+    const wordmark = closing.locator('[class*="closingWordmark"]');
+    const email = closing.locator('a[href^="mailto:"]');
+    const trustLinks = closing.locator('[class*="trustLinks"] a');
+    await expect(closing).toHaveAttribute("data-active", "true");
+    await expect(content).toBeVisible();
+    await expect(wordmark).toBeVisible();
+    await expect(email).toBeVisible();
+    expect(await trustLinks.count()).toBeGreaterThanOrEqual(5);
+    for (const link of await trustLinks.all()) await expect(link).toBeVisible();
+
+    const closingFit = await closing.evaluate((element) => {
+      const stage = element as HTMLElement;
+      const contentElement = stage.querySelector<HTMLElement>('[class*="closingContent"]');
+      const wordmarkElement = stage.querySelector<HTMLElement>('[class*="closingWordmark"]');
+      const emailElement = stage.querySelector<HTMLElement>('a[href^="mailto:"]');
+      const trustElement = stage.querySelector<HTMLElement>('[class*="trustLinks"]');
+      if (!contentElement || !wordmarkElement || !emailElement || !trustElement) return null;
+      const rects = [contentElement, wordmarkElement, emailElement, trustElement]
+        .map((item) => item.getBoundingClientRect());
+      return {
+        allInsideViewport: rects.every((rect) =>
+          rect.left >= -1 &&
+          rect.right <= window.innerWidth + 1 &&
+          rect.top >= -1 &&
+          rect.bottom <= window.innerHeight + 1
+        ),
+        contentNoClip: contentElement.scrollHeight <= contentElement.clientHeight + 1,
+        stageNoClip: stage.scrollHeight <= stage.clientHeight + 1,
+        wordmarkBottom: rects[1].bottom,
+        contentTop: rects[0].top,
+      };
+    });
+
+    expect(closingFit).not.toBeNull();
+    expect(closingFit!.allInsideViewport).toBe(true);
+    expect(closingFit!.contentNoClip).toBe(true);
+    expect(closingFit!.stageNoClip).toBe(true);
+    expect(closingFit!.wordmarkBottom).toBeLessThanOrEqual(closingFit!.contentTop - 6);
+  });
+}
