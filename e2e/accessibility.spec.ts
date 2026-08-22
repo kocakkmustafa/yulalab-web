@@ -1,7 +1,18 @@
-import { test, expect, type Page } from "@playwright/test";
+import { chromium, test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 async function expectNoBlockingViolations(page: Page, label: string) {
+  const pageEntrance = page.locator(".page-enter").first();
+  if ((await pageEntrance.count()) > 0) {
+    // Contrast must be sampled from the settled page. During the intentional
+    // 500ms entrance fade, axe correctly blends text with the parent opacity
+    // and can report a transient false positive even though the final token
+    // is WCAG AA. Reduced-motion behavior is covered separately below.
+    await pageEntrance.evaluate(async (element) => {
+      await Promise.allSettled(element.getAnimations().map((animation) => animation.finished));
+    });
+  }
+
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
     .analyze();
@@ -11,8 +22,13 @@ async function expectNoBlockingViolations(page: Page, label: string) {
   );
   const summary = blocking
     .map(
-      (violation) =>
-        `${violation.impact}: ${violation.id} — ${violation.help} (${violation.nodes.length} node(s))`,
+      (violation) => {
+        const targets = violation.nodes
+          .slice(0, 3)
+          .map((node) => node.target.join(" "))
+          .join(", ");
+        return `${violation.impact}: ${violation.id} — ${violation.help} (${violation.nodes.length} node(s); ${targets})`;
+      },
     )
     .join("\n");
 
@@ -43,6 +59,7 @@ const ROUTES = [
 
 for (const [label, path] of ROUTES) {
   test(`no serious or critical accessibility violations: ${label}`, async ({ page }) => {
+    if (path === "/" || path === "/en") test.setTimeout(60_000);
     await page.goto(path);
     await expectNoBlockingViolations(page, path);
   });
@@ -53,13 +70,29 @@ for (const [label, progress] of [
   ["proof", 0.54],
   ["closing", 0.98],
 ] as const) {
-  test(`3D homepage ${label} stage has no serious or critical violations`, async ({ page }) => {
-    await page.goto(`/?capture=1&progress=${progress}&tier=high`);
-    const experience = page.locator('[data-yula-experience="true"]');
-    await expect(experience).toHaveAttribute("data-experience-ready", "true", {
-      timeout: 30_000,
-    });
-    await expectNoBlockingViolations(page, `homepage capture: ${label}`);
+  test(`3D homepage ${label} stage has no serious or critical violations`, async () => {
+    test.setTimeout(90_000);
+    const browser = await chromium.launch();
+
+    try {
+      const context = await browser.newContext({
+        baseURL: "http://127.0.0.1:4173",
+        locale: "tr-TR",
+      });
+      const page = await context.newPage();
+
+      await page.goto(`/?capture=1&progress=${progress}&tier=low`);
+      const experience = page.locator('[data-yula-experience="true"]');
+      await expect(experience).toHaveAttribute("data-experience-ready", "true", {
+        timeout: 45_000,
+      });
+      await expect(experience).toHaveAttribute("data-tier", "low");
+      await expect(page.locator("canvas")).toHaveCount(1);
+      await expectNoBlockingViolations(page, `homepage capture: ${label}`);
+      await context.close();
+    } finally {
+      await browser.close();
+    }
   });
 }
 

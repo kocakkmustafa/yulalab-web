@@ -41,6 +41,11 @@ const IMMUTABLE_GL_OPTIONS = {
 // PerformanceMonitor needs a bounded sample window. After it, the demand loop
 // sleeps until React props or loaded assets explicitly invalidate the scene.
 const PERFORMANCE_WARMUP_SECONDS = 2.5;
+const TRANSMISSION_RESOLUTION_SCALE: Record<QualityTier, number> = {
+  high: 0.5,
+  medium: 0.35,
+  low: 0.25,
+};
 
 type CanvasLifecycleProps = Pick<
   ExperienceCanvasProps,
@@ -85,6 +90,11 @@ function CanvasLifecycle({
   }, [invalidate, mode, progress, tier]);
 
   useEffect(() => {
+    renderer.transmissionResolutionScale = TRANSMISSION_RESOLUTION_SCALE[tier];
+    invalidate();
+  }, [invalidate, renderer, tier]);
+
+  useEffect(() => {
     postAssetsFrameSeen.current = false;
     if (assetsSettled) invalidate();
   }, [assetsSettled, invalidate]);
@@ -101,6 +111,15 @@ function CanvasLifecycle({
     readySent.current = true;
     onReadyRef.current();
   }, -100);
+
+  // Camera, theme, transmission and portal passes all settle before this one
+  // deterministic screen composite. A positive priority transfers R3F's
+  // automatic render ownership to this callback, so the root is still drawn
+  // exactly once for every requested frame.
+  useFrame((state) => {
+    state.gl.setRenderTarget(null);
+    state.gl.render(state.scene, state.camera);
+  }, 100);
 
   return null;
 }
@@ -155,12 +174,13 @@ export function ExperienceCanvas({
         gl.outputColorSpace = SRGBColorSpace;
         gl.toneMapping = ACESFilmicToneMapping;
         gl.shadowMap.type = PCFShadowMap;
+        gl.transmissionResolutionScale = TRANSMISSION_RESOLUTION_SCALE[tier];
       }}
       shadows={quality.shadows}
       style={{ width: "100%", height: "100%", pointerEvents: "none" }}
     >
       <PerformanceMonitor
-        bounds={(refreshRate) => [Math.min(42, refreshRate * 0.72), refreshRate]}
+        bounds={(refreshRate) => [Math.min(45, refreshRate * 0.82), refreshRate]}
         flipflops={1}
         iterations={8}
         ms={250}

@@ -3,7 +3,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { PerspectiveCamera, Vector3 } from "three";
-import { evaluateTimeline } from "./timeline";
+import { interpolateViewportCamera } from "./timeline";
 import type { ExperienceMode } from "./types";
 
 export type CameraRigProps = {
@@ -13,10 +13,11 @@ export type CameraRigProps = {
 
 export function CameraRig({ progress, mode }: CameraRigProps) {
   const camera = useThree((state) => state.camera);
+  const viewportWidth = useThree((state) => state.size.width);
   const target = useMemo(() => new Vector3(), []);
 
   useFrame(() => {
-    const pose = evaluateTimeline(progress, mode).camera;
+    const pose = interpolateViewportCamera(progress, viewportWidth, mode);
 
     camera.position.set(...pose.position);
     target.set(...pose.target);

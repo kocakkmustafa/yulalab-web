@@ -13,7 +13,7 @@ import { createAmbientAudio, type AmbientAudioController } from "./audio";
 import { ExperienceErrorBoundary } from "./ExperienceErrorBoundary";
 import { ExperienceLoader } from "./ExperienceLoader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
-import { detectInitialTier, supportsWebGL } from "./quality";
+import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
 import { evaluateTimeline } from "./timeline";
 import type {
@@ -50,8 +50,11 @@ type YulaExperienceProps = {
 
 type WebGLState = "checking" | "available" | "unavailable";
 
-const LOADER_SESSION_KEY = "yula-experience-loader-v1";
-const LOADER_DURATION_MS = 4_000;
+const LOADER_SESSION_KEY = "yula-experience-loader-v2";
+const LOADER_DRAW_DURATION_MS = 1_800;
+const LOADER_EXIT_DURATION_MS = 800;
+const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
+const LOADER_HOLD_PROGRESS = 0.78;
 const TIER_ORDER: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
 
 function useMediaQuery(query: string): boolean {
@@ -73,24 +76,43 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const mobile = useMediaQuery("(max-width: 767px)");
   const compactViewport = useMediaQuery("(max-height: 600px)");
-  const { progress, capture } = useExperienceProgress(reducedMotion);
   const [webgl, setWebgl] = useState<WebGLState>("checking");
   const [canvasFailed, setCanvasFailed] = useState(false);
   const [canvasReady, setCanvasReady] = useState(false);
   const [tier, setTier] = useState<QualityTier>("low");
-  const [loaderVisible, setLoaderVisible] = useState(false);
+  // The opening card is part of the server response so the first paint and
+  // hydrated experience begin on the same visual frame.
+  const [loaderVisible, setLoaderVisible] = useState(true);
   const [loaderProgress, setLoaderProgress] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [forceStatic, setForceStatic] = useState(false);
   const audio = useRef<AmbientAudioController | null>(null);
+  const canvasReadyRef = useRef(false);
+  const timelineEnabled =
+    mounted &&
+    !forceStatic &&
+    !reducedMotion &&
+    !compactViewport &&
+    webgl === "available" &&
+    !canvasFailed;
+  const { progress, capture } = useExperienceProgress(timelineEnabled);
 
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
-    const available = supportsWebGL();
-    setWebgl(available ? "available" : "unavailable");
-    setTier(capture.tier ?? detectInitialTier());
-  }, [capture.tier]);
+    canvasReadyRef.current = canvasReady;
+  }, [canvasReady]);
+
+  useEffect(() => {
+    const capabilities = detectExperienceCapabilities();
+    const allowSoftwareCapture = capture.enabled && capabilities.available;
+    setWebgl(
+      capabilities.available && (!capabilities.software || allowSoftwareCapture)
+        ? "available"
+        : "unavailable",
+    );
+    setTier(capture.tier ?? capabilities.tier);
+  }, [capture.enabled, capture.tier]);
 
   useEffect(() => {
     return () => {
@@ -101,8 +123,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   }, []);
 
   useEffect(() => {
+    if (!mounted) return;
+
     if (
-      !mounted ||
       reducedMotion ||
       compactViewport ||
       forceStatic ||
@@ -132,11 +155,43 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
 
     let animationFrame = 0;
     const startedAt = performance.now();
+    let lastFrameAt = startedAt;
+    let activeElapsed = 0;
+    let exitStartedAt: number | null = null;
     setLoaderVisible(true);
     setLoaderProgress(0);
 
     const tick = (now: number) => {
-      const next = Math.min(1, Math.max(0, (now - startedAt) / LOADER_DURATION_MS));
+      activeElapsed += Math.min(100, Math.max(0, now - lastFrameAt));
+      lastFrameAt = now;
+      const drawProgress = Math.min(
+        1,
+        Math.max(0, activeElapsed / LOADER_DRAW_DURATION_MS),
+      );
+      let next = drawProgress * LOADER_HOLD_PROGRESS;
+
+      if (
+        drawProgress >= 1 &&
+        !canvasReadyRef.current &&
+        activeElapsed >= LOADER_CANVAS_TIMEOUT_MS
+      ) {
+        // A broken or exceptionally slow GPU must never turn the opening into
+        // an interaction gate. Fall back to the complete linear document.
+        setLoaderProgress(1);
+        setLoaderVisible(false);
+        setCanvasFailed(true);
+        return;
+      }
+
+      if (drawProgress >= 1 && canvasReadyRef.current) {
+        exitStartedAt ??= activeElapsed;
+        const exitProgress = Math.min(
+          1,
+          Math.max(0, (activeElapsed - exitStartedAt) / LOADER_EXIT_DURATION_MS),
+        );
+        next = LOADER_HOLD_PROGRESS + exitProgress * (1 - LOADER_HOLD_PROGRESS);
+      }
+
       setLoaderProgress(next);
       if (next < 1) {
         animationFrame = requestAnimationFrame(tick);
@@ -216,6 +271,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     <div
       className={`${styles.journey} ${useStatic ? styles.staticJourney : ""}`}
       data-yula-experience="true"
+      data-experience-mounted={mounted ? "true" : "false"}
       data-experience-ready={experienceReady ? "true" : "false"}
       data-stage={frame.stage}
       data-active-product={activeProduct?.slug ?? "none"}
@@ -225,13 +281,27 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       data-experience-fallback={fallbackActive ? "true" : undefined}
       suppressHydrationWarning
     >
+      <noscript>
+        <style>{
+          `[data-yula-loader="true"]{display:none!important}` +
+          `[data-yula-static="true"]{display:block!important}` +
+          `[data-sound-control="true"]{display:none!important}`
+        }</style>
+      </noscript>
       {useStatic ? (
-        <StaticExperience
-          copy={copy}
-          products={products}
-          soundEnabled={soundEnabled}
-          onSoundToggle={() => void toggleSound()}
-        />
+        <div
+          data-yula-static="true"
+          aria-hidden={mounted && loaderVisible ? "true" : undefined}
+          inert={mounted && loaderVisible}
+          style={loaderVisible ? { display: "none" } : undefined}
+        >
+          <StaticExperience
+            copy={copy}
+            products={products}
+            soundEnabled={soundEnabled}
+            onSoundToggle={() => void toggleSound()}
+          />
+        </div>
       ) : (
         <>
           <span id="experience-hero" className={styles.scrollAnchor} style={{ top: 0 }} />
@@ -274,11 +344,11 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             />
           </div>
 
-          {loaderVisible ? (
-            <ExperienceLoader lines={copy.loader} progress={loaderProgress} />
-          ) : null}
         </>
       )}
+      {loaderVisible ? (
+        <ExperienceLoader lines={copy.loader} progress={loaderProgress} />
+      ) : null}
     </div>
   );
 }

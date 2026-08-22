@@ -12,7 +12,10 @@ jobs:
     # Without this, a stuck step (measured: "Install Playwright browsers"
     # hung 3.5h+ on 2026-08-19, run 32210132669 — GitHub's own default is
     # 360 minutes) burns Actions minutes silently instead of failing loud.
-    timeout-minutes: 15
+    # The high-tier WebGL smoke test deliberately compiles the real glass
+    # shader in software-rendered CI. Keep the suite serial to avoid GPU
+    # context starvation, and budget enough time for that honest render.
+    timeout-minutes: 30
 
     # A REAL PostgreSQL, on purpose. The attribution schema pushes its
     # rules (no raw session token, no free-text UTM, no query string in a

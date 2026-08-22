@@ -6,6 +6,7 @@ import type {
   TimelineFrame,
   Vec3,
 } from "./types";
+import { viewportMobileMix } from "./layout";
 
 export const STAGES = {
   hero: [0, 0.085],
@@ -145,6 +146,25 @@ export function interpolateKeyframes(
   };
 }
 
+export function interpolateViewportCamera(
+  progress: number,
+  viewportWidth: number,
+  fallbackMode: ExperienceMode = "desktop",
+): CameraPose {
+  if (!Number.isFinite(viewportWidth) || viewportWidth <= 0) {
+    return interpolateKeyframes(CAMERA_TRACKS[fallbackMode], progress);
+  }
+
+  const mobileMix = viewportMobileMix(viewportWidth);
+  const desktop = interpolateKeyframes(CAMERA_TRACKS.desktop, progress);
+  const mobile = interpolateKeyframes(CAMERA_TRACKS.mobile, progress);
+  return {
+    position: lerpVec3(desktop.position, mobile.position, mobileMix),
+    target: lerpVec3(desktop.target, mobile.target, mobileMix),
+    fov: lerp(desktop.fov, mobile.fov, mobileMix),
+  };
+}
+
 type VecKey = { progress: number; value: Vec3 };
 type NumberKey = { progress: number; value: number };
 
@@ -180,28 +200,31 @@ const GLYPH_POSITION: readonly VecKey[] = [
   { progress: 0.69, value: [0, 0.2, -18.9] },
   { progress: 0.835, value: [0, 0, -25.3] },
   { progress: 0.955, value: [-1.8, 0.1, -34.5] },
-  { progress: 1, value: [-4.5, 0.05, -39] },
+  { progress: 1, value: [-6.3, 0.12, -38.4] },
 ];
 
 const GLYPH_ROTATION: readonly VecKey[] = [
   { progress: 0, value: [-0.08, -0.15, 0.02] },
   { progress: 0.505, value: [0.05, 0.5, -0.03] },
   { progress: 0.575, value: [0.15, 1.15, 0.02] },
-  { progress: 0.69, value: [0, 1.85, 0] },
-  { progress: 0.835, value: [0.05, 2.35, 0] },
-  { progress: 0.955, value: [0, 0.45, 0] },
+  { progress: 0.69, value: [0.02, 0.35, 0] },
+  { progress: 0.765, value: [0.03, 0.12, 0] },
+  { progress: 0.835, value: [0.04, 0.16, 0] },
+  { progress: 0.955, value: [0, 0.32, 0] },
   { progress: 1, value: [0, 0.08, 0] },
 ];
 
 const GLYPH_SCALE: readonly NumberKey[] = [
-  { progress: 0, value: 2.78 },
-  { progress: 0.085, value: 3.02 },
+  { progress: 0, value: 2.08 },
+  { progress: 0.085, value: 2.05 },
   { progress: 0.505, value: 2.4 },
   { progress: 0.575, value: 2.1 },
-  { progress: 0.69, value: 4.4 },
-  { progress: 0.835, value: 4.1 },
-  { progress: 0.955, value: 2.4 },
-  { progress: 1, value: 2 },
+  { progress: 0.69, value: 0.95 },
+  { progress: 0.765, value: 0.75 },
+  { progress: 0.805, value: 0.75 },
+  { progress: 0.835, value: 0.75 },
+  { progress: 0.955, value: 1.35 },
+  { progress: 1, value: 0.85 },
 ];
 
 function stageAt(progress: number): ExperienceStage {
@@ -264,6 +287,16 @@ function resolveGlyphPosition(
   const depthExtent = glyphDepthExtent(rotation, scale);
   const clearance = depthExtent + GLYPH_CARD_CLEARANCE;
 
+  // The hero camera moves toward the room. Move the Y toward the exact first
+  // portfolio clearance plane at the same time, so it no longer grows past
+  // the viewport and then snaps backwards at the stage boundary.
+  if (progress < STAGES.portfolio[0]) {
+    const firstCardPlane = -1.25 - 0.5 * 1.36;
+    const entryDepth = firstCardPlane - clearance;
+    const travel = smootherstep(segmentProgress(progress, 0, STAGES.portfolio[0]));
+    return [sampled[0], sampled[1], lerp(sampled[2], entryDepth, travel)];
+  }
+
   // The reference's monogram is a physical object behind the active work,
   // not a watermark painted over it. The portfolio cards advance 1.36 world
   // units per slot. Offset the moving plane by half a slot so the full bevelled
@@ -285,6 +318,16 @@ function resolveGlyphPosition(
     return [sampled[0], sampled[1], cardDepth + lerp(-clearance, clearance, crossing)];
   }
 
+  if (progress > STAGES.proof[1] && progress < 0.62) {
+    const proofEndRotation = sampleVec(GLYPH_ROTATION, STAGES.proof[1]);
+    const proofEndScale = sampleNumber(GLYPH_SCALE, STAGES.proof[1]);
+    const proofEndClearance =
+      glyphDepthExtent(proofEndRotation, proofEndScale) + GLYPH_CARD_CLEARANCE;
+    const proofExitDepth = -13.98 + proofEndClearance;
+    const settle = smootherstep(segmentProgress(progress, STAGES.proof[1], 0.62));
+    return [sampled[0], sampled[1], lerp(proofExitDepth, sampled[2], settle)];
+  }
+
   return sampled;
 }
 
@@ -299,7 +342,7 @@ export function evaluateTimeline(
   const proof = slotFrame(p, STAGES.proof, 8);
   const value = slotFrame(p, STAGES.values, 4);
   const whiteRise = smoothstep(segmentProgress(p, STAGES.crossing[0], STAGES.crossing[1]));
-  const darkReturn = smoothstep(segmentProgress(p, STAGES.vision[0], 0.805));
+  const darkReturn = smoothstep(segmentProgress(p, 0.825, 0.855));
   const whiteMix = whiteRise * (1 - darkReturn);
   // The physical blade enters before the whole environment changes. This
   // preserves a dark upper chamber at mid-crossing, then makes the white
@@ -307,6 +350,16 @@ export function evaluateTimeline(
   const themeMix = Math.pow(whiteMix, 3);
   const proofMorph = smoothstep(segmentProgress(p, STAGES.proof[0], STAGES.proof[1]));
   const closingDraw = smoothstep(segmentProgress(p, STAGES.closing[0], STAGES.closing[1]));
+  const worksBackdropMix =
+    smoothstep(segmentProgress(p, 0.072, 0.11)) *
+    (1 - smoothstep(segmentProgress(p, 0.475, 0.515)));
+  const visionPortal = smoothstep(segmentProgress(p, 0.785, 0.835));
+  const servicePortalOpacity =
+    smoothstep(segmentProgress(p, 0.79, 0.805)) *
+    (1 - smoothstep(segmentProgress(p, 0.84, 0.855)));
+  const serviceIn = smoothstep(segmentProgress(p, 0.835, 0.858));
+  const serviceOut = smoothstep(segmentProgress(p, 0.925, 0.965));
+  const closingContent = smoothstep(segmentProgress(p, 0.968, 0.992));
   const glyphRotation = sampleVec(GLYPH_ROTATION, p);
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
@@ -352,6 +405,12 @@ export function evaluateTimeline(
           : 0.18 * (1 - themeMix),
       proofMorph,
       closingDraw,
+      worksBackdropMix,
+      visionPortal,
+      servicePortalOpacity,
+      serviceIn,
+      serviceOut,
+      closingContent,
     },
     overlay,
   };

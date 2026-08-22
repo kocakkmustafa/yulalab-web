@@ -118,6 +118,7 @@ export function Header() {
           onClick={() => setMobile(false)}
         />
         <div
+          data-site-mobile-panel="true"
           className={
             "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-white/10 p-6 flex flex-col transition-transform duration-500 " +
             (mobile ? "translate-x-0" : "translate-x-full")

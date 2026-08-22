@@ -260,3 +260,37 @@ Confirm the deployment commit matches merged `main`, then smoke-test `https://yu
 - [ ] **Step 6: Record the milestone.**
 
 Append exact commit, PR, Vercel deployment, test counts, browser evidence, rollback SHA, and remaining limitations to the evidence ledger and update the active Yulalab vault handoff with preserved frontmatter/wikilinks.
+
+## 2026-08-22 final implementation addendum
+
+The shipped candidate keeps the original truth, locale and single-progress contracts while advancing the observed reference choreography in these ways:
+
+- the loader now resolves through wire, depth/glass and a readiness-gated exit;
+- WORKS uses orbiting meshes plus a lazy, crossfading screen-space atmosphere;
+- VISION hands off through a capped offscreen Y portal into a curved SERVICE corridor;
+- the physical Y fades during the outro and a giant solid white `YULA` wordmark becomes the final focal plane;
+- short phone, tablet and desktop heights have explicit wordmark/content separation rules;
+- reduced-motion, compact-height, no-WebGL and no-JS paths expose the complete linear document without a scroll RAF or Canvas;
+- the root composite owns the final frame after camera, panel uniforms and portal FBO updates;
+- social image generation is static, warning-free and independent of dynamic font glyph fallback.
+
+### Current local evidence
+
+- `pnpm lint`: PASS, zero lint warnings/errors.
+- `pnpm typecheck`: PASS.
+- `pnpm build`: PASS, 60 static pages, no build warnings; public registry contains 8 products and TR/EN copy has 491/491-key parity.
+- `pnpm test`: PASS, 43 files and 759/759 tests.
+- `pnpm test:e2e`: PASS, 153/153 Chromium tests, including real high-tier glass pixels, loader containment, stage continuity, responsive closing geometry, serious/critical Axe checks, reduced motion, WebGL failure, no-JS, 404 metadata and the PNG social-image endpoint.
+- `pnpm verify:links`: PASS, 4/4 public links reachable.
+- `pnpm verify:render-mode`: PASS, 20 time-derived routes retain 900-second revalidation.
+- `pnpm audit --prod --audit-level high`: PASS, no known vulnerabilities.
+- High-tier visual checkpoints were inspected at 1440x900, 1366x768, 768x1024, 390x844 and 390x667.
+- Independent source audits: render sequence PASS, performance PASS, visual/accessibility PASS, release diff clean after duplicate draft removal.
+
+### Remaining release gates
+
+- [ ] Commit the explicitly selected source/test/document files; do not use blind `git add -A`.
+- [ ] Push the isolated branch and create the reviewed PR.
+- [ ] Merge to `main` under the founder's existing release approval and monitor Vercel.
+- [ ] Verify both locales and representative desktop/mobile checkpoints on the deployed commit.
+- [ ] Record commit, PR, deployment and rollback evidence in the workspace ledger and Yulalab vault handoff.
