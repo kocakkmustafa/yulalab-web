@@ -86,7 +86,7 @@ function criticallyDampedStep(
   return { position: clamp01(position), velocity };
 }
 
-export function useExperienceProgress(reducedMotion: boolean): {
+export function useExperienceProgress(enabled: boolean): {
   progress: number;
   capture: CaptureParams;
 } {
@@ -110,27 +110,28 @@ export function useExperienceProgress(reducedMotion: boolean): {
       return;
     }
 
+    if (!enabled) {
+      position.current = 0;
+      velocity.current = 0;
+      setProgress((current) => (current === 0 ? current : 0));
+      return;
+    }
+
     let animationFrame = 0;
     let previousTimestamp: number | null = null;
 
     const tick = (timestamp: number) => {
       const target = readDocumentProgress();
-
-      if (reducedMotion) {
-        position.current = target;
-        velocity.current = 0;
-      } else {
-        const elapsed =
-          previousTimestamp === null ? 1 / 60 : (timestamp - previousTimestamp) / 1_000;
-        const deltaSeconds = Math.min(1 / 15, Math.max(1 / 240, elapsed));
-        const next = criticallyDampedStep(
-          { position: position.current, velocity: velocity.current },
-          target,
-          deltaSeconds,
-        );
-        position.current = next.position;
-        velocity.current = next.velocity;
-      }
+      const elapsed =
+        previousTimestamp === null ? 1 / 60 : (timestamp - previousTimestamp) / 1_000;
+      const deltaSeconds = Math.min(1 / 15, Math.max(1 / 240, elapsed));
+      const next = criticallyDampedStep(
+        { position: position.current, velocity: velocity.current },
+        target,
+        deltaSeconds,
+      );
+      position.current = next.position;
+      velocity.current = next.velocity;
 
       previousTimestamp = timestamp;
       setProgress((current) =>
@@ -141,7 +142,7 @@ export function useExperienceProgress(reducedMotion: boolean): {
 
     animationFrame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animationFrame);
-  }, [capture.enabled, capture.progress, reducedMotion]);
+  }, [capture.enabled, capture.progress, enabled]);
 
   return {
     progress: capture.enabled ? capture.progress : progress,

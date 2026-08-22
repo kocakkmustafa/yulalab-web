@@ -11,7 +11,7 @@ import {
   TextureLoader,
 } from "three";
 import { clamp01, segmentProgress, smoothstep } from "./timeline";
-import { proofLayoutPose } from "./layout";
+import { proofLayoutPose, shouldLoadPortfolioMedia } from "./layout";
 import type {
   ExperienceMode,
   ExperienceProduct,
@@ -141,11 +141,12 @@ function dimensionsForAspect(aspect: number): readonly [number, number] {
 
 function makeFallbackTexture(product: ExperienceProduct): CanvasTexture {
   const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 640;
+  canvas.width = 768;
+  canvas.height = 480;
   const context = canvas.getContext("2d");
 
   if (context) {
+    const scale = canvas.width / 1024;
     const gradient = context.createLinearGradient(0, 0, canvas.width, canvas.height);
     gradient.addColorStop(0, product.colors.background);
     gradient.addColorStop(0.58, product.colors.primary);
@@ -155,22 +156,22 @@ function makeFallbackTexture(product: ExperienceProduct): CanvasTexture {
 
     context.globalAlpha = 0.28;
     context.strokeStyle = product.colors.accent;
-    context.lineWidth = 3;
+    context.lineWidth = 3 * scale;
     for (let index = -4; index < 14; index += 1) {
       context.beginPath();
-      context.moveTo(index * 110, 0);
-      context.lineTo(index * 110 + 420, canvas.height);
+      context.moveTo(index * 110 * scale, 0);
+      context.lineTo((index * 110 + 420) * scale, canvas.height);
       context.stroke();
     }
 
     context.globalAlpha = 1;
     context.fillStyle = "#ffffff";
-    context.font = "800 190px ui-sans-serif, system-ui, -apple-system, sans-serif";
-    context.textAlign = "left";
+    context.font = `800 ${190 * scale}px ui-sans-serif, system-ui, -apple-system, sans-serif`;
+    context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(product.monogram, 72, 265);
-    context.font = "650 62px ui-sans-serif, system-ui, -apple-system, sans-serif";
-    context.fillText(product.name, 78, 455);
+    context.fillText(product.monogram, canvas.width * 0.64, 265 * scale);
+    context.font = `650 ${62 * scale}px ui-sans-serif, system-ui, -apple-system, sans-serif`;
+    context.fillText(product.name, canvas.width * 0.64, 455 * scale);
   }
 
   const texture = new CanvasTexture(canvas);
@@ -469,15 +470,21 @@ function ProductCard({
   productIndex,
   opacity,
   tier,
+  loadRichMedia,
   onAssetSettled,
 }: {
   product: ExperienceProduct;
   productIndex: number;
   opacity: number;
   tier: QualityTier;
+  loadRichMedia: boolean;
   onAssetSettled: (path: string) => void;
 }) {
   if (product.screenshots.length > 0) {
+    if (!loadRichMedia) {
+      return <BrandedFallback opacity={opacity} product={product} />;
+    }
+
     return (
       <group>
         {product.screenshots.map((screenshot, layerIndex) => (
@@ -501,12 +508,17 @@ function ProductCard({
 
   if (product.lifecycle === "research") {
     return (
-      <ResearchWireframe
-        opacity={opacity}
-        product={product}
-        tier={tier}
-        variant={(productIndex - 3 + 5) % 5}
-      />
+      <group>
+        <BrandedFallback opacity={opacity * 0.9} product={product} />
+        <group position={[0.94, 0.1, -0.22]} rotation={[0.03, -0.12, 0]} scale={0.72}>
+          <ResearchWireframe
+            opacity={opacity * 0.44}
+            product={product}
+            tier={tier}
+            variant={(productIndex - 3 + 5) % 5}
+          />
+        </group>
+      </group>
     );
   }
 
@@ -529,16 +541,17 @@ function productPose(index: number, frame: TimelineFrame, mode: ExperienceMode) 
   const difference = index - frame.productFloat;
   const distance = Math.abs(difference);
   const focus = 1 - smoothstep(clamp01(distance));
-  const side = difference === 0 ? (index % 2 === 0 ? -1 : 1) : Math.sign(difference);
+  const orbitAngle = difference * 0.6;
+  const focusPlane = -1.25 - frame.productFloat * 1.36;
   const arcPosition: Vec3 = [
-    side * (1.55 + Math.min(distance, 2.5) * 0.34) * (1 - focus),
-    (index % 2 === 0 ? 0.24 : -0.22) * (1 - focus),
-    -1.25 - index * 1.36,
+    Math.sin(orbitAngle) * 3.25,
+    Math.sin(orbitAngle * 0.72) * 0.32,
+    focusPlane - (1 - Math.cos(orbitAngle)) * 1.45 - Math.min(distance, 3) * 0.04,
   ];
   const arcRotation: Vec3 = [
-    0,
-    -side * (0.26 + Math.min(distance, 3) * 0.12) * (1 - focus),
-    side * 0.025 * (1 - focus),
+    Math.sin(orbitAngle * 0.5) * 0.025,
+    -orbitAngle * 0.72,
+    -Math.sin(orbitAngle) * 0.018,
   ];
   const proof = proofLayoutPose(index, mode);
   const morph = frame.world.proofMorph;
@@ -557,9 +570,54 @@ export function PortfolioField({
   tier,
   onAssetsSettled,
 }: PortfolioFieldProps) {
+  const enter = smoothstep(segmentProgress(frame.progress, 0.065, 0.105));
+  const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.585, 0.675));
+  // The final WORKS card yields to the proof ledger before the cards complete
+  // their physical morph. Keeping the geometry faint preserves depth without
+  // making the evidence typography compete with eight equally bright objects.
+  const proofBackdropMix = smoothstep(segmentProgress(frame.progress, 0.49, 0.525));
+  const proofBackdropOpacity = lerp(1, 0.24, proofBackdropMix);
+  const fieldOpacity = enter * leave * proofBackdropOpacity;
+  const [richMediaProducts, setRichMediaProducts] = useState<ReadonlySet<number>>(
+    () => new Set(),
+  );
+  const eligibleMediaProducts = useMemo(
+    () => products.slice(0, 8).flatMap((product, index) =>
+      product.screenshots.length > 0 && shouldLoadPortfolioMedia(
+        fieldOpacity,
+        Math.abs(index - frame.productFloat),
+        frame.world.proofMorph,
+      )
+        ? [index]
+        : [],
+    ),
+    [fieldOpacity, frame.productFloat, frame.world.proofMorph, products],
+  );
+  const requestedMediaProducts = useMemo(
+    () => new Set([...richMediaProducts, ...eligibleMediaProducts]),
+    [eligibleMediaProducts, richMediaProducts],
+  );
+
+  useEffect(() => {
+    if (eligibleMediaProducts.length === 0) return;
+
+    setRichMediaProducts((current) => {
+      if (eligibleMediaProducts.every((index) => current.has(index))) return current;
+      return new Set([...current, ...eligibleMediaProducts]);
+    });
+  }, [eligibleMediaProducts]);
+
   const assetPaths = useMemo(
-    () => [...new Set(products.flatMap((product) => product.screenshots.map((shot) => shot.path)))],
-    [products],
+    () => [
+      ...new Set(
+        products.slice(0, 8).flatMap((product, index) =>
+          requestedMediaProducts.has(index)
+            ? product.screenshots.map((shot) => shot.path)
+            : [],
+        ),
+      ),
+    ],
+    [products, requestedMediaProducts],
   );
   const assetKey = assetPaths.join("\u0000");
   const settledAssets = useRef(new Set<string>());
@@ -580,24 +638,26 @@ export function PortfolioField({
   }, [assetKey, assetPaths.length]);
 
   const handleAssetSettled = useCallback((path: string) => {
+    if (!assetPaths.includes(path)) return;
     settledAssets.current.add(path);
     if (!notified.current && settledAssets.current.size >= assetPaths.length) {
       notified.current = true;
       onAssetsSettledRef.current?.();
     }
-  }, [assetPaths.length]);
-
-  const enter = smoothstep(segmentProgress(frame.progress, 0.065, 0.105));
-  const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.585, 0.675));
-  const fieldOpacity = enter * leave;
+  }, [assetPaths]);
 
   return (
     <group visible={fieldOpacity > 0.001}>
       {products.slice(0, 8).map((product, index) => {
         const pose = productPose(index, frame, mode);
+        const portfolioDistance = Math.abs(index - frame.productFloat);
+        const portfolioFocus = 1 - smoothstep(clamp01(portfolioDistance));
+        const portfolioOpacity = lerp(0.045, 1, Math.pow(portfolioFocus, 0.78));
         const proofDistance = Math.abs(index - frame.proofFloat);
         const proofFocus = 1 - smoothstep(clamp01(proofDistance));
-        const proofOpacity = lerp(1, 0.32 + proofFocus * 0.68, frame.world.proofMorph);
+        const proofOpacity = 0.22 + proofFocus * 0.78;
+        const cardOpacity = lerp(portfolioOpacity, proofOpacity, frame.world.proofMorph);
+        const loadRichMedia = requestedMediaProducts.has(index);
         return (
           <group
             key={product.slug}
@@ -607,10 +667,11 @@ export function PortfolioField({
             userData={{ productSlug: product.slug, registryScreenshotOnly: true }}
           >
             <ProductCard
-              opacity={fieldOpacity * proofOpacity}
+              opacity={fieldOpacity * cardOpacity}
               product={product}
               productIndex={index}
               tier={tier}
+              loadRichMedia={loadRichMedia}
               onAssetSettled={handleAssetSettled}
             />
           </group>

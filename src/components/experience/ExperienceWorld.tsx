@@ -15,7 +15,7 @@ import type {
   TimelineFrame,
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
-import { YulaGlyph } from "./YulaGlyph";
+import { VisionServicePortal } from "./VisionServicePortal";
 import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 
 export type ExperienceWorldProps = {
@@ -115,7 +115,7 @@ export function ExperienceWorld({
       </Environment>
 
       <GridRoom frame={frame} tier={tier} />
-      <YulaGlyph frame={frame} tier={tier} />
+      <VisionServicePortal frame={frame} tier={tier} />
       <PortfolioField
         frame={frame}
         mode={mode}

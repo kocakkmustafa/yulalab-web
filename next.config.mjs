@@ -68,6 +68,7 @@ const nextConfig = {
     ],
   },
   experimental: {
+    globalNotFound: true,
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
   async headers() {

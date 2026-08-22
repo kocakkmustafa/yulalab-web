@@ -163,3 +163,17 @@ Failure boundaries:
 - Serious/critical axe violations: 0.
 - Production build, route suite, claim checks, and high-severity production audit pass.
 - Remote `main` merge deploys successfully to Vercel and live `yulalab.com` is smoke-tested in both locales.
+
+## 9. Final choreography addendum
+
+This addendum supersedes the earlier beat descriptions where the final reference study produced a more faithful implementation:
+
+- **Opening:** the architectural SVG Y is contained at desktop, square, tablet and phone sizes, gains depth/glass, and exits only after the persistent Canvas reports readiness. The live glass Y uses aspect-aware poses and sits below hero copy on phones.
+- **WORKS:** product meshes follow a sine/cosine orbit. Verified media loads only near focus, remains cached for reverse scroll and crossfades into a blurred/tiled screen-space atmosphere; research remains procedural and explicitly unshipped.
+- **VISION → SERVICE:** a close-up Y mask and noise-driven portal render into a capped 512/384/256 offscreen target with zero MSAA. It reveals four sine-bent SERVICE media panels rather than hard-cutting to isolated value cards.
+- **Outro:** the physical Y recedes and fades. A giant solid white screen-space `YULA` wordmark replaces the early outline/collapse concept, followed by contact, trust and legal content over the living grid.
+- **Responsive outro:** 390x667/844 phones, 768/900px tablets and 720/768px-high desktops maintain at least a measured six-pixel wordmark-to-CTA separation while preserving the reference scale.
+- **Frame ownership:** camera and scene lifecycle updates precede panel uniforms, the portal FBO renders after those uniforms, and one positive-priority root compositor presents the final frame.
+- **Performance/fallback:** DPR is capped at 1.75, transmission and FBO resolution are tier-bounded, media is lazy, and static/reduced/software paths run neither Canvas nor the immersive scroll RAF.
+
+The final implementation remains clean-room: no reference source, private media, font or proprietary animation asset is included.

@@ -1,9 +1,9 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "nodejs";
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
-export const alt = "YULA Lab — product lab";
+export const dynamic = "force-static";
+
+const imageSize = { width: 1200, height: 630 };
 
 /**
  * Default OpenGraph image for the umbrella landing page. Lives at the
@@ -11,7 +11,7 @@ export const alt = "YULA Lab — product lab";
  * router doesn't fight the next-intl `as-needed` rewrite. Content is
  * in Turkish — the lab's default voice — and stays readable in EN.
  */
-export default function LandingOgImage() {
+export function GET() {
   const heroTitle = "Geleceğin ürünlerini bugün tasarlıyoruz.";
   const eyebrow = "Product Lab · Türkiye";
 
@@ -152,6 +152,6 @@ export default function LandingOgImage() {
         </div>
       </div>
     ),
-    { ...size },
+    { ...imageSize },
   );
 }

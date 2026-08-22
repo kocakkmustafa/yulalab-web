@@ -15,7 +15,7 @@ import {
   Vector3,
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
-import { CROSSING_BLADE } from "./timeline";
+import { CROSSING_BLADE, STAGES } from "./timeline";
 
 export type GridRoomProps = {
   frame: TimelineFrame;
@@ -101,7 +101,7 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
-function makeWordmarkTexture(): CanvasTexture {
+function makeWordmarkTexture(label: string): CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 2048;
   canvas.height = 512;
@@ -113,11 +113,11 @@ function makeWordmarkTexture(): CanvasTexture {
     context.font = "900 300px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText("YULA", canvas.width / 2, canvas.height / 2 + 12);
+    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12);
 
     context.globalCompositeOperation = "destination-out";
     context.globalAlpha = 0.13;
-    context.fillText("YULA", canvas.width / 2 + 11, canvas.height / 2 + 12);
+    context.fillText(label, canvas.width / 2 + 11, canvas.height / 2 + 12);
   }
 
   const texture = new CanvasTexture(canvas);
@@ -234,7 +234,8 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
       }),
     [],
   );
-  const wordmark = useMemo(makeWordmarkTexture, []);
+  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
+  const worksWordmark = useMemo(() => makeWordmarkTexture("WORKS"), []);
   const bladeColor = useMemo(() => new Color("#fffdf7"), []);
   const radialSegments = tier === "high" ? 112 : tier === "medium" ? 72 : 40;
   const heightSegments = tier === "low" ? 12 : 24;
@@ -250,13 +251,17 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
     () => () => {
       gridMaterial.dispose();
       halftoneMaterial.dispose();
-      wordmark.dispose();
+      yulaWordmark.dispose();
+      worksWordmark.dispose();
     },
-    [gridMaterial, halftoneMaterial, wordmark],
+    [gridMaterial, halftoneMaterial, worksWordmark, yulaWordmark],
   );
 
   const blade = frame.world.bladeProgress;
   const bladeY = -1.65 + blade * 1.35;
+  const wordmarkZ = frame.progress < STAGES.portfolio[0]
+    ? -1.25
+    : -2.35 - frame.productFloat * 1.36;
 
   return (
     <group>
@@ -292,14 +297,27 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
         </mesh>
       ))}
 
-      <mesh position={[0, 0.1, -1.25]} renderOrder={-2}>
+      <mesh position={[0, 0.1, wordmarkZ]} renderOrder={-2}>
         <planeGeometry args={[14.2, 3.55]} />
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
           depthWrite={false}
-          map={wordmark}
-          opacity={frame.world.wordmarkOpacity}
+          map={yulaWordmark}
+          opacity={frame.world.wordmarkOpacity * (1 - frame.world.worksBackdropMix)}
+          toneMapped={false}
+          transparent
+        />
+      </mesh>
+
+      <mesh position={[0, 0.1, wordmarkZ - 0.02]} renderOrder={-2}>
+        <planeGeometry args={[15.8, 3.55]} />
+        <meshBasicMaterial
+          color="#ffffff"
+          depthTest
+          depthWrite={false}
+          map={worksWordmark}
+          opacity={frame.world.worksBackdropMix * 0.82}
           toneMapped={false}
           transparent
         />

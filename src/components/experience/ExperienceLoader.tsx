@@ -12,6 +12,9 @@ type ExperienceLoaderProps = {
 type LoaderStyle = CSSProperties & {
   "--loader-progress": number;
   "--loader-reveal": number;
+  "--loader-flat": number;
+  "--loader-depth": number;
+  "--loader-exit": number;
 };
 
 function clampProgress(value: number): number {
@@ -28,7 +31,10 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
   const style: LoaderStyle = {
     "--loader-progress": clamped,
-    "--loader-reveal": Math.max(0, (clamped - 0.58) / 0.42),
+    "--loader-reveal": clampProgress((clamped - 0.32) / 0.46),
+    "--loader-flat": clampProgress(clamped / 0.42),
+    "--loader-depth": clampProgress((clamped - 0.28) / 0.5),
+    "--loader-exit": clampProgress((clamped - 0.78) / 0.22),
   };
 
   return (
@@ -38,6 +44,7 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
       role="status"
       aria-live="polite"
       aria-atomic="true"
+      data-yula-loader="true"
       data-loader-progress={clamped.toFixed(3)}
     >
       <div className={styles.loaderField} aria-hidden="true">
@@ -53,6 +60,10 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
             <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />
             <path d="M435 328H565V588H435Z" />
             <path d="M500 348L613 230L548 178L500 230L452 178L387 230Z" />
+          </g>
+          <g className={styles.loaderGlyphDepth}>
+            <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />
+            <path d="M435 328H565V588H435Z" />
           </g>
           <g className={styles.loaderGlyphGlass}>
             <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />

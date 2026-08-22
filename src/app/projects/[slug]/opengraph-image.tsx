@@ -37,6 +37,15 @@ export default async function ProjectOgImage({
   const foreground = project.brand.foreground;
   const background = project.brand.background;
   const gradient = project.brand.gradient;
+  const statusIsFilled = project.status === "live" || project.status === "beta";
+  const statusLabel =
+    project.status === "live"
+      ? "live"
+      : project.status === "beta"
+        ? "beta"
+        : project.status === "coming-soon"
+          ? "coming soon"
+          : "in development";
 
   return new ImageResponse(
     (
@@ -225,15 +234,27 @@ export default async function ProjectOgImage({
           }}
         >
           <span style={{ display: "flex" }}>yulalab.com/projects/{slug}</span>
-          <span style={{ display: "flex", color: accent, fontWeight: 600 }}>
-            {project.status === "live"
-              ? "● live"
-              : project.status === "beta"
-              ? "● beta"
-              : project.status === "coming-soon"
-              ? "○ coming soon"
-              : "○ in development"}
-          </span>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              color: accent,
+              fontWeight: 600,
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                width: 10,
+                height: 10,
+                border: `2px solid ${accent}`,
+                borderRadius: 9999,
+                background: statusIsFilled ? accent : "transparent",
+              }}
+            />
+            <span style={{ display: "flex" }}>{statusLabel}</span>
+          </div>
         </div>
       </div>
     ),

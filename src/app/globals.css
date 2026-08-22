@@ -4,6 +4,10 @@
 
 :root {
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
 }
 
 html,
@@ -142,6 +146,29 @@ body:has([data-yula-experience="true"]) [data-site-header="true"],
 body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"],
 body:has([data-yula-experience="true"]) [data-site-footer="true"] {
   display: none;
+}
+
+/* `viewport-fit=cover` lets the immersive canvas paint behind a notch. Keep
+   the shared site chrome and every non-experience route inside the same safe
+   boundary without shrinking their full-bleed backgrounds. */
+body:not(:has([data-yula-experience="true"])) main,
+[data-site-header="true"],
+[data-site-footer="true"] {
+  padding-right: var(--safe-right);
+  padding-left: var(--safe-left);
+}
+
+[data-site-header="true"] {
+  padding-top: var(--safe-top);
+}
+
+[data-site-footer="true"] {
+  padding-bottom: var(--safe-bottom);
+}
+
+[data-site-mobile-panel="true"] {
+  padding: calc(1.5rem + var(--safe-top)) calc(1.5rem + var(--safe-right))
+    calc(1.5rem + var(--safe-bottom)) calc(1.5rem + var(--safe-left));
 }
 
 /* IntersectionObserver-driven reveal — deliberately larger than a
@@ -331,6 +358,10 @@ button:hover .arrow-nudge {
    Continuous/automatic animation stops outright; one-shot reveals resolve
    to their end state instantly instead of easing there. */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   .drift-a,
   .drift-b,
   .drift-c,

@@ -51,6 +51,12 @@ export type TimelineFrame = {
     wordmarkOpacity: number;
     proofMorph: number;
     closingDraw: number;
+    worksBackdropMix: number;
+    visionPortal: number;
+    servicePortalOpacity: number;
+    serviceIn: number;
+    serviceOut: number;
+    closingContent: number;
   };
   overlay: Record<ExperienceStage, number>;
 };

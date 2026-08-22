@@ -20,9 +20,18 @@ import {
 
 const experienceCanvasHarness = vi.hoisted(() => ({
   canvasProps: undefined as Record<string, unknown> | undefined,
-  frameCallbacks: [] as Array<
-    (state: { clock: { elapsedTime: number } }) => void
-  >,
+  frameCallbacks: [] as Array<{
+    callback: (state: {
+      camera: object;
+      clock: { elapsedTime: number };
+      gl: {
+        render: ReturnType<typeof vi.fn>;
+        setRenderTarget: ReturnType<typeof vi.fn>;
+      };
+      scene: object;
+    }) => void;
+    priority: number;
+  }>,
   invalidate: vi.fn(),
   performanceProps: undefined as Record<string, unknown> | undefined,
   renderer: {
@@ -31,6 +40,8 @@ const experienceCanvasHarness = vi.hoisted(() => ({
       removeEventListener: vi.fn(),
     },
     outputColorSpace: null as unknown,
+    render: vi.fn(),
+    setRenderTarget: vi.fn(),
     shadowMap: { type: null as unknown },
     toneMapping: null as unknown,
   },
@@ -43,9 +54,21 @@ vi.mock("@react-three/fiber", () => ({
     return props.children ?? null;
   },
   useFrame: (
-    callback: (state: { clock: { elapsedTime: number } }) => void,
+    callback: (state: {
+      camera: object;
+      clock: { elapsedTime: number };
+      gl: typeof experienceCanvasHarness.renderer;
+      scene: object;
+    }) => void,
+    priority = 0,
   ) => {
-    experienceCanvasHarness.frameCallbacks.push(callback);
+    experienceCanvasHarness.frameCallbacks.push({
+      callback: (state) => callback({
+        ...state,
+        gl: experienceCanvasHarness.renderer,
+      }),
+      priority,
+    });
   },
   useThree: <T,>(
     selector: (state: {
@@ -91,6 +114,7 @@ function installRuntimeSignals({
   height = 900,
   cores = 12,
   memory = 16,
+  renderer = "ANGLE (Apple, Apple M3, Metal)",
 }: {
   webgl?: boolean;
   reducedMotion?: boolean;
@@ -99,8 +123,19 @@ function installRuntimeSignals({
   height?: number;
   cores?: number;
   memory?: number;
+  renderer?: string;
 } = {}) {
-  const context = { getExtension: vi.fn() };
+  const rendererInfo = { UNMASKED_RENDERER_WEBGL: 0x9246 };
+  const loseContext = vi.fn();
+  const context = {
+    RENDERER: 0x1f01,
+    getExtension: vi.fn((name: string) => {
+      if (name === "WEBGL_debug_renderer_info") return rendererInfo;
+      if (name === "WEBGL_lose_context") return { loseContext };
+      return null;
+    }),
+    getParameter: vi.fn(() => renderer),
+  };
   const getContext = vi
     .spyOn(HTMLCanvasElement.prototype, "getContext")
     .mockImplementation(((kind: string) =>
@@ -113,7 +148,7 @@ function installRuntimeSignals({
   defineValue(navigator, "deviceMemory", memory);
   defineValue(window, "matchMedia", vi.fn(() => ({ matches: reducedMotion })));
 
-  return { context, getContext };
+  return { context, getContext, loseContext };
 }
 
 function resetExperienceCanvasHarness() {
@@ -123,7 +158,25 @@ function resetExperienceCanvasHarness() {
   experienceCanvasHarness.performanceProps = undefined;
   experienceCanvasHarness.renderer.domElement.addEventListener.mockClear();
   experienceCanvasHarness.renderer.domElement.removeEventListener.mockClear();
+  experienceCanvasHarness.renderer.render.mockClear();
+  experienceCanvasHarness.renderer.setRenderTarget.mockClear();
   experienceCanvasHarness.worldProps = undefined;
+}
+
+function runCanvasFrame(priority: number, elapsedTime: number) {
+  const entry = experienceCanvasHarness.frameCallbacks.findLast(
+    (frame) => frame.priority === priority,
+  );
+  expect(entry).toBeDefined();
+  const camera = {};
+  const scene = {};
+  entry?.callback({
+    camera,
+    clock: { elapsedTime },
+    gl: experienceCanvasHarness.renderer,
+    scene,
+  });
+  return { camera, scene };
 }
 
 function installAnimationFrames() {
@@ -169,7 +222,7 @@ afterEach(() => {
 describe("experience quality policy", () => {
   it("contains only mutable Canvas settings and only downgrades", () => {
     expect(QUALITY).toEqual({
-      high: { dpr: [1, 2], shadows: "basic" },
+      high: { dpr: [1, 1.75], shadows: "basic" },
       medium: { dpr: [1, 1.5], shadows: false },
       low: { dpr: 1, shadows: false },
     });
@@ -180,12 +233,13 @@ describe("experience quality policy", () => {
     expect(downgradeTier("low")).toBe("low");
   });
 
-  it("uses a safe WebGL2 probe without forcing context loss", () => {
-    const { context, getContext } = installRuntimeSignals();
+  it("releases its temporary WebGL2 probe context", () => {
+    const { context, getContext, loseContext } = installRuntimeSignals();
 
     expect(supportsWebGL()).toBe(true);
     expect(getContext).toHaveBeenCalledWith("webgl2");
-    expect(context.getExtension).not.toHaveBeenCalled();
+    expect(context.getExtension).toHaveBeenCalledWith("WEBGL_lose_context");
+    expect(loseContext).toHaveBeenCalledOnce();
   });
 
   it("selects high only for a capable, roomy, motion-enabled device", () => {
@@ -219,6 +273,7 @@ describe("experience quality policy", () => {
     { signals: { reducedMotion: true }, reason: "reduced motion" },
     { signals: { cores: 2, memory: 2 }, reason: "constrained hardware" },
     { signals: { dpr: 3.5 }, reason: "an expensive pixel ratio" },
+    { signals: { renderer: "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device))" }, reason: "software rendering" },
   ] as const)("selects low for $reason", ({ signals }) => {
     installRuntimeSignals(signals);
     expect(detectInitialTier()).toBe("low");
@@ -251,15 +306,17 @@ describe("experience Canvas runtime contract", () => {
       ms: 250,
     });
 
-    const initialFrame = experienceCanvasHarness.frameCallbacks.at(-1);
-    expect(initialFrame).toBeDefined();
     experienceCanvasHarness.invalidate.mockClear();
-    act(() => initialFrame?.({ clock: { elapsedTime: 0.5 } }));
+    act(() => runCanvasFrame(-100, 0.5));
     expect(experienceCanvasHarness.invalidate).toHaveBeenCalledTimes(1);
 
     experienceCanvasHarness.invalidate.mockClear();
-    act(() => initialFrame?.({ clock: { elapsedTime: 3 } }));
+    act(() => runCanvasFrame(-100, 3));
     expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
+
+    const { camera, scene } = runCanvasFrame(100, 3);
+    expect(experienceCanvasHarness.renderer.setRenderTarget).toHaveBeenCalledWith(null);
+    expect(experienceCanvasHarness.renderer.render).toHaveBeenCalledWith(scene, camera);
 
     view.rerender(
       createElement(ExperienceCanvas, {
@@ -293,8 +350,7 @@ describe("experience Canvas runtime contract", () => {
     };
     const view = render(createElement(ExperienceCanvas, baseProps));
 
-    const beforeAssets = experienceCanvasHarness.frameCallbacks.at(-1);
-    act(() => beforeAssets?.({ clock: { elapsedTime: 3 } }));
+    act(() => runCanvasFrame(-100, 3));
     expect(onReady).not.toHaveBeenCalled();
 
     const onAssetsSettled = experienceCanvasHarness.worldProps
@@ -304,14 +360,13 @@ describe("experience Canvas runtime contract", () => {
     act(() => onAssetsSettled?.());
     expect(experienceCanvasHarness.invalidate).toHaveBeenCalled();
 
-    const afterAssets = experienceCanvasHarness.frameCallbacks.at(-1);
     experienceCanvasHarness.invalidate.mockClear();
-    act(() => afterAssets?.({ clock: { elapsedTime: 3 } }));
+    act(() => runCanvasFrame(-100, 3));
     expect(onReady).not.toHaveBeenCalled();
     expect(experienceCanvasHarness.invalidate).toHaveBeenCalledTimes(1);
 
     experienceCanvasHarness.invalidate.mockClear();
-    act(() => afterAssets?.({ clock: { elapsedTime: 3 } }));
+    act(() => runCanvasFrame(-100, 3));
     expect(onReady).toHaveBeenCalledTimes(1);
     expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
 
@@ -384,7 +439,7 @@ describe("the single experience progress loop", () => {
     window.history.replaceState({}, "", "/");
     setScrollGeometry(500);
     const frames = installAnimationFrames();
-    const { result, unmount } = renderHook(() => useExperienceProgress(false));
+    const { result, unmount } = renderHook(() => useExperienceProgress(true));
 
     expect(frames.request).toHaveBeenCalledTimes(1);
     expect(frames.callbacks.size).toBe(1);
@@ -404,15 +459,16 @@ describe("the single experience progress loop", () => {
     expect(frames.cancel).toHaveBeenCalledTimes(1);
   });
 
-  it("returns exact document progress with no smoothing for reduced motion", () => {
+  it("does not schedule document reads while the immersive timeline is disabled", () => {
     setScrollGeometry(625);
     const frames = installAnimationFrames();
-    const { result, unmount } = renderHook(() => useExperienceProgress(true));
+    const { result, unmount } = renderHook(() => useExperienceProgress(false));
 
-    frames.runNext(16);
-    expect(result.current.progress).toBe(0.625);
-
+    expect(result.current.progress).toBe(0);
+    expect(frames.request).not.toHaveBeenCalled();
+    expect(frames.callbacks.size).toBe(0);
     unmount();
+    expect(frames.cancel).not.toHaveBeenCalled();
   });
 
   it("pins capture progress exactly and does not start a scroll loop", () => {

@@ -3,6 +3,10 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   testDir: "./e2e",
   fullyParallel: true,
+  // Several suites visit the WebGL homepage. Parallel browser workers exhaust
+  // the finite headless GPU/context pool and make otherwise healthy routes
+  // time out; one worker is both faster and deterministic for this project.
+  workers: 1,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",

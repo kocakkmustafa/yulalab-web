@@ -28,6 +28,17 @@ type StageStyle = CSSProperties & {
   "--stage-opacity": number;
 };
 
+type PanelStyle = CSSProperties & {
+  "--panel-opacity": number;
+  "--panel-offset": number;
+};
+
+type WorksBackdropStyle = CSSProperties & {
+  "--works-opacity": number;
+  "--works-primary": string;
+  "--works-secondary": string;
+};
+
 type OverlayStyle = CSSProperties & {
   "--experience-fg": string;
   "--experience-muted": string;
@@ -51,6 +62,12 @@ function overlayStyle(whiteMix: number): OverlayStyle {
 
 function stageIs(frame: TimelineFrame, stage: ExperienceStage): boolean {
   return frame.stage === stage;
+}
+
+function visualFocus(distance: number): number {
+  const clamped = Math.min(1, Math.max(0, Math.abs(distance)));
+  const eased = clamped * clamped * (3 - 2 * clamped);
+  return 1 - eased;
 }
 
 /** Europe/Istanbul is the registry's documented freshness boundary. */
@@ -129,6 +146,7 @@ export function ExperienceHeader({
         <button
           type="button"
           className={styles.soundButton}
+          data-sound-control="true"
           aria-pressed={soundEnabled}
           onClick={onSoundToggle}
         >
@@ -214,22 +232,26 @@ type ExperienceClosingContentProps = {
 export function ExperienceClosingContent({ copy, headingId }: ExperienceClosingContentProps) {
   return (
     <div className={styles.closingContent}>
-      <p className={styles.kicker}>{copy.closing.kicker}</p>
-      <h2 id={headingId}>{copy.closing.title}</h2>
-      <p className={styles.closingBody}>{copy.closing.body}</p>
-      <a className={styles.emailLink} href={`mailto:${copy.closing.email}`}>
-        {copy.closing.email}
-      </a>
-      <nav className={styles.trustLinks} aria-label={copy.closing.kicker}>
-        <Link href="/transparency">{copy.navigation.transparency}</Link>
-        <Link href="/contact">{copy.navigation.contact}</Link>
-        <Link href="/privacy">{copy.closing.privacy}</Link>
-        <Link href="/terms">{copy.closing.terms}</Link>
-        <Link href="/support">{copy.closing.support}</Link>
-      </nav>
-      <div className={styles.legalLine}>
-        <span>© {new Date().getFullYear()} YULA Lab</span>
-        <span>{copy.closing.rights}</span>
+      <div className={styles.closingPitch}>
+        <p className={styles.kicker}>{copy.closing.kicker}</p>
+        <h2 id={headingId}>{copy.closing.title}</h2>
+        <p className={styles.closingBody}>{copy.closing.body}</p>
+      </div>
+      <div className={styles.closingContact}>
+        <a className={styles.emailLink} href={`mailto:${copy.closing.email}`}>
+          {copy.closing.email}
+        </a>
+        <nav className={styles.trustLinks} aria-label={copy.closing.kicker}>
+          <Link href="/transparency">{copy.navigation.transparency}</Link>
+          <Link href="/contact">{copy.navigation.contact}</Link>
+          <Link href="/privacy">{copy.closing.privacy}</Link>
+          <Link href="/terms">{copy.closing.terms}</Link>
+          <Link href="/support">{copy.closing.support}</Link>
+        </nav>
+        <div className={styles.legalLine}>
+          <span>© {new Date().getFullYear()} YULA Lab</span>
+          <span>{copy.closing.rights}</span>
+        </div>
       </div>
     </div>
   );
@@ -244,6 +266,8 @@ export function ExperienceOverlay({
   onSoundToggle,
   onLinearView,
 }: ExperienceOverlayProps) {
+  const closingInteractive =
+    stageIs(frame, "closing") && frame.world.closingContent >= 0.2;
   const today = useExperienceSiteDate();
 
   return (
@@ -287,8 +311,33 @@ export function ExperienceOverlay({
         inert={!stageIs(frame, "portfolio")}
         aria-label={copy.portfolio.kicker}
       >
+        <div className={styles.worksBackdrop} aria-hidden="true">
+          {products.map((product, index) => {
+            const opacity = visualFocus(index - frame.productFloat) * frame.world.worksBackdropMix;
+            const screenshot = product.screenshots[0]?.path;
+            const screenshotIsNear =
+              frame.world.worksBackdropMix > 0.001 &&
+              Math.abs(index - frame.productFloat) <= 1.05;
+            const style: WorksBackdropStyle = {
+              "--works-opacity": opacity,
+              "--works-primary": product.colors.primary,
+              "--works-secondary": product.colors.secondary,
+              backgroundImage: screenshot && screenshotIsNear
+                ? `linear-gradient(105deg, ${product.colors.background} 8%, transparent 72%), url("${screenshot}")`
+                : `radial-gradient(circle at 72% 36%, ${product.colors.primary}, transparent 34%), linear-gradient(125deg, ${product.colors.background}, ${product.colors.secondary})`,
+            };
+
+            return <span key={product.slug} style={style} />;
+          })}
+        </div>
+
         {products.map((product, index) => {
           const active = stageIs(frame, "portfolio") && index === frame.productIndex;
+          const distance = index - frame.productFloat;
+          const panelStyle: PanelStyle = {
+            "--panel-opacity": visualFocus(distance),
+            "--panel-offset": Math.max(-1, Math.min(1, distance)),
+          };
           return (
             <article
               key={product.slug}
@@ -297,6 +346,7 @@ export function ExperienceOverlay({
               inert={!active}
               data-product={product.slug}
               data-active={active ? "true" : "false"}
+              style={panelStyle}
             >
               <div className={styles.productMeta}>
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
@@ -348,7 +398,7 @@ export function ExperienceOverlay({
           className={styles.proofGrid}
           role="region"
           tabIndex={0}
-          aria-labelledby="experience-proof-title"
+          aria-label={`${copy.proof.kicker}: ${copy.proof.source}`}
         >
           {products.filter((product) => product.claims.length > 0).map((product) => (
             <article key={product.slug} className={styles.proofProduct}>
@@ -406,6 +456,11 @@ export function ExperienceOverlay({
         <div className={styles.valuePanels}>
           {copy.values.items.map((value, index) => {
             const active = stageIs(frame, "values") && index === frame.valueIndex;
+            const distance = index - frame.valueFloat;
+            const panelStyle: PanelStyle = {
+              "--panel-opacity": visualFocus(distance),
+              "--panel-offset": Math.max(-1, Math.min(1, distance)),
+            };
             return (
               <article
                 key={value.title}
@@ -413,6 +468,7 @@ export function ExperienceOverlay({
                 aria-hidden={!active}
                 inert={!active}
                 data-active={active ? "true" : "false"}
+                style={panelStyle}
               >
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 <h3>{value.title}</h3>
@@ -425,11 +481,17 @@ export function ExperienceOverlay({
 
       <section
         className={`${styles.stage} ${styles.closingStage}`}
-        style={stageStyle(frame.overlay.closing)}
-        aria-hidden={!stageIs(frame, "closing")}
-        inert={!stageIs(frame, "closing")}
+        data-interactive={closingInteractive ? "true" : "false"}
+        style={{
+          ...stageStyle(frame.overlay.closing),
+          "--closing-content": frame.world.closingContent,
+          "--closing-draw": frame.world.closingDraw,
+        } as CSSProperties}
+        aria-hidden={!closingInteractive}
+        inert={!closingInteractive}
         aria-labelledby="experience-closing-title"
       >
+        <div className={styles.closingWordmark} aria-hidden="true"><span>Y</span>ULA</div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
     </div>
