@@ -197,9 +197,9 @@
         "label": "Open methodology",
         "title": "Top 3 factors for every prediction.",
         "claim": "We don't hide why the model picked that horse. A rule-based weighting shows the top 3 factors in race-specific language.",
-        "proof": "→ ~61% Top-3 · honest live post-deployment tracking · burunfark.com/model-performance, 2026-07-23",
+        "proof": "→ 1,225 live-tracked races · ~29% Top-1 / ~62% Top-3 · burunfark.com/dogruluk, 2026-08-25",
         "detailLabel": "Live tracking panel",
-        "detailBody": "611 races over the past 12 months; winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns one click away."
+        "detailBody": "Across 1,225 live-tracked races over 69 days, winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns are one click away."
       },
       "lifeos": {
         "label": "On-device privacy",
@@ -306,7 +306,7 @@
     },
     "burunfarki": {
       "eyebrow": "Product 02 · Live · Analysis tool",
-      "lede": "A transparent AI horse-racing analysis platform — not betting. The model was built on 13,587 races; both the hit rates and the misses stay on the same screen. Every prediction states what drove it.",
+      "lede": "A transparent AI horse-racing analysis platform — not betting. Its current 69-day live-tracking window covers 1,225 races; ~29% Top-1 and ~62% Top-3 hit rates sit beside the misses on the same screen. Every prediction states what drove it.",
       "s1Kicker": "01 — What it does, and doesn't",
       "a1Title": "It reads the race; it doesn't hand you a slip.",
       "a1Body": "The platform takes a race's data and shows the model's ranking along with the factors that produced it. It generates no odds, recommends no bets, guarantees nothing. The decision is the user's.",

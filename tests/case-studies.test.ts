@@ -50,7 +50,7 @@ function goodCase(): CaseStudy {
     ],
     outcome: {
       claimId: "burunfarki-topk-accuracy",
-      figure: "~%61",
+      figure: "~%62",
       metricTr: "Top-3 doğruluğu",
       metricEn: "Top-3 accuracy",
     },

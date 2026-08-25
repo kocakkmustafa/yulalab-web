@@ -55,21 +55,22 @@ describe("stats that restate a registry claim must be linked to it", () => {
 
   it("resolves a linked stat back to its claim", () => {
     const bf = projects.find((p) => p.slug === "burunfarki")!;
-    const stat = bf.stats.find((s) => s.value === "~%61")!;
+    const stat = bf.stats.find((s) => s.value === "~%62")!;
     expect(linkedClaimFor("burunfarki", stat)?.id).toBe("burunfarki-topk-accuracy");
   });
 
   it("links exactly the stats that are supposed to be linked", () => {
     // Keyed on the LABEL as well as the value. Every other guard reasons
     // about stat.value, so swapping the label objects on Top-1 and Top-3
-    // shipped "Top-3 ~%30 / Top-1 ~%61" — the headline metric doubled and
+    // shipped "Top-3 ~%29 / Top-1 ~%62" — the headline metric doubled and
     // stamped as verified — with no test edit anywhere. A bare number means
     // nothing without its label; the pair is the claim.
     const EXPECTED = [
       ["braavolabs", "Primitives", "9", "braavolabs-primitive-count"],
       ["braavolabs", "LLM Providers", "14", "braavolabs-provider-count"],
-      ["burunfarki", "Top-1 (live tracking)", "~%30", "burunfarki-topk-accuracy"],
-      ["burunfarki", "Top-3 (live tracking)", "~%61", "burunfarki-topk-accuracy"],
+      ["burunfarki", "Top-1 (live tracking)", "~%29", "burunfarki-topk-accuracy"],
+      ["burunfarki", "Top-3 (live tracking)", "~%62", "burunfarki-topk-accuracy"],
+      ["burunfarki", "live-tracked races", "1.225", "burunfarki-topk-accuracy"],
       ["lifeos", "On-device encryption", "AES-256", "lifeos-on-device-encryption"],
     ] as const;
 
@@ -124,7 +125,7 @@ describe("a linked stat must be a figure its claim declares", () => {
     const claim = bf.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
     expect(claim.statementEn).toContain("69");
     expect(claimAsserts(claim, "~%69")).toBe(false);
-    expect(claimAsserts(claim, "~%61")).toBe(true);
+    expect(claimAsserts(claim, "~%62")).toBe(true);
   });
 
   it("refuses a config constant buried in a limitation caveat", () => {
@@ -136,7 +137,7 @@ describe("a linked stat must be a figure its claim declares", () => {
   it("cannot declare a figure the statement does not contain", () => {
     // Moving figures into structured data fixed "a disclaimer is not a
     // warrant", but opened the opposite hole: nothing tied figures back to
-    // the sentence, so `figures: ["~%99"]` beside a statement saying ~61%
+    // the sentence, so `figures: ["~%99"]` beside a statement saying ~62%
     // would have passed. The pairing is deliberately asymmetric —
     // containment is NECESSARY (a figure cannot be invented) but not
     // SUFFICIENT (being present is exactly what ~69% already was).
@@ -193,8 +194,8 @@ describe("a linked stat must be a figure its claim declares", () => {
   });
 
   it("the matcher itself behaves", () => {
-    expect(claimAsserts({ figures: ["~%61"] }, "~%61")).toBe(true);
-    expect(claimAsserts({ figures: ["~%61"] }, "~%69")).toBe(false);
+    expect(claimAsserts({ figures: ["~%62"] }, "~%62")).toBe(true);
+    expect(claimAsserts({ figures: ["~%62"] }, "~%69")).toBe(false);
     expect(claimAsserts({ figures: [] }, "9")).toBe(false);
     expect(claimAsserts({}, "9")).toBe(false);
   });
@@ -212,6 +213,6 @@ describe("the remaining unsourced numbers are counted, not hidden", () => {
 
   it("does not count a linked stat as unsourced", () => {
     const unsourced = unsourcedQuantitativeStats(projects, publicRegistry);
-    expect(unsourced.some((u) => u.value === "~%61")).toBe(false);
+    expect(unsourced.some((u) => u.value === "~%62")).toBe(false);
   });
 });

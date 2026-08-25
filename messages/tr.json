@@ -197,9 +197,9 @@
         "label": "Açık metodoloji",
         "title": "Her tahmin için ilk 3 etken.",
         "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. Kural-tabanlı ağırlıklandırmayla en etkili 3 faktörü yarış-spesifik dilde anlatıyoruz.",
-        "proof": "→ ~%61 Top-3 · canlı yayın-sonrası dürüst takip · burunfark.com/model-performance, 2026-07-23",
+        "proof": "→ 1.225 canlı takip yarışı · ~%29 Top-1 / ~%62 Top-3 · burunfark.com/dogruluk, 2026-08-25",
         "detailLabel": "Canlı takip paneli",
-        "detailBody": "Son 12 ayın 611 yarışı üstünde modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
+        "detailBody": "69 günlük canlı takipteki 1.225 yarışta modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
       },
       "lifeos": {
         "label": "Cihaz üstü gizlilik",
@@ -306,7 +306,7 @@
     },
     "burunfarki": {
       "eyebrow": "Ürün 02 · Yayında · Analiz aracı",
-      "lede": "Şeffaf AI at yarışı analiz platformu — bahis değil. Model 13.587 yarış üzerinde kuruldu; isabet oranları da, ıskaladığı yerler de aynı ekranda durur. Her tahminin yanında onu neyin sürüklediği yazılıdır.",
+      "lede": "Şeffaf AI at yarışı analiz platformu — bahis değil. Güncel 69 günlük canlı takip penceresi 1.225 yarışı kapsar; ~%29 Top-1 ve ~%62 Top-3 isabet de, ıskaladığı yerler de aynı ekranda durur. Her tahminin yanında onu neyin sürüklediği yazılıdır.",
       "s1Kicker": "01 — Ne yapar, ne yapmaz",
       "a1Title": "Yarışı okur, kupon vermez.",
       "a1Body": "Platform bir yarışın verisini alır, modelin sıralamasını ve bu sıralamayı oluşturan etkenleri gösterir. Bahis oranı üretmez, kupon önermez, garanti vermez. Karar kullanıcıdadır.",

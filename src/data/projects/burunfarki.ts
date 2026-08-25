@@ -15,12 +15,12 @@ export const burunfarki: ProjectConfig = {
     en: "Numbers over hunches.",
   },
   description: {
-    tr: "Burun Farkı, Türkiye at yarışlarının ilk açık ve şeffaf veri-odaklı analiz platformu. 130 binden fazla koşucu, 13 binden fazla yarış — modelin neden tahmin ettiğini gizlemiyor.",
-    en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. 130k+ runners, 13k+ races — and the model never hides why it predicted what it did.",
+    tr: "Burun Farkı, Türkiye at yarışlarının ilk açık ve şeffaf veri-odaklı analiz platformu. Canlı takip performansını burunfark.com/dogruluk kaynağıyla açıklar; modelin neden tahmin ettiğini gizlemez.",
+    en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. It documents live-tracking performance at burunfark.com/dogruluk and never hides why the model made a prediction.",
   },
   short: {
-    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. Top-3 doğruluğu ~%61, canlı yayın-sonrası dürüst takip (burunfark.com/model-performance, 2026-07-23). Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü.",
-    en: "Open, transparent, data-driven analytics for Turkish horse racing. ~61% Top-3 accuracy, honest live post-deployment tracking (burunfark.com/model-performance, 2026-07-23). A separate training-time backtest measured ~69% Top-3.",
+    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. 1.225 canlı takip yarışında Top-1 ~%29, Top-3 ~%62 (burunfark.com/dogruluk, 2026-08-25). Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü.",
+    en: "Open, transparent, data-driven analytics for Turkish horse racing. Across 1,225 live-tracked races: Top-1 ~29%, Top-3 ~62% (burunfark.com/dogruluk, 2026-08-25). A separate training-time backtest measured ~69% Top-3.",
   },
   brand: {
     primary: "#FAB81F",
@@ -88,16 +88,16 @@ export const burunfarki: ProjectConfig = {
     {
       title: { tr: "Tarihsel arşiv", en: "Historical archive" },
       description: {
-        tr: "13.587 koşuda, 130.930 koşucuda — modelin geçmişte nerede yanıldığını da görürsün.",
-        en: "13,587 races, 130,930 runners — including where the model has been wrong.",
+        tr: "69 günlük canlı takipteki 1.225 yarış — modelin geçmişte nerede yanıldığını da görürsün.",
+        en: "The 1,225 races in the current 69-day live-tracking window — including where the model has been wrong.",
       },
       icon: "Database",
     },
     {
       title: { tr: "Canlı takip paneli", en: "Live tracking panel" },
       description: {
-        tr: "Son 12 ayın gerçek sonuçları üzerinde, modelin getirisini gün gün izle.",
-        en: "Track the model's day-by-day performance against the past 12 months of real results.",
+        tr: "Yayımlanan 69 günlük canlı takip penceresindeki gerçek sonuçlarla modelin getirisini gün gün izle.",
+        en: "Track the model's day-by-day performance against the published 69-day live-results window.",
       },
       icon: "TrendingUp",
     },
@@ -119,24 +119,27 @@ export const burunfarki: ProjectConfig = {
     },
   ],
   // Honest live (post-deployment) walk-forward accuracy, not training-time
-  // backtest. Source: burunfark.com/model-performance, verified 2026-08-19
-  // (BF DEFTER B-021 / FABLE_PLAN.md:171). Training-time backtest separately
+  // backtest. Source: burunfark.com/dogruluk, verified 2026-08-25
+  // (69 days / 1,225 races in the current live DOM). Training-time backtest separately
   // measured ~69% Top-3 — see the `short` field above for that distinction.
   // TODO(Y-P0-003): move source/verifiedAt/expiresAt into the public
   // registry schema once it exists; this comment is a stopgap until then.
   stats: [
     {
-      value: "~%30",
+      value: "~%29",
       label: { tr: "Top-1 (canlı takip)", en: "Top-1 (live tracking)" },
       claimId: "burunfarki-topk-accuracy",
     },
     {
-      value: "~%61",
+      value: "~%62",
       label: { tr: "Top-3 (canlı takip)", en: "Top-3 (live tracking)" },
       claimId: "burunfarki-topk-accuracy",
     },
-    { value: "13.587", label: { tr: "yarış", en: "races" } },
-    { value: "130.930", label: { tr: "koşucu", en: "runners" } },
+    {
+      value: "1.225",
+      label: { tr: "canlı takip yarışı", en: "live-tracked races" },
+      claimId: "burunfarki-topk-accuracy",
+    },
   ],
   vision: {
     tr: "At yarışını duygusal bir kumardan, denetlenebilir bir kantitatif disipline çeviren açık bir araç ekosistemi.",
