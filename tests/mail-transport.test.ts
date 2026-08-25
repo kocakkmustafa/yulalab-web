@@ -6,6 +6,12 @@ import {
   sendgridTransport,
   type MailMessage,
 } from "@/server/mail";
+import {
+  DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+  DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV,
+} from "@/server/data-request-token";
 
 const message: MailMessage = {
   outboxId: "11111111-1111-1111-1111-111111111111",
@@ -28,6 +34,12 @@ beforeEach(() => {
     "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
     "SENDGRID_TEMPLATE_LEAD_RECEIPT_EN",
     "SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR",
+    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR",
+    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN",
+    DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+    DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+    DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
+    DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV,
   ]) {
     delete process.env[key];
   }
@@ -60,6 +72,13 @@ describe("the provider call", () => {
     expect(body.personalizations[0].to[0].email).toBe("ada@example.com");
     expect(body.from.email).toBe("hello@yulalab.com");
     expect(body.dynamic_template_data).toEqual({ receiptId: "YL-1" });
+    expect(body.tracking_settings).toEqual({
+      click_tracking: { enable: false, enable_text: false },
+      open_tracking: { enable: false },
+    });
+    expect(body.personalizations[0].custom_args).toEqual({
+      yulalab_outbox_id: message.outboxId,
+    });
   });
 });
 
@@ -93,6 +112,8 @@ describe("which transport this deployment gets", () => {
     expect(missingTemplates()).toEqual([
       "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
       "SENDGRID_TEMPLATE_LEAD_RECEIPT_EN",
+      DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+      DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
     ]);
   });
 
@@ -105,21 +126,33 @@ describe("which transport this deployment gets", () => {
     expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
 
     process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
-    expect(missingTemplates()).toEqual(["SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR"]);
+    expect(missingTemplates()).toEqual([
+      "SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR",
+      DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+      DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+    ]);
     expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
 
     process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
-    expect(missingTemplates()).toEqual([]);
+    expect(missingTemplates()).toEqual([
+      DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+      DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+    ]);
     expect(deliverableEventTypes()).toEqual(["lead_receipt", "lead_internal_route"]);
   });
 
-  it("never treats the unaddressable verification event as deliverable", () => {
+  it("requires the server-only token secret and both verification templates", () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
     process.env.MAIL_FROM = "hello@yulalab.com";
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
     process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
     expect(deliverableEventTypes()).not.toContain("data_request_verification");
+    process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = "test-only-current-data-request-secret-32-bytes";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    expect(deliverableEventTypes()).toContain("data_request_verification");
   });
 });
 

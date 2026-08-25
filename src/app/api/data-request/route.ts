@@ -7,6 +7,7 @@ import {
   verifyDataRequest,
   type DataRequestType,
 } from "@/server/data-requests";
+import { dataRequestDeliveryMissingConfig } from "@/server/mail";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -14,7 +15,7 @@ export const dynamic = "force-dynamic";
 const MAX_BODY_BYTES = 2_048;
 const TYPES: readonly DataRequestType[] = ["access", "delete", "correct"];
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const ALLOWED_FIELDS = new Set(["email", "requestType", "token"]);
+const ALLOWED_FIELDS = new Set(["email", "requestType", "locale", "token"]);
 
 const ALLOWED_ORIGINS = new Set(["https://yulalab.com", "https://www.yulalab.com"]);
 
@@ -66,6 +67,7 @@ function clientKey(request: Request): string {
  * the information a data-request surface must not hand out.
  */
 const SUBMITTED = { status: "submitted" } as const;
+const TEMPORARILY_UNAVAILABLE = { error: "temporarily_unavailable" } as const;
 
 export async function POST(request: Request): Promise<Response> {
   if (!enabled()) {
@@ -105,17 +107,17 @@ export async function POST(request: Request): Promise<Response> {
 
   // Verification arm.
   if (typeof body.token === "string") {
-    if (!isDatabaseConfigured()) {
-      return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
+    if (!isDatabaseConfigured("intake")) {
+      return NextResponse.json(TEMPORARILY_UNAVAILABLE, { status: 503 });
     }
     try {
-      const { verified } = await verifyDataRequest(getPool(), body.token, { now: new Date() });
+      const { verified } = await verifyDataRequest(getPool("intake"), body.token, { now: new Date() });
       // 200 either way, with the outcome in the body: a 404 for an unknown
       // token would leak which links are live.
       return NextResponse.json({ verified }, { status: 200 });
     } catch (error) {
       console.error("data request verify failed", error instanceof Error ? error.name : "unknown");
-      return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
+      return NextResponse.json(TEMPORARILY_UNAVAILABLE, { status: 503 });
     }
   }
 
@@ -128,21 +130,26 @@ export async function POST(request: Request): Promise<Response> {
   if (!TYPES.includes(body.requestType as DataRequestType)) {
     return NextResponse.json({ error: "requestType" }, { status: 400 });
   }
+  const locale = body.locale ?? "tr";
+  if (locale !== "tr" && locale !== "en") {
+    return NextResponse.json({ error: "locale" }, { status: 400 });
+  }
 
-  if (!isDatabaseConfigured()) {
-    return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
+  if (!isDatabaseConfigured("intake") || dataRequestDeliveryMissingConfig().length > 0) {
+    return NextResponse.json(TEMPORARILY_UNAVAILABLE, { status: 503 });
   }
 
   try {
     await createDataRequest(
-      getPool(),
-      { email, requestType: body.requestType as DataRequestType },
+      getPool("intake"),
+      { email, requestType: body.requestType as DataRequestType, locale },
       { now: new Date() },
     );
   } catch (error) {
     // Not surfaced to the caller: whether the write succeeded is itself a
     // signal about that address. Logged as a shape only.
     console.error("data request write failed", error instanceof Error ? error.name : "unknown");
+    return NextResponse.json(TEMPORARILY_UNAVAILABLE, { status: 503 });
   }
   return NextResponse.json(SUBMITTED, { status: 202 });
 }

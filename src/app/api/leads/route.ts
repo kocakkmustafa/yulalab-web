@@ -186,14 +186,14 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ receiptId: "YL-00000000" }, { status: 201 });
   }
 
-  if (!isDatabaseConfigured()) {
+  if (!isDatabaseConfigured("intake")) {
     // No silent success: a form that says "thank you" while storing nothing
     // is worse than one that says it is unavailable.
     return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
   }
 
   try {
-    const { receiptId } = await createLead(getPool(), parsed.value, { now: new Date() });
+    const { receiptId } = await createLead(getPool("intake"), parsed.value, { now: new Date() });
     return NextResponse.json({ receiptId }, { status: 201 });
   } catch (error) {
     // Only the failure SHAPE. Everything in the payload is personal data,

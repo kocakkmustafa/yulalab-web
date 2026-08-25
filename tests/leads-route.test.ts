@@ -7,6 +7,11 @@ import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/att
 const SCHEMA = "t_leads_route";
 const ORIGIN = "https://yulalab.com";
 let pool: Pool;
+const localLoginUrl = (schema: string) => {
+  const url = new URL(testDatabaseUrl(schema));
+  url.username = process.env.USER ?? "postgres";
+  return url.toString();
+};
 
 beforeAll(async () => {
   pool = await createIsolatedSchema(SCHEMA);
@@ -24,7 +29,10 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await pool.query("TRUNCATE leads, lead_consents, event_outbox, data_requests CASCADE");
-  process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+  process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+  process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(SCHEMA);
+  process.env.YULA_MAIL_DATABASE_URL = "postgres://mail-test@invalid.invalid/yula";
+  process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN;
   // The route refuses everything unless collection is explicitly enabled;
   // see the "closed by default" suite at the bottom for why.
@@ -35,8 +43,11 @@ beforeEach(async () => {
 
 afterEach(async () => {
   const { resetPool } = await import("@/server/db");
-  await resetPool();
-  delete process.env.DATABASE_URL;
+  await resetPool("intake");
+  delete process.env.YULA_INTAKE_DATABASE_URL;
+  delete process.env.YULA_MAIL_DATABASE_URL;
+  delete process.env.YULA_PURGE_DATABASE_URL;
+  delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.LEADS_ENABLED;
   vi.restoreAllMocks();
 });
@@ -129,7 +140,7 @@ describe("rejections", () => {
 
 describe("honest failure when storage is unavailable", () => {
   it("does not pretend to have captured the lead", async () => {
-    delete process.env.DATABASE_URL;
+    delete process.env.YULA_INTAKE_DATABASE_URL;
     const res = await post(body());
     expect(res.status).toBe(503);
     const json = (await res.json()) as { receiptId?: string };
@@ -202,9 +213,10 @@ describe("PII never reaches the logs", () => {
     vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
       errors.push(args.map((a) => (typeof a === "string" ? a : inspect(a))).join(" "));
     });
-    process.env.DATABASE_URL = testDatabaseUrl(HOSTILE);
     const { resetPool } = await import("@/server/db");
-    await resetPool();
+    await resetPool("intake");
+    process.env.YULA_DATABASE_SCHEMA = HOSTILE;
+    process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(HOSTILE);
 
     const res = await post(body({ email: "kaan.kocak@example.com", message: "these are secret plans" }));
     expect(res.status).toBe(503);
@@ -215,7 +227,9 @@ describe("PII never reaches the logs", () => {
     expect(logged).not.toContain("these are secret plans");
     expect(logged).not.toContain("Kaan");
 
-    await resetPool();
+    await resetPool("intake");
+    process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+    process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(SCHEMA);
     await pool.query(`DROP SCHEMA IF EXISTS ${HOSTILE} CASCADE`);
   });
 });

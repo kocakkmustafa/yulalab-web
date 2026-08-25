@@ -7,6 +7,11 @@ const SCHEMA = "t_events_route";
 const ORIGIN = "https://yulalab.com";
 
 let pool: Pool;
+const localLoginUrl = (schema: string) => {
+  const url = new URL(testDatabaseUrl(schema));
+  url.username = process.env.USER ?? "postgres";
+  return url.toString();
+};
 
 beforeAll(async () => {
   pool = await createIsolatedSchema(SCHEMA);
@@ -18,15 +23,21 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await pool.query("TRUNCATE attributions");
-  process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+  process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+  process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(SCHEMA);
+  process.env.YULA_MAIL_DATABASE_URL = "postgres://mail-test@invalid.invalid/yula";
+  process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
   process.env.ATTRIBUTION_SECRET = "test-secret-not-a-real-one";
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN;
 });
 
 afterEach(async () => {
   const { resetPool } = await import("@/server/db");
-  await resetPool();
-  delete process.env.DATABASE_URL;
+  await resetPool("intake");
+  delete process.env.YULA_INTAKE_DATABASE_URL;
+  delete process.env.YULA_MAIL_DATABASE_URL;
+  delete process.env.YULA_PURGE_DATABASE_URL;
+  delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.ATTRIBUTION_SECRET;
 });
 
@@ -118,7 +129,7 @@ describe("honest failure when storage is unavailable", () => {
     // events that were never written — the site's own funnel would then
     // report a number it cannot back. Fail open for the visitor (their
     // navigation is never blocked), fail closed for the claim.
-    delete process.env.DATABASE_URL;
+    delete process.env.YULA_INTAKE_DATABASE_URL;
     const res = await post(body());
     expect(res.status).toBe(503);
     await expect(res.json()).resolves.toMatchObject({ stored: false });

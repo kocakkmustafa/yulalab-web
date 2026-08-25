@@ -6,11 +6,18 @@ import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/att
 import { resetPool } from "@/server/db";
 
 const original = { ...process.env };
+const localLoginUrl = (schema: string) => {
+  const url = new URL(testDatabaseUrl(schema));
+  url.username = process.env.USER ?? "postgres";
+  return url.toString();
+};
 
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   delete process.env.CRON_SECRET;
-  delete process.env.DATABASE_URL;
+  delete process.env.YULA_INTAKE_DATABASE_URL;
+  delete process.env.YULA_MAIL_DATABASE_URL;
+  delete process.env.YULA_PURGE_DATABASE_URL;
 });
 
 afterEach(() => {
@@ -102,7 +109,10 @@ describe("when the scheduler actually calls it", () => {
       );
 
       process.env.CRON_SECRET = "s3cret";
-      process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+      process.env.YULA_INTAKE_DATABASE_URL = "postgres://intake-test@invalid.invalid/yula";
+      process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+      process.env.YULA_MAIL_DATABASE_URL = localLoginUrl(SCHEMA);
+      process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
       process.env.LEADS_ENABLED = "1";
       process.env.SENDGRID_API_KEY = "SG.key";
       process.env.MAIL_FROM = "hello@yulalab.com";
@@ -120,7 +130,7 @@ describe("when the scheduler actually calls it", () => {
       expect(after.rows[0].delivered_at).not.toBeNull();
     } finally {
       vi.unstubAllGlobals();
-      await resetPool();
+      await resetPool("mail");
       await dropSchema(pool, SCHEMA);
     }
   });
@@ -154,7 +164,10 @@ describe("a queue with rows nothing will ever retry", () => {
       );
 
       process.env.CRON_SECRET = "s3cret";
-      process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+      process.env.YULA_INTAKE_DATABASE_URL = "postgres://intake-test@invalid.invalid/yula";
+      process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+      process.env.YULA_MAIL_DATABASE_URL = localLoginUrl(SCHEMA);
+      process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
       process.env.LEADS_ENABLED = "1";
       process.env.SENDGRID_API_KEY = "SG.key";
       process.env.MAIL_FROM = "hello@yulalab.com";
@@ -167,7 +180,7 @@ describe("a queue with rows nothing will ever retry", () => {
       expect(await response.json()).toMatchObject({ dead: 1, remaining: 0, delivered: 0 });
     } finally {
       vi.unstubAllGlobals();
-      await resetPool();
+      await resetPool("mail");
       await dropSchema(pool, SCHEMA);
     }
   });
