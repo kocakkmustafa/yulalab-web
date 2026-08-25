@@ -25,6 +25,14 @@ import { Pool } from "pg";
  * be served by a pool built for the previous one. In practice exactly one
  * entry exists, because the URL never changes there.
  */
+export type DatabaseRole = "intake" | "mail" | "purge";
+
+const ROLE_ENV: Record<DatabaseRole, string> = {
+  intake: "YULA_INTAKE_DATABASE_URL",
+  mail: "YULA_MAIL_DATABASE_URL",
+  purge: "YULA_PURGE_DATABASE_URL",
+};
+const DATABASE_ROLES = Object.keys(ROLE_ENV) as DatabaseRole[];
 const pools = new Map<string, Pool>();
 
 function isLocalHost(connectionString: string): boolean {
@@ -40,20 +48,75 @@ function isLocalHost(connectionString: string): boolean {
   }
 }
 
-export function databaseUrl(): string | undefined {
-  return process.env.DATABASE_URL || undefined;
+export function databaseUrl(role: DatabaseRole): string | undefined {
+  return process.env[ROLE_ENV[role]] || undefined;
 }
 
-export function isDatabaseConfigured(): boolean {
-  return Boolean(databaseUrl());
-}
+type DatabaseRoleConfiguration =
+  | { ready: true }
+  | {
+      ready: false;
+      reason:
+        | "missing_role_database_url"
+        | "invalid_role_database_url"
+        | "shared_role_database_identity"
+        | "missing_database_schema"
+        | "unsafe_database_schema"
+        | "connection_schema_override";
+    };
 
-export function getPool(): Pool {
-  const url = databaseUrl();
-  if (!url) {
-    throw new Error("DATABASE_URL is not configured");
+function credentialIdentity(connectionString: string): string | undefined {
+  try {
+    const url = new URL(connectionString);
+    if (url.protocol !== "postgres:" && url.protocol !== "postgresql:") return undefined;
+    if (!url.username || !url.hostname || !url.pathname || url.pathname === "/") return undefined;
+    return decodeURIComponent(url.username).toLowerCase();
+  } catch {
+    return undefined;
   }
-  const existing = pools.get(url);
+}
+
+export function validateDatabaseRoleConfiguration(): DatabaseRoleConfiguration {
+  const schema = process.env.YULA_DATABASE_SCHEMA;
+  if (!schema) return { ready: false, reason: "missing_database_schema" };
+  if (!/^[a-z_][a-z0-9_]{0,62}$/.test(schema) || ["public", "pg_catalog", "information_schema"].includes(schema)) {
+    return { ready: false, reason: "unsafe_database_schema" };
+  }
+  const urls = DATABASE_ROLES.map((role) => databaseUrl(role));
+  if (urls.some((url) => !url)) return { ready: false, reason: "missing_role_database_url" };
+  const identities = urls.map((url) => credentialIdentity(url as string));
+  if (identities.some((identity) => !identity)) {
+    return { ready: false, reason: "invalid_role_database_url" };
+  }
+  if (new Set(identities).size !== DATABASE_ROLES.length) {
+    return { ready: false, reason: "shared_role_database_identity" };
+  }
+  for (const connectionString of urls as string[]) {
+    const url = new URL(connectionString);
+    if (url.searchParams.has("search_path")) {
+      return { ready: false, reason: "connection_schema_override" };
+    }
+    const options = url.searchParams.get("options");
+    if (options !== null && options.trim() !== `-c search_path=${schema}`) {
+      return { ready: false, reason: "connection_schema_override" };
+    }
+  }
+  return { ready: true };
+}
+
+export function isDatabaseConfigured(role: DatabaseRole): boolean {
+  return Boolean(databaseUrl(role)) && validateDatabaseRoleConfiguration().ready;
+}
+
+export function getPool(role: DatabaseRole): Pool {
+  const configuration = validateDatabaseRoleConfiguration();
+  const url = databaseUrl(role);
+  if (!configuration.ready || !url) {
+    throw new Error("database role configuration is unavailable");
+  }
+  const schema = process.env.YULA_DATABASE_SCHEMA as string;
+  const cacheKey = `${role}\u0000${schema}\u0000${url}`;
+  const existing = pools.get(cacheKey);
   if (existing) return existing;
 
   {
@@ -71,8 +134,9 @@ export function getPool(): Pool {
       // database name happened to contain "localhost" silently dropped TLS
       // and sent those very credentials in the clear.
       ssl: isLocalHost(url) ? undefined : { rejectUnauthorized: true },
+      options: `-c search_path=${schema}`,
     });
-    pools.set(url, pool);
+    pools.set(cacheKey, pool);
     return pool;
   }
 }
@@ -86,12 +150,15 @@ export function getPool(): Pool {
  * another test file is mid-query on — the cross-file destruction this map
  * was introduced to prevent, reintroduced by the cleanup.
  */
-export async function resetPool(): Promise<void> {
-  const url = databaseUrl();
+export async function resetPool(role: DatabaseRole): Promise<void> {
+  const url = databaseUrl(role);
   if (!url) return;
-  const pool = pools.get(url);
+  const schema = process.env.YULA_DATABASE_SCHEMA;
+  if (!schema) return;
+  const cacheKey = `${role}\u0000${schema}\u0000${url}`;
+  const pool = pools.get(cacheKey);
   if (!pool) return;
-  pools.delete(url);
+  pools.delete(cacheKey);
   await pool.end();
 }
 

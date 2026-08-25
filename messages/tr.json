@@ -12,7 +12,8 @@
     "contact": "İletişim",
     "ctaProjects": "Projeleri Keşfet",
     "menuOpen": "Menü",
-    "menuClose": "Kapat"
+    "menuClose": "Kapat",
+    "studio": "Stüdyo"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
@@ -32,7 +33,8 @@
     "rights": "Tüm hakları saklıdır.",
     "version": "v0.1 · showcase",
     "navCaseStudies": "Vaka çalışmaları",
-    "navOperatingSystem": "Nasıl çalışıyoruz"
+    "navOperatingSystem": "Nasıl çalışıyoruz",
+    "navStudio": "Stüdyo"
   },
   "common": {
     "explore": "Keşfet",
@@ -242,7 +244,11 @@
     "pressHint": "Röportaj, etkinlik daveti ve basın bülteni talepleri.",
     "locationEyebrow": "Lokasyon",
     "locationTitle": "Türkiye",
-    "locationNote": "Toplantılar Salı – Perşembe, hibrit."
+    "locationNote": "Toplantılar Salı – Perşembe, hibrit.",
+    "studioBody": "Bu sayfadaki adresler genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusu daha hızlıdır: bütçe aralığı, zamanlama ve kararı veren rol orada sorulur, dolayısıyla ilk yanıt bu üç soruyu tekrar sormakla geçmez.",
+    "studioEyebrow": "Proje başvurusu",
+    "studioLink": "Stüdyo başvurusu",
+    "studioTitle": "Bir iş için mi yazıyorsunuz?"
   },
   "notFound": {
     "title": "Sayfa bulunamadı.",
@@ -587,5 +593,87 @@
       "research": "Araştırma",
       "archived": "Arşiv"
     }
+  },
+  "studio": {
+    "applyIntro": "Kesin bütçe rakamı ya da karar vericinin adı sorulmaz — aralık ve rol yeter.",
+    "applyTitle": "Başvuru",
+    "dataBody": "Ölçüm için gereken en az erişimi isteriz ve neye eriştiğimizi yazılı tutarız. Kişisel veriye erişim gerekiyorsa bunu ayrıca konuşur, kapsamı yazıya dökeriz.",
+    "dataTitle": "Veri ve erişim beklentisi",
+    "eyebrow": "Stüdyo",
+    "forTitle": "Kimler için",
+    "for": [
+      "Gerçek bir ürünü olan ve neyi kanıtlayabildiğini bilmek isteyen ekipler",
+      "Ölçüm altyapısı olmayan, ama ölçmeye hazır olanlar",
+      "Mağazaya çıkmış ya da çıkmak üzere olan, disiplin arayan ürünler"
+    ],
+    "form": {
+      "choose": "Seçin",
+      "closedAlt": "Bu arada doğrudan yazabilirsiniz: ",
+      "closedAltLink": "iletişim",
+      "closedBody": "Bu site henüz form üzerinden kişisel veri toplamıyor. Hukuk incelemesi ve e-posta altyapısı tamamlanana kadar kapalı kalacak — bu bir eksiklik değil, sıralama.",
+      "closedTitle": "Başvuru formu şu an kapalı.",
+      "company": "Şirket (isteğe bağlı)",
+      "consent": "Başvurumun değerlendirilmesi için bu bilgilerin saklanmasını onaylıyorum.",
+      "consentLink": "Gizlilik",
+      "email": "E-posta",
+      "errors": {
+        "budgetBand": "Bütçe aralığını seçin.",
+        "closed": "Başvurular şu an kapalı.",
+        "company-long": "Şirket adı çok uzun.",
+        "consent": "Devam etmek için onay gerekli.",
+        "decisionRole": "Karar veren rolü seçin.",
+        "email": "Geçerli bir e-posta yazın.",
+        "email-long": "E-posta adresi çok uzun.",
+        "locale": "Dil geçersiz.",
+        "name": "Adınızı yazın.",
+        "name-long": "Ad çok uzun.",
+        "problem": "Çözmek istediğiniz problemi yazın.",
+        "problem-long": "Açıklama çok uzun; kısaltır mısınız?",
+        "rate": "Çok fazla deneme yapıldı; biraz sonra tekrar deneyin.",
+        "server": "Gönderilemedi; lütfen tekrar deneyin.",
+        "timing": "Başlama zamanını seçin."
+      },
+      "name": "Ad",
+      "problem": "Çözmek istediğiniz problem",
+      "reference": "Referans",
+      "sending": "Gönderiliyor",
+      "sentTitle": "Başvurunuz alındı.",
+      "submit": "Başvur"
+    },
+    "intro": "Kendi ürünlerimize uyguladığımız disiplini sizin ürününüze uygularız: her iddia kaynaklı, her rakam tarihli, bayatlayan her şey görünür.",
+    "noPromiseBody": "Sonuç garantisi vermeyiz — ölçüm ne derse onu yayınlarız, hoşumuza gitmese de. Sermaye ya da yatırım sağlamıyoruz. Bugüne kadar hiçbir dış müşteri işini tamamlamadık; bunu gizlemek yerine yazıyoruz.",
+    "noPromiseTitle": "Vermediğimiz sözler",
+    "notForTitle": "Kimler için değil",
+    "notFor": [
+      "Fikri olan ama ürünü olmayanlar — burada doğrulanacak bir şey yok",
+      "Yatırım arayanlar; YULA iş yapar, para vermez",
+      "Sonucu önceden yazılmış bir rapor isteyenler",
+      "Ölçümün söyleyeceği şeyi duymak istemeyenler"
+    ],
+    "stagesTitle": "Dört aşama",
+    "stages": [
+      {
+        "body": "Bugün neyin doğru olduğunu ölçeriz: hangi iddia kaynaklı, hangisi değil.",
+        "deliverable": "Teslim: kaynaklı iddia envanteri ve eksik kanıt listesi.",
+        "title": "Kanıt temeli"
+      },
+      {
+        "body": "Ne inşa edileceğini ve neyin ölçüleceğini yazılı hale getiririz.",
+        "deliverable": "Teslim: kapsam belgesi ve ölçüm planı.",
+        "title": "Ürün tanımı"
+      },
+      {
+        "body": "Kod yazılır, kapılar kurulur; her iddia kaynağıyla birlikte gelir.",
+        "deliverable": "Teslim: çalışan kod, testler ve build'i düşüren doğrulama kapıları.",
+        "title": "İnşa ve doğrulama"
+      },
+      {
+        "body": "Yayına alınır, ölçüm sürer; bayatlayan iddia bayat olarak görünür.",
+        "deliverable": "Teslim: yayın, ölçüm akışı ve devir notu.",
+        "title": "Yayın ve işletme"
+      }
+    ],
+    "termsNote": "Ticari şartlar ve fiyatlandırma yazılı olarak, görüşmede paylaşılır.",
+    "title": "YULA ile inşa et."
   }
 }

@@ -1,14 +1,22 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import type { Pool } from "pg";
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+import { Pool } from "pg";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { createIsolatedSchema, dropSchema } from "./helpers/attribution-db";
+import { testDatabaseUrl } from "./helpers/attribution-db";
 import {
   createDataRequest,
   verifyDataRequest,
   hashToken,
   purgeExpiredVerifications,
 } from "@/server/data-requests";
+import {
+  DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+  DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV,
+  dataRequestTokenKeyring,
+  deriveDataRequestToken,
+} from "@/server/data-request-token";
 
 /**
  * A data request is a capability question, not a form question.
@@ -19,27 +27,74 @@ import {
  * time-limited, and spent on use.
  */
 const SCHEMA = "t_data_requests";
+const CURRENT_KEY_ID = "2026-08-current";
+const CURRENT_SECRET = "test-only-current-data-request-secret-32-bytes";
+const PREVIOUS_KEY_ID = "2026-07-previous";
+const PREVIOUS_SECRET = "test-only-previous-data-request-secret-32-bytes";
+const INTAKE_ROLE = "t_data_requests_intake";
+const MAIL_ROLE = "t_data_requests_mail";
+const PURGE_ROLE = "t_data_requests_purge";
 let pool: Pool;
 
 beforeAll(async () => {
-  pool = await createIsolatedSchema(SCHEMA);
-  for (const file of [
+  pool = new Pool({ connectionString: testDatabaseUrl(SCHEMA), max: 6 });
+  const migrations = [
+    "../db/migrations/0001_attribution.sql",
     "../db/migrations/0002_leads_consents_outbox.sql",
     "../db/migrations/0003_data_request_verification.sql",
-  ]) {
-    await pool.query(readFileSync(path.resolve(import.meta.dirname, file), "utf8"));
-  }
+  ].map((file) => readFileSync(path.resolve(import.meta.dirname, file), "utf8")).join("\n");
+  const migration4 = readFileSync(
+    path.resolve(import.meta.dirname, "../db/migrations/0004_access_boundary.sql"),
+    "utf8",
+  );
+  await pool.query(`BEGIN;
+    DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;
+    CREATE SCHEMA ${SCHEMA};
+    SET LOCAL search_path = ${SCHEMA};
+    ${migrations}
+    DROP ROLE IF EXISTS ${INTAKE_ROLE};
+    DROP ROLE IF EXISTS ${MAIL_ROLE};
+    DROP ROLE IF EXISTS ${PURGE_ROLE};
+    CREATE ROLE ${INTAKE_ROLE} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE NOINHERIT;
+    CREATE ROLE ${MAIL_ROLE} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE NOINHERIT;
+    CREATE ROLE ${PURGE_ROLE} LOGIN NOSUPERUSER NOBYPASSRLS NOCREATEDB NOCREATEROLE NOINHERIT;
+    SELECT set_config('yulalab.runtime_role', '${INTAKE_ROLE}', false);
+    SELECT set_config('yulalab.target_schema', '${SCHEMA}', false);
+    SELECT set_config('yulalab.intake_role', '${INTAKE_ROLE}', false);
+    SELECT set_config('yulalab.mail_role', '${MAIL_ROLE}', false);
+    SELECT set_config('yulalab.purge_role', '${PURGE_ROLE}', false);
+    ${migration4}
+    COMMIT;
+  `);
 });
 
 afterAll(async () => {
-  await dropSchema(pool, SCHEMA);
+  await pool.query(`BEGIN;
+    DROP SCHEMA IF EXISTS ${SCHEMA} CASCADE;
+    DROP ROLE IF EXISTS ${INTAKE_ROLE}, ${MAIL_ROLE}, ${PURGE_ROLE};
+    COMMIT;`);
+  await pool.end();
 });
 
 beforeEach(async () => {
   await pool.query("TRUNCATE data_requests, event_outbox CASCADE");
+  process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = CURRENT_KEY_ID;
+  process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = CURRENT_SECRET;
+  delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV];
+  delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV];
 });
 
 const NOW = new Date("2026-08-19T10:00:00Z");
+
+async function markPendingVerificationsDelivered() {
+  await pool.query(
+    `UPDATE data_requests
+        SET verification_sent_at = $1,
+            verification_expires_at = $1::timestamptz + interval '24 hours'
+      WHERE verification_state = 'pending'`,
+    [NOW],
+  );
+}
 
 describe("submitting a request", () => {
   it("creates a pending row and queues a verification message", async () => {
@@ -54,9 +109,16 @@ describe("submitting a request", () => {
     expect(rows).toHaveLength(1);
     expect(rows[0].verification_state).toBe("pending");
     expect(rows[0].completed_at).toBeNull();
+    expect(rows[0].verification_token_key_id).toBe(CURRENT_KEY_ID);
+    expect(rows[0].verification_sent_at).toBeNull();
+    expect(rows[0].verification_expires_at).toBeNull();
 
-    const outbox = await pool.query("SELECT event_type FROM event_outbox");
+    const outbox = await pool.query("SELECT event_type, payload_json FROM event_outbox");
     expect(outbox.rows.map((r) => r.event_type)).toEqual(["data_request_verification"]);
+    expect(outbox.rows[0].payload_json).toEqual({
+      locale: "tr",
+      tokenKeyId: CURRENT_KEY_ID,
+    });
   });
 
   it("never stores the token itself", async () => {
@@ -71,6 +133,7 @@ describe("submitting a request", () => {
     const { rows } = await pool.query("SELECT * FROM data_requests");
     expect(JSON.stringify(rows[0])).not.toContain(token);
     expect(rows[0].verification_token_hash).toBe(hashToken(token));
+    expect(token).toBe(deriveDataRequestToken(rows[0].id, CURRENT_SECRET));
   });
 
   it("keeps the token out of the queued payload too", async () => {
@@ -85,24 +148,149 @@ describe("submitting a request", () => {
     expect(JSON.stringify(rows[0].payload_json)).not.toContain(token);
   });
 
-  it("gives the link a deadline", async () => {
+  it("does not spend the 24-hour deadline while the request is only queued", async () => {
     await createDataRequest(pool, { email: "a@b.co", requestType: "delete" }, { now: NOW });
-    // In seconds: pg renders a 24-hour interval as {days: 1}, so asserting
-    // on .hours silently read undefined and would have passed for any window.
     const { rows } = await pool.query(
-      "SELECT EXTRACT(EPOCH FROM (verification_expires_at - created_at))::int AS seconds FROM data_requests",
+      "SELECT verification_sent_at, verification_expires_at FROM data_requests",
     );
-    expect(rows[0].seconds).toBe(24 * 60 * 60);
+    expect(rows[0]).toEqual({ verification_sent_at: null, verification_expires_at: null });
+  });
+
+  it("parses a bounded current+previous keyring without accepting a retired key", () => {
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV] = PREVIOUS_KEY_ID;
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV] = PREVIOUS_SECRET;
+    const keyring = dataRequestTokenKeyring();
+    expect(keyring.current).toEqual({ id: CURRENT_KEY_ID, secret: CURRENT_SECRET });
+    expect(keyring.previous).toEqual({ id: PREVIOUS_KEY_ID, secret: PREVIOUS_SECRET });
+    expect(keyring.byId.get("retired-2026-06")).toBeUndefined();
+  });
+
+  it("rejects a half-configured or duplicate-id keyring", () => {
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV] = PREVIOUS_KEY_ID;
+    delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV];
+    expect(() => dataRequestTokenKeyring()).toThrow(/keyring/i);
+
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV] = CURRENT_KEY_ID;
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV] = PREVIOUS_SECRET;
+    expect(() => dataRequestTokenKeyring()).toThrow(/keyring/i);
+  });
+
+  it("durable abuse boundary: deduplicates one normalized recipient and request type across pools", async () => {
+    const other = new Pool({ connectionString: testDatabaseUrl(SCHEMA), max: 2 });
+    try {
+      await Promise.all([
+        createDataRequest(
+          pool,
+          { email: "  Same.Person@Example.COM ", requestType: "access", locale: "tr" },
+          { now: NOW },
+        ),
+        createDataRequest(
+          other,
+          { email: "same.person@example.com", requestType: "access", locale: "en" },
+          { now: NOW },
+        ),
+      ]);
+    } finally {
+      await other.end();
+    }
+
+    const requests = await pool.query("SELECT email FROM data_requests");
+    const outbox = await pool.query(
+      "SELECT event_type FROM event_outbox WHERE event_type = 'data_request_verification'",
+    );
+    expect(requests.rows).toEqual([{ email: "same.person@example.com" }]);
+    expect(outbox.rowCount).toBe(1);
+  });
+
+  it("does not let an earlier request type suppress another right for the same recipient", async () => {
+    await createDataRequest(
+      pool,
+      { email: "Rights.Holder@Example.com", requestType: "access", locale: "tr" },
+      { now: NOW },
+    );
+    await createDataRequest(
+      pool,
+      { email: " rights.holder@example.COM ", requestType: "delete", locale: "en" },
+      { now: NOW },
+    );
+
+    const requests = await pool.query(
+      "SELECT email, request_type FROM data_requests ORDER BY request_type",
+    );
+    expect(requests.rows).toEqual([
+      { email: "rights.holder@example.com", request_type: "access" },
+      { email: "rights.holder@example.com", request_type: "delete" },
+    ]);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(2);
+  });
+
+  it("durable abuse boundary: enforces one atomic global rolling-window quota across pools", async () => {
+    for (let index = 0; index < 99; index += 1) {
+      await createDataRequest(
+        pool,
+        { email: `quota-${index}@example.com`, requestType: "access", locale: "tr" },
+        { now: NOW },
+      );
+    }
+
+    const other = new Pool({ connectionString: testDatabaseUrl(SCHEMA), max: 2 });
+    try {
+      const settled = await Promise.allSettled([
+        createDataRequest(
+          pool,
+          { email: "quota-last-a@example.com", requestType: "access", locale: "tr" },
+          { now: NOW },
+        ),
+        createDataRequest(
+          other,
+          { email: "quota-last-b@example.com", requestType: "access", locale: "tr" },
+          { now: NOW },
+        ),
+      ]);
+      expect(settled.filter((result) => result.status === "fulfilled")).toHaveLength(1);
+      expect(settled.filter((result) => result.status === "rejected")).toHaveLength(1);
+    } finally {
+      await other.end();
+    }
+
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(100);
+    expect(
+      (await pool.query("SELECT 1 FROM event_outbox WHERE event_type = 'data_request_verification'"))
+        .rowCount,
+    ).toBe(100);
   });
 });
 
 describe("verifying", () => {
+  it("never lets one request capability verify a different request", async () => {
+    const first = await createDataRequest(
+      pool,
+      { email: "first@example.com", requestType: "access" },
+      { now: NOW },
+    );
+    await createDataRequest(
+      pool,
+      { email: "second@example.com", requestType: "delete" },
+      { now: NOW },
+    );
+    await markPendingVerificationsDelivered();
+    expect((await verifyDataRequest(pool, first.token, { now: NOW })).verified).toBe(true);
+    const { rows } = await pool.query(
+      "SELECT email, verification_state FROM data_requests ORDER BY email",
+    );
+    expect(rows).toEqual([
+      { email: "first@example.com", verification_state: "verified" },
+      { email: "second@example.com", verification_state: "pending" },
+    ]);
+  });
+
   it("moves a pending request to verified with the right token", async () => {
     const { token } = await createDataRequest(
       pool,
       { email: "a@b.co", requestType: "delete" },
       { now: NOW },
     );
+    await markPendingVerificationsDelivered();
     const result = await verifyDataRequest(pool, token, { now: NOW });
     expect(result.verified).toBe(true);
 
@@ -116,6 +304,7 @@ describe("verifying", () => {
       { email: "a@b.co", requestType: "delete" },
       { now: NOW },
     );
+    await markPendingVerificationsDelivered();
     await verifyDataRequest(pool, token, { now: NOW });
     const { rows } = await pool.query("SELECT verification_token_hash FROM data_requests");
     expect(rows[0].verification_token_hash).toBeNull();
@@ -124,11 +313,58 @@ describe("verifying", () => {
     expect(second.verified).toBe(false);
   });
 
+  it("lets exactly one concurrent verifier spend the capability", async () => {
+    const { token } = await createDataRequest(
+      pool,
+      { email: "race@example.com", requestType: "correct" },
+      { now: NOW },
+    );
+    await markPendingVerificationsDelivered();
+    const [first, second] = await Promise.all([
+      verifyDataRequest(pool, token, { now: NOW }),
+      verifyDataRequest(pool, token, { now: NOW }),
+    ]);
+    expect([first.verified, second.verified].sort()).toEqual([false, true]);
+  });
+
+  it("consumes with one conditional UPDATE RETURNING rather than SELECT then UPDATE", async () => {
+    const token = "d".repeat(64);
+    const query = vi.fn(async (sql: string) => {
+      expect(sql).toMatch(/^\s*UPDATE data_requests/i);
+      expect(sql).toMatch(/verification_state\s*=\s*'pending'/i);
+      expect(sql).toMatch(/verification_token_hash\s*=\s*\$1/i);
+      expect(sql).toMatch(/verification_expires_at\s*>\s*\$2/i);
+      expect(sql).toMatch(/RETURNING\s+id/i);
+      return { rowCount: 1, rows: [{ id: "11111111-1111-4111-8111-111111111111" }] };
+    });
+
+    await expect(
+      verifyDataRequest({ query } as never, token, { now: NOW }),
+    ).resolves.toEqual({ verified: true });
+    expect(query).toHaveBeenCalledTimes(1);
+  });
+
+  it("creates no row when the server-only token secret is absent", async () => {
+    delete process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV];
+    await expect(
+      createDataRequest(
+        pool,
+        { email: "no-secret@example.com", requestType: "delete" },
+        { now: NOW },
+      ),
+    ).rejects.toThrow(/keyring/i);
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(0);
+  });
+
   it("refuses a token past its deadline", async () => {
     const { token } = await createDataRequest(
       pool,
       { email: "a@b.co", requestType: "delete" },
       { now: NOW },
+    );
+    await pool.query(
+      "UPDATE data_requests SET verification_sent_at = $1, verification_expires_at = $2",
+      [NOW, new Date(NOW.getTime() + 24 * 60 * 60 * 1000)],
     );
     const late = new Date(NOW.getTime() + 25 * 60 * 60 * 1000);
     expect((await verifyDataRequest(pool, token, { now: late })).verified).toBe(false);
@@ -154,8 +390,9 @@ describe("the database refuses impossible states", () => {
   it("will not let a pending request exist without a live token", async () => {
     await expect(
       pool.query(
-        "INSERT INTO data_requests (email, request_type, verification_state) VALUES ($1,$2,'pending')",
-        ["a@b.co", "delete"],
+        `INSERT INTO data_requests (email, request_type, verification_state, verification_token_key_id)
+         VALUES ($1,$2,'pending',$3)`,
+        ["a@b.co", "delete", CURRENT_KEY_ID],
       ),
     ).rejects.toThrow();
   });
@@ -163,9 +400,9 @@ describe("the database refuses impossible states", () => {
   it("will not keep a token on a request that is no longer pending", async () => {
     await expect(
       pool.query(
-        `INSERT INTO data_requests (email, request_type, verification_state, verification_token_hash)
-         VALUES ($1,$2,'verified',$3)`,
-        ["a@b.co", "delete", "b".repeat(64)],
+        `INSERT INTO data_requests (email, request_type, verification_state, verification_token_hash, verification_token_key_id)
+         VALUES ($1,$2,'verified',$3,$4)`,
+        ["a@b.co", "delete", "b".repeat(64), CURRENT_KEY_ID],
       ),
     ).rejects.toThrow();
   });
@@ -173,9 +410,11 @@ describe("the database refuses impossible states", () => {
   it("will not complete a request that was never verified", async () => {
     await expect(
       pool.query(
-        `INSERT INTO data_requests (email, request_type, verification_state, verification_expires_at, verification_token_hash, completed_at)
-         VALUES ($1,$2,'pending',now()+interval '1 day',$3, now())`,
-        ["a@b.co", "delete", "c".repeat(64)],
+        `INSERT INTO data_requests (
+           email, request_type, verification_state, verification_sent_at,
+           verification_expires_at, verification_token_hash, verification_token_key_id, completed_at
+         ) VALUES ($1,$2,'pending',now(),now()+interval '1 day',$3,$4,now())`,
+        ["a@b.co", "delete", "c".repeat(64), CURRENT_KEY_ID],
       ),
     ).rejects.toThrow();
   });
@@ -183,9 +422,11 @@ describe("the database refuses impossible states", () => {
   it("will not store a raw token in the hash column", async () => {
     await expect(
       pool.query(
-        `INSERT INTO data_requests (email, request_type, verification_state, verification_expires_at, verification_token_hash)
-         VALUES ($1,$2,'pending',now()+interval '1 day','not-a-hash')`,
-        ["a@b.co", "delete"],
+        `INSERT INTO data_requests (
+           email, request_type, verification_state, verification_sent_at,
+           verification_expires_at, verification_token_hash, verification_token_key_id
+         ) VALUES ($1,$2,'pending',now(),now()+interval '1 day','not-a-hash',$3)`,
+        ["a@b.co", "delete", CURRENT_KEY_ID],
       ),
     ).rejects.toThrow();
   });
@@ -194,6 +435,10 @@ describe("the database refuses impossible states", () => {
 describe("unverified requests do not linger", () => {
   it("expires a pending request whose window has closed and clears its token", async () => {
     await createDataRequest(pool, { email: "a@b.co", requestType: "delete" }, { now: NOW });
+    await pool.query(
+      "UPDATE data_requests SET verification_sent_at = $1, verification_expires_at = $2",
+      [NOW, new Date(NOW.getTime() + 24 * 60 * 60 * 1000)],
+    );
     const expired = await purgeExpiredVerifications(
       pool,
       new Date(NOW.getTime() + 25 * 60 * 60 * 1000),
@@ -208,6 +453,49 @@ describe("unverified requests do not linger", () => {
 
   it("leaves a request still inside its window alone", async () => {
     await createDataRequest(pool, { email: "a@b.co", requestType: "delete" }, { now: NOW });
+    await pool.query(
+      "UPDATE data_requests SET verification_sent_at = $1, verification_expires_at = $2",
+      [NOW, new Date(NOW.getTime() + 24 * 60 * 60 * 1000)],
+    );
     expect(await purgeExpiredVerifications(pool, NOW)).toBe(0);
+  });
+
+  it.each([
+    ["verified", "verified"],
+    ["expired", "expired"],
+    ["never-sent", "pending"],
+  ])("removes an outbox-free %s request after retention", async (_label, state) => {
+    const purgeAt = new Date(NOW.getTime() + 24 * 60 * 60 * 1000);
+    const purgeRun = new Date(purgeAt.getTime() + 1);
+    await createDataRequest(
+      pool,
+      { email: `${_label}@example.com`, requestType: "delete" },
+      { now: NOW },
+    );
+    await pool.query("DELETE FROM event_outbox");
+    await pool.query(
+      `UPDATE data_requests
+          SET verification_state = $1,
+              verification_token_hash = CASE WHEN $1 = 'pending' THEN verification_token_hash ELSE NULL END,
+              purge_at = $2`,
+      [state, purgeAt],
+    );
+
+    expect(await purgeExpiredVerifications(pool, purgeRun)).toBe(1);
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(0);
+  });
+
+  it("does not remove a retained request while its verification outbox still exists", async () => {
+    const purgeAt = new Date(NOW.getTime() + 24 * 60 * 60 * 1000);
+    const purgeRun = new Date(purgeAt.getTime() + 1);
+    await createDataRequest(
+      pool,
+      { email: "retained@example.com", requestType: "delete" },
+      { now: NOW },
+    );
+    await pool.query("UPDATE data_requests SET purge_at = $1", [purgeAt]);
+
+    expect(await purgeExpiredVerifications(pool, purgeRun)).toBe(0);
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(1);
   });
 });

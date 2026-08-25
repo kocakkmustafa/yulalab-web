@@ -6,6 +6,13 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { LeadForm, errorKey } from "@/components/contact/LeadForm";
 import { CURRENT_NOTICE_VERSION } from "@/lib/consent";
+import { StudioApplicationForm } from "@/components/studio/StudioApplication";
+import { STUDIO_QUALIFIERS } from "@/lib/studio";
+
+// StudioApplication uses the locale-aware Link adapter. Its Next navigation
+// dependency is not part of this jsdom contract and cannot resolve outside a
+// Next runtime, so keep the real form and isolate only that adapter boundary.
+vi.mock("@/i18n/navigation", () => ({ Link: "a" }));
 
 interface Copy {
   leadForm: {
@@ -14,9 +21,20 @@ interface Copy {
     message: string;
     submit: string;
     company: string;
+    intent: string;
+    intents: Record<string, string>;
     sentBody: string;
     sentBodyMailed: string;
     errors: Record<string, string>;
+  };
+  studio: {
+    form: {
+      name: string;
+      email: string;
+      problem: string;
+      submit: string;
+      errors: Record<string, string>;
+    };
   };
 }
 
@@ -32,10 +50,22 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-function renderForm(mailConfigured = false, locale = "tr") {
+function renderForm(mailConfigured = false, locale = "tr", studioEnabled = true) {
   return render(
     <NextIntlClientProvider locale={locale} messages={locale === "en" ? english : messages}>
-      <LeadForm products={[{ slug: "lifeos", name: "LifeOS" }]} mailConfigured={mailConfigured} />
+      <LeadForm
+        products={[{ slug: "lifeos", name: "LifeOS" }]}
+        mailConfigured={mailConfigured}
+        studioEnabled={studioEnabled}
+      />
+    </NextIntlClientProvider>,
+  );
+}
+
+function renderStudioForm(locale = "tr") {
+  return render(
+    <NextIntlClientProvider locale={locale} messages={locale === "en" ? english : messages}>
+      <StudioApplicationForm open />
     </NextIntlClientProvider>,
   );
 }
@@ -50,6 +80,24 @@ function fill() {
   fireEvent.change(screen.getByLabelText(messages.leadForm.message), {
     target: { value: "merhaba" },
   });
+  fireEvent.click(screen.getByRole("checkbox"));
+}
+
+function fillStudio() {
+  fireEvent.change(screen.getByLabelText(messages.studio.form.name), {
+    target: { value: "Ada" },
+  });
+  fireEvent.change(screen.getByLabelText(messages.studio.form.email), {
+    target: { value: "ada@example.com" },
+  });
+  fireEvent.change(screen.getByLabelText(messages.studio.form.problem), {
+    target: { value: "A measurable product problem." },
+  });
+  for (const qualifier of STUDIO_QUALIFIERS) {
+    fireEvent.change(screen.getByLabelText(qualifier.labelTr), {
+      target: { value: qualifier.options[0].value },
+    });
+  }
   fireEvent.click(screen.getByRole("checkbox"));
 }
 
@@ -206,6 +254,48 @@ describe("what is posted", () => {
     await waitFor(() => expect(fetchMock).toHaveBeenCalled());
     const body = postedBody(fetchMock);
     expect("productSlug" in body).toBe(false);
+  });
+});
+
+describe("Studio rollback inside the general contact form", () => {
+  it("removes the Studio option, defaults to product, and submits successfully", async () => {
+    const fetchMock = stubFetch(201, { receiptId: "YL-ROLLBACK" });
+    renderForm(false, "tr", false);
+
+    const subject = screen.getByLabelText(messages.leadForm.intent) as HTMLSelectElement;
+    expect(Array.from(subject.options, (option) => option.value)).not.toContain("studio");
+    expect(subject.value).toBe("product");
+
+    fill();
+    fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
+    await screen.findByText(/YL-ROLLBACK/);
+    expect(postedBody(fetchMock).intent).toBe("product");
+  });
+
+  it("keeps Studio available and selected only while the server enables it", () => {
+    renderForm(false, "tr", true);
+    const subject = screen.getByLabelText(messages.leadForm.intent) as HTMLSelectElement;
+    expect(Array.from(subject.options, (option) => option.value)).toContain("studio");
+    expect(subject.value).toBe("studio");
+  });
+});
+
+describe("the Studio API error envelope", () => {
+  it("renders a known API {error} code with localized copy", async () => {
+    stubFetch(400, { error: "email" });
+    renderStudioForm();
+    fillStudio();
+    fireEvent.submit(screen.getByRole("button", { name: messages.studio.form.submit }));
+    await screen.findByText(messages.studio.form.errors.email);
+  });
+
+  it("fails safe for an unknown API {error} code without exposing it", async () => {
+    stubFetch(400, { error: "opaque_backend_detail" });
+    renderStudioForm();
+    fillStudio();
+    fireEvent.submit(screen.getByRole("button", { name: messages.studio.form.submit }));
+    await screen.findByText(messages.studio.form.errors.server);
+    expect(screen.queryByText("opaque_backend_detail")).toBeNull();
   });
 });
 

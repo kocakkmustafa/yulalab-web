@@ -1,4 +1,4 @@
-import { chromium, test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 async function expectNoBlockingViolations(page: Page, label: string) {
@@ -65,33 +65,59 @@ for (const [label, path] of ROUTES) {
   });
 }
 
+for (const [locale, path, homeName, linearName, languageName] of [
+  ["tr", "/?capture=1&progress=0&tier=low", "YULALAB — Ana sayfa", "2D — Doğrusal deneyim", "EN — English"],
+  ["en", "/en?capture=1&progress=0&tier=low", "YULALAB — Home", "2D — Linear experience", "TR — Türkçe"],
+] as const) {
+  test(`visible control labels remain inside their accessible names (${locale})`, async ({ page }) => {
+    await page.goto(path, { waitUntil: "domcontentloaded" });
+    const experience = page.locator('[data-yula-experience="true"]');
+    await expect(experience).toHaveAttribute("data-experience-mounted", "true", {
+      timeout: 45_000,
+    });
+    await expect(page.getByRole("link", { name: homeName, exact: true })).toBeAttached();
+    await expect(page.getByRole("button", { name: linearName, exact: true })).toBeAttached();
+    await expect(page.getByRole("link", { name: languageName, exact: true })).toBeAttached();
+
+    const results = await new AxeBuilder({ page })
+      .withRules(["label-content-name-mismatch"])
+      .analyze();
+    expect(
+      results.violations.map((violation) => violation.id),
+      `${locale} label-in-name mismatch`,
+    ).toEqual([]);
+  });
+}
+
 for (const [label, progress] of [
   ["hero", 0],
   ["proof", 0.54],
   ["closing", 0.98],
 ] as const) {
-  test(`3D homepage ${label} stage has no serious or critical violations`, async () => {
-    test.setTimeout(90_000);
-    const browser = await chromium.launch();
+  test(`3D homepage ${label} stage has no serious or critical violations`, async ({ browser }) => {
+    // Headless Chromium uses SwiftShader in CI. A cold shader compilation can
+    // exceed 45s on a busy host even though the same committed-frame contract
+    // resolves in a few seconds on hardware WebGL. Keep this bounded, but give
+    // the software renderer enough room to produce the two real ready frames.
+    test.setTimeout(120_000);
+    const context = await browser.newContext({
+      baseURL: "http://127.0.0.1:4173",
+      locale: "tr-TR",
+    });
 
     try {
-      const context = await browser.newContext({
-        baseURL: "http://127.0.0.1:4173",
-        locale: "tr-TR",
-      });
       const page = await context.newPage();
 
       await page.goto(`/?capture=1&progress=${progress}&tier=low`);
       const experience = page.locator('[data-yula-experience="true"]');
       await expect(experience).toHaveAttribute("data-experience-ready", "true", {
-        timeout: 45_000,
+        timeout: 75_000,
       });
       await expect(experience).toHaveAttribute("data-tier", "low");
       await expect(page.locator("canvas")).toHaveCount(1);
       await expectNoBlockingViolations(page, `homepage capture: ${label}`);
-      await context.close();
     } finally {
-      await browser.close();
+      await context.close();
     }
   });
 }

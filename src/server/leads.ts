@@ -34,6 +34,8 @@ export type LeadInput = {
   productSlug?: string;
   message: string;
   locale: "tr" | "en";
+  /** Server-derived from validated closed Studio enums; never public input. */
+  studioVerdict?: "qualified" | "unqualified";
   /**
    * Optional override for tests. Production always records
    * CURRENT_NOTICE_VERSION; a version chosen by the submitter would make the
@@ -71,8 +73,19 @@ export function dedupeKey(input: Pick<LeadInput, "email" | "message" | "intent">
     .digest("hex");
 }
 
-/** Where a given intent should land internally. */
-export function routeFor(intent: LeadIntent): string {
+/**
+ * Where a given intent should land internally.
+ *
+ * A LABEL on the internal notification, not a mailbox: every internal mail
+ * goes to the single LEADS_INTERNAL_ADDRESS. So a new value here routes
+ * attention, and cannot silently address mail to a box nobody reads.
+ *
+ * `studio` used to fall through to the general label. The public route now
+ * accepts only the three closed Studio answers, validates them, and derives
+ * this verdict server-side. Keeping the verdict internal is important even
+ * though it grants no access: the qualified route is also a durable metric.
+ */
+export function routeFor(intent: LeadIntent, studioVerdict?: LeadInput["studioVerdict"]): string {
   switch (intent) {
     case "product":
       return "support";
@@ -80,6 +93,8 @@ export function routeFor(intent: LeadIntent): string {
       return "press";
     case "privacy":
       return "privacy";
+    case "studio":
+      return studioVerdict === "qualified" ? "studio-qualified" : "studio";
     default:
       return "merhaba";
   }
@@ -182,7 +197,11 @@ export async function createLead(
        VALUES ('lead_internal_route', $1, $2, $3)`,
       [
         leadId,
-        JSON.stringify({ receiptId, route: routeFor(input.intent), intent: input.intent }),
+        JSON.stringify({
+          receiptId,
+          route: routeFor(input.intent, input.studioVerdict),
+          intent: input.intent,
+        }),
         now,
       ],
     );

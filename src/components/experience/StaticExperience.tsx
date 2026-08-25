@@ -41,6 +41,14 @@ export function StaticExperience({
         <h1>{copy.hero.title}</h1>
         <p className={styles.staticLede}>{copy.hero.lede}</p>
         <p className={styles.staticNotice}>{copy.hero.notice}</p>
+        <TrackedLink
+          href="#experience-portfolio"
+          event="home_primary_cta"
+          className={styles.productLink}
+        >
+          {copy.hero.scroll}
+          <span aria-hidden="true">↘</span>
+        </TrackedLink>
         <p className={styles.fallbackNotice}>
           <span>{copy.fallback.label}</span>
           {copy.fallback.reason}

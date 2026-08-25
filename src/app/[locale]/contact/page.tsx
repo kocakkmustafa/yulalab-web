@@ -8,9 +8,11 @@ import { company } from "@/data/company";
 import { LeadForm } from "@/components/contact/LeadForm";
 import { leadsEnabled } from "@/server/lead-surface";
 import { mailTransport } from "@/server/mail";
+import { Link } from "@/i18n/navigation";
 import { publicRegistry } from "@/data/public-registry";
 import { partitionForIndex } from "@/lib/product-index";
 import { GlassSheen } from "@/components/common/GlassSheen";
+import { studioEnabled } from "@/server/studio-surface";
 
 export async function generateMetadata({
   params,
@@ -39,11 +41,26 @@ export default async function ContactPage({
   // `leadsEnabled`. The mail links below stay whether or not the form does:
   // they work today, they need no consent record, and they are the fallback
   // the form's own "closed" message points at.
-  return <Contact enabled={leadsEnabled()} mailConfigured={mailTransport().configured} />;
+  return (
+    <Contact
+      enabled={leadsEnabled()}
+      mailConfigured={mailTransport().configured}
+      studioEnabled={studioEnabled()}
+    />
+  );
 }
 
-function Contact({ enabled, mailConfigured }: { enabled: boolean; mailConfigured: boolean }) {
+function Contact({
+  enabled,
+  mailConfigured,
+  studioEnabled,
+}: {
+  enabled: boolean;
+  mailConfigured: boolean;
+  studioEnabled: boolean;
+}) {
   const t = useTranslations("contact");
+  const studioT = useTranslations("studio");
   return (
     <div className="page-enter relative">
       <GlassSheen />
@@ -72,6 +89,7 @@ function Contact({ enabled, mailConfigured }: { enabled: boolean; mailConfigured
         <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-6 pb-4">
           <LeadForm
             mailConfigured={mailConfigured}
+            studioEnabled={studioEnabled}
             products={partitionForIndex(publicRegistry).primary.map((record) => ({
               slug: record.slug,
               name: record.name,
@@ -96,6 +114,33 @@ function Contact({ enabled, mailConfigured }: { enabled: boolean; mailConfigured
           />
         ) : null}
       </section>
+
+      {/* A project enquiry sent here costs the sender a round trip: the reply
+          is three qualifying questions /studio already asks. Pointing at it is
+          the whole modification the roadmap asks of this page — the general
+          addresses stay, because not every message is a project. */}
+      {studioEnabled ? (
+        <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-6 pb-6">
+          <div className="glass p-7">
+            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-2">
+              {t("studioEyebrow")}
+            </div>
+            <h2 className="font-display text-2xl font-semibold tracking-tight text-ink-50">
+              {enabled ? t("studioTitle") : studioT("form.closedTitle")}
+            </h2>
+            <p className="mt-3 max-w-[62ch] text-[14.5px] leading-relaxed text-ink-300">
+              {enabled ? t("studioBody") : studioT("form.closedBody")}
+            </p>
+            <Link
+              href="/studio"
+              data-contact-studio
+              className="focusable mt-5 inline-flex rounded-full border border-hairline-strong px-6 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-50"
+            >
+              {enabled ? t("studioLink") : studioT("title")}
+            </Link>
+          </div>
+        </section>
+      ) : null}
 
       <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-12 pb-16">
         <div className="glass p-7 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">

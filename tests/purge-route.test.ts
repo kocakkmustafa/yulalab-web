@@ -6,6 +6,11 @@ import { recordAttribution } from "@/server/attribution";
 const SCHEMA = "t_purge_route";
 const SECRET = "test-secret-not-a-real-one";
 let pool: Pool;
+const localLoginUrl = (schema: string) => {
+  const url = new URL(testDatabaseUrl(schema));
+  url.username = process.env.USER ?? "postgres";
+  return url.toString();
+};
 
 beforeAll(async () => {
   pool = await createIsolatedSchema(SCHEMA);
@@ -23,6 +28,11 @@ beforeAll(async () => {
       "utf8",
     ),
   );
+  await pool.query(`ALTER TABLE data_requests
+    ADD COLUMN verification_sent_at timestamptz,
+    ADD COLUMN verification_token_key_id text,
+    ADD COLUMN verification_queue_expires_at timestamptz,
+    ADD COLUMN purge_at timestamptz`);
 });
 
 afterAll(async () => {
@@ -31,14 +41,20 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await pool.query("TRUNCATE attributions, leads, lead_consents, event_outbox, data_requests CASCADE");
-  process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+  process.env.YULA_INTAKE_DATABASE_URL = "postgres://intake-test@invalid.invalid/yula";
+  process.env.YULA_MAIL_DATABASE_URL = "postgres://mail-test@invalid.invalid/yula";
+  process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+  process.env.YULA_PURGE_DATABASE_URL = localLoginUrl(SCHEMA);
   process.env.CRON_SECRET = "cron-secret-for-tests";
 });
 
 afterEach(async () => {
   const { resetPool } = await import("@/server/db");
-  await resetPool();
-  delete process.env.DATABASE_URL;
+  await resetPool("purge");
+  delete process.env.YULA_INTAKE_DATABASE_URL;
+  delete process.env.YULA_MAIL_DATABASE_URL;
+  delete process.env.YULA_PURGE_DATABASE_URL;
+  delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.CRON_SECRET;
 });
 
@@ -82,7 +98,13 @@ describe("GET /api/purge", () => {
 
     const res = await get("Bearer cron-secret-for-tests");
     expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ purged: 1, purgedLeads: 0, purgedOutbox: 0, expiredVerifications: 0 });
+    await expect(res.json()).resolves.toEqual({
+      purged: 1,
+      purgedLeads: 0,
+      purgedOutbox: 0,
+      expiredVerifications: 0,
+      purgedDataRequests: 0,
+    });
 
     const { rows } = await pool.query("SELECT count(*)::int AS n FROM attributions");
     expect(rows[0].n).toBe(1);
@@ -120,7 +142,7 @@ describe("both retentions run, not just the first one", () => {
     expect(route).toContain("purgeExpiredLeads");
     expect(route).toContain("purgeExpiredAttributions");
     expect(route).toContain("purgeExpiredOutbox");
-    expect(route).toContain("purgeExpiredVerifications");
+    expect(route).toContain("purgeDataRequestResidue");
   });
 
   it("reports both counts so a silent no-op is visible", async () => {
@@ -160,6 +182,34 @@ describe("the schedule is actually wired", () => {
 });
 
 describe("outbox rows do not outlive their retention", () => {
+  it("routes verification residue through the race-safe transactional purge", async () => {
+    const request = await pool.query<{ id: string }>(
+      `INSERT INTO data_requests (
+         email, request_type, verification_state, verification_token_hash,
+         verification_expires_at, verification_token_key_id,
+         verification_queue_expires_at, purge_at
+       ) VALUES (
+         'residue@example.com', 'delete', 'pending', repeat('a', 64),
+         now() + interval '1 day', 'test-key',
+         now() - interval '2 days', now() - interval '1 day'
+       ) RETURNING id`,
+    );
+    await pool.query(
+      `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, purge_at)
+       VALUES ('data_request_verification', $1, '{"locale":"tr","tokenKeyId":"test-key"}', now() - interval '1 day')`,
+      [request.rows[0].id],
+    );
+
+    const res = await get("Bearer cron-secret-for-tests");
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({
+      expiredVerifications: 1,
+      purgedDataRequests: 1,
+    });
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(0);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(0);
+  });
+
   it("purges an aged outbox row even though no lead owns it", async () => {
     // aggregate_id points at leads AND at data requests, so there is no
     // single foreign key to cascade from. Before this, purging a lead left

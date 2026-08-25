@@ -105,6 +105,30 @@ describe("reference-faithful experience timeline", () => {
     expect(evaluateTimeline(progress, "desktop").stage).toBe(stage);
   });
 
+  it("hands full-screen overlay ownership across an empty boundary frame", () => {
+    const orderedStages = Object.entries(STAGES) as [
+      keyof typeof STAGES,
+      readonly [number, number],
+    ][];
+
+    for (let index = 1; index < orderedStages.length; index += 1) {
+      const [outgoingName] = orderedStages[index - 1];
+      const [incomingName, [boundary]] = orderedStages[index];
+      const boundaryFrame = evaluateTimeline(boundary, "desktop");
+
+      expect(boundaryFrame.overlay[outgoingName], `${outgoingName} at ${boundary}`).toBe(0);
+      expect(boundaryFrame.overlay[incomingName], `${incomingName} at ${boundary}`).toBe(0);
+
+      for (let step = -100; step <= 100; step += 1) {
+        const frame = evaluateTimeline(boundary + step * 0.00001, "desktop");
+        const visibleStages = orderedStages.filter(
+          ([stage]) => frame.overlay[stage] > Number.EPSILON,
+        );
+        expect(visibleStages.length, `visible overlays near ${boundary}`).toBeLessThanOrEqual(1);
+      }
+    }
+  });
+
   it("clamps invalid and out-of-range progress", () => {
     expect(evaluateTimeline(Number.NaN, "desktop").progress).toBe(0);
     expect(evaluateTimeline(-10, "desktop").progress).toBe(0);
@@ -120,6 +144,21 @@ describe("reference-faithful experience timeline", () => {
       const frame = evaluateTimeline(center, "desktop");
       expect(frame.productIndex).toBe(index);
       expect(frame.productProgress).toBeCloseTo(0.5, 6);
+    }
+  });
+
+  it("assigns each product slot boundary to exactly one semantic owner", () => {
+    const [start, end] = STAGES.portfolio;
+    const epsilon = (end - start) / 1_000_000;
+
+    for (let incoming = 1; incoming < 8; incoming += 1) {
+      const boundary = start + (incoming / 8) * (end - start);
+      expect(evaluateTimeline(boundary - epsilon, "desktop").productIndex).toBe(incoming - 1);
+
+      const frame = evaluateTimeline(boundary, "desktop");
+      expect(frame.productIndex).toBe(incoming);
+      expect(frame.productProgress).toBeCloseTo(0, 10);
+      expect(evaluateTimeline(boundary + epsilon, "desktop").productIndex).toBe(incoming);
     }
   });
 
@@ -195,6 +234,21 @@ describe("reference-faithful experience timeline", () => {
       const frame = evaluateTimeline(center, "desktop");
       expect(frame.valueIndex).toBe(index);
       expect(frame.valueProgress).toBeCloseTo(0.5, 6);
+    }
+  });
+
+  it("assigns each value slot boundary to exactly one semantic owner", () => {
+    const [start, end] = STAGES.values;
+    const epsilon = (end - start) / 1_000_000;
+
+    for (let incoming = 1; incoming < 4; incoming += 1) {
+      const boundary = start + (incoming / 4) * (end - start);
+      expect(evaluateTimeline(boundary - epsilon, "desktop").valueIndex).toBe(incoming - 1);
+
+      const frame = evaluateTimeline(boundary, "desktop");
+      expect(frame.valueIndex).toBe(incoming);
+      expect(frame.valueProgress).toBeCloseTo(0, 10);
+      expect(evaluateTimeline(boundary + epsilon, "desktop").valueIndex).toBe(incoming);
     }
   });
 
@@ -307,6 +361,28 @@ describe("reference-faithful experience timeline", () => {
       );
       expect(endOfHero.width).toBeLessThanOrEqual(mode === "desktop" ? 0.46 : 0.66);
       expect(endOfHero.height).toBeLessThanOrEqual(0.68);
+    }
+  });
+
+  it("centers the opening Y and gives short phones a collision-safe pose", () => {
+    const desktopPose = glyphViewportPose(0, 1440 / 900, 1440);
+    expect(Math.abs(desktopPose.offset[0])).toBeLessThanOrEqual(0.05);
+    expect(desktopPose.scaleMultiplier).toBeGreaterThanOrEqual(0.72);
+    expect(desktopPose.scaleMultiplier).toBeLessThan(0.84);
+
+    const tallPhone = glyphViewportPose(0, 390 / 844, 390);
+    const shortPhone = glyphViewportPose(0, 390 / 667, 390);
+    const narrowShortPhone = glyphViewportPose(0, 320 / 700, 320);
+    expect(shortPhone.offset[1]).toBeGreaterThan(tallPhone.offset[1]);
+    expect(shortPhone.scaleMultiplier).toBeLessThan(tallPhone.scaleMultiplier);
+    expect(narrowShortPhone.offset[1]).toBeGreaterThan(tallPhone.offset[1]);
+
+    for (const [width, height] of [[390, 667], [320, 700]] as const) {
+      const bounds = projectedGlyphBounds(0, "mobile", width, height);
+      expect(bounds.left).toBeGreaterThanOrEqual(-0.88);
+      expect(bounds.right).toBeLessThanOrEqual(0.88);
+      expect(bounds.bottom).toBeGreaterThanOrEqual(-0.88);
+      expect(bounds.top).toBeLessThanOrEqual(0.88);
     }
   });
 

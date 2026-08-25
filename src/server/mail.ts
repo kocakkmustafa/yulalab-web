@@ -1,4 +1,12 @@
 import type { Pool, PoolClient } from "pg";
+import {
+  dataRequestTokenKeyForId,
+  dataRequestTokenKeyring,
+  dataRequestTokenKeyringMissing,
+  dataRequestVerificationUrl,
+  deriveDataRequestToken,
+  tokenHashMatches,
+} from "@/server/data-request-token";
 
 /**
  * The outbox consumer.
@@ -120,7 +128,13 @@ export interface DrainResult {
 }
 
 type Resolution =
-  | { kind: "send"; to: string; locale: "tr" | "en" }
+  | {
+      kind: "send";
+      to: string;
+      locale: "tr" | "en";
+      data?: Record<string, unknown>;
+      verification?: { requestId: string; tokenKeyId: string };
+    }
   | { kind: "dropped" }
   | { kind: "blocked" };
 
@@ -142,9 +156,14 @@ interface OutboxRow {
 const HAS_ADDRESS: Record<OutboxEventType, () => boolean> = {
   lead_receipt: () => true,
   lead_internal_route: () => Boolean(process.env.LEADS_INTERNAL_ADDRESS?.trim()),
-  // See resolveRecipient: the verification token is sha256 at rest, so the
-  // link cannot be rebuilt here. Never deliverable until that is decided.
-  data_request_verification: () => false,
+  data_request_verification: () => {
+    try {
+      dataRequestTokenKeyring();
+      return true;
+    } catch {
+      return false;
+    }
+  },
 };
 
 /**
@@ -174,9 +193,29 @@ export function deliverableEventTypes(): OutboxEventType[] {
  * `blocked: N` and no way to find out why.
  */
 export function missingTemplates(): string[] {
-  return (Object.keys(HAS_ADDRESS) as OutboxEventType[])
+  const missing = (Object.keys(HAS_ADDRESS) as OutboxEventType[])
     .filter((type) => HAS_ADDRESS[type]())
     .flatMap(missingTemplatesFor);
+  missing.push(...dataRequestTokenKeyringMissing());
+  return [...new Set(missing)];
+}
+
+export function dataRequestDeliveryMissingConfig(): string[] {
+  const missing = dataRequestTokenKeyringMissing();
+  for (const key of [
+    "SENDGRID_API_KEY",
+    "MAIL_FROM",
+    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR",
+    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN",
+  ]) {
+    if (!process.env[key]?.trim()) missing.push(key);
+  }
+  try {
+    dataRequestTokenKeyring();
+  } catch {
+    if (missing.length === 0) missing.push("DATA_REQUEST_TOKEN_KEYRING");
+  }
+  return [...new Set(missing)];
 }
 
 /**
@@ -218,19 +257,52 @@ async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolut
     return { kind: "send", to: process.env.LEADS_INTERNAL_ADDRESS!.trim(), locale: "tr" };
   }
 
-  // data_request_verification, unreachable via isDeliverable and kept as the
-  // explanation for why.
-  //
-  // Blocked BY DESIGN, and this is the honest outcome rather than a gap left
-  // open. The verification token is sha256 at rest and the plaintext is
-  // returned once to the caller and never persisted (`src/server/
-  // data-requests.ts`), so the link in this mail cannot be rebuilt here.
-  // Closing it means choosing between putting a live credential in a queued
-  // payload for thirty days and sending at creation time, which gives up the
-  // outbox's guarantee — a decision, not a detail. Until it is made this
-  // consumer refuses the row: nothing sent, nothing stamped, no attempt
-  // spent. A verification mail with a broken link is worse than none.
-  return { kind: "blocked" };
+  const locale = row.payload_json.locale;
+  if (locale !== "tr" && locale !== "en") return { kind: "blocked" };
+  const tokenKeyId = row.payload_json.tokenKeyId;
+  if (typeof tokenKeyId !== "string") return { kind: "blocked" };
+  const key = dataRequestTokenKeyForId(tokenKeyId);
+  if (!key) return { kind: "blocked" };
+
+  const { rows } = await db.query<{
+    email: string;
+    request_type: string;
+    verification_state: string;
+    verification_token_hash: string | null;
+    verification_token_key_id: string | null;
+    verification_queue_expires_at: Date;
+  }>(
+    `SELECT email, request_type, verification_state, verification_token_hash,
+            verification_token_key_id, verification_queue_expires_at
+       FROM data_requests
+      WHERE id = $1`,
+    [row.aggregate_id],
+  );
+  if (!rows.length || rows[0].verification_state !== "pending") return { kind: "dropped" };
+  if (rows[0].verification_token_key_id !== tokenKeyId) return { kind: "blocked" };
+  if (new Date(rows[0].verification_queue_expires_at).getTime() <= Date.now()) {
+    await db.query(
+      `UPDATE data_requests
+          SET verification_state = 'expired', verification_token_hash = NULL
+        WHERE id = $1 AND verification_state = 'pending'`,
+      [row.aggregate_id],
+    );
+    return { kind: "dropped" };
+  }
+
+  const token = deriveDataRequestToken(row.aggregate_id, key.secret);
+  if (!tokenHashMatches(token, rows[0].verification_token_hash)) return { kind: "blocked" };
+
+  return {
+    kind: "send",
+    to: rows[0].email,
+    locale,
+    data: {
+      requestType: rows[0].request_type,
+      verificationUrl: dataRequestVerificationUrl(token, locale),
+    },
+    verification: { requestId: row.aggregate_id, tokenKeyId },
+  };
 }
 
 /**
@@ -388,7 +460,7 @@ export async function drainOutbox(
           eventType: row.event_type,
           to: resolution.to,
           locale: resolution.locale,
-          data: row.payload_json,
+          data: resolution.data ?? row.payload_json,
         });
       } catch {
         // The provider's error is deliberately not carried further: it can
@@ -398,6 +470,32 @@ export async function drainOutbox(
         await db.query("COMMIT");
         result.failed += 1;
         continue;
+      }
+
+      // A rejected provider call must not consume the person's 24-hour
+      // capability window. Stamp only after provider acceptance, while the
+      // outbox row is still locked, and commit it with delivered_at below.
+      //
+      // There is deliberately no exactly-once claim across SendGrid and
+      // PostgreSQL: if the provider accepts and this transaction then fails,
+      // retrying sends the same deterministic token with the same outboxId
+      // correlation. That at-least-once duplicate is safer than losing the
+      // only verification message.
+      if (resolution.verification) {
+        const refreshed = await db.query(
+          `UPDATE data_requests
+              SET verification_sent_at = COALESCE(verification_sent_at, now()),
+                  verification_expires_at = COALESCE(verification_expires_at, now() + interval '24 hours'),
+                  purge_at = GREATEST(purge_at, now() + interval '24 hours')
+            WHERE id = $1
+              AND verification_state = 'pending'
+              AND verification_token_key_id = $2
+            RETURNING verification_sent_at, verification_expires_at`,
+          [resolution.verification.requestId, resolution.verification.tokenKeyId],
+        );
+        if (!refreshed.rowCount) {
+          throw new Error("verification delivery state changed after provider acceptance");
+        }
       }
 
       // now(), not a timestamp passed in from the caller.
@@ -410,7 +508,13 @@ export async function drainOutbox(
       // would take the queue down. This is the same two-sources-for-one-time
       // drift that migration 0002 removed from `retention_until`; the fix is
       // the same one: let the clock that wrote the row write the stamp.
-      await db.query("UPDATE event_outbox SET delivered_at = now() WHERE id = $1", [row.id]);
+      await db.query(
+        `UPDATE event_outbox
+            SET delivered_at = now(),
+                purge_at = GREATEST(purge_at, now() + interval '24 hours')
+          WHERE id = $1`,
+        [row.id],
+      );
       await db.query("COMMIT");
       result.delivered += 1;
     } catch (error) {
@@ -476,12 +580,19 @@ export function sendgridTransport(
           "content-type": "application/json",
         },
         body: JSON.stringify({
-          personalizations: [{ to: [{ email: message.to }] }],
+          personalizations: [{
+            to: [{ email: message.to }],
+            custom_args: { yulalab_outbox_id: message.outboxId },
+          }],
           from: { email: from },
           // The template is chosen by event and rendered by the provider, so
           // no copy — and no message body — passes through here.
           template_id: templateFor(message.eventType, message.locale),
           dynamic_template_data: message.data,
+          tracking_settings: {
+            click_tracking: { enable: false, enable_text: false },
+            open_tracking: { enable: false },
+          },
         }),
       });
       if (!response.ok) {
@@ -507,7 +618,7 @@ const TEMPLATE_LOCALES: Record<OutboxEventType, readonly ("tr" | "en")[]> = {
   lead_receipt: ["tr", "en"],
   // Written to our own inbox, which is Turkish.
   lead_internal_route: ["tr"],
-  data_request_verification: [],
+  data_request_verification: ["tr", "en"],
 };
 
 /**

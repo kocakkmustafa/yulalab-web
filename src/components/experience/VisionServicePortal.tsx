@@ -71,7 +71,7 @@ export function VisionServicePortal({ frame, tier }: VisionServicePortalProps) {
       renderer.xr.enabled = false;
       renderer.autoClear = true;
       renderer.setRenderTarget(target);
-      renderer.setClearColor("#07050a", 1);
+      renderer.setClearColor("#07050a", 0);
       renderer.clear(true, true, true);
       renderer.render(portalScene, camera);
     } finally {
@@ -87,7 +87,6 @@ export function VisionServicePortal({ frame, tier }: VisionServicePortalProps) {
       {portalActive
         ? createPortal(
           <>
-            <color attach="background" args={["#07050a"]} />
             <fog attach="fog" args={["#07050a", 9, 54]} />
             <ambientLight intensity={0.9} />
             <directionalLight color="#f0e5ff" intensity={2.4} position={[5, 8, 7]} />

@@ -25,9 +25,12 @@ function valid(overrides: Record<string, unknown> = {}) {
 }
 
 describe("event allowlist", () => {
-  it("accepts every event name the roadmap §8.1 enumerates", () => {
-    // Guards against someone quietly narrowing the funnel: the roadmap
-    // lists these 13 by name, so the contract must carry all 13.
+  it("carries the anonymous interaction events but not the server-bound qualification verdict", () => {
+    // Guards against someone quietly narrowing the funnel: the roadmap lists
+    // 13 by name, so the contract must carry all 13.
+    //
+    // Qualification is a server-bound property of an accepted lead. Keeping
+    // it here lets an anonymous caller inflate the numerator without a lead.
     expect(EVENT_NAMES).toEqual([
       "home_primary_cta",
       "products_filter_changed",
@@ -54,6 +57,18 @@ describe("event allowlist", () => {
   it("accepts a well-formed payload", () => {
     const result = parseEventPayload(valid());
     expect(result.ok).toBe(true);
+  });
+
+  it("security correction: rejects anonymous studio qualification even without a target", () => {
+    const result = parseEventPayload(valid({ event: "studio_application_qualified" }));
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.reason).toMatch(/unknown event/i);
+
+    const targetless = parseEventPayload(
+      valid({ event: "studio_application_qualified", target: undefined, targetCategory: undefined }),
+    );
+    expect(targetless.ok).toBe(false);
+    if (!targetless.ok) expect(targetless.reason).toMatch(/unknown event/i);
   });
 });
 

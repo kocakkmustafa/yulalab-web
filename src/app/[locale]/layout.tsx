@@ -12,6 +12,7 @@ import { PageTransition } from "@/components/layout/PageTransition";
 import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
 import { company } from "@/data/company";
+import { studioEnabled } from "@/server/studio-surface";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -112,6 +113,7 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
+  const studioOpen = studioEnabled();
 
   return (
     <html
@@ -129,11 +131,11 @@ export default async function LocaleLayout({
               @media (prefers-reduced-motion) rule in globals.css; this is
               the Framer Motion half of the same promise. */}
           <MotionConfig reducedMotion="user">
-            <Header />
+            <Header studioEnabled={studioOpen} />
             <main>
               <PageTransition>{children}</PageTransition>
             </main>
-            <Footer />
+            <Footer studioEnabled={studioOpen} />
           </MotionConfig>
         </NextIntlClientProvider>
         <Analytics />

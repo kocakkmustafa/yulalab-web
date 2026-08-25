@@ -6,6 +6,10 @@ import { createIsolatedSchema, dropSchema } from "./helpers/attribution-db";
 import { drainOutbox, MAX_ATTEMPTS, unconfiguredTransport } from "@/server/mail";
 import { createLead } from "@/server/leads";
 import type { MailMessage, MailTransport } from "@/server/mail";
+import {
+  DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+} from "@/server/data-request-token";
 
 /**
  * The outbox consumer.
@@ -40,6 +44,10 @@ beforeEach(async () => {
   process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
   process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
   process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
+  process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
+  process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = "test-only-data-request-secret-at-least-32-bytes";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
 });
 
 let seq = 0;
@@ -216,11 +224,8 @@ describe("a lead that has been deleted", () => {
   });
 });
 
-describe("an event this consumer cannot address", () => {
-  it("refuses data_request_verification rather than sending a broken link", async () => {
-    // The verification token is sha256 at rest and the plaintext is never
-    // persisted, so the link cannot be rebuilt here. Blocking is the honest
-    // outcome: not sent, not delivered, and no attempt burned.
+describe("a verification row whose capability cannot be reconstructed", () => {
+  it("blocks a corrupt hash rather than sending a broken link", async () => {
     const { rows } = await pool.query(
       `INSERT INTO data_requests (email, request_type, verification_token_hash, verification_expires_at)
        VALUES ('ada@example.com', 'access', repeat('a', 64), now() + interval '1 hour')
@@ -228,7 +233,7 @@ describe("an event this consumer cannot address", () => {
     );
     await pool.query(
       `INSERT INTO event_outbox (event_type, aggregate_id, payload_json)
-       VALUES ('data_request_verification', $1, '{"requestType":"access"}'::jsonb)`,
+       VALUES ('data_request_verification', $1, '{"requestType":"access","locale":"tr"}'::jsonb)`,
       [rows[0].id],
     );
     const transport = transportThat("succeeds");
@@ -332,6 +337,7 @@ describe("a backlog of rows that cannot be addressed", () => {
     );
     await queueReceipt("ada@example.com");
 
+    delete process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV];
     const transport = transportThat("succeeds");
     const result = await drainOutbox(pool, transport);
     expect(result.delivered).toBe(1);
@@ -397,6 +403,7 @@ describe("the unconfigured count", () => {
     );
     await queueReceipt();
 
+    delete process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV];
     const result = await drainOutbox(pool, unconfiguredTransport());
     expect(result.skipped).toBe(1);
     expect(result.blocked).toBe(2);
@@ -531,7 +538,7 @@ describe("an error inside the transaction, not just at connect time", () => {
         }) as typeof client.release;
         client.query = ((...args: unknown[]) => {
           const sql = typeof args[0] === "string" ? args[0] : "";
-          if (sql.startsWith("UPDATE event_outbox SET delivered_at")) {
+          if (sql.includes("UPDATE event_outbox") && sql.includes("delivered_at = now()")) {
             stamps += 1;
             // The first row goes through; the connection dies on the second.
             if (stamps > 1) throw new Error("connection terminated mid-transaction");

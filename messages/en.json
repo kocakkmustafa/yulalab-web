@@ -12,7 +12,8 @@
     "contact": "Contact",
     "ctaProjects": "Explore Projects",
     "menuOpen": "Menu",
-    "menuClose": "Close"
+    "menuClose": "Close",
+    "studio": "Studio"
   },
   "footer": {
     "tagline": "An independent product lab that uses AI in the right place at the right time, without overstating it.",
@@ -32,7 +33,8 @@
     "rights": "All rights reserved.",
     "version": "v0.1 · showcase",
     "navCaseStudies": "Case studies",
-    "navOperatingSystem": "How we work"
+    "navOperatingSystem": "How we work",
+    "navStudio": "Studio"
   },
   "common": {
     "explore": "Explore",
@@ -242,7 +244,11 @@
     "pressHint": "Interviews, event invitations and press release requests.",
     "locationEyebrow": "Location",
     "locationTitle": "Türkiye",
-    "locationNote": "Meetings Tuesday – Thursday, hybrid."
+    "locationNote": "Meetings Tuesday – Thursday, hybrid.",
+    "studioBody": "The addresses on this page are for general correspondence. If you have a project in mind, the studio application is faster: it asks for budget band, timing and who decides, so the first reply is not spent asking those three questions.",
+    "studioEyebrow": "Project enquiry",
+    "studioLink": "Studio application",
+    "studioTitle": "Writing about a piece of work?"
   },
   "notFound": {
     "title": "Page not found.",
@@ -587,5 +593,87 @@
       "research": "Research",
       "archived": "Archived"
     }
+  },
+  "studio": {
+    "applyIntro": "We do not ask for an exact budget figure or a decision-maker's name — a band and a role are enough.",
+    "applyTitle": "Apply",
+    "dataBody": "We ask for the least access measurement needs, and we keep a written record of what we touched. If personal data is involved we discuss it separately and put the scope in writing.",
+    "dataTitle": "Data and access expectations",
+    "eyebrow": "Studio",
+    "forTitle": "Who it is for",
+    "for": [
+      "Teams with a real product who want to know what they can actually prove",
+      "Teams with no measurement layer yet, but ready to measure",
+      "Products at or near a store release that need the discipline"
+    ],
+    "form": {
+      "choose": "Choose",
+      "closedAlt": "In the meantime, write to us directly: ",
+      "closedAltLink": "contact",
+      "closedBody": "This site is not yet collecting personal data through a form. It stays closed until the legal review and the mail setup are done — that is sequencing, not an omission.",
+      "closedTitle": "Applications are closed right now.",
+      "company": "Company (optional)",
+      "consent": "I agree to these details being stored so my application can be reviewed.",
+      "consentLink": "Privacy",
+      "email": "Email",
+      "errors": {
+        "budgetBand": "Please choose a budget band.",
+        "closed": "Applications are closed right now.",
+        "company-long": "That company name is too long.",
+        "consent": "Consent is required to continue.",
+        "decisionRole": "Please choose who decides.",
+        "email": "Please enter a valid email address.",
+        "email-long": "That email address is too long.",
+        "locale": "Invalid locale.",
+        "name": "Please enter your name.",
+        "name-long": "That name is too long.",
+        "problem": "Please describe the problem.",
+        "problem-long": "That description is too long — could you shorten it?",
+        "rate": "Too many attempts; please try again shortly.",
+        "server": "Could not send; please try again.",
+        "timing": "Please choose a timing."
+      },
+      "name": "Name",
+      "problem": "The problem you want solved",
+      "reference": "Reference",
+      "sending": "Sending",
+      "sentTitle": "Your application is in.",
+      "submit": "Apply"
+    },
+    "intro": "The discipline we hold our own products to, applied to yours: every claim sourced, every figure dated, everything stale visibly stale.",
+    "noPromiseBody": "We do not guarantee an outcome — we publish what the measurement says, including when we dislike it. We do not provide capital or investment. We have not yet completed an engagement for an outside client, and we would rather write that here than leave it out.",
+    "noPromiseTitle": "What we do not promise",
+    "notForTitle": "Who it is not for",
+    "notFor": [
+      "An idea without a product — there is nothing here to verify yet",
+      "Anyone looking for investment; YULA does the work, it does not write cheques",
+      "Anyone who wants a report whose conclusion is already written",
+      "Anyone who does not want to hear what the measurement says"
+    ],
+    "stagesTitle": "Four stages",
+    "stages": [
+      {
+        "body": "We measure what is true today: which claims have a source and which do not.",
+        "deliverable": "Delivered: an inventory of sourced claims and a list of what lacks evidence.",
+        "title": "Evidence baseline"
+      },
+      {
+        "body": "What gets built, and what gets measured, written down.",
+        "deliverable": "Delivered: a scope document and a measurement plan.",
+        "title": "Product definition"
+      },
+      {
+        "body": "Code, and the gates around it; every claim arrives with its source.",
+        "deliverable": "Delivered: working code, tests, and verification gates that fail the build.",
+        "title": "Build and verify"
+      },
+      {
+        "body": "Released, and kept measured — a lapsed claim shows as lapsed.",
+        "deliverable": "Delivered: the release, the measurement stream, and a handover note.",
+        "title": "Ship and operate"
+      }
+    ],
+    "termsNote": "Commercial terms and pricing are shared in writing, in conversation.",
+    "title": "Build with YULA."
   }
 }

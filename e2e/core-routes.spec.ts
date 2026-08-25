@@ -109,3 +109,118 @@ test("language switcher moves between TR and EN on the same page", async ({
   await switchToEn.click();
   await expect(page).toHaveURL(/\/en\/manifesto$/);
 });
+
+test("production locale routing has bounded canonical redirects", async ({ request }) => {
+  for (const host of ["127.0.0.1:4173", "localhost:4173"]) {
+    const origin = `http://${host}`;
+
+    const contact = await request.get(`${origin}/contact`, { maxRedirects: 0 });
+    expect(contact.status(), `${host}/contact redirected to itself`).toBe(200);
+
+    const studio = await request.get(
+      `${origin}/studio?returnTo=%2F%2Fevil.example%2Fstudio`,
+      { maxRedirects: 0 },
+    );
+    expect(studio.status()).toBe(307);
+    expect(studio.headers().location).toBe("/contact");
+    const studioLocation = new URL(studio.headers().location!, origin);
+    expect(studioLocation.origin).toBe(origin);
+    expect(studioLocation.pathname).toBe("/contact");
+    expect(studioLocation.hostname).not.toBe("evil.example");
+
+    const englishContact = await request.get(`${origin}/en/contact`, { maxRedirects: 0 });
+    expect(englishContact.status()).toBe(200);
+
+    const englishStudio = await request.get(`${origin}/en/studio`, { maxRedirects: 0 });
+    expect(englishStudio.status()).toBe(307);
+    expect(englishStudio.headers().location).toBe("/en/contact");
+    const englishLocation = new URL(englishStudio.headers().location!, origin);
+    expect(englishLocation.origin).toBe(origin);
+    expect(englishLocation.pathname).toBe("/en/contact");
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact", "/contact"],
+      ["/tr/studio", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, { maxRedirects: 0 });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(canonical);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("");
+    }
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact?proof=1", "/contact"],
+      ["/tr/studio?proof=1", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, {
+        maxRedirects: 0,
+      });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(`${canonical}?proof=1`);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("?proof=1");
+    }
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact?proof=spoof", "/contact"],
+      ["/tr/studio?proof=spoof", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, {
+        headers: { "x-next-intl-locale": "tr" },
+        maxRedirects: 0,
+      });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(`${canonical}?proof=spoof`);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("?proof=spoof");
+    }
+
+    for (const edgePath of [
+      "/tr/%2F%2Fevil.example",
+      "/tr/%252F%252Fevil.example",
+      "/tr/%5Cevil.example",
+      "/tr//evil.example",
+    ]) {
+      const response = await request.get(`${origin}${edgePath}`, {
+        maxRedirects: 0,
+      });
+      expect([307, 308, 400]).toContain(response.status());
+
+      const rawLocation = response.headers().location;
+      if (response.status() === 400) {
+        expect(rawLocation).toBeUndefined();
+      } else {
+        expect(rawLocation).toBeDefined();
+        expect(rawLocation!.startsWith("//")).toBe(false);
+        expect(new URL(rawLocation!, origin).origin).toBe(origin);
+      }
+    }
+  }
+
+  for (const bypassPath of [
+    "/api/leads",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/opengraph-image",
+    "/asset.example.js",
+  ]) {
+    const response = await request.get(`http://127.0.0.1:4173${bypassPath}`, {
+      maxRedirects: 0,
+    });
+    expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
+    expect(response.headers().location).toBeUndefined();
+  }
+
+  const invalidLocale = await request.get("http://127.0.0.1:4173/fr/contact", {
+    maxRedirects: 0,
+  });
+  expect(invalidLocale.status()).toBe(404);
+  expect(invalidLocale.headers().location).toBeUndefined();
+});
