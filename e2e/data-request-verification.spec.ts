@@ -42,4 +42,3 @@ test("malformed fragment is inert, keyboard-safe, and does not overflow at 320px
   expect(posts).toBe(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });
-
