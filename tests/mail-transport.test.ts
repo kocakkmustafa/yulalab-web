@@ -87,12 +87,12 @@ describe("which transport this deployment gets", () => {
     expect(mailTransport().configured).toBe(false);
   });
 
-  it("is unconfigured when the lead surface itself is closed", () => {
-    // Two switches, one meaning. A consumer that would send mail for a form
-    // nobody can submit is how you find out later that one was flipped alone.
+  it("stays configured for accepted work when new intake is closed", () => {
+    // LEADS_ENABLED gates admission, not delivery. Rows already accepted into
+    // the durable outbox must finish even after new submissions are stopped.
     process.env.SENDGRID_API_KEY = "SG.key";
     process.env.MAIL_FROM = "hello@yulalab.com";
-    expect(mailTransport().configured).toBe(false);
+    expect(mailTransport().configured).toBe(true);
   });
 
   it("is unconfigured with a key but no sender address", () => {
@@ -153,6 +153,33 @@ describe("which transport this deployment gets", () => {
     process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
     process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
     expect(deliverableEventTypes()).toContain("data_request_verification");
+  });
+
+  it("reports a structurally invalid token key id in drain diagnostics", () => {
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "invalid key id";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
+      "test-only-current-data-request-secret-32-bytes";
+
+    expect(missingTemplates()).toEqual(["DATA_REQUEST_TOKEN_KEYRING"]);
+  });
+
+  it("reports colliding current and previous token key ids in drain diagnostics", () => {
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
+      "test-only-current-data-request-secret-32-bytes";
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV] = "2026-08-current";
+    process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV] =
+      "test-only-previous-data-request-secret-32-bytes";
+
+    expect(missingTemplates()).toEqual(["DATA_REQUEST_TOKEN_KEYRING"]);
   });
 });
 

@@ -4,6 +4,10 @@ import path from "node:path";
 import { GET } from "@/app/api/mail/route";
 import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/attribution-db";
 import { resetPool } from "@/server/db";
+import {
+  DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
+  DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
+} from "@/server/data-request-token";
 
 const original = { ...process.env };
 const localLoginUrl = (schema: string) => {
@@ -132,6 +136,68 @@ describe("when the scheduler actually calls it", () => {
       vi.unstubAllGlobals();
       await resetPool("mail");
       await dropSchema(pool, SCHEMA);
+    }
+  });
+
+  it("drains accepted data-request verification work after intake closes", async () => {
+    const pool = await createIsolatedSchema(`${SCHEMA}_data_request`);
+    try {
+      for (const file of [
+        "../db/migrations/0002_leads_consents_outbox.sql",
+        "../db/migrations/0003_data_request_verification.sql",
+      ]) {
+        await pool.query(readFileSync(path.resolve(import.meta.dirname, file), "utf8"));
+      }
+      await pool.query(`ALTER TABLE data_requests
+        ADD COLUMN verification_sent_at timestamptz,
+        ADD COLUMN verification_token_key_id text,
+        ADD COLUMN verification_queue_expires_at timestamptz,
+        ADD COLUMN purge_at timestamptz;
+        ALTER TABLE data_requests DROP CONSTRAINT pending_requires_a_live_token;
+        ALTER TABLE data_requests ADD CONSTRAINT pending_requires_a_live_token CHECK (
+          verification_state <> 'pending'
+          OR (verification_token_hash IS NOT NULL
+              AND verification_token_key_id IS NOT NULL
+              AND verification_queue_expires_at IS NOT NULL
+              AND purge_at IS NOT NULL)
+        )`);
+
+      process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
+      process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
+        "test-only-current-data-request-secret-32-bytes";
+      const { createDataRequest } = await import("@/server/data-requests");
+      await createDataRequest(
+        pool,
+        { email: "accepted-before-close@example.com", requestType: "access", locale: "en" },
+        { now: new Date() },
+      );
+
+      process.env.CRON_SECRET = "s3cret";
+      process.env.YULA_DATABASE_SCHEMA = `${SCHEMA}_data_request`;
+      process.env.YULA_INTAKE_DATABASE_URL = "postgres://intake-test@invalid.invalid/yula";
+      process.env.YULA_MAIL_DATABASE_URL = localLoginUrl(`${SCHEMA}_data_request`);
+      process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
+      delete process.env.LEADS_ENABLED;
+      process.env.SENDGRID_API_KEY = "SG.key";
+      process.env.MAIL_FROM = "hello@yulalab.com";
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+      const fetchMock = vi.fn(async () => new Response("", { status: 202 }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      const response = await GET(get("Bearer s3cret"));
+      const body = await response.json();
+      expect({ status: response.status, body }).toEqual({
+        status: 200,
+        body: expect.objectContaining({ delivered: 1, remaining: 0 }),
+      });
+      expect(fetchMock).toHaveBeenCalledTimes(1);
+      const after = await pool.query("SELECT delivered_at FROM event_outbox");
+      expect(after.rows[0].delivered_at).not.toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+      await resetPool("mail");
+      await dropSchema(pool, `${SCHEMA}_data_request`);
     }
   });
 });

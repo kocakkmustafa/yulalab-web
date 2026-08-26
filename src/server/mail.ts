@@ -196,7 +196,13 @@ export function missingTemplates(): string[] {
   const missing = (Object.keys(HAS_ADDRESS) as OutboxEventType[])
     .filter((type) => HAS_ADDRESS[type]())
     .flatMap(missingTemplatesFor);
-  missing.push(...dataRequestTokenKeyringMissing());
+  const keyringMissing = dataRequestTokenKeyringMissing();
+  missing.push(...keyringMissing);
+  try {
+    dataRequestTokenKeyring();
+  } catch {
+    if (keyringMissing.length === 0) missing.push("DATA_REQUEST_TOKEN_KEYRING");
+  }
   return [...new Set(missing)];
 }
 
@@ -644,16 +650,14 @@ function missingTemplatesFor(type: OutboxEventType): string[] {
  * The transport this deployment actually has.
  *
  * Unconfigured unless the transport chain is present: key and sender.
- * Templates gate individual event types, not this. `LEADS_ENABLED` is in
- * the condition on purpose: the surface that WRITES leads is closed until legal
- * review, and a consumer that would send mail for a form nobody can submit
- * is a way to discover, later and by accident, that one of the two switches
- * was flipped alone.
+ * Templates gate individual event types, not this. `LEADS_ENABLED` gates only
+ * new admission: durable rows accepted before intake closes must still drain,
+ * otherwise a rollback abandons work the site already promised to process.
  */
 export function mailTransport(fetchImpl: typeof fetch = fetch): MailTransport {
   const apiKey = process.env.SENDGRID_API_KEY?.trim();
   const from = process.env.MAIL_FROM?.trim();
-  if (process.env.LEADS_ENABLED !== "1" || !apiKey || !from) return unconfiguredTransport();
+  if (!apiKey || !from) return unconfiguredTransport();
   // Templates are NOT checked here. They gate one event type at a time via
   // isDeliverable, so a missing template blocks that type and leaves the
   // others delivering, rather than taking the whole transport down.

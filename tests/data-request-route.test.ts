@@ -284,10 +284,30 @@ describe("verifying", () => {
     expect(res.status).toBe(200);
     await expect(res.json()).resolves.toEqual({ verified: false });
   });
+
+  it("keeps an already-issued verification link valid after intake closes", async () => {
+    const { createDataRequest } = await import("@/server/data-requests");
+    const { token } = await createDataRequest(
+      pool,
+      { email: "accepted-before-close@example.com", requestType: "delete" },
+      { now: new Date() },
+    );
+    await pool.query(
+      `UPDATE data_requests
+          SET verification_sent_at = now(),
+              verification_expires_at = now() + interval '24 hours'
+        WHERE verification_state = 'pending'`,
+    );
+    delete process.env.LEADS_ENABLED;
+
+    const res = await post({ token });
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual({ verified: true });
+  });
 });
 
 describe("the surface is closed by default", () => {
-  it("refuses everything unless collection is enabled", async () => {
+  it("refuses new submissions unless collection is enabled", async () => {
     delete process.env.LEADS_ENABLED;
     const res = await post({ email: "a@b.co", requestType: "delete" });
     expect(res.status).toBe(503);

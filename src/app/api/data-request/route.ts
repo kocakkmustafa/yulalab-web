@@ -72,9 +72,6 @@ const SUBMITTED = { status: "submitted" } as const;
 const TEMPORARILY_UNAVAILABLE = { error: "temporarily_unavailable" } as const;
 
 export async function POST(request: Request): Promise<Response> {
-  if (!enabled()) {
-    return NextResponse.json({ error: "not_accepting_submissions" }, { status: 503 });
-  }
   if (!allowedOrigin(request)) {
     return NextResponse.json({ error: "origin" }, { status: 403 });
   }
@@ -121,6 +118,10 @@ export async function POST(request: Request): Promise<Response> {
       console.error("data request verify failed", error instanceof Error ? error.name : "unknown");
       return NextResponse.json(TEMPORARILY_UNAVAILABLE, { status: 503 });
     }
+  }
+
+  if (!enabled()) {
+    return NextResponse.json({ error: "not_accepting_submissions" }, { status: 503 });
   }
 
   // Submission arm. Shape errors are still 400 — a caller that sent the wrong
