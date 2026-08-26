@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 // TR is the root locale (no prefix), EN is served under /en — see
 // src/i18n/routing.ts ("as-needed" localePrefix). Every route here must
@@ -72,18 +73,167 @@ test("homepage EN renders the product-lab identity", async ({ page }) => {
   await expect(page.locator("body")).not.toContainText(/venture studio/i);
 });
 
-test("unknown routes are noindex and never publish localhost social metadata", async ({ page }) => {
-  const response = await page.goto("/__yula_missing_route__", {
-    waitUntil: "domcontentloaded",
-  });
-  expect(response?.status()).toBe(404);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
-    "content",
-    /^https:\/\/yulalab\.com\/opengraph-image/,
-  );
+const MISSING_ROUTE_CASES = [
+  {
+    locale: "tr",
+    path: "/__yula_missing_route__",
+    lang: "tr",
+    title: "Sayfa bulunamadı.",
+    home: "Ana sayfa",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    locale: "en",
+    path: "/en/__yula_missing_route__",
+    lang: "en",
+    title: "Page not found.",
+    home: "Home",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+] as const;
 
-  const socialImage = await page.request.get("/opengraph-image");
+const MISSING_ROUTE_VIEWPORTS = [
+  { label: "mobile", width: 390, height: 844 },
+  { label: "desktop", width: 1280, height: 720 },
+] as const;
+
+for (const localeCase of MISSING_ROUTE_CASES) {
+  for (const viewport of MISSING_ROUTE_VIEWPORTS) {
+    test(`locale-aware 404 ${localeCase.locale} ${viewport.label}`, async ({ page }, testInfo) => {
+      await page.setViewportSize(viewport);
+      await page.route("**/_vercel/insights/script.js", async (route) => {
+        const requestUrl = new URL(route.request().url());
+        if (!["127.0.0.1", "localhost"].includes(requestUrl.hostname)) {
+          await route.continue();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/javascript; charset=utf-8",
+          body: "globalThis.va = globalThis.va || function () {};",
+        });
+      });
+
+      const expectedTopLevel404Console: string[] = [];
+      const unexpectedConsoleErrors: string[] = [];
+      const expectedTopLevel404Responses: string[] = [];
+      const unexpectedHttpResponses: string[] = [];
+      const failedRequests: string[] = [];
+      page.on("console", (message) => {
+        if (message.type() !== "error") return;
+        const locationUrl = message.location().url;
+        const locationPath = locationUrl ? new URL(locationUrl).pathname : "";
+        if (
+          message.text() ===
+            "Failed to load resource: the server responded with a status of 404 (Not Found)" &&
+          locationPath === localeCase.path
+        ) {
+          expectedTopLevel404Console.push(message.text());
+          return;
+        }
+        unexpectedConsoleErrors.push(`${locationUrl || "unknown"} ${message.text()}`);
+      });
+      page.on("response", (httpResponse) => {
+        if (httpResponse.status() < 400) return;
+        const request = httpResponse.request();
+        const responseUrl = new URL(httpResponse.url());
+        const summary = `${httpResponse.status()} ${request.method()} ${request.resourceType()} ${responseUrl.pathname}`;
+        if (
+          httpResponse.status() === 404 &&
+          request.method() === "GET" &&
+          request.isNavigationRequest() &&
+          request.resourceType() === "document" &&
+          responseUrl.pathname === localeCase.path
+        ) {
+          expectedTopLevel404Responses.push(summary);
+          return;
+        }
+        unexpectedHttpResponses.push(summary);
+      });
+      page.on("requestfailed", (request) => {
+        failedRequests.push(`${request.method()} ${request.url()} ${request.failure()?.errorText}`);
+      });
+
+      const response = await page.goto(localeCase.path, { waitUntil: "load" });
+      expect(response?.status()).toBe(404);
+      await expect(page.locator("html")).toHaveAttribute("lang", localeCase.lang);
+      await expect(page.getByRole("heading", { name: localeCase.title })).toBeVisible();
+      await expect(
+        page.getByRole("main").getByRole("link", { name: localeCase.home, exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.locator('meta[name="robots"][content*="noindex"][content*="nofollow"]'),
+      ).toHaveAttribute(
+        "content",
+        /(?=.*noindex)(?=.*nofollow)/i,
+      );
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        "href",
+        localeCase.canonical,
+      );
+      await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+        "content",
+        localeCase.ogLocale,
+      );
+      await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+        "content",
+        new RegExp(localeCase.title.replace(".", "\\."), "i"),
+      );
+      await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+        "content",
+        localeCase.canonical,
+      );
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+        "content",
+        /^https:\/\/yulalab\.com\/opengraph-image/,
+      );
+
+      const fit = await page.evaluate(() => ({
+        innerWidth: window.innerWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+      }));
+      expect(fit.scrollWidth).toBeLessThanOrEqual(fit.innerWidth + 1);
+
+      const pageEntrance = page.locator(".page-enter").first();
+      await pageEntrance.evaluate(async (element) => {
+        await Promise.allSettled(element.getAnimations().map((animation) => animation.finished));
+      });
+      const accessibility = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .analyze();
+      expect(
+        accessibility.violations.filter((violation) =>
+          ["serious", "critical"].includes(violation.impact ?? ""),
+        ),
+      ).toEqual([]);
+      expect(expectedTopLevel404Console).toHaveLength(1);
+      expect(expectedTopLevel404Responses).toEqual([
+        `404 GET document ${localeCase.path}`,
+      ]);
+      expect(unexpectedConsoleErrors).toEqual([]);
+      expect(unexpectedHttpResponses).toEqual([]);
+      expect(failedRequests).toEqual([]);
+
+      await page.screenshot({
+        path: testInfo.outputPath(`${localeCase.locale}-${viewport.label}.png`),
+        fullPage: true,
+      });
+    });
+  }
+}
+
+test("unsupported locale fails closed before locale rendering", async ({ request }) => {
+  const response = await request.get("/fr/__yula_missing_route__", { maxRedirects: 0 });
+  expect(response.status()).toBe(404);
+  expect(response.headers().location).toBeUndefined();
+  expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
+  expect(await response.text()).toBe("");
+});
+
+test("404 social image is a real canonical PNG", async ({ request }) => {
+  const socialImage = await request.get("/opengraph-image");
   expect(socialImage.ok()).toBe(true);
   expect(socialImage.headers()["content-type"]).toContain("image/png");
 });
