@@ -10,17 +10,17 @@
           "kind": "web",
           "url": "https://braavolabs.com",
           "status": "live",
-          "source": "https://braavolabs.com (live DOM, title and canonical URL rechecked in Chrome on 2026-08-25)",
-          "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-08-26"
+          "source": "https://braavolabs.com (live DOM, title and canonical URL rechecked in browser on 2026-08-28)",
+          "verifiedAt": "2026-08-28",
+          "expiresAt": "2026-08-29"
         },
         {
           "kind": "ios",
           "url": "https://apps.apple.com/us/app/braavolabs/id6771440905",
           "status": "live",
-          "source": "https://apps.apple.com/us/app/braavolabs/id6771440905 (public App Store listing, Version 1.0.3, rechecked in Chrome on 2026-08-25)",
-          "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-08-26"
+          "source": "https://apps.apple.com/us/app/braavolabs/id6771440905 (public App Store listing/API, Version 1.0.3, rechecked via public lookup on 2026-08-28)",
+          "verifiedAt": "2026-08-28",
+          "expiresAt": "2026-08-29"
         }
       ],
       "primaryCta": {
@@ -96,7 +96,7 @@
       ],
       "privacyUrl": "/privacy/braavolabs",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-25"
+      "updatedAt": "2026-08-28"
     },
     {
       "slug": "burunfarki",
@@ -107,9 +107,9 @@
           "kind": "web",
           "url": "https://burunfark.com",
           "status": "live",
-          "source": "https://burunfark.com/dogruluk (live accuracy-history DOM rechecked in Chrome on 2026-08-25)",
-          "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-08-26"
+          "source": "https://burunfark.com/dogruluk (live accuracy-history DOM rechecked in browser on 2026-08-28)",
+          "verifiedAt": "2026-08-28",
+          "expiresAt": "2026-08-29"
         }
       ],
       "primaryCta": {
@@ -166,7 +166,7 @@
       ],
       "privacyUrl": "/privacy/burunfarki",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-25"
+      "updatedAt": "2026-08-28"
     },
     {
       "slug": "lifeos",
@@ -177,9 +177,9 @@
           "kind": "ios",
           "url": "https://apps.apple.com/app/id6771527233",
           "status": "live",
-          "source": "https://apps.apple.com/app/id6771527233 (public App Store listing, Version 1.6.0, rechecked in Chrome on 2026-08-25)",
-          "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-08-26"
+          "source": "https://apps.apple.com/app/id6771527233 (public App Store listing/API, Version 1.6.0, rechecked via public lookup on 2026-08-28)",
+          "verifiedAt": "2026-08-28",
+          "expiresAt": "2026-08-29"
         },
         {
           "kind": "android",
@@ -215,7 +215,7 @@
       ],
       "privacyUrl": "/privacy/lifeos",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-25"
+      "updatedAt": "2026-08-28"
     },
     {
       "slug": "gravita",
