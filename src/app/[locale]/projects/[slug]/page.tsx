@@ -4,6 +4,7 @@ import { setRequestLocale } from "next-intl/server";
 import { getProjectBySlug, getProjectSlugs } from "@/data/projects";
 import { ProductPage } from "@/components/projects/ProductPage";
 import { routing } from "@/i18n/routing";
+import { notFoundMetadata } from "@/lib/not-found-metadata";
 import type { Locale } from "@/lib/types";
 
 type PageProps = {
@@ -46,8 +47,8 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   const project = getProjectBySlug(slug);
-  if (!project) return {};
   const lang = locale as Locale;
+  if (!project) return notFoundMetadata(lang);
   return {
     title: project.name,
     description: project.tagline[lang],

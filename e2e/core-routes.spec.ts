@@ -224,6 +224,75 @@ for (const localeCase of MISSING_ROUTE_CASES) {
   }
 }
 
+const DYNAMIC_MISSING_ROUTE_CASES = [
+  {
+    label: "project tr",
+    path: "/projects/__missing_product__",
+    lang: "tr",
+    heading: "Sayfa bulunamadı.",
+    pageTitle: "Sayfa bulunamadı. · YULA Lab",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    label: "project en",
+    path: "/en/projects/__missing_product__",
+    lang: "en",
+    heading: "Page not found.",
+    pageTitle: "Page not found. · YULA Lab",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+  {
+    label: "case study tr",
+    path: "/case-studies/__missing_case__",
+    lang: "tr",
+    heading: "Sayfa bulunamadı.",
+    pageTitle: "Sayfa bulunamadı. · YULA Lab",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    label: "case study en",
+    path: "/en/case-studies/__missing_case__",
+    lang: "en",
+    heading: "Page not found.",
+    pageTitle: "Page not found. · YULA Lab",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+] as const;
+
+for (const routeCase of DYNAMIC_MISSING_ROUTE_CASES) {
+  test(`locale-aware dynamic 404 ${routeCase.label}`, async ({ page }) => {
+    const response = await page.goto(routeCase.path, { waitUntil: "load" });
+
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", routeCase.lang);
+    await expect(page.getByRole("heading", { name: routeCase.heading })).toBeVisible();
+    await expect(page).toHaveTitle(routeCase.pageTitle);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      routeCase.canonical,
+    );
+    await expect(
+      page.locator('meta[name="robots"][content*="noindex"][content*="nofollow"]'),
+    ).toHaveAttribute("content", /(?=.*noindex)(?=.*nofollow)/i);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      routeCase.heading,
+    );
+    await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+      "content",
+      routeCase.ogLocale,
+    );
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+      "content",
+      routeCase.canonical,
+    );
+  });
+}
+
 test("unsupported locale fails closed before locale rendering", async ({ request }) => {
   const response = await request.get("/fr/__yula_missing_route__", { maxRedirects: 0 });
   expect(response.status()).toBe(404);

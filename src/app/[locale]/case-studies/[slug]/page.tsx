@@ -6,6 +6,8 @@ import { CaseStudyPage } from "@/components/case-studies/CaseStudyPage";
 import { caseStudies } from "@/data/case-studies";
 import { publicRegistry } from "@/data/public-registry";
 import { publishableCaseStudies } from "@/lib/case-studies";
+import { notFoundMetadata } from "@/lib/not-found-metadata";
+import type { Locale } from "@/lib/types";
 import { routing } from "@/i18n/routing";
 
 /**
@@ -27,7 +29,7 @@ export function generateStaticParams() {
  */
 export const revalidate = 900;
 
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export async function generateMetadata({
   params,
@@ -36,7 +38,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const study = publishableCaseStudies(caseStudies, publicRegistry).find((s) => s.slug === slug);
-  if (!study) return {};
+  if (!study) return notFoundMetadata(locale as Locale);
   const tr = locale === "tr";
   return {
     title: tr ? study.titleTr : study.titleEn,
