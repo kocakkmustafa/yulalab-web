@@ -150,7 +150,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const secret = process.env.ATTRIBUTION_SECRET;
-  if (!isDatabaseConfigured() || !secret) {
+  if (!isDatabaseConfigured("intake") || !secret) {
     return NextResponse.json(
       { stored: false, reason: "storage_unavailable" },
       { status: 503 },
@@ -158,7 +158,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
-    await recordAttribution(getPool(), parsed.value, { now: new Date(), secret });
+    await recordAttribution(getPool("intake"), parsed.value, { now: new Date(), secret });
   } catch (error) {
     // Deliberately does not log the payload — only the failure shape.
     console.error("attribution write failed", error instanceof Error ? error.message : "unknown");

@@ -71,7 +71,18 @@ export function dedupeKey(input: Pick<LeadInput, "email" | "message" | "intent">
     .digest("hex");
 }
 
-/** Where a given intent should land internally. */
+/**
+ * Where a given intent should land internally.
+ *
+ * A LABEL on the internal notification, not a mailbox: every internal mail
+ * goes to the single LEADS_INTERNAL_ADDRESS. So a new value here routes
+ * attention, and cannot silently address mail to a box nobody reads.
+ *
+ * `studio` used to fall through to the general label. Public Studio answers
+ * are anonymous self-report, so they may select this ordinary routing label
+ * but can never select the trusted `studio-qualified` metric. A future
+ * authenticated reviewer transition must own that separate state change.
+ */
 export function routeFor(intent: LeadIntent): string {
   switch (intent) {
     case "product":
@@ -80,6 +91,8 @@ export function routeFor(intent: LeadIntent): string {
       return "press";
     case "privacy":
       return "privacy";
+    case "studio":
+      return "studio";
     default:
       return "merhaba";
   }
@@ -182,7 +195,11 @@ export async function createLead(
        VALUES ('lead_internal_route', $1, $2, $3)`,
       [
         leadId,
-        JSON.stringify({ receiptId, route: routeFor(input.intent), intent: input.intent }),
+        JSON.stringify({
+          receiptId,
+          route: routeFor(input.intent),
+          intent: input.intent,
+        }),
         now,
       ],
     );

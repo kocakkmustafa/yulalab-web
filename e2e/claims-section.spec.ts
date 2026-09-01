@@ -78,15 +78,15 @@ test("a stat backed by a claim carries provenance, fresh or lapsed", async ({ pa
   // single thing this site must never do casually. A lapsed claim is a
   // correct state, not a broken test.
   await page.goto("/en/projects/burunfarki");
-  const top3 = page.getByText("~%61", { exact: true }).first();
+  const top3 = page.getByText("~%62", { exact: true }).first();
   await expect(top3).toBeVisible();
   const card = top3.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
   await expect(card).toContainText(/verified \d{4}-\d{2}-\d{2}|needs re-verification/i);
 });
 
 test("a stat with no claim behind it carries no invented provenance", async ({ page }) => {
-  await page.goto("/en/projects/burunfarki");
-  const races = page.getByText("13.587", { exact: true }).first();
-  const card = races.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
+  await page.goto("/en/projects/lifeos");
+  const algorithms = page.getByText("9+", { exact: true }).first();
+  const card = algorithms.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
   await expect(card).not.toContainText(/verified/i);
 });

@@ -59,6 +59,10 @@ const securityHeaders = [
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Preserve middleware-produced origins verbatim. Without this, Next 15.5's
+  // production adapter can normalize a 127.0.0.1 canonical locale redirect
+  // back to localhost after the middleware has returned it.
+  skipMiddlewareUrlNormalize: true,
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [
@@ -92,6 +96,16 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: "/tr",
+        destination: "/",
+        permanent: false,
+      },
+      {
+        source: "/tr/:path*",
+        destination: "/:path*",
+        permanent: false,
+      },
       // links.yulalab.com is the single canonical linktree surface — this
       // used to be a byte-identical copy in public/links/, manually kept in
       // sync (and drifting). One source now; short links (/bf, /lo, ...)

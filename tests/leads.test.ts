@@ -2,7 +2,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vites
 import type { Pool } from "pg";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { createIsolatedSchema, dropSchema } from "./helpers/attribution-db";
+import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/attribution-db";
 import { createLead, dedupeKey, receiptIdFor, purgeExpiredLeads } from "@/server/leads";
 
 /**
@@ -394,4 +394,413 @@ describe("atomicity, not merely statement order", () => {
     );
     expect(rows[0].orphans).toBe(0);
   });
+});
+
+describe("studio qualification at the API boundary", () => {
+  const origin = "https://yulalab.com";
+
+  async function postQualified(
+    overrides: Record<string, unknown>,
+    options: { studioEnabled?: string } = {},
+  ) {
+    const previous = {
+      databaseSchema: process.env.YULA_DATABASE_SCHEMA,
+      intakeDatabaseUrl: process.env.YULA_INTAKE_DATABASE_URL,
+      mailDatabaseUrl: process.env.YULA_MAIL_DATABASE_URL,
+      purgeDatabaseUrl: process.env.YULA_PURGE_DATABASE_URL,
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
+      leadsEnabled: process.env.LEADS_ENABLED,
+      studioEnabled: process.env.STUDIO_ENABLED,
+    };
+    const intakeDatabaseUrl = new URL(testDatabaseUrl(SCHEMA));
+    intakeDatabaseUrl.username = process.env.USER ?? "postgres";
+    process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+    process.env.YULA_INTAKE_DATABASE_URL = intakeDatabaseUrl.toString();
+    process.env.YULA_MAIL_DATABASE_URL = "postgres://mail-test@invalid.invalid/yula";
+    process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
+    process.env.NEXT_PUBLIC_SITE_URL = origin;
+    process.env.LEADS_ENABLED = "1";
+    process.env.STUDIO_ENABLED = options.studioEnabled ?? "true";
+
+    const { resetPool } = await import("@/server/db");
+    const { resetRateLimit } = await import("@/server/rate-limit");
+    await resetPool("intake");
+    resetRateLimit();
+
+    try {
+      const { POST } = await import("@/app/api/leads/route");
+      return await POST(
+        new Request(`${origin}/api/leads`, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+            origin,
+            "x-forwarded-for": "203.0.113.71",
+          },
+          body: JSON.stringify({
+            name: "Ada",
+            email: "ada@example.com",
+            intent: "studio",
+            message: "A qualified Studio application.",
+            locale: "en",
+            consent: true,
+            website: "",
+            budgetBand: "150-400k",
+            timing: "now",
+            decisionRole: "founder",
+            ...overrides,
+          }),
+        }),
+      );
+    } finally {
+      await resetPool("intake");
+      if (previous.databaseSchema === undefined) delete process.env.YULA_DATABASE_SCHEMA;
+      else process.env.YULA_DATABASE_SCHEMA = previous.databaseSchema;
+      if (previous.intakeDatabaseUrl === undefined) delete process.env.YULA_INTAKE_DATABASE_URL;
+      else process.env.YULA_INTAKE_DATABASE_URL = previous.intakeDatabaseUrl;
+      if (previous.mailDatabaseUrl === undefined) delete process.env.YULA_MAIL_DATABASE_URL;
+      else process.env.YULA_MAIL_DATABASE_URL = previous.mailDatabaseUrl;
+      if (previous.purgeDatabaseUrl === undefined) delete process.env.YULA_PURGE_DATABASE_URL;
+      else process.env.YULA_PURGE_DATABASE_URL = previous.purgeDatabaseUrl;
+      if (previous.siteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+      else process.env.NEXT_PUBLIC_SITE_URL = previous.siteUrl;
+      if (previous.leadsEnabled === undefined) delete process.env.LEADS_ENABLED;
+      else process.env.LEADS_ENABLED = previous.leadsEnabled;
+      if (previous.studioEnabled === undefined) delete process.env.STUDIO_ENABLED;
+      else process.env.STUDIO_ENABLED = previous.studioEnabled;
+    }
+  }
+
+  it("stores valid anonymous Studio enums as an ordinary lead with no trusted numerator", async () => {
+    const response = await postQualified({});
+    expect(response.status).toBe(201);
+    const { rows } = await pool.query(
+      "SELECT payload_json->>'route' AS route FROM event_outbox WHERE event_type = 'lead_internal_route'",
+    );
+    expect(rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("security correction: ignores a direct caller-supplied verdict and keeps retries ordinary", async () => {
+    await pool.query(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+        "utf8",
+      ),
+    );
+    const forged = { ...VALID, studioVerdict: "qualified" } as typeof VALID;
+    const first = await createLead(pool, forged, { now: new Date("2026-08-25T10:00:00Z") });
+    const retry = await createLead(pool, forged, { now: new Date("2026-08-25T10:00:01Z") });
+    expect(retry.receiptId).toBe(first.receiptId);
+
+    const { rows } = await pool.query(
+      `SELECT outbox.aggregate_id, outbox.payload_json->>'route' AS route, lead.intent
+         FROM event_outbox AS outbox
+         JOIN leads AS lead ON lead.id = outbox.aggregate_id
+        WHERE outbox.event_type = 'lead_internal_route'
+          AND outbox.payload_json->>'route' = 'studio-qualified'`,
+    );
+    expect(rows).toHaveLength(0);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("security correction: database keeps the trusted qualified route dormant", async () => {
+    await pool.query(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+        "utf8",
+      ),
+    );
+    const { rows } = await pool.query(
+      `INSERT INTO leads (name,email,intent,message,locale,dedupe_key,created_at)
+       VALUES ('Ada','ada@example.com','studio','Studio request','tr',$1,$2)
+       RETURNING id`,
+      ["a".repeat(64), new Date("2026-08-25T11:00:00Z")],
+    );
+    await expect(
+      pool.query(
+        `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, created_at)
+         VALUES ('lead_internal_route',$1,$2,$3)`,
+        [
+          rows[0].id,
+          JSON.stringify({ route: "studio-qualified", intent: "studio", receiptId: "YL-TEST0000" }),
+          new Date("2026-08-25T11:00:00Z"),
+        ],
+      ),
+    ).rejects.toThrow(/studio-qualified/i);
+  });
+
+  it("security correction: demotes pre-existing anonymous qualified rows without deleting audit history", async () => {
+    // Model a database that has rows from the pre-Design-A migration before
+    // the new dormant trigger is installed. Earlier tests may already have
+    // applied 0005 to this isolated schema, so remove only that test trigger.
+    await pool.query("DROP TRIGGER IF EXISTS event_outbox_bind_studio_qualified ON event_outbox");
+    const lead = (await pool.query(
+      `INSERT INTO leads (name,email,intent,message,locale,dedupe_key,created_at)
+       VALUES ('Ada','old@example.com','studio','Old anonymous Studio request','tr',$1,$2)
+       RETURNING id`,
+      ["b".repeat(64), new Date("2026-08-25T11:05:00Z")],
+    )).rows[0];
+    const before = (await pool.query(
+      `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, created_at)
+       VALUES ('lead_internal_route',$1,$2,$3) RETURNING id`,
+      [
+        lead.id,
+        JSON.stringify({ route: "studio-qualified", intent: "studio", receiptId: "YL-OLD0000" }),
+        new Date("2026-08-25T11:05:00Z"),
+      ],
+    )).rows[0];
+
+    await pool.query(readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    ));
+
+    expect((await pool.query(
+      `SELECT id, payload_json->>'route' AS route FROM event_outbox WHERE id = $1`,
+      [before.id],
+    )).rows).toEqual([{ id: before.id, route: "studio" }]);
+  });
+
+  it("security correction: makes legacy demotion atomic and visible through FORCE RLS", () => {
+    const migration = readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    );
+    expect(migration).toMatch(/LOCK TABLE attributions, event_outbox IN ACCESS EXCLUSIVE MODE/i);
+    expect(migration).toMatch(/ALTER TABLE %I\.event_outbox NO FORCE ROW LEVEL SECURITY/i);
+    expect(migration).toMatch(/ALTER TABLE %I\.event_outbox FORCE ROW LEVEL SECURITY/i);
+    expect(migration).toMatch(/residual anonymous studio-qualified routes after demotion/i);
+    expect(migration).toMatch(/studio_application_qualified[^]*studio_application_submitted/i);
+    expect(migration).toMatch(/residual anonymous studio-qualified attributions after demotion/i);
+  });
+
+  it("security hardening: a pg_temp leads shadow cannot satisfy the qualified-route trigger", async () => {
+    const client = await pool.connect();
+    try {
+      await client.query(
+        readFileSync(
+          path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+          "utf8",
+        ),
+      );
+      await client.query("BEGIN");
+      await client.query(`SET LOCAL search_path = pg_temp, ${SCHEMA}`);
+      await client.query("CREATE TEMP TABLE leads (id uuid PRIMARY KEY, intent text NOT NULL) ON COMMIT DROP");
+      const shadowId = "00000000-0000-4000-8000-000000000005";
+      await client.query("INSERT INTO pg_temp.leads (id, intent) VALUES ($1, 'studio')", [shadowId]);
+
+      await expect(
+        client.query(
+          `INSERT INTO ${SCHEMA}.event_outbox (event_type, aggregate_id, payload_json, created_at)
+           VALUES ('lead_internal_route',$1,$2,$3)`,
+          [
+            shadowId,
+            JSON.stringify({ route: "studio-qualified", intent: "studio", receiptId: "YL-SHADOW0" }),
+            new Date("2026-08-25T11:10:00Z"),
+          ],
+        ),
+      ).rejects.toThrow(/studio-qualified/i);
+      await client.query("ROLLBACK");
+    } finally {
+      await client.query("ROLLBACK").catch(() => {});
+      client.release();
+    }
+  });
+
+  it("security hardening: the trigger function has fixed search_path and no unintended EXECUTE", async () => {
+    await pool.query(
+      readFileSync(
+        path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+        "utf8",
+      ),
+    );
+    const { rows } = await pool.query(
+      `SELECT proc.proconfig,
+              proc.prosecdef,
+              EXISTS (
+                SELECT 1
+                  FROM aclexplode(coalesce(proc.proacl, acldefault('f', proc.proowner))) acl
+                 WHERE acl.grantee = 0 AND acl.privilege_type = 'EXECUTE'
+              ) AS public_execute,
+              EXISTS (
+                SELECT 1
+                  FROM aclexplode(coalesce(proc.proacl, acldefault('f', proc.proowner))) acl
+                 WHERE acl.grantee <> 0
+                   AND acl.grantee <> proc.proowner
+                   AND acl.privilege_type = 'EXECUTE'
+              ) AS unintended_execute,
+              trigger.tgenabled
+         FROM pg_proc proc
+         JOIN pg_namespace namespace ON namespace.oid = proc.pronamespace
+         JOIN pg_trigger trigger ON trigger.tgfoid = proc.oid
+        WHERE namespace.nspname = $1
+          AND proc.proname = 'enforce_studio_qualified_route'
+          AND trigger.tgname = 'event_outbox_bind_studio_qualified'`,
+      [SCHEMA],
+    );
+    expect(rows).toEqual([
+      {
+        proconfig: ["search_path=pg_catalog, pg_temp"],
+        prosecdef: false,
+        public_execute: false,
+        unintended_execute: false,
+        tgenabled: "O",
+      },
+    ]);
+
+    await createLead(pool, { ...VALID, email: "trigger-postflight@example.com" }, {
+      now: new Date("2026-08-25T11:20:00Z"),
+    });
+    expect(
+      (await pool.query(
+        `SELECT 1 FROM event_outbox
+          WHERE event_type = 'lead_internal_route'
+            AND payload_json->>'route' = 'studio-qualified'`,
+      )).rowCount,
+    ).toBe(0);
+  });
+
+  it("security hardening: pg_temp cannot divert the target attribution correction", async () => {
+    const migration = readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    );
+    const client = await pool.connect();
+    let targetConstraint = "";
+    try {
+      await client.query(`ALTER TABLE ${SCHEMA}.attributions
+        DROP CONSTRAINT IF EXISTS attributions_event_name_check`);
+      await client.query(`ALTER TABLE ${SCHEMA}.attributions
+        ADD CONSTRAINT attributions_event_name_check CHECK (
+          event_name IN ('home_primary_cta', 'studio_application_qualified')
+        )`);
+      await client.query("CREATE TEMP TABLE attributions (event_name text)");
+      await client.query(`ALTER TABLE pg_temp.attributions
+        ADD CONSTRAINT attributions_event_name_check CHECK (
+          event_name IN ('home_primary_cta', 'studio_application_qualified')
+        )`);
+
+      await client.query(migration);
+      const { rows } = await client.query(
+        `SELECT pg_get_constraintdef(constraint_row.oid) AS definition
+           FROM pg_constraint constraint_row
+           JOIN pg_class table_class ON table_class.oid = constraint_row.conrelid
+           JOIN pg_namespace namespace ON namespace.oid = table_class.relnamespace
+          WHERE namespace.nspname = $1
+            AND table_class.relname = 'attributions'
+            AND constraint_row.conname = 'attributions_event_name_check'`,
+        [SCHEMA],
+      );
+      targetConstraint = rows[0]?.definition ?? "";
+    } finally {
+      await client.query("ROLLBACK").catch(() => {});
+      await client.query("DROP TABLE IF EXISTS pg_temp.attributions").catch(() => {});
+      await client.query(`SET search_path = ${SCHEMA}`);
+      await client.query(migration);
+      client.release();
+    }
+
+    expect(targetConstraint).not.toContain("studio_application_qualified");
+  });
+
+  it("security hardening: rerun revokes a pre-existing unintended function grant", async () => {
+    const migration = readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    );
+    const role = "t_leads_unintended_exec";
+    const client = await pool.connect();
+    let rerunError: unknown;
+    let retainsExecute = true;
+    try {
+      await client.query(migration);
+      await client.query(`DROP ROLE IF EXISTS ${role}`);
+      await client.query(`CREATE ROLE ${role} NOLOGIN NOSUPERUSER NOBYPASSRLS NOINHERIT`);
+      await client.query(
+        `GRANT EXECUTE ON FUNCTION ${SCHEMA}.enforce_studio_qualified_route() TO ${role}`,
+      );
+      try {
+        await client.query(migration);
+      } catch (error) {
+        rerunError = error;
+      }
+      await client.query("ROLLBACK").catch(() => {});
+      const { rows } = await client.query(
+        `SELECT has_function_privilege($1, $2, 'EXECUTE') AS retains_execute`,
+        [role, `${SCHEMA}.enforce_studio_qualified_route()`],
+      );
+      retainsExecute = rows[0]?.retains_execute ?? true;
+    } finally {
+      await client.query("ROLLBACK").catch(() => {});
+      await client.query(
+        `REVOKE ALL ON FUNCTION ${SCHEMA}.enforce_studio_qualified_route() FROM ${role}`,
+      ).catch(() => {});
+      await client.query(`DROP ROLE IF EXISTS ${role}`).catch(() => {});
+      client.release();
+    }
+
+    expect(rerunError).toBeUndefined();
+    expect(retainsExecute).toBe(false);
+  });
+
+  it("keeps an explicitly unqualified studio application on the ordinary studio route", async () => {
+    const response = await postQualified({
+      budgetBand: "under-50k",
+      timing: "exploring",
+      decisionRole: "advisor",
+      message: "An ordinary Studio application.",
+    });
+    expect(response.status).toBe(201);
+    const { rows } = await pool.query(
+      "SELECT payload_json->>'route' AS route FROM event_outbox WHERE event_type = 'lead_internal_route'",
+    );
+    expect(rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("keeps a general Studio lead with no qualifier set on the ordinary route", async () => {
+    const response = await postQualified({
+      budgetBand: undefined,
+      timing: undefined,
+      decisionRole: undefined,
+      message: "A general Studio enquiry.",
+    });
+    expect(response.status).toBe(201);
+    const { rows } = await pool.query(
+      "SELECT payload_json->>'route' AS route FROM event_outbox WHERE event_type = 'lead_internal_route'",
+    );
+    expect(rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("rejects the retired public qualified field without storing personal data", async () => {
+    const response = await postQualified({ qualified: true });
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({ error: 'unknown field "qualified"' });
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it("rejects Studio qualifiers on a non-studio intent without storing personal data", async () => {
+    const response = await postQualified({ intent: "press" });
+    expect(response.status).toBe(400);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it.each(["qualified", "unqualified", "general"] as const)(
+    "keeps the %s Studio API sink closed while Studio is disabled",
+    async (kind) => {
+      const overrides = kind === "qualified"
+        ? {}
+        : kind === "unqualified"
+          ? { budgetBand: "under-50k", timing: "exploring", decisionRole: "advisor" }
+          : { budgetBand: undefined, timing: undefined, decisionRole: undefined };
+      const response = await postQualified(overrides, { studioEnabled: "false" });
+      expect(response.status).toBe(503);
+      await expect(response.json()).resolves.toEqual({
+        error: "studio_not_accepting_submissions",
+      });
+      expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+    },
+  );
 });

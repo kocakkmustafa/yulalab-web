@@ -1,4 +1,13 @@
 import { NextResponse } from "next/server";
+// One source for the caps. They were literals here and constants in
+// src/lib/studio.ts; halving this one left every test green while the
+// studio form kept promising the old limit to the person typing.
+import {
+  LIMITS,
+  isBudgetBand,
+  isDecisionRole,
+  isTiming,
+} from "@/lib/studio";
 import { leadsEnabled } from "@/server/lead-surface";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { allowRequest } from "@/server/rate-limit";
@@ -9,6 +18,7 @@ import {
   type LeadIntent,
 } from "@/server/leads";
 import { readBounded } from "@/server/http";
+import { studioEnabled } from "@/server/studio-surface";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -50,6 +60,11 @@ const ALLOWED_FIELDS = new Set([
   // honoured. Sending it is a loud 400.
   "consent",
   "website",
+  // Studio only. These are closed self-report answers for later human review;
+  // they are not an authenticity signal and never mint a trusted metric.
+  "budgetBand",
+  "timing",
+  "decisionRole",
 ]);
 
 function allowedOrigin(request: Request): boolean {
@@ -112,19 +127,30 @@ function parse(input: unknown): Parsed {
   const email = str(body.email);
   const message = str(body.message);
 
-  if (name.length < 1 || name.length > 120) return { ok: false, reason: "name" };
-  if (!EMAIL.test(email) || email.length > 254) return { ok: false, reason: "email" };
-  if (message.length < 1 || message.length > 4000) return { ok: false, reason: "message" };
+  if (name.length < 1 || name.length > LIMITS.name) return { ok: false, reason: "name" };
+  if (!EMAIL.test(email) || email.length > LIMITS.email) return { ok: false, reason: "email" };
+  if (message.length < 1 || message.length > LIMITS.message) return { ok: false, reason: "message" };
   if (!INTENTS.includes(body.intent as LeadIntent)) return { ok: false, reason: "intent" };
   if (body.locale !== "tr" && body.locale !== "en") return { ok: false, reason: "locale" };
   if (body.consent !== true) return { ok: false, reason: "consent" };
 
   const company = str(body.company);
-  if (company.length > 160) return { ok: false, reason: "company" };
+  if (company.length > LIMITS.company) return { ok: false, reason: "company" };
 
   const productSlug = str(body.productSlug);
   if (productSlug && !/^[a-z0-9-]{1,64}$/.test(productSlug)) {
     return { ok: false, reason: "productSlug" };
+  }
+
+  const hasStudioQualifiers = ["budgetBand", "timing", "decisionRole"].some((key) => key in body);
+  if (hasStudioQualifiers && body.intent !== "studio") {
+    return { ok: false, reason: "studio qualifiers" };
+  }
+
+  if (hasStudioQualifiers) {
+    if (!isBudgetBand(body.budgetBand)) return { ok: false, reason: "budgetBand" };
+    if (!isTiming(body.timing)) return { ok: false, reason: "timing" };
+    if (!isDecisionRole(body.decisionRole)) return { ok: false, reason: "decisionRole" };
   }
 
   return {
@@ -186,14 +212,18 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ receiptId: "YL-00000000" }, { status: 201 });
   }
 
-  if (!isDatabaseConfigured()) {
+  if (parsed.value.intent === "studio" && !studioEnabled()) {
+    return NextResponse.json({ error: "studio_not_accepting_submissions" }, { status: 503 });
+  }
+
+  if (!isDatabaseConfigured("intake")) {
     // No silent success: a form that says "thank you" while storing nothing
     // is worse than one that says it is unavailable.
     return NextResponse.json({ error: "storage_unavailable" }, { status: 503 });
   }
 
   try {
-    const { receiptId } = await createLead(getPool(), parsed.value, { now: new Date() });
+    const { receiptId } = await createLead(getPool("intake"), parsed.value, { now: new Date() });
     return NextResponse.json({ receiptId }, { status: 201 });
   } catch (error) {
     // Only the failure SHAPE. Everything in the payload is personal data,

@@ -35,6 +35,7 @@ const CAUSTIC_VERTEX_SHADER = `
 const CAUSTIC_FRAGMENT_SHADER = `
   uniform float uTime;
   uniform float uGlassMix;
+  uniform float uHeroMix;
   uniform float uPortal;
   varying vec3 vLocalPosition;
   varying vec3 vViewNormal;
@@ -59,6 +60,8 @@ const CAUSTIC_FRAGMENT_SHADER = `
     vec3 magenta = vec3(1.0, 0.18, 0.72);
     vec3 color = mix(cyan, violet, chroma);
     color = mix(color, magenta, facet * 0.42);
+    float heroWhite = uHeroMix * clamp(sweep * 0.82 + rim * 0.42 + diagonal * 0.24, 0.0, 1.0);
+    color = mix(color, vec3(1.0), heroWhite);
 
     float portalAxis = vLocalPosition.y * 0.56 + 0.5;
     float portalNoise = 0.08 * sin(vLocalPosition.x * 13.0 + vLocalPosition.z * 17.0 + uTime * 0.2);
@@ -66,6 +69,7 @@ const CAUSTIC_FRAGMENT_SHADER = `
     color = mix(color, mix(cyan, magenta, chroma), portal * 0.72);
 
     float energy = 0.022 + diagonal * 0.16 + sweep * 0.09 + facet * 0.06 + rim * 0.035 + portal * 0.16;
+    energy += uHeroMix * (0.035 + sweep * 0.1 + rim * 0.055);
     gl_FragColor = vec4(color * (1.1 + diagonal * 1.6), energy * uGlassMix);
   }
 `;
@@ -89,11 +93,13 @@ const PORTAL_FRAGMENT_SHADER = `
     vec4 portal = texture2D(uPortalTexture, screenUv);
     float coordinate = vLocalPosition.y * 0.5 + 0.5;
     float noise = (portalNoise(vLocalPosition) - 0.5) * 0.2;
-    float threshold = 1.04 - uReveal * 1.12;
+    float threshold = 1.08 - uReveal * 1.34;
     float wipe = smoothstep(threshold - 0.075, threshold + 0.075, coordinate + noise);
     wipe *= smoothstep(0.005, 0.08, uReveal);
+    vec2 edgeDistance = min(screenUv, vec2(1.0) - screenUv);
+    float targetFeather = smoothstep(0.0, 0.065, min(edgeDistance.x, edgeDistance.y));
     float scan = 0.96 + 0.04 * sin(screenUv.y * 420.0 + uTime * 0.38);
-    gl_FragColor = vec4(portal.rgb * scan, portal.a * wipe * uOpacity);
+    gl_FragColor = vec4(portal.rgb * scan, portal.a * wipe * targetFeather * uOpacity);
   }
 `;
 
@@ -138,12 +144,15 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
   useEffect(() => () => geometry.dispose(), [geometry]);
 
   const whiteMix = frame.glyph.outlineMix;
-  const closingVisibility = 1 - frame.world.closingDraw;
+  const servicePresence = frame.world.serviceIn * (1 - frame.world.serviceOut);
+  const closingVisibility = (1 - frame.world.closingDraw) * (1 - servicePresence * 0.78);
   const bodyColor = useMemo(
     () => new Color("#b9a7d8").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],
   );
-  const bodyOpacity = (1 - whiteMix * 0.7) * closingVisibility;
+  const bodyOpacity = (1 - whiteMix * 0.7)
+    * closingVisibility
+    * (tier === "low" ? 0.7 : 1);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const transmission =
     tier === "high" ? 0.94 * frame.glyph.glassMix : tier === "medium" ? 0.78 * frame.glyph.glassMix : 0;
@@ -166,6 +175,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
     () => ({
       uTime: { value: 0 },
       uGlassMix: { value: 1 },
+      uHeroMix: { value: 0 },
       uPortal: { value: 0 },
     }),
     [],
@@ -187,6 +197,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18;
       causticMaterial.current.uniforms.uGlassMix.value =
         frame.glyph.glassMix * closingVisibility;
+      causticMaterial.current.uniforms.uHeroMix.value = frame.overlay.hero;
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
     }
 
@@ -219,12 +230,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
           clearcoat={0.92}
           clearcoatRoughness={0.15}
           color={bodyColor}
-          depthWrite={bodyOpacity > 0.55}
-          envMapIntensity={1.25}
+          depthWrite={tier !== "low" && bodyOpacity > 0.55}
+          envMapIntensity={tier === "low" ? 1.7 : 1.25}
           ior={1.35}
-          metalness={0.74}
+          metalness={tier === "low" ? 0.22 : 0.74}
           opacity={bodyOpacity}
-          roughness={0.27}
+          roughness={tier === "low" ? 0.16 : 0.27}
           thickness={0}
           transmission={0}
           transparent
@@ -275,27 +286,25 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
         />
       </mesh>
 
-      {tier !== "low" ? (
-        <mesh
-          geometry={geometry}
-          position={[0, 0, 0.012]}
-          renderOrder={3}
-          scale={0.986}
-          visible={glassVisible}
-        >
-          <shaderMaterial
-            ref={causticMaterial}
-            blending={AdditiveBlending}
-            depthTest={false}
-            depthWrite={false}
-            fragmentShader={CAUSTIC_FRAGMENT_SHADER}
-            toneMapped={false}
-            transparent
-            uniforms={causticUniforms}
-            vertexShader={CAUSTIC_VERTEX_SHADER}
-          />
-        </mesh>
-      ) : null}
+      <mesh
+        geometry={geometry}
+        position={[0, 0, 0.012]}
+        renderOrder={3}
+        scale={0.986}
+        visible={glassVisible}
+      >
+        <shaderMaterial
+          ref={causticMaterial}
+          blending={AdditiveBlending}
+          depthTest={false}
+          depthWrite={false}
+          fragmentShader={CAUSTIC_FRAGMENT_SHADER}
+          toneMapped={false}
+          transparent
+          uniforms={causticUniforms}
+          vertexShader={CAUSTIC_VERTEX_SHADER}
+        />
+      </mesh>
 
       {portalTexture && frame.world.servicePortalOpacity > 0.001 ? (
         <mesh

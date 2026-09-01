@@ -8,7 +8,7 @@ import type { Locale } from "@/lib/types";
 
 const SOCIAL_ICON = { x: XLogo, linkedin: Linkedin, instagram: Instagram } as const;
 
-export function Footer() {
+export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const t = useTranslations("footer");
   const locale = useLocale() as Locale;
   const year = new Date().getFullYear();
@@ -92,6 +92,13 @@ export function Footer() {
                 {t("navNotes")}
               </Link>
             </li>
+            {studioEnabled ? (
+              <li>
+                <Link href="/studio" className="link-wipe">
+                  {t("navStudio")}
+                </Link>
+              </li>
+            ) : null}
             <li>
               <Link href="/case-studies" className="link-wipe">
                 {t("navCaseStudies")}

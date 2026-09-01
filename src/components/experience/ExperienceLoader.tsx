@@ -2,6 +2,7 @@
 
 import type { CSSProperties } from "react";
 import type { ExperienceCopy } from "./types";
+import { resolveLoaderFrame } from "./loader";
 import styles from "./Experience.module.css";
 
 type ExperienceLoaderProps = {
@@ -14,27 +15,25 @@ type LoaderStyle = CSSProperties & {
   "--loader-reveal": number;
   "--loader-flat": number;
   "--loader-depth": number;
+  "--loader-flash": number;
   "--loader-exit": number;
 };
-
-function clampProgress(value: number): number {
-  if (!Number.isFinite(value)) return 0;
-  return Math.min(1, Math.max(0, value));
-}
 
 /**
  * A self-running architectural title card, not an interaction gate.
  * Timing lives in YulaExperience so capture mode can provide an exact frame.
  */
 export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
-  const clamped = clampProgress(progress);
+  const frame = resolveLoaderFrame(progress);
+  const clamped = frame.progress;
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
   const style: LoaderStyle = {
     "--loader-progress": clamped,
-    "--loader-reveal": clampProgress((clamped - 0.32) / 0.46),
-    "--loader-flat": clampProgress(clamped / 0.42),
-    "--loader-depth": clampProgress((clamped - 0.28) / 0.5),
-    "--loader-exit": clampProgress((clamped - 0.78) / 0.22),
+    "--loader-reveal": frame.reveal,
+    "--loader-flat": frame.flat,
+    "--loader-depth": frame.depth,
+    "--loader-flash": frame.flash,
+    "--loader-exit": frame.exit,
   };
 
   return (
@@ -47,6 +46,11 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
       data-yula-loader="true"
       data-loader-progress={clamped.toFixed(3)}
     >
+      <div className={styles.loaderBurst} aria-hidden="true">
+        <i />
+        <i />
+        <span />
+      </div>
       <div className={styles.loaderField} aria-hidden="true">
         <svg className={styles.loaderBlueprint} viewBox="0 0 1000 700">
           <g className={styles.loaderAxes}>

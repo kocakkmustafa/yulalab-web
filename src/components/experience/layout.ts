@@ -48,8 +48,13 @@ export function glyphViewportPose(
 ): GlyphViewportPose {
   const safeAspect = Number.isFinite(aspect) && aspect > 0 ? aspect : 1;
   const mobileMix = viewportMobileMix(viewportWidth);
+  const viewportHeight = Number.isFinite(viewportWidth)
+    ? viewportWidth / safeAspect
+    : Number.POSITIVE_INFINITY;
+  const shortMobileMix = mobileMix * (
+    1 - smoothstep((viewportHeight - 640) / 200)
+  );
   const compactMix = 1 - smoothstep((safeAspect - 1) / 0.35);
-  const portraitMix = 1 - smoothstep((safeAspect - 0.55) / 0.38);
   const heroExit = smoothstep((clamp01(progress) - 0.04) / 0.045);
   const compositionStrength = 1 - heroExit;
   const proofRestore = smoothstep((clamp01(progress) - 0.505) / 0.07);
@@ -61,16 +66,19 @@ export function glyphViewportPose(
   const mobilePortalStrength = mobilePortalSettle * (1 - mobilePortalRelease);
   const compactReduction = lerp(0.5, 0.24, mobileMix);
   const responsiveScale = 1 - compactReduction * compactMix * (1 - proofRestore);
-  const openingScale = lerp(lerp(0.84, 0.88, mobileMix), 1, heroExit);
+  const openingScale = lerp(lerp(0.8, 0.9, mobileMix), 1, heroExit);
   const scaleMultiplier = responsiveScale * openingScale
+    * (1 - 0.14 * shortMobileMix * compositionStrength)
     * (1 - 0.2 * mobileMix * mobilePortalStrength);
-  const desktopOffsetX = 0.9 + 0.35 * (1 - compactMix);
+  const openingMobileY = lerp(0, 1.15, shortMobileMix)
+    * compactMix
+    * mobileMix
+    * compositionStrength;
 
   return {
     offset: [
-      (desktopOffsetX * compositionStrength - 1.05 * visionStrength) * (1 - mobileMix),
-      -(0.95 + 2.2 * portraitMix) * compactMix * mobileMix * compositionStrength
-        + 0.55 * mobileMix * mobilePortalStrength,
+      -1.05 * visionStrength * (1 - mobileMix),
+      openingMobileY + 0.55 * mobileMix * mobilePortalStrength,
       0,
     ],
     scaleMultiplier,

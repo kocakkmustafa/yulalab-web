@@ -8,7 +8,7 @@ export default function NotFound() {
 
   return (
     <div className="page-enter max-w-3xl mx-auto px-6 pt-40 pb-32 text-center">
-      <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-4">
+      <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300 mb-4">
         404
       </div>
       <h1 className="font-display text-5xl font-semibold tracking-tight text-ink-50">

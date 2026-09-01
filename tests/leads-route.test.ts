@@ -7,6 +7,12 @@ import { createIsolatedSchema, dropSchema, testDatabaseUrl } from "./helpers/att
 const SCHEMA = "t_leads_route";
 const ORIGIN = "https://yulalab.com";
 let pool: Pool;
+const localLoginUrl = (schema: string) => {
+  const url = new URL(testDatabaseUrl(schema));
+  url.username = process.env.USER ?? "postgres";
+  return url.toString();
+};
+let previousStudioEnabled: string | undefined;
 
 beforeAll(async () => {
   pool = await createIsolatedSchema(SCHEMA);
@@ -24,20 +30,32 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await pool.query("TRUNCATE leads, lead_consents, event_outbox, data_requests CASCADE");
-  process.env.DATABASE_URL = testDatabaseUrl(SCHEMA);
+  previousStudioEnabled = process.env.STUDIO_ENABLED;
+  process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+  process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(SCHEMA);
+  process.env.YULA_MAIL_DATABASE_URL = "postgres://mail-test@invalid.invalid/yula";
+  process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN;
   // The route refuses everything unless collection is explicitly enabled;
   // see the "closed by default" suite at the bottom for why.
   process.env.LEADS_ENABLED = "1";
+  // This legacy route corpus submits Studio payloads by default. Publication
+  // is therefore an explicit per-test precondition, not a process-wide flag.
+  process.env.STUDIO_ENABLED = "true";
   const { resetRateLimit } = await import("@/server/rate-limit");
   resetRateLimit();
 });
 
 afterEach(async () => {
   const { resetPool } = await import("@/server/db");
-  await resetPool();
-  delete process.env.DATABASE_URL;
+  await resetPool("intake");
+  delete process.env.YULA_INTAKE_DATABASE_URL;
+  delete process.env.YULA_MAIL_DATABASE_URL;
+  delete process.env.YULA_PURGE_DATABASE_URL;
+  delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.LEADS_ENABLED;
+  if (previousStudioEnabled === undefined) delete process.env.STUDIO_ENABLED;
+  else process.env.STUDIO_ENABLED = previousStudioEnabled;
   vi.restoreAllMocks();
 });
 
@@ -50,6 +68,9 @@ function body(overrides: Record<string, unknown> = {}) {
     locale: "tr",
     consent: true,
     website: "", // honeypot, must stay empty
+    budgetBand: "150-400k",
+    timing: "now",
+    decisionRole: "founder",
     ...overrides,
   };
 }
@@ -72,6 +93,16 @@ describe("a valid submission", () => {
     const json = (await res.json()) as { receiptId: string };
     expect(json.receiptId).toMatch(/^YL-[0-9A-F]{8}$/);
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
+    expect((await pool.query(
+      `SELECT 1 FROM event_outbox
+        WHERE event_type = 'lead_internal_route'
+          AND payload_json->>'route' = 'studio-qualified'`,
+    )).rowCount).toBe(0);
   });
 
   it("returns the same receipt for a double submit and stores one lead", async () => {
@@ -79,6 +110,25 @@ describe("a valid submission", () => {
     const second = (await (await post(body())).json()) as { receiptId: string };
     expect(second.receiptId).toBe(first.receiptId);
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("ignores forged qualification headers and keeps valid self-report ordinary", async () => {
+    const res = await post(body(), {
+      "x-studio-qualified": "true",
+      "x-yula-reviewer": "founder",
+      "x-forwarded-for": "203.0.113.77",
+    });
+    expect(res.status).toBe(201);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
   });
 });
 
@@ -117,6 +167,40 @@ describe("rejections", () => {
     expect(res.status).toBe(403);
   });
 
+  it("rejects the retired public qualified boolean without storing a lead", async () => {
+    const res = await post(body({ qualified: true }));
+    expect(res.status).toBe(400);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it.each(["studioVerdict", "isQualified"])(
+    "rejects the forged public verdict alias %s without storing a lead",
+    async (field) => {
+      const res = await post(body({ [field]: "qualified" }));
+      expect(res.status).toBe(400);
+      expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+      expect((await pool.query("SELECT * FROM event_outbox")).rowCount).toBe(0);
+    },
+  );
+
+  it.each([
+    ["budgetBand", "OVER-400K"],
+    ["timing", " now "],
+    ["decisionRole", "owner"],
+    ["budgetBand", 150_000],
+  ])("rejects a forged Studio qualifier %s without storing personal data", async (field, value) => {
+    const res = await post(body({ [field]: value }));
+    expect(res.status).toBe(400);
+    await expect(res.json()).resolves.toEqual({ error: field });
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
+  it("rejects Studio-only qualifiers on another intent", async () => {
+    const res = await post(body({ intent: "press" }));
+    expect(res.status).toBe(400);
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+  });
+
   it("rate-limits a flood from one client", async () => {
     let limited = 0;
     for (let i = 0; i < 40; i += 1) {
@@ -129,7 +213,7 @@ describe("rejections", () => {
 
 describe("honest failure when storage is unavailable", () => {
   it("does not pretend to have captured the lead", async () => {
-    delete process.env.DATABASE_URL;
+    delete process.env.YULA_INTAKE_DATABASE_URL;
     const res = await post(body());
     expect(res.status).toBe(503);
     const json = (await res.json()) as { receiptId?: string };
@@ -202,9 +286,10 @@ describe("PII never reaches the logs", () => {
     vi.spyOn(console, "error").mockImplementation((...args: unknown[]) => {
       errors.push(args.map((a) => (typeof a === "string" ? a : inspect(a))).join(" "));
     });
-    process.env.DATABASE_URL = testDatabaseUrl(HOSTILE);
     const { resetPool } = await import("@/server/db");
-    await resetPool();
+    await resetPool("intake");
+    process.env.YULA_DATABASE_SCHEMA = HOSTILE;
+    process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(HOSTILE);
 
     const res = await post(body({ email: "kaan.kocak@example.com", message: "these are secret plans" }));
     expect(res.status).toBe(503);
@@ -215,7 +300,9 @@ describe("PII never reaches the logs", () => {
     expect(logged).not.toContain("these are secret plans");
     expect(logged).not.toContain("Kaan");
 
-    await resetPool();
+    await resetPool("intake");
+    process.env.YULA_DATABASE_SCHEMA = SCHEMA;
+    process.env.YULA_INTAKE_DATABASE_URL = localLoginUrl(SCHEMA);
     await pool.query(`DROP SCHEMA IF EXISTS ${HOSTILE} CASCADE`);
   });
 });
@@ -240,6 +327,18 @@ describe("the collection surface is closed by default", () => {
       expect((await post(body())).status).toBe(503);
     }
     process.env.LEADS_ENABLED = "1";
+  });
+});
+
+describe("the Studio API surface is closed by default", () => {
+  it("refuses a direct Studio submission when STUDIO_ENABLED is unset", async () => {
+    delete process.env.STUDIO_ENABLED;
+    const res = await post(body());
+    expect(res.status).toBe(503);
+    await expect(res.json()).resolves.toEqual({
+      error: "studio_not_accepting_submissions",
+    });
+    expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
   });
 });
 

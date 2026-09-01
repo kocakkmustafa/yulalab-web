@@ -8,10 +8,10 @@ import { ArrowUpRight, Menu, X } from "@/components/common/icons";
 import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
-type NavKey = "home" | "manifesto" | "transparency" | "projects" | "notes" | "contact";
+type NavKey = "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
 type NavItem = {
   key: NavKey;
-  href: "/" | "/manifesto" | "/transparency" | "/projects" | "/notes" | "/contact";
+  href: "/" | "/manifesto" | "/transparency" | "/projects" | "/studio" | "/notes" | "/contact";
 };
 
 const NAV: NavItem[] = [
@@ -19,15 +19,17 @@ const NAV: NavItem[] = [
   { key: "manifesto", href: "/manifesto" },
   { key: "transparency", href: "/transparency" },
   { key: "projects", href: "/projects" },
+  { key: "studio", href: "/studio" },
   { key: "notes", href: "/notes" },
   { key: "contact", href: "/contact" },
 ];
 
-export function Header() {
+export function Header({ studioEnabled }: { studioEnabled: boolean }) {
   const t = useTranslations("header");
   const locale = useLocale();
   const pathname = usePathname();
   const stripped = stripLocale(pathname, locale);
+  const navigation = studioEnabled ? NAV : NAV.filter((item) => item.key !== "studio");
 
   const [scrolled, setScrolled] = useState(false);
   const [mobile, setMobile] = useState(false);
@@ -63,8 +65,8 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7 text-[13.5px] text-ink-200">
-            {NAV.map((n) => {
+          <nav className="hidden lg:flex items-center gap-7 text-[13.5px] text-ink-200">
+            {navigation.map((n) => {
               const isActive =
                 (n.href === "/" && stripped === "/") ||
                 (n.href !== "/" && stripped.startsWith(n.href));
@@ -94,7 +96,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMobile(true)}
-            className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
+            className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
             aria-label={t("menuOpen")}
           >
             <Menu size={18} />
@@ -108,7 +110,7 @@ export function Header() {
         aria-hidden={!mobile}
         inert={!mobile}
         className={
-          "fixed inset-0 z-50 md:hidden transition-opacity duration-400 " +
+          "fixed inset-0 z-50 lg:hidden transition-opacity duration-400 " +
           (mobile ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0")
         }
         style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -140,7 +142,7 @@ export function Header() {
             </button>
           </div>
           <nav className="mt-10 flex flex-col gap-2">
-            {NAV.map((n) => (
+            {navigation.map((n) => (
               <Link
                 key={n.href}
                 href={n.href}

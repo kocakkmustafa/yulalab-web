@@ -6,6 +6,7 @@ import { CURRENT_NOTICE_VERSION } from "@/lib/consent";
 
 const INTENTS = ["product", "studio", "partnership", "press", "privacy"] as const;
 type Intent = (typeof INTENTS)[number];
+const NON_STUDIO_INTENTS = INTENTS.filter((intent) => intent !== "studio");
 
 type State =
   | { kind: "idle" }
@@ -39,6 +40,7 @@ type State =
 export function LeadForm({
   products,
   mailConfigured,
+  studioEnabled,
 }: {
   products: { slug: string; name: string }[];
   /**
@@ -53,12 +55,23 @@ export function LeadForm({
    * disagree.
    */
   mailConfigured: boolean;
+  /**
+   * Server-owned Studio publication truth. When false, the general contact
+   * form must neither advertise nor submit the Studio intent: the dedicated
+   * Studio API sink deliberately remains fail-closed during rollback.
+   */
+  studioEnabled: boolean;
 }) {
   const t = useTranslations("leadForm");
   const locale = useLocale() as "tr" | "en";
   const id = useId();
-  const [intent, setIntent] = useState<Intent>("studio");
+  const intents = studioEnabled ? INTENTS : NON_STUDIO_INTENTS;
+  const [intent, setIntent] = useState<Intent>(studioEnabled ? "studio" : "product");
   const [state, setState] = useState<State>({ kind: "idle" });
+  // A server prop is stable for this rendered page, but keeping the selected
+  // value fail-closed also protects hydration/re-render boundaries: a stale
+  // client value cannot post Studio after the server disabled it.
+  const effectiveIntent = !studioEnabled && intent === "studio" ? "product" : intent;
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,7 +92,7 @@ export function LeadForm({
     const payload: Record<string, unknown> = {
       name: String(data.get("name") ?? "").trim(),
       email: String(data.get("email") ?? "").trim(),
-      intent,
+      intent: effectiveIntent,
       message: String(data.get("message") ?? "").trim(),
       locale,
       // Read from the field, never asserted. Hardcoding `true` here is
@@ -99,7 +112,7 @@ export function LeadForm({
     const slug = String(data.get("productSlug") ?? "");
     // Only for a product intent: the database rejects the pair otherwise,
     // and a routing rule must never read a slug nobody asked about.
-    if (intent === "product" && slug) payload.productSlug = slug;
+    if (effectiveIntent === "product" && slug) payload.productSlug = slug;
 
     try {
       const response = await fetch("/api/leads", {
@@ -171,10 +184,13 @@ export function LeadForm({
           id={`${id}-intent`}
           name="intent"
           className={field}
-          value={intent}
-          onChange={(e) => setIntent(e.target.value as Intent)}
+          value={effectiveIntent}
+          onChange={(e) => {
+            const value = e.target.value as Intent;
+            setIntent(!studioEnabled && value === "studio" ? "product" : value);
+          }}
         >
-          {INTENTS.map((value) => (
+          {intents.map((value) => (
             <option key={value} value={value}>
               {t(`intents.${value}`)}
             </option>
@@ -182,7 +198,7 @@ export function LeadForm({
         </select>
       </div>
 
-      {intent === "product" ? (
+      {effectiveIntent === "product" ? (
         <div>
           <label className={label} htmlFor={`${id}-product`}>
             {t("product")}

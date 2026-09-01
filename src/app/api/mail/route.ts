@@ -24,12 +24,12 @@ export async function GET(request: Request): Promise<Response> {
   if (!authorisedByCronSecret(request)) {
     return NextResponse.json({ drained: null, reason: "unauthorized" }, { status: 401 });
   }
-  if (!isDatabaseConfigured()) {
+  if (!isDatabaseConfigured("mail")) {
     return NextResponse.json({ drained: null, reason: "storage_unavailable" }, { status: 503 });
   }
 
   try {
-    const result = await drainOutbox(getPool(), mailTransport());
+    const result = await drainOutbox(getPool("mail"), mailTransport());
     if (result.aborted || (result.dead ?? 0) > 0) {
       /* A non-zero `dead` count means rows exhausted every retry: people who
          will never receive a receipt, and nothing will ever try again. That

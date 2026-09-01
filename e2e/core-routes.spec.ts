@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 // TR is the root locale (no prefix), EN is served under /en — see
 // src/i18n/routing.ts ("as-needed" localePrefix). Every route here must
@@ -72,18 +73,236 @@ test("homepage EN renders the product-lab identity", async ({ page }) => {
   await expect(page.locator("body")).not.toContainText(/venture studio/i);
 });
 
-test("unknown routes are noindex and never publish localhost social metadata", async ({ page }) => {
-  const response = await page.goto("/__yula_missing_route__", {
-    waitUntil: "domcontentloaded",
-  });
-  expect(response?.status()).toBe(404);
-  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/i);
-  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
-    "content",
-    /^https:\/\/yulalab\.com\/opengraph-image/,
-  );
+const MISSING_ROUTE_CASES = [
+  {
+    locale: "tr",
+    path: "/__yula_missing_route__",
+    lang: "tr",
+    title: "Sayfa bulunamadı.",
+    home: "Ana sayfa",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    locale: "en",
+    path: "/en/__yula_missing_route__",
+    lang: "en",
+    title: "Page not found.",
+    home: "Home",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+] as const;
 
-  const socialImage = await page.request.get("/opengraph-image");
+const MISSING_ROUTE_VIEWPORTS = [
+  { label: "mobile", width: 390, height: 844 },
+  { label: "desktop", width: 1280, height: 720 },
+] as const;
+
+for (const localeCase of MISSING_ROUTE_CASES) {
+  for (const viewport of MISSING_ROUTE_VIEWPORTS) {
+    test(`locale-aware 404 ${localeCase.locale} ${viewport.label}`, async ({ page }, testInfo) => {
+      await page.setViewportSize(viewport);
+      await page.route("**/_vercel/insights/script.js", async (route) => {
+        const requestUrl = new URL(route.request().url());
+        if (!["127.0.0.1", "localhost"].includes(requestUrl.hostname)) {
+          await route.continue();
+          return;
+        }
+        await route.fulfill({
+          status: 200,
+          contentType: "application/javascript; charset=utf-8",
+          body: "globalThis.va = globalThis.va || function () {};",
+        });
+      });
+
+      const expectedTopLevel404Console: string[] = [];
+      const unexpectedConsoleErrors: string[] = [];
+      const expectedTopLevel404Responses: string[] = [];
+      const unexpectedHttpResponses: string[] = [];
+      const failedRequests: string[] = [];
+      page.on("console", (message) => {
+        if (message.type() !== "error") return;
+        const locationUrl = message.location().url;
+        const locationPath = locationUrl ? new URL(locationUrl).pathname : "";
+        if (
+          message.text() ===
+            "Failed to load resource: the server responded with a status of 404 (Not Found)" &&
+          locationPath === localeCase.path
+        ) {
+          expectedTopLevel404Console.push(message.text());
+          return;
+        }
+        unexpectedConsoleErrors.push(`${locationUrl || "unknown"} ${message.text()}`);
+      });
+      page.on("response", (httpResponse) => {
+        if (httpResponse.status() < 400) return;
+        const request = httpResponse.request();
+        const responseUrl = new URL(httpResponse.url());
+        const summary = `${httpResponse.status()} ${request.method()} ${request.resourceType()} ${responseUrl.pathname}`;
+        if (
+          httpResponse.status() === 404 &&
+          request.method() === "GET" &&
+          request.isNavigationRequest() &&
+          request.resourceType() === "document" &&
+          responseUrl.pathname === localeCase.path
+        ) {
+          expectedTopLevel404Responses.push(summary);
+          return;
+        }
+        unexpectedHttpResponses.push(summary);
+      });
+      page.on("requestfailed", (request) => {
+        failedRequests.push(`${request.method()} ${request.url()} ${request.failure()?.errorText}`);
+      });
+
+      const response = await page.goto(localeCase.path, { waitUntil: "load" });
+      expect(response?.status()).toBe(404);
+      await expect(page.locator("html")).toHaveAttribute("lang", localeCase.lang);
+      await expect(page.getByRole("heading", { name: localeCase.title })).toBeVisible();
+      await expect(
+        page.getByRole("main").getByRole("link", { name: localeCase.home, exact: true }),
+      ).toBeVisible();
+      await expect(
+        page.locator('meta[name="robots"][content*="noindex"][content*="nofollow"]'),
+      ).toHaveAttribute(
+        "content",
+        /(?=.*noindex)(?=.*nofollow)/i,
+      );
+      await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+        "href",
+        localeCase.canonical,
+      );
+      await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+        "content",
+        localeCase.ogLocale,
+      );
+      await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+        "content",
+        new RegExp(localeCase.title.replace(".", "\\."), "i"),
+      );
+      await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+        "content",
+        localeCase.canonical,
+      );
+      await expect(page.locator('meta[property="og:image"]')).toHaveAttribute(
+        "content",
+        /^https:\/\/yulalab\.com\/opengraph-image/,
+      );
+
+      const fit = await page.evaluate(() => ({
+        innerWidth: window.innerWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+      }));
+      expect(fit.scrollWidth).toBeLessThanOrEqual(fit.innerWidth + 1);
+
+      const pageEntrance = page.locator(".page-enter").first();
+      await pageEntrance.evaluate(async (element) => {
+        await Promise.allSettled(element.getAnimations().map((animation) => animation.finished));
+      });
+      const accessibility = await new AxeBuilder({ page })
+        .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+        .analyze();
+      expect(
+        accessibility.violations.filter((violation) =>
+          ["serious", "critical"].includes(violation.impact ?? ""),
+        ),
+      ).toEqual([]);
+      expect(expectedTopLevel404Console).toHaveLength(1);
+      expect(expectedTopLevel404Responses).toEqual([
+        `404 GET document ${localeCase.path}`,
+      ]);
+      expect(unexpectedConsoleErrors).toEqual([]);
+      expect(unexpectedHttpResponses).toEqual([]);
+      expect(failedRequests).toEqual([]);
+
+      await page.screenshot({
+        path: testInfo.outputPath(`${localeCase.locale}-${viewport.label}.png`),
+        fullPage: true,
+      });
+    });
+  }
+}
+
+const DYNAMIC_MISSING_ROUTE_CASES = [
+  {
+    label: "project tr",
+    path: "/projects/__missing_product__",
+    lang: "tr",
+    heading: "Sayfa bulunamadı.",
+    pageTitle: "Sayfa bulunamadı. · YULA Lab",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    label: "project en",
+    path: "/en/projects/__missing_product__",
+    lang: "en",
+    heading: "Page not found.",
+    pageTitle: "Page not found. · YULA Lab",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+  {
+    label: "case study tr",
+    path: "/case-studies/__missing_case__",
+    lang: "tr",
+    heading: "Sayfa bulunamadı.",
+    pageTitle: "Sayfa bulunamadı. · YULA Lab",
+    canonical: "https://yulalab.com",
+    ogLocale: "tr_TR",
+  },
+  {
+    label: "case study en",
+    path: "/en/case-studies/__missing_case__",
+    lang: "en",
+    heading: "Page not found.",
+    pageTitle: "Page not found. · YULA Lab",
+    canonical: "https://yulalab.com/en",
+    ogLocale: "en_US",
+  },
+] as const;
+
+for (const routeCase of DYNAMIC_MISSING_ROUTE_CASES) {
+  test(`locale-aware dynamic 404 ${routeCase.label}`, async ({ page }) => {
+    const response = await page.goto(routeCase.path, { waitUntil: "load" });
+
+    expect(response?.status()).toBe(404);
+    await expect(page.locator("html")).toHaveAttribute("lang", routeCase.lang);
+    await expect(page.getByRole("heading", { name: routeCase.heading })).toBeVisible();
+    await expect(page).toHaveTitle(routeCase.pageTitle);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      "href",
+      routeCase.canonical,
+    );
+    await expect(
+      page.locator('meta[name="robots"][content*="noindex"][content*="nofollow"]'),
+    ).toHaveAttribute("content", /(?=.*noindex)(?=.*nofollow)/i);
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      routeCase.heading,
+    );
+    await expect(page.locator('meta[property="og:locale"]')).toHaveAttribute(
+      "content",
+      routeCase.ogLocale,
+    );
+    await expect(page.locator('meta[property="og:url"]')).toHaveAttribute(
+      "content",
+      routeCase.canonical,
+    );
+  });
+}
+
+test("unsupported locale fails closed before locale rendering", async ({ request }) => {
+  const response = await request.get("/fr/__yula_missing_route__", { maxRedirects: 0 });
+  expect(response.status()).toBe(404);
+  expect(response.headers().location).toBeUndefined();
+  expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
+  expect(await response.text()).toBe("");
+});
+
+test("404 social image is a real canonical PNG", async ({ request }) => {
+  const socialImage = await request.get("/opengraph-image");
   expect(socialImage.ok()).toBe(true);
   expect(socialImage.headers()["content-type"]).toContain("image/png");
 });
@@ -108,4 +327,119 @@ test("language switcher moves between TR and EN on the same page", async ({
   const switchToEn = page.getByRole("button", { name: /switch to en/i });
   await switchToEn.click();
   await expect(page).toHaveURL(/\/en\/manifesto$/);
+});
+
+test("production locale routing has bounded canonical redirects", async ({ request }) => {
+  for (const host of ["127.0.0.1:4173", "localhost:4173"]) {
+    const origin = `http://${host}`;
+
+    const contact = await request.get(`${origin}/contact`, { maxRedirects: 0 });
+    expect(contact.status(), `${host}/contact redirected to itself`).toBe(200);
+
+    const studio = await request.get(
+      `${origin}/studio?returnTo=%2F%2Fevil.example%2Fstudio`,
+      { maxRedirects: 0 },
+    );
+    expect(studio.status()).toBe(307);
+    expect(studio.headers().location).toBe("/contact");
+    const studioLocation = new URL(studio.headers().location!, origin);
+    expect(studioLocation.origin).toBe(origin);
+    expect(studioLocation.pathname).toBe("/contact");
+    expect(studioLocation.hostname).not.toBe("evil.example");
+
+    const englishContact = await request.get(`${origin}/en/contact`, { maxRedirects: 0 });
+    expect(englishContact.status()).toBe(200);
+
+    const englishStudio = await request.get(`${origin}/en/studio`, { maxRedirects: 0 });
+    expect(englishStudio.status()).toBe(307);
+    expect(englishStudio.headers().location).toBe("/en/contact");
+    const englishLocation = new URL(englishStudio.headers().location!, origin);
+    expect(englishLocation.origin).toBe(origin);
+    expect(englishLocation.pathname).toBe("/en/contact");
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact", "/contact"],
+      ["/tr/studio", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, { maxRedirects: 0 });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(canonical);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("");
+    }
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact?proof=1", "/contact"],
+      ["/tr/studio?proof=1", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, {
+        maxRedirects: 0,
+      });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(`${canonical}?proof=1`);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("?proof=1");
+    }
+
+    for (const [prefixed, canonical] of [
+      ["/tr/contact?proof=spoof", "/contact"],
+      ["/tr/studio?proof=spoof", "/studio"],
+    ] as const) {
+      const response = await request.get(`${origin}${prefixed}`, {
+        headers: { "x-next-intl-locale": "tr" },
+        maxRedirects: 0,
+      });
+      expect(response.status()).toBe(307);
+      expect(response.headers().location).toBe(`${canonical}?proof=spoof`);
+      const location = new URL(response.headers().location!, origin);
+      expect(location.origin).toBe(origin);
+      expect(location.pathname).toBe(canonical);
+      expect(location.search).toBe("?proof=spoof");
+    }
+
+    for (const edgePath of [
+      "/tr/%2F%2Fevil.example",
+      "/tr/%252F%252Fevil.example",
+      "/tr/%5Cevil.example",
+      "/tr//evil.example",
+    ]) {
+      const response = await request.get(`${origin}${edgePath}`, {
+        maxRedirects: 0,
+      });
+      expect([307, 308, 400]).toContain(response.status());
+
+      const rawLocation = response.headers().location;
+      if (response.status() === 400) {
+        expect(rawLocation).toBeUndefined();
+      } else {
+        expect(rawLocation).toBeDefined();
+        expect(rawLocation!.startsWith("//")).toBe(false);
+        expect(new URL(rawLocation!, origin).origin).toBe(origin);
+      }
+    }
+  }
+
+  for (const bypassPath of [
+    "/api/leads",
+    "/robots.txt",
+    "/sitemap.xml",
+    "/opengraph-image",
+    "/asset.example.js",
+  ]) {
+    const response = await request.get(`http://127.0.0.1:4173${bypassPath}`, {
+      maxRedirects: 0,
+    });
+    expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
+    expect(response.headers().location).toBeUndefined();
+  }
+
+  const invalidLocale = await request.get("http://127.0.0.1:4173/fr/contact", {
+    maxRedirects: 0,
+  });
+  expect(invalidLocale.status()).toBe(404);
+  expect(invalidLocale.headers().location).toBeUndefined();
 });

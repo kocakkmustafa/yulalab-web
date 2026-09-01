@@ -61,9 +61,9 @@ describe("a stat backed by a claim", () => {
     expect(screen.queryByText(new RegExp(`verified ${claim.verifiedAt}`))).toBeNull();
   });
 
-  it("marks BOTH figures the claim covers", () => {
+  it("marks all three figures the claim covers", () => {
     renderFor("burunfarki", dayAfterExpiry(claim.expiresAt));
-    expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(2);
+    expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(3);
   });
 });
 
@@ -161,21 +161,19 @@ describe("resolving the right claim, not just any claim", () => {
   });
 });
 
-describe("a stat with no claim behind it", () => {
+describe("a genuinely unsourced stat", () => {
   it("renders plainly, with no invented provenance", () => {
-    const { record } = product("burunfarki");
-    const claim = record.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
-    renderFor("burunfarki", onExpiryDay(claim.expiresAt));
-    const races = screen.getByText("13.587").closest("div")!.parentElement!;
-    expect(races.textContent).not.toMatch(/verified/i);
+    const { config } = product("lifeos");
+    const algorithms = config.stats.find((stat) => stat.value === "9+")!;
+    expect(algorithms.claimId).toBeUndefined();
+    renderFor("lifeos", new Date("2026-08-25T12:00:00+03:00"));
+    const card = screen.getByText("9+").closest("div")!.parentElement!;
+    expect(card.textContent).not.toMatch(/verified/i);
   });
 
   it("still renders the value", () => {
-    const { record } = product("burunfarki");
-    const claim = record.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
-    renderFor("burunfarki", onExpiryDay(claim.expiresAt));
-    expect(screen.getByText("13.587")).toBeTruthy();
-    expect(screen.getByText("130.930")).toBeTruthy();
+    renderFor("lifeos", new Date("2026-08-25T12:00:00+03:00"));
+    expect(screen.getByText("9+")).toBeTruthy();
   });
 });
 
@@ -199,7 +197,7 @@ describe("empty and degraded cases", () => {
         labels={LABELS}
       />,
     );
-    expect(screen.getByText("~%61")).toBeTruthy();
+    expect(screen.getByText("~%62")).toBeTruthy();
     expect(screen.queryByText(/verified/i)).toBeNull();
   });
 });

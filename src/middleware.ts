@@ -31,6 +31,15 @@ export default function middleware(req: NextRequest) {
   if (isMetadataRoute(req.nextUrl.pathname)) {
     return NextResponse.next();
   }
+
+  const firstSegment = req.nextUrl.pathname.split("/")[1];
+  if (
+    /^[a-z]{2}$/.test(firstSegment) &&
+    !routing.locales.some((locale) => locale === firstSegment)
+  ) {
+    return new NextResponse(null, { status: 404 });
+  }
+
   return intl(req);
 }
 

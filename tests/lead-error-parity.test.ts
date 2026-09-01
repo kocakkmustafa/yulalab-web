@@ -1,7 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { errorKey } from "@/components/contact/LeadForm";
+import { studioErrorKey } from "@/components/studio/StudioApplication";
+
+// Error-envelope parity exercises StudioApplication's exported mapper, not
+// Next's router. Mock only the locale-aware navigation adapter so the actual
+// component module still loads and the mapper cannot drift behind a duplicate.
+vi.mock("@/i18n/navigation", () => ({ Link: "a" }));
 
 /**
  * Ties the form's error messages to the reasons the route actually returns.
@@ -17,6 +23,7 @@ const messages = ["tr", "en"].map((locale) => ({
   locale,
   copy: JSON.parse(readFileSync(path.resolve(root, `messages/${locale}.json`), "utf8")) as {
     leadForm: { errors: Record<string, string> };
+    studio: { form: { errors: Record<string, string> } };
   },
 }));
 
@@ -55,6 +62,25 @@ describe("every rejection a person can act on has its own message", () => {
       for (const { locale, copy } of messages) {
         expect(copy.leadForm.errors[key], `missing ${locale} copy for ${key}`).toBeTruthy();
       }
+    }
+  });
+});
+
+describe("the Studio form shares the API error envelope", () => {
+  const cases = [
+    ["email", 400, "email"],
+    ["message", 400, "problem-long"],
+    ["studio_not_accepting_submissions", 503, "closed"],
+    ["unknown_backend_detail", 400, "server"],
+  ] as const;
+
+  it.each(cases)("maps API error %s at status %s to %s", (error, status, key) => {
+    expect(studioErrorKey(error, status)).toBe(key);
+  });
+
+  it.each(cases)("has localized copy for the %s mapping", (_error, _status, key) => {
+    for (const { locale, copy } of messages) {
+      expect(copy.studio.form.errors[key], `missing ${locale} Studio copy for ${key}`).toBeTruthy();
     }
   });
 });

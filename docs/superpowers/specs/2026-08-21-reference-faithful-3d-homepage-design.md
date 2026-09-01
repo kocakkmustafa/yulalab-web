@@ -173,7 +173,47 @@ This addendum supersedes the earlier beat descriptions where the final reference
 - **VISION → SERVICE:** a close-up Y mask and noise-driven portal render into a capped 512/384/256 offscreen target with zero MSAA. It reveals four sine-bent SERVICE media panels rather than hard-cutting to isolated value cards.
 - **Outro:** the physical Y recedes and fades. A giant solid white screen-space `YULA` wordmark replaces the early outline/collapse concept, followed by contact, trust and legal content over the living grid.
 - **Responsive outro:** 390x667/844 phones, 768/900px tablets and 720/768px-high desktops maintain at least a measured six-pixel wordmark-to-CTA separation while preserving the reference scale.
-- **Frame ownership:** camera and scene lifecycle updates precede panel uniforms, the portal FBO renders after those uniforms, and one positive-priority root compositor presents the final frame.
+- **Frame ownership:** lifecycle/readiness (`-100`) and world theme (`-90`) updates run first; camera (`-50`) precedes service-panel uniforms (`-45`), then the portal FBO renders (`-40`). No positive-priority callback takes over the root render loop: R3F's automatic root render presents the final frame after those ordered preparation passes.
 - **Performance/fallback:** DPR is capped at 1.75, transmission and FBO resolution are tier-bounded, media is lazy, and static/reduced/software paths run neither Canvas nor the immersive scroll RAF.
 
 The final implementation remains clean-room: no reference source, private media, font or proprietary animation asset is included.
+
+## 10. Opening correction addendum — 2026-08-22
+
+**Status:** Approved by the founder's instruction to inspect the live site and correct the remaining opening and visual mismatches.
+
+Live comparison against `https://alche.studio/` exposed three gaps that the earlier implementation addendum did not close:
+
+1. The session-storage shortcut skips the architectural intro on later reloads, while the reference establishes its identity on every fresh document load.
+2. The loader fades while both its SVG Y and the live WebGL Y are visible, producing a double-glyph handoff instead of the reference's bright refractive wipe.
+3. The final opening frame gives the marketing statement almost half the viewport and offsets the Y into it. The reference instead centers the physical monogram over a full-width wordmark and keeps supporting information in restrained peripheral panels.
+
+The corrective design is therefore binding:
+
+- every non-reduced, non-compact, WebGL-capable fresh homepage document load runs the intro; capture mode can still freeze or skip it deterministically;
+- the intro progresses through thin construction lines, resolved glass, a short white/chromatic refractive burst, then a late opaque-to-transparent handoff after Canvas readiness;
+- the hero's physical Y is centered and slightly smaller; the existing world-space `YULA` wordmark remains the dominant typographic plane behind it;
+- the canonical hero statement, description and product counts remain visible semantic DOM, but move to a compact right-side lab-status panel rather than competing with the monogram;
+- technical material labels use only real constants already present in the renderer (`IOR 1.35`, active tier, eight-product count); no fake telemetry is introduced;
+- the homepage header loses its heavy hero divider and uses a wordmark treatment closer to the reference while retaining locale, 2D and sound controls;
+- mobile preserves the same hierarchy with a separate stacked composition and must not place the semantic panel under the centered Y.
+
+No reference source code, model, texture, shader, font or private media is copied. The implementation continues to use YULA's own geometry, registry data and clean-room shaders.
+
+## 11. Full-journey visual correction addendum — 2026-08-22
+
+The opening correction must not leave known visual defects in later beats. A live, deterministic checkpoint audit found that the total scroll length already matches the reference closely; the remaining mismatch is stage ownership, composition and handoff quality rather than journey duration.
+
+The following corrections are therefore part of the same approved pass:
+
+- **Single stage ownership:** semantic full-screen stages do not crossfade through a shared 50% frame. The outgoing DOM layer fades to zero before the incoming layer becomes visible; the persistent WebGL world supplies continuity across the narrow neutral handoff. Product and value slots use the same exclusive ownership rule so adjacent panels never occupy the same coordinates at equal opacity.
+- **Single scroll owner:** the desktop Proof Ledger cannot scroll independently. The main document remains the sole wheel/trackpad owner, while proof content is compacted to fit its stage and remains available in the static/fallback document.
+- **Stable first frame:** hero and header remain visually covered until the Canvas has produced a ready frame. The opening renderer continues refreshing while the immersive view is visible so a demand-loop pause cannot expose a blank compositor frame.
+- **Responsive opening:** the centered Y has a short-phone pose in addition to the existing width/aspect pose. At `390x667` and `320x700`, it cannot collide with the semantic copy or notice; at larger phones it retains the stronger reference-scale silhouette.
+- **Crossing cleanup:** proof controls disappear with the proof stage, the white crossing cannot retain stale dark-stage UI, and the close camera move must not crop the Y into an accidental top/right slab.
+- **Mission and vision separation:** giant manifesto headings never share a visible frame. Their background treatment stays quiet enough for the physical light-to-dark passage to remain legible.
+- **Portal integrity:** SERVICE media is masked without a visible rectangular texture boundary. Portal opacity and the service scene handoff are feathered within the Y silhouette.
+- **Values legibility:** the service sphere is reduced and dimmed behind copy; value panels use an opaque-enough glass surface and exclusive slot transitions, including the `0.895` boundary.
+- **Closing breathing room:** the final wordmark is slightly reduced/repositioned where required to preserve a deliberate wordmark-to-footer gap rather than the previous minimum collision-only threshold.
+
+These corrections preserve the registry-derived copy, lifecycle honesty, reduced-motion/static documents, one persistent Canvas, quality tiers and clean-room implementation constraint.
