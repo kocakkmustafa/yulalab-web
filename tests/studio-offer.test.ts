@@ -456,11 +456,9 @@ describe("a studio application is routed as one", () => {
    * routing; there was none, and nothing failed — a default branch is the
    * quietest place for a requirement to go missing.
    */
-  it("labels studio applications, and separates qualified ones", async () => {
+  it("keeps anonymous studio applications on the ordinary studio route", async () => {
     const { routeFor } = await import("@/server/leads");
     expect(routeFor("studio")).toBe("studio");
-    expect(routeFor("studio", "qualified")).toBe("studio-qualified");
-    expect(routeFor("studio", "unqualified")).toBe("studio");
     // The other intents keep their labels: this is an addition, not a rewire.
     expect(routeFor("press")).toBe("press");
     expect(routeFor("privacy")).toBe("privacy");

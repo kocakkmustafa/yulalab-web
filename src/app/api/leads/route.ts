@@ -6,9 +6,7 @@ import {
   LIMITS,
   isBudgetBand,
   isDecisionRole,
-  isQualified,
   isTiming,
-  type StudioApplication,
 } from "@/lib/studio";
 import { leadsEnabled } from "@/server/lead-surface";
 import { getPool, isDatabaseConfigured } from "@/server/db";
@@ -62,7 +60,8 @@ const ALLOWED_FIELDS = new Set([
   // honoured. Sending it is a loud 400.
   "consent",
   "website",
-  // Studio only. These are closed answers; the server derives the verdict.
+  // Studio only. These are closed self-report answers for later human review;
+  // they are not an authenticity signal and never mint a trusted metric.
   "budgetBand",
   "timing",
   "decisionRole",
@@ -148,22 +147,10 @@ function parse(input: unknown): Parsed {
     return { ok: false, reason: "studio qualifiers" };
   }
 
-  let studioVerdict: "qualified" | "unqualified" | undefined;
   if (hasStudioQualifiers) {
     if (!isBudgetBand(body.budgetBand)) return { ok: false, reason: "budgetBand" };
     if (!isTiming(body.timing)) return { ok: false, reason: "timing" };
     if (!isDecisionRole(body.decisionRole)) return { ok: false, reason: "decisionRole" };
-    const application: StudioApplication = {
-      name,
-      email,
-      company: company || undefined,
-      problem: message,
-      budgetBand: body.budgetBand,
-      timing: body.timing,
-      decisionRole: body.decisionRole,
-      locale: body.locale,
-    };
-    studioVerdict = isQualified(application) ? "qualified" : "unqualified";
   }
 
   return {
@@ -174,7 +161,6 @@ function parse(input: unknown): Parsed {
       email,
       company: company || undefined,
       intent: body.intent as LeadIntent,
-      studioVerdict,
       productSlug: productSlug || undefined,
       message,
       locale: body.locale,

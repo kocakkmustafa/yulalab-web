@@ -93,6 +93,16 @@ describe("a valid submission", () => {
     const json = (await res.json()) as { receiptId: string };
     expect(json.receiptId).toMatch(/^YL-[0-9A-F]{8}$/);
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
+    expect((await pool.query(
+      `SELECT 1 FROM event_outbox
+        WHERE event_type = 'lead_internal_route'
+          AND payload_json->>'route' = 'studio-qualified'`,
+    )).rowCount).toBe(0);
   });
 
   it("returns the same receipt for a double submit and stores one lead", async () => {
@@ -100,6 +110,25 @@ describe("a valid submission", () => {
     const second = (await (await post(body())).json()) as { receiptId: string };
     expect(second.receiptId).toBe(first.receiptId);
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(1);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
+  });
+
+  it("ignores forged qualification headers and keeps valid self-report ordinary", async () => {
+    const res = await post(body(), {
+      "x-studio-qualified": "true",
+      "x-yula-reviewer": "founder",
+      "x-forwarded-for": "203.0.113.77",
+    });
+    expect(res.status).toBe(201);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route
+         FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
   });
 });
 
@@ -143,6 +172,16 @@ describe("rejections", () => {
     expect(res.status).toBe(400);
     expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
   });
+
+  it.each(["studioVerdict", "isQualified"])(
+    "rejects the forged public verdict alias %s without storing a lead",
+    async (field) => {
+      const res = await post(body({ [field]: "qualified" }));
+      expect(res.status).toBe(400);
+      expect((await pool.query("SELECT * FROM leads")).rowCount).toBe(0);
+      expect((await pool.query("SELECT * FROM event_outbox")).rowCount).toBe(0);
+    },
+  );
 
   it.each([
     ["budgetBand", "OVER-400K"],

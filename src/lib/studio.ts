@@ -200,17 +200,3 @@ export function qualificationSummary(
     line("decisionRole", application.decisionRole),
   ].join("\n");
 }
-
-/**
- * Whether an application is QUALIFIED for the studio conversation.
- *
- * Stated as a rule rather than judged case by case, because the roadmap's
- * acceptance gate counts qualified submissions — a count nobody can audit if
- * "qualified" means whatever the reader felt. Deliberately generous: this
- * decides routing, not worth.
- */
-export function isQualified(application: StudioApplication): boolean {
-  if (validateStudioApplication(application).length > 0) return false;
-  if (application.budgetBand === "under-50k" && application.timing === "exploring") return false;
-  return true;
-}

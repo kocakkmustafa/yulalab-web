@@ -471,24 +471,25 @@ describe("studio qualification at the API boundary", () => {
     }
   }
 
-  it("derives the qualified route from exact server-validated Studio enums", async () => {
+  it("stores valid anonymous Studio enums as an ordinary lead with no trusted numerator", async () => {
     const response = await postQualified({});
     expect(response.status).toBe(201);
     const { rows } = await pool.query(
       "SELECT payload_json->>'route' AS route FROM event_outbox WHERE event_type = 'lead_internal_route'",
     );
-    expect(rows).toEqual([{ route: "studio-qualified" }]);
+    expect(rows).toEqual([{ route: "studio" }]);
   });
 
-  it("security correction: binds one qualified metric row to one accepted Studio lead", async () => {
+  it("security correction: ignores a direct caller-supplied verdict and keeps retries ordinary", async () => {
     await pool.query(
       readFileSync(
         path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
         "utf8",
       ),
     );
-    const first = await createLead(pool, { ...VALID, studioVerdict: "qualified" }, { now: new Date("2026-08-25T10:00:00Z") });
-    const retry = await createLead(pool, { ...VALID, studioVerdict: "qualified" }, { now: new Date("2026-08-25T10:00:01Z") });
+    const forged = { ...VALID, studioVerdict: "qualified" } as typeof VALID;
+    const first = await createLead(pool, forged, { now: new Date("2026-08-25T10:00:00Z") });
+    const retry = await createLead(pool, forged, { now: new Date("2026-08-25T10:00:01Z") });
     expect(retry.receiptId).toBe(first.receiptId);
 
     const { rows } = await pool.query(
@@ -498,11 +499,14 @@ describe("studio qualification at the API boundary", () => {
         WHERE outbox.event_type = 'lead_internal_route'
           AND outbox.payload_json->>'route' = 'studio-qualified'`,
     );
-    expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ route: "studio-qualified", intent: "studio" });
+    expect(rows).toHaveLength(0);
+    expect((await pool.query(
+      `SELECT payload_json->>'route' AS route FROM event_outbox
+        WHERE event_type = 'lead_internal_route'`,
+    )).rows).toEqual([{ route: "studio" }]);
   });
 
-  it("security correction: database rejects a qualified route not bound to a Studio lead", async () => {
+  it("security correction: database keeps the trusted qualified route dormant", async () => {
     await pool.query(
       readFileSync(
         path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
@@ -511,7 +515,7 @@ describe("studio qualification at the API boundary", () => {
     );
     const { rows } = await pool.query(
       `INSERT INTO leads (name,email,intent,message,locale,dedupe_key,created_at)
-       VALUES ('Ada','ada@example.com','press','Press request','tr',$1,$2)
+       VALUES ('Ada','ada@example.com','studio','Studio request','tr',$1,$2)
        RETURNING id`,
       ["a".repeat(64), new Date("2026-08-25T11:00:00Z")],
     );
@@ -526,6 +530,51 @@ describe("studio qualification at the API boundary", () => {
         ],
       ),
     ).rejects.toThrow(/studio-qualified/i);
+  });
+
+  it("security correction: demotes pre-existing anonymous qualified rows without deleting audit history", async () => {
+    // Model a database that has rows from the pre-Design-A migration before
+    // the new dormant trigger is installed. Earlier tests may already have
+    // applied 0005 to this isolated schema, so remove only that test trigger.
+    await pool.query("DROP TRIGGER IF EXISTS event_outbox_bind_studio_qualified ON event_outbox");
+    const lead = (await pool.query(
+      `INSERT INTO leads (name,email,intent,message,locale,dedupe_key,created_at)
+       VALUES ('Ada','old@example.com','studio','Old anonymous Studio request','tr',$1,$2)
+       RETURNING id`,
+      ["b".repeat(64), new Date("2026-08-25T11:05:00Z")],
+    )).rows[0];
+    const before = (await pool.query(
+      `INSERT INTO event_outbox (event_type, aggregate_id, payload_json, created_at)
+       VALUES ('lead_internal_route',$1,$2,$3) RETURNING id`,
+      [
+        lead.id,
+        JSON.stringify({ route: "studio-qualified", intent: "studio", receiptId: "YL-OLD0000" }),
+        new Date("2026-08-25T11:05:00Z"),
+      ],
+    )).rows[0];
+
+    await pool.query(readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    ));
+
+    expect((await pool.query(
+      `SELECT id, payload_json->>'route' AS route FROM event_outbox WHERE id = $1`,
+      [before.id],
+    )).rows).toEqual([{ id: before.id, route: "studio" }]);
+  });
+
+  it("security correction: makes legacy demotion atomic and visible through FORCE RLS", () => {
+    const migration = readFileSync(
+      path.resolve(import.meta.dirname, "../db/migrations/0005_studio_acceptance_metric.sql"),
+      "utf8",
+    );
+    expect(migration).toMatch(/LOCK TABLE attributions, event_outbox IN ACCESS EXCLUSIVE MODE/i);
+    expect(migration).toMatch(/ALTER TABLE %I\.event_outbox NO FORCE ROW LEVEL SECURITY/i);
+    expect(migration).toMatch(/ALTER TABLE %I\.event_outbox FORCE ROW LEVEL SECURITY/i);
+    expect(migration).toMatch(/residual anonymous studio-qualified routes after demotion/i);
+    expect(migration).toMatch(/studio_application_qualified[^]*studio_application_submitted/i);
+    expect(migration).toMatch(/residual anonymous studio-qualified attributions after demotion/i);
   });
 
   it("security hardening: a pg_temp leads shadow cannot satisfy the qualified-route trigger", async () => {
@@ -602,18 +651,16 @@ describe("studio qualification at the API boundary", () => {
       },
     ]);
 
-    await createLead(
-      pool,
-      { ...VALID, studioVerdict: "qualified", email: "trigger-postflight@example.com" },
-      { now: new Date("2026-08-25T11:20:00Z") },
-    );
+    await createLead(pool, { ...VALID, email: "trigger-postflight@example.com" }, {
+      now: new Date("2026-08-25T11:20:00Z"),
+    });
     expect(
       (await pool.query(
         `SELECT 1 FROM event_outbox
           WHERE event_type = 'lead_internal_route'
             AND payload_json->>'route' = 'studio-qualified'`,
       )).rowCount,
-    ).toBe(1);
+    ).toBe(0);
   });
 
   it("security hardening: pg_temp cannot divert the target attribution correction", async () => {
