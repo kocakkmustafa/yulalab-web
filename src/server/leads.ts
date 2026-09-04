@@ -75,7 +75,7 @@ export function dedupeKey(input: Pick<LeadInput, "email" | "message" | "intent">
  * Where a given intent should land internally.
  *
  * A LABEL on the internal notification, not a mailbox: every internal mail
- * goes to the single LEADS_INTERNAL_ADDRESS. So a new value here routes
+ * goes to the single YULA_LEADS_INTERNAL_ADDRESS. So a new value here routes
  * attention, and cannot silently address mail to a box nobody reads.
  *
  * `studio` used to fall through to the general label. Public Studio answers

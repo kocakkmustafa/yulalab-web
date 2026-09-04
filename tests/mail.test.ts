@@ -10,6 +10,7 @@ import {
   DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
   DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
 } from "@/server/data-request-token";
+import { APPROVED_MAIL_IDENTITY, MAIL_IDENTITY_ENV } from "@/server/mail-identity";
 
 /**
  * The outbox consumer.
@@ -38,16 +39,19 @@ afterAll(async () => {
 
 beforeEach(async () => {
   await pool.query("TRUNCATE leads, event_outbox, data_requests CASCADE");
-  process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
+  process.env[MAIL_IDENTITY_ENV.fromEmail] = APPROVED_MAIL_IDENTITY.fromEmail;
+  process.env[MAIL_IDENTITY_ENV.fromName] = APPROVED_MAIL_IDENTITY.fromName;
+  process.env[MAIL_IDENTITY_ENV.replyToEmail] = APPROVED_MAIL_IDENTITY.replyToEmail;
+  process.env[MAIL_IDENTITY_ENV.internalAddress] = APPROVED_MAIL_IDENTITY.internalAddress;
   // A type is deliverable only once it has BOTH an address and its
   // templates, so the fixture has to supply them like a real deployment.
-  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
-  process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
+  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-cef2371a06014280857d0f17e3056305";
+  process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-d42d50b22fda48e49cfbb6ab373f420e";
+  process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-2ce67d70cec249aeab61577361a50572";
   process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
   process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = "test-only-data-request-secret-at-least-32-bytes";
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-934e79bac8f841dfb7066e169d8f4ffc";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-e9aeeaa9dc8949679777b61eed0f41dc";
 });
 
 let seq = 0;
@@ -247,7 +251,7 @@ describe("a verification row whose capability cannot be reconstructed", () => {
   });
 
   it("blocks an internal route with nowhere to route to", async () => {
-    delete process.env.LEADS_INTERNAL_ADDRESS;
+    delete process.env[MAIL_IDENTITY_ENV.internalAddress];
     const leadId = await queueReceipt();
     await pool.query(
       `INSERT INTO event_outbox (event_type, aggregate_id, payload_json)
@@ -257,6 +261,23 @@ describe("a verification row whose capability cannot be reconstructed", () => {
     const result = await drainOutbox(pool, transportThat("succeeds"));
     expect(result.blocked).toBe(1);
     expect(result.delivered).toBe(1); // the receipt still goes
+  });
+});
+
+describe("an event whose template id is not the approved container", () => {
+  it("never calls the provider or spends an attempt", async () => {
+    await queueReceipt();
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-other";
+    const transport = transportThat("succeeds");
+
+    const result = await drainOutbox(pool, transport);
+
+    expect(transport.sent).toHaveLength(0);
+    expect(result.blocked).toBe(1);
+    expect(result.missingConfig).toContain("INVALID_SENDGRID_TEMPLATE_LEAD_RECEIPT_TR");
+    const { rows } = await pool.query("SELECT attempts, delivered_at FROM event_outbox");
+    expect(rows[0].attempts).toBe(0);
+    expect(rows[0].delivered_at).toBeNull();
   });
 });
 
@@ -303,7 +324,7 @@ describe("what reaches the transport", () => {
       { now: new Date() },
     );
 
-    process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
+    process.env[MAIL_IDENTITY_ENV.internalAddress] = APPROVED_MAIL_IDENTITY.internalAddress;
     const transport = transportThat("succeeds");
     await drainOutbox(pool, transport);
 
@@ -421,12 +442,12 @@ describe("where an internal notification actually goes", () => {
        VALUES ('lead_internal_route', $1, '{"receiptId":"YL-1","route":"studio","intent":"studio"}'::jsonb)`,
       [leadId],
     );
-    process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
+    process.env[MAIL_IDENTITY_ENV.internalAddress] = APPROVED_MAIL_IDENTITY.internalAddress;
 
     const transport = transportThat("succeeds");
     await drainOutbox(pool, transport);
     const internal = transport.sent.find((m) => m.eventType === "lead_internal_route");
-    expect(internal?.to).toBe("studio@yulalab.com");
+    expect(internal?.to).toBe("yula@yulalab.com");
   });
 });
 

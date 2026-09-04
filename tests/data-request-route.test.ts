@@ -9,6 +9,7 @@ import {
   DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
   DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV,
 } from "@/server/data-request-token";
+import { APPROVED_MAIL_IDENTITY, MAIL_IDENTITY_ENV } from "@/server/mail-identity";
 
 const SCHEMA = "t_dsr_route";
 const ORIGIN = "https://yulalab.com";
@@ -21,6 +22,12 @@ const roleLoginUrl = (schema: string, username: string) => {
   url.username = username;
   return url.toString();
 };
+
+function configureMailIdentity() {
+  process.env[MAIL_IDENTITY_ENV.fromEmail] = APPROVED_MAIL_IDENTITY.fromEmail;
+  process.env[MAIL_IDENTITY_ENV.fromName] = APPROVED_MAIL_IDENTITY.fromName;
+  process.env[MAIL_IDENTITY_ENV.replyToEmail] = APPROVED_MAIL_IDENTITY.replyToEmail;
+}
 
 beforeAll(async () => {
   pool = new Pool({ connectionString: testDatabaseUrl(SCHEMA), max: 6 });
@@ -75,9 +82,11 @@ beforeEach(async () => {
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV];
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV];
   process.env.SENDGRID_API_KEY = "SG.test";
-  process.env.MAIL_FROM = "hello@yulalab.com";
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+  configureMailIdentity();
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+    "d-934e79bac8f841dfb7066e169d8f4ffc";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+    "d-e9aeeaa9dc8949679777b61eed0f41dc";
   process.env.DATA_REQUEST_CHALLENGE_PROVIDER = "turnstile";
   process.env.DATA_REQUEST_CHALLENGE_SECRET = "server-only-test-secret";
   process.env.DATA_REQUEST_CHALLENGE_HOSTNAME = "yulalab.com";
@@ -105,6 +114,8 @@ afterEach(async () => {
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV];
   delete process.env.SENDGRID_API_KEY;
   delete process.env.MAIL_FROM;
+  delete process.env.LEADS_INTERNAL_ADDRESS;
+  for (const key of Object.values(MAIL_IDENTITY_ENV)) delete process.env[key];
   delete process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR;
   delete process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN;
   delete process.env.DATA_REQUEST_CHALLENGE_PROVIDER;
@@ -161,15 +172,26 @@ describe("submitting", () => {
     expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(0);
   });
 
-  it("requires DB, keyring, provider, sender and both locale templates before writing", async () => {
+  it("requires DB, keyring, exact base identity and both locale templates before writing", async () => {
     const cases: Array<[string, () => void]> = [
       ["database", () => { delete process.env.YULA_INTAKE_DATABASE_URL; }],
       ["key id", () => { delete process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV]; }],
       ["key secret", () => { delete process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV]; }],
       ["provider", () => { delete process.env.SENDGRID_API_KEY; }],
-      ["sender", () => { delete process.env.MAIL_FROM; }],
+      ["sender", () => { delete process.env[MAIL_IDENTITY_ENV.fromEmail]; }],
+      ["sender name", () => { delete process.env[MAIL_IDENTITY_ENV.fromName]; }],
+      ["reply-to", () => { delete process.env[MAIL_IDENTITY_ENV.replyToEmail]; }],
+      ["invalid sender", () => { process.env[MAIL_IDENTITY_ENV.fromEmail] = "other@yulalab.com"; }],
+      ["invalid sender name", () => { process.env[MAIL_IDENTITY_ENV.fromName] = "Yula Lab"; }],
+      ["invalid reply-to", () => { process.env[MAIL_IDENTITY_ENV.replyToEmail] = "other@yulalab.com"; }],
       ["TR template", () => { delete process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR; }],
       ["EN template", () => { delete process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN; }],
+      ["invalid TR template", () => {
+        process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-other";
+      }],
+      ["invalid EN template", () => {
+        process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-other";
+      }],
     ];
 
     for (const [, remove] of cases) {
@@ -184,9 +206,11 @@ describe("submitting", () => {
       process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
       process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = "test-only-current-data-request-secret-32-bytes";
       process.env.SENDGRID_API_KEY = "SG.test";
-      process.env.MAIL_FROM = "hello@yulalab.com";
-      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+      configureMailIdentity();
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+        "d-934e79bac8f841dfb7066e169d8f4ffc";
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+        "d-e9aeeaa9dc8949679777b61eed0f41dc";
       const { resetPool } = await import("@/server/db");
       await resetPool("intake");
     }

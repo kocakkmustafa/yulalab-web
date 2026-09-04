@@ -8,6 +8,7 @@ import {
   DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
   DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
 } from "@/server/data-request-token";
+import { APPROVED_MAIL_IDENTITY, MAIL_IDENTITY_ENV } from "@/server/mail-identity";
 
 const original = { ...process.env };
 const localLoginUrl = (schema: string) => {
@@ -15,6 +16,12 @@ const localLoginUrl = (schema: string) => {
   url.username = process.env.USER ?? "postgres";
   return url.toString();
 };
+
+function configureMailIdentity() {
+  process.env[MAIL_IDENTITY_ENV.fromEmail] = APPROVED_MAIL_IDENTITY.fromEmail;
+  process.env[MAIL_IDENTITY_ENV.fromName] = APPROVED_MAIL_IDENTITY.fromName;
+  process.env[MAIL_IDENTITY_ENV.replyToEmail] = APPROVED_MAIL_IDENTITY.replyToEmail;
+}
 
 beforeEach(() => {
   vi.spyOn(console, "error").mockImplementation(() => {});
@@ -119,9 +126,9 @@ describe("when the scheduler actually calls it", () => {
       process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
       process.env.LEADS_ENABLED = "1";
       process.env.SENDGRID_API_KEY = "SG.key";
-      process.env.MAIL_FROM = "hello@yulalab.com";
-      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+      configureMailIdentity();
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-cef2371a06014280857d0f17e3056305";
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-d42d50b22fda48e49cfbb6ab373f420e";
       const fetchMock = vi.fn(async () => new Response("", { status: 202 }));
       vi.stubGlobal("fetch", fetchMock);
 
@@ -179,9 +186,11 @@ describe("when the scheduler actually calls it", () => {
       process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
       delete process.env.LEADS_ENABLED;
       process.env.SENDGRID_API_KEY = "SG.key";
-      process.env.MAIL_FROM = "hello@yulalab.com";
-      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+      configureMailIdentity();
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+        "d-934e79bac8f841dfb7066e169d8f4ffc";
+      process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+        "d-e9aeeaa9dc8949679777b61eed0f41dc";
       const fetchMock = vi.fn(async () => new Response("", { status: 202 }));
       vi.stubGlobal("fetch", fetchMock);
 
@@ -236,9 +245,9 @@ describe("a queue with rows nothing will ever retry", () => {
       process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
       process.env.LEADS_ENABLED = "1";
       process.env.SENDGRID_API_KEY = "SG.key";
-      process.env.MAIL_FROM = "hello@yulalab.com";
-      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+      configureMailIdentity();
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-cef2371a06014280857d0f17e3056305";
+      process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-d42d50b22fda48e49cfbb6ab373f420e";
       vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 202 })));
 
       const response = await GET(get("Bearer s3cret"));

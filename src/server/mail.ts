@@ -7,6 +7,11 @@ import {
   deriveDataRequestToken,
   tokenHashMatches,
 } from "@/server/data-request-token";
+import {
+  mailIdentityDiagnosticCodes,
+  resolveMailIdentity,
+  type MailIdentity,
+} from "@/server/mail-identity";
 
 /**
  * The outbox consumer.
@@ -155,7 +160,7 @@ interface OutboxRow {
  */
 const HAS_ADDRESS: Record<OutboxEventType, () => boolean> = {
   lead_receipt: () => true,
-  lead_internal_route: () => Boolean(process.env.LEADS_INTERNAL_ADDRESS?.trim()),
+  lead_internal_route: () => resolveMailIdentity().internalRoute.ready,
   data_request_verification: () => {
     try {
       dataRequestTokenKeyring();
@@ -171,7 +176,7 @@ const HAS_ADDRESS: Record<OutboxEventType, () => boolean> = {
  *
  * An address AND the templates it needs. Per TYPE rather than globally: the
  * missing internal-route template used to make the whole transport report
- * itself unconfigured, so setting LEADS_INTERNAL_ADDRESS — a small, low-risk
+ * itself unconfigured, so setting YULA_LEADS_INTERNAL_ADDRESS — a small, low-risk
  * change — silently stopped every customer receipt. A type that is missing
  * something is `blocked`: not sent, not stamped, and no attempt spent, so it
  * resumes the moment the variable is set.
@@ -208,14 +213,10 @@ export function missingTemplates(): string[] {
 
 export function dataRequestDeliveryMissingConfig(): string[] {
   const missing = dataRequestTokenKeyringMissing();
-  for (const key of [
-    "SENDGRID_API_KEY",
-    "MAIL_FROM",
-    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR",
-    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN",
-  ]) {
-    if (!process.env[key]?.trim()) missing.push(key);
-  }
+  if (!process.env.SENDGRID_API_KEY?.trim()) missing.push("SENDGRID_API_KEY");
+  const identity = resolveMailIdentity().transport;
+  missing.push(...mailIdentityDiagnosticCodes(identity));
+  missing.push(...missingTemplatesFor("data_request_verification"));
   try {
     dataRequestTokenKeyring();
   } catch {
@@ -256,11 +257,13 @@ async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolut
     const { rowCount } = await db.query("SELECT 1 FROM leads WHERE id = $1", [row.aggregate_id]);
     if (!rowCount) return { kind: "dropped" };
 
-    // isDeliverable has already established the address is set; absent
+    // isDeliverable has already established the address is valid; absent
     // configuration is `blocked` rather than `failed` because there is no
     // provider outage to retry against, and burning attempts would silently
     // discard the notification once the address is finally set.
-    return { kind: "send", to: process.env.LEADS_INTERNAL_ADDRESS!.trim(), locale: "tr" };
+    const internalRoute = resolveMailIdentity().internalRoute;
+    if (!internalRoute.ready) return { kind: "blocked" };
+    return { kind: "send", to: internalRoute.value.address, locale: "tr" };
   }
 
   const locale = row.payload_json.locale;
@@ -379,7 +382,12 @@ export async function drainOutbox(
   // SQL filter and the resolver cannot disagree mid-run.
   const before = await pending();
   result.blocked = before.unaddressable;
-  result.missingConfig = missingTemplates();
+  const identity = resolveMailIdentity();
+  result.missingConfig = [...new Set([
+    ...mailIdentityDiagnosticCodes(identity.transport),
+    ...mailIdentityDiagnosticCodes(identity.internalRoute),
+    ...missingTemplates(),
+  ])];
 
   if (!transport.configured) {
     // Only the rows credentials would actually help. Counting the
@@ -565,7 +573,7 @@ export async function drainOutbox(
  */
 export function sendgridTransport(
   apiKey: string,
-  from: string,
+  identity: MailIdentity,
   fetchImpl: typeof fetch = fetch,
   timeoutMs: number = SEND_TIMEOUT_MS,
 ): MailTransport {
@@ -589,12 +597,13 @@ export function sendgridTransport(
           personalizations: [{
             to: [{ email: message.to }],
             custom_args: { yulalab_outbox_id: message.outboxId },
+            dynamic_template_data: dynamicTemplateData(message),
           }],
-          from: { email: from },
+          from: { email: identity.fromEmail, name: identity.fromName },
+          reply_to: { email: identity.replyToEmail },
           // The template is chosen by event and rendered by the provider, so
           // no copy — and no message body — passes through here.
           template_id: templateFor(message.eventType, message.locale),
-          dynamic_template_data: message.data,
           tracking_settings: {
             click_tracking: { enable: false, enable_text: false },
             open_tracking: { enable: false },
@@ -610,12 +619,83 @@ export function sendgridTransport(
   };
 }
 
-function templateKey(eventType: OutboxEventType, locale: "tr" | "en"): string {
-  return `SENDGRID_TEMPLATE_${eventType.toUpperCase()}_${locale.toUpperCase()}`;
+function templateFor(eventType: OutboxEventType, locale: "tr" | "en"): string {
+  const definition = templateDefinition(eventType, locale);
+  if (process.env[definition.envKey] !== definition.templateId) {
+    throw new Error("mail template configuration is invalid");
+  }
+  return definition.templateId;
 }
 
-function templateFor(eventType: OutboxEventType, locale: "tr" | "en"): string {
-  return process.env[templateKey(eventType, locale)] ?? "";
+type TemplateDefinition = Readonly<{ envKey: string; templateId: string }>;
+
+const TEMPLATE_CATALOG: Readonly<
+  Record<OutboxEventType, Partial<Record<"tr" | "en", TemplateDefinition>>>
+> = Object.freeze({
+  lead_receipt: Object.freeze({
+    tr: Object.freeze({
+      envKey: "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
+      templateId: "d-cef2371a06014280857d0f17e3056305",
+    }),
+    en: Object.freeze({
+      envKey: "SENDGRID_TEMPLATE_LEAD_RECEIPT_EN",
+      templateId: "d-d42d50b22fda48e49cfbb6ab373f420e",
+    }),
+  }),
+  lead_internal_route: Object.freeze({
+    tr: Object.freeze({
+      envKey: "SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR",
+      templateId: "d-2ce67d70cec249aeab61577361a50572",
+    }),
+  }),
+  data_request_verification: Object.freeze({
+    tr: Object.freeze({
+      envKey: "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR",
+      templateId: "d-934e79bac8f841dfb7066e169d8f4ffc",
+    }),
+    en: Object.freeze({
+      envKey: "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN",
+      templateId: "d-e9aeeaa9dc8949679777b61eed0f41dc",
+    }),
+  }),
+});
+
+function templateDefinition(
+  eventType: OutboxEventType,
+  locale: "tr" | "en",
+): TemplateDefinition {
+  const definition = TEMPLATE_CATALOG[eventType][locale];
+  if (!definition) throw new Error("mail template configuration is invalid");
+  return definition;
+}
+
+function requiredTemplateValue(message: MailMessage, key: string): string {
+  const value = message.data[key];
+  if (typeof value !== "string" || value.length === 0) {
+    throw new Error("mail template data is invalid");
+  }
+  return value;
+}
+
+function dynamicTemplateData(message: MailMessage): Record<string, string> {
+  switch (message.eventType) {
+    case "lead_receipt":
+      return {
+        receiptId: requiredTemplateValue(message, "receiptId"),
+        locale: message.locale,
+      };
+    case "lead_internal_route":
+      return {
+        receiptId: requiredTemplateValue(message, "receiptId"),
+        route: requiredTemplateValue(message, "route"),
+        intent: requiredTemplateValue(message, "intent"),
+      };
+    case "data_request_verification":
+      return {
+        requestType: requiredTemplateValue(message, "requestType"),
+        verificationUrl: requiredTemplateValue(message, "verificationUrl"),
+      };
+  }
 }
 
 /** Which locales each deliverable event actually needs a template for. */
@@ -642,8 +722,13 @@ const TEMPLATE_LOCALES: Record<OutboxEventType, readonly ("tr" | "en")[]> = {
  */
 function missingTemplatesFor(type: OutboxEventType): string[] {
   return TEMPLATE_LOCALES[type]
-    .filter((locale) => !templateFor(type, locale))
-    .map((locale) => templateKey(type, locale));
+    .flatMap((locale) => {
+      const definition = templateDefinition(type, locale);
+      const configured = process.env[definition.envKey];
+      if (configured === undefined || configured === "") return [definition.envKey];
+      if (configured !== definition.templateId) return [`INVALID_${definition.envKey}`];
+      return [];
+    });
 }
 
 /**
@@ -656,10 +741,10 @@ function missingTemplatesFor(type: OutboxEventType): string[] {
  */
 export function mailTransport(fetchImpl: typeof fetch = fetch): MailTransport {
   const apiKey = process.env.SENDGRID_API_KEY?.trim();
-  const from = process.env.MAIL_FROM?.trim();
-  if (!apiKey || !from) return unconfiguredTransport();
+  const identity = resolveMailIdentity().transport;
+  if (!apiKey || !identity.ready) return unconfiguredTransport();
   // Templates are NOT checked here. They gate one event type at a time via
   // isDeliverable, so a missing template blocks that type and leaves the
   // others delivering, rather than taking the whole transport down.
-  return sendgridTransport(apiKey, from, fetchImpl);
+  return sendgridTransport(apiKey, identity.value, fetchImpl);
 }
