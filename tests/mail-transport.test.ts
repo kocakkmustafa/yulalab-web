@@ -7,6 +7,11 @@ import {
   type MailMessage,
 } from "@/server/mail";
 import {
+  APPROVED_MAIL_IDENTITY,
+  MAIL_IDENTITY_ENV,
+  type MailIdentity,
+} from "@/server/mail-identity";
+import {
   DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
   DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
   DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
@@ -18,11 +23,38 @@ const message: MailMessage = {
   eventType: "lead_receipt",
   to: "ada@example.com",
   locale: "tr",
-  data: { receiptId: "YL-1" },
+  data: { receiptId: "YL-1", locale: "tr" },
 };
+
+const IDENTITY: MailIdentity = {
+  fromEmail: "hello@yulalab.com",
+  fromName: "YULALAB",
+  replyToEmail: "yula@yulalab.com",
+};
+
+const TEMPLATE_IDS = {
+  SENDGRID_TEMPLATE_LEAD_RECEIPT_TR: "d-cef2371a06014280857d0f17e3056305",
+  SENDGRID_TEMPLATE_LEAD_RECEIPT_EN: "d-d42d50b22fda48e49cfbb6ab373f420e",
+  SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR: "d-2ce67d70cec249aeab61577361a50572",
+  SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR: "d-934e79bac8f841dfb7066e169d8f4ffc",
+  SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN: "d-e9aeeaa9dc8949679777b61eed0f41dc",
+} as const;
 
 function respondWith(status: number, body = "") {
   return vi.fn(async () => new Response(body, { status })) as unknown as typeof fetch;
+}
+
+function configureIdentity({ internal = false }: { internal?: boolean } = {}) {
+  process.env[MAIL_IDENTITY_ENV.fromEmail] = APPROVED_MAIL_IDENTITY.fromEmail;
+  process.env[MAIL_IDENTITY_ENV.fromName] = APPROVED_MAIL_IDENTITY.fromName;
+  process.env[MAIL_IDENTITY_ENV.replyToEmail] = APPROVED_MAIL_IDENTITY.replyToEmail;
+  if (internal) {
+    process.env[MAIL_IDENTITY_ENV.internalAddress] = APPROVED_MAIL_IDENTITY.internalAddress;
+  }
+}
+
+function configureTemplates() {
+  for (const [key, value] of Object.entries(TEMPLATE_IDS)) process.env[key] = value;
 }
 
 beforeEach(() => {
@@ -31,11 +63,8 @@ beforeEach(() => {
     "SENDGRID_API_KEY",
     "MAIL_FROM",
     "LEADS_INTERNAL_ADDRESS",
-    "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
-    "SENDGRID_TEMPLATE_LEAD_RECEIPT_EN",
-    "SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR",
-    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR",
-    "SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN",
+    ...Object.values(MAIL_IDENTITY_ENV),
+    ...Object.keys(TEMPLATE_IDS),
     DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
     DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
     DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV,
@@ -47,31 +76,56 @@ beforeEach(() => {
 
 describe("the provider call", () => {
   it("throws on a rejection instead of counting as delivered", async () => {
-    // The whole consumer rests on this: a transport that returns normally is
-    // taken as proof the mail went out, and the row is never retried.
-    const transport = sendgridTransport("SG.key", "hello@yulalab.com", respondWith(429));
+    configureTemplates();
+    const transport = sendgridTransport("SG.key", IDENTITY, respondWith(429));
     await expect(transport.send(message)).rejects.toThrow(/429/);
   });
 
-  it("keeps the API key and the provider's echo out of the error", async () => {
+  it("keeps provider, identity and capability values out of the error", async () => {
+    configureTemplates();
+    const verificationUrl = "https://yulalab.com/data-request/verify#token=capability-canary";
     const transport = sendgridTransport(
       "SG.super-secret",
-      "hello@yulalab.com",
-      respondWith(400, JSON.stringify({ errors: [{ message: "bad address ada@example.com" }] })),
+      IDENTITY,
+      respondWith(
+        400,
+        JSON.stringify({
+          errors: [{ message: `bad address ada@example.com at ${verificationUrl}` }],
+        }),
+      ),
     );
-    const error = await transport.send(message).catch((e: Error) => e);
+    const error = await transport.send({
+      ...message,
+      eventType: "data_request_verification",
+      data: { requestType: "access", verificationUrl },
+    }).catch((caught: Error) => caught);
     expect(String(error)).not.toContain("SG.super-secret");
     expect(String(error)).not.toContain("ada@example.com");
+    expect(String(error)).not.toContain(verificationUrl);
+    expect(String(error)).not.toContain(IDENTITY.fromEmail);
+    expect(String(error)).not.toContain(IDENTITY.fromName);
+    expect(String(error)).not.toContain(IDENTITY.replyToEmail);
+    expect(String(error)).not.toContain(
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR,
+    );
   });
 
-  it("sends the address and the receipt, never the message body", async () => {
+  it("uses the structured identity and personalization-scoped dynamic data", async () => {
+    configureTemplates();
     const fetchImpl = respondWith(202);
-    await sendgridTransport("SG.key", "hello@yulalab.com", fetchImpl).send(message);
+    await sendgridTransport("SG.key", IDENTITY, fetchImpl).send(message);
     const [, init] = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls[0];
     const body = JSON.parse((init as RequestInit).body as string);
+
     expect(body.personalizations[0].to[0].email).toBe("ada@example.com");
-    expect(body.from.email).toBe("hello@yulalab.com");
-    expect(body.dynamic_template_data).toEqual({ receiptId: "YL-1" });
+    expect(body.from).toEqual({ email: "hello@yulalab.com", name: "YULALAB" });
+    expect(body.reply_to).toEqual({ email: "yula@yulalab.com" });
+    expect(body).not.toHaveProperty("reply_to_list");
+    expect(body.personalizations[0].dynamic_template_data).toEqual({
+      receiptId: "YL-1",
+      locale: "tr",
+    });
+    expect(body).not.toHaveProperty("dynamic_template_data");
     expect(body.tracking_settings).toEqual({
       click_tracking: { enable: false, enable_text: false },
       open_tracking: { enable: false },
@@ -79,6 +133,43 @@ describe("the provider call", () => {
     expect(body.personalizations[0].custom_args).toEqual({
       yulalab_outbox_id: message.outboxId,
     });
+  });
+
+  it("allowlists dynamic data and keeps recipient PII only in the to envelope", async () => {
+    configureTemplates();
+    const fetchImpl = respondWith(202);
+    const recipient = "recipient-canary@example.net";
+    await sendgridTransport("SG.key", IDENTITY, fetchImpl).send({
+      ...message,
+      to: recipient,
+      data: {
+        receiptId: "YL-ALLOW",
+        locale: "tr",
+        name: "name-canary",
+        email: recipient,
+        company: "company-canary",
+        message: "message-canary",
+        productSlug: "product-canary",
+      },
+    });
+
+    const [, init] = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls[0];
+    const body = JSON.parse((init as RequestInit).body as string);
+    expect(body.personalizations[0].dynamic_template_data).toEqual({
+      receiptId: "YL-ALLOW",
+      locale: "tr",
+    });
+    const withoutEnvelope = structuredClone(body);
+    delete withoutEnvelope.personalizations[0].to;
+    expect(JSON.stringify(withoutEnvelope)).not.toContain(recipient);
+    for (const canary of [
+      "name-canary",
+      "company-canary",
+      "message-canary",
+      "product-canary",
+    ]) {
+      expect(JSON.stringify(body)).not.toContain(canary);
+    }
   });
 });
 
@@ -88,26 +179,28 @@ describe("which transport this deployment gets", () => {
   });
 
   it("stays configured for accepted work when new intake is closed", () => {
-    // LEADS_ENABLED gates admission, not delivery. Rows already accepted into
-    // the durable outbox must finish even after new submissions are stopped.
     process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
+    configureIdentity();
     expect(mailTransport().configured).toBe(true);
   });
 
-  it("is unconfigured with a key but no sender address", () => {
+  it("is unconfigured with a key but no canonical identity", () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
     expect(mailTransport().configured).toBe(false);
   });
 
-  it("is configured once the transport itself is, and names what is still missing", () => {
-    // Templates do NOT gate the transport. They gate one event type at a
-    // time, so a missing one blocks that type and leaves the rest
-    // delivering — see the next test for why that distinction matters.
-    process.env.LEADS_ENABLED = "1";
+  it("does not accept the two legacy identity keys as fallback", () => {
     process.env.SENDGRID_API_KEY = "SG.key";
     process.env.MAIL_FROM = "hello@yulalab.com";
+    process.env.LEADS_INTERNAL_ADDRESS = "yula@yulalab.com";
+    expect(mailTransport().configured).toBe(false);
+  });
+
+  it("is configured once the base identity is, and names missing templates", () => {
+    process.env.LEADS_ENABLED = "1";
+    process.env.SENDGRID_API_KEY = "SG.key";
+    configureIdentity();
     expect(mailTransport().configured).toBe(true);
     expect(missingTemplates()).toEqual([
       "SENDGRID_TEMPLATE_LEAD_RECEIPT_TR",
@@ -118,14 +211,11 @@ describe("which transport this deployment gets", () => {
   });
 
   it("does not let an internal-route address stop customer receipts", () => {
-    // Setting LEADS_INTERNAL_ADDRESS is a small, low-risk change. It used to
-    // make the whole transport report itself unconfigured until its template
-    // was added too — silently stopping every customer receipt.
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR;
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN;
     expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
 
-    process.env.LEADS_INTERNAL_ADDRESS = "studio@yulalab.com";
+    process.env[MAIL_IDENTITY_ENV.internalAddress] = APPROVED_MAIL_IDENTITY.internalAddress;
     expect(missingTemplates()).toEqual([
       "SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR",
       DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
@@ -133,7 +223,8 @@ describe("which transport this deployment gets", () => {
     ]);
     expect(deliverableEventTypes()).toEqual(["lead_receipt"]);
 
-    process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR = "d-internal";
+    process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR;
     expect(missingTemplates()).toEqual([
       DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV,
       DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV,
@@ -141,25 +232,49 @@ describe("which transport this deployment gets", () => {
     expect(deliverableEventTypes()).toEqual(["lead_receipt", "lead_internal_route"]);
   });
 
+  it("keeps receipts and verification deliverable when the internal address is invalid", () => {
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR;
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN;
+    process.env.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR;
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR;
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN;
+    process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
+    process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
+      "test-only-current-data-request-secret-32-bytes";
+    process.env[MAIL_IDENTITY_ENV.internalAddress] = "other@yulalab.com";
+
+    expect(deliverableEventTypes()).toEqual(["lead_receipt", "data_request_verification"]);
+  });
+
   it("requires the server-only token secret and both verification templates", () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
+    configureIdentity();
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR;
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN;
     expect(deliverableEventTypes()).not.toContain("data_request_verification");
     process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
     process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = "test-only-current-data-request-secret-32-bytes";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR;
+    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN;
     expect(deliverableEventTypes()).toContain("data_request_verification");
   });
 
+  it("reports a non-canonical template id as invalid configuration", () => {
+    configureTemplates();
+    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-other";
+
+    expect(deliverableEventTypes()).not.toContain("lead_receipt");
+    expect(missingTemplates()).toContain("INVALID_SENDGRID_TEMPLATE_LEAD_RECEIPT_TR");
+  });
+
   it("reports a structurally invalid token key id in drain diagnostics", () => {
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    configureTemplates();
     process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "invalid key id";
     process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
       "test-only-current-data-request-secret-32-bytes";
@@ -168,10 +283,7 @@ describe("which transport this deployment gets", () => {
   });
 
   it("reports colliding current and previous token key ids in drain diagnostics", () => {
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-tr";
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN = "d-en";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-    process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+    configureTemplates();
     process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = "2026-08-current";
     process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] =
       "test-only-current-data-request-secret-32-bytes";
@@ -185,33 +297,63 @@ describe("which transport this deployment gets", () => {
 
 describe("a provider that stops responding", () => {
   it("gives up instead of holding the row's transaction open", async () => {
-    // A hang, not a rejection: `attempts` is never incremented, so the
-    // retry budget never runs out, and ORDER BY created_at hands the same
-    // row back first on every later run. One stuck send would block the
-    // whole queue, deterministically and with nothing in the counts.
+    configureTemplates();
     const hangs = ((_url: string | URL | Request, init?: RequestInit) =>
       new Promise<Response>((_resolve, reject) => {
         init?.signal?.addEventListener("abort", () => reject(new Error("aborted")));
       })) as unknown as typeof fetch;
-    const transport = sendgridTransport("SG.key", "hello@yulalab.com", hangs, 20);
+    const transport = sendgridTransport("SG.key", IDENTITY, hangs, 20);
     await expect(transport.send(message)).rejects.toThrow();
   });
 });
 
 describe("the request itself", () => {
   it("authenticates, because an unauthenticated send burns every retry", async () => {
+    configureTemplates();
     const fetchImpl = respondWith(202);
-    await sendgridTransport("SG.key", "hello@yulalab.com", fetchImpl).send(message);
+    await sendgridTransport("SG.key", IDENTITY, fetchImpl).send(message);
     const [, init] = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls[0];
     const headers = (init as RequestInit).headers as Record<string, string>;
     expect(headers.authorization).toBe("Bearer SG.key");
   });
 
-  it("picks the template for the event and the language", async () => {
-    process.env.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR = "d-turkish";
+  it.each([
+    ["lead_receipt", "tr", TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_TR],
+    ["lead_receipt", "en", TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_RECEIPT_EN],
+    ["lead_internal_route", "tr", TEMPLATE_IDS.SENDGRID_TEMPLATE_LEAD_INTERNAL_ROUTE_TR],
+    [
+      "data_request_verification",
+      "tr",
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR,
+    ],
+    [
+      "data_request_verification",
+      "en",
+      TEMPLATE_IDS.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN,
+    ],
+  ] as const)("uses the exact %s/%s template", async (eventType, locale, expected) => {
+    configureTemplates();
     const fetchImpl = respondWith(202);
-    await sendgridTransport("SG.key", "hello@yulalab.com", fetchImpl).send(message);
+    const data = eventType === "lead_internal_route"
+      ? { receiptId: "YL-1", route: "studio", intent: "studio" }
+      : eventType === "data_request_verification"
+        ? {
+            requestType: "access",
+            verificationUrl: "https://yulalab.com/data-request/verify#token=test",
+          }
+        : { receiptId: "YL-1", locale };
+    await sendgridTransport("SG.key", IDENTITY, fetchImpl).send({
+      ...message,
+      eventType,
+      locale,
+      data,
+    });
     const [, init] = (fetchImpl as unknown as ReturnType<typeof vi.fn>).mock.calls[0];
-    expect(JSON.parse((init as RequestInit).body as string).template_id).toBe("d-turkish");
+    const body = JSON.parse((init as RequestInit).body as string);
+    expect(body.template_id).toBe(expected);
+    expect(body.tracking_settings).toEqual({
+      click_tracking: { enable: false, enable_text: false },
+      open_tracking: { enable: false },
+    });
   });
 });

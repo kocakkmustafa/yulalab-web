@@ -5,6 +5,7 @@ import ContactPage from "@/app/[locale]/contact/page";
 import StudioPage from "@/app/[locale]/studio/page";
 import PrivacyPage from "@/app/[locale]/privacy/page";
 import { mailTransport } from "@/server/mail";
+import { APPROVED_MAIL_IDENTITY, MAIL_IDENTITY_ENV } from "@/server/mail-identity";
 import { studioEnabled } from "@/server/studio-surface";
 
 /**
@@ -156,8 +157,20 @@ describe("the emailed-a-copy claim follows the transport", () => {
   it("tracks mailTransport(), not a constant", async () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
+    process.env[MAIL_IDENTITY_ENV.fromEmail] = APPROVED_MAIL_IDENTITY.fromEmail;
+    process.env[MAIL_IDENTITY_ENV.fromName] = APPROVED_MAIL_IDENTITY.fromName;
+    process.env[MAIL_IDENTITY_ENV.replyToEmail] = APPROVED_MAIL_IDENTITY.replyToEmail;
     expect((await contactProps()).mailConfigured).toBe(true);
     expect((await contactProps()).mailConfigured).toBe(mailTransport().configured);
+  });
+
+  it("does not advertise mailed copy delivery for legacy-only identity config", async () => {
+    process.env.LEADS_ENABLED = "1";
+    process.env.SENDGRID_API_KEY = "SG.key";
+    process.env.MAIL_FROM = "hello@yulalab.com";
+    process.env.LEADS_INTERNAL_ADDRESS = "yula@yulalab.com";
+
+    expect((await contactProps()).mailConfigured).toBe(false);
+    expect(mailTransport().configured).toBe(false);
   });
 });

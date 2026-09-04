@@ -83,8 +83,10 @@ beforeEach(async () => {
   process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = CURRENT_SECRET;
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV];
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_SECRET_ENV];
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR = "d-dsr-tr";
-  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN = "d-dsr-en";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_TR =
+    "d-934e79bac8f841dfb7066e169d8f4ffc";
+  process.env.SENDGRID_TEMPLATE_DATA_REQUEST_VERIFICATION_EN =
+    "d-e9aeeaa9dc8949679777b61eed0f41dc";
   vi.restoreAllMocks();
 });
 
