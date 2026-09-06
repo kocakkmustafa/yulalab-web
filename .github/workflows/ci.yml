@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-test:
-    name: lint, typecheck, unit, Netlify build, localhost e2e
+    name: lint, typecheck, unit, Netlify build, localhost e2e, audit
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
@@ -77,6 +77,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install locked offline build CLI
         run: npm ci --prefix .github/ci/netlify --no-audit --no-fund
+      - name: Verify overridden CI dependency compatibility
+        run: node .github/ci/verify-tool-compatibility.mjs
       - name: Lint
         run: pnpm lint
       - name: Typecheck
@@ -104,6 +106,12 @@ jobs:
         run: pnpm exec playwright test --workers=1 --retries=0 --reporter=list,json --trace=retain-on-failure
         env:
           PLAYWRIGHT_JSON_OUTPUT_FILE: playwright-report/results.json
+      - name: Dependency audit (production, high+)
+        run: pnpm audit --prod --audit-level high
+      - name: Dependency audit (including build and deployment tools, high+)
+        run: pnpm audit --audit-level high
+      - name: Dependency audit (locked Netlify CLI, high+)
+        run: npm audit --prefix .github/ci/netlify --audit-level high
       - name: Verify published bytes after build and tests
         run: |
           python3 .github/ci/verify-published-source.py
