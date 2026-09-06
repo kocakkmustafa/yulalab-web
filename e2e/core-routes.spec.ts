@@ -1,8 +1,10 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
+
 test("explicit Turkish URLs override English browser and cookie preferences", async ({ browser }) => {
-  const origin = "http://127.0.0.1:4173";
+  const origin = `http://127.0.0.1:${e2ePort}`;
   const context = await browser.newContext({ locale: "en-US" });
   try {
     const page = await context.newPage();
@@ -361,7 +363,7 @@ test("language switcher moves between TR and EN on the same page", async ({
 });
 
 test("production locale routing has bounded canonical redirects", async ({ request }) => {
-  for (const host of ["127.0.0.1:4173", "localhost:4173"]) {
+  for (const host of [`127.0.0.1:${e2ePort}`, `localhost:${e2ePort}`]) {
     const origin = `http://${host}`;
 
     const contact = await request.get(`${origin}/contact`, { maxRedirects: 0 });
@@ -465,14 +467,14 @@ test("production locale routing has bounded canonical redirects", async ({ reque
     "/opengraph-image",
     "/asset.example.js",
   ]) {
-    const response = await request.get(`http://127.0.0.1:4173${bypassPath}`, {
+    const response = await request.get(`http://127.0.0.1:${e2ePort}${bypassPath}`, {
       maxRedirects: 0,
     });
     expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
     expect(response.headers().location).toBeUndefined();
   }
 
-  const invalidLocale = await request.get("http://127.0.0.1:4173/fr/contact", {
+  const invalidLocale = await request.get(`http://127.0.0.1:${e2ePort}/fr/contact`, {
     maxRedirects: 0,
   });
   expect(invalidLocale.status()).toBe(404);

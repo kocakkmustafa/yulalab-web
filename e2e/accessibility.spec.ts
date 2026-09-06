@@ -1,6 +1,8 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
+
 async function expectNoBlockingViolations(page: Page, label: string) {
   const pageEntrance = page.locator(".page-enter").first();
   if ((await pageEntrance.count()) > 0) {
@@ -101,7 +103,7 @@ for (const [label, progress] of [
     // the software renderer enough room to produce the two real ready frames.
     test.setTimeout(120_000);
     const context = await browser.newContext({
-      baseURL: "http://127.0.0.1:4173",
+      baseURL: `http://127.0.0.1:${e2ePort}`,
       locale: "tr-TR",
     });
 

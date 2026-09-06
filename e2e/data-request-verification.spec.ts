@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
+
 const TOKEN = "a".repeat(64);
 
 test("verification HTTP responses retain their own nonce and referrer policy", async ({ request }) => {
@@ -85,7 +87,7 @@ for (const locale of ["tr", "en"] as const) {
     const page = await context.newPage();
     const route = locale === "tr" ? "/data-request/verify" : "/en/data-request/verify";
     try {
-      await page.goto(`http://127.0.0.1:4173${route}#token=${TOKEN}`);
+      await page.goto(`http://127.0.0.1:${e2ePort}${route}#token=${TOKEN}`);
       await expect(page.getByRole("button")).toHaveCount(0);
       await expect(page.getByText(locale === "tr" ? /JavaScript'i etkinleştirip/ : /enable JavaScript/)).toBeVisible();
       await expect(page.getByRole("link")).toHaveAttribute("href", locale === "tr" ? "/contact" : "/en/contact");
