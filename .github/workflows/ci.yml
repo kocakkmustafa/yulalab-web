@@ -108,8 +108,30 @@ jobs:
         run: |
           python3 .github/ci/verify-published-source.py
           python3 ../links/.github/ci/verify-published-source.py
-      - name: Upload normal CI evidence
+      - name: Enforce artifact storage budget
+        id: artifact-budget
         if: always()
+        run: |
+          python3 - <<'PY_BUDGET'
+          from pathlib import Path
+          import os
+          roots = [Path("playwright-report"), Path("test-results"),
+                   Path(os.environ["RUNNER_TEMP"]) / "links-static-manifest.json",
+                   Path(os.environ["RUNNER_TEMP"]) / "netlify-artifacts.json"]
+          files = []
+          for root in roots:
+              if root.is_file():
+                  files.append(root)
+              elif root.is_dir():
+                  files.extend(path for path in root.rglob("*") if path.is_file())
+          total = sum(path.stat().st_size for path in files)
+          print(f"CI evidence: {len(files)} files, {total} bytes; limit 400 MiB")
+          assert total <= 400 * 1024 * 1024, "Evidence exceeds included-storage task budget; upload refused"
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write("within=true\n")
+          PY_BUDGET
+      - name: Upload normal CI evidence
+        if: always() && steps.artifact-budget.outputs.within == 'true'
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: web-normal-ci-${{ github.sha }}
@@ -118,4 +140,4 @@ jobs:
             test-results/
             ${{ runner.temp }}/links-static-manifest.json
             ${{ runner.temp }}/netlify-artifacts.json
-          retention-days: 7
+          retention-days: 3
