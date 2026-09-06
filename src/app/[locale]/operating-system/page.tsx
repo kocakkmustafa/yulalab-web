@@ -91,8 +91,8 @@ function OperatingSystem() {
         </h1>
         <p className="mt-7 max-w-[58ch] text-[16.5px] leading-[1.65] text-ink-300">
           {tr
-            ? "Bu sayfa süreç anlatmıyor; çalışan mekanizmaları anlatıyor. Buradaki sayımlar — ürün, iddia, kanıt seviyesi, durum ve bayatlamış yüzey — sitenin geri kalanının okuduğu kayıttan hesaplanıyor; elle yazılan eşik ve süreler ise ilgili yapılandırmada tanımlı."
-            : "This page is not a description of process; it lists mechanisms that run. The counts here — products, claims, evidence levels, states and lapsed surfaces — are computed from the same record the rest of the site renders from; the thresholds and windows named below live in the configuration they describe."}
+            ? "Bu sayfa, kaynakta tanımlı mekanizmaları ve kapsamlarını anlatır. Ürün, iddia, kanıt seviyesi, durum ve süresi dolmuş yüzey sayıları kayıtlı veriden hesaplanır; canlı işlerin çalışması ayrıca çalışma kayıtlarıyla doğrulanır."
+            : "This page describes the mechanisms defined in the source and their scope. Product, claim, evidence-level, lifecycle and expired-surface counts are computed from recorded data; live jobs require separate execution evidence."}
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
@@ -116,8 +116,8 @@ function OperatingSystem() {
         title={tr ? "Kanıt seviyeleri" : "Evidence levels"}
         intro={
           tr
-            ? "Her iddia bir seviyeyle etiketlenir. Bu bir kalite sıralaması değil, kapsam etiketidir: okuyucunun 'kodu okuyup saydık' ile 'kendi metnimiz böyle diyor'u ayırt edebilmesi için."
-            : "Every claim is tagged with a level. Not a quality ranking — a scope label, so a reader can tell 'we read the code and counted' apart from 'our own copy says so'."
+            ? "Kayıtlı her iddia bir seviyeyle etiketlenir. Bu bir kalite sıralaması değil, kapsam etiketidir: okuyucunun 'kodu okuyup saydık' ile 'kendi metnimiz böyle diyor'u ayırt edebilmesi için."
+            : "Every recorded claim is tagged with a level. Not a quality ranking — a scope label, so a reader can tell 'we read the code and counted' apart from 'our own copy says so'."
         }
       >
         <div className="space-y-3">
@@ -178,8 +178,8 @@ function OperatingSystem() {
         title={tr ? "İddia politikası" : "Public claim policy"}
         intro={
           tr
-            ? "Bir rakamın bu sitede görünmesi için önünde geçmesi gereken kapılar. Hepsi çalışıyor; hiçbiri niyet beyanı değil."
-            : "The gates a number must pass before it appears here. All of them run; none is a statement of intent."
+            ? "Kayıtlı iddiaların yapısı, bağlı istatistikler, ekran görüntüleri ve vaka çalışmaları otomatik kontrollerden geçer. Serbest tanıtım metinleri ayrıca gözden geçirilir."
+            : "Recorded claims, linked statistics, screenshots and case studies have automated checks. Free-form promotional copy is reviewed separately."
         }
       >
         <RuleList
@@ -212,26 +212,26 @@ function OperatingSystem() {
         title={tr ? "Gizlilik ve güvenlik" : "Privacy and security"}
         intro={
           tr
-            ? "Bugün fiilen ne topluyoruz sorusunun cevabı: neredeyse hiçbir şey — ve bunun sebebi henüz kimsenin yazmamış olması değil, anahtarın kapalı olması."
-            : "What we actually collect today: almost nothing — and not because nobody has written it yet, but because the switch is off."
+            ? "İletişim formu, huni ölçümü ve e-posta gönderimi ayrı kontrollerle yönetilir. Toplanan veri türleri ve kullanım amaçları gizlilik sayfasında açıklanır."
+            : "The contact form, funnel measurement and email delivery have separate controls. The privacy page describes the data categories and their purposes."
         }
       >
         <RuleList
           items={
             tr
               ? [
-                  "İletişim formu ve e-posta kuyruğu kodu tamamlandı ama TEK bir anahtarla kapalı; kapalıyken uç nokta 503 döner ve gizlilik metni de bu gerçeği aynı anahtardan okur.",
+                  "Yeni iletişim başvuruları kapalıyken form uç noktası 503 döner. Daha önce kabul edilmiş bildirimlerin gönderimi ayrı posta yapılandırmasına ve kuyruk işinin çalışmasına bağlıdır; başvuru alımını kapatmak bekleyen postayı iptal etmez.",
                   "Rıza bir kutucuk değil, tarihli bildirim sürümüyle kendi kaydıdır — 'onayladı' bilgisi 'neye onayladı' sorusunu yanıtlayamaz.",
-                  `Huni ölçümü serbest metin kabul etmez: alan adı bile bilinse değeri kısıtlıdır, sayfa yolundan sorgu dizesi düşürülür, saklama ${RAW_RETENTION_DAYS} gündür ve silme işi gerçekten koşar.`,
-                  "Kişisel veri talepleri (erişim, düzeltme, silme) adres kanıtıyla işler ve onurlandırılan bir silme, kişiye ait bekleyen bildirimleri de düşürür.",
-                  "Tarayıcıya gönderilen içerik sıkı bir CSP altında çalışır; çerçeveleme kapalı, yalnız açıkça anlaşılmış tek bir dış kaynak gömülebilir.",
+                  `Huni ölçümü serbest metin kabul etmez: alan değerleri kısıtlıdır ve sayfa yolundan sorgu dizesi çıkarılır. Ham kayıtlar için ${RAW_RETENTION_DAYS} günlük saklama süresi ve süresi dolan kayıtları temizleyen bir iş tanımlıdır; canlı silme işleminin tamamlandığı çalışma kaydıyla doğrulanır.`,
+                  "Kişisel veri taleplerinde e-posta adresi doğrulanır. Adresin doğrulanması, erişim, düzeltme veya silme talebinin tamamlandığı anlamına gelmez.",
+                  "Site, içerik kaynaklarını sınırlayan CSP ve başka sitelerde çerçevelenmeyi engelleyen başlıklarla yapılandırılmıştır. Genel sayfalarla e-posta doğrulama sayfası farklı CSP kuralları kullanır.",
                 ]
               : [
-                  "The contact form and mail queue are complete but held behind ONE switch; while it is off the endpoint returns 503, and the privacy page reads that same switch rather than describing a different site.",
+                  "When new contact submissions are disabled, the form endpoint returns 503. Delivery of previously accepted notifications depends on separate mail configuration and execution of the queue worker; closing intake does not cancel pending mail.",
                   "Consent is not a checkbox but its own record, stamped with a dated notice version — knowing someone agreed cannot answer what they agreed to.",
-                  `Funnel measurement refuses free text: even a known field's value is constrained, query strings are stripped from the page path, retention is ${RAW_RETENTION_DAYS} days, and the deletion job actually runs.`,
-                  "Data requests (access, correction, deletion) require proof of address, and an honoured deletion also drops that person's pending notifications.",
-                  "Everything served runs under a strict CSP; framing is off, and exactly one external surface is embeddable by explicit agreement.",
+                  `Funnel measurement refuses free text: field values are constrained and query strings are removed from page paths. Raw records have a ${RAW_RETENTION_DAYS}-day retention period and a job that removes expired records; completed deletion in production is confirmed through execution records.`,
+                  "Data requests include email-address verification. Verifying the address does not mean that an access, correction or deletion request has been fulfilled.",
+                  "The site is configured with a CSP that restricts content sources and headers that prevent other sites from framing it. General pages and the email-verification page use different CSP rules.",
                 ]
           }
         />
@@ -253,13 +253,13 @@ function OperatingSystem() {
                   "Kurucu kapısı: mağaza gönderimi, fiyat, gerçek para, hesap sahipliği, hukuk ve geri dönülmez kararlar yalnız insana aittir.",
                   "Güvenlik, ödeme, migration ve gizlilik sınıfı işlerde bağımsız bir inceleme zorunludur; kimse kendi işini onaylayamaz. Bu inceleme pratikte reddediyor da — kayıtta üst üste RED almış turlar var.",
                   "'Bitti' bir yüzde değildir: bir iş yalnız KABUL EDİLDİ durumuna geçtiğinde biter, o da kanıt satırı yazılmadan mümkün değil.",
-                  "İnsan, cihaz veya takvim gerektiren şeyler tahmin edilmez; DIŞ KAPI olarak kaydedilir ve sıradaki işe geçilir.",
+                  "İnsan, cihaz veya takvim gerektiren adımlar DIŞ KAPI olarak kaydedilir; beklenen işlem ve tamamlandığını gösterecek kanıt açıkça belirtilir.",
                 ]
               : [
                   "Founder gate: store submission, pricing, real money, account ownership, legal questions and irreversible decisions belong to a human only.",
                   "Security, payment, migration and privacy work requires an independent review before acceptance; nobody approves their own work. That review does reject in practice — the record contains rounds that were turned down more than once.",
                   "'Done' is not a percentage: work ends only when it reaches ACCEPTED, and it cannot get there without an evidence row.",
-                  "Anything needing a person, a device or a calendar is not guessed at — it is recorded as an EXTERNAL GATE and the next task starts.",
+                  "Steps needing a person, a device or a calendar are recorded as EXTERNAL GATES, with the required action and completion evidence stated explicitly.",
                 ]
           }
         />
@@ -281,20 +281,18 @@ function OperatingSystem() {
               ? [
                   "Metin taraması her build'de koşuyor, ama depo-dışı hedefleri yalnız yerelde ve CI'da var — bu sayfayı sunan deploy taramanın daha dar bir sürümünü çalıştırıyor.",
                   "Vaka çalışması kendi rakamını yazmaz: kayıtlı bir iddianın doğrulanmış figürlerinden hangisini raporladığını söyler, ekranda gördüğünüz sayı kayıttan okunur. Aynı kural başlığı, ölçüm etiketini ve 'sonrasında ne değişti' bölümünü de kapsar — çünkü bunlar iddia gibi okunur. Başlangıç durumu, kısıt, karar özetleri, artefakt etiketleri, izin kapsamı ve başarısızlık dersi serbest metindir; oralarda rakam olağandır. Bilinen sınır: 'Doğruluk-95' gibi tanımlayıcı biçimli bir dize etiket olarak kabul edilir.",
-                  `Yüzey tazeliği hesaplanıyor ama hiçbir sayfaya bağlı değil. Şu anda kayıttaki ${lapsed} mağaza/erişim yüzeyinin doğrulama penceresi kapanmış durumda; kartlardaki durum rozeti ise kayıttan değil ikinci bir kaynaktan geliyor ve hiç tarih taşımıyor. İki kaynağın birleştirilmesi sıradaki iş kaleminde.`,
+                  `Ürün detay sayfası mağaza ve erişim yüzeylerinin doğrulama tarihini kullanır; süresi dolan erişim iddiası yeniden doğrulama uyarısıyla gösterilir. Kayıttaki ${lapsed} yüzeyin doğrulama penceresi kapanmıştır. Bu kontrol bütün tanıtım metinlerini kapsamaz.`,
                   "Bağlantı erişilebilirliği CI'da engelleyici değil: bozuk bir mağaza adresi uyarı üretir, boru hattını düşürmez.",
-                  "Sürekli entegrasyon şu anda faturalandırma nedeniyle koşamıyor; kapılar yerelde çalıştırılıyor ve kanıtı kayda yazılıyor.",
-                  "Portföyde abonesi olan bir ürün (Readio) bu kayıtta hiç yok — kapsamı genişletmek kurucu kararıdır, sessizce yapılmaz.",
-                  "İletişim makbuzu hedefi 60 saniyeydi; kuyruk günde bir kez boşaltılıyor. Yayınlanan hiçbir metin daha hızlısını vaat etmiyor, ama hedef karşılanmıyor.",
+                  "CI; lint, tip denetimi, test, build ve bağımlılık kontrollerini içerir. Sonuçlar ilgili değişiklik ve çalıştırma kaydıyla değerlendirilir; yerel kontroller üretim yayını anlamına gelmez.",
+                  "Varsayılan dağıtım yapılandırmasında posta işi günde bir kez zamanlanır. Bu bir teslim süresi taahhüdü değildir; gönderim posta yapılandırmasına, sağlayıcıya ve işin başarıyla çalışmasına bağlıdır.",
                 ]
               : [
                   "The prose scan runs on every build, but its cross-repository targets exist only locally and in CI — the deploy that serves this page runs a narrower version of it.",
                   "A case study does not supply its own number: it names which of a registry claim's verified figures it reports, and the numeral you see is read from the registry. The same rule covers the title, the metric label and the 'what changed after' section, because those read as claims. Baseline, constraint, decision summaries, artifact labels, the permission scope and the failure lesson stay free prose — a number is ordinary there. The known edge: an identifier-shaped string such as 'Accuracy-95' is accepted as a label.",
-                  `Surface freshness is computed but wired to no page. Right now ${lapsed} store/availability surfaces in the record have passed their verification window; meanwhile the status badge on a card comes from a second source that carries no date at all. Merging the two sources is the next scheduled item.`,
+                  `Product detail pages use verification dates for store and availability surfaces; expired availability assertions show a re-verification notice. Verification windows have closed for ${lapsed} recorded surfaces. This check does not cover every piece of promotional copy.`,
                   "Link reachability is not blocking in CI: a dead store URL raises a warning, it does not fail the pipeline.",
-                  "Continuous integration cannot currently run for billing reasons; the gates are run locally and the evidence is written to the record.",
-                  "One product with paying subscribers (Readio) is absent from this record entirely — widening the scope is the founder's decision, not something done quietly.",
-                  "The contact receipt target was 60 seconds; the queue drains once a day. No published text promises faster, but the target is not met.",
+                  "CI includes lint, type checking, tests, a build and dependency checks. Results are assessed against the relevant change and run record; local checks do not establish a production release.",
+                  "The default deployment configuration schedules the mail job once a day. This is not a delivery-time commitment; sending depends on mail configuration, the provider and successful job execution.",
                 ]
           }
         />

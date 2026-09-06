@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-05-12";
+const LAST_UPDATED = "2026-09-06";
 
 export async function generateMetadata({
   params,
@@ -81,8 +81,8 @@ function BraavolabsPrivacy() {
                 <li>
                   <strong className="text-ink-100">{isTR ? "Uygulama kullanım verileri" : "Application usage data"}</strong>:
                   {" "}{isTR
-                    ? "Oluşturduğunuz workflow'lar, run sonuçları, onay kararları, entegrasyon yapılandırmaları. Bunlar kendi hesabınızın çalışma alanıdır ve yalnızca sizinle paylaşılır."
-                    : "Workflows you create, run results, approval decisions, integration configurations. These belong to your workspace and are visible only to you."}
+                    ? "Oluşturduğunuz workflow'lar, run sonuçları, onay kararları ve entegrasyon yapılandırmaları çalışma alanınıza aittir. Ortak bir çalışma alanında başka üyeler de bulunabilir; bu içerikler yalnızca size ait kişisel kayıtlar olarak değerlendirilmemelidir."
+                    : "Workflows you create, run results, approval decisions and integration configurations belong to your workspace. A shared workspace may have other members; this content should not be treated as personal records belonging only to you."}
                 </li>
                 <li>
                   <strong className="text-ink-100">{isTR ? "Cihaz tanımlayıcıları" : "Device identifiers"}</strong>:
@@ -137,8 +137,8 @@ function BraavolabsPrivacy() {
             <Section title={isTR ? "Veri saklama" : "Data retention"}>
               <p>
                 {isTR
-                  ? "Hesabınız aktif olduğu sürece veriniz saklanır. Hesabı silerseniz, 30 gün içinde tüm kişisel veriniz silinir (yedek rotasyonu sonrası). Faturalandırma kayıtları yasal süreler boyunca tutulur (KVKK uyumu için 10 yıl)."
-                  : "Your data is retained while your account is active. If you delete your account, all personal data is removed within 30 days (after backup rotation). Billing records are kept for legal retention periods (10 years under Turkish KVKK)."}
+                  ? "Hesap silme, kullanıcı kaydınızı kaldırır. Çalışma alanının son üyesiyseniz çalışma alanı kayıtları da silinir; başka üyeler varsa çalışma alanı içeriği, etkinlik ve mağaza abonelik kayıtları o çalışma alanında kalır. Silme kapsamı ve geçerli saklama yükümlülükleri doğrulanmış talebiniz için açıklanır. Aboneliği iptal etmek ayrı bir işlemdir."
+                  : "Account deletion removes your user record. If you are the workspace's last member, workspace records are also deleted; if other members remain, workspace content, activity and store subscription records remain with that workspace. The deletion scope and applicable retention obligations are explained for your verified request. Subscription cancellation is a separate action."}
               </p>
             </Section>
 
@@ -153,8 +153,8 @@ function BraavolabsPrivacy() {
             <Section title={isTR ? "Haklarınız" : "Your rights"}>
               <p>
                 {isTR
-                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamında: verilerinize erişme, düzeltme, silme, taşıma ve işlemeye itiraz etme haklarına sahipsiniz. Bu talepleri merhaba@yulalab.com adresine gönderebilirsiniz; 30 gün içinde yanıtlıyoruz."
-                  : "Under KVKK Article 11 and GDPR Articles 15-22, you have the right to access, correct, delete, port, and object to processing of your data. Send requests to merhaba@yulalab.com; we respond within 30 days."}
+                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamında: verilerinize erişme, düzeltme, silme, taşıma ve işlemeye itiraz etme haklarına sahipsiniz. Bu talepleri support@yulalab.com adresine gönderebilirsiniz; 30 gün içinde yanıtlıyoruz."
+                  : "Under KVKK Article 11 and GDPR Articles 15-22, you have the right to access, correct, delete, port, and object to processing of your data. Send requests to support@yulalab.com; we respond within 30 days."}
               </p>
             </Section>
 
@@ -177,7 +177,7 @@ function BraavolabsPrivacy() {
             <Section title={isTR ? "İletişim" : "Contact"}>
               <p>
                 {isTR ? "Veri Sorumlusu" : "Data Controller"}: YULA Lab — Mustafa Kaan Koçak<br />
-                {isTR ? "E-posta" : "Email"}: <a href="mailto:merhaba@yulalab.com" className="link-wipe text-ink-50">merhaba@yulalab.com</a><br />
+                {isTR ? "E-posta" : "Email"}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
                 {isTR ? "Konum" : "Location"}: Türkiye
               </p>
             </Section>

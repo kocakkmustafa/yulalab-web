@@ -11,12 +11,12 @@ export const braavolabs: ProjectConfig = {
     en: "Autonomous AI Company OS",
   },
   tagline: {
-    tr: "AI şirketin, 10 dakikada kurulur.",
-    en: "Your AI company, built in 10 minutes.",
+    tr: "AI ekibini tek merkezden yönet.",
+    en: "Manage your AI team in one place.",
   },
   description: {
-    tr: "Braavolabs, küçük ekiplerin kendi otonom AI şirketlerini dakikalar içinde kurmasını sağlayan bir işletim sistemi. 9 primitif, 14 LLM sağlayıcısı, 6 dil — tek panelden.",
-    en: "Braavolabs is an operating system that lets small teams stand up their own autonomous AI companies in minutes. 9 primitives, 14 LLM providers, 6 languages — from a single panel.",
+    tr: "Braavolabs, küçük ekiplerin AI ajanlarını ve otomasyonlarını tek panelden kurup yönetmesini sağlayan bir işletim sistemi.",
+    en: "Braavolabs is an operating system for small teams to build and manage AI agents and automations from a single panel.",
   },
   short: {
     tr: "Küçük ekipler için otonom AI şirket OS'i. Primitifler, ajan ağları ve şeffaf maliyet — tek panel.",
@@ -115,7 +115,6 @@ export const braavolabs: ProjectConfig = {
       label: { tr: "LLM Sağlayıcı", en: "LLM Providers" },
       claimId: "braavolabs-provider-count",
     },
-    { value: "~10dk", label: { tr: "Kurulum süresi", en: "Setup time" } },
     { value: "6", label: { tr: "Dil", en: "Languages" } },
   ],
   vision: {

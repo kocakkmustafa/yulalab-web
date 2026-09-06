@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { MailAdmissionCapacityError } from "@/server/mail-admission";
 // One source for the caps. They were literals here and constants in
 // src/lib/studio.ts; halving this one left every test green while the
 // studio form kept promising the old limit to the person typing.
@@ -226,6 +227,9 @@ export async function POST(request: Request): Promise<Response> {
     const { receiptId } = await createLead(getPool("intake"), parsed.value, { now: new Date() });
     return NextResponse.json({ receiptId }, { status: 201 });
   } catch (error) {
+    if (error instanceof MailAdmissionCapacityError) {
+      return NextResponse.json({ error: "rate_limited" }, { status: 429 });
+    }
     // Only the failure SHAPE. Everything in the payload is personal data,
     // and a stack trace or an echoed row is the easiest way to leak it.
     console.error("lead write failed", redactWriteFailure(error));

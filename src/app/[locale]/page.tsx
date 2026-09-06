@@ -1,4 +1,5 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { YulaExperience } from "@/components/experience/YulaExperience";
 import type {
   ExperienceCopy,
@@ -39,7 +40,7 @@ export default async function LandingPage({
 }) {
   const { locale: rawLocale } = await params;
   if (!isLocale(rawLocale)) {
-    throw new Error(`Unsupported homepage locale: ${rawLocale}`);
+    notFound();
   }
 
   const locale = rawLocale;

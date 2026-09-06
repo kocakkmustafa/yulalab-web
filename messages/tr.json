@@ -189,7 +189,7 @@
         "label": "Şeffaf maliyet",
         "title": "Her ajan, her token, her saniye.",
         "claim": "Her pipeline run; hangi ajanın hangi tool'u çağırdığını, kaç token harcadığını ve hangi karara mâl olduğunu açık panelde gösterir. Sürpriz fatura yok.",
-        "proof": "→ 9 primitif · 14 LLM sağlayıcı · BYOK",
+        "proof": "→ Primitifler · sağlayıcılar · ürün sayfasında tarihli kanıtlar",
         "detailLabel": "Audit trail",
         "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; para harcayan aksiyonlar insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
       },
@@ -197,25 +197,25 @@
         "label": "Açık metodoloji",
         "title": "Her tahmin için ilk 3 etken.",
         "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. Kural-tabanlı ağırlıklandırmayla en etkili 3 faktörü yarış-spesifik dilde anlatıyoruz.",
-        "proof": "→ 1.225 canlı takip yarışı · ~%29 Top-1 / ~%62 Top-3 · burunfark.com/dogruluk, 2026-08-25",
+        "proof": "→ burunfark.com/dogruluk · ürün sayfasında tarihli ölçüm özeti",
         "detailLabel": "Canlı takip paneli",
-        "detailBody": "69 günlük canlı takipteki 1.225 yarışta modelin günlük performansı; kazanan tahminler kadar yanılan tahminler de aynı dashboard'da. Hipodrom × pist × mesafe kırılımı tek tıkla."
+        "detailBody": "Canlı takip panelinde kazanan tahminlerle yanılan tahminler birlikte incelenir. Sonuçları değerlendirirken ölçüm tarihini, yarış kapsamını ve hipodrom, pist, mesafe kırılımlarını birlikte okuyun."
       },
       "lifeos": {
         "label": "Cihaz üstü gizlilik",
-        "title": "Veriniz cihazınızda kalır.",
-        "claim": "Kişisel veri sunucularımıza gönderilmez. SQLCipher + AES-256 ile cihaz üstünde şifrelenir, modeller cihazınızda çalışır, bulut senkronu opt-in'dir.",
+        "title": "Cihazda saklama, isteğe bağlı senkron.",
+        "claim": "Kişisel kayıtlar SQLCipher ve AES-256 ile cihazda şifrelenir. Yerel modelle yapılan AI işlemleri cihazda çalışır; bulut senkronizasyonu isteğe bağlıdır.",
         "proof": "→ AES-256 · Offline-first · 0 reklam",
         "detailLabel": "On-device AI",
-        "detailBody": "Sağlık, finans, ilişki ve hedef verileriniz cihazınızdan dışarı çıkmaz. Bulut senkronunu açtığınızda bile sadece şifreli bundle; YULA Lab okuyamaz, eğitim için kullanamaz."
+        "detailBody": "Yerel AI için desteklenen bir cihaz ve kurulu model gerekir. Model indirme, hesap ve mağaza işlemleri ile açtığınız çökme raporlaması, senkronizasyon ayarından bağımsız ağ yollarıdır. Ayrıntılar LifeOS gizlilik politikasında açıklanır."
       }
     },
     "guaranteeEyebrow": "Vazgeçmediğiniz şeyler",
-    "guaranteeTitle": "Şeffaflık dört garanti demek.",
+    "guaranteeTitle": "Şeffaflık için dört ilke.",
     "guarantees": {
       "dataOwnership": {
         "title": "Veriniz size aittir.",
-        "body": "Tek bir tıkla tüm verinizi makine-okunur formatta indirebilir veya silebilirsiniz. KVKK ve GDPR'nin gerektirdiğinin ötesinde, kalıcı ve self-servis."
+        "body": "Dışa aktarma ve silme araçlarının kapsamı ürüne ve sürüme göre değişir. Cihaz verilerini silmek, hesap ve sunucu kayıtlarını silmekten ayrıdır. Mevcut araçlar ve saklama bilgileri için ürünün gizlilik politikasını inceleyin; hesap ve sunucu kayıtlarına ilişkin taleplerinizi support@yulalab.com adresine iletin."
       },
       "noTraining": {
         "title": "Veriniz model eğitiminde kullanılmaz.",
@@ -227,7 +227,7 @@
       },
       "exitRight": {
         "title": "Çıkış kapısı her zaman açık.",
-        "body": "İptal tek tık. Veri export tek tık. Hesap silme tek tık. Sözleşmeye 90 günlük kilit yok; ürünü beğenmediğiniz anda gidersiniz."
+        "body": "Abonelik iptali, hesap silme ve cihaz verilerini kaldırma ayrı işlemlerdir. İptal için satın aldığınız mağaza veya hizmetin abonelik yönetimini kullanın. Veri dışa aktarma ve silme adımları için ürünün gizlilik politikasına bakın; destek için support@yulalab.com adresine yazın."
       }
     },
     "ctaEyebrow": "Sorularınız mı var?",
@@ -238,14 +238,14 @@
     "eyebrow": "İletişim",
     "title": "Konuşalım.",
     "intro": "Bir fikir, bir geri bildirim, bir basın talebi ya da sadece bir merhaba — bize ulaşmanın en hızlı yolu e-posta. Genelde 48 saat içinde dönüyoruz.",
-    "generalLabel": "Genel",
-    "generalHint": "Ortaklık, iş birliği, ürün ve teknik soruları için bu adres.",
+    "generalLabel": "Destek ve iletişim",
+    "generalHint": "Ürün desteği, teknik sorular, iş birliği ve basın talepleri için bize yazın.",
     "pressLabel": "Basın",
     "pressHint": "Röportaj, etkinlik daveti ve basın bülteni talepleri.",
     "locationEyebrow": "Lokasyon",
     "locationTitle": "Türkiye",
     "locationNote": "Toplantılar Salı – Perşembe, hibrit.",
-    "studioBody": "Bu sayfadaki adresler genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusu daha hızlıdır: bütçe aralığı, zamanlama ve kararı veren rol orada sorulur, dolayısıyla ilk yanıt bu üç soruyu tekrar sormakla geçmez.",
+    "studioBody": "Bu sayfadaki adres genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusu daha hızlıdır: bütçe aralığı, zamanlama ve kararı veren rol orada sorulur, dolayısıyla ilk yanıt bu üç soruyu tekrar sormakla geçmez.",
     "studioEyebrow": "Proje başvurusu",
     "studioLink": "Stüdyo başvurusu",
     "studioTitle": "Bir iş için mi yazıyorsunuz?"
@@ -281,15 +281,15 @@
     "otherAlso": "Ayrıca",
     "lifeos": {
       "eyebrow": "Ürün 01 · iOS'ta canlı",
-      "lede": "Offline-first kişisel yaşam işletim sistemi. Beş yaşam alanı tek bir sakin arayüzde toplanır; her kayıt cihazda AES-256 ile şifrelenir. Bulut isteğe bağlıdır — kapalıyken uygulama tam çalışır.",
+      "lede": "Yerel-öncelikli kişisel yaşam işletim sistemi. Beş yaşam alanı tek bir sakin arayüzde toplanır; kayıtlar cihazda AES-256 ile şifrelenir. Bulut senkronizasyonu isteğe bağlıdır.",
       "s1Kicker": "01 — Ne yapar",
       "a1Title": "Beş yaşam alanı, tek görünüm.",
       "a1Body": "Notlar, alışkanlıklar, planlar ve kayıtlar ayrı uygulamalara dağılmaz. LifeOS bunları tek bir sakin görünümde birleştirir; hangi alanın ne durumda olduğu ekranı doldurmadan görülür.",
-      "a2Title": "İnternet olmadan da tam çalışır.",
-      "a2Body": "Veri cihazda doğar, cihazda durur. Senkron açılırsa yalnız kullanıcının seçtiği alanlar taşınır; kapalıyken hiçbir istek sunucuya gitmez. Şifreleme anahtarı cihazdan çıkmaz.",
+      "a2Title": "Günlük kayıtlarınız çevrimdışı da elinizde.",
+      "a2Body": "Verileriniz cihazda tutulur; senkronizasyon isteğe bağlıdır. Model indirme, hesap ve mağaza işlemleri ile etkinleştirdiğiniz çökme raporlaması, senkron ayarından bağımsız olarak internet kullanabilir.",
       "s2Kicker": "02 — Gizlilik mimarisi",
       "r1k": "Depolama",
-      "r1v": "Yalnız cihaz · şifreli",
+      "r1v": "Cihazda şifreli · bulut isteğe bağlı",
       "r2k": "Anahtar",
       "r2v": "Cihazda üretilir, dışa çıkmaz",
       "r3k": "Analitik",
@@ -306,7 +306,7 @@
     },
     "burunfarki": {
       "eyebrow": "Ürün 02 · Yayında · Analiz aracı",
-      "lede": "Şeffaf AI at yarışı analiz platformu — bahis değil. Güncel 69 günlük canlı takip penceresi 1.225 yarışı kapsar; ~%29 Top-1 ve ~%62 Top-3 isabet de, ıskaladığı yerler de aynı ekranda durur. Her tahminin yanında onu neyin sürüklediği yazılıdır.",
+      "lede": "Şeffaf AI at yarışı analiz platformu. Modelin sıralamaları, gerekçeleri ve geçmiş sonuçları birlikte gösterilir. Tarihli performans kayıtlarını ve ölçüm kapsamını aşağıdaki kanıt bölümünde inceleyebilirsiniz.",
       "s1Kicker": "01 — Ne yapar, ne yapmaz",
       "a1Title": "Yarışı okur, kupon vermez.",
       "a1Body": "Platform bir yarışın verisini alır, modelin sıralamasını ve bu sıralamayı oluşturan etkenleri gösterir. Bahis oranı üretmez, kupon önermez, garanti vermez. Karar kullanıcıdadır.",
@@ -324,16 +324,16 @@
       "note": "Backtest, modelin eğitiminde görmediği ileri tarihli yarışlar üzerinde çalıştırılır. Dışlanan yarışlar ve veri aralığı yöntem notunda listelenir.",
       "interfaceNote": "Gerçek ekran görüntüsü üretimden alınır, yeniden çizilmez.",
       "ctaTitle": "Sayılara kendiniz bakın.",
-      "ctaBody": "Platform açık: aynı yarışın analizini, modelin gerekçesini ve geçmiş isabet dökümünü kayıt olmadan görebilirsiniz.",
+      "ctaBody": "Burun Farkı bağlantısından erişimi kontrol edebilir, sorularınızı e-postayla iletebilirsiniz.",
       "ctaPrimary": "Platformu aç",
-      "ctaSecondary": "Yöntem notu",
+      "ctaSecondary": "E-posta ile sor",
       "disclaimer": "Burun Farkı bir bahis ürünü değildir, bahis aracılığı yapmaz. Geçmiş performans gelecekteki sonucun güvencesi değildir."
     },
     "braavolabs": {
       "eyebrow": "Ürün 03 · Beta · kapalı davet",
-      "lede": "Ajan ve otomasyon komuta merkezi. Dokuz primitif, on iki LLM sağlayıcısı ve her çalıştırmanın kuruşunu gösteren bir maliyet defteri. Hangi modelin ne harcadığı tahmin edilmez, okunur.",
+      "lede": "Ajan ve otomasyon komuta merkezi. Yeniden kullanılabilir primitifler, çoklu LLM sağlayıcıları ve çalıştırma maliyetlerini gösteren bir defter. Sağlayıcı ve primitif sayılarını tarihli kanıt bölümünde inceleyebilirsiniz.",
       "s1Kicker": "01 — Ne yapar",
-      "a1Title": "Dokuz primitif, geniş (şablonsuz) birleşim uzayı.",
+      "a1Title": "Primitiflerle kurulan otomasyonlar.",
       "a1Body": "Otomasyonlar hazır şablonlardan değil, birkaç temel yapı taşından kurulur. Her taş tek bir işi yapar; akış bu taşların dizilişinden doğar ve okunabilir kalır.",
       "a2Title": "Maliyet sürpriz değildir.",
       "a2Body": "Her çalıştırmanın hangi sağlayıcıda kaç token harcadığı ve karşılığındaki tutar defterde durur. Sağlayıcı değiştirmek bir ayar; yeniden yazım gerekmez.",
@@ -349,9 +349,9 @@
       "note": "",
       "interfaceNote": "Gerçek ekran görüntüsü beta yapısından alınır.",
       "ctaTitle": "Beta kapalı davetle ilerliyor.",
-      "ctaBody": "Sıra listesine yazıldığınızda ne zaman ve neden davet edildiğinizi açıkça yazıyoruz. Hazır olmayan bir şeyi herkese açmıyoruz.",
-      "ctaPrimary": "Beta sırasına yazıl",
-      "ctaSecondary": "Teknik notlar",
+      "ctaBody": "Ürün erişimini Braavolabs üzerinden kontrol edebilir, kurulum ve kullanım sorularınızı e-posta ile iletebilirsiniz.",
+      "ctaPrimary": "Braavolabs’ı aç",
+      "ctaSecondary": "E-posta ile sor",
       "disclaimer": ""
     },
     "gravita": {
@@ -360,13 +360,13 @@
       "s1Kicker": "01 — Ne yapar",
       "a1Title": "On hata değil, tek hata.",
       "a1Body": "Kamera her denemeni izler; seni en çok geride tutan tek şeyi söyler. Aynı anda on düzeltme değil, sırayla bir tane — ilerleme böyle kalıcı olur.",
-      "a2Title": "Cihazda kalır, cihazda işlenir.",
-      "a2Body": "Kamera analizi telefonunda çalışır. Ham video cihazından çıkmaz; yalnız ölçüm ve geri bildirim sende kalır.",
+      "a2Title": "Hedef: cihazda kamera analizi.",
+      "a2Body": "Gravita geliştirme aşamasında. Kamera analizini telefonda çalıştırmayı hedefliyoruz. İlk sürümün işlediği, sakladığı ve aktardığı veriler sürüme ait gizlilik bilgilerinde açıklanacak.",
       "s2Kicker": "02 — Yöntem",
       "r1k": "Girdi",
       "r1v": "Telefon kamerası",
       "r2k": "Analiz",
-      "r2v": "Cihazda işlenir",
+      "r2v": "Cihazda analiz hedefi · geliştirme aşamasında",
       "r3k": "Çıktı",
       "r3v": "Tek hata · ölçülebilir ilerleme",
       "r4k": "Durum",
@@ -431,16 +431,16 @@
     },
     "ostinato": {
       "eyebrow": "Ürün 07 · Yakında · Pratik koçu",
-      "lede": "Kamera ve mikrofonla postürünü ve temel tekniğini analiz eden bir enstrüman pratik koçu. Öğretmensiz geçen pratik saatlerini ölçülebilir kılar — ilk enstrümanı çello.",
-      "s1Kicker": "01 — Ne yapar",
-      "a1Title": "Postürünü, tekniğini izler.",
-      "a1Body": "Kamera oturuşunu ve enstrüman tutuşunu izler; mikrofon çıkan sesi dinler. Temel teknik hataları erken, yerleşmeden yakalar.",
-      "a2Title": "Öğretmensiz saatler artık sayılır.",
-      "a2Body": "Ders arası geçen pratik saatlerini kayda geçirir. İlerleme bir hisse değil, zamanla biriken bir ölçüme dönüşür.",
-      "s2Kicker": "02 — Yöntem",
-      "r1k": "Girdi",
+      "lede": "Kamera ve ses analizini birleştiren bir enstrüman pratik koçu geliştiriyoruz. Hedefimiz, öğretmensiz geçen pratik saatlerini ölçülebilir kılmak; ilk odak çello.",
+      "s1Kicker": "01 — Geliştirme hedefleri",
+      "a1Title": "Postür ve teknik için geri bildirim.",
+      "a1Body": "Kamera ve mikrofon girdilerini birleştirerek oturuş, enstrüman tutuşu ve temel teknik çalışmasını desteklemeyi hedefliyoruz.",
+      "a2Title": "Dersler arasındaki pratiği görünür kılmak.",
+      "a2Body": "Pratik süresini ve zaman içindeki ilerlemeyi takip edebileceğiniz araçlar üzerinde çalışıyoruz. Kullanılabilir yetenekler ilk sürümle açıklanacak.",
+      "s2Kicker": "02 — Planlanan yöntem",
+      "r1k": "Planlanan girdi",
       "r1v": "Kamera + mikrofon",
-      "r2k": "Analiz",
+      "r2k": "Hedeflenen analiz",
       "r2v": "Postür · temel teknik",
       "r3k": "Enstrüman",
       "r3v": "Çello (ilk)",
@@ -483,7 +483,9 @@
     "claimsLapsedHeading": "Yeniden doğrulanmalı",
     "claimsLapsedNote": "Bu iddiaların doğrulama süresi doldu. Yanlış oldukları anlamına gelmez — yalnızca kimsenin yakın zamanda yeniden kontrol etmediği anlamına gelir, bu yüzden güncel sayılmıyorlar.",
     "statVerified": "doğrulama",
-    "statNeedsReverification": "yeniden doğrulanmalı"
+    "statNeedsReverification": "yeniden doğrulanmalı",
+    "availabilityUnverified": "Yayın durumu yeniden doğrulanmalı",
+    "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz."
   },
   "leadForm": {
     "name": "Ad",
@@ -509,8 +511,8 @@
     "sentBody": "Mesajın kaydedildi. Şu anda otomatik e-posta göndermiyoruz, bu yüzden aşağıdaki referans numarasını saklaman işine yarar.",
     "reference": "Referans",
     "errors": {
-      "closed": "Form şu anda kapalı. Bu sayfadaki e-posta adreslerinden bize ulaşabilirsin.",
-      "rateLimited": "Kısa sürede çok fazla deneme oldu. Bir dakika sonra tekrar dene.",
+      "closed": "Form şu anda kapalı. Bu sayfadaki e-posta adresinden bize ulaşabilirsin.",
+      "rateLimited": "Başvuru sınırına ulaşıldı. Daha sonra tekrar deneyin veya e-postayla iletişime geçin.",
       "unavailable": "Mesajı şu anda kaydedemiyoruz. Lütfen e-posta ile ulaş.",
       "tooLarge": "Mesaj fazla uzun.",
       "offline": "Sunucuya ulaşılamadı. Bağlantını kontrol edip tekrar dene.",
@@ -629,7 +631,7 @@
         "name-long": "Ad çok uzun.",
         "problem": "Çözmek istediğiniz problemi yazın.",
         "problem-long": "Açıklama çok uzun; kısaltır mısınız?",
-        "rate": "Çok fazla deneme yapıldı; biraz sonra tekrar deneyin.",
+        "rate": "Başvuru sınırına ulaşıldı. Daha sonra tekrar deneyin veya e-postayla iletişime geçin.",
         "server": "Gönderilemedi; lütfen tekrar deneyin.",
         "timing": "Başlama zamanını seçin."
       },

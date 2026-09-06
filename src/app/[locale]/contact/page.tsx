@@ -98,27 +98,19 @@ function Contact({
         </section>
       ) : null}
 
-      <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-6 pb-12 grid grid-cols-1 md:grid-cols-2 gap-5">
+      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-6 pb-12">
         <MailCard
           label={t("generalLabel")}
           address={company.contact.email}
           hint={t("generalHint")}
           accent="#C3F400"
         />
-        {company.contact.press ? (
-          <MailCard
-            label={t("pressLabel")}
-            address={company.contact.press}
-            hint={t("pressHint")}
-            accent="#FAB81F"
-          />
-        ) : null}
       </section>
 
       {/* A project enquiry sent here costs the sender a round trip: the reply
           is three qualifying questions /studio already asks. Pointing at it is
           the whole modification the roadmap asks of this page — the general
-          addresses stay, because not every message is a project. */}
+          address stays, because not every message is a project. */}
       {studioEnabled ? (
         <section className="relative max-w-5xl mx-auto px-6 lg:px-10 pt-6 pb-6">
           <div className="glass p-7">

@@ -55,8 +55,7 @@ export const company: CompanyConfig = {
     email: "kocakmkaan@gmail.com",
   },
   contact: {
-    email: "merhaba@yulalab.com",
-    press: "press@yulalab.com",
+    email: "support@yulalab.com",
   },
   socials: {
     // linkedin: temporarily removed — the /company/yulalab page 404s

@@ -11,16 +11,16 @@ export const ostinato: ProjectConfig = {
     en: "Instrument & Music Practice Coach",
   },
   tagline: {
-    tr: "Öğretmensiz pratik, artık ölçülebilir.",
-    en: "Practice without a teacher, now measurable.",
+    tr: "Öğretmensiz pratiği ölçülebilir kılmak için.",
+    en: "Towards measurable practice without a teacher.",
   },
   description: {
-    tr: "Ostinato, kamera ve mikrofonla postürünü ve temel tekniğini analiz eden bir enstrüman pratik koçu. Öğretmensiz geçen pratik saatlerini ölçülebilir kılar — ilk enstrümanı çello.",
-    en: "Ostinato is an instrument-practice coach that analyzes your posture and fundamental technique through camera and microphone. It makes your unsupervised practice hours measurable — starting with cello.",
+    tr: "Kamera ve ses analizini birleştiren bir enstrüman pratik koçu geliştiriyoruz. Hedefimiz, öğretmensiz geçen pratik saatlerini ölçülebilir kılmak; ilk odak çello.",
+    en: "We are developing an instrument-practice coach that combines camera and audio analysis. Our goal is measurable practice between lessons, starting with cello.",
   },
   short: {
-    tr: "Kamera + mikrofonla postür ve temel tekniği analiz eder; öğretmensiz pratiği ölçülebilir kılar. İlk enstrüman: çello.",
-    en: "Analyzes posture and fundamental technique via camera + mic; makes unsupervised practice measurable. First instrument: cello.",
+    tr: "Kamera ve ses analizini birleştirecek bir pratik koçu geliştiriyoruz. İlk odak: çello.",
+    en: "An instrument-practice coach in development, combining camera and audio analysis. First focus: cello.",
   },
   brand: {
     primary: "#D8A657",
@@ -43,32 +43,32 @@ export const ostinato: ProjectConfig = {
     {
       title: { tr: "Postür analizi", en: "Posture analysis" },
       description: {
-        tr: "Kamera oturuşunu ve enstrüman tutuşunu izler; zamanla yerleşen kötü alışkanlıkları erken yakalar.",
-        en: "The camera watches your seating and hold; it catches bad habits early, before they settle in.",
+        tr: "Hedef: kamerayla oturuş ve enstrüman tutuşunu izleyerek postür çalışmasını desteklemek.",
+        en: "Goal: support posture practice by observing seating and instrument hold through the camera.",
       },
       icon: "Eye",
     },
     {
       title: { tr: "Temel teknik kontrolü", en: "Fundamental technique checks" },
       description: {
-        tr: "Yay tutuşu, el pozisyonu gibi temel teknik unsurları kamera ve mikrofonla birlikte değerlendirir.",
-        en: "Evaluates fundamentals like bow hold and hand position using camera and microphone together.",
+        tr: "Hedef: yay tutuşu ve el pozisyonu gibi teknik unsurları görüntü ve sesle birlikte değerlendirmek.",
+        en: "Goal: evaluate fundamentals such as bow hold and hand position using video and audio together.",
       },
       icon: "Microscope",
     },
     {
       title: { tr: "Ölçülebilir pratik saatleri", en: "Measurable practice hours" },
       description: {
-        tr: "Öğretmensiz geçen her pratik saatini kayda geçirir; ilerleme zamanla sayılarla görünür.",
-        en: "Logs every unsupervised practice hour; progress becomes visible as numbers over time.",
+        tr: "Hedef: dersler arasındaki pratik süresini ve zaman içindeki ilerlemeyi görünür kılmak.",
+        en: "Goal: make practice time between lessons and progress over time visible.",
       },
       icon: "TrendingUp",
     },
     {
       title: { tr: "Kamera + mikrofon", en: "Camera + microphone" },
       description: {
-        tr: "Görüntü ve sesi birlikte okur — sadece duruşu değil, çıkan sesi de değerlendirmenin parçası yapar.",
-        en: "Reads video and audio together — what you sound like is part of the evaluation too, not just how you sit.",
+        tr: "Görüntü ve sesin birlikte değerlendirilmesi üzerinde çalışıyoruz; kullanılabilir yetenekler ilk sürümle açıklanacak.",
+        en: "We are working on combined video and audio assessment; available capabilities will be documented with the first release.",
       },
       icon: "Cpu",
     },

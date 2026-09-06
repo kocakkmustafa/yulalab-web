@@ -19,8 +19,8 @@ export const gravita: ProjectConfig = {
     en: "Gravita is a movement coach that analyzes your handstand and bodyweight-skill attempts through your phone's camera. Each try, it names the single flaw holding you back most and moves you forward with a measurable progression plan.",
   },
   short: {
-    tr: "Kamera kayıtlarını cihazda analiz eden bir handstand & vücut becerisi koçu. En önemli hatanı söyler, ölçülebilir ilerlemeyle seni bir sonraki seviyeye taşır.",
-    en: "An on-device handstand and bodyweight-skills coach. Names your single biggest flaw and moves you forward with measurable progression.",
+    tr: "Cihazda kamera analizi hedefiyle geliştirilen bir handstand ve vücut becerisi koçu. Tek hataya odaklanan geri bildirim ve ölçülebilir ilerleme üzerine çalışıyoruz.",
+    en: "A handstand and bodyweight-skills coach in development, with on-device camera analysis as a goal. We are working on focused feedback and measurable progression.",
   },
   brand: {
     primary: "#FF6A45",
@@ -57,10 +57,10 @@ export const gravita: ProjectConfig = {
       icon: "TrendingUp",
     },
     {
-      title: { tr: "Cihazda işlenir", en: "Processed on-device" },
+      title: { tr: "Cihazda analiz hedefi", en: "On-device analysis goal" },
       description: {
-        tr: "Kamera analizi telefonunda çalışır. Ham video cihazından çıkmaz.",
-        en: "Camera analysis runs on your phone. Raw video never leaves the device.",
+        tr: "Kamera analizini telefonda çalıştırmayı hedefliyoruz. Veri işleme, saklama ve aktarım kapsamı ilk sürümün gizlilik bilgilerinde açıklanacak.",
+        en: "We aim to run camera analysis on the phone. The first release's privacy information will explain its data processing, storage and transfers.",
       },
       icon: "Lock",
     },
@@ -75,10 +75,6 @@ export const gravita: ProjectConfig = {
   ],
   stats: [
     { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    {
-      value: "0",
-      label: { tr: "Cihaz dışına çıkan ham video", en: "Raw video leaving the device" },
-    },
   ],
   vision: {
     tr: "Herkesin, kişisel bir hareket koçuna cebinden ulaşabildiği bir dünya.",

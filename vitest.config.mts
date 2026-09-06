@@ -10,12 +10,11 @@ export default defineConfig({
   test: {
     environment: "node",
     include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
-    // Eight suites open real PostgreSQL pools while the remaining files can
-    // also exercise jsdom and route handlers. Letting Vitest mirror a large
-    // host CPU count oversubscribes those pools and turns 5-second flood tests
-    // into machine-dependent timeouts; four workers retains file isolation
-    // while keeping the standard local and CI command deterministic.
-    maxWorkers: 4,
+    // DB fixtures use separate schemas but share PostgreSQL catalogs. A
+    // different suite's DROP can race migration constraint introspection.
+    // Serialize files; explicit concurrent clients inside the security and
+    // admission tests still exercise the real locking/race boundaries.
+    fileParallelism: false,
   },
   resolve: {
     alias: {

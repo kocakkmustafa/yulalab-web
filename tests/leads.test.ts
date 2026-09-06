@@ -115,6 +115,18 @@ describe("a valid lead", () => {
 });
 
 describe("the transaction is real", () => {
+  it("treats a failed rollback after capacity rejection as storage failure", async () => {
+    const now = new Date("2026-08-19T10:00:00Z");
+    for (let i = 0; i < 20; i += 1) {
+      await createLead(pool, { ...VALID, message: `Message ${i}` }, { now });
+    }
+    await expect(createLead(poolFailingOn(pool, "ROLLBACK"), {
+      ...VALID, message: "Another message",
+    }, { now })).rejects.toMatchObject({ name: "LeadTransactionError" });
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(20);
+    expect(pool.waitingCount).toBe(0);
+  });
+
   it("writes NOTHING when the outbox insert fails", async () => {
     // A mail provider outage must not lose the lead, and a failed write must
     // not leave a lead with no receipt queued. Both go together or neither.

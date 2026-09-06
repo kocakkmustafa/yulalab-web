@@ -54,7 +54,7 @@ const LEADS: Record<string, { tr: string; en: string }> = {
   message: { tr: "mesajınızın kendisi", en: "your message itself" },
   locale: { tr: "sayfanın dili", en: "the page language" },
   status: { tr: "talebin bizdeki durumu", en: "the status of the request on our side" },
-  retention_until: { tr: "silineceği tarih", en: "the date it will be deleted" },
+  retention_until: { tr: "saklama süresinin sona erdiği tarih", en: "the retention expiry date" },
   dedupe_key: { tr: "eşleştirme değeri", en: "a matching value" },
 };
 

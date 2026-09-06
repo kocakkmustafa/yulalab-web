@@ -14,7 +14,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const isTR = locale === "tr";
   return {
-    title: isTR ? "Destek · YULA Lab" : "Support · YULA Lab",
+    title: isTR ? "Destek" : "Support",
     description: isTR
       ? "Braavolabs, Burun Farkı, LifeOS ve Motion uygulamaları için destek ve sıkça sorulan sorular."
       : "Support and FAQ for Braavolabs, Burun Farkı, LifeOS, and the Motion apps.",
@@ -52,23 +52,23 @@ function Support() {
 
           <p className="mt-7 max-w-[52ch] text-[16.5px] md:text-[17.5px] leading-[1.6] text-ink-300">
             {isTR
-              ? "Tüm ürünlerimizin destek talepleri merhaba@yulalab.com adresine gelir. Mesajlarınıza genellikle 48 saat içinde dönüyoruz; acil bir konu olduğunda satır başına 'ACIL' yazmanız yeterli."
-              : "Support requests for all our products go to merhaba@yulalab.com. We usually respond within 48 hours; for urgent matters, lead your message with 'URGENT'."}
+              ? "Tüm ürünlerimizin destek talepleri support@yulalab.com adresine gelir. Mesajlarınıza genellikle 48 saat içinde dönüyoruz; acil bir konu olduğunda satır başına 'ACIL' yazmanız yeterli."
+              : "Support requests for all our products go to support@yulalab.com. We usually respond within 48 hours; for urgent matters, lead your message with 'URGENT'."}
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
             <a
-              href="mailto:merhaba@yulalab.com"
+              href="mailto:support@yulalab.com"
               className="group block rounded-2xl border border-white/15 hover:border-white/30 hover:bg-white/[0.04] p-6 transition-colors focusable"
             >
               <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
                 {isTR ? "E-posta" : "Email"}
               </div>
               <div className="mt-4 font-display text-[22px] text-ink-50">
-                merhaba@yulalab.com
+                support@yulalab.com
               </div>
               <div className="mt-3 text-sm text-ink-300">
-                {isTR ? "48 saat içinde yanıt" : "Reply within 48 hours"}
+                {isTR ? "Genellikle 48 saat içinde yanıt" : "Usually replies within 48 hours"}
               </div>
             </a>
 
@@ -95,18 +95,15 @@ function Support() {
               {isTR ? "Sıkça sorulanlar" : "Frequently asked"}
             </div>
             <div className="space-y-8">
-              {/* Placed first on purpose: the subscription and account-deletion
-                  answers below describe Braavolabs/LifeOS/Burun Farkı. The five
-                  Motion apps have neither accounts nor purchases, so a Motion
-                  user following those steps would look for a screen that does
-                  not exist. Stating the exception before the rule prevents that. */}
+              {/* Explain product scope before the store/account workflows below. */}
               <FAQ
                 q={isTR
                   ? "Motion uygulamaları (Choreia · Lissom · Gravita · JabLab · Ostinato) için de bunlar geçerli mi?"
                   : "Do these apply to the Motion apps (Choreia · Lissom · Gravita · JabLab · Ostinato)?"}
                 a={isTR
-                  ? "Kısmen. Motion uygulamalarında hesap yoktur, giriş yapmazsınız ve şu an satın alınacak bir şey yoktur — dolayısıyla aşağıdaki abonelik, hesap silme ve geri ödeme adımları bu beş uygulama için geçerli değildir. Verinizin tamamı cihazınızda durur; uygulamayı silmek onu da siler. Kamera görüntüsü telefonunuzdan hiç çıkmaz. Ayrıntı: /privacy/motion"
-                  : "Partly. The Motion apps have no accounts, no sign-in, and nothing to purchase right now — so the subscription, account-deletion, and refund steps below do not apply to these five. All of your data stays on your device; deleting the app deletes it. The camera image never leaves your phone. Details: /privacy/motion"}
+                  ? "Aşağıdaki abonelik, hesap silme ve geri ödeme adımları her Motion ürünü için ortak bir akış değildir. Kullandığınız uygulama ve sürümün gizlilik kapsamını kontrol edin; destek talebinizde uygulama adı ve sürümünü belirtin."
+                  : "The subscription, account-deletion and refund steps below are not a shared workflow for every Motion product. Check the privacy scope for your app and version, and include both in your support request."}
+                links={[{ href: "/privacy/motion", label: isTR ? "Motion gizlilik bilgileri" : "Motion privacy information" }]}
               />
               <FAQ
                 q={isTR ? "Aboneliğimi nasıl iptal ederim?" : "How do I cancel my subscription?"}
@@ -117,38 +114,48 @@ function Support() {
               <FAQ
                 q={isTR ? "Hesabımı nasıl silerim?" : "How do I delete my account?"}
                 a={isTR
-                  ? "Uygulama içinden Ayarlar > Hesap > Hesabı Sil. Veriniz 30 gün içinde sunucularımızdan silinir; cihaz verisi anında silinir. Alternatif olarak merhaba@yulalab.com adresine mail atabilirsiniz."
-                  : "From within the app: Settings > Account > Delete account. Server-side data is removed within 30 days; device data is deleted immediately. Alternatively email merhaba@yulalab.com."}
+                  ? "Hesap silme yolu ve silinecek kayıtların kapsamı ürüne göre değişir. İlgili ürünün gizlilik bilgilerini kontrol edin veya uygulama adı ve sürümüyle support@yulalab.com adresine yazın. Braavolabs’ta başka üyeleri olan çalışma alanı kayıtları kalabilir. Aboneliği iptal etmek ayrı bir işlemdir."
+                  : "Account-deletion steps and the records affected vary by product. Check the product privacy information or email support@yulalab.com with the app name and version. In Braavolabs, workspace records can remain when other members still belong to that workspace. Subscription cancellation is a separate action."}
               />
               <FAQ
                 q={isTR ? "Geri ödeme alabilir miyim?" : "Can I get a refund?"}
                 a={isTR
                   ? "Abonelik ödemeleri Apple ve Google tarafından yönetildiği için geri ödemeler de onların üzerinden işlenir. Apple için reportaproblem.apple.com, Google için play.google.com/store/account/orderhistory üzerinden talep gönderebilirsiniz. Mağaza kararlarına müdahalemiz yoktur; ancak bir tartışma olursa biz de inceleyip destek olmaya çalışırız."
                   : "Because Apple and Google manage subscription payments, refunds also go through them. For Apple use reportaproblem.apple.com; for Google use play.google.com/store/account/orderhistory. We cannot override store decisions, but if there's a dispute we'll review and try to help."}
+                links={[
+                  { href: "https://reportaproblem.apple.com", label: isTR ? "Apple geri ödeme talebi" : "Request an Apple refund" },
+                  { href: "https://play.google.com/store/account/orderhistory", label: isTR ? "Google Play sipariş geçmişi" : "Google Play order history" },
+                ]}
               />
               <FAQ
                 q={isTR ? "Verim güvende mi?" : "Is my data safe?"}
                 a={isTR
-                  ? "Her ürünün detaylı gizlilik politikasını /privacy adresinden okuyabilirsiniz. Kısa cevap: iletişim TLS ile şifrelenir; LifeOS özelinde cihaz verisi SQLCipher + AES-256 ile şifrelenir; Motion uygulamalarında kamera görüntüsü cihazdan hiç çıkmaz; reklam yok, model eğitimi için kullanılmıyor."
-                  : "You can read each product's detailed privacy policy at /privacy. Short answer: traffic is TLS-encrypted; LifeOS specifically encrypts on-device data with SQLCipher + AES-256; in the Motion apps the camera image never leaves your device; no ads, no use for model training."}
+                  ? "Ürünlerin gizlilik bilgilerini aşağıdaki bağlantıdan okuyabilirsiniz. Kısa cevap: iletişim TLS ile şifrelenir; LifeOS özelinde cihaz verisi SQLCipher + AES-256 ile şifrelenir. Motion ürünleri için uygulama ve sürüme özgü kapsam ayrı açıklanır."
+                  : "You can read the product privacy information using the link below. Short answer: traffic is TLS-encrypted; LifeOS specifically encrypts on-device data with SQLCipher + AES-256. The scope for Motion products is described separately by app and version."}
+                links={[{ href: "/privacy", label: isTR ? "Gizlilik politikaları" : "Privacy policies" }]}
               />
               <FAQ
                 q={isTR ? "Bir hata buldum, nereye bildiririm?" : "I found a bug — where do I report it?"}
                 a={isTR
-                  ? "merhaba@yulalab.com adresine yazabilir veya ilgili uygulamanın GitHub Issues sayfasına bildirebilirsiniz (kamu repo'ları). Hata raporunda cihaz modeli, OS sürümü, uygulama sürümü ve hatanın adımlarını paylaşmanız çözümü hızlandırır."
-                  : "Email merhaba@yulalab.com or open an issue in the relevant app's public GitHub repo. Including device model, OS version, app version, and reproduction steps speeds up resolution."}
+                  ? "support@yulalab.com adresine yazabilir veya ilgili uygulamanın GitHub Issues sayfasına bildirebilirsiniz (kamu repo'ları). Hata raporunda cihaz modeli, OS sürümü, uygulama sürümü ve hatanın adımlarını paylaşmanız çözümü hızlandırır."
+                  : "Email support@yulalab.com or open an issue in the relevant app's public GitHub repo. Including device model, OS version, app version, and reproduction steps speeds up resolution."}
               />
               <FAQ
                 q={isTR ? "Birden fazla cihazda kullanabilir miyim?" : "Can I use it on multiple devices?"}
                 a={isTR
-                  ? "Apple App Store / Google Play aile paylaşımını destekliyoruz. Aynı Apple ID veya Google hesabı altındaki cihazlarda aboneliğiniz otomatik aktif olur."
-                  : "We support Apple App Store / Google Play family sharing. Subscriptions activate automatically on devices signed into the same Apple ID or Google account."}
+                  ? "Aynı mağaza hesabıyla birden fazla cihaz kullanmak, aile üyeleriyle satın alma paylaşımından farklıdır. Yeni cihazda satın alırken kullandığınız mağaza hesabıyla giriş yapın; erişim görünmüyorsa satın alımları geri yükleme seçeneğini kullanın veya bize yazın. Google Play Aile Kitaplığı uygulama içi satın almaları paylaşmaz. Apple'da aile paylaşımı yalnız uygun satın alma ve abonelikler için geçerlidir; satın alma ekranındaki koşulları kontrol edin."
+                  : "Using several devices with the same store account is different from sharing purchases with family members. Sign in on the new device with the store account used for the purchase; if access is missing, use the restore-purchases option or contact us. Google Play Family Library does not share in-app purchases. On Apple, family sharing applies only to eligible purchases and subscriptions; check the terms shown when purchasing."}
+                links={[
+                  { href: "https://support.apple.com/en-us/108107", label: isTR ? "Apple aile abonelikleri" : "Apple family subscriptions" },
+                  { href: `https://support.google.com/googleplay/answer/7007852?hl=${isTR ? "tr" : "en"}`, label: isTR ? "Google Play Aile Kitaplığı" : "Google Play Family Library" },
+                ]}
               />
               <FAQ
                 q={isTR ? "Hangi platformları destekliyorsunuz?" : "Which platforms do you support?"}
                 a={isTR
-                  ? "Braavolabs ve LifeOS: iOS 13+ ve Android 8+. Burun Farkı: iOS 13+ ve Android 6+. iPad ve Android tablet desteği uygulama bazında değişebilir; App Store / Play Store sayfasında belirtilmiştir."
-                  : "Braavolabs and LifeOS: iOS 13+ and Android 8+. Burun Farkı: iOS 13+ and Android 6+. iPad / Android tablet support varies by app and is listed on each App Store / Play Store page."}
+                  ? "Yayımlanmış iPhone sürümlerinde Braavolabs iOS 17.0+, LifeOS iOS 16.0+ gerektirir. İndirilebilir sürümler ve mağaza bağlantıları ilgili ürün sayfasında yer alır. Android, iPad ve tablet uyumluluğu ürün ve sürüme göre değişir; indirmeden önce mağaza sayfasındaki cihaz gereksinimlerini kontrol edin."
+                  : "The published iPhone versions require iOS 17.0+ for Braavolabs and iOS 16.0+ for LifeOS. Available releases and store links are listed on each product page. Android, iPad, and tablet compatibility varies by product and release; check the device requirements on the store listing before downloading."}
+                links={[{ href: "/projects", label: isTR ? "Ürünler ve indirme bağlantıları" : "Products and download links" }]}
               />
             </div>
           </div>
@@ -161,10 +168,10 @@ function Support() {
             </p>
             <div className="mt-4">
               <a
-                href="mailto:merhaba@yulalab.com"
+                href="mailto:support@yulalab.com"
                 className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-900 pl-5 pr-4 py-3 text-[14px] font-medium hover:bg-ink-100 transition-colors focusable"
               >
-                merhaba@yulalab.com
+                support@yulalab.com
                 <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
               </a>
             </div>
@@ -175,7 +182,7 @@ function Support() {
   );
 }
 
-function FAQ({ q, a }: { q: string; a: string }) {
+function FAQ({ q, a, links = [] }: { q: string; a: string; links?: { href: string; label: string }[] }) {
   return (
     <details className="group">
       <summary className="cursor-pointer list-none flex items-start justify-between gap-4 py-3 border-b border-white/[0.06] hover:border-white/15 transition-colors">
@@ -185,6 +192,19 @@ function FAQ({ q, a }: { q: string; a: string }) {
         <span className="font-mono text-[12px] text-ink-400 group-open:rotate-45 transition-transform mt-1.5">+</span>
       </summary>
       <div className="mt-4 text-[15px] leading-[1.7] text-ink-300">{a}</div>
+      {links.length > 0 && (
+        <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[15px] text-ink-100">
+          {links.map(({ href, label }) => (
+            <li key={href}>
+              {href.startsWith("/") ? (
+                <Link href={href} className="inline-flex min-h-11 items-center underline underline-offset-4 focusable">{label}</Link>
+              ) : (
+                <a href={href} className="inline-flex min-h-11 items-center underline underline-offset-4 focusable">{label}</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
     </details>
   );
 }

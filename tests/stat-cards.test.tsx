@@ -161,19 +161,19 @@ describe("resolving the right claim, not just any claim", () => {
   });
 });
 
-describe("a genuinely unsourced stat", () => {
+describe("a stat without a claim reference", () => {
   it("renders plainly, with no invented provenance", () => {
     const { config } = product("lifeos");
-    const algorithms = config.stats.find((stat) => stat.value === "9+")!;
-    expect(algorithms.claimId).toBeUndefined();
+    const domains = config.stats.find((stat) => stat.value === "5")!;
+    expect(domains.claimId).toBeUndefined();
     renderFor("lifeos", new Date("2026-08-25T12:00:00+03:00"));
-    const card = screen.getByText("9+").closest("div")!.parentElement!;
+    const card = screen.getByText("5").closest("div")!.parentElement!;
     expect(card.textContent).not.toMatch(/verified/i);
   });
 
   it("still renders the value", () => {
     renderFor("lifeos", new Date("2026-08-25T12:00:00+03:00"));
-    expect(screen.getByText("9+")).toBeTruthy();
+    expect(screen.getByText("5")).toBeTruthy();
   });
 });
 
