@@ -640,7 +640,10 @@ test("mobile header keeps the journey navigation reachable", async ({ page }) =>
 
 test("proof ledger leaves wheel ownership with the document", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
-  await openCapture(page, 0.54);
+  const root = await openCapture(page, 0.54);
+  // Mounting precedes WebGL warm-up. Begin input only after the existing
+  // readiness signal, so renderer startup cannot consume the scroll deadline.
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 45_000 });
   const ledger = page.locator('[class*="proofGrid"]');
   const dimensions = await ledger.evaluate((element) => ({
     clientHeight: element.clientHeight,

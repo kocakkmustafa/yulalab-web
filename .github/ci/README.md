@@ -3,8 +3,8 @@
 The release snapshot commit `345bd36c42074e926c1c788baf43300c1f86e561`
 contains all 257 files from the published web source manifest. The CI change
 preserves 251 files verbatim. The six exceptions in `published-files.json`
-are the workflow and Playwright harness: configurable local port and denial of
-external browser DNS. The public application, hosting configuration, runtime
+are the workflow and Playwright harness: configurable local port, denial of
+external browser DNS, and readiness synchronization before wheel input. The public application, hosting configuration, runtime
 dependencies, lockfile, translations, assets, and database code are unchanged.
 
 The Links sibling is pinned to
@@ -20,6 +20,9 @@ artifact checks, and all existing Playwright tests. Local E2E uses port 4189;
 is intentionally not requested. Every assertion remains in the baseline
 test suites; local/browser results do not establish canonical hostname or
 provider behavior.
+The proof-ledger wheel test waits for the existing experience-ready signal
+before input; its five-second scroll assertion and zero internal-scroll check
+remain unchanged. Renderer startup is not part of that interaction assertion.
 
 `netlify/package-lock.json` freezes the build CLI dependency tree independently
 of the product lockfile. Netlify CLI remains pinned to 27.5.0; only the CI
