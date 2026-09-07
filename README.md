@@ -175,16 +175,40 @@ rows changes that accounting and must be considered before such maintenance.
 
 ## Deployment
 
-The existing Git integration publishes `main` to Vercel and creates branch
-previews. As verified on 2026-09-06, production remains at
-[yulalab.com](https://yulalab.com); apex + `www` both point to Vercel
-(`A 76.76.21.21`, `CNAME cname.vercel-dns.com`). MX records are reserved
-for Google Workspace and live alongside the web records.
+[yulalab.com](https://yulalab.com) is hosted on Netlify project `yulalab-web`
+(`65a77e28-286e-415c-a0d1-fab7370a3c57`). The 2026-09-08 provider readback
+confirmed the published deployment `6a9dd77a87eb60ea7fc2fde0`, ready state and
+forced HTTPS. Deployment is manual; this Netlify project has no connected Git
+repository. Domain and Google Workspace MX settings are managed separately.
 
-`netlify.toml` builds the same Next.js app using the pinned
-`@netlify/plugin-nextjs` development dependency. Local adapter verification uses
-Netlify CLI 27.5.0 with `netlify build --offline --context production`; it does
-not publish a site. No Netlify production migration is claimed here.
+Install the frozen product dependencies and independently locked Netlify CLI
+27.5.0 before using the build or deploy commands:
+
+```bash
+pnpm install --frozen-lockfile
+npm ci --prefix .github/ci/netlify --no-audit --no-fund
+node .github/ci/netlify/node_modules/netlify-cli/bin/run.js build --offline --context production
+```
+
+`netlify.toml` uses the pinned `@netlify/plugin-nextjs` adapter. The offline
+build produces the Next.js and Netlify artifacts without publishing them.
+Authenticated access to the existing Netlify projects is required for uploads:
+
+```bash
+pnpm run deploy:preview
+pnpm run deploy
+```
+
+`deploy:preview` builds and uploads a draft to the existing private
+`yulalab-preview` project (`322c6a44-e788-49e4-aa12-a397e0f85d43`), whose
+production and preview access are protected by Netlify Login. Preserve and
+verify that protection before upload. `deploy` builds and publishes to the
+explicit canonical production project above; run it only for the accepted
+candidate under the publication authorization. Both commands use the locked
+CLI and explicit project IDs. Record the actual deploy ID, source revision,
+provider result and canonical browser acceptance after publishing; a build or
+CI result alone is not publication evidence. Keep the prior deployment receipt
+for rollback.
 
 Vercel Web Analytics is rendered only when the platform exposes `VERCEL=1`.
 Local and non-Vercel builds do not request the provider-specific
@@ -192,10 +216,9 @@ Local and non-Vercel builds do not request the provider-specific
 provider to enable analytics; any replacement needs its own implementation
 and privacy review.
 
-The intended hosting policy is free tier only. Confirm commercial-use terms,
-account plan and hard usage limits before migration. Preserve ISR, API and
-verification CSP behavior, and retain the previous deployment/DNS values for
-rollback. `vercel.json` cron entries are Vercel-specific: they do not schedule
+The hosting policy is free tier only; keep deployments within the Free
+allowance and do not enable paid overage. Preserve ISR, API and verification CSP behavior.
+`vercel.json` cron entries are Vercel-specific: they do not schedule
 jobs on Netlify. Configuring an alternative scheduler and proving delivery and
 retention are prerequisites for activating those server workflows there.
 

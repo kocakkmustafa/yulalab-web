@@ -16,8 +16,8 @@
     "verify:claims": "tsx scripts/verify-public-registry.ts",
     "verify:links": "tsx scripts/verify-public-links.ts",
     "verify:claims:local": "node scripts/verify-claims-local.mjs",
-    "deploy": "vercel --prod",
-    "deploy:preview": "vercel",
+    "deploy": "node .github/ci/netlify/node_modules/netlify-cli/bin/run.js deploy --prod --context production --site 65a77e28-286e-415c-a0d1-fab7370a3c57",
+    "deploy:preview": "node .github/ci/netlify/node_modules/netlify-cli/bin/run.js deploy --context deploy-preview --site 322c6a44-e788-49e4-aa12-a397e0f85d43",
     "verify:render-mode": "node scripts/verify-render-mode.mjs"
   },
   "dependencies": {

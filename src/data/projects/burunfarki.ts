@@ -156,5 +156,5 @@ export const burunfarki: ProjectConfig = {
     { kind: "instagram", href: "https://instagram.com/burunfarki" },
     { kind: "youtube", href: "https://youtube.com/@burunfarki" },
   ],
-  contactEmail: "press@burunfark.com",
+  contactEmail: "support@yulalab.com",
 };

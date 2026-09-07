@@ -2,10 +2,21 @@
 
 The release snapshot commit `345bd36c42074e926c1c788baf43300c1f86e561`
 contains all 257 files from the published web source manifest. The CI change
-preserves 251 files verbatim. The six exceptions in `published-files.json`
+originally preserved 251 files verbatim. The six exceptions in `published-files.json`
 are the workflow and Playwright harness: configurable local port, denial of
-external browser DNS, and readiness synchronization before wheel input. The public application, hosting configuration, runtime
-dependencies, lockfile, translations, assets, and database code are unchanged.
+external browser DNS, and readiness synchronization before wheel input.
+The publication baseline remains immutable. Intentional product changes are
+listed separately in `reviewed-source-changes.json`, with the baseline and
+candidate SHA-256, a review reason, and the permanent evidence class
+`CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE`. The verifier
+requires each unique changed path to exist in the baseline, its old hash to
+match, and its current bytes to match the reviewed candidate hash. Every other
+baseline file remains byte-identical. This candidate aligns the Burun Farki
+project contact with `support@yulalab.com`, points the package deploy commands
+at the existing Netlify production/private preview projects, and updates the
+deployment documentation. Hosting configuration, dependencies, lockfile,
+translations, assets and database code are unchanged. Passing this check is
+not a deployment receipt.
 
 The Links sibling is pinned to
 `1c307de4a3e6ce5a017692509ac14e479528faf5`. Push that existing commit to its
@@ -52,6 +63,6 @@ There is no deploy or merge step in these workflows. A successful local run
 is not a GitHub runner receipt. Review the actual run's checkout SHA, sibling
 SHA, job/step results, and artifacts before recording useful CI acceptance.
 
-Future intentional product changes require an updated source manifest and
-an explicit review of the publication relationship; the current manifest is
-a release snapshot assertion, not a claim that future source is unchanged.
+Future intentional product changes require an exact reviewed delta and an
+explicit review of the publication relationship. Keep historical manifests
+intact; record actual publication acceptance in a separate deploy receipt.

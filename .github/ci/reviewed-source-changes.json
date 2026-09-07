@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "publicationBaselineManifestSha256": "13988697d1af4522076c1607886e29f0eb08af3a391eafe78ffa8540cd6c4931",
+  "changes": [
+    {
+      "path": "src/data/projects/burunfarki.ts",
+      "publishedSha256": "56dd03bad167b0fc7078b53dfe765975f9300b8500dc27cdd7521087824c876b",
+      "candidateSha256": "74f6c9469c8247da432a9785deac9f767e46a8aaa09e18ab2a5454b6d3114834",
+      "reason": "Align the Burun Farki project contact on both YULALAB locales with the user-approved support@yulalab.com address.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "package.json",
+      "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
+      "candidateSha256": "fbc0439610c7172243a22983bb3f4876a6f1d5b8fa9b6632288d83f6f5d20779",
+      "reason": "Route normal deployment commands through locked Netlify CLI and explicit existing canonical production/private preview project IDs.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "README.md",
+      "publishedSha256": "ba4212bed0476cc6bf3cd30d23251f1211eabb931fb14c58eb0ea1d73420f0ea",
+      "candidateSha256": "431d9f9acc6e7cf4a8e0d578afa8ed8bb6a1f9b5cf705da647e4ba8c8d844aef",
+      "reason": "Replace historical Vercel hosting instructions with the verified Netlify publication state, locked CLI prerequisites and explicit release commands.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    }
+  ]
+}

@@ -65,7 +65,7 @@ jobs:
           pnpm --version
           python3 --version
           uname -a
-      - name: Verify published source bytes in both repos
+      - name: Verify web publication baseline and reviewed delta; unchanged Links
         run: |
           python3 .github/ci/verify-published-source.py
           python3 ../links/.github/ci/verify-published-source.py
@@ -112,7 +112,7 @@ jobs:
         run: pnpm audit --audit-level high
       - name: Dependency audit (locked Netlify CLI, high+)
         run: npm audit --prefix .github/ci/netlify --audit-level high
-      - name: Verify published bytes after build and tests
+      - name: Verify candidate source bytes after build and tests
         run: |
           python3 .github/ci/verify-published-source.py
           python3 ../links/.github/ci/verify-published-source.py
