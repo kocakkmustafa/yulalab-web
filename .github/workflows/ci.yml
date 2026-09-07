@@ -73,6 +73,8 @@ jobs:
         run: |
           (cd ../links && python3 .github/ci/static-contract.py)
           python3 ../links/.github/ci/netlify-contract.py "$RUNNER_TEMP/links-static" > "$RUNNER_TEMP/links-static-manifest.json"
+      - name: Netlify artifact contract regression fixtures with Python optimization
+        run: python3 -B -O .github/ci/test-netlify-contract.py
       - name: Install frozen product dependencies
         run: pnpm install --frozen-lockfile
       - name: Install locked offline build CLI

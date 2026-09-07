@@ -47,6 +47,31 @@ platform and architecture, validates the adapter function/edge bundles and
 the registry bytes, and records their hashes. It does not execute those
 bundles in a production provider runtime.
 
+The artifact contract accepts the pinned adapter's single `eszip2` bundle or
+one `eszip2` plus one `tar` bundle, in either order. Both forms must retain the
+same single middleware route and generator. Unknown or duplicate formats,
+missing files, unsafe asset paths, filesystem symlinks, and asset SHA-256
+mismatches fail explicitly even with Python optimization enabled. Standard
+ZIP/gzip/tar integrity checks and a small ESZIP_V2 section-boundary check catch
+truncated files; the ESZIP check is not a semantic parser or execution proof.
+The server ZIP may contain the adapter's normal pnpm dependency links; the
+checker does not extract or execute the archive.
+
+Run `python3 -B -O .github/ci/test-netlify-contract.py` for the small temporary
+regression fixtures; CI runs them automatically before the offline build.
+After an existing build has completed its adapter lifecycle, run
+`python3 -B -O .github/ci/netlify-contract.py` to record its local hashes. These
+commands do not build or deploy. A CI-only checker change does not make a new
+published source revision: compare runtime inputs and the existing artefact
+hashes separately with the actual deployment receipt.
+
+The product commands are `pnpm run deploy` and `pnpm run deploy:preview`.
+CLI 27.5.0 builds by default; its hidden compatibility `--build` flag is
+supported but unnecessary. The integrated deploy lifecycle temporarily moves
+CDN content into the configured `.next` publish directory, then restores it to
+`.netlify/static` on completion. A later `deploy --no-build` against raw
+`.next` skips that lifecycle and is not an equivalent publication command.
+
 The two existing package-manager dependency audit gates remain mandatory:
 `pnpm audit --prod --audit-level high` and `pnpm audit --audit-level high`.
 The independently locked Netlify CLI tree is also checked with
