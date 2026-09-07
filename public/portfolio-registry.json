@@ -10,17 +10,17 @@
           "kind": "web",
           "url": "https://braavolabs.com",
           "status": "live",
-          "source": "https://braavolabs.com (live DOM, title and canonical URL rechecked in browser on 2026-08-28)",
-          "verifiedAt": "2026-08-28",
-          "expiresAt": "2026-08-29"
+          "source": "https://braavolabs.com (public HTTP readback on 2026-09-06 Europe/Istanbul: redirected to https://www.braavolabs.com/ with 200; title 'Braavolabs — Cross-vendor AI control', canonical and linked /docs/getting-started content verified; public presentation only)",
+          "verifiedAt": "2026-09-06",
+          "expiresAt": "2026-09-07"
         },
         {
           "kind": "ios",
           "url": "https://apps.apple.com/us/app/braavolabs/id6771440905",
           "status": "live",
-          "source": "https://apps.apple.com/us/app/braavolabs/id6771440905 (public App Store listing/API, Version 1.0.3, rechecked via public lookup on 2026-08-28)",
-          "verifiedAt": "2026-08-28",
-          "expiresAt": "2026-08-29"
+          "source": "https://itunes.apple.com/lookup?id=6771440905&country=us (US and TR public Apple lookup on 2026-09-06 Europe/Istanbul: resultCount=1, Braavolabs 1.0.3, minimum iOS 17.0; public App Store HTML also 200; listing availability only)",
+          "verifiedAt": "2026-09-06",
+          "expiresAt": "2026-09-07"
         }
       ],
       "primaryCta": {
@@ -107,9 +107,9 @@
           "kind": "web",
           "url": "https://burunfark.com",
           "status": "live",
-          "source": "https://burunfark.com/dogruluk (live accuracy-history DOM rechecked in browser on 2026-08-28)",
-          "verifiedAt": "2026-08-28",
-          "expiresAt": "2026-08-29"
+          "source": "https://burunfark.com (public HTTP and Chrome DOM readback on 2026-09-06 Europe/Istanbul: homepage heading, rendered product explanation, navigation and canonical verified; publication only, accuracy metrics and data-rights acceptance not reverified)",
+          "verifiedAt": "2026-09-06",
+          "expiresAt": "2026-09-07"
         }
       ],
       "primaryCta": {
@@ -177,9 +177,9 @@
           "kind": "ios",
           "url": "https://apps.apple.com/app/id6771527233",
           "status": "live",
-          "source": "https://apps.apple.com/app/id6771527233 (public App Store listing/API, Version 1.6.0, rechecked via public lookup on 2026-08-28)",
-          "verifiedAt": "2026-08-28",
-          "expiresAt": "2026-08-29"
+          "source": "https://itunes.apple.com/lookup?id=6771527233&country=us (US and TR public Apple lookup on 2026-09-06 Europe/Istanbul: resultCount=1, LifeOS 1.6.0, minimum iOS 16.0; registry App Store URL resolved to public US listing with 200; listing availability only)",
+          "verifiedAt": "2026-09-06",
+          "expiresAt": "2026-09-07"
         },
         {
           "kind": "android",

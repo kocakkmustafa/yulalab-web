@@ -1,4 +1,5 @@
 import type { Pool, PoolClient } from "pg";
+import { MAIL_RUN_LIMIT } from "@/server/mail-admission";
 import {
   dataRequestTokenKeyForId,
   dataRequestTokenKeyring,
@@ -42,7 +43,7 @@ export const MAX_ATTEMPTS = 5;
 export const SEND_TIMEOUT_MS = 10_000;
 
 /** Bounded so one run cannot hold a connection for an unbounded time. */
-const BATCH_LIMIT = 100;
+const BATCH_LIMIT = MAIL_RUN_LIMIT;
 
 export type OutboxEventType =
   | "lead_receipt"

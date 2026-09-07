@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-05-12";
+const LAST_UPDATED = "2026-09-06";
 
 export async function generateMetadata({
   params,
@@ -16,8 +16,8 @@ export async function generateMetadata({
   return {
     title: isTR ? "Gizlilik · LifeOS" : "Privacy · LifeOS",
     description: isTR
-      ? "LifeOS uygulaması için gizlilik politikası. Verileriniz cihazınızda kalır."
-      : "Privacy policy for the LifeOS application. Your data stays on your device.",
+      ? "LifeOS'un cihazda saklama, isteğe bağlı hizmetler ve veri haklarına ilişkin gizlilik bilgileri."
+      : "LifeOS privacy information about on-device storage, optional services and your data rights.",
     alternates: {
       canonical: isTR ? "/privacy/lifeos" : `/${locale}/privacy/lifeos`,
     },
@@ -65,8 +65,8 @@ function LifeosPrivacy() {
             <Section title={isTR ? "Tek satırlık özet" : "One-line summary"}>
               <p className="text-ink-100">
                 {isTR
-                  ? "LifeOS, kişisel verilerinizi cihazınızda şifreli olarak saklayan offline-first bir uygulamadır. Sunucumuza hiçbir kişisel veri kalıcı olarak gönderilmez (bulut senkronu seçeneği hariç — bu da uçtan uca şifrelidir)."
-                  : "LifeOS is an offline-first app that stores your personal data encrypted on your device. No personal data is permanently sent to our servers (except optional cloud sync, which is end-to-end encrypted)."}
+                  ? "LifeOS, cihaz üstü veri saklamayı temel alan offline-first bir uygulamadır. Hesap, satın alma durumu, çökme raporlaması ve isteğe bağlı bulut yedekleme için işlenen veriler aşağıda ayrı ayrı açıklanır. Cihazda tutulan içerikle bu hizmetlere gönderilen hesap ve hizmet verileri aynı kapsamda değildir."
+                  : "LifeOS is an offline-first app built around on-device data storage. Data processed for accounts, purchase state, crash reporting and optional cloud backup is described separately below. Content kept on your device is distinct from the account and service data sent to those services."}
               </p>
             </Section>
 
@@ -80,8 +80,8 @@ function LifeosPrivacy() {
               </ul>
               <p className="mt-4">
                 {isTR
-                  ? "Tüm bu veriler SQLCipher + AES-256 ile cihaz üstünde şifrelenir. Anahtar cihazın Keychain (iOS) veya Keystore (Android) içinde saklanır."
-                  : "All of this is encrypted on-device with SQLCipher + AES-256. The encryption key is stored in the device's Keychain (iOS) or Keystore (Android)."}
+                  ? "Uygulamanın ana veritabanı cihazda SQLCipher + AES-256 ile şifrelenir. Veritabanı anahtarı cihazın Keychain (iOS) veya Keystore (Android) içinde saklanır. Ses, fotoğraf, dışa aktarılan dosyalar ve diğer ek dosyalar ayrı dosyalar olabilir; veritabanı şifrelemesi bu dosyaların tamamını kapsadığı anlamına gelmez."
+                  : "The app's main database is encrypted on-device with SQLCipher + AES-256. Its key is stored in the device's Keychain (iOS) or Keystore (Android). Audio, photos, exports and other attachments may be separate files; database encryption does not mean that it covers every one of those files."}
               </p>
             </Section>
 
@@ -94,10 +94,10 @@ function LifeosPrivacy() {
                     : "Email and device ID (only if you create an account). You can use the app with most features without creating an account."}
                 </li>
                 <li>
-                  <strong className="text-ink-100">{isTR ? "Anonim çökme raporları" : "Anonymous crash reports"}</strong>:
+                  <strong className="text-ink-100">{isTR ? "Çökme raporları" : "Crash reports"}</strong>:
                   {" "}{isTR
-                    ? "Sentry üzerinden, ve VARSAYILAN OLARAK KAPALI. Ayarlar > Gizlilik bölümünden açabilirsiniz; veriyi tanımlayan kişisel bilgi içermez."
-                    : "Via Sentry, and DISABLED BY DEFAULT. You can enable it in Settings > Privacy; the data contains no personally identifying information."}
+                    ? "Çökme raporlaması için Sentry kullanılır. Raporlama tercihinizi Ayarlar > Gizlilik bölümünden kontrol edebilir ve değiştirebilirsiniz. Raporlama açıkken uygulama hatalarına ilişkin tanılama verileri Sentry'ye gönderilir."
+                    : "Sentry is used for crash reporting. You can check and change your reporting preference in Settings > Privacy. When reporting is enabled, diagnostic data about application errors is sent to Sentry."}
                 </li>
                 <li>
                   <strong className="text-ink-100">{isTR ? "Satın alma durumu" : "Purchase state"}</strong>:
@@ -106,10 +106,10 @@ function LifeosPrivacy() {
                     : "Apple App Store / Google Play receipt validation. We only store active/inactive and tier (Plus / Pro)."}
                 </li>
                 <li>
-                  <strong className="text-ink-100">{isTR ? "Bulut yedek (opsiyonel)" : "Cloud backup (optional)"}</strong>:
+                  <strong className="text-ink-100">{isTR ? "Bulut eşzamanlama (isteğe bağlı)" : "Cloud sync (optional)"}</strong>:
                   {" "}{isTR
-                    ? "Eğer açık olarak etkinleştirirseniz, verileriniz şifreli bundle olarak Supabase Storage'a yüklenir. Şifre çözme anahtarı cihazınızdadır — YULA Lab veriyi okuyamaz, eğitim için kullanamaz."
-                    : "If you explicitly enable it, your data is uploaded to Supabase Storage as an encrypted bundle. The decryption key stays on your device — YULA Lab cannot read or use the data for training."}
+                    ? "Bulut eşzamanlamayı etkinleştirirseniz, eşzamanlama kapsamındaki kayıtlar Supabase hizmetine aktarılabilir. Cihazdaki veritabanının şifreli olması, bulut kopyasının uçtan uca şifreli olduğu anlamına gelmez. Aktarılan veri kapsamı ve şifreleme özellikleri için kullandığınız sürümün uygulama içi bilgilerini kontrol edin; kişisel içerik göndermeden önce destek ekibinden açıklama isteyebilirsiniz."
+                    : "If you enable cloud sync, records included in sync may be transferred to Supabase. Encryption of the database on your device does not mean that the cloud copy is end-to-end encrypted. Check the in-app information for your version for the data included and the available encryption features; you can ask support for clarification before sending personal content."}
                 </li>
               </ul>
             </Section>
@@ -127,15 +127,15 @@ function LifeosPrivacy() {
                 <li><strong className="text-ink-100">Supabase</strong>: {isTR ? "Hesap kaydı ve opsiyonel bulut yedek. AB içi (Frankfurt) sunucularda barınır." : "Account registration and optional cloud backup. Hosted on EU (Frankfurt) servers."}</li>
                 <li><strong className="text-ink-100">Apple HealthKit / Health Connect</strong>: {isTR ? "Sağlık verisi okuma izni (opsiyonel)." : "Health data read permission (optional)."}</li>
                 <li><strong className="text-ink-100">Apple App Store / Google Play</strong>: {isTR ? "Abonelik ödemesi ve makbuz doğrulama." : "Subscription payments and receipt validation."}</li>
-                <li><strong className="text-ink-100">Sentry</strong>: {isTR ? "Çökme raporları (varsayılan KAPALI)." : "Crash reports (disabled by default)."}</li>
+                <li><strong className="text-ink-100">Sentry</strong>: {isTR ? "Çökme raporları; uygulamadaki raporlama tercihine bağlıdır." : "Crash reports, subject to your reporting preference in the app."}</li>
               </ul>
             </Section>
 
             <Section title={isTR ? "Veri saklama" : "Data retention"}>
               <p>
                 {isTR
-                  ? "Cihaz verisi siz silene kadar kalır. Hesap silindiğinde sunucudaki kayıtlar 30 gün içinde silinir. Bulut yedeklerini istediğiniz zaman tek tıkla silebilirsiniz."
-                  : "Device data is kept until you delete it. When you delete your account, server-side records are removed within 30 days. You can delete cloud backups with a single tap at any time."}
+                  ? "Cihaz verisi siz silene kadar kalır. Hesap silme işlemi ile cihazdaki dosyaların silinmesi ayrı işlemlerdir. Hesap silme işleminin tamamlandığını belgeleyen makbuz kayıtları, hesap silindikten sonra da kullanıcı kimliğiyle birlikte tutulabilir. Bu nedenle tüm sunucu kayıtlarının 30 gün içinde silineceğine dair genel bir garanti vermiyoruz. Hesabınızla ilişkili kayıtların kapsamı, saklama süresi ve silme talebi için support@yulalab.com adresine yazabilirsiniz."
+                  : "Device data is kept until you delete it. Deleting an account and removing files from your device are separate actions. Receipts documenting completion of an account deletion may retain the user identifier after the account has been deleted. We therefore do not give a blanket guarantee that all server-side records are removed within 30 days. For the scope and retention period of records associated with your account, or a deletion request, contact support@yulalab.com."}
               </p>
             </Section>
 
@@ -158,16 +158,16 @@ function LifeosPrivacy() {
             <Section title={isTR ? "Haklarınız" : "Your rights"}>
               <p>
                 {isTR
-                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamındaki erişim, düzeltme, silme, taşıma ve itiraz haklarına sahipsiniz. Uygulama içinden tek tıkla tüm cihaz verisini export edebilir veya silebilirsiniz. Sunucu kayıtları için merhaba@yulalab.com adresine yazın."
-                  : "You have rights of access, correction, deletion, portability, and objection under KVKK Article 11 and GDPR Articles 15-22. From within the app you can export or delete all device data with one tap. For server-side records, email merhaba@yulalab.com."}
+                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamındaki erişim, düzeltme, silme, taşıma ve itiraz haklarına sahipsiniz. Cihaz kayıtları için kullandığınız sürümdeki dışa aktarma ve silme araçlarının kapsadığı verileri kontrol edin; ayrı ek dosyalar ayrıca işlem gerektirebilir. Hesap ve sunucu kayıtlarına ilişkin taleplerinizi support@yulalab.com adresine iletin."
+                  : "You have rights of access, correction, deletion, portability, and objection under KVKK Article 11 and GDPR Articles 15-22. For device records, check which data the export and deletion tools in your version cover; separate attachments may require an additional action. Send requests about account and server-side records to support@yulalab.com."}
               </p>
             </Section>
 
             <Section title={isTR ? "Veri güvenliği" : "Data security"}>
               <p>
                 {isTR
-                  ? "Cihaz veritabanı SQLCipher + AES-256 ile şifrelenir. Anahtar Keychain/Keystore içinde tutulur. Bulut yedekler uçtan uca şifrelenir — sunucu hiçbir veriyi açık metin görmez. İletişim TLS 1.2+ ile yapılır."
-                  : "The device database is encrypted with SQLCipher + AES-256. The key is stored in Keychain/Keystore. Cloud backups are end-to-end encrypted — the server never sees plaintext. Communication uses TLS 1.2+."}
+                  ? "Ana cihaz veritabanı SQLCipher + AES-256 ile şifrelenir; anahtarı Keychain/Keystore içinde tutulur. Bu koruma kapsamı, ayrı ek dosyalardan ve isteğe bağlı bulut eşzamanlamadan farklıdır. Bulut eşzamanlama için bu sayfada tüm sürümleri kapsayan uçtan uca şifreleme veya sunucunun veriyi okuyamaması garantisi verilmez."
+                  : "The main device database is encrypted with SQLCipher + AES-256, with its key held in Keychain/Keystore. This protection has a different scope from separate attachments and optional cloud sync. This page does not guarantee end-to-end encryption or server unreadability of cloud sync data across all versions."}
               </p>
             </Section>
 
@@ -182,7 +182,7 @@ function LifeosPrivacy() {
             <Section title={isTR ? "İletişim" : "Contact"}>
               <p>
                 {isTR ? "Veri Sorumlusu" : "Data Controller"}: YULA Lab — Mustafa Kaan Koçak<br />
-                {isTR ? "E-posta" : "Email"}: <a href="mailto:merhaba@yulalab.com" className="link-wipe text-ink-50">merhaba@yulalab.com</a><br />
+                {isTR ? "E-posta" : "Email"}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
                 {isTR ? "Konum" : "Location"}: Türkiye
               </p>
             </Section>

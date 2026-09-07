@@ -3,6 +3,8 @@ import { Pool } from "pg";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { testDatabaseUrl } from "./helpers/attribution-db";
+import { createLead, type LeadInput } from "@/server/leads";
+import { MailAdmissionCapacityError } from "@/server/mail-admission";
 import {
   createDataRequest,
   verifyDataRequest,
@@ -77,7 +79,7 @@ afterAll(async () => {
 });
 
 beforeEach(async () => {
-  await pool.query("TRUNCATE data_requests, event_outbox CASCADE");
+  await pool.query("TRUNCATE leads, lead_consents, data_requests, event_outbox CASCADE");
   process.env[DATA_REQUEST_TOKEN_CURRENT_KEY_ID_ENV] = CURRENT_KEY_ID;
   process.env[DATA_REQUEST_TOKEN_CURRENT_SECRET_ENV] = CURRENT_SECRET;
   delete process.env[DATA_REQUEST_TOKEN_PREVIOUS_KEY_ID_ENV];
@@ -85,6 +87,114 @@ beforeEach(async () => {
 });
 
 const NOW = new Date("2026-08-19T10:00:00Z");
+
+describe("shared durable mail admission", () => {
+  const lead = (id: number): LeadInput => ({
+    name: "Admission test", email: `lead-${id}@example.com`, message: "Please contact me.",
+    intent: "partnership", locale: "en",
+  });
+  const request = (id: number) => ({ email: `request-${id}@example.com`, requestType: "access" as const });
+  const later = (hours: number) => new Date(NOW.getTime() + hours * 3_600_000);
+  async function fillRequests(count: number) {
+    for (let i = 0; i < count; i += 1) await createDataRequest(pool, request(i), { now: NOW });
+  }
+  async function fillLeads() {
+    for (let i = 0; i < 20; i += 1) await createLead(pool, lead(i), { now: NOW });
+  }
+  function intakePool() {
+    const url = new URL(testDatabaseUrl(SCHEMA));
+    url.username = INTAKE_ROLE;
+    return new Pool({ connectionString: url.href, max: 3 });
+  }
+
+  it("bounds varying-content recipient floods across real restricted-role pools", async () => {
+    const first = intakePool();
+    const second = intakePool();
+    try {
+      expect((await first.query("SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user")).rows)
+        .toEqual([{ rolsuper: false, rolbypassrls: false }]);
+      const outcomes = await Promise.allSettled(Array.from({ length: 28 }, (_, i) =>
+        createLead(i % 2 ? first : second, {
+          ...lead(0), email: i % 2 ? " LEAD-0@Example.COM " : "lead-0@example.com",
+          message: `Different message ${i}`, intent: i % 2 ? "press" : "partnership",
+          locale: i % 2 ? "tr" : "en",
+        }, { now: NOW }),
+      ));
+      expect(outcomes.filter((o) => o.status === "fulfilled")).toHaveLength(20);
+      expect(outcomes.filter((o) => o.status === "rejected" && o.reason instanceof MailAdmissionCapacityError)).toHaveLength(8);
+      expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(20);
+      expect((await pool.query("SELECT 1 FROM lead_consents")).rowCount).toBe(20);
+      expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(40);
+    } finally {
+      await Promise.all([first.end(), second.end()]);
+    }
+  });
+
+  it("preserves an exact retry at capacity and keeps 60 places available for data requests", async () => {
+    const original = await createLead(pool, lead(0), { now: NOW });
+    for (let i = 1; i < 20; i += 1) await createLead(pool, lead(i), { now: NOW });
+    await expect(createLead(pool, lead(20), { now: NOW })).rejects.toBeInstanceOf(MailAdmissionCapacityError);
+    expect(await createLead(pool, lead(0), { now: NOW })).toEqual(original);
+    await fillRequests(60);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(100);
+    await expect(createDataRequest(pool, request(60), { now: NOW })).rejects.toMatchObject({ name: "DataRequestCapacityError" });
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(20);
+  });
+
+  it("does not let two-job leads consume the final single slot under a restricted-role race", async () => {
+    await fillRequests(99);
+    const first = intakePool();
+    const second = intakePool();
+    try {
+      const outcomes = await Promise.allSettled([
+        createLead(first, lead(0), { now: NOW }),
+        createDataRequest(second, request(99), { now: NOW }),
+      ]);
+      expect(outcomes.map((o) => o.status)).toEqual(["rejected", "fulfilled"]);
+      expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(100);
+      expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(0);
+      expect((await pool.query("SELECT 1 FROM lead_consents")).rowCount).toBe(0);
+    } finally {
+      await Promise.all([first.end(), second.end()]);
+    }
+  });
+
+  it("reserves pending capacity during a multi-day delivery outage, including failed jobs", async () => {
+    await fillLeads();
+    await pool.query("UPDATE event_outbox SET attempts = 5");
+    await expect(createLead(pool, lead(20), { now: later(25) })).rejects.toBeInstanceOf(MailAdmissionCapacityError);
+    await expect(createLead(pool, lead(21), { now: later(49) })).rejects.toBeInstanceOf(MailAdmissionCapacityError);
+    await createDataRequest(pool, request(0), { now: later(49) });
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(41);
+  });
+
+  it("counts recent source records after delivery or orphan-queue deletion", async () => {
+    await fillRequests(100);
+    await markPendingVerificationsDelivered();
+    await pool.query("UPDATE data_requests SET verification_state = 'verified', verification_token_hash = NULL");
+    // The worker can remove non-pending request jobs; their accepted source
+    // records must still spend today's budget.
+    await pool.query("DELETE FROM event_outbox");
+    await expect(createDataRequest(pool, request(101), { now: later(2) })).rejects.toMatchObject({ name: "DataRequestCapacityError" });
+    await expect(createLead(pool, lead(0), { now: later(2) })).rejects.toBeInstanceOf(MailAdmissionCapacityError);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(0);
+  });
+
+  it("keeps an old undelivered backlog bounded when the admission window expires", async () => {
+    await fillRequests(100);
+    await expect(createDataRequest(pool, request(101), { now: later(25) })).rejects.toMatchObject({ name: "DataRequestCapacityError" });
+    await expect(createLead(pool, lead(0), { now: later(25) })).rejects.toBeInstanceOf(MailAdmissionCapacityError);
+    await pool.query("DELETE FROM event_outbox");
+    await expect(createLead(pool, lead(0), { now: later(25) })).resolves.toHaveProperty("receiptId");
+  });
+
+  it("deduplicates rolling 24-hour retries and accepts a new submission at expiry", async () => {
+    const first = await createLead(pool, lead(0), { now: NOW });
+    expect(await createLead(pool, lead(0), { now: new Date(later(24).getTime() - 1) })).toEqual(first);
+    expect(await createLead(pool, lead(0), { now: later(24) })).not.toEqual(first);
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(2);
+  });
+});
 
 async function markPendingVerificationsDelivered() {
   await pool.query(

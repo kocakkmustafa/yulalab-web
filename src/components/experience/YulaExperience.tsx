@@ -16,7 +16,7 @@ import { resolveVisibleFrameDelta } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
-import { evaluateTimeline } from "./timeline";
+import { evaluateTimeline, STAGES } from "./timeline";
 import type {
   ExperienceCopy,
   ExperienceMode,
@@ -95,7 +95,11 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     !compactViewport &&
     webgl === "available" &&
     !canvasFailed;
-  const { progress, capture } = useExperienceProgress(timelineEnabled);
+  const { progress, capture, scrollRange } = useExperienceProgress(timelineEnabled);
+  // Native anchors use document pixels; the timeline uses the scrollable range.
+  // Land at the first card's center, after both entry fades have completed.
+  const firstProductCenter = STAGES.portfolio[0] +
+    (STAGES.portfolio[1] - STAGES.portfolio[0]) / (2 * Math.max(1, products.length));
 
   useEffect(() => setMounted(true), []);
 
@@ -317,7 +321,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       ) : (
         <>
           <span id="experience-hero" className={styles.scrollAnchor} style={{ top: 0 }} />
-          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: "8.5%" }} />
+          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * firstProductCenter }} />
           <span id="experience-proof" className={styles.scrollAnchor} style={{ top: "50.5%" }} />
           <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: "69%" }} />
 

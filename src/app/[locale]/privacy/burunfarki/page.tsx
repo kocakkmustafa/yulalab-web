@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-05-12";
+const LAST_UPDATED = "2026-09-06";
 
 export async function generateMetadata({
   params,
@@ -122,7 +122,7 @@ function BurunfarkiPrivacy() {
               <ul className="list-disc pl-5 space-y-2">
                 <li>
                   <strong className="text-ink-100">Supabase</strong>:
-                  {" "}{isTR ? "Kimlik doğrulama, veritabanı, edge functions. AB-içi (Frankfurt) sunucularda barındırılır." : "Authentication, database, edge functions. Hosted on EU (Frankfurt) servers."}
+                  {" "}{isTR ? "Kimlik doğrulama, veritabanı ve edge functions. Veritabanı projesinin bölgesi İrlanda'dır (AB, eu-west-1)." : "Authentication, database and edge functions. The database project's region is Ireland (EU, eu-west-1)."}
                 </li>
                 <li>
                   <strong className="text-ink-100">Apple App Store / Google Play</strong>:
@@ -142,8 +142,8 @@ function BurunfarkiPrivacy() {
             <Section title={isTR ? "Veri saklama" : "Data retention"}>
               <p>
                 {isTR
-                  ? "Hesabınız aktifken veriniz saklanır. Hesabı silerseniz 30 gün içinde silinir. Anonim analitik veriler (yarış kullanımı toplamları) süresiz tutulabilir."
-                  : "Your data is retained while your account is active. If you delete your account, it is removed within 30 days. Anonymous analytics (race usage aggregates) may be kept indefinitely."}
+                  ? "Hesap silme akışı hesap, profil, kupon ve ilişkili abonelik kayıtlarını kapsar. Sağlayıcı günlükleri, yedekler ve saklama yükümlülüğü bulunan kayıtlar ayrıca değerlendirilir. Bu kayıtların saklama süresi ve silme talebinin kapsamı için support@yulalab.com adresine yazabilirsiniz."
+                  : "The account deletion flow covers account, profile, coupon and associated subscription records. Provider logs, backups and records subject to retention obligations are assessed separately. Contact support@yulalab.com for the retention period of these records and the scope of a deletion request."}
               </p>
             </Section>
 
@@ -158,8 +158,8 @@ function BurunfarkiPrivacy() {
             <Section title={isTR ? "Haklarınız" : "Your rights"}>
               <p>
                 {isTR
-                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamında erişim, düzeltme, silme, taşıma ve itiraz haklarına sahipsiniz. Talepleri merhaba@yulalab.com adresine gönderebilirsiniz; 30 gün içinde yanıtlanır."
-                  : "Under KVKK Article 11 and GDPR Articles 15-22 you have rights of access, correction, deletion, portability, and objection. Send requests to merhaba@yulalab.com; we respond within 30 days."}
+                  ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamında erişim, düzeltme, silme, taşıma ve itiraz haklarına sahipsiniz. Talepleri support@yulalab.com adresine gönderebilirsiniz; 30 gün içinde yanıtlanır."
+                  : "Under KVKK Article 11 and GDPR Articles 15-22 you have rights of access, correction, deletion, portability, and objection. Send requests to support@yulalab.com; we respond within 30 days."}
               </p>
             </Section>
 
@@ -182,7 +182,7 @@ function BurunfarkiPrivacy() {
             <Section title={isTR ? "İletişim" : "Contact"}>
               <p>
                 {isTR ? "Veri Sorumlusu" : "Data Controller"}: YULA Lab — Mustafa Kaan Koçak<br />
-                {isTR ? "E-posta" : "Email"}: <a href="mailto:merhaba@yulalab.com" className="link-wipe text-ink-50">merhaba@yulalab.com</a><br />
+                {isTR ? "E-posta" : "Email"}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
                 {isTR ? "Konum" : "Location"}: Türkiye
               </p>
             </Section>

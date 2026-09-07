@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import type { PoolClient } from "pg";
+import { assertMailAdmission, lockMailAdmission, MailAdmissionCapacityError } from "@/server/mail-admission";
 import {
   deriveDataRequestToken,
   dataRequestTokenKeyring,
@@ -28,7 +29,7 @@ export type DataRequestInput = {
 export const VERIFICATION_WINDOW_HOURS = 24;
 export const VERIFICATION_QUEUE_RETENTION_DAYS = 30;
 export const DATA_REQUEST_RETENTION_DAYS = 30;
-/** One address can enqueue at most one verification message in this window. */
+/** One address/request-type pair can enqueue one message in this window. */
 export const DATA_REQUEST_RECIPIENT_COOLDOWN_HOURS = 24;
 /** A deployment-wide rolling window, enforced under one transaction lock. */
 export const DATA_REQUEST_GLOBAL_WINDOW_MINUTES = 60;
@@ -88,9 +89,7 @@ export async function createDataRequest(
     // pools, processes and serverless instances share one decision. Always
     // take global before recipient: a stable order prevents cross-recipient
     // deadlocks while the global counter is checked.
-    await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [
-      "yulalab:data-request:global",
-    ]);
+    await lockMailAdmission(db);
     await db.query("SELECT pg_advisory_xact_lock(hashtextextended($1, 0))", [
       `yulalab:data-request:recipient:${normalizedEmail}:${input.requestType}`,
     ]);
@@ -123,6 +122,7 @@ export async function createDataRequest(
       return { token: duplicateToken };
     }
 
+    await assertMailAdmission(db, "data_request", now);
     const capacity = await db.query<{ accepted: number }>(
       `SELECT count(*)::int AS accepted
          FROM data_requests
@@ -178,6 +178,7 @@ export async function createDataRequest(
       transactionError.name = "DataRequestTransactionError";
       throw transactionError;
     }
+    if (error instanceof MailAdmissionCapacityError) throw new DataRequestCapacityError();
     throw error;
   } finally {
     db.release(poisoned ? true : undefined);

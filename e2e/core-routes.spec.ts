@@ -1,6 +1,28 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
+const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
+
+test("explicit Turkish URLs override English browser and cookie preferences", async ({ browser }) => {
+  const origin = `http://127.0.0.1:${e2ePort}`;
+  const context = await browser.newContext({ locale: "en-US" });
+  try {
+    const page = await context.newPage();
+    for (const [entry, canonical] of [
+      ["/tr/contact", "/contact"],
+      ["/%74r/data-request/verify", "/data-request/verify"],
+    ]) {
+      await context.addCookies([{ name: "NEXT_LOCALE", value: "en", url: origin }]);
+      await page.goto(`${origin}${entry}`);
+      await expect(page).toHaveURL(`${origin}${canonical}`);
+      await expect(page.locator("html")).toHaveAttribute("lang", "tr");
+      expect((await context.cookies()).find((cookie) => cookie.name === "NEXT_LOCALE")?.value).toBe("tr");
+    }
+  } finally {
+    await context.close();
+  }
+});
+
 // TR is the root locale (no prefix), EN is served under /en — see
 // src/i18n/routing.ts ("as-needed" localePrefix). Every route here must
 // resolve for both locales with no error boundary and no forbidden
@@ -307,6 +329,17 @@ test("404 social image is a real canonical PNG", async ({ request }) => {
   expect(socialImage.headers()["content-type"]).toContain("image/png");
 });
 
+test("missing top-level assets return 404 without a locale server error", async ({ request }) => {
+  for (const path of ["/favicon.ico", "/missing.svg", "/asset.example.js"]) {
+    const response = await request.get(path, { maxRedirects: 0 });
+    expect(response.status(), path).toBe(404);
+    expect(response.headers().location).toBeUndefined();
+  }
+  const icon = await request.get("/icon.svg");
+  expect(icon.ok()).toBe(true);
+  expect(icon.headers()["content-type"]).toContain("image/svg+xml");
+});
+
 test("products index links to every product detail page", async ({
   page,
 }) => {
@@ -324,13 +357,13 @@ test("language switcher moves between TR and EN on the same page", async ({
   // LocaleSwitcher is a <button> that navigates client-side via next-intl's
   // router (not a plain <a href>) — see src/components/layout/LocaleSwitcher.tsx.
   await page.goto("/manifesto");
-  const switchToEn = page.getByRole("button", { name: /switch to en/i });
+  const switchToEn = page.getByRole("button", { name: /İngilizceye geç/i });
   await switchToEn.click();
   await expect(page).toHaveURL(/\/en\/manifesto$/);
 });
 
 test("production locale routing has bounded canonical redirects", async ({ request }) => {
-  for (const host of ["127.0.0.1:4173", "localhost:4173"]) {
+  for (const host of [`127.0.0.1:${e2ePort}`, `localhost:${e2ePort}`]) {
     const origin = `http://${host}`;
 
     const contact = await request.get(`${origin}/contact`, { maxRedirects: 0 });
@@ -363,7 +396,7 @@ test("production locale routing has bounded canonical redirects", async ({ reque
     ] as const) {
       const response = await request.get(`${origin}${prefixed}`, { maxRedirects: 0 });
       expect(response.status()).toBe(307);
-      expect(response.headers().location).toBe(canonical);
+      expect(new URL(response.headers().location!, origin).href).toBe(`${origin}${canonical}`);
       const location = new URL(response.headers().location!, origin);
       expect(location.origin).toBe(origin);
       expect(location.pathname).toBe(canonical);
@@ -378,7 +411,7 @@ test("production locale routing has bounded canonical redirects", async ({ reque
         maxRedirects: 0,
       });
       expect(response.status()).toBe(307);
-      expect(response.headers().location).toBe(`${canonical}?proof=1`);
+      expect(new URL(response.headers().location!, origin).href).toBe(`${origin}${canonical}?proof=1`);
       const location = new URL(response.headers().location!, origin);
       expect(location.origin).toBe(origin);
       expect(location.pathname).toBe(canonical);
@@ -394,7 +427,7 @@ test("production locale routing has bounded canonical redirects", async ({ reque
         maxRedirects: 0,
       });
       expect(response.status()).toBe(307);
-      expect(response.headers().location).toBe(`${canonical}?proof=spoof`);
+      expect(new URL(response.headers().location!, origin).href).toBe(`${origin}${canonical}?proof=spoof`);
       const location = new URL(response.headers().location!, origin);
       expect(location.origin).toBe(origin);
       expect(location.pathname).toBe(canonical);
@@ -402,6 +435,10 @@ test("production locale routing has bounded canonical redirects", async ({ reque
     }
 
     for (const edgePath of [
+      "/tr/%2F%2Fevil-host",
+      "/tr/%252F%252Fevil-host",
+      "/tr/%5Cevil-host",
+      "/tr//evil-host",
       "/tr/%2F%2Fevil.example",
       "/tr/%252F%252Fevil.example",
       "/tr/%5Cevil.example",
@@ -410,10 +447,10 @@ test("production locale routing has bounded canonical redirects", async ({ reque
       const response = await request.get(`${origin}${edgePath}`, {
         maxRedirects: 0,
       });
-      expect([307, 308, 400]).toContain(response.status());
+      expect([307, 308, 400, 404]).toContain(response.status());
 
       const rawLocation = response.headers().location;
-      if (response.status() === 400) {
+      if (response.status() === 400 || response.status() === 404) {
         expect(rawLocation).toBeUndefined();
       } else {
         expect(rawLocation).toBeDefined();
@@ -430,14 +467,14 @@ test("production locale routing has bounded canonical redirects", async ({ reque
     "/opengraph-image",
     "/asset.example.js",
   ]) {
-    const response = await request.get(`http://127.0.0.1:4173${bypassPath}`, {
+    const response = await request.get(`http://127.0.0.1:${e2ePort}${bypassPath}`, {
       maxRedirects: 0,
     });
     expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
     expect(response.headers().location).toBeUndefined();
   }
 
-  const invalidLocale = await request.get("http://127.0.0.1:4173/fr/contact", {
+  const invalidLocale = await request.get(`http://127.0.0.1:${e2ePort}/fr/contact`, {
     maxRedirects: 0,
   });
   expect(invalidLocale.status()).toBe(404);

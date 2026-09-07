@@ -138,7 +138,7 @@ export default async function LocaleLayout({
             <Footer studioEnabled={studioOpen} />
           </MotionConfig>
         </NextIntlClientProvider>
-        <Analytics />
+        {process.env.VERCEL === "1" ? <Analytics /> : null}
       </body>
     </html>
   );

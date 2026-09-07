@@ -6,11 +6,12 @@ import { categoriseTarget } from "@/lib/analytics/client";
 import { ClaimsSection } from "@/components/projects/ClaimsSection";
 import { StatCards } from "@/components/projects/StatCards";
 import { publicRegistry } from "@/data/public-registry";
-import { presentClaims } from "@/lib/proof";
+import { presentClaims, presentSurfaces } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
+import { company } from "@/data/company";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
 /**
@@ -52,6 +53,14 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   const presented = registryRecord ? presentClaims(registryRecord, now) : [];
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
+  const publication = registryRecord
+    ? presentSurfaces(registryRecord, now).find(
+        ({ surface }) => surface.url.replace(/\/$/, "") === web?.replace(/\/$/, ""),
+      )
+    : undefined;
+  const publicationAvailable = publication?.statusConfirmed &&
+    (publication.surface.status === "live" || publication.surface.status === "beta");
+  const needsPublicationCheck = Boolean(web) && !publicationAvailable;
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
@@ -99,7 +108,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               style={{ background: accent, boxShadow: `0 0 10px ${accent}b3` }}
             />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
-              {p.eyebrow}
+              {needsPublicationCheck ? t("availabilityUnverified") : p.eyebrow}
             </span>
           </Reveal>
           <Reveal delay={80}>
@@ -213,11 +222,16 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           <section className="pb-24">
             <div className="glass p-8 lg:p-16 text-center">
               <h2 className="font-display font-light text-[clamp(24px,3vw,40px)] tracking-tight mb-4">
-                {p.ctaTitle}
+                {needsPublicationCheck ? t("availabilityUnverified") : p.ctaTitle}
               </h2>
               <p className="mx-auto max-w-[46ch] text-[15px] leading-[1.72] text-ink-300 mb-8">
                 {p.ctaBody}
               </p>
+              {needsPublicationCheck && publication && (
+                <p className="mb-6 text-sm text-ink-300">
+                  {t("availabilityCheckedAt", { date: publication.surface.verifiedAt })}
+                </p>
+              )}
               <div className="flex flex-wrap gap-3 justify-center">
                 {/* the primary action only renders when there is a real
                     destination — a dead CTA is worse than none */}
@@ -239,7 +253,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                   </TrackedLink>
                 ) : null}
                 <a
-                  href={`mailto:${project.contactEmail ?? "merhaba@yulalab.com"}`}
+                  href={`mailto:${project.contactEmail ?? company.contact.email}`}
                   className="inline-flex items-center px-6 py-4 text-sm rounded-[10px] border border-white/10 text-ink-300 hover:text-ink-50 hover:border-white/20 transition-colors focusable"
                 >
                   {p.ctaSecondary}

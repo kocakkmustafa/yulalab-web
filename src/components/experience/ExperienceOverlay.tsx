@@ -120,6 +120,13 @@ export function ExperienceHeader({
   onLinearView,
 }: ExperienceHeaderProps) {
   const nextLocale = copy.locale === "tr" ? "en" : "tr";
+  const closeMobileMenu = (menu: HTMLDetailsElement | null) => {
+    if (!menu) return;
+    menu.open = false;
+    // The native fragment jump also moves focus; restore a visible control
+    // after that default action rather than leaving focus in the closed menu.
+    requestAnimationFrame(() => menu.querySelector("summary")?.focus({ preventScroll: true }));
+  };
 
   return (
     <header className={styles.experienceHeader}>
@@ -137,11 +144,22 @@ export function ExperienceHeader({
         <a href="#experience-proof">{copy.navigation.transparency}</a>
       </nav>
 
-      <details className={styles.mobileNavigation}>
+      <details
+        className={styles.mobileNavigation}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeMobileMenu(event.currentTarget);
+          }
+        }}
+      >
         <summary aria-label={copy.navigation.projects}>
           <span aria-hidden="true"><i /><i /><i /></span>
         </summary>
-        <nav aria-label={copy.navigation.home}>
+        <nav
+          aria-label={copy.navigation.home}
+          onClick={(event) => closeMobileMenu(event.currentTarget.closest("details"))}
+        >
           <a href="#experience-portfolio">{copy.navigation.projects}</a>
           <a href="#experience-manifesto">{copy.navigation.manifesto}</a>
           <a href="#experience-proof">{copy.navigation.transparency}</a>

@@ -23,7 +23,7 @@ export function LocaleSwitcher({ onNavigate }: Props) {
       type="button"
       onClick={handleClick}
       className="inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1.5 text-[11.5px] font-mono tracking-widest uppercase text-ink-200 hover:text-ink-50 hover:border-white/25 transition-colors focusable"
-      aria-label={`TR/EN — switch to ${otherLocale.toUpperCase()}`}
+      aria-label={locale === "tr" ? "TR/EN — İngilizceye geç" : "TR/EN — switch to TR"}
     >
       <span className={locale === "tr" ? "text-ink-50" : "opacity-60"}>TR</span>
       <span className="opacity-30">/</span>

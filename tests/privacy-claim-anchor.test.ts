@@ -34,7 +34,7 @@ const DISCLOSURE: Record<string, { tr: string; en: string }> = {
   target_url: { tr: "dış bağlantının adresi", en: "address of the outbound link" },
   target_category: { tr: "o bağlantının sınıfı", en: "that link's class" },
   created_at: { tr: "zaman damgası", en: "timestamp" },
-  purge_at: { tr: "silineceği tarih", en: "the date it will be deleted" },
+  purge_at: { tr: "saklama süresinin sona erdiği tarih", en: "the retention expiry date" },
 };
 
 /** Column names declared by the migration, in order. */

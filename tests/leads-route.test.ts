@@ -57,6 +57,7 @@ afterEach(async () => {
   if (previousStudioEnabled === undefined) delete process.env.STUDIO_ENABLED;
   else process.env.STUDIO_ENABLED = previousStudioEnabled;
   vi.restoreAllMocks();
+  vi.useRealTimers();
 });
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -87,6 +88,52 @@ async function post(payload: unknown, headers: Record<string, string> = {}) {
 }
 
 describe("a valid submission", () => {
+  it("preserves the receipt for an identical retry across UTC midnight", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-09-06T23:59:59Z"));
+    const first = await post(body());
+    expect(first.status).toBe(201);
+    const receipt = await first.json();
+    vi.setSystemTime(new Date("2026-09-07T00:00:01Z"));
+    const retry = await post(body());
+    expect(retry.status).toBe(201);
+    expect(await retry.json()).toEqual(receipt);
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(1);
+    expect((await pool.query("SELECT 1 FROM lead_consents")).rowCount).toBe(1);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(2);
+  });
+
+  it("does not reveal recent contact activity through address-only rejection", async () => {
+    expect((await post(body())).status).toBe(201);
+    const known = await post(body({ email: " SOMEONE@EXAMPLE.COM ", message: "An unrelated inquiry" }));
+    const fresh = await post(body({ email: "fresh@example.com", message: "An unrelated inquiry" }));
+    expect(known.status).toBe(201);
+    expect(fresh.status).toBe(known.status);
+    expect(Object.keys(await known.json())).toEqual(["receiptId"]);
+    expect(Object.keys(await fresh.json())).toEqual(["receiptId"]);
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(3);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(6);
+  });
+
+  it("returns a truthful capacity error for changed content without losing retry receipts", async () => {
+    const first = await post(body(), { "x-forwarded-for": "203.0.113.1" });
+    expect(first.status).toBe(201);
+    const receipt = await first.json();
+    for (let i = 1; i < 20; i += 1) {
+      expect((await post(body({ message: `Additional inquiry ${i}` }))).status).toBe(201);
+    }
+    const limited = await post(body({ email: " SOMEONE@EXAMPLE.COM ", message: "Another message" }), {
+      "x-forwarded-for": "198.51.100.2",
+    });
+    expect(limited.status).toBe(429);
+    expect(await limited.json()).toEqual({ error: "rate_limited" });
+    const retry = await post(body());
+    expect(retry.status).toBe(201);
+    expect(await retry.json()).toEqual(receipt);
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(20);
+    expect((await pool.query("SELECT 1 FROM event_outbox")).rowCount).toBe(40);
+  });
+
   it("accepts it and returns a quotable receipt", async () => {
     const res = await post(body());
     expect(res.status).toBe(201);
@@ -385,12 +432,14 @@ describe("the rate-limit key identifies a client, not everyone", () => {
   it("does not throttle a second client because a first one flooded", async () => {
     // Mutating clientKey to a constant made one IP throttle the whole world
     // and passed the existing flood test, which only asserted limited > 0.
+    // Exact retries exercise the per-client limiter without spending the
+    // separate shared mail budget on each request.
     const { resetRateLimit } = await import("@/server/rate-limit");
     resetRateLimit();
     for (let i = 0; i < 40; i += 1) {
-      await post(body({ message: `flood ${i}` }), { "x-forwarded-for": "203.0.113.9" });
+      await post(body({ message: "Repeated submission" }), { "x-forwarded-for": "203.0.113.9" });
     }
-    const other = await post(body({ message: "a different person" }), {
+    const other = await post(body({ message: "a different person", email: "different@example.com" }), {
       "x-forwarded-for": "198.51.100.4",
     });
     expect(other.status).toBe(201);

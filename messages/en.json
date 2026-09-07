@@ -189,7 +189,7 @@
         "label": "Transparent cost",
         "title": "Every agent, every token, every second.",
         "claim": "Every pipeline run shows which agent called which tool, how many tokens it spent and which decision it cost — in plain view. No surprise bills.",
-        "proof": "→ 9 primitives · 14 LLM providers · BYOK",
+        "proof": "→ Primitives · providers · dated evidence on the product page",
         "detailLabel": "Audit trail",
         "detailBody": "Every tool call and decision is a separate row; money-touching actions require an explicit human approval. Export the full run as CSV / JSON and reconcile against your own accounting."
       },
@@ -197,25 +197,25 @@
         "label": "Open methodology",
         "title": "Top 3 factors for every prediction.",
         "claim": "We don't hide why the model picked that horse. A rule-based weighting shows the top 3 factors in race-specific language.",
-        "proof": "→ 1,225 live-tracked races · ~29% Top-1 / ~62% Top-3 · burunfark.com/dogruluk, 2026-08-25",
+        "proof": "→ burunfark.com/dogruluk · dated measurement summary on the product page",
         "detailLabel": "Live tracking panel",
-        "detailBody": "Across 1,225 live-tracked races over 69 days, winning predictions and missed predictions live in the same dashboard. Track × distance × course breakdowns are one click away."
+        "detailBody": "The live tracking panel includes winning and missed predictions together. Read results alongside their measurement date, race coverage and breakdowns by track, course and distance."
       },
       "lifeos": {
         "label": "On-device privacy",
-        "title": "Your data stays on your device.",
-        "claim": "Personal data is never sent to our servers. SQLCipher + AES-256 encrypts on-device, models run on your phone, cloud sync is opt-in.",
+        "title": "On-device storage, optional sync.",
+        "claim": "Personal records are encrypted on-device with SQLCipher and AES-256. AI tasks using the local model run on-device; cloud sync is optional.",
         "proof": "→ AES-256 · Offline-first · 0 ads",
         "detailLabel": "On-device AI",
-        "detailBody": "Health, finance, relationship and goal data never leaves your device. When you opt into cloud sync, only an encrypted bundle moves; YULA Lab cannot read it and cannot use it for training."
+        "detailBody": "Local AI requires a supported device and an installed model. Model downloads, account and store operations, and crash reporting you enable are separate network paths from sync. The LifeOS privacy policy explains these options."
       }
     },
     "guaranteeEyebrow": "What you never give up",
-    "guaranteeTitle": "Transparency means four guarantees.",
+    "guaranteeTitle": "Four principles for transparency.",
     "guarantees": {
       "dataOwnership": {
         "title": "Your data belongs to you.",
-        "body": "One click to download all of your data in a machine-readable format, one click to delete it. Beyond what KVKK and GDPR require — permanent and self-serve."
+        "body": "The scope of export and deletion tools varies by product and version. Deleting device data is separate from deleting account and server-side records. See the product's privacy policy for available tools and retention information; send requests about account and server-side records to support@yulalab.com."
       },
       "noTraining": {
         "title": "Your data is not used for model training.",
@@ -227,7 +227,7 @@
       },
       "exitRight": {
         "title": "The exit door is always open.",
-        "body": "Cancel in one click. Export in one click. Delete the account in one click. No 90-day contract lock-in; the moment you stop liking the product you leave."
+        "body": "Canceling a subscription, deleting an account and removing device data are separate actions. To cancel, use subscription management in the store or service where you purchased. See the product's privacy policy for export and deletion steps; contact support@yulalab.com for help."
       }
     },
     "ctaEyebrow": "Have a deeper question?",
@@ -238,14 +238,14 @@
     "eyebrow": "Contact",
     "title": "Let's talk.",
     "intro": "An idea, a piece of feedback, a press request, or just hello — email is the fastest way to reach us. We usually reply within 48 hours.",
-    "generalLabel": "General",
-    "generalHint": "For partnerships, collaborations, product and technical questions.",
+    "generalLabel": "Support and contact",
+    "generalHint": "Contact us for product support, technical questions, partnerships, and press inquiries.",
     "pressLabel": "Press",
     "pressHint": "Interviews, event invitations and press release requests.",
     "locationEyebrow": "Location",
     "locationTitle": "Türkiye",
     "locationNote": "Meetings Tuesday – Thursday, hybrid.",
-    "studioBody": "The addresses on this page are for general correspondence. If you have a project in mind, the studio application is faster: it asks for budget band, timing and who decides, so the first reply is not spent asking those three questions.",
+    "studioBody": "The address on this page is for general correspondence. If you have a project in mind, the studio application is faster: it asks for budget band, timing and who decides, so the first reply is not spent asking those three questions.",
     "studioEyebrow": "Project enquiry",
     "studioLink": "Studio application",
     "studioTitle": "Writing about a piece of work?"
@@ -281,15 +281,15 @@
     "otherAlso": "Also",
     "lifeos": {
       "eyebrow": "Product 01 · Live on iOS",
-      "lede": "An offline-first personal life operating system. Five life domains gathered into one calm interface; every record encrypted on the device with AES-256. The cloud is optional — with it off, the app still works in full.",
+      "lede": "An offline-first personal life operating system. Five life domains gathered into one calm interface, with records encrypted on the device using AES-256. Cloud sync is optional.",
       "s1Kicker": "01 — What it does",
       "a1Title": "Five life domains, one view.",
       "a1Body": "Notes, habits, plans and records don't scatter across separate apps. LifeOS gathers them into a single calm view where the state of each domain is visible without crowding the screen.",
-      "a2Title": "Fully functional without a connection.",
-      "a2Body": "Data is born on the device and stays there. If sync is enabled only the domains you pick travel; with it off, no request leaves for a server. The encryption key never leaves the device.",
+      "a2Title": "Your daily records are available offline.",
+      "a2Body": "Your data is stored on-device; sync is optional. Model downloads, account and store operations, and crash reporting you enable may use the internet independently of the sync setting.",
       "s2Kicker": "02 — Privacy architecture",
       "r1k": "Storage",
-      "r1v": "Device only · encrypted",
+      "r1v": "Encrypted on device · optional cloud",
       "r2k": "Key",
       "r2v": "Generated on device, never exported",
       "r3k": "Analytics",
@@ -306,7 +306,7 @@
     },
     "burunfarki": {
       "eyebrow": "Product 02 · Live · Analysis tool",
-      "lede": "A transparent AI horse-racing analysis platform — not betting. Its current 69-day live-tracking window covers 1,225 races; ~29% Top-1 and ~62% Top-3 hit rates sit beside the misses on the same screen. Every prediction states what drove it.",
+      "lede": "A transparent AI horse-racing analysis platform. Model rankings, their reasoning and past results appear together. Explore the dated performance records and measurement scope in the evidence section below.",
       "s1Kicker": "01 — What it does, and doesn't",
       "a1Title": "It reads the race; it doesn't hand you a slip.",
       "a1Body": "The platform takes a race's data and shows the model's ranking along with the factors that produced it. It generates no odds, recommends no bets, guarantees nothing. The decision is the user's.",
@@ -324,16 +324,16 @@
       "note": "The backtest runs on later-dated races the model never saw in training. Excluded races and the data range are listed in the method note.",
       "interfaceNote": "Real screenshots are captured from production, never redrawn.",
       "ctaTitle": "Check the numbers yourself.",
-      "ctaBody": "The platform is open: you can see a race's analysis, the model's reasoning and the historical hit breakdown without signing up.",
+      "ctaBody": "Check access through the Burun Farkı link, or send your questions by email.",
       "ctaPrimary": "Open the platform",
-      "ctaSecondary": "Method note",
+      "ctaSecondary": "Ask by email",
       "disclaimer": "Burun Farkı is not a betting product and does not broker bets. Past performance is no guarantee of future results."
     },
     "braavolabs": {
       "eyebrow": "Product 03 · Beta · closed invite",
-      "lede": "An agent and automation command centre. Nine primitives, fourteen LLM providers, and a cost ledger that shows what every run spent. What a model costs isn't estimated — it's read.",
+      "lede": "An agent and automation command centre. Reusable primitives, multiple LLM providers and a ledger of run costs. Explore provider and primitive counts in the dated evidence section.",
       "s1Kicker": "01 — What it does",
-      "a1Title": "Nine primitives, an open-ended combination space.",
+      "a1Title": "Automations built from primitives.",
       "a1Body": "Automations are built from a handful of building blocks rather than canned templates. Each block does one job; the flow emerges from how they're arranged, and stays readable.",
       "a2Title": "Cost is never a surprise.",
       "a2Body": "How many tokens each run spent with which provider — and what that came to — sits in the ledger. Switching provider is a setting, not a rewrite.",
@@ -349,9 +349,9 @@
       "note": "",
       "interfaceNote": "Real screenshots are captured from the beta build.",
       "ctaTitle": "The beta moves by closed invite.",
-      "ctaBody": "When you join the queue we state plainly when and why you'll be invited. We don't open something to everyone before it's ready.",
-      "ctaPrimary": "Join the beta queue",
-      "ctaSecondary": "Technical notes",
+      "ctaBody": "Check product access through Braavolabs, or ask about setup and usage by email.",
+      "ctaPrimary": "Open Braavolabs",
+      "ctaSecondary": "Ask by email",
       "disclaimer": ""
     },
     "gravita": {
@@ -360,13 +360,13 @@
       "s1Kicker": "01 — What it does",
       "a1Title": "Not ten fixes. One.",
       "a1Body": "The camera watches every attempt and names the single thing holding you back most. Not ten corrections at once — one at a time. That's how progress sticks.",
-      "a2Title": "Stays on-device, processed on-device.",
-      "a2Body": "Camera analysis runs on your phone. Raw video never leaves the device — only the measurement and the feedback are yours to keep.",
+      "a2Title": "Our goal: on-device camera analysis.",
+      "a2Body": "Gravita is in development. We aim to run camera analysis on the phone. The first release's privacy information will explain which data that version processes, stores and transfers.",
       "s2Kicker": "02 — Method",
       "r1k": "Input",
       "r1v": "Phone camera",
       "r2k": "Analysis",
-      "r2v": "Processed on-device",
+      "r2v": "On-device analysis goal · in development",
       "r3k": "Output",
       "r3v": "Single flaw · measurable progression",
       "r4k": "Status",
@@ -431,16 +431,16 @@
     },
     "ostinato": {
       "eyebrow": "Product 07 · Coming soon · Music practice",
-      "lede": "An instrument-practice coach that analyzes your posture and fundamental technique through camera and microphone. It makes your unsupervised practice hours measurable — starting with cello.",
-      "s1Kicker": "01 — What it does",
-      "a1Title": "Watches your posture, your technique.",
-      "a1Body": "The camera watches your seating and hold; the microphone listens to what comes out. Fundamental mistakes get caught early, before they settle in.",
-      "a2Title": "Unsupervised hours finally count.",
-      "a2Body": "It logs the practice hours you spend between lessons. Progress stops being a feeling and becomes a measurement that builds up over time.",
-      "s2Kicker": "02 — Method",
-      "r1k": "Input",
+      "lede": "We are developing an instrument-practice coach that combines camera and audio analysis. Our goal is measurable practice between lessons, starting with cello.",
+      "s1Kicker": "01 — Development goals",
+      "a1Title": "Feedback for posture and technique.",
+      "a1Body": "We aim to combine camera and microphone input to support practice of seating, instrument hold and fundamental technique.",
+      "a2Title": "Make practice between lessons visible.",
+      "a2Body": "We are working on tools to track practice time and progress. Available capabilities will be documented with the first release.",
+      "s2Kicker": "02 — Planned method",
+      "r1k": "Planned input",
       "r1v": "Camera + microphone",
-      "r2k": "Analysis",
+      "r2k": "Target analysis",
       "r2v": "Posture · fundamental technique",
       "r3k": "Instrument",
       "r3v": "Cello (first)",
@@ -483,7 +483,9 @@
     "claimsLapsedHeading": "Needs re-verification",
     "claimsLapsedNote": "These claims have outrun their verification window. That does not mean they are wrong — only that nobody has re-checked them recently, so they do not count as current.",
     "statVerified": "verified",
-    "statNeedsReverification": "needs re-verification"
+    "statNeedsReverification": "needs re-verification",
+    "availabilityUnverified": "Publication status needs re-verification",
+    "availabilityCheckedAt": "Last publication check: {date}. You can open the link to check its current status."
   },
   "leadForm": {
     "name": "Name",
@@ -509,8 +511,8 @@
     "sentBody": "Your message has been recorded. We do not send automatic email yet, so it is worth keeping the reference below.",
     "reference": "Reference",
     "errors": {
-      "closed": "The form is closed right now. The email addresses on this page still reach us.",
-      "rateLimited": "Too many attempts in a short time. Try again in a minute.",
+      "closed": "The form is closed right now. The email address on this page still reaches us.",
+      "rateLimited": "The submission limit has been reached. Try again later or contact us by email.",
       "unavailable": "We cannot record your message right now. Please use email instead.",
       "tooLarge": "That message is too long.",
       "offline": "We could not reach the server. Check your connection and try again.",
@@ -629,7 +631,7 @@
         "name-long": "That name is too long.",
         "problem": "Please describe the problem.",
         "problem-long": "That description is too long — could you shorten it?",
-        "rate": "Too many attempts; please try again shortly.",
+        "rate": "The submission limit has been reached. Try again later or contact us by email.",
         "server": "Could not send; please try again.",
         "timing": "Please choose a timing."
       },

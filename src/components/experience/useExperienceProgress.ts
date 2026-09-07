@@ -89,6 +89,7 @@ function criticallyDampedStep(
 export function useExperienceProgress(enabled: boolean): {
   progress: number;
   capture: CaptureParams;
+  scrollRange: number;
 } {
   const capture = useMemo(
     () =>
@@ -99,6 +100,7 @@ export function useExperienceProgress(enabled: boolean): {
   );
   const initialProgress = capture.enabled ? capture.progress : 0;
   const [progress, setProgress] = useState(initialProgress);
+  const [scrollRange, setScrollRange] = useState(0);
   const position = useRef(initialProgress);
   const velocity = useRef(0);
 
@@ -146,6 +148,7 @@ export function useExperienceProgress(enabled: boolean): {
     };
 
     const wake = () => {
+      setScrollRange(Math.max(0, document.documentElement.scrollHeight - window.innerHeight));
       target = readDocumentProgress();
       if (animationFrame !== 0) return;
       previousTimestamp = null;
@@ -174,5 +177,6 @@ export function useExperienceProgress(enabled: boolean): {
   return {
     progress: capture.enabled ? capture.progress : progress,
     capture,
+    scrollRange,
   };
 }

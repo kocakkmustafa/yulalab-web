@@ -27,7 +27,48 @@ function isMetadataRoute(pathname: string): boolean {
   );
 }
 
+function canonicalRedirect(req: NextRequest, pathname: string, locale: "tr" | "en") {
+  const destination = new URL(req.url);
+  destination.pathname = pathname;
+  const response = NextResponse.redirect(destination);
+  // Explicit locale paths take precedence over a previous cookie or the
+  // browser language, including after TR's as-needed prefix is removed.
+  response.cookies.set("NEXT_LOCALE", locale, { path: "/", sameSite: "lax" });
+  return response;
+}
+
 export default function middleware(req: NextRequest) {
+  const pathname = req.nextUrl.pathname;
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(pathname);
+  } catch {
+    return new NextResponse(null, { status: 400 });
+  }
+
+  // Config headers match the encoded URL, while route matching can decode
+  // segments. Canonicalize capability aliases before a successful response
+  // so the generic policy cannot mask the route's random nonce policy.
+  if (/^\/(?:tr\/|en\/)?data-request\/verify\/?$/.test(decoded)) {
+    const canonical = decoded.startsWith("/en/")
+      ? "/en/data-request/verify"
+      : "/data-request/verify";
+    if (pathname !== canonical) {
+      return canonicalRedirect(req, canonical, canonical.startsWith("/en/") ? "en" : "tr");
+    }
+  }
+
+  // Canonicalize external TR URLs here only. A config redirect would run
+  // again after Netlify forwards next-intl's internal /tr rewrite to Next.
+  if (pathname === "/tr" || pathname.startsWith("/tr/")) {
+    const canonical = pathname.slice(3) || "/";
+    const decodedCanonical = decoded.slice(3) || "/";
+    if (/^\/[\\/]/.test(decodedCanonical) || decodedCanonical.includes("\\")) {
+      return new NextResponse(null, { status: 400 });
+    }
+    return canonicalRedirect(req, canonical, "tr");
+  }
+
   if (isMetadataRoute(req.nextUrl.pathname)) {
     return NextResponse.next();
   }

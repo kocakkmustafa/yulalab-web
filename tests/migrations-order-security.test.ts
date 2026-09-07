@@ -35,6 +35,7 @@ function psql(file: string, schema: string) {
     [
       DATABASE_URL,
       "--no-psqlrc",
+      "--set=VERBOSITY=verbose",
       `--set=target_schema=${schema}`,
       `--set=runtime_role=${intakeRole}`,
       `--set=intake_role=${intakeRole}`,
@@ -75,8 +76,19 @@ async function waitForCatalogWritersToQuiesce(): Promise<void> {
 }
 
 async function runApply(schema: string) {
-  await waitForCatalogWritersToQuiesce();
-  return psql(APPLY, schema);
+  // Autovacuum can start after a quiet catalog sample. PostgreSQL aborts a
+  // deadlocked transaction atomically; a fresh psql invocation repeats every
+  // lock and preflight. Retry only that SQLSTATE, never a rejected pre-state,
+  // lock timeout, process timeout, or failed concurrency assertion.
+  for (let attempt = 1; ; attempt += 1) {
+    await waitForCatalogWritersToQuiesce();
+    const result = psql(APPLY, schema);
+    if (attempt >= 3 || result.error || result.signal || result.status !== 3 || !/\bERROR:\s+40P01:/.test(result.stderr)) {
+      return result;
+    }
+    console.warn(`Atomic migration test ${schema}: retrying rolled-back PostgreSQL 40P01 (attempt ${attempt}/3)\n${result.stderr}`);
+    await new Promise((resolve) => setTimeout(resolve, attempt === 1 ? 100 : 250));
+  }
 }
 
 beforeAll(async () => {
@@ -320,7 +332,8 @@ describe("the immutable 0001 -> 0004 deployment boundary", () => {
       await admin.query(
         `ALTER POLICY yulalab_intake_access ON ${schema}.data_requests USING (true) WITH CHECK (true)`,
       );
-      expect((await runApply(schema)).status).toBe(0);
+      const repaired = await runApply(schema);
+      expect(repaired.status, `${repaired.stdout}\n${repaired.stderr}`).toBe(0);
 
       await admin.query(`GRANT CREATE ON SCHEMA ${schema} TO ${attackerRole}`);
       const schemaAcl = await runApply(schema);

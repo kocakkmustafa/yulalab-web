@@ -17,6 +17,7 @@ const STATIC_PATHS = [
   "/privacy/lifeos",
   "/privacy/braavolabs",
   "/privacy/burunfarki",
+  "/privacy/motion",
 ];
 
 function siteOrigin(): string {

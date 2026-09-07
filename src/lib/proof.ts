@@ -40,17 +40,7 @@ export function presentClaims(record: ProductPublicRecord, now: Date): Presented
   });
 }
 
-/**
- * NOT RENDERED ANYWHERE YET.
- *
- * Stated plainly because the whole point of this module was to kill a
- * "written, called from nowhere" helper, and shipping another one silently
- * would repeat it. The availability/status section that will consume this
- * is part of the product-detail IA still to be built (roadmap §5.3 sections
- * 7 and 8); until then the only caller is countLapsedSurfaces and its tests,
- * and "a stale surface keeps its URL but withdraws the status assertion" is
- * true of this library and of no rendered surface.
- */
+/** ProductPage uses this to qualify publication status while keeping links usable. */
 export type PresentedSurface = {
   surface: ProductPublicRecord["surfaces"][number];
   /**

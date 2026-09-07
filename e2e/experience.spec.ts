@@ -1,4 +1,7 @@
 import { chromium, expect, test, type Page } from "@playwright/test";
+import { LOCAL_ONLY_BROWSER_ARGS } from "../.github/ci/browser-options";
+
+const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
 
 const ROOT = '[data-yula-experience="true"]';
 
@@ -91,10 +94,10 @@ test("focused product media settles before visual capture is ready", async ({ pa
 
 test("high-tier glass shader produces real canvas pixels", async () => {
   test.setTimeout(210_000);
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: LOCAL_ONLY_BROWSER_ARGS });
   try {
     const context = await browser.newContext({
-      baseURL: "http://127.0.0.1:4173",
+      baseURL: `http://127.0.0.1:${e2ePort}`,
       deviceScaleFactor: 1.75,
       locale: "tr-TR",
       viewport: { width: 960, height: 640 },
@@ -249,12 +252,12 @@ const LOADER_VIEWPORTS = [
 for (const viewport of LOADER_VIEWPORTS) {
   test(`opening blueprint stays contained on ${viewport.label}`, async () => {
     test.setTimeout(210_000);
-    const browser = await chromium.launch();
+    const browser = await chromium.launch({ args: LOCAL_ONLY_BROWSER_ARGS });
 
     try {
     for (const loaderProgress of [0.15, 0.65, 0.92]) {
         const context = await browser.newContext({
-          baseURL: "http://127.0.0.1:4173",
+          baseURL: `http://127.0.0.1:${e2ePort}`,
           locale: "en-US",
           viewport: { width: viewport.width, height: viewport.height },
         });
@@ -637,7 +640,10 @@ test("mobile header keeps the journey navigation reachable", async ({ page }) =>
 
 test("proof ledger leaves wheel ownership with the document", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
-  await openCapture(page, 0.54);
+  const root = await openCapture(page, 0.54);
+  // Mounting precedes WebGL warm-up. Begin input only after the existing
+  // readiness signal, so renderer startup cannot consume the scroll deadline.
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 45_000 });
   const ledger = page.locator('[class*="proofGrid"]');
   const dimensions = await ledger.evaluate((element) => ({
     clientHeight: element.clientHeight,

@@ -19,8 +19,8 @@ export const lifeos: ProjectConfig = {
     en: "LifeOS unifies five life domains (health, finance, relationships, career, meaning) in a single offline-first OS with AES-256 on-device encryption.",
   },
   short: {
-    tr: "Yerel-öncelikli, AES-256 ile cihaz üstünde şifrelenen kişisel yaşam OS'i. 5 alan, 9+ algoritma.",
-    en: "Offline-first, AES-256 on-device encrypted personal life OS. 5 domains, 9+ validated algorithms.",
+    tr: "Yerel-öncelikli, AES-256 ile cihaz üstünde şifrelenen kişisel yaşam OS'i. Beş yaşam alanı bir arada.",
+    en: "Offline-first, AES-256 on-device encrypted personal life OS. Five life domains in one place.",
   },
   brand: {
     primary: "#C3F400",
@@ -60,16 +60,16 @@ export const lifeos: ProjectConfig = {
     {
       title: { tr: "AI koç (özel)", en: "AI coach (private)" },
       description: {
-        tr: "Modeller cihaz üzerinde çalışır. Hassas veri sunucularımıza asla gönderilmez.",
-        en: "Models run on-device. Sensitive data never leaves your phone.",
+        tr: "Yerel modelle yapılan AI işlemleri cihazda çalışır. Kullanılabilirlik, cihaz desteğine ve modelin kurulmasına bağlıdır.",
+        en: "AI tasks using the local model run on-device. Availability depends on device support and model installation.",
       },
       icon: "Cpu",
     },
     {
-      title: { tr: "Bilimsel algoritmalar", en: "Scientific algorithms" },
+      title: { tr: "Yöntemler ve araçlar", en: "Methods and tools" },
       description: {
-        tr: "CBT, PERMA, atomik alışkanlıklar, FIRE — 9+ doğrulanmış çerçeve.",
-        en: "CBT, PERMA, atomic habits, FIRE — 9+ validated frameworks.",
+        tr: "PERMA, alışkanlık şablonları ve FIRE planlama araçları.",
+        en: "PERMA, habit templates and FIRE planning tools.",
       },
       icon: "Microscope",
     },
@@ -92,7 +92,6 @@ export const lifeos: ProjectConfig = {
   ],
   stats: [
     { value: "5", label: { tr: "Hayat alanı", en: "Life domains" } },
-    { value: "9+", label: { tr: "Bilimsel algoritma", en: "Scientific algorithms" } },
     {
       value: "AES-256",
       label: { tr: "Cihaz üstü şifreleme", en: "On-device encryption" },

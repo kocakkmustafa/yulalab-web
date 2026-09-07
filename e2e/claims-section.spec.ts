@@ -86,7 +86,9 @@ test("a stat backed by a claim carries provenance, fresh or lapsed", async ({ pa
 
 test("a stat with no claim behind it carries no invented provenance", async ({ page }) => {
   await page.goto("/en/projects/lifeos");
-  const algorithms = page.getByText("9+", { exact: true }).first();
-  const card = algorithms.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
+  const domains = page.getByText("Life domains", { exact: true });
+  const card = domains.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
+  await expect(card).toBeVisible();
+  await expect(card).toContainText("5");
   await expect(card).not.toContainText(/verified/i);
 });

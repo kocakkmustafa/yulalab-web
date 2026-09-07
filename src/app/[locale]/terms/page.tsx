@@ -6,7 +6,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { company } from "@/data/company";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
-const LAST_UPDATED = "2026-07-10";
+const LAST_UPDATED = "2026-09-06";
 
 export async function generateMetadata({
   params,
@@ -119,8 +119,11 @@ function Terms() {
             <Section title={isTR ? "5. Burun Farkı — özel şartlar" : "5. Burun Farkı — special terms"}>
               <p>
                 {isTR
-                  ? "Burun Farkı, at yarışı verisi üzerine istatistiksel analiz ve eğitim sunan bir araçtır. Bir bahis platformu DEĞİLDİR; gerçek-parayla bahis işlemi yapmaz ve bahis sitelerine link vermez. İçerik yalnızca 18 yaş ve üstü kullanıcılar içindir. Analizler bir sonucu garanti etmez; kararlarınızın sorumluluğu size aittir. Sorumlu oyun: 18+ · Yeşilay Danışmanlık 182 · yesilay.org.tr."
-                  : "Burun Farkı is a tool offering statistical analysis and education on horse-racing data. It is NOT a gambling platform; it processes no real-money wagers and links to no betting sites. The content is for users aged 18 and over only. Analyses guarantee no outcome; you are responsible for your decisions. Responsible play: 18+ · Yeşilay counselling 182 · yesilay.org.tr."}
+                  ? "Burun Farkı, at yarışı verisi üzerine istatistiksel analiz ve eğitim sunan bir araçtır. Bir bahis platformu DEĞİLDİR; gerçek-parayla bahis işlemi yapmaz ve bahis sitelerine link vermez. İçerik yalnızca 18 yaş ve üstü kullanıcılar içindir. Analizler bir sonucu garanti etmez; kararlarınızın sorumluluğu size aittir. Sorumlu oyun: 18+ · Yeşilay Danışmanlık Merkezi (YEDAM): "
+                  : "Burun Farkı is a tool offering statistical analysis and education on horse-racing data. It is NOT a gambling platform; it processes no real-money wagers and links to no betting sites. The content is for users aged 18 and over only. Analyses guarantee no outcome; you are responsible for your decisions. Responsible play: 18+ · Yeşilay Counselling Centre (YEDAM): "}
+                <a href="tel:115" className="underline underline-offset-4 focusable">115</a>
+                {" · "}
+                <a href="https://yedam.org.tr/telefon-ile-danismanlik" className="underline underline-offset-4 focusable">yedam.org.tr</a>.
               </p>
             </Section>
 

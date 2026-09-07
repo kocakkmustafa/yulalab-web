@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-08-17";
+const LAST_UPDATED = "2026-09-06";
 
 const APPS = [
   "Choreia: Learn to Dance",
@@ -24,8 +24,8 @@ export async function generateMetadata({
   return {
     title: isTR ? "Gizlilik · Motion uygulamaları" : "Privacy · Motion apps",
     description: isTR
-      ? "Choreia, Lissom, Gravita, JabLab ve Ostinato için gizlilik politikası. Kamera görüntüsü cihazdan çıkmaz."
-      : "Privacy policy for Choreia, Lissom, Gravita, JabLab and Ostinato. The camera image never leaves your device.",
+      ? "Motion ailesinin gizlilik bilgileri ve uygulama/sürüm kapsamı: Choreia, Lissom, Gravita, JabLab ve Ostinato."
+      : "Privacy information and app/version scope for the Motion family: Choreia, Lissom, Gravita, JabLab and Ostinato.",
     alternates: {
       canonical: isTR ? "/privacy/motion" : `/${locale}/privacy/motion`,
     },
@@ -60,7 +60,7 @@ function MotionPrivacy() {
           <EyebrowChip>Motion</EyebrowChip>
 
           <h1 className="mt-6 font-display font-extrabold text-ink-50 leading-[0.96] tracking-tightest text-[40px] sm:text-[52px] md:text-[60px]">
-            {isTR ? "Motion gizlilik politikası" : "Motion privacy policy"}
+            {isTR ? "Motion gizlilik bilgileri" : "Motion privacy information"}
           </h1>
 
           <p className="mt-6 font-mono text-[11px] tracking-widest uppercase text-ink-400">
@@ -69,8 +69,8 @@ function MotionPrivacy() {
 
           <p className="mt-6 text-[15px] leading-[1.6] text-ink-300">
             {isTR
-              ? "Bu politika beş uygulamanın tamamı için geçerlidir:"
-              : "This policy covers all five applications:"}
+              ? "Bu sayfa, geliştirme aşamasındaki aşağıdaki Motion ürünleri için genel gizlilik kapsamını açıklar:"
+              : "This page describes the general privacy scope for the following Motion products in development:"}
           </p>
           <ul className="mt-3 space-y-1 text-[15px] leading-[1.6] text-ink-200">
             {APPS.map((a) => (
@@ -79,90 +79,51 @@ function MotionPrivacy() {
           </ul>
 
           <div className="mt-14 space-y-10 text-[16px] leading-[1.7] text-ink-300">
-            <Section title={isTR ? "Özet" : "Summary"}>
+            <Section title={isTR ? "Uygulama ve sürüm kapsamı" : "App and version scope"}>
               <p>
                 {isTR
-                  ? "Bu beş uygulama tamamen cihazınızda çalışır. Kamera görüntüsü ve ondan çıkarılan vücut noktaları telefonunuzdan çıkmaz. Hesap açmanız gerekmez; bulut senkronu, analitik ve reklam yoktur. Sizin hakkınızda hiçbir sunucumuzda veri tutmuyoruz."
-                  : "These five applications run entirely on your device. The camera image, and the body landmarks derived from it, never leave your phone. No account is required; there is no cloud sync, no analytics, and no advertising. We hold no data about you on any server of ours."}
+                  ? "Kamera, mikrofon, saklama ve ağ kullanımı her uygulamanın kendi özellikleri ve sürümü kapsamında ele alınır. Bu sayfa bütün Motion uygulamaları için tek bir veri işleme politikası sunmaz. Kullandığınız sürüm hakkında bilgi almak için uygulama adını ve sürümünü belirterek bize yazabilirsiniz."
+                  : "Camera, microphone, storage and network use are addressed for each app's features and version. This page does not provide one data-processing policy for every Motion app. Contact us with the app name and version for information about the version you use."}
               </p>
             </Section>
 
-            <Section title={isTR ? "Kamera" : "Camera"}>
+            <Section title={isTR ? "Kamera ve mikrofon" : "Camera and microphone"}>
               <p>
                 {isTR
-                  ? "Kamera, hareketinizi gerçek zamanlı olarak vücut noktalarına (33 nokta) dönüştürmek için kullanılır. Görüntü karesi cihazın içinde işlenir; kaydedilmez, diske yazılmaz, hiçbir yere gönderilmez. Uygulamayı kapattığınızda o kareden geriye hiçbir şey kalmaz."
-                  : "The camera is used to convert your movement into body landmarks (33 points) in real time. Frames are processed inside the device; they are not recorded, not written to disk, and not transmitted anywhere. When you close the app, nothing remains of those frames."}
-              </p>
-              <p className="mt-3">
-                {isTR
-                  ? "Kamera izni yalnız siz verdiğinizde ve yalnız antrenman ekranlarında kullanılır."
-                  : "Camera permission is used only when you grant it, and only on the practice screens."}
+                  ? "Görüntü, vücut noktaları veya ses kullanan bir özellik için hangi verinin işlendiği, kaydedildiği ve aktarıldığı uygulamaya özgü gizlilik bilgilerinde açıklanmalıdır. Bu ayrıntıları support@yulalab.com adresinden talep edebilirsiniz."
+                  : "For a feature that uses images, body landmarks or audio, the app-specific privacy information needs to explain which data is processed, recorded and transferred. You can request these details at support@yulalab.com."}
               </p>
             </Section>
 
-            <Section title={isTR ? "Cihazınızda saklananlar" : "What is stored on your device"}>
+            <Section title={isTR ? "Saklama ve ağ kullanımı" : "Storage and network use"}>
               <p>
                 {isTR
-                  ? "Çalışma kayıtlarınız, ölçülen eklem açıları ve ilerlemeniz uygulamanın kendi özel klasöründe, düz dosya olarak tutulur. Bu veriler cihazdan çıkmaz. Uygulamayı sildiğinizde birlikte silinir."
-                  : "Your practice records, measured joint angles, and progress are kept as plain files in the application's own private storage. This data does not leave the device. Deleting the app deletes it."}
-              </p>
-              <p className="mt-3">
-                {isTR
-                  ? "Not: telefonunuzda iCloud veya Google yedeklemesi açıksa, bu dosyalar sizin kendi yedeğinize dahil olabilir. O yedek size aittir; bizim erişimimiz yoktur."
-                  : "Note: if iCloud or Google backup is enabled on your phone, these files may be included in your own backup. That backup belongs to you; we have no access to it."}
-              </p>
-            </Section>
-
-            <Section title={isTR ? "Toplamadığımız veriler" : "Data we do not collect"}>
-              <p>
-                {isTR
-                  ? "Hesap bilgisi, e-posta, ad, konum, rehber, reklam tanımlayıcısı, kullanım analitiği veya telemetri toplamıyoruz. Uygulamaların üretim kodunda verinizi bir sunucuya ileten hiçbir ağ isteği yok (tek istisna aşağıda: yazı tipi indirmesi) — bu bir iddia değil, ölçüldü."
-                  : "We do not collect account details, email, name, location, contacts, advertising identifiers, usage analytics, or telemetry. The applications' production code contains no network request that transmits your data to a server (one exception below: font downloads) — this is not a claim, it was measured."}
-              </p>
-            </Section>
-
-            <Section title={isTR ? "Tek istisna: yazı tipleri" : "One exception: fonts"}>
-              <p>
-                {isTR
-                  ? "Dürüstlük gereği ayrıca yazıyoruz: beş uygulamanın dördü (Choreia, Lissom, JabLab, Ostinato) ilk açılışta yazı tiplerini Google Fonts sunucularından indiriyor. Bu istek sırasında Google, standart bir web isteğinde olduğu gibi IP adresinizi görebilir. İstek yalnız yazı tipi dosyası içindir; hakkınızda hiçbir veri gönderilmez."
-                  : "For the sake of honesty we state this separately: four of the five applications (Choreia, Lissom, JabLab, Ostinato) download their fonts from Google Fonts servers on first launch. During that request Google can see your IP address, as with any standard web request. The request is only for the font file; no data about you is sent."}
-              </p>
-              <p className="mt-3">
-                {isTR
-                  ? "Gravita bunu yapmaz — yazı tipleri uygulamanın içine paketlenmiştir ve hiçbir ağ isteği yoktur. Diğer dördünde de aynı değişikliği yapıyoruz; bu sayfa tamamlandığında güncellenecek."
-                  : "Gravita does not do this — its fonts are bundled inside the application and it makes no network requests at all. We are making the same change in the other four; this page will be updated when that is complete."}
-              </p>
-            </Section>
-
-            <Section title={isTR ? "Üçüncü taraf bileşenler" : "Third-party components"}>
-              <p>
-                {isTR
-                  ? "Vücut noktalarını çıkarmak için Google'ın MediaPipe kütüphanesini kullanıyoruz. MediaPipe tamamen cihaz üzerinde çalışır ve ağ bağlantısı kurmaz. Ayrıca izin durumunu cihazda saklayan standart bir izin bileşeni kullanılıyor. Reklam ağı, analitik veya çökme raporlama servisi bulunmuyor."
-                  : "We use Google's MediaPipe library to derive body landmarks. MediaPipe runs entirely on-device and makes no network connections. We also use a standard permissions component that stores permission state on the device. There is no ad network, analytics service, or crash-reporting service."}
+                  ? "Yerel kayıtlar, dışa aktarma, cihaz yedekleri, tanılama ve yazı tipi indirmeleri dahil ağ kullanımı uygulama ve sürüm kapsamında açıklanır. Verilerin saklanması veya silinmesi hakkında sorunuz varsa destek talebinizde uygulama adını ve sürümünü belirtin."
+                  : "Local records, exports, device backups, diagnostics and network use, including font downloads, are addressed for each app and version. For questions about storing or deleting data, include the app name and version in your support request."}
               </p>
             </Section>
 
             <Section title={isTR ? "Sağlık ve fitness" : "Health and fitness"}>
               <p>
                 {isTR
-                  ? "Bu uygulamalar vücut hareketinizi ölçer ve size geri bildirim verir. Tıbbi cihaz değildirler; teşhis koymaz, tedavi önermez, tıbbi tavsiye vermezler. Apple Sağlık veya Google Fit ile veri paylaşmıyoruz. Bir rahatsızlığınız varsa hekiminize danışın."
-                  : "These applications measure your body movement and give you feedback. They are not medical devices; they do not diagnose, prescribe treatment, or give medical advice. We do not share data with Apple Health or Google Fit. If you have a health condition, consult your physician."}
+                  ? "Motion ürünleri hareket ve pratik desteği amacıyla geliştirilmektedir. Tıbbi cihaz değildirler; teşhis koymaz, tedavi önermez, tıbbi tavsiye vermezler. Bir rahatsızlığınız varsa hekiminize danışın."
+                  : "Motion products are being developed to support movement and practice. They are not medical devices; they do not diagnose, prescribe treatment, or give medical advice. If you have a health condition, consult your physician."}
               </p>
             </Section>
 
             <Section title={isTR ? "Çocuklar" : "Children"}>
               <p>
                 {isTR
-                  ? "Uygulamalar çocuklara yönelik değildir ve çocuklardan bilerek veri toplamaz. Zaten hiç kimseden sunucuya veri toplamıyoruz."
-                  : "The applications are not directed at children and do not knowingly collect data from children. We do not collect data from anyone to any server in any case."}
+                  ? "Uygulamalar çocuklara yönelik değildir ve çocuklardan bilerek veri toplamaz."
+                  : "The applications are not directed at children and do not knowingly collect data from children."}
               </p>
             </Section>
 
             <Section title={isTR ? "Haklarınız" : "Your rights"}>
               <p>
                 {isTR
-                  ? "KVKK ve GDPR kapsamında verilerinize erişme, düzeltme ve silme haklarınız vardır. Pratikte: hakkınızda hiçbir sunucumuzda veri bulunmadığı için bizden dışa aktarılacak ya da silinecek bir şey yoktur. Tüm veriniz cihazınızdadır ve tamamen sizin denetiminizdedir; uygulamayı silmek onu da siler."
-                  : "Under GDPR and Turkish data protection law (KVKK) you have the right to access, correct, and delete your data. In practice: because we hold no data about you on any server, there is nothing for us to export or delete. All of your data is on your device and entirely under your control; deleting the app deletes it."}
+                  ? "KVKK ve GDPR kapsamında verilerinize erişme, düzeltme ve silme haklarınız vardır. Talebinizi uygulama adı ve sürümüyle birlikte support@yulalab.com adresine iletebilirsiniz. Talebin kapsamı ilgili uygulamanın veri akışına göre değerlendirilir."
+                  : "Under GDPR and Turkish data protection law (KVKK) you have the right to access, correct, and delete your data. Send your request to support@yulalab.com with the app name and version. Its scope is assessed against the relevant app's data flow."}
               </p>
             </Section>
 
@@ -179,8 +140,8 @@ function MotionPrivacy() {
                 {isTR ? "Veri Sorumlusu" : "Data Controller"}: YULA Lab — Mustafa Kaan Koçak
                 <br />
                 {isTR ? "E-posta" : "Email"}:{" "}
-                <a href="mailto:merhaba@yulalab.com" className="link-wipe text-ink-50">
-                  merhaba@yulalab.com
+                <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">
+                  support@yulalab.com
                 </a>
                 <br />
                 {isTR ? "Konum" : "Location"}: Türkiye

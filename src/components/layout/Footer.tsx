@@ -12,6 +12,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const t = useTranslations("footer");
   const locale = useLocale() as Locale;
   const year = new Date().getFullYear();
+  const emailBreakAt = company.contact.email.indexOf("@") + 1;
 
   return (
     <footer data-site-footer="true" className="border-t border-white/[0.06] mt-32">
@@ -126,7 +127,9 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                 href={`mailto:${company.contact.email}`}
                 className="link-wipe [overflow-wrap:anywhere]"
               >
-                {company.contact.email}
+                {company.contact.email.slice(0, emailBreakAt)}
+                <wbr />
+                {company.contact.email.slice(emailBreakAt)}
               </a>
             </li>
           </ul>

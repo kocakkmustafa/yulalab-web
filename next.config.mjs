@@ -79,7 +79,18 @@ const nextConfig = {
     return [
       {
         source: "/:path*",
-        headers: securityHeaders,
+        headers: securityHeaders.filter(
+          ({ key }) => key !== "Content-Security-Policy" && key !== "Referrer-Policy",
+        ),
+      },
+      {
+        // Next preserves config headers over route Response headers. The
+        // capability document must own its per-response nonce and referrer
+        // policy. Middleware canonicalizes encoded spellings before rendering.
+        source: "/:path((?!(?:tr/|en/)?data-request/verify/?$).*)",
+        headers: securityHeaders.filter(
+          ({ key }) => key === "Content-Security-Policy" || key === "Referrer-Policy",
+        ),
       },
       {
         // links.yulalab.com (a separate origin) fetches this at runtime
@@ -96,16 +107,6 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      {
-        source: "/tr",
-        destination: "/",
-        permanent: false,
-      },
-      {
-        source: "/tr/:path*",
-        destination: "/:path*",
-        permanent: false,
-      },
       // links.yulalab.com is the single canonical linktree surface — this
       // used to be a byte-identical copy in public/links/, manually kept in
       // sync (and drifting). One source now; short links (/bf, /lo, ...)

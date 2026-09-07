@@ -27,8 +27,13 @@ describe("plain data-request verification capability route", () => {
       expect(response.headers.get("content-security-policy")).toMatch(/default-src 'none'/i);
       expect(response.headers.get("content-security-policy")).toMatch(/connect-src 'self'/i);
       expect(response.headers.get("content-security-policy")).not.toMatch(/https?:\/\//i);
-      expect(html).not.toMatch(/vercel|analytics|google|font|iframe|img\s/i);
+      expect(html).not.toMatch(/vercel|analytics|google|<link\b|<iframe\b|<img\b|@import|@font-face|url\(/i);
       expect(html).not.toContain("__next");
+      const nonce = /<script nonce="([^"]+)"/.exec(html)?.[1];
+      expect(nonce).toBeTruthy();
+      expect(html).toContain(`<style nonce="${nonce}">`);
+      expect(response.headers.get("content-security-policy")).toContain(`style-src 'nonce-${nonce}'`);
+      expect(response.headers.get("content-security-policy")).not.toContain("unsafe-inline");
     },
   );
 
@@ -44,6 +49,13 @@ describe("plain data-request verification capability route", () => {
     expect(html).toContain("location.hash");
     expect(html).toContain("/api/data-request");
     expect(html).not.toMatch(/document\.referrer|navigator\.sendBeacon|new Image/i);
+  });
+
+  it.each(["tr", "en"] as const)("%s has an inert no-script state and a localized exit", async (locale) => {
+    const html = await (await verificationPage(locale)).text();
+    expect(html).toContain('<button id="verify" type="button" hidden>');
+    expect(html).toContain("<noscript><p>");
+    expect(html).toContain(`href="${locale === "en" ? "/en" : ""}/contact"`);
   });
 
   it("a scanner GET performs no server-side POST or external request", async () => {

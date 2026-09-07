@@ -13,7 +13,9 @@ beforeAll(async () => {
     throw new Error("next.config.mjs must define headers() — regression?");
   }
   const headerEntries = await config.headers();
-  headerList = headerEntries[0].headers ?? [];
+  headerList = headerEntries
+    .filter((e) => e.source !== "/portfolio-registry.json")
+    .flatMap((e) => e.headers ?? []);
   const registryEntry = headerEntries.find((e) => e.source === "/portfolio-registry.json");
   registryJsonHeaders = registryEntry?.headers ?? [];
 });

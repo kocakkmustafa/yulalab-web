@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import type { PoolClient } from "pg";
+import { assertMailAdmission, lockMailAdmission } from "@/server/mail-admission";
 
 /**
  * Lead capture.
@@ -60,9 +61,9 @@ export function receiptIdFor(leadId: string): string {
  *
  * Deduplication is resolved by the database, not by a check-then-insert in
  * the application: two rapid submissions race, and the loser would otherwise
- * create a second lead and a second receipt for one person. Including the
- * date means the same person genuinely writing again tomorrow is a new lead
- * rather than a silently swallowed one.
+ * create a second lead and a second receipt for one person. The day key
+ * remains the database uniqueness backstop; the transaction also recognizes
+ * matching content within 24 hours so midnight does not break retries.
  */
 export function dedupeKey(input: Pick<LeadInput, "email" | "message" | "intent">, now: Date): string {
   const day = now.toISOString().slice(0, 10);
@@ -133,6 +134,29 @@ export async function createLead(
 
   try {
     await db.query("BEGIN");
+    await lockMailAdmission(db);
+
+    // A retry costs no new work and retains its receipt even at capacity.
+    // Different content must never be acknowledged as if it had been stored.
+    const duplicate = await db.query<{ id: string }>(
+      `SELECT id FROM leads
+        WHERE dedupe_key = $1 OR (
+          created_at > $2::timestamptz - interval '24 hours'
+          AND lower(btrim(email)) = lower(btrim($3::text))
+          AND message = $4 AND intent = $5
+        )
+        ORDER BY created_at DESC LIMIT 1`,
+      [key, now, input.email.trim(), input.message.trim(), input.intent],
+    );
+    if (duplicate.rows[0]) {
+      await db.query("COMMIT");
+      return { receiptId: receiptIdFor(duplicate.rows[0].id) };
+    }
+    // Admission must not depend on address-only history: an anonymous caller
+    // could otherwise infer someone else's recent contact activity from 429.
+    // The shared daily and pending budgets bound new work for all addresses.
+    await assertMailAdmission(db, "lead", now);
+
     // ON CONFLICT, not SELECT-then-INSERT.
     //
     // The previous version checked for an existing row and then inserted,
@@ -218,6 +242,11 @@ export async function createLead(
       rollbackFailed = true;
     });
     poisoned = rollbackFailed;
+    if (rollbackFailed) {
+      const transactionError = new Error("lead transaction rollback failed");
+      transactionError.name = "LeadTransactionError";
+      throw transactionError;
+    }
     throw error;
   } finally {
     db.release(poisoned ? true : undefined);
