@@ -70,6 +70,7 @@ def check_eszip(data):
 def check_tar(data):
     # gzip.decompress consumes the trailer too, detecting truncated gzip/CRC.
     seen = set()
+    regular_files = set()
     with tarfile.open(fileobj=io.BytesIO(gzip.decompress(data)), mode="r:") as archive:
         for member in archive.getmembers():
             require(safe_archive_name(member.name), "unsafe tar member path")
@@ -78,8 +79,9 @@ def check_tar(data):
             seen.add(name)
             require(member.isdir() or member.isfile(), "tar links or special members are forbidden")
             if member.isfile():
+                regular_files.add(name)
                 require(len(archive.extractfile(member).read()) == member.size, "truncated tar member")
-    require(f"{MIDDLEWARE}.js" in seen, "tar middleware entry missing")
+    require(f"{MIDDLEWARE}.js" in regular_files, "tar middleware entry missing")
 
 
 def validate(root):

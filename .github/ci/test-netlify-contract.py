@@ -217,6 +217,17 @@ Cache-Control = "public, max-age=300, must-revalidate"
                 self.write_json(f"{EDGE}/manifest.json", self.edge)
                 self.rejected()
 
+    def test_tar_middleware_directory_is_not_a_file(self):
+        output = io.BytesIO()
+        with tarfile.open(fileobj=output, mode="w") as archive:
+            member = tarfile.TarInfo(f"./{MIDDLEWARE}.js/")
+            member.type = tarfile.DIRTYPE
+            archive.addfile(member)
+        self.edge["bundles"].append(self.asset("tar", gzip.compress(output.getvalue(), mtime=0)))
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        with self.assertRaisesRegex(contract.ContractError, "tar middleware entry missing"):
+            contract.validate(self.root)
+
     def test_server_zip_truncation_and_wrong_build(self):
         path = self.root / self.zip_relative
         path.write_bytes(path.read_bytes()[:-8])
