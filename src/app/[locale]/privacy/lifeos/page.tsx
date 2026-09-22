@@ -161,6 +161,12 @@ function LifeosPrivacy() {
                   ? "KVKK Madde 11 ve GDPR Madde 15-22 kapsamındaki erişim, düzeltme, silme, taşıma ve itiraz haklarına sahipsiniz. Cihaz kayıtları için kullandığınız sürümdeki dışa aktarma ve silme araçlarının kapsadığı verileri kontrol edin; ayrı ek dosyalar ayrıca işlem gerektirebilir. Hesap ve sunucu kayıtlarına ilişkin taleplerinizi support@yulalab.com adresine iletin."
                   : "You have rights of access, correction, deletion, portability, and objection under KVKK Article 11 and GDPR Articles 15-22. For device records, check which data the export and deletion tools in your version cover; separate attachments may require an additional action. Send requests about account and server-side records to support@yulalab.com."}
               </p>
+              <p className="mt-4">
+                {isTR ? "Hesap silme adımları ve uygulama dışından talep yolu: " : "Account deletion steps and the request path outside the app: "}
+                <Link href="/delete-account/lifeos" className="link-wipe text-ink-50">
+                  {isTR ? "LifeOS hesabını ve verilerini silme" : "Delete your LifeOS account and data"}
+                </Link>.
+              </p>
             </Section>
 
             <Section title={isTR ? "Veri güvenliği" : "Data security"}>

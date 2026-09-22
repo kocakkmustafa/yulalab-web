@@ -22,6 +22,41 @@
       "candidateSha256": "431d9f9acc6e7cf4a8e0d578afa8ed8bb6a1f9b5cf705da647e4ba8c8d844aef",
       "reason": "Replace historical Vercel hosting instructions with the verified Netlify publication state, locked CLI prerequisites and explicit release commands.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/privacy/lifeos/page.tsx",
+      "publishedSha256": "d7812236da65af0b5766fde98b02e06e000cdb80ba606d4f08604591cc277324",
+      "candidateSha256": "f2539d0f10dd6d816fff2a2789630cf010a6f6f84cb154fcc22e5b3a82bce747",
+      "reason": "Link the LifeOS privacy policy to the dedicated account-deletion request page in both supported locales.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/sitemap.ts",
+      "publishedSha256": "bf1e30dd37f6a64c6afab5dac3b91f0f672a9dad941345d4474eadadb15b4a08",
+      "candidateSha256": "a92d9c9184b55967fb54c366f363c5d9b76c6cac535d7b8624ad929bb2353bfc",
+      "reason": "Advertise the dedicated LifeOS account-deletion page for the Turkish and English site routes.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/delete-account/lifeos/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "72009e8c78b784deb59cf8607f33920e907f498b5decadc92bb1e30cec54bfff",
+      "reason": "Add a LifeOS-specific, bilingual, off-app account-and-data deletion request path with honest scope and retention information for Google Play.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tests/data-request-delivery.test.ts",
+      "publishedSha256": "0035667fb6aee764020129c6809feab0327a1a6f3b6bc200b829cb62a10c2916",
+      "candidateSha256": "3f8f670e521cc89bf94ece84ede187524c63cf41f5f055f846a0653b84b9dd53",
+      "reason": "Keep the existing delivery-window regression fixture five days old relative to execution time so retention expiry does not turn it into a stale calendar fixture; production behavior and all 24-hour assertions remain unchanged.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "vitest.config.mts",
+      "publishedSha256": "e1278ceb589454a93a99f72218327123d48af001e6f904aa69b9febe6d255bdf",
+      "candidateSha256": "7915fa4d58c6212a75d4f4829d3c61e4b22ebb985b6f59d60e0528bb4b5adb16",
+      "reason": "Use jsdom browser storage in test workers when the host Node version exposes its own storage globals; preserve real DOM privacy assertions and support older Node versions without the flag.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
 }
