@@ -92,6 +92,20 @@
       "candidateSha256": "2b799c9101047f6c30eeabf9e98366632b2c3ab250569608af75afe44d03de3a",
       "reason": "Keep the pinned Deno/Netlify edge dependency declaration aligned with the audited exact Next 15.5.24 package so the Linux Node 22 adapter build leaves tracked source bytes unchanged.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/lifeos.ts",
+      "publishedSha256": "7a8f05f3da46ddbd7f5fdb6e484db31bd362c180d64f8b0a9374c07f453adea3",
+      "candidateSha256": "5e79eb843ebb984c01ba9acfb61d878989fc6e09e8310bacac474c1eb38b43a7",
+      "reason": "Stop presenting the old legal microsite as a dedicated LifeOS product website in SoftwareApplication structured data; preserve the verified App Store primary CTA and YULALAB legal routes.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/lib/analytics/events.ts",
+      "publishedSha256": "e14a590bacfb44a31b83a849f47f1a377ed6dd3568f73db78662f510568c9e4f",
+      "candidateSha256": "f5b007c451d191b08086591163213a808f4d66a24b0002385b079dcf698c4045",
+      "reason": "Remove the obsolete LifeOS microsite example from the outbound allowlist explanation; the source still reads project links until the registry owns all destinations.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
 }
