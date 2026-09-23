@@ -73,9 +73,11 @@ for (const route of ALL_ROUTES) {
       // Next.js's default error boundary and not-found page both render an
       // <h1>; a broken route often still 200s (client-side render) so the
       // status check alone isn't enough — assert real content landed.
-      await expect(page.locator("body")).not.toContainText(
-        /application error|something went wrong/i,
-      );
+      // Privacy copy may legitimately discuss "application errors". Match
+      // the error boundary's heading rather than every word in the page.
+      await expect(page.getByRole("heading", {
+        name: /^(application error|something went wrong)/i,
+      })).toHaveCount(0);
       await expect(page).not.toHaveTitle(/404/i);
     });
   }
