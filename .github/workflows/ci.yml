@@ -17,7 +17,7 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       YULA_E2E_PORT: '4189'
-      LINKS_COMMIT: 1c307de4a3e6ce5a017692509ac14e479528faf5
+      LINKS_COMMIT: 43524f61e28d9bbd73be372ca8bc30feedddb8ad
     services:
       postgres:
         image: postgres:17
@@ -54,7 +54,7 @@ jobs:
       - name: Set up pinned Node
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
-          node-version: 22.23.2
+          node-version: 26.9.0
           cache: pnpm
       - name: Record runner and source identity
         run: |
@@ -97,7 +97,7 @@ jobs:
       - name: URL well-formedness without live requests
         run: pnpm verify:links --no-live
       - name: Build Next and Netlify artifacts offline
-        run: node .github/ci/netlify/node_modules/netlify-cli/bin/run.js build --offline --context production
+        run: pnpm build:netlify
       - name: Product render mode from built output
         run: pnpm verify:render-mode
       - name: Verify Netlify config and generated artifacts

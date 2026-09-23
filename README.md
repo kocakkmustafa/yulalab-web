@@ -47,8 +47,8 @@ Each project is configured in [`src/data/projects/<slug>.ts`](./src/data/project
 | Icons        | Lucide                                                                    |
 | i18n         | `next-intl` 4 — TR (default) and EN                                       |
 | SEO          | Dynamic [`sitemap.ts`](./src/app/sitemap.ts) + [`robots.ts`](./src/app/robots.ts) + OpenGraph + Twitter |
-| Hosting      | Vercel baseline; Netlify Next.js adapter candidate                       |
-| Package mgr  | pnpm 10.33.0; Node.js 22.23.2 verified toolchain                          |
+| Hosting      | Netlify with the pinned Next.js adapter                                  |
+| Package mgr  | pnpm 10.33.0; Node.js 26.9.0 build, Node.js 24 function runtime            |
 
 ## Local development
 
@@ -187,11 +187,18 @@ Install the frozen product dependencies and independently locked Netlify CLI
 ```bash
 pnpm install --frozen-lockfile
 npm ci --prefix .github/ci/netlify --no-audit --no-fund
-node .github/ci/netlify/node_modules/netlify-cli/bin/run.js build --offline --context production
+pnpm build:netlify
 ```
 
 `netlify.toml` uses the pinned `@netlify/plugin-nextjs` adapter. The offline
 build produces the Next.js and Netlify artifacts without publishing them.
+The build uses Node 26.9.0; the CLI scripts explicitly set
+`AWS_LAMBDA_JS_RUNTIME=nodejs24.x`, a supported Netlify Functions runtime.
+The artifact checker rejects a missing or different runtime in the generated
+function manifest. This variable is a process/provider setting, not a
+`netlify.toml` environment setting. A future provider-managed build must verify
+the same runtime setting before publication; local artifacts do not establish
+the remote configuration.
 Authenticated access to the existing Netlify projects is required for uploads:
 
 ```bash
