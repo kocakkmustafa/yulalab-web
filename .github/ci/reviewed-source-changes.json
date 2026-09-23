@@ -12,8 +12,22 @@
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "fbc0439610c7172243a22983bb3f4876a6f1d5b8fa9b6632288d83f6f5d20779",
-      "reason": "Route normal deployment commands through locked Netlify CLI and explicit existing canonical production/private preview project IDs.",
+      "candidateSha256": "db0b0c5a67a57b1efec1f887467bca21a919bd41b631ad83f5538a8d23b917aa",
+      "reason": "Route normal deployment commands through locked Netlify CLI and explicit existing canonical production/private preview project IDs; pin audited Next and transitive dependency versions for the current production candidate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "deno.lock",
+      "publishedSha256": "b6e624268f9825b9b67e7bb0965ec88558248bd751a24a307a5b7f11288b3187",
+      "candidateSha256": "2b799c9101047f6c30eeabf9e98366632b2c3ab250569608af75afe44d03de3a",
+      "reason": "Keep the pinned Deno/Netlify edge dependency declaration aligned with the audited exact Next 15.5.24 package so the Linux Node 22 adapter build leaves tracked source bytes unchanged.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "publishedSha256": "0214f3938ff0c89a3ae8cdaa211770e922672ab5d8394519bade0fe5bb90bc5a",
+      "candidateSha256": "0136232eef55461673ef396901f6df4d57f79863234b687595c9b0a99d9c3d7c",
+      "reason": "Lock the reviewed audited Next, sharp, js-yaml and smol-toml dependency updates without changing application source or deployment commands.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
