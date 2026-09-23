@@ -61,8 +61,8 @@
     {
       "path": "tests/data-request-delivery.test.ts",
       "publishedSha256": "0035667fb6aee764020129c6809feab0327a1a6f3b6bc200b829cb62a10c2916",
-      "candidateSha256": "3f8f670e521cc89bf94ece84ede187524c63cf41f5f055f846a0653b84b9dd53",
-      "reason": "Keep the existing delivery-window regression fixture five days old relative to execution time so retention expiry does not turn it into a stale calendar fixture; production behavior and all 24-hour assertions remain unchanged.",
+      "candidateSha256": "593db5d934b84de51b01671af55b891d2c22f78ff07d2dddb0daa84e3c7eba76",
+      "reason": "Keep delivery fixtures inside the 30-day verification queue window relative to execution time; the previous fixed August date expired on September 23 and caused seven false CI failures. Production behavior and 24-hour assertions remain unchanged.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {

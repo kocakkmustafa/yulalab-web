@@ -25,7 +25,8 @@ const PREVIOUS_SECRET = "test-only-previous-secret-with-at-least-32-bytes";
 const INTAKE_ROLE = "t_dsr_delivery_intake";
 const MAIL_ROLE = "t_dsr_delivery_mail";
 const PURGE_ROLE = "t_dsr_delivery_purge";
-const NOW = new Date("2026-08-24T09:00:00.000Z");
+// Stay inside the real 30-day queue window while leaving room for DB clock skew.
+const NOW = new Date(Date.now() - 60_000);
 let pool: Pool;
 
 function configuredTransport(sent: MailMessage[]): MailTransport {
