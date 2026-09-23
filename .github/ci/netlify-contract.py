@@ -96,7 +96,7 @@ def validate(root):
     config = tomllib.loads(read("netlify.toml").decode())
     require(config["build"]["command"] == "pnpm build", "build command mismatch")
     require(config["build"]["publish"] == ".next", "publish directory mismatch")
-    require(config["build"]["environment"] == {"NODE_VERSION": "22.23.2", "PNPM_VERSION": "10.33.0"}, "build environment mismatch")
+    require(config["build"]["environment"] == {"NODE_VERSION": "26.9.0", "PNPM_VERSION": "10.33.0"}, "build environment mismatch")
     require(config["plugins"] == [{"package": "@netlify/plugin-nextjs"}], "build plugin mismatch")
     package = read_json("package.json")
     require(package["devDependencies"]["@netlify/plugin-nextjs"] == "5.15.13", "adapter version mismatch")
@@ -115,7 +115,7 @@ def validate(root):
     handler = functions["functions"][0]
     require(handler["name"] == HANDLER, "server function identity mismatch")
     require(handler["generator"] == GENERATOR, "server function generator mismatch")
-    require(handler["runtimeVersion"] == "nodejs22.x", "server function runtime mismatch")
+    require(handler.get("runtimeVersion") == "nodejs24.x", "server function runtime must be explicitly nodejs24.x")
     zip_relative = f".netlify/functions/{HANDLER}.zip"
     zip_path = regular_file(root, zip_relative)
     require(zip_path.stat().st_size > 0, "empty server function zip")

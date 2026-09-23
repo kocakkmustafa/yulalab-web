@@ -14,15 +14,16 @@ match, and its current bytes to match the reviewed candidate hash. Every other
 baseline file remains byte-identical. This candidate aligns the Burun Farki
 project contact with `support@yulalab.com`, points the package deploy commands
 at the existing Netlify production/private preview projects, and updates the
-deployment documentation. Hosting configuration, dependencies, lockfile,
-translations, assets and database code are unchanged. Passing this check is
+deployment documentation. The 2026-09-22 candidate also updates the Node build
+target, pins the supported function runtime, patches Next/sharp/YAML/TOML
+advisories, and fixes clock-dependent and Node 26 browser-storage test setup.
+Translations, assets and database code are unchanged. Passing this check is
 not a deployment receipt.
 
 The Links sibling is pinned to
-`1c307de4a3e6ce5a017692509ac14e479528faf5`. Push that existing commit to its
-repository before the web workflow is run remotely. Its source parent
-`9150a7f75d470594b3c31bba9c46d761c3f169b5` reproduces all ten publication
-manifest files; only its CI workflow and new CI helpers differ.
+`43524f61e28d9bbd73be372ca8bc30feedddb8ad`, the existing main revision with
+the stale technical banner removed. Its own immutable publication manifest
+and reviewed candidate deltas are verified separately by the web workflow.
 
 The workflow runs all existing unit tests with disposable PostgreSQL 17,
 lint, typecheck, content and URL-shape checks, offline Next/Netlify build,
@@ -41,8 +42,14 @@ package overrides TOML to 4.2.0 and IPX sharp to 0.35.4 for the published
 advisories GHSA-82x6-q7mm-w9cf, GHSA-v5mp-jgw5-2x6j, and
 GHSA-f88m-g3jw-g9cj. The compatibility check parses local Netlify/Cargo
 configuration and performs an IPX resize/WebP conversion with local fixtures.
-The product dependency graph is unchanged. The Netlify step builds locally with `--offline` and
-contains no deployment command. The artifact check distinguishes the host
+The product dependency patches are recorded in the reviewed source manifest
+and pnpm lockfile. The Netlify step runs `pnpm build:netlify` locally with
+`--offline` and contains no deployment command. Build Node is 26.9.0; the CLI
+process explicitly sets `AWS_LAMBDA_JS_RUNTIME=nodejs24.x`. Netlify's build
+Node selection and supported Functions runtimes have separate release schedules.
+A future provider-managed build must verify that environment setting through
+the provider before publication; it is not configured through `netlify.toml`.
+The artifact check requires an explicit Node 24 function runtime, distinguishes the host
 platform and architecture, validates the adapter function/edge bundles and
 the registry bytes, and records their hashes. It does not execute those
 bundles in a production provider runtime.

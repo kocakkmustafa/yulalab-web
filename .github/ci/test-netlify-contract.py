@@ -57,7 +57,7 @@ class ArtifactContractTests(unittest.TestCase):
 command = "pnpm build"
 publish = ".next"
 [build.environment]
-NODE_VERSION = "22.23.2"
+NODE_VERSION = "26.9.0"
 PNPM_VERSION = "10.33.0"
 [[plugins]]
 package = "@netlify/plugin-nextjs"
@@ -79,7 +79,7 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.write(self.zip_relative, b"")
         self.make_zip()
         self.functions = {"functions": [{"name": HANDLER, "generator": "@netlify/plugin-nextjs@5.15.13",
-                                        "runtimeVersion": "nodejs22.x", "path": str(self.root / self.zip_relative)}],
+                                        "runtimeVersion": "nodejs24.x", "path": str(self.root / self.zip_relative)}],
                           "system": {"arch": "fixture", "platform": "fixture"}}
         self.write_json(".netlify/functions/manifest.json", self.functions)
         self.edge = {"bundles": [self.asset("eszip2", minimal_eszip())],
@@ -153,6 +153,8 @@ Cache-Control = "public, max-age=300, must-revalidate"
         handler = self.functions["functions"][0]
         cases = [[], [handler, handler], [{**handler, "name": "other"}],
                  [{**handler, "generator": "other"}], [{**handler, "runtimeVersion": "nodejs20.x"}],
+                 [{**handler, "runtimeVersion": "nodejs22.x"}], [{**handler, "runtimeVersion": "nodejs26.x"}],
+                 [{key: value for key, value in handler.items() if key != "runtimeVersion"}],
                  [{**handler, "path": "/outside/server.zip"}],
                  [{key: value for key, value in handler.items() if key != "generator"}]]
         for functions in cases:
@@ -239,7 +241,7 @@ Cache-Control = "public, max-age=300, must-revalidate"
         path = self.root / "netlify.toml"
         original = path.read_text()
         for old, new in (("pnpm build", "echo skipped"), ('publish = ".next"', 'publish = "public"'),
-                         ("22.23.2", "20.0.0"), ("10.33.0", "9.0.0"),
+                         ("26.9.0", "20.0.0"), ("10.33.0", "9.0.0"),
                          ('package = "@netlify/plugin-nextjs"', 'package = "other"'),
                          ("https://links.yulalab.com", "*")):
             with self.subTest(setting=old):
