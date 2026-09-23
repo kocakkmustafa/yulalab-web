@@ -3,9 +3,10 @@ import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-09-22";
+const LAST_UPDATED = "2026-09-23";
 const REQUEST_EMAIL = "support@yulalab.com";
 const REQUEST_HREF = `mailto:${REQUEST_EMAIL}?subject=LifeOS%20account%20deletion`;
+const DATA_REQUEST_HREF = `mailto:${REQUEST_EMAIL}?subject=LifeOS%20data%20deletion`;
 
 export async function generateMetadata({
   params,
@@ -74,6 +75,25 @@ export default async function LifeosAccountDeletionPage({
                   ? "LifeOS içinde Ayarlar → HESAP İŞLEMLERİ → Hesabımı kalıcı olarak sil yolunu aç. Onay ekranındaki adımları tamamla. Uygulama çevrimiçi hesabı ve ilişkili senkronize kayıtları silmeyi dener; ardından kapsamına giren cihaz verilerini temizler. Çevrimiçi silme doğrulanamazsa uygulama bunu ayrı bir uyarıyla bildirir. Bu durumda hesap ve bulut kayıtları hâlâ mevcut olabilir; yeniden giriş yaparak tekrar deneyebilir veya yukarıdaki e-posta yolunu kullanabilirsin."
                   : "In LifeOS, open Settings → ACCOUNT ACTIONS → Permanently delete my account and complete the confirmation steps. The app attempts to delete your online account and associated synced records, then clears the device data within its deletion scope. If online deletion cannot be confirmed, the app shows a separate warning. Your account and cloud records may still exist in that case; sign in to try again or use the email request above."}
               </p>
+            </Section>
+
+            <Section title={isTR ? "Hesabı silmeden belirli verileri silme" : "Delete specific data without deleting your account"}>
+              <p>
+                {isTR
+                  ? "LifeOS içindeki Arşiv Merkezi'nde arşivlenmiş izleyicileri ve bunlara bağlı kayıtları kalıcı olarak silebilirsin. Uygulama önce bu cihazdaki kayıtları temizler ve ilişkili bulut kayıtlarının silinmesini doğrulamaya çalışır. Bulut silme doğrulanmazsa işlem beklemede görünür; çevrimiçi olduğunda yeniden deneyebilirsin. Hesabın açık kalır."
+                  : "In LifeOS Archive Center, you can permanently delete archived trackers and their related records. The app clears those records on this device first and attempts to confirm deletion of the related cloud records. If cloud deletion is not confirmed, the request remains pending so you can retry when online. Your account stays open."}
+              </p>
+              <p className="mt-4">
+                {isTR
+                  ? "Uygulamaya erişemiyorsan veya başka hesap bağlantılı verilerin silinmesini istiyorsan, hesabında kullandığın e-posta adresinden bize yaz. Hangi veri türlerinin silinmesini istediğini belirt; parola, kimlik belgesi veya sağlık verilerinin içeriğini gönderme. İşlem öncesinde hesap sahipliğini doğrulamamız gerekebilir."
+                  : "If you cannot access the app or want other account-linked data deleted, email us from the address used for your account. Tell us which types of data you want deleted; do not send passwords, identity documents, or the contents of health records. We may need to verify account ownership before processing the request."}
+              </p>
+              <a
+                href={DATA_REQUEST_HREF}
+                className="mt-5 inline-flex rounded-lg border border-white/25 px-5 py-3 text-ink-50 hover:bg-white/[0.06] focusable"
+              >
+                {isTR ? "Veri silme talebi gönder" : "Email a data deletion request"} · {REQUEST_EMAIL}
+              </a>
             </Section>
 
             <Section title={isTR ? "Silme kapsamı ve saklanan kayıtlar" : "Deletion scope and retained records"}>

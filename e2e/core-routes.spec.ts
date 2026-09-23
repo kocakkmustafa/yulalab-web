@@ -36,6 +36,8 @@ const STATIC_ROUTES = [
   "/contact",
   "/support",
   "/privacy",
+  "/privacy/lifeos",
+  "/delete-account/lifeos",
   "/privacy/motion",
   "/terms",
   "/notes",
@@ -77,6 +79,34 @@ for (const route of ALL_ROUTES) {
       await expect(page).not.toHaveTitle(/404/i);
     });
   }
+}
+
+for (const localeCase of [
+  {
+    path: "/delete-account/lifeos",
+    canonical: "https://yulalab.com/delete-account/lifeos",
+    account: "Silme talebi gönder",
+    data: "Veri silme talebi gönder",
+  },
+  {
+    path: "/en/delete-account/lifeos",
+    canonical: "https://yulalab.com/en/delete-account/lifeos",
+    account: "Email a deletion request",
+    data: "Email a data deletion request",
+  },
+] as const) {
+  test(`${localeCase.path} offers account and partial data deletion without the app`, async ({ page }) => {
+    const response = await page.goto(localeCase.path);
+    expect(response?.status()).toBe(200);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/LifeOS/i);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", localeCase.canonical);
+    await expect(page.getByRole("link", { name: new RegExp(localeCase.account) })).toHaveAttribute(
+      "href", "mailto:support@yulalab.com?subject=LifeOS%20account%20deletion",
+    );
+    await expect(page.getByRole("link", { name: new RegExp(localeCase.data) })).toHaveAttribute(
+      "href", "mailto:support@yulalab.com?subject=LifeOS%20data%20deletion",
+    );
+  });
 }
 
 test("homepage renders the product-lab identity, not the retired venture-studio framing", async ({

@@ -54,8 +54,8 @@
     {
       "path": "src/app/[locale]/delete-account/lifeos/page.tsx",
       "publishedSha256": null,
-      "candidateSha256": "72009e8c78b784deb59cf8607f33920e907f498b5decadc92bb1e30cec54bfff",
-      "reason": "Add a LifeOS-specific, bilingual, off-app account-and-data deletion request path with honest scope and retention information for Google Play.",
+      "candidateSha256": "2dcdab8d6dbbfe2c5eced610499db364777276f0c99827b113ab232a0f6c7149",
+      "reason": "Add a LifeOS-specific, bilingual, off-app account-and-data deletion request path with honest scope and retention information for Google Play; explain optional partial tracker and account-linked data deletion without closing the account.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
