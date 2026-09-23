@@ -185,9 +185,9 @@ export function outboundHostAllowlist(): Set<string> {
   // social profiles and per-product sites that never made it into the
   // registry (the known Y-P0-003 leftover, tracked for Y-P1-001). Reading
   // both is not belt-and-braces; measured against a real browser, the
-  // registry alone rejected LifeOS's own primary CTA with a 400, because
-  // lifeos-legal.vercel.app exists only in this list. Collapse this loop
-  // into the one above when the two sources become one.
+  // registry alone once rejected a project-owned CTA with a 400, because
+  // that destination existed only in this list. Collapse this loop into
+  // the one above when the two sources become one.
   for (const project of projects) {
     for (const link of project.links) add(link.href);
   }
