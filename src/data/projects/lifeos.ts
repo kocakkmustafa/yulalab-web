@@ -114,7 +114,9 @@ export const lifeos: ProjectConfig = {
     // iOS live on the App Store (verified 2026-07-10). Android still in closed
     // testing → Play link stays hidden until the production track goes live.
     { kind: "appstore", href: "https://apps.apple.com/app/id6771527233" },
-    { kind: "web", href: "https://lifeos-legal.vercel.app" },
+    // The old legal microsite is unavailable; keep this hidden until a
+    // dedicated LifeOS website has a verified live URL.
+    { kind: "web", href: null },
     { kind: "playstore", href: null },
     { kind: "x", href: null },
     { kind: "instagram", href: null },
