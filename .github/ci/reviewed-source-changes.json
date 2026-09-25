@@ -106,6 +106,20 @@
       "candidateSha256": "f5b007c451d191b08086591163213a808f4d66a24b0002385b079dcf698c4045",
       "reason": "Remove the obsolete LifeOS microsite example from the outbound allowlist explanation; the source still reads project links until the registry owns all destinations.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/privacy/motion/page.tsx",
+      "publishedSha256": "c8e100e471f37fa98e1bc4166a1dec7fa371e9a8b318823af1a747a0f8cf5ed8",
+      "candidateSha256": "b7a16011bdca1c26d1432afb202d557dca1392880b4bb09250c6d0069ba0ee62",
+      "reason": "Clarify the shared Motion privacy notice in Turkish and English for five apps: separate account data from on-device camera data, subscriptions, retention, and in-app account deletion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/support/page.tsx",
+      "publishedSha256": "406c7a84b6061141671dc8ce0d2ba5497f5ae8b00b159ac92d27105bc279ea7e",
+      "candidateSha256": "40963747da03e56c216fd440113c13febc9e56aff4d3344fd8e174963be171da",
+      "reason": "Add the five Motion apps to bilingual support and account-deletion guidance using the approved live support route and contact.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
 }
