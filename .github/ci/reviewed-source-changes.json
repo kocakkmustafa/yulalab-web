@@ -12,8 +12,8 @@
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "bb4ef5efe80ebca400d9b31008e5e7bd1ae87d7bb4e883ebe5394420d54e2b8b",
-      "reason": "Preserve the first candidate exact Next 15.5.24 and sharp 0.35.4 dependency pins, while retaining the later explicit Node 24 Netlify build/deploy scripts and existing project IDs.",
+      "candidateSha256": "0701daf0dde55b51cc3d63a862df56a36975edcf82eadbafb7983c48af8bc3af",
+      "reason": "Pin pnpm 10.33.0 for Netlify Corepack so install and nested build commands use the same package-manager version; preserve existing dependency and runtime pins.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
