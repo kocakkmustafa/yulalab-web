@@ -101,8 +101,8 @@ function Support() {
                   ? "Motion uygulamaları (Choreia · Lissom · Gravita · JabLab · Ostinato) için de bunlar geçerli mi?"
                   : "Do these apply to the Motion apps (Choreia · Lissom · Gravita · JabLab · Ostinato)?"}
                 a={isTR
-                  ? "Aşağıdaki abonelik, hesap silme ve geri ödeme adımları her Motion ürünü için ortak bir akış değildir. Kullandığınız uygulama ve sürümün gizlilik kapsamını kontrol edin; destek talebinizde uygulama adı ve sürümünü belirtin."
-                  : "The subscription, account-deletion and refund steps below are not a shared workflow for every Motion product. Check the privacy scope for your app and version, and include both in your support request."}
+                  ? "Beş Motion uygulaması tek hesabı paylaşır. Bireysel abonelik yalnız ilgili uygulamada, Motion+ beşinde geçerlidir. Hesap silme bütün Motion hesabını etkiler; her uygulama kendi cihazdaki kayıtlarını temizler. Diğer YULA Lab ürünlerinde akış farklı olabilir."
+                  : "The five Motion apps share one account. An individual subscription covers its app; Motion+ covers all five. Account deletion affects the whole Motion account; each app clears its own on-device records. Other YULA Lab products may have different flows."}
                 links={[{ href: "/privacy/motion", label: isTR ? "Motion gizlilik bilgileri" : "Motion privacy information" }]}
               />
               <FAQ
@@ -114,8 +114,8 @@ function Support() {
               <FAQ
                 q={isTR ? "Hesabımı nasıl silerim?" : "How do I delete my account?"}
                 a={isTR
-                  ? "Hesap silme yolu ve silinecek kayıtların kapsamı ürüne göre değişir. İlgili ürünün gizlilik bilgilerini kontrol edin veya uygulama adı ve sürümüyle support@yulalab.com adresine yazın. Braavolabs’ta başka üyeleri olan çalışma alanı kayıtları kalabilir. Aboneliği iptal etmek ayrı bir işlemdir."
-                  : "Account-deletion steps and the records affected vary by product. Check the product privacy information or email support@yulalab.com with the app name and version. In Braavolabs, workspace records can remain when other members still belong to that workspace. Subscription cancellation is a separate action."}
+                  ? "Motion için uygulamada Hesap > Hesabı sil yolunu kullanın; uygulamaya erişemiyorsanız support@yulalab.com adresine Motion hesabı silme talebi gönderin. Motion ortak hesabı bütün beş uygulamada silinir; diğer ürünlerde kapsam farklıdır. Braavolabs’ta başka üyeleri olan çalışma alanı kayıtları kalabilir. Aboneliği iptal etmek ayrı bir işlemdir."
+                  : "For Motion, use Account > Delete account in the app, or email support@yulalab.com to request deletion if you cannot access the app. The shared Motion account is deleted across all five apps; other products have different scopes. In Braavolabs, workspace records can remain when other members still belong to that workspace. Cancel subscriptions separately."}
               />
               <FAQ
                 q={isTR ? "Geri ödeme alabilir miyim?" : "Can I get a refund?"}
