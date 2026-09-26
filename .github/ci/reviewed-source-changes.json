@@ -110,8 +110,8 @@
     {
       "path": "src/app/[locale]/privacy/motion/page.tsx",
       "publishedSha256": "c8e100e471f37fa98e1bc4166a1dec7fa371e9a8b318823af1a747a0f8cf5ed8",
-      "candidateSha256": "8f59ef55f8059192e7e57c01164be7820983ada88ef23dc311c5c6670868e46f",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "candidateSha256": "2a00201d880e1464ec7aa66a71660cfe9c310ddbd8fdcd04bed72e9fa1bbfe81",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Disclose retained provider IP/user-agent/platform diagnostics, approximate IP-derived location and salted bcrypt credentials for account/security operations; clarify provider logs and backups are not instantly erased with account deletion. Exact source and aggregate provider records reviewed; no GPS/device ID, advertising or production acceptance added.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {

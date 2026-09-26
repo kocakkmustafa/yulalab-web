@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-09-26";
+const LAST_UPDATED = "2026-09-27";
 
 const APPS = [
   "Choreia: Learn to Dance",
@@ -93,6 +93,24 @@ function MotionPrivacy() {
                   ? "Beş uygulama tek Motion hesabını kullanır. Kayıt, giriş, e-posta doğrulama ve parola kurtarma için e-posta adresiniz ve parolanız Supabase Auth'a gönderilir; isteğe bağlı görünen adınız Motion profilinde saklanır. Rastgele hesap kimliği oturumunuzu ve uygulama erişiminizi ilişkilendirir. Parolayı uygulamanın seans geçmişine kaydetmeyiz. İlk sürümde beş uygulamada da ücretli satış kapalıdır. Abonelikler açılırsa bireysel abonelik yalnız satın alındığı uygulamada, Motion+ ise beş uygulamada geçerli olacak şekilde tasarlanmıştır."
                   : "The five apps share one Motion account. Your email address and password go to Supabase Auth for sign-up, sign-in, email confirmation and password recovery; an optional display name is stored in your Motion profile. A random account ID links your session and app access. The apps do not put your password in practice history. Paid sales are disabled in the first release of all five apps. If subscriptions are enabled, an individual subscription is designed to cover its app and Motion+ all five."}
               </p>
+              <p className="mt-3">
+                {isTR
+                  ? "Supabase Auth, parolanızı doğrulamak için bcrypt ile üretilmiş tuzlu bir parola özeti (hash) saklar. Bu kimlik doğrulama kaydı hesabınıza bağlıdır ve hesap girişi ile güvenliği için kullanılır."
+                  : "Supabase Auth stores a salted password hash produced with bcrypt to verify your password. This authentication record is linked to your account and used for account sign-in and security."}
+              </p>
+            </Section>
+
+            <Section title={isTR ? "Sağlayıcı günlükleri ve yaklaşık konum" : "Provider logs and approximate location"}>
+              <p>
+                {isTR
+                  ? "Motion hesap hizmetlerine gönderilen istekler, Supabase ve hizmet sağlayıcılarının sakladığı operasyonel günlüklere IP adresi, kullanıcı aracısı (user agent), işletim sistemi, platform ve çalışma ortamı sürümleri ile istek ve kimlik doğrulama olaylarının teknik ayrıntılarını ekleyebilir. Bunlar teknik hizmet bilgileridir; uygulamalar benzersiz bir cihaz kimliği göndermez. Sağlayıcı günlükleri ayrıca IP adresine dayanan yaklaşık ülke, bölge ve şehir bilgisi içerir. Bu konum bilgisi GPS'ten alınmaz ve uygulamalar konum izni istemez."
+                  : "Requests to Motion account services can add your IP address, user agent, operating system, platform and runtime versions, and request and authentication metadata to operational logs retained by Supabase and service providers. These are technical service details; the apps do not send a unique device ID. Provider logs also contain approximate country, region and city information based on the IP address. This location does not come from GPS, and the apps do not request location permission."}
+              </p>
+              <p className="mt-3">
+                {isTR
+                  ? "Günlük kayıtları hesap kimliği veya IP adresi üzerinden sizinle ilişkilendirilebilir. Hesap ve sağlayıcı verileri kimlik doğrulama, güvenlik, hizmetin işletilmesi ve teknik sorunların incelenmesi için kullanılır; reklam veya reklam amaçlı takip için kullanılmaz."
+                  : "Log records can be associated with you through an account ID or IP address. Account and provider data are used for authentication, security, operating the service and investigating technical issues; they are not used for advertising or advertising tracking."}
+              </p>
             </Section>
 
             <Section title={isTR ? "Satın alma doğrulaması" : "Purchase verification"}>
@@ -133,8 +151,8 @@ function MotionPrivacy() {
               </a>
               <p className="mt-3">
                 {isTR
-                  ? "Hesap silmek Apple veya Google aboneliğini iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabınızdan ayrıca iptal edin. Sunucuda yalnız rastgele hesap kimliğinin tek yönlü özeti, diğer cihazların silmeyi sonradan tanıması için silme kaydı olarak tutulur. Sağlayıcıların operasyonel günlükleri ve yedekleri kendi saklama döngülerine tabidir."
-                  : "Deleting the account does not cancel an Apple or Google subscription; cancel it separately in your store account to stop renewal. The server retains only a one-way digest of the random account ID as a deletion receipt so other devices can recognize a later launch. Provider operational logs and backups follow their own retention cycles."}
+                  ? "Hesap silmek Apple veya Google aboneliğini iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabınızdan ayrıca iptal edin. Diğer cihazların silmeyi sonradan tanıması için rastgele hesap kimliğinin tek yönlü özeti sunucuda silme kaydı olarak tutulur. Sağlayıcıların operasyonel günlükleri ve yedekleri kendi saklama döngülerine tabidir; hesap silme, bu kayıtların tamamının anında silindiği anlamına gelmez."
+                  : "Deleting the account does not cancel an Apple or Google subscription; cancel it separately in your store account to stop renewal. A one-way digest of the random account ID is retained on the server as a deletion receipt so other devices can recognize deletion on a later launch. Provider operational logs and backups follow their own retention cycles; deleting an account does not mean that all of those records are immediately erased."}
               </p>
             </section>
 
