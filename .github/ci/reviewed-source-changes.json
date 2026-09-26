@@ -110,15 +110,64 @@
     {
       "path": "src/app/[locale]/privacy/motion/page.tsx",
       "publishedSha256": "c8e100e471f37fa98e1bc4166a1dec7fa371e9a8b318823af1a747a0f8cf5ed8",
-      "candidateSha256": "b7a16011bdca1c26d1432afb202d557dca1392880b4bb09250c6d0069ba0ee62",
-      "reason": "Clarify the shared Motion privacy notice in Turkish and English for five apps: separate account data from on-device camera data, subscriptions, retention, and in-app account deletion.",
+      "candidateSha256": "8f59ef55f8059192e7e57c01164be7820983ada88ef23dc311c5c6670868e46f",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/support/page.tsx",
       "publishedSha256": "406c7a84b6061141671dc8ce0d2ba5497f5ae8b00b159ac92d27105bc279ea7e",
-      "candidateSha256": "40963747da03e56c216fd440113c13febc9e56aff4d3344fd8e174963be171da",
-      "reason": "Add the five Motion apps to bilingual support and account-deletion guidance using the approved live support route and contact.",
+      "candidateSha256": "2dee5053a731c834a9e733b0ccbe0c0de0b94bfb108ed8caba0bdbcbd92d0a62",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/gravita.ts",
+      "publishedSha256": "2e1337cac2f1db0357c33f3795beda8b0e90b83d1b14691bd8a5ae40d311dec6",
+      "candidateSha256": "efc301925623a77dc445af17f3562262057c07112fe4840bb5da449ff596f8f6",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/lissom.ts",
+      "publishedSha256": "05b2eebb66f7c400a38de5d6ec4392b5376f0fa07a0581ce75e6963ed2707f01",
+      "candidateSha256": "6e020dd3291b142b9d06e0ba988c773d45b2e1a54be280f832ada630a8442280",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/jablab.ts",
+      "publishedSha256": "d86767d708c73f681814f1a1217e71252cb4f27ce73e233debc93f9f0ae09c53",
+      "candidateSha256": "ee4e57d249ae067a724a68bedf85da9ef3e2bdae61e127f27b15040a8f0e4209",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/ostinato.ts",
+      "publishedSha256": "e9cb2f9f50a664daea5b45e2921e9b1d1cc3d562cbf812801eb381f4fe369a6a",
+      "candidateSha256": "964a9bce44e8428ae5ec002e85f69dd45fe91d2fc7a8b2a6a25cebe23a8af78d",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/choreia.ts",
+      "publishedSha256": "0ac4df1f8ee2e5c7d4174cbc0c04c93a2c572eadf3dbd34c4b0d137a1b7dde3e",
+      "candidateSha256": "65747ff7af85ae57c87562dd21410d1bb1b8b54dce33accb0be0f52937bfeb55",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "messages/tr.json",
+      "publishedSha256": "79e66db7533af16c84ceff652563524b1cf0542ab28e394e6a147fb98bed93de",
+      "candidateSha256": "f6b0d1308f99387730b433ced71bf4ce065b8dc308121d6badb24a5376975d66",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "messages/en.json",
+      "publishedSha256": "e0c73fe7d41853e2cece3dcf4681c7b9836c5562f4c8d96575bf66573f0e784c",
+      "candidateSha256": "76631f655845a3d45b02b2c266cbb91900646201af9205b64b804baecbf8d359",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]

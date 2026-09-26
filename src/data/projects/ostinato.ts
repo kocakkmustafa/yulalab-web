@@ -11,16 +11,16 @@ export const ostinato: ProjectConfig = {
     en: "Instrument & Music Practice Coach",
   },
   tagline: {
-    tr: "Öğretmensiz pratiği ölçülebilir kılmak için.",
-    en: "Towards measurable practice without a teacher.",
+    tr: "Gitar pratiğini adım adım kur.",
+    en: "Build your guitar practice step by step.",
   },
   description: {
-    tr: "Kamera ve ses analizini birleştiren bir enstrüman pratik koçu geliştiriyoruz. Hedefimiz, öğretmensiz geçen pratik saatlerini ölçülebilir kılmak; ilk odak çello.",
-    en: "We are developing an instrument-practice coach that combines camera and audio analysis. Our goal is measurable practice between lessons, starting with cello.",
+    tr: "Ostinato'nun ilk sürümü, gitar kursu ve cihazda öz bildirimli ilerlemeye odaklanır. İstersen tek nota gözlemini başlatıp mikrofon izni verebilirsin; ses yalnız geçici cihaz belleğinde işlenir, kaydedilmez veya yüklenmez. Gözlem doğruluk ya da ustalık puanı üretmez; kurs mikrofonsuz tamamlanabilir. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
+    en: "Ostinato's first release focuses on a guitar course and on-device, self-reported progress. You can choose to start single-note observation and grant microphone permission; audio is processed only in temporary device memory, never recorded or uploaded. Observation does not produce a correctness or mastery score; the course can be completed without the microphone. Camera coaching and paid sales are disabled in the first release.",
   },
   short: {
-    tr: "Kamera ve ses analizini birleştirecek bir pratik koçu geliştiriyoruz. İlk odak: çello.",
-    en: "An instrument-practice coach in development, combining camera and audio analysis. First focus: cello.",
+    tr: "Gitar kursu, öz bildirimli ilerleme ve isteğe bağlı tek nota gözlemi. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
+    en: "A guitar course, self-reported progress and optional single-note observation. Camera coaching and paid sales are disabled in the first release.",
   },
   brand: {
     primary: "#D8A657",
@@ -41,49 +41,49 @@ export const ostinato: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Postür analizi", en: "Posture analysis" },
+      title: { tr: "Gitar kursu", en: "A guitar course" },
       description: {
-        tr: "Hedef: kamerayla oturuş ve enstrüman tutuşunu izleyerek postür çalışmasını desteklemek.",
-        en: "Goal: support posture practice by observing seating and instrument hold through the camera.",
+        tr: "Okuma ve pratik adımlarıyla çalışırsın. Kurs kamera izni gerektirmez ve mikrofonsuz tamamlanabilir.",
+        en: "Work through reading and practice steps. The course does not require camera permission and can be completed without the microphone.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Temel teknik kontrolü", en: "Fundamental technique checks" },
+      title: { tr: "İsteğe bağlı tek nota gözlemi", en: "Optional single-note observation" },
       description: {
-        tr: "Hedef: yay tutuşu ve el pozisyonu gibi teknik unsurları görüntü ve sesle birlikte değerlendirmek.",
-        en: "Goal: evaluate fundamentals such as bow hold and hand position using video and audio together.",
+        tr: "Mikrofonu sen başlatır ve işletim sistemi iznini sen verirsin. Yaklaşık nota gösterimi akor, zamanlama, doğruluk veya ustalık değerlendirmesi değildir.",
+        en: "You start the microphone and grant operating-system permission. The approximate note display does not assess chords, timing, correctness or mastery.",
       },
       icon: "Microscope",
     },
     {
-      title: { tr: "Ölçülebilir pratik saatleri", en: "Measurable practice hours" },
+      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
       description: {
-        tr: "Hedef: dersler arasındaki pratik süresini ve zaman içindeki ilerlemeyi görünür kılmak.",
-        en: "Goal: make practice time between lessons and progress over time visible.",
+        tr: "Okuma, pratik ve tamamlanma cihazda ayrı kaydedilir. Nota gözlemi dersi tamamlamaz veya beceri puanı vermez.",
+        en: "Reading, practice and completion are recorded separately on the device. Note observation does not complete a lesson or award a skill score.",
       },
       icon: "TrendingUp",
     },
     {
-      title: { tr: "Kamera + mikrofon", en: "Camera + microphone" },
+      title: { tr: "Geçici bellekte ses", en: "Audio in temporary memory" },
       description: {
-        tr: "Görüntü ve sesin birlikte değerlendirilmesi üzerinde çalışıyoruz; kullanılabilir yetenekler ilk sürümle açıklanacak.",
-        en: "We are working on combined video and audio assessment; available capabilities will be documented with the first release.",
+        tr: "Ham ses dosyası kaydedilmez veya yüklenmez. Ekrandan çıkış, hesap değişimi veya arka plana geçiş mikrofonu durdurur; geri dönüşte kendiliğinden başlamaz. Kamera koçluğu ilk sürümde kapalıdır.",
+        en: "Raw audio files are not recorded or uploaded. Leaving the screen, changing account or moving to the background stops the microphone; returning does not restart it. Camera coaching is disabled in the first release.",
       },
       icon: "Cpu",
     },
   ],
   stats: [
     { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    { value: "Cello", label: { tr: "İlk enstrüman", en: "First instrument" } },
+    { value: "Guitar", label: { tr: "İlk enstrüman", en: "First instrument" } },
   ],
   vision: {
     tr: "Enstrüman pratiğinin, öğretmen olmadan geçen saatlerini de değerli kılmak.",
     en: "Make the hours you practice without a teacher count too.",
   },
   mission: {
-    tr: "Postür ve temel teknik hatalarını erken yakalayıp, pratiği bilinçli bir alışkanlığa çevirmek.",
-    en: "Catch posture and fundamental-technique mistakes early, turning practice into a deliberate habit.",
+    tr: "Gitar pratiğini anlaşılır dersler ve dürüst ilerleme kayıtlarıyla bilinçli bir alışkanlığa çevirmek.",
+    en: "Turn guitar practice into a deliberate habit with clear lessons and honest progress records.",
   },
   order: 7,
   links: [],
