@@ -4,6 +4,7 @@
     "netlify-cli": "27.5.0"
   },
   "overrides": {
+    "brace-expansion": "5.0.12",
     "toml": "4.2.0",
     "ipx": {
       "sharp": "0.35.4"

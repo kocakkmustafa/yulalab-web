@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-09-25";
+const LAST_UPDATED = "2026-09-27";
 
 const APPS = [
   "Choreia: Learn to Dance",
@@ -90,24 +90,42 @@ function MotionPrivacy() {
             <Section title={isTR ? "Ortak hesap ve üyelik" : "Shared account and membership"}>
               <p>
                 {isTR
-                  ? "Beş uygulama tek Motion hesabını kullanır. Kayıt, giriş, e-posta doğrulama ve parola kurtarma için e-posta adresiniz ve parolanız Supabase Auth'a gönderilir; isteğe bağlı görünen adınız Motion profilinde saklanır. Rastgele hesap kimliği oturumunuzu ve uygulama erişiminizi ilişkilendirir. Parolayı uygulamanın seans geçmişine kaydetmeyiz. Bireysel abonelik yalnız satın alındığı uygulamada, Motion+ ise beş uygulamada geçerlidir."
-                  : "The five apps share one Motion account. Your email address and password go to Supabase Auth for sign-up, sign-in, email confirmation and password recovery; an optional display name is stored in your Motion profile. A random account ID links your session and app access. The apps do not put your password in practice history. An individual subscription covers its app; Motion+ covers all five."}
+                  ? "Beş uygulama tek Motion hesabını kullanır. Kayıt, giriş, e-posta doğrulama ve parola kurtarma için e-posta adresiniz ve parolanız Supabase Auth'a gönderilir; isteğe bağlı görünen adınız Motion profilinde saklanır. Rastgele hesap kimliği oturumunuzu ve uygulama erişiminizi ilişkilendirir. Parolayı uygulamanın seans geçmişine kaydetmeyiz. İlk sürümde beş uygulamada da ücretli satış kapalıdır. Abonelikler açılırsa bireysel abonelik yalnız satın alındığı uygulamada, Motion+ ise beş uygulamada geçerli olacak şekilde tasarlanmıştır."
+                  : "The five apps share one Motion account. Your email address and password go to Supabase Auth for sign-up, sign-in, email confirmation and password recovery; an optional display name is stored in your Motion profile. A random account ID links your session and app access. The apps do not put your password in practice history. Paid sales are disabled in the first release of all five apps. If subscriptions are enabled, an individual subscription is designed to cover its app and Motion+ all five."}
+              </p>
+              <p className="mt-3">
+                {isTR
+                  ? "Supabase Auth, parolanızı doğrulamak için bcrypt ile üretilmiş tuzlu bir parola özeti (hash) saklar. Bu kimlik doğrulama kaydı hesabınıza bağlıdır ve hesap girişi ile güvenliği için kullanılır."
+                  : "Supabase Auth stores a salted password hash produced with bcrypt to verify your password. This authentication record is linked to your account and used for account sign-in and security."}
+              </p>
+            </Section>
+
+            <Section title={isTR ? "Sağlayıcı günlükleri ve yaklaşık konum" : "Provider logs and approximate location"}>
+              <p>
+                {isTR
+                  ? "Motion hesap hizmetlerine gönderilen istekler, Supabase ve hizmet sağlayıcılarının sakladığı operasyonel günlüklere IP adresi, kullanıcı aracısı (user agent), işletim sistemi, platform ve çalışma ortamı sürümleri ile istek ve kimlik doğrulama olaylarının teknik ayrıntılarını ekleyebilir. Bunlar teknik hizmet bilgileridir; uygulamalar benzersiz bir cihaz kimliği göndermez. Sağlayıcı günlükleri ayrıca IP adresine dayanan yaklaşık ülke, bölge ve şehir bilgisi içerir. Bu konum bilgisi GPS'ten alınmaz ve uygulamalar konum izni istemez."
+                  : "Requests to Motion account services can add your IP address, user agent, operating system, platform and runtime versions, and request and authentication metadata to operational logs retained by Supabase and service providers. These are technical service details; the apps do not send a unique device ID. Provider logs also contain approximate country, region and city information based on the IP address. This location does not come from GPS, and the apps do not request location permission."}
+              </p>
+              <p className="mt-3">
+                {isTR
+                  ? "Günlük kayıtları hesap kimliği veya IP adresi üzerinden sizinle ilişkilendirilebilir. Hesap ve sağlayıcı verileri kimlik doğrulama, güvenlik, hizmetin işletilmesi ve teknik sorunların incelenmesi için kullanılır; reklam veya reklam amaçlı takip için kullanılmaz."
+                  : "Log records can be associated with you through an account ID or IP address. Account and provider data are used for authentication, security, operating the service and investigating technical issues; they are not used for advertising or advertising tracking."}
               </p>
             </Section>
 
             <Section title={isTR ? "Satın alma doğrulaması" : "Purchase verification"}>
               <p>
                 {isTR
-                  ? "Üyelik açıldığında Apple veya Google mağaza ürünü ve işlem kanıtı sunucuda doğrulanır. Motion, uygulama kimliği, mağaza, ürün, işlem referansı, üyelik durumu ve bitiş/doğrulama zamanını hesabınızla ilişkili olarak saklar; Google işlem referansı satın alma belirtecini içerebilir. Doğrulama için mağaza sağlayıcısına istek gönderilir. Ödeme kartı bilgilerinizi Motion almaz."
-                  : "When you activate a subscription, the store product and transaction evidence are verified with Apple or Google. Motion stores the app ID, store, product, transaction reference, entitlement status, and expiry/verification times against your account; a Google transaction reference can contain a purchase token. Verification requests go to the store provider. Motion does not receive your payment card details."}
+                  ? "İlk sürümde uygulamalarda abonelik satın alma başlatılamaz. Ücretli üyelik ileride açılırsa Apple veya Google mağaza ürünü ve işlem kanıtı sunucuda doğrulanır. Bu akış için Motion, uygulama kimliği, mağaza, ürün, işlem referansı, üyelik durumu ve bitiş/doğrulama zamanını hesabınızla ilişkili olarak saklayacak şekilde tasarlanmıştır; Google işlem referansı satın alma belirtecini içerebilir. Doğrulama için mağaza sağlayıcısına istek gönderilir. Ödeme kartı bilgilerinizi Motion almaz."
+                  : "The apps cannot start subscription purchases in the first release. If paid membership is enabled later, the store product and transaction evidence are verified with Apple or Google. That flow is designed to store the app ID, store, product, transaction reference, entitlement status, and expiry/verification times against your account; a Google transaction reference can contain a purchase token. Verification requests go to the store provider. Motion does not receive your payment card details."}
               </p>
             </Section>
 
-            <Section title={isTR ? "Kamera ve cihazdaki geçmiş" : "Camera and on-device history"}>
+            <Section title={isTR ? "Kamera, isteğe bağlı mikrofon ve cihazdaki geçmiş" : "Camera, optional microphone and on-device history"}>
               <p>
                 {isTR
-                  ? "İzin verirseniz kamera görüntüsü hareketi incelemek için cihazda canlı işlenir; video kaydedilmez veya Motion sunucusuna yüklenmez. İlk sürüm mikrofon izni istemez. Uygulamanın oluşturduğu çalışma, ölçüm ve seans geçmişi yalnız o uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez. Misafir geçmişi giriş yaptığınızda hesabınıza otomatik taşınmaz. Motion hesap kayıtları Frankfurt'taki Supabase projesinde saklanır; iletimde HTTPS kullanılır. Uygulamalarda reklam veya davranış izleme SDK'sı yoktur."
-                  : "If you allow camera access, video is processed live on your device for movement features; it is not recorded or uploaded to Motion servers. The first release does not request microphone access. Practice, measurement and session history created by an app stays in that app's local device storage; it is not synced to your Motion account. Guest history is not automatically moved into an account when you sign in. Motion account records are stored in its Frankfurt Supabase project, with HTTPS in transit. The apps contain no advertising or behavioral tracking SDK."}
+                  ? "İlk sürümde beş uygulamada da kamera koçluğu kapalıdır; kurslar kamera izni gerektirmez. Kamera videosu kaydedilmez veya Motion sunucusuna yüklenmez. Ostinato'nun gitar kursunda isteğe bağlı tek nota gözlemini siz başlatır ve mikrofon iznini siz verirsiniz. Yaklaşık nota gözlemi doğruluk veya ustalık puanı üretmez ve dersi tamamlamaz. Ses yalnız cihaz belleğinde işlenir; ham ses dosyası kaydedilmez veya sunucuya yüklenmez. Gözlemi durdurduğunuzda, hesap değiştirdiğinizde ya da ekran veya uygulama arka plana geçtiğinde mikrofon durur; geri dönüşte kendiliğinden başlamaz. Kurs mikrofonsuz tamamlanabilir; diğer dört Motion uygulamasının ilk kursları mikrofon istemez. Okuma, pratik ve öz bildirimli kurs ilerlemesi kamera beceri puanı değildir. Kurs ilerlemesi ve uygulamanın oluşturduğu çalışma geçmişi yalnız o uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez. Misafir geçmişi giriş yaptığınızda hesabınıza otomatik taşınmaz. Motion hesap kayıtları Frankfurt'taki Supabase projesinde saklanır; iletimde HTTPS kullanılır. Uygulamalarda reklam veya davranış izleme SDK'sı yoktur."
+                  : "Camera coaching is disabled in the first release of all five apps; the courses do not require camera permission. Camera video is not recorded or uploaded to Motion servers. In Ostinato's guitar course, you choose to start optional single-note observation and grant microphone permission. The approximate note observation does not produce a correctness or mastery score or complete a lesson. Audio is processed only in device memory; raw audio files are not recorded or uploaded. The microphone stops when you stop observation, change account, or the screen or app leaves the foreground; returning does not restart it. You can complete the course without it; the other four Motion apps' first courses do not request microphone access. Reading, practice and self-reported course progress are not a camera skill score. Course progress and practice history created by an app stay in that app's local device storage; they are not synced to your Motion account. Guest history is not automatically moved into an account when you sign in. Motion account records are stored in its Frankfurt Supabase project, with HTTPS in transit. The apps contain no advertising or behavioral tracking SDK."}
               </p>
             </Section>
 
@@ -133,8 +151,8 @@ function MotionPrivacy() {
               </a>
               <p className="mt-3">
                 {isTR
-                  ? "Hesap silmek Apple veya Google aboneliğini iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabınızdan ayrıca iptal edin. Sunucuda yalnız rastgele hesap kimliğinin tek yönlü özeti, diğer cihazların silmeyi sonradan tanıması için silme kaydı olarak tutulur. Sağlayıcıların operasyonel günlükleri ve yedekleri kendi saklama döngülerine tabidir."
-                  : "Deleting the account does not cancel an Apple or Google subscription; cancel it separately in your store account to stop renewal. The server retains only a one-way digest of the random account ID as a deletion receipt so other devices can recognize a later launch. Provider operational logs and backups follow their own retention cycles."}
+                  ? "Hesap silmek Apple veya Google aboneliğini iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabınızdan ayrıca iptal edin. Diğer cihazların silmeyi sonradan tanıması için rastgele hesap kimliğinin tek yönlü özeti sunucuda silme kaydı olarak tutulur. Sağlayıcıların operasyonel günlükleri ve yedekleri kendi saklama döngülerine tabidir; hesap silme, bu kayıtların tamamının anında silindiği anlamına gelmez."
+                  : "Deleting the account does not cancel an Apple or Google subscription; cancel it separately in your store account to stop renewal. A one-way digest of the random account ID is retained on the server as a deletion receipt so other devices can recognize deletion on a later launch. Provider operational logs and backups follow their own retention cycles; deleting an account does not mean that all of those records are immediately erased."}
               </p>
             </section>
 

@@ -11,16 +11,16 @@ export const jablab: ProjectConfig = {
     en: "Solo Boxing & Shadow Training Coach",
   },
   tagline: {
-    tr: "Gölgeyle çalış, gerçeğini duy.",
-    en: "Train the shadow, hear what's real.",
+    tr: "Gölge boksunu adım adım çalış.",
+    en: "Practise shadow boxing step by step.",
   },
   description: {
-    tr: "JabLab, shadow boxing çalışmanı tam vücut kamerayla izleyen bir solo boks koçu. Gardın, duruşun, kombinasyon sıran ve dengen hakkında açıklanabilir, sesli geri bildirim verir — antrenman arkadaşı olmadan da nereni geliştireceğini bilirsin.",
-    en: "JabLab is a solo boxing coach that watches your shadow-boxing with full-body camera tracking. It gives explainable, spoken feedback on your guard, stance, combination sequencing and balance — so you know what to fix even without a training partner.",
+    tr: "JabLab'ın ilk sürümü, temas içermeyen solo boks kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda ayrı kaydedilir; kamera beceri puanı veya teknik onay üretilmez. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
+    en: "JabLab's first release focuses on a non-contact solo boxing course. Reading, practice and self-reported completion are recorded separately on the device; no camera skill score or technique certification is produced. Camera coaching and paid sales are disabled in the first release.",
   },
   short: {
-    tr: "Shadow boxing'ini tam vücut izler; gard, duruş, kombinasyon ve denge hakkında açıklanabilir sesli geri bildirim verir.",
-    en: "Watches your shadow boxing full-body; gives explainable spoken feedback on guard, stance, combinations and balance.",
+    tr: "Temas içermeyen solo boks kursu ve öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
+    en: "A non-contact solo boxing course with self-reported progress. Camera coaching and paid sales are disabled in the first release.",
   },
   brand: {
     primary: "#FF3B3B",
@@ -41,34 +41,34 @@ export const jablab: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Tam vücut takip", en: "Full-body tracking" },
+      title: { tr: "Solo boks kursu", en: "A solo boxing course" },
       description: {
-        tr: "Kamera; ayak, kalça, omuz ve el pozisyonunu birlikte izler — tek bir eklemi değil.",
-        en: "The camera tracks feet, hips, shoulders and hands together — not a single joint in isolation.",
+        tr: "Okuma ve temas içermeyen pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
+        en: "Follow reading and non-contact practice steps without camera or microphone permission.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Açıklanabilir geri bildirim", en: "Explainable feedback" },
+      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
       description: {
-        tr: "Neyin yanlış olduğunu değil, neden yanlış olduğunu söyler — kara kutu geri bildirim yok.",
-        en: "Tells you not just what's off, but why — no black-box feedback.",
+        tr: "Okuma, pratik ve tamamlanma ayrı kayıtlardır. Tamamlanmayı kendin bildirirsin; bu bir kamera beceri puanı değildir.",
+        en: "Reading, practice and completion are separate records. You report completion yourself; it is not a camera skill score.",
       },
       icon: "BadgeCheck",
     },
     {
-      title: { tr: "Sesli, anlık uyarı", en: "Spoken, real-time cues" },
+      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
       description: {
-        tr: "Ekrana bakmadan, antrenman sırasında sesli uyarı alırsın.",
-        en: "Get spoken cues mid-drill, without breaking eye contact with your imaginary opponent.",
+        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
+        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "Denge & kombinasyon analizi", en: "Balance & combination analysis" },
+      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
       description: {
-        tr: "Kombinasyon sıranı ve denge kaybını işaretler; tekrar eden hatalar zamanla görünür olur.",
-        en: "Flags your combination sequencing and balance loss; repeated mistakes surface over time.",
+        tr: "Gard, duruş, kombinasyon ve denge için kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kapalıdır.",
+        en: "Camera feedback on guard, stance, combinations and balance is a goal for a later stage; it is disabled in the first release.",
       },
       icon: "Microscope",
     },
@@ -76,10 +76,10 @@ export const jablab: ProjectConfig = {
   stats: [
     { value: "···", label: { tr: "Lansman", en: "Launch" } },
     {
-      value: "4",
+      value: "Solo",
       label: {
-        tr: "İzlenen unsur · gard, duruş, kombinasyon, denge",
-        en: "Tracked elements · guard, stance, combos, balance",
+        tr: "İlk kurs · temas içermeyen boks",
+        en: "First course · non-contact boxing",
       },
     },
   ],
@@ -88,8 +88,8 @@ export const jablab: ProjectConfig = {
     en: "Solo boxing practice that gives you real feedback, even without a training partner.",
   },
   mission: {
-    tr: "Gölge boksun görünmeyen hatalarını görünür ve açıklanabilir kılmak.",
-    en: "Make the invisible mistakes of shadow boxing visible and explainable.",
+    tr: "Solo boks pratiğini anlaşılır dersler ve dürüst ilerleme kayıtlarıyla desteklemek.",
+    en: "Support solo boxing practice with clear lessons and honest progress records.",
   },
   order: 6,
   links: [],

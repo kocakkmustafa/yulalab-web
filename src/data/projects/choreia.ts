@@ -11,16 +11,16 @@ export const choreia: ProjectConfig = {
     en: "Global Dance Coach",
   },
   tagline: {
-    tr: "Adımını izlesin, hocan gibi seslensin.",
-    en: "Let it watch your steps and talk like your teacher.",
+    tr: "Salsa adımlarını kendi hızında çalış.",
+    en: "Practise salsa steps at your own pace.",
   },
   description: {
-    tr: "Choreia, telefon kamerasıyla tam vücut hareketini izleyen bir dans koçu. Adımlarını, zamanlamanı ve formunu analiz eder; dans hocan yanındaymış gibi sesli yönlendirmeler vererek dünyanın her yerinden dansları öğrenmeni sağlar.",
-    en: "Choreia is a dance coach that watches your full-body movement through your phone's camera. It analyzes your steps, timing and form, and guides you with spoken cues — as if a real dance teacher were right there — so you can learn dances from anywhere in the world.",
+    tr: "Choreia'nın ilk sürümü, solo Salsa On1 kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda kaydedilir; kamera beceri puanı veya dans ustalığı onayı üretilmez. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
+    en: "Choreia's first release focuses on a solo Salsa On1 course. Reading, practice and self-reported completion are saved on the device; no camera skill score or dance mastery certification is produced. Camera coaching and paid sales are disabled in the first release.",
   },
   short: {
-    tr: "Kamera tam vücudunu izler; adım, zamanlama ve formunu analiz eder. Dans hocan yanındaymış gibi sesli yönlendirmeyle global dansları öğrenirsin.",
-    en: "The camera watches your full body and analyzes your steps, timing and form. Learn dances from around the world with spoken guidance, as if your teacher were right there.",
+    tr: "Solo Salsa On1 kursu ve öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
+    en: "A solo Salsa On1 course with self-reported progress. Camera coaching and paid sales are disabled in the first release.",
   },
   brand: {
     primary: "#FF3DA6",
@@ -41,34 +41,34 @@ export const choreia: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Tam vücut takip", en: "Full-body tracking" },
+      title: { tr: "Solo Salsa On1 kursu", en: "A solo Salsa On1 course" },
       description: {
-        tr: "Kamera; ayak, kalça, omuz ve kol hareketlerini birlikte izler — koreografinin bütününü görür, tek bir adımı değil.",
-        en: "The camera tracks feet, hips, shoulders and arms together — it sees the whole choreography, not a single step in isolation.",
+        tr: "Okuma ve pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
+        en: "Follow reading and practice steps without camera or microphone permission.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Adım, zamanlama, form", en: "Step, timing, form" },
+      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
       description: {
-        tr: "Her hareketini referans koreografiyle karşılaştırır; zamanlaman ve formun ayrı ayrı değerlendirilir.",
-        en: "Every move is compared against the reference choreography; your timing and form are scored separately.",
+        tr: "Okuma, pratik ve tamamlanma ayrı kayıtlardır. Tamamlanmayı kendin bildirirsin; kamera beceri puanı değildir.",
+        en: "Reading, practice and completion are separate records. You report completion yourself; it is not a camera skill score.",
       },
       icon: "Microscope",
     },
     {
-      title: { tr: "Hocan yanındaymış gibi", en: "Like your teacher is right there" },
+      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
       description: {
-        tr: "Sesli yönlendirme, ekrana bakmana gerek kalmadan anlık düzeltme sağlar — antrenman arkadaşı değil, gerçek bir eğitmen hissi.",
-        en: "Spoken guidance corrects you in real time without breaking your focus on the mirror — it feels like a real instructor, not a training partner.",
+        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
+        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "Global dans kütüphanesi", en: "A global dance library" },
+      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
       description: {
-        tr: "Dünyanın farklı yerlerinden dansları aynı yöntemle öğrenirsin — tek bir tarz değil, geniş bir repertuvar.",
-        en: "Learn dances from around the world with the same method — not a single style, but a wide repertoire.",
+        tr: "Adım, zamanlama ve form için kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kapalıdır.",
+        en: "Camera feedback on steps, timing and form is a goal for a later stage; it is disabled in the first release.",
       },
       icon: "Globe",
     },
@@ -76,10 +76,10 @@ export const choreia: ProjectConfig = {
   stats: [
     { value: "···", label: { tr: "Lansman", en: "Launch" } },
     {
-      value: "3",
+      value: "Salsa",
       label: {
-        tr: "İzlenen unsur · adım, zamanlama, form",
-        en: "Tracked elements · steps, timing, form",
+        tr: "İlk kurs · solo On1",
+        en: "First course · solo On1",
       },
     },
   ],
@@ -88,8 +88,8 @@ export const choreia: ProjectConfig = {
     en: "A world where everyone can reach a dance teacher from anywhere, right in their own living room.",
   },
   mission: {
-    tr: "Global dansları, yanında gerçek bir eğitmen varmış hissiyle adım adım öğrenilebilir kılmak.",
-    en: "Make global dances learnable step by step, with the feel of a real teacher standing right beside you.",
+    tr: "Dans pratiğini anlaşılır kurs adımları ve dürüst ilerleme kayıtlarıyla desteklemek.",
+    en: "Support dance practice with clear course steps and honest progress records.",
   },
   order: 8,
   links: [],

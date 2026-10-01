@@ -11,16 +11,16 @@ export const gravita: ProjectConfig = {
     en: "Handstand, Bodyweight Skills & Strength Coach",
   },
   tagline: {
-    tr: "Telefonun, en önemli hatanı görsün.",
-    en: "Let your phone catch your biggest flaw.",
+    tr: "Adım adım çalış, ilerlemeni kendin kaydet.",
+    en: "Practice step by step and record your progress.",
   },
   description: {
-    tr: "Gravita, telefon kamerasıyla handstand ve vücut becerisi denemelerini analiz eden bir hareket koçu. Her denemede seni en çok geride tutan tek hatayı söyler ve ölçülebilir bir ilerleme planıyla bir sonraki seviyeye taşır.",
-    en: "Gravita is a movement coach that analyzes your handstand and bodyweight-skill attempts through your phone's camera. Each try, it names the single flaw holding you back most and moves you forward with a measurable progression plan.",
+    tr: "Gravita'nın ilk sürümü, handstand ve vücut ağırlığı becerileri için temel bir kursa odaklanır. Okuma, pratik ve öz bildirimli ilerleme cihazda kaydedilir; kamera beceri puanı veya ustalık onayı üretilmez. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
+    en: "Gravita's first release focuses on a foundation course for handstand and bodyweight skills. Reading, practice and self-reported progress are saved on the device; no camera skill score or mastery certification is produced. Camera coaching and paid sales are disabled in the first release.",
   },
   short: {
-    tr: "Cihazda kamera analizi hedefiyle geliştirilen bir handstand ve vücut becerisi koçu. Tek hataya odaklanan geri bildirim ve ölçülebilir ilerleme üzerine çalışıyoruz.",
-    en: "A handstand and bodyweight-skills coach in development, with on-device camera analysis as a goal. We are working on focused feedback and measurable progression.",
+    tr: "Handstand ve vücut becerileri için kurs ve öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
+    en: "A handstand and bodyweight-skills course with self-reported progress. Camera coaching and paid sales are disabled in the first release.",
   },
   brand: {
     primary: "#FF6A45",
@@ -41,34 +41,34 @@ export const gravita: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Tek en önemli hata", en: "Your single biggest flaw" },
+      title: { tr: "Temel beceri kursu", en: "A foundation skills course" },
       description: {
-        tr: "Kamera her denemeni izler ve seni en çok geride tutan tek hatayı söyler — on tane değil, bir tane.",
-        en: "The camera watches every attempt and names the one flaw holding you back most — not ten, just one.",
+        tr: "Okuma ve pratik adımlarıyla çalışırsın; kursu kullanmak için kamera izni gerekmez.",
+        en: "Work through reading and practice steps; the course does not require camera permission.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Ölçülebilir ilerleme", en: "Measurable progression" },
+      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
       description: {
-        tr: "Her deneme bir öncekiyle karşılaştırılır; ilerleme hissiyat değil, ölçümdür.",
-        en: "Every attempt is compared against the last; progress is a measurement, not a feeling.",
+        tr: "Okuma, pratik ve tamamlanma kayıtları ayrıdır. Tamamlanma kendi bildiriminle kaydedilir; kamera beceri puanı değildir.",
+        en: "Reading, practice and completion are separate records. Completion is saved by your own report; it is not a camera skill score.",
       },
       icon: "TrendingUp",
     },
     {
       title: { tr: "Cihazda analiz hedefi", en: "On-device analysis goal" },
       description: {
-        tr: "Kamera analizini telefonda çalıştırmayı hedefliyoruz. Veri işleme, saklama ve aktarım kapsamı ilk sürümün gizlilik bilgilerinde açıklanacak.",
-        en: "We aim to run camera analysis on the phone. The first release's privacy information will explain its data processing, storage and transfers.",
+        tr: "Cihazda kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kamera koçluğu kapalıdır.",
+        en: "On-device camera feedback is a goal for a later stage; camera coaching is disabled in the first release.",
       },
       icon: "Lock",
     },
     {
-      title: { tr: "Bilimsel hareket kırılımı", en: "Evidence-based movement breakdown" },
+      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
       description: {
-        tr: "Denge, hizalama ve omuz açısı gibi ölçülebilir kriterlerle değerlendirir — tahmin değil.",
-        en: "Evaluated on measurable criteria — balance, alignment, shoulder angle — not guesswork.",
+        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
+        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
       },
       icon: "Microscope",
     },
@@ -81,8 +81,8 @@ export const gravita: ProjectConfig = {
     en: "A world where everyone carries a personal movement coach in their pocket.",
   },
   mission: {
-    tr: "Vücut becerisi öğrenimini tahminden çıkarıp, kameranın gördüğü tek bir dürüst geri bildirime indirgemek.",
-    en: "Take the guesswork out of learning bodyweight skills and reduce it to one honest, camera-verified piece of feedback.",
+    tr: "Vücut becerisi pratiğini anlaşılır kurs adımları ve dürüst ilerleme kayıtlarıyla desteklemek.",
+    en: "Support bodyweight-skills practice with clear course steps and honest progress records.",
   },
   order: 4,
   links: [],

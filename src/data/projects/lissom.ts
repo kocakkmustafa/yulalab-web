@@ -11,16 +11,16 @@ export const lissom: ProjectConfig = {
     en: "Flexibility & Mobility Coach",
   },
   tagline: {
-    tr: "Birkaç dakikada ölç, her gün biraz aç.",
-    en: "Measure in minutes, open up a little every day.",
+    tr: "Kısa pratiklerle hareket alışkanlığı kur.",
+    en: "Build a movement habit with short practice.",
   },
   description: {
-    tr: "Lissom, birkaç dakikalık bir kamera testiyle hareket kapasiteni ölçen bir esneklik ve mobilite koçu. Ölçüme göre günlük, kısa bir yoga/mobilite programı çıkarır ve dört haftada bir seni yeniden ölçerek ilerlemeni gösterir.",
-    en: "Lissom is a flexibility and mobility coach that measures your movement capacity through a few-minute camera test. It builds a short daily yoga/mobility routine from that measurement and re-tests you every four weeks to show progress.",
+    tr: "Lissom'un ilk sürümü, Hatha yoga kursuyla okuma ve pratik adımları sunar. Kurs ilerlemesi cihazda öz bildirimle kaydedilir; kamera ölçümü, beceri puanı veya otomatik yeniden test değildir. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
+    en: "Lissom's first release offers reading and practice steps through a Hatha yoga course. Course progress is saved on the device by self-report; it is not a camera measurement, skill score or automatic re-test. Camera coaching and paid sales are disabled in the first release.",
   },
   short: {
-    tr: "Birkaç dakikalık kamera testiyle mobilite ölçer, günlük kısa program çıkarır, 4 haftada yeniden ölçer.",
-    en: "Measures mobility with a few-minute camera test, builds a short daily routine, re-measures every 4 weeks.",
+    tr: "Hatha yoga kursu ve cihazda öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
+    en: "A Hatha yoga course with on-device, self-reported progress. Camera coaching and paid sales are disabled in the first release.",
   },
   brand: {
     primary: "#6EE7C8",
@@ -41,34 +41,34 @@ export const lissom: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Hızlı kapasite testi", en: "A quick capacity test" },
+      title: { tr: "Hatha yoga kursu", en: "A Hatha yoga course" },
       description: {
-        tr: "Birkaç dakikalık bir kamera testiyle mevcut hareket kapasiteni ölçer — kayıt olmadan başlar.",
-        en: "A few-minute camera test measures your current range of motion — no sign-up needed to start.",
+        tr: "Kursun okuma ve pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
+        en: "Follow the course's reading and practice steps without camera or microphone permission.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Günlük kısa program", en: "A short daily routine" },
+      title: { tr: "Pratik adımları", en: "Practice steps" },
       description: {
-        tr: "Ölçümüne göre kısa, günlük bir yoga/mobilite programı önerir — saatlerce değil, dakikalarca.",
-        en: "Suggests a short daily yoga/mobility routine based on your measurement — minutes, not hours.",
+        tr: "Ders metinleri ve pratik adımlarıyla çalışırsın; kamera ölçümünden otomatik kişisel program üretilmez.",
+        en: "Work with lesson text and practice steps; no personal routine is generated automatically from a camera measurement.",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "4 haftalık döngü", en: "A 4-week cycle" },
+      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
       description: {
-        tr: "Dört haftada bir yeniden ölçer; ilerleme bir sonraki testte sayılarla görünür.",
-        en: "Re-measures every four weeks; progress shows up as numbers in the next test.",
+        tr: "Okuma, pratik ve tamamlanmayı kendin kaydedersin. Bu kayıtlar bu cihazda tutulur; hareket kapasitesi ölçümü değildir.",
+        en: "Record reading, practice and completion yourself. These records stay on this device; they are not range-of-motion measurements.",
       },
       icon: "TrendingUp",
     },
     {
-      title: { tr: "Kanıta dayalı hareketler", en: "Evidence-based movement" },
+      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
       description: {
-        tr: "Program, doğrulanmış mobilite ve esneklik pratiklerinden derlenir — trend değil, yöntem.",
-        en: "The routine is drawn from validated mobility and flexibility practice — method, not trend.",
+        tr: "Kamera tabanlı mobilite geri bildirimi sonraki aşama hedefidir; ilk sürümde kamera koçluğu kapalıdır.",
+        en: "Camera-based mobility feedback is a goal for a later stage; camera coaching is disabled in the first release.",
       },
       icon: "Microscope",
     },
@@ -76,8 +76,8 @@ export const lissom: ProjectConfig = {
   stats: [
     { value: "···", label: { tr: "Lansman", en: "Launch" } },
     {
-      value: "4",
-      label: { tr: "Haftada bir yeniden ölçüm", en: "Weeks between re-measurements" },
+      value: "Hatha",
+      label: { tr: "İlk kurs", en: "First course" },
     },
   ],
   vision: {
@@ -85,8 +85,8 @@ export const lissom: ProjectConfig = {
     en: "Turn flexibility from a talent into a habit you can measure and build.",
   },
   mission: {
-    tr: "Günde birkaç dakikayla, kanıta dayalı hareketlerle bedeninin hareket kapasitesini genişletmek.",
-    en: "Expand your body's range of motion a few minutes a day, with evidence-based movement.",
+    tr: "Yoga pratiğini anlaşılır dersler ve sürdürülebilir çalışma alışkanlıklarıyla desteklemek.",
+    en: "Support yoga practice with clear lessons and sustainable practice habits.",
   },
   order: 5,
   links: [],
