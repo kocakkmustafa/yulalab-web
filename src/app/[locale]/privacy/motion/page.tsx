@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-09-06";
+const LAST_UPDATED = "2026-09-26";
 
 const APPS = [
   "Choreia: Learn to Dance",
@@ -69,8 +69,8 @@ function MotionPrivacy() {
 
           <p className="mt-6 text-[15px] leading-[1.6] text-ink-300">
             {isTR
-              ? "Bu sayfa, geliştirme aşamasındaki aşağıdaki Motion ürünleri için genel gizlilik kapsamını açıklar:"
-              : "This page describes the general privacy scope for the following Motion products in development:"}
+              ? "Bu politika, aşağıdaki beş Motion uygulamasının ilk mağaza sürümündeki ortak hesap ve uygulamaya özgü yerel veri kullanımını açıklar:"
+              : "This policy describes the shared account and app-specific local data use in the first store release of these five Motion apps:"}
           </p>
           <ul className="mt-3 space-y-1 text-[15px] leading-[1.6] text-ink-200">
             {APPS.map((a) => (
@@ -78,30 +78,65 @@ function MotionPrivacy() {
             ))}
           </ul>
 
+          <p className="mt-6 text-[15px] leading-[1.6] text-ink-200">
+            <a href="#motion-account-deletion" className="link-wipe text-ink-50">
+              {isTR
+                ? "Motion hesabı ve ilişkili veriler için silme talebi"
+                : "Request deletion of a Motion account and associated data"}
+            </a>
+          </p>
+
           <div className="mt-14 space-y-10 text-[16px] leading-[1.7] text-ink-300">
-            <Section title={isTR ? "Uygulama ve sürüm kapsamı" : "App and version scope"}>
+            <Section title={isTR ? "Ortak hesap ve üyelik" : "Shared account and membership"}>
               <p>
                 {isTR
-                  ? "Kamera, mikrofon, saklama ve ağ kullanımı her uygulamanın kendi özellikleri ve sürümü kapsamında ele alınır. Bu sayfa bütün Motion uygulamaları için tek bir veri işleme politikası sunmaz. Kullandığınız sürüm hakkında bilgi almak için uygulama adını ve sürümünü belirterek bize yazabilirsiniz."
-                  : "Camera, microphone, storage and network use are addressed for each app's features and version. This page does not provide one data-processing policy for every Motion app. Contact us with the app name and version for information about the version you use."}
+                  ? "Beş uygulama tek Motion hesabını kullanır. Kayıt, giriş, e-posta doğrulama ve parola kurtarma için e-posta adresiniz ve parolanız Supabase Auth'a gönderilir; isteğe bağlı görünen adınız Motion profilinde saklanır. Rastgele hesap kimliği oturumunuzu ve uygulama erişiminizi ilişkilendirir. Parolayı uygulamanın seans geçmişine kaydetmeyiz. Bireysel abonelik yalnız satın alındığı uygulamada, Motion+ ise beş uygulamada geçerlidir."
+                  : "The five apps share one Motion account. Your email address and password go to Supabase Auth for sign-up, sign-in, email confirmation and password recovery; an optional display name is stored in your Motion profile. A random account ID links your session and app access. The apps do not put your password in practice history. An individual subscription covers its app; Motion+ covers all five."}
               </p>
             </Section>
 
-            <Section title={isTR ? "Kamera ve mikrofon" : "Camera and microphone"}>
+            <Section title={isTR ? "Satın alma doğrulaması" : "Purchase verification"}>
               <p>
                 {isTR
-                  ? "Görüntü, vücut noktaları veya ses kullanan bir özellik için hangi verinin işlendiği, kaydedildiği ve aktarıldığı uygulamaya özgü gizlilik bilgilerinde açıklanmalıdır. Bu ayrıntıları support@yulalab.com adresinden talep edebilirsiniz."
-                  : "For a feature that uses images, body landmarks or audio, the app-specific privacy information needs to explain which data is processed, recorded and transferred. You can request these details at support@yulalab.com."}
+                  ? "Üyelik açıldığında Apple veya Google mağaza ürünü ve işlem kanıtı sunucuda doğrulanır. Motion, uygulama kimliği, mağaza, ürün, işlem referansı, üyelik durumu ve bitiş/doğrulama zamanını hesabınızla ilişkili olarak saklar; Google işlem referansı satın alma belirtecini içerebilir. Doğrulama için mağaza sağlayıcısına istek gönderilir. Ödeme kartı bilgilerinizi Motion almaz."
+                  : "When you activate a subscription, the store product and transaction evidence are verified with Apple or Google. Motion stores the app ID, store, product, transaction reference, entitlement status, and expiry/verification times against your account; a Google transaction reference can contain a purchase token. Verification requests go to the store provider. Motion does not receive your payment card details."}
               </p>
             </Section>
 
-            <Section title={isTR ? "Saklama ve ağ kullanımı" : "Storage and network use"}>
+            <Section title={isTR ? "Kamera, isteğe bağlı mikrofon ve cihazdaki geçmiş" : "Camera, optional microphone and on-device history"}>
               <p>
                 {isTR
-                  ? "Yerel kayıtlar, dışa aktarma, cihaz yedekleri, tanılama ve yazı tipi indirmeleri dahil ağ kullanımı uygulama ve sürüm kapsamında açıklanır. Verilerin saklanması veya silinmesi hakkında sorunuz varsa destek talebinizde uygulama adını ve sürümünü belirtin."
-                  : "Local records, exports, device backups, diagnostics and network use, including font downloads, are addressed for each app and version. For questions about storing or deleting data, include the app name and version in your support request."}
+                  ? "İzin verirseniz kamera görüntüsü hareketi incelemek için cihazda canlı işlenir; video kaydedilmez veya Motion sunucusuna yüklenmez. Ostinato'nun gitar kursunda isteğe bağlı tek nota gözlemini siz başlatır ve mikrofon iznini siz verirsiniz. Ses yalnız cihaz belleğinde işlenir; ham ses dosyası kaydedilmez veya sunucuya yüklenmez. Gözlemi durdurduğunuzda ya da ekran veya uygulama arka plana geçtiğinde mikrofon durur. Kurs mikrofonsuz tamamlanabilir; diğer Motion uygulamalarının ilk kursları mikrofon istemez. Uygulamanın oluşturduğu çalışma, ölçüm ve seans geçmişi yalnız o uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez. Misafir geçmişi giriş yaptığınızda hesabınıza otomatik taşınmaz. Motion hesap kayıtları Frankfurt'taki Supabase projesinde saklanır; iletimde HTTPS kullanılır. Uygulamalarda reklam veya davranış izleme SDK'sı yoktur."
+                  : "If you allow camera access, video is processed live on your device for movement features; it is not recorded or uploaded to Motion servers. In Ostinato's guitar course, you choose to start optional single-note observation and grant microphone permission. Audio is processed only in device memory; raw audio files are not recorded or uploaded. The microphone stops when you stop observation or the screen or app leaves the foreground. You can complete the course without it; the other Motion apps' first courses do not request microphone access. Practice, measurement and session history created by an app stays in that app's local device storage; it is not synced to your Motion account. Guest history is not automatically moved into an account when you sign in. Motion account records are stored in its Frankfurt Supabase project, with HTTPS in transit. The apps contain no advertising or behavioral tracking SDK."}
               </p>
             </Section>
+
+            <section id="motion-account-deletion" className="scroll-mt-28">
+              <h2 className="font-display font-bold text-ink-50 text-[22px] md:text-[24px] mb-3">
+                {isTR ? "Motion hesabını ve verilerini silme" : "Delete a Motion account and its data"}
+              </h2>
+              <p>
+                {isTR
+                  ? "Herhangi bir Motion uygulamasında Hesap > Hesabı sil yolunu kullanabilirsiniz. Bu işlem ortak hesabı, profili ve sunucudaki abonelik erişim kayıtlarını siler; kullandığınız uygulamanın o hesaba ait yerel geçmişini temizler. Diğer Motion uygulamaları açılıp çevrimiçi silme kaydını denetlediklerinde kendi yerel hesap geçmişlerini temizler. Misafir kayıtları ayrı kalır."
+                  : "Use Account > Delete account in any Motion app. This deletes the shared account, profile and server-side entitlement records, then clears that account's local history in the app you used. Other Motion apps clear their own local account history when next opened and able to check the online deletion receipt. Guest records remain separate."}
+              </p>
+              <p className="mt-3">
+                {isTR
+                  ? "Uygulama elinizde yoksa veya silme işlemi başarısız olursa, aşağıdaki bağlantıdan support@yulalab.com adresine Motion hesabı silme talebi gönderin. Talebi işlemek için hesap e-postanızı ve kullandığınız uygulamayı belirtin; parolanızı göndermeyin."
+                  : "If you no longer have the app or deletion fails, use the link below to request deletion from support@yulalab.com. Include your account email and the app you used so we can locate the account; do not send your password."}
+              </p>
+              <a
+                href="mailto:support@yulalab.com?subject=Motion%20account%20deletion"
+                className="link-wipe text-ink-50"
+              >
+                {isTR ? "E-postayla silme talebi gönder" : "Email an account deletion request"}
+              </a>
+              <p className="mt-3">
+                {isTR
+                  ? "Hesap silmek Apple veya Google aboneliğini iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabınızdan ayrıca iptal edin. Sunucuda yalnız rastgele hesap kimliğinin tek yönlü özeti, diğer cihazların silmeyi sonradan tanıması için silme kaydı olarak tutulur. Sağlayıcıların operasyonel günlükleri ve yedekleri kendi saklama döngülerine tabidir."
+                  : "Deleting the account does not cancel an Apple or Google subscription; cancel it separately in your store account to stop renewal. The server retains only a one-way digest of the random account ID as a deletion receipt so other devices can recognize a later launch. Provider operational logs and backups follow their own retention cycles."}
+              </p>
+            </section>
 
             <Section title={isTR ? "Sağlık ve fitness" : "Health and fitness"}>
               <p>
@@ -122,8 +157,8 @@ function MotionPrivacy() {
             <Section title={isTR ? "Haklarınız" : "Your rights"}>
               <p>
                 {isTR
-                  ? "KVKK ve GDPR kapsamında verilerinize erişme, düzeltme ve silme haklarınız vardır. Talebinizi uygulama adı ve sürümüyle birlikte support@yulalab.com adresine iletebilirsiniz. Talebin kapsamı ilgili uygulamanın veri akışına göre değerlendirilir."
-                  : "Under GDPR and Turkish data protection law (KVKK) you have the right to access, correct, and delete your data. Send your request to support@yulalab.com with the app name and version. Its scope is assessed against the relevant app's data flow."}
+                  ? "Hesap profilinizi uygulamada görebilir ve görünen adınızı düzeltebilirsiniz. Verilerinize erişim, düzeltme veya silme taleplerinizi hesap e-postanız ve uygulama adıyla support@yulalab.com adresine iletebilirsiniz. Uygulanabilir KVKK ve GDPR hakları saklıdır."
+                  : "You can view your account profile and correct your display name in the app. Send requests to access, correct or delete data to support@yulalab.com with your account email and app name. Applicable rights under Turkish data protection law (KVKK) and GDPR remain available."}
               </p>
             </Section>
 

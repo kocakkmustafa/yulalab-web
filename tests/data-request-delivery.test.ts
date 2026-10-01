@@ -166,10 +166,11 @@ describe("durable verification delivery", () => {
   });
 
   it("starts a full 24-hour window only when a five-day-old queue row is prepared", async () => {
+    const fiveDaysAgo = new Date(Date.now() - 5 * 24 * 60 * 60 * 1000);
     await createDataRequest(
       pool,
       { email: "ada@example.com", requestType: "access", locale: "tr" },
-      { now: new Date("2026-08-19T09:00:00.000Z") },
+      { now: fiveDaysAgo },
     );
     const queued = await pool.query(
       "SELECT verification_sent_at, verification_expires_at FROM data_requests",

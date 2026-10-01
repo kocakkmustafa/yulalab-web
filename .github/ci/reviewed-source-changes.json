@@ -3,6 +3,13 @@
   "publicationBaselineManifestSha256": "13988697d1af4522076c1607886e29f0eb08af3a391eafe78ffa8540cd6c4931",
   "changes": [
     {
+      "path": "tests/data-request-delivery.test.ts",
+      "publishedSha256": "0035667fb6aee764020129c6809feab0327a1a6f3b6bc200b829cb62a10c2916",
+      "candidateSha256": "3f8f670e521cc89bf94ece84ede187524c63cf41f5f055f846a0653b84b9dd53",
+      "reason": "Keep the existing delivery-window regression fixture five days old relative to execution time so retention expiry does not turn it into a stale calendar fixture; production behavior and all 24-hour assertions remain unchanged.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
       "path": "src/data/projects/burunfarki.ts",
       "publishedSha256": "56dd03bad167b0fc7078b53dfe765975f9300b8500dc27cdd7521087824c876b",
       "candidateSha256": "74f6c9469c8247da432a9785deac9f767e46a8aaa09e18ab2a5454b6d3114834",
@@ -12,15 +19,50 @@
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "fbc0439610c7172243a22983bb3f4876a6f1d5b8fa9b6632288d83f6f5d20779",
-      "reason": "Route normal deployment commands through locked Netlify CLI and explicit existing canonical production/private preview project IDs.",
+      "candidateSha256": "e4a25632005804d2ab9d450c61b284cc22d939898c7739f06e0f7343be5bedf7",
+      "reason": "Retain explicit existing Netlify project IDs, use the supported Node 24 function runtime for local build/deploy commands, and patch Next, sharp, YAML and TOML advisories without changing the Next major.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "README.md",
       "publishedSha256": "ba4212bed0476cc6bf3cd30d23251f1211eabb931fb14c58eb0ea1d73420f0ea",
-      "candidateSha256": "431d9f9acc6e7cf4a8e0d578afa8ed8bb6a1f9b5cf705da647e4ba8c8d844aef",
-      "reason": "Replace historical Vercel hosting instructions with the verified Netlify publication state, locked CLI prerequisites and explicit release commands.",
+      "candidateSha256": "fe339d43338c48cfbc0c46f9342d3e6e58a465a72e8524acbd987b5660792e71",
+      "reason": "Document existing Netlify publication history separately from candidate Node 26 builds and explicit supported Node 24 function runtime; preserve approval and provider-readback requirements.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "vitest.config.mts",
+      "publishedSha256": "e1278ceb589454a93a99f72218327123d48af001e6f904aa69b9febe6d255bdf",
+      "candidateSha256": "7915fa4d58c6212a75d4f4829d3c61e4b22ebb985b6f59d60e0528bb4b5adb16",
+      "reason": "Use jsdom browser storage in test workers when the host Node version exposes its own storage globals; preserve real DOM privacy assertions and support older Node versions without the flag.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "publishedSha256": "0214f3938ff0c89a3ae8cdaa211770e922672ab5d8394519bade0fe5bb90bc5a",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "candidateSha256": "32ac8225f60056ec3752a30745f58c4f53c7a24061808dddd2cd9a96ff131548",
+      "reason": "Freeze the patched Next/sharp/YAML/TOML dependency graph for the current Node toolchain; audit failures remain blocking."
+    },
+    {
+      "path": "netlify.toml",
+      "publishedSha256": "ad306e4e273440ccd8c81daf3919e39e829e4840e57be7b4f12bc151a1659ddd",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "candidateSha256": "173d80a5a8a01ece03f172fe54290baaae234b4e0c74a6828eb4bd0be6a416a9",
+      "reason": "Select the current Node 26.9.0 build toolchain; Functions runtime is explicitly selected by the CLI process and checked separately in generated artifacts."
+    },
+    {
+      "path": "public/portfolio-registry.json",
+      "publishedSha256": "d89f1a2cd815e9416d8ee3d1147c8dc2f6e564d1d3f84d496c4334cde1fb11f6",
+      "candidateSha256": "eeac458fd7097c611bf1f40db6be5ae67bb51c1366d34678924b0a95c499387d",
+      "reason": "Regenerate the public JSON from the reviewed registry source after the 2026-09-22 public HTTP/App Store listing readback for four existing surfaces; keep matching source/CDN bytes, the 24-hour proof expiry, unchanged product claims and public-only limits. This local candidate artifact is not publication evidence.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/public-registry.ts",
+      "publishedSha256": "37b81cac7caddc5cf13d4a4d1e14edb7c204e2ceb55f28499a457c63524c1467",
+      "candidateSha256": "e5061bbf248dd994179501cc069bdf21b27bb6efe9d3273c0900e11c16e9debd",
+      "reason": "Refresh only the provenance and 24-hour verification timestamps of the existing Braavolabs web/iOS, Burun Farki web and LifeOS iOS surfaces from the 2026-09-22 public HTTP/App Store listing readback. Retain published Braavolabs 1.0.3 and LifeOS 1.6.0 availability; local 1.0.4/1.6.1 candidates, authenticated features, metrics and product claims are not newly accepted.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
