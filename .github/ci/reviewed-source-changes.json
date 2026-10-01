@@ -12,8 +12,8 @@
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "0701daf0dde55b51cc3d63a862df56a36975edcf82eadbafb7983c48af8bc3af",
-      "reason": "Pin pnpm 10.33.0 for Netlify Corepack so install and nested build commands use the same package-manager version; preserve existing dependency and runtime pins.",
+      "candidateSha256": "eee0097bb87677f2874a971ea4ca5e648309c58a3ffc92aaff1029d8a743b7c0",
+      "reason": "Pin pnpm 10.33.0 for Netlify Corepack and patch only transitive undici 6/7/8 and brace-expansion 1/5 to their reviewed advisory fixes; preserve application and runtime pins.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -62,8 +62,8 @@
       "path": "pnpm-lock.yaml",
       "publishedSha256": "0214f3938ff0c89a3ae8cdaa211770e922672ab5d8394519bade0fe5bb90bc5a",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "candidateSha256": "0136232eef55461673ef396901f6df4d57f79863234b687595c9b0a99d9c3d7c",
-      "reason": "Lock the reviewed audited Next, sharp, js-yaml and smol-toml dependency updates without changing application source or deployment commands."
+      "candidateSha256": "200db53f53b45cdb7beb7a686c763d90b4c913a4c26edf2de8e8819d483e908c",
+      "reason": "Lock the reviewed Next, sharp, js-yaml and smol-toml updates plus transitive undici and brace-expansion security patches without changing application source or deployment commands."
     },
     {
       "path": "netlify.toml",
