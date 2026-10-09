@@ -83,20 +83,75 @@ def check_eszip(data):
     require(offset == len(data), "unexpected eszip trailing bytes")
 
 
+def tar_require(condition, message, member):
+    require(condition, f"{message}: name={member.name[:512]!r}, "
+            f"type={member.type.hex()}, link={member.linkname[:512]!r}")
+
+
+def tar_member_name(member):
+    name = member.name
+    tar_require(safe_archive_name(name) and "\0" not in name
+                and not re.match(r"^[A-Za-z]:", name), "unsafe tar member path", member)
+    normalized = str(PurePosixPath(name))
+    tar_require(normalized != "." and not re.match(r"^[A-Za-z]:", normalized),
+                "empty or drive-qualified tar member path", member)
+    tar_require(member.isdir() or not name.endswith("/"), "non-directory tar path has trailing slash", member)
+    return normalized
+
+
+def tar_link_target(member, name, directories):
+    target = member.linkname
+    tar_require(bool(target) and "\0" not in target and "\\" not in target
+                and not PurePosixPath(target).is_absolute()
+                and not re.match(r"^[A-Za-z]:", str(PurePosixPath(target))),
+                "unsafe tar link target", member)
+    # Symlink targets start at their parent; hardlink targets start at archive root.
+    parts = list(PurePosixPath(name).parent.parts) if member.issym() else []
+    components = target.split("/")
+    for index, component in enumerate(components):
+        if component == "..":
+            tar_require(bool(parts), "tar link escapes archive root", member)
+            parts.pop()
+        elif component not in ("", "."):
+            parts.append(component)
+        if index < len(components) - 1 and parts:
+            # Check raw traversal too: link/../file must not cross a link or a file.
+            tar_require("/".join(parts) in directories, "tar link traverses a non-directory", member)
+    tar_require(bool(parts), "empty tar link target", member)
+    return "/".join(parts)
+
+
 def check_tar(data):
     # gzip.decompress consumes the trailer too, detecting truncated gzip/CRC.
-    seen = set()
+    members = {}
     regular_files = set()
     with tarfile.open(fileobj=io.BytesIO(gzip.decompress(data)), mode="r:") as archive:
         for member in archive.getmembers():
-            require(safe_archive_name(member.name), "unsafe tar member path")
-            name = str(PurePosixPath(member.name))
-            require(name not in seen, "duplicate tar member")
-            seen.add(name)
-            require(member.isdir() or member.isfile(), "tar links or special members are forbidden")
-            if member.isfile():
+            name = tar_member_name(member)
+            tar_require(name not in members, "duplicate tar member", member)
+            members[name] = member
+            regular = member.type in (tarfile.REGTYPE, tarfile.AREGTYPE) and member.sparse is None
+            tar_require(regular or member.isdir() or member.issym() or member.islnk(),
+                        "tar special members are forbidden", member)
+            if regular:
                 regular_files.add(name)
-                require(len(archive.extractfile(member).read()) == member.size, "truncated tar member")
+                tar_require(len(archive.extractfile(member).read()) == member.size, "truncated tar member", member)
+            elif member.issym() or member.islnk():
+                tar_require(member.size == 0, "tar link must not contain payload", member)
+
+        directories = {name for name, member in members.items() if member.isdir()}
+        for name, member in members.items():
+            for parent in PurePosixPath(name).parents:
+                if str(parent) != ".":
+                    tar_require(str(parent) not in members or members[str(parent)].isdir(),
+                                "tar member ancestor is not a directory", member)
+                    directories.add(str(parent))
+        for name, member in members.items():
+            if member.issym() or member.islnk():
+                target = tar_link_target(member, name, directories)
+                # No filesystem extraction or recursive link following. Requiring a
+                # direct real file also rejects missing/directory targets, chains/cycles.
+                tar_require(target in regular_files, "tar link target is not a direct regular file", member)
     require(f"{MIDDLEWARE}.js" in regular_files, "tar middleware entry missing")
 
 

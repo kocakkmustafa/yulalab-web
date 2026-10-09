@@ -10,6 +10,7 @@ import tempfile
 import unittest
 import zipfile
 from pathlib import Path
+from unittest import mock
 
 SPEC = importlib.util.spec_from_file_location("netlify_contract", Path(__file__).with_name("netlify-contract.py"))
 contract = importlib.util.module_from_spec(SPEC)
@@ -45,6 +46,20 @@ def minimal_tar(name=f"./{MIDDLEWARE}.js", link=False):
             payload = b"export default () => new Response('fixture');"
             member.size = len(payload)
             archive.addfile(member, io.BytesIO(payload))
+    return gzip.compress(output.getvalue(), mtime=0)
+
+
+def tar_entries(entries):
+    output = io.BytesIO()
+    with tarfile.open(fileobj=output, mode="w", format=tarfile.PAX_FORMAT) as archive:
+        for entry in entries:
+            member = tarfile.TarInfo(entry["name"])
+            member.type = entry.get("type", tarfile.REGTYPE)
+            member.linkname = entry.get("target", "")
+            member.pax_headers = entry.get("pax", {})
+            payload = entry.get("payload", b"fixture regular content")
+            member.size = len(payload) if member.type in (tarfile.REGTYPE, tarfile.AREGTYPE) else entry.get("size", 0)
+            archive.addfile(member, io.BytesIO(payload) if member.size else None)
     return gzip.compress(output.getvalue(), mtime=0)
 
 
@@ -255,6 +270,124 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.edge["bundles"].append(self.asset("tar", gzip.compress(output.getvalue(), mtime=0)))
         self.write_json(f"{EDGE}/manifest.json", self.edge)
         with self.assertRaisesRegex(contract.ContractError, "tar middleware entry missing"):
+            contract.validate(self.root)
+
+    def test_contained_tar_links_to_real_files_preserve_contract_without_extraction(self):
+        entries = [{"name": f"./{MIDDLEWARE}.js"}, {"name": "shared/module.js"},
+                   {"name": "alias.js", "type": tarfile.SYMTYPE, "target": "./shared/module.js"},
+                   {"name": "nested/alias.js", "type": tarfile.SYMTYPE, "target": "../shared/module.js"},
+                   {"name": "hard-alias.js", "type": tarfile.LNKTYPE, "target": "./shared/module.js"},
+                   {"name": "nested/hard-alias.js", "type": tarfile.LNKTYPE, "target": "shared/module.js"}]
+        eszip = self.edge["bundles"][0]
+        for order in (entries, list(reversed(entries))):
+            with self.subTest(order=[entry["name"] for entry in order]):
+                tar = self.asset("tar", tar_entries(order))
+                self.edge["bundles"] = [eszip, tar]
+                self.write_json(f"{EDGE}/manifest.json", self.edge)
+                with mock.patch.object(tarfile.TarFile, "extract", side_effect=AssertionError("filesystem extraction")), \
+                     mock.patch.object(tarfile.TarFile, "extractall", side_effect=AssertionError("filesystem extraction")), \
+                     mock.patch.object(tarfile.TarFile, "_find_link_target", side_effect=AssertionError("link following")):
+                    result = contract.validate(self.root)
+                self.assertEqual(result["status"], "PASS")
+                self.assertEqual(result["buildId"], BUILD_ID)
+                self.assertEqual(result["registryByteParity"], True)
+                self.assertEqual(result["edgeFormats"], ["eszip2", "tar"])
+                self.assertEqual(len(result["files"]), 10)
+                receipt = next(file for file in result["files"] if file["path"].endswith(tar["asset"]))
+                self.assertEqual(receipt["sha256"], tar["asset"][:64])
+
+    def test_tar_links_reject_unsafe_targets_and_names(self):
+        regular = [{"name": f"{MIDDLEWARE}.js"}, {"name": "shared/file.js"}]
+        targets = ("", "/shared/file.js", "//shared/file.js", "C:/shared/file.js", "./C:/shared/file.js",
+                   "C:file.js", "shared\\file.js", "../shared/file.js", "shared/../../file.js",
+                   "shared/file.js/", "shared/file.js/.", "missing/../shared/file.js", "shared/missing.js")
+        for kind in (tarfile.SYMTYPE, tarfile.LNKTYPE):
+            for target in targets:
+                with self.subTest(kind=kind, target=target):
+                    entries = regular + [{"name": "alias.js", "type": kind, "target": target}]
+                    with self.assertRaises(contract.ContractError):
+                        contract.check_tar(tar_entries(entries))
+        for name in ("../alias.js", "/alias.js", "C:/alias.js", "./C:/alias.js", "alias\\file.js", "alias.js/"):
+            with self.subTest(name=name):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(tar_entries(regular + [{"name": name, "type": tarfile.SYMTYPE,
+                                                               "target": "shared/file.js"}]))
+        # PAX metadata preserves embedded NULs instead of terminating a legacy header field.
+        for pax in ({"path": "alias\0.js"}, {"linkpath": "shared/file.js\0ignored"}):
+            with self.subTest(pax=pax):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(tar_entries(regular + [{"name": "alias.js", "type": tarfile.SYMTYPE,
+                                                               "target": "shared/file.js", "pax": pax}]))
+
+    def test_tar_links_reject_missing_directory_chain_cycle_and_alias_middleware(self):
+        regular = [{"name": f"{MIDDLEWARE}.js"}, {"name": "real.js"}]
+        cases = [
+            [{"name": "alias.js", "type": tarfile.SYMTYPE, "target": "missing.js"}],
+            [{"name": "directory", "type": tarfile.DIRTYPE},
+             {"name": "alias.js", "type": tarfile.SYMTYPE, "target": "directory"}],
+            [{"name": "first.js", "type": tarfile.SYMTYPE, "target": "real.js"},
+             {"name": "second.js", "type": tarfile.SYMTYPE, "target": "first.js"}],
+            [{"name": "first.js", "type": tarfile.LNKTYPE, "target": "real.js"},
+             {"name": "second.js", "type": tarfile.LNKTYPE, "target": "first.js"}],
+            [{"name": "first.js", "type": tarfile.SYMTYPE, "target": "second.js"},
+             {"name": "second.js", "type": tarfile.LNKTYPE, "target": "first.js"}],
+            [{"name": "self.js", "type": tarfile.SYMTYPE, "target": "self.js"}],
+            [{"name": "alias.js", "type": tarfile.SYMTYPE, "target": "real.js", "size": 1}],
+        ]
+        for entries in cases:
+            with self.subTest(entries=entries):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(tar_entries(regular + entries))
+        for kind in (tarfile.SYMTYPE, tarfile.LNKTYPE):
+            with self.subTest(middleware_kind=kind):
+                with self.assertRaisesRegex(contract.ContractError, "tar middleware entry missing"):
+                    contract.check_tar(tar_entries([{"name": "real.js"},
+                        {"name": f"{MIDDLEWARE}.js", "type": kind, "target": "real.js"}]))
+
+    def test_tar_links_reject_duplicate_ancestor_collision_and_raw_traversal(self):
+        regular = [{"name": f"{MIDDLEWARE}.js"}, {"name": "real.js"}]
+        cases = [
+            [{"name": "./real.js"}],
+            [{"name": "alias.js", "type": tarfile.SYMTYPE, "target": "real.js"}, {"name": "./alias.js"}],
+            [{"name": "parent", "type": tarfile.SYMTYPE, "target": "real.js"}, {"name": "parent/child.js"}],
+            [{"name": "parent", "type": tarfile.LNKTYPE, "target": "real.js"}, {"name": "parent/child.js"}],
+            [{"name": "parent"}, {"name": "parent/child.js"}],
+            [{"name": "directory", "type": tarfile.DIRTYPE},
+             {"name": "alias", "type": tarfile.SYMTYPE, "target": "real.js"},
+             {"name": "link.js", "type": tarfile.SYMTYPE, "target": "alias/../real.js"}],
+            [{"name": "link.js", "type": tarfile.SYMTYPE, "target": "real.js/../real.js"}],
+            [{"name": "nested/link.js", "type": tarfile.SYMTYPE, "target": "../../real.js"}],
+            [{"name": "nested/link.js", "type": tarfile.LNKTYPE, "target": "../real.js"}],
+        ]
+        for entries in cases:
+            with self.subTest(entries=entries):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(tar_entries(regular + entries))
+
+    def test_tar_links_keep_special_member_hash_crc_and_manifest_rejections(self):
+        regular = [{"name": f"{MIDDLEWARE}.js"}, {"name": "real.js"}]
+        for kind in (tarfile.CHRTYPE, tarfile.BLKTYPE, tarfile.FIFOTYPE, tarfile.CONTTYPE, b"S", b"X"):
+            with self.subTest(kind=kind):
+                with self.assertRaises(ERRORS):
+                    contract.check_tar(tar_entries(regular + [{"name": "special", "type": kind}]))
+        data = tar_entries(regular + [{"name": "alias.js", "type": tarfile.SYMTYPE, "target": "real.js"}])
+        eszip = self.edge["bundles"][0]
+        tar = self.asset("tar", data)
+        self.edge["bundles"] = [eszip, tar]
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        asset = self.root / EDGE / tar["asset"]
+        asset.write_bytes(data + b"corrupted")
+        with self.assertRaisesRegex(contract.ContractError, "edge asset SHA-256 mismatch"):
+            contract.validate(self.root)
+        corrupt = bytearray(data)
+        corrupt[-8] ^= 1
+        self.edge["bundles"] = [eszip, self.asset("tar", bytes(corrupt))]
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        self.rejected()
+        self.edge["bundles"] = [eszip, tar]
+        asset.write_bytes(data)
+        self.write_json(f"{EDGE}/manifest.json", {**self.edge, "routes": []})
+        with self.assertRaisesRegex(contract.ContractError, "expected one middleware route"):
             contract.validate(self.root)
 
     def test_server_zip_truncation_and_wrong_build(self):
