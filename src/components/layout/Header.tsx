@@ -8,14 +8,15 @@ import { ArrowUpRight, Menu, X } from "@/components/common/icons";
 import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 
-type NavKey = "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
+type NavKey = "consulting" | "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
 type NavItem = {
   key: NavKey;
-  href: "/" | "/manifesto" | "/transparency" | "/projects" | "/studio" | "/notes" | "/contact";
+  href: "/consulting" | "/" | "/manifesto" | "/transparency" | "/projects" | "/studio" | "/notes" | "/contact";
 };
 
 const NAV: NavItem[] = [
   { key: "home", href: "/" },
+  { key: "consulting", href: "/consulting" },
   { key: "manifesto", href: "/manifesto" },
   { key: "transparency", href: "/transparency" },
   { key: "projects", href: "/projects" },
@@ -34,17 +35,30 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobile, setMobile] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
+  const mobileDialog = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    setMobile(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const dialog = mobileDialog.current;
+    if (!dialog) return;
+    if (mobile && !dialog.open) dialog.showModal();
+    if (!mobile && dialog.open) dialog.close();
+  }, [mobile]);
 
   useEffect(() => {
     if (!mobile) return;
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key !== "Escape") return;
-      event.preventDefault();
+    // A modal hidden by the desktop layout must not keep the page inert.
+    const desktop = window.matchMedia("(min-width: 1024px)");
+    const onDesktop = () => {
+      if (!desktop.matches) return;
       setMobile(false);
-      menuButton.current?.focus({ preventScroll: true });
     };
-    document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    onDesktop();
+    desktop.addEventListener("change", onDesktop);
+    return () => desktop.removeEventListener("change", onDesktop);
   }, [mobile]);
 
   useEffect(() => {
@@ -78,7 +92,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-7 text-[13.5px] text-ink-200">
+          <nav className="hidden lg:flex items-center gap-4 text-[13.5px] text-ink-200">
             {navigation.map((n) => {
               const isActive =
                 (n.href === "/" && stripped === "/") ||
@@ -112,6 +126,8 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             onClick={() => setMobile(true)}
             className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
             aria-label={t("menuOpen")}
+            aria-expanded={mobile}
+            aria-controls="site-mobile-navigation"
           >
             <Menu size={18} />
           </button>
@@ -119,12 +135,20 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
       </header>
 
       {/* Mobile slide panel */}
-      <div
+      <dialog
+        id="site-mobile-navigation"
+        ref={mobileDialog}
         data-site-mobile-drawer="true"
+        aria-label={t("menuOpen")}
         aria-hidden={!mobile}
         inert={!mobile}
+        onCancel={(event) => {
+          event.preventDefault();
+          setMobile(false);
+        }}
+        onClose={() => setMobile(false)}
         className={
-          "fixed inset-0 z-50 lg:hidden transition-opacity duration-400 " +
+          "fixed inset-0 z-50 m-0 h-[100dvh] w-screen max-h-none max-w-none border-0 bg-transparent p-0 text-inherit backdrop:bg-transparent lg:hidden transition-opacity duration-400 " +
           (mobile ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0")
         }
         style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -178,7 +202,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             {t("ctaProjects")} <ArrowUpRight size={14} strokeWidth={2} />
           </Link>
         </div>
-      </div>
+      </dialog>
     </>
   );
 }

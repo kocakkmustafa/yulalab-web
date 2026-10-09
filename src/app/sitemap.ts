@@ -11,6 +11,7 @@ const STATIC_PATHS = [
   "/case-studies",
   "/operating-system",
   "/contact",
+  "/consulting",
   "/support",
   "/terms",
   "/privacy",

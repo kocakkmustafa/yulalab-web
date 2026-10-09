@@ -46,6 +46,16 @@ export default function middleware(req: NextRequest) {
     return new NextResponse(null, { status: 400 });
   }
 
+  // Netlify can forward next-intl's internal /tr rewrite before evaluating
+  // Next config redirects. Resolve this external alias before locale routing
+  // so /links cannot become an unknown localized page. Never forward query
+  // values: the destination is the fixed public hub, not a caller's returnTo.
+  if (/^\/(?:tr\/|en\/)?links\/?$/.test(decoded)) {
+    const destination = new URL("https://links.yulalab.com/");
+    if (decoded.startsWith("/en/")) destination.searchParams.set("lang", "en");
+    return NextResponse.redirect(destination, 308);
+  }
+
   // Config headers match the encoded URL, while route matching can decode
   // segments. Canonicalize capability aliases before a successful response
   // so the generic policy cannot mask the route's random nonce policy.

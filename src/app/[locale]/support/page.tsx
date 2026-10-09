@@ -37,6 +37,11 @@ export default async function SupportPage({
 function Support() {
   const locale = useLocale();
   const isTR = locale === "tr";
+  const supportSubject = isTR ? "Ürün desteği / geri bildirim" : "Product support / feedback";
+  const supportBody = isTR
+    ? "Ürün:\nSürüm / build:\nCihaz ve işletim sistemi:\nYapmak istediğim görev:\nBeklenen sonuç:\nGerçek sonuç / takıldığım adım:\nTekrar oluşturma adımları:\n\nŞifre, doğrulama kodu, API anahtarı veya özel kayıt eklemeyin. Ekran görüntüsündeki kişisel bilgileri kapatın."
+    : "Product:\nVersion / build:\nDevice and operating system:\nTask I wanted to complete:\nExpected result:\nActual result / step where I got stuck:\nSteps to reproduce:\n\nDo not include passwords, verification codes, API keys or private records. Redact personal information in screenshots.";
+  const supportHref = `mailto:support@yulalab.com?subject=${encodeURIComponent(supportSubject)}&body=${encodeURIComponent(supportBody)}`;
 
   return (
     <div className="page-enter relative">
@@ -52,13 +57,13 @@ function Support() {
 
           <p className="mt-7 max-w-[52ch] text-[16.5px] md:text-[17.5px] leading-[1.6] text-ink-300">
             {isTR
-              ? "Tüm ürünlerimizin destek talepleri support@yulalab.com adresine gelir. Mesajlarınıza genellikle 48 saat içinde dönüyoruz; acil bir konu olduğunda satır başına 'ACIL' yazmanız yeterli."
-              : "Support requests for all our products go to support@yulalab.com. We usually respond within 48 hours; for urgent matters, lead your message with 'URGENT'."}
+              ? "Destek ve geri bildirim için support@yulalab.com adresine yazabilirsiniz. Ürün adı, sürüm ve takıldığınız adım çözümü incelememize yardımcı olur. Şifre, doğrulama kodu, API anahtarı veya özel kayıt göndermeyin."
+              : "Email support@yulalab.com for support or feedback. Include the product, version and step where you got stuck so we can investigate. Do not send passwords, verification codes, API keys or private records."}
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
             <a
-              href="mailto:support@yulalab.com"
+              href={supportHref}
               className="group block rounded-2xl border border-white/15 hover:border-white/30 hover:bg-white/[0.04] p-6 transition-colors focusable"
             >
               <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
@@ -68,7 +73,7 @@ function Support() {
                 support@yulalab.com
               </div>
               <div className="mt-3 text-sm text-ink-300">
-                {isTR ? "Genellikle 48 saat içinde yanıt" : "Usually replies within 48 hours"}
+                {isTR ? "E-posta taslağını açar; mesajı siz gönderirsiniz" : "Opens an email draft; you send the message"}
               </div>
             </a>
 
@@ -137,8 +142,8 @@ function Support() {
               <FAQ
                 q={isTR ? "Bir hata buldum, nereye bildiririm?" : "I found a bug — where do I report it?"}
                 a={isTR
-                  ? "support@yulalab.com adresine yazabilir veya ilgili uygulamanın GitHub Issues sayfasına bildirebilirsiniz (kamu repo'ları). Hata raporunda cihaz modeli, OS sürümü, uygulama sürümü ve hatanın adımlarını paylaşmanız çözümü hızlandırır."
-                  : "Email support@yulalab.com or open an issue in the relevant app's public GitHub repo. Including device model, OS version, app version, and reproduction steps speeds up resolution."}
+                  ? "support@yulalab.com adresine ürün adı, cihaz modeli, işletim sistemi, uygulama sürümü, beklenen ve gerçek sonuç ile tekrar oluşturma adımlarını yazın. Ekran görüntüsündeki kişisel bilgileri kapatın; şifre, token veya özel kayıt göndermeyin."
+                  : "Email support@yulalab.com with the product, device, operating system, app version, expected and actual results, and steps to reproduce. Redact personal information in screenshots; do not send passwords, tokens or private records."}
               />
               <FAQ
                 q={isTR ? "Birden fazla cihazda kullanabilir miyim?" : "Can I use it on multiple devices?"}
@@ -168,7 +173,7 @@ function Support() {
             </p>
             <div className="mt-4">
               <a
-                href="mailto:support@yulalab.com"
+                href={supportHref}
                 className="inline-flex items-center gap-2 rounded-full bg-ink-50 text-ink-900 pl-5 pr-4 py-3 text-[14px] font-medium hover:bg-ink-100 transition-colors focusable"
               >
                 support@yulalab.com

@@ -110,6 +110,7 @@ export type ExperienceCopy = {
   locale: "tr" | "en";
   navigation: {
     home: string;
+    consulting: string;
     projects: string;
     manifesto: string;
     transparency: string;

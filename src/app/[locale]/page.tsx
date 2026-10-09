@@ -152,6 +152,7 @@ export default async function LandingPage({
     locale,
     navigation: {
       home: t("navigation.home"),
+      consulting: t("navigation.consulting"),
       projects: t("navigation.projects"),
       manifesto: t("navigation.manifesto"),
       transparency: t("navigation.transparency"),

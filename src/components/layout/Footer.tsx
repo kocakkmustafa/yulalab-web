@@ -74,6 +74,9 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           </div>
           <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
             <li>
+              <Link href="/consulting" className="link-wipe">{t("navConsulting")}</Link>
+            </li>
+            <li>
               <Link href="/manifesto" className="link-wipe">
                 {t("navManifesto")}
               </Link>

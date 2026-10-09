@@ -139,6 +139,7 @@ export function ExperienceHeader({
       </a>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>
+        <Link href="/consulting">{copy.navigation.consulting}</Link>
         <a href="#experience-portfolio">{copy.navigation.projects}</a>
         <a href="#experience-manifesto">{copy.navigation.manifesto}</a>
         <a href="#experience-proof">{copy.navigation.transparency}</a>
@@ -160,7 +161,8 @@ export function ExperienceHeader({
           aria-label={copy.navigation.home}
           onClick={(event) => closeMobileMenu(event.currentTarget.closest("details"))}
         >
-          <a href="#experience-portfolio">{copy.navigation.projects}</a>
+          <Link href="/consulting">{copy.navigation.consulting}</Link>
+        <a href="#experience-portfolio">{copy.navigation.projects}</a>
           <a href="#experience-manifesto">{copy.navigation.manifesto}</a>
           <a href="#experience-proof">{copy.navigation.transparency}</a>
         </nav>
@@ -288,6 +290,7 @@ export function ExperienceClosingContent({ copy, headingId }: ExperienceClosingC
         </a>
         <nav className={styles.trustLinks} aria-label={copy.closing.kicker}>
           <Link href="/transparency">{copy.navigation.transparency}</Link>
+          <Link href="/consulting">{copy.navigation.consulting}</Link>
           <Link href="/contact">{copy.navigation.contact}</Link>
           <Link href="/privacy">{copy.closing.privacy}</Link>
           <Link href="/terms">{copy.closing.terms}</Link>
@@ -370,6 +373,7 @@ export function ExperienceOverlay({
           <p className={styles.kicker}>{copy.hero.eyebrow}</p>
           <h1>{copy.hero.title}</h1>
           <p className={styles.heroLede}>{copy.hero.lede}</p>
+          <Link href="/consulting" className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></Link>
           <p className={styles.heroNotice}>{copy.hero.notice}</p>
         </div>
         <TrackedLink

@@ -29,9 +29,9 @@ if (errors.length) {
 // is already on disk — a stale committed JSON must fail this the same way
 // a stale generated one would.
 try {
-  // `pnpm exec`, not `npx`: this script is on the production deploy path
-  // now that build runs it, and npx resolution is the fragile one.
-  execFileSync("pnpm", ["exec", "tsx", "scripts/export-public-registry.ts", "--check"], {
+  // Use the same Node executable and locally installed tsx loader as the gate.
+  // The documented import API avoids the CLI's unnecessary IPC server.
+  execFileSync(process.execPath, ["--import", "tsx", "scripts/export-public-registry.ts", "--check"], {
     cwd: ROOT,
     stdio: "inherit",
   });

@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "YULA Lab — We design tomorrow's products today.",
-    "description": "YULA Lab is an independent product lab building AI-native, data-driven products that simplify everyday life."
+    "description": "YULA Lab develops its own products and offers AI consulting: from workflow assessment to prototypes, integrations and evaluation."
   },
   "header": {
     "home": "Home",
@@ -13,7 +13,8 @@
     "ctaProjects": "Explore Projects",
     "menuOpen": "Menu",
     "menuClose": "Close",
-    "studio": "Studio"
+    "studio": "Studio",
+    "consulting": "AI consulting"
   },
   "footer": {
     "tagline": "An independent product lab that uses AI in the right place at the right time, without overstating it.",
@@ -34,7 +35,8 @@
     "version": "v0.1 · showcase",
     "navCaseStudies": "Case studies",
     "navOperatingSystem": "How we work",
-    "navStudio": "Studio"
+    "navStudio": "Studio",
+    "navConsulting": "AI consulting"
   },
   "common": {
     "explore": "Explore",
@@ -88,7 +90,7 @@
     "heroEyebrow": "A one-person AI product lab · Türkiye",
     "heroTitleA": "Few products.",
     "heroTitleB": "Thought about for a long time.",
-    "heroLede": "YULA Lab builds software that keeps personal data on the device, backs its claims with numbers, and refuses to push complexity onto the user. Not an agency, not a consultancy — we ship and maintain our own products.",
+    "heroLede": "YULA Lab develops its own products and offers AI consulting: from workflow assessment to prototypes, integrations and evaluation.",
     "heroCta": "See the portfolio",
     "scrollHint": "Scroll to continue",
     "visionKicker": "01 — Vision & Mission",
@@ -155,8 +157,8 @@
     "eyebrow": "Projects",
     "title": "The family.",
     "intro": "Eight products, one discipline. Each speaks its own design language; underneath, the same engineering culture, the same transparency, the same calm user experience.",
-    "shippedHeading": "Shipped",
-    "shippedNote": "Products you can download or use today.",
+    "shippedHeading": "Publication records",
+    "shippedNote": "Products with a previous publication or beta record. Cards flag availability that needs re-verification; dated sources and links are on each product page.",
     "researchHeading": "In research",
     "researchNote": "Not released yet: no store pages, no download links, no verified numbers. They are kept separate below because giving them the same weight as shipped products would make them look like more than they are.",
     "researchToggle": "Show {count} products in research"
@@ -306,7 +308,7 @@
     },
     "burunfarki": {
       "eyebrow": "Product 02 · Live · Analysis tool",
-      "lede": "A transparent AI horse-racing analysis platform. Model rankings, their reasoning and past results appear together. Explore the dated performance records and measurement scope in the evidence section below.",
+      "lede": "A transparent AI horse-racing analysis platform. Model rankings, their reasoning and past results appear together. Explore the dated performance records and measurement scope in the evidence section below. Development is currently on hold; this page does not promise a new release or current store availability.",
       "s1Kicker": "01 — What it does, and doesn't",
       "a1Title": "It reads the race; it doesn't hand you a slip.",
       "a1Body": "The platform takes a race's data and shows the model's ranking along with the factors that produced it. It generates no odds, recommends no bets, guarantees nothing. The decision is the user's.",
@@ -532,7 +534,8 @@
       "transparency": "Transparency",
       "contact": "Contact",
       "soundOn": "Sound on",
-      "soundOff": "Sound off"
+      "soundOff": "Sound off",
+      "consulting": "AI consulting"
     },
     "loader": {
       "geometry": "Resolving spatial axes",
@@ -543,8 +546,8 @@
     "hero": {
       "eyebrow": "YULA LAB · INDEPENDENT PRODUCT LAB",
       "title": "Few products. Thought about for a long time.",
-      "lede": "YULA Lab is an independent product lab that keeps personal data on the device, publishes claims with their sources, and ships and maintains its own products.",
-      "notice": "{liveCount} products live · {betaCount} beta · {researchCount} research directions",
+      "lede": "YULA Lab develops its own products and offers AI consulting: from workflow assessment to prototypes, integrations and evaluation.",
+      "notice": "Product status and publication evidence are shown on each product page.",
       "scroll": "Scroll to continue"
     },
     "portfolio": {
@@ -579,7 +582,7 @@
     "closing": {
       "kicker": "TRUST · CONTACT · LEGAL",
       "title": "Real products. Open methods. Long life.",
-      "body": "Write briefly about a product, partnership, or technical method and we will answer directly.",
+      "body": "Discuss an AI project, product question or partnership with us.",
       "privacy": "Privacy",
       "terms": "Terms",
       "support": "Support",
@@ -677,5 +680,45 @@
     ],
     "termsNote": "Commercial terms and pricing are shared in writing, in conversation.",
     "title": "Build with YULA."
+  },
+  "consulting": {
+    "eyebrow": "AI CONSULTING · YULA LAB",
+    "title": "Make AI useful in your business.",
+    "intro": "From a specific business problem to a testable prototype and a maintainable integration. We help teams decide where AI adds value, build the right workflow, and measure its limits.",
+    "servicesTitle": "What we can work on",
+    "services": [
+      {
+        "title": "AI opportunity assessment",
+        "body": "Map a workflow, its data and constraints. Compare AI with simpler alternatives before committing to a build.",
+        "output": "Deliverable: prioritized use cases, feasibility notes and a scoped implementation plan."
+      },
+      {
+        "title": "Prototypes and integrations",
+        "body": "Build a focused assistant, knowledge search or workflow automation around your existing tools. Define human review and failure handling.",
+        "output": "Deliverable: a working prototype, evaluation cases and integration documentation."
+      },
+      {
+        "title": "Evaluation and engineering review",
+        "body": "Review model outputs, data handling, reliability and operating cost against agreed criteria.",
+        "output": "Deliverable: findings, reproducible checks and a prioritized improvement plan."
+      }
+    ],
+    "processTitle": "A clear scope before a build",
+    "steps": [
+      "Discovery: describe the problem, current workflow and constraints.",
+      "Scope: agree the deliverables, access boundaries, acceptance criteria and commercial terms in writing.",
+      "Build and evaluate: test a focused solution against representative cases.",
+      "Handover: document operation, known limits and the next decision."
+    ],
+    "proofTitle": "Our own products are the starting point.",
+    "proofBody": "Our portfolio shows the products we build and their documented development and publication status. It is our own engineering work, not a list of client engagements.",
+    "proofLink": "Explore our products",
+    "limits": "We do not promise a revenue increase, perfect model output or a release date before discovery. Production access and deployment require a separate agreement.",
+    "contactTitle": "Tell us what you want to improve.",
+    "contactBody": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. The email link opens your mail app; nothing is submitted by this page.",
+    "cta": "Discuss your project",
+    "subject": "AI consulting enquiry",
+    "terms": "Availability, pricing and scope are confirmed in conversation.",
+    "nav": "AI consulting"
   }
 }

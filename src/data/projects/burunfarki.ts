@@ -15,12 +15,12 @@ export const burunfarki: ProjectConfig = {
     en: "Numbers over hunches.",
   },
   description: {
-    tr: "Burun Farkı, Türkiye at yarışlarının ilk açık ve şeffaf veri-odaklı analiz platformu. Canlı takip performansını burunfark.com/dogruluk kaynağıyla açıklar; modelin neden tahmin ettiğini gizlemez.",
-    en: "Burun Farkı is the first open, transparent, data-driven analytics platform for Turkish horse racing. It documents live-tracking performance at burunfark.com/dogruluk and never hides why the model made a prediction.",
+    tr: "Burun Farkı, Türkiye at yarışları için veri odaklı analiz ürünü. Canlı takip performansını burunfark.com/dogruluk kaynağıyla açıklar; modelin neden tahmin ettiğini gizlemez.",
+    en: "Burun Farkı is a data-driven analytics product for Turkish horse racing. It documents live-tracking performance at burunfark.com/dogruluk and never hides why the model made a prediction.",
   },
   short: {
-    tr: "Türkiye at yarışları için açık, şeffaf veri-odaklı analiz. 1.225 canlı takip yarışında Top-1 ~%29, Top-3 ~%62 (burunfark.com/dogruluk, 2026-08-25). Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü.",
-    en: "Open, transparent, data-driven analytics for Turkish horse racing. Across 1,225 live-tracked races: Top-1 ~29%, Top-3 ~62% (burunfark.com/dogruluk, 2026-08-25). A separate training-time backtest measured ~69% Top-3.",
+    tr: "Türkiye at yarışları için veri odaklı analiz ürünü. Geliştirme şu anda beklemede. Tarihli performans kayıtları ve ölçüm sınırları ürün sayfasındadır; güncel yayın durumu ayrıca doğrulanmalıdır.",
+    en: "A data-driven analytics product for Turkish horse racing. Development is currently on hold. Dated performance records and measurement limits are on the product page; current publication status requires separate verification.",
   },
   brand: {
     primary: "#FAB81F",

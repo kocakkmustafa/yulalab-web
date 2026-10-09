@@ -31,7 +31,7 @@ export function MailCard({ label, address, hint, accent = "#F4F4F5" }: Props) {
               {label}
             </span>
           </div>
-          <div className="mt-6 font-display text-2xl md:text-[28px] font-semibold tracking-tight text-ink-50">
+          <div className="mt-6 [overflow-wrap:anywhere] font-display text-2xl md:text-[28px] font-semibold tracking-tight text-ink-50">
             {address}
           </div>
           <p className="mt-2 text-[14px] text-ink-400 max-w-[40ch]">{hint}</p>

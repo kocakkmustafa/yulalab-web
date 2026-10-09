@@ -1,7 +1,7 @@
 {
   "site": {
     "title": "YULA Lab — Geleceğin ürünlerini bugün tasarlıyoruz.",
-    "description": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır."
+    "description": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme."
   },
   "header": {
     "home": "Ana Sayfa",
@@ -13,7 +13,8 @@
     "ctaProjects": "Projeleri Keşfet",
     "menuOpen": "Menü",
     "menuClose": "Kapat",
-    "studio": "Stüdyo"
+    "studio": "Stüdyo",
+    "consulting": "AI danışmanlığı"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
@@ -34,7 +35,8 @@
     "version": "v0.1 · showcase",
     "navCaseStudies": "Vaka çalışmaları",
     "navOperatingSystem": "Nasıl çalışıyoruz",
-    "navStudio": "Stüdyo"
+    "navStudio": "Stüdyo",
+    "navConsulting": "AI danışmanlığı"
   },
   "common": {
     "explore": "Keşfet",
@@ -88,7 +90,7 @@
     "heroEyebrow": "Tek kişilik AI ürün laboratuvarı · Türkiye",
     "heroTitleA": "Az sayıda ürün.",
     "heroTitleB": "Uzun süre üzerinde düşünülmüş.",
-    "heroLede": "YULA Lab; kişisel veriyi cihazda tutan, iddiasını sayıyla açan ve karmaşıklığı kullanıcıya yıkmayan yazılımlar kurar. Ajans değil, danışmanlık değil — kendi ürünlerini yayına alır ve sürdürür.",
+    "heroLede": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
     "heroCta": "Portföyü gör",
     "scrollHint": "Kaydırarak ilerleyin",
     "visionKicker": "01 — Vizyon & Misyon",
@@ -155,8 +157,8 @@
     "eyebrow": "Projeler",
     "title": "Aile.",
     "intro": "Sekiz ürün, tek disiplin. Her biri kendi tasarım dilini konuşur; ama altta hep aynı mühendislik kültürü, aynı şeffaflık, aynı sade kullanıcı deneyimi vardır.",
-    "shippedHeading": "Yayında olanlar",
-    "shippedNote": "İndirilebilen ya da bugün kullanılabilen ürünler.",
+    "shippedHeading": "Yayın kaydı bulunanlar",
+    "shippedNote": "Daha önce yayın veya beta kaydı bulunan ürünler. Güncel erişim doğrulanmadığında kartta belirtilir; tarihli kaynaklar ve bağlantılar ürün sayfasındadır.",
     "researchHeading": "Araştırma aşamasındakiler",
     "researchNote": "Henüz yayınlanmadılar: mağaza sayfaları, indirme bağlantıları ve doğrulanmış rakamları yok. Aşağıda ayrı tutuluyorlar çünkü yayındaki ürünlerle aynı ağırlıkta gösterilmeleri onları oldukları şeyden fazlası gibi gösterirdi.",
     "researchToggle": "Araştırma aşamasındaki {count} ürünü göster"
@@ -306,7 +308,7 @@
     },
     "burunfarki": {
       "eyebrow": "Ürün 02 · Yayında · Analiz aracı",
-      "lede": "Şeffaf AI at yarışı analiz platformu. Modelin sıralamaları, gerekçeleri ve geçmiş sonuçları birlikte gösterilir. Tarihli performans kayıtlarını ve ölçüm kapsamını aşağıdaki kanıt bölümünde inceleyebilirsiniz.",
+      "lede": "Şeffaf AI at yarışı analiz platformu. Modelin sıralamaları, gerekçeleri ve geçmiş sonuçları birlikte gösterilir. Tarihli performans kayıtlarını ve ölçüm kapsamını aşağıdaki kanıt bölümünde inceleyebilirsiniz. Geliştirme çalışmaları şu anda beklemede; bu sayfa yeni bir yayın veya güncel mağaza erişimi taahhüdü değildir.",
       "s1Kicker": "01 — Ne yapar, ne yapmaz",
       "a1Title": "Yarışı okur, kupon vermez.",
       "a1Body": "Platform bir yarışın verisini alır, modelin sıralamasını ve bu sıralamayı oluşturan etkenleri gösterir. Bahis oranı üretmez, kupon önermez, garanti vermez. Karar kullanıcıdadır.",
@@ -532,7 +534,8 @@
       "transparency": "Şeffaflık",
       "contact": "İletişim",
       "soundOn": "Sesi aç",
-      "soundOff": "Sesi kapat"
+      "soundOff": "Sesi kapat",
+      "consulting": "AI danışmanlığı"
     },
     "loader": {
       "geometry": "Mekânsal eksenler çözümleniyor",
@@ -543,8 +546,8 @@
     "hero": {
       "eyebrow": "YULA LAB · BAĞIMSIZ ÜRÜN LABORATUVARI",
       "title": "Az sayıda ürün. Uzun süre düşünülmüş.",
-      "lede": "YULA Lab; kişisel veriyi cihazda tutan, iddiasını kaynağıyla açan ve kendi ürünlerini yayına alıp sürdüren bağımsız bir ürün laboratuvarıdır.",
-      "notice": "{liveCount} ürün yayında · {betaCount} beta · {researchCount} araştırma yönü",
+      "lede": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
+      "notice": "Ürün durumu ve yayın kanıtı her ürünün sayfasında gösterilir.",
       "scroll": "Kaydırarak ilerleyin"
     },
     "portfolio": {
@@ -579,7 +582,7 @@
     "closing": {
       "kicker": "GÜVEN · İLETİŞİM · YASAL",
       "title": "Gerçek ürün. Açık yöntem. Uzun ömür.",
-      "body": "Bir ürün, ortaklık ya da teknik yöntem hakkında konuşmak için kısa yazın; doğrudan yanıtlayalım.",
+      "body": "AI projeniz, ürün sorunuz veya iş birliği için bize yazın.",
       "privacy": "Gizlilik",
       "terms": "Kullanım şartları",
       "support": "Destek",
@@ -677,5 +680,45 @@
     ],
     "termsNote": "Ticari şartlar ve fiyatlandırma yazılı olarak, görüşmede paylaşılır.",
     "title": "YULA ile inşa et."
+  },
+  "consulting": {
+    "eyebrow": "AI DANIŞMANLIĞI · YULA LAB",
+    "title": "Yapay zekayı işinizde faydaya dönüştürün.",
+    "intro": "Somut bir iş probleminden test edilebilir prototipe ve sürdürülebilir entegrasyona. AI’ın değer kattığı alanları belirliyor, uygun iş akışını kuruyor ve sınırlarını ölçüyoruz.",
+    "servicesTitle": "Birlikte çalışabileceğimiz alanlar",
+    "services": [
+      {
+        "title": "AI fırsat değerlendirmesi",
+        "body": "İş akışını, veriyi ve kısıtları inceleriz. Uygulamaya geçmeden önce AI’ı daha basit alternatiflerle karşılaştırırız.",
+        "output": "Teslimat: öncelikli kullanım senaryoları, uygulanabilirlik notları ve kapsamı belirlenmiş uygulama planı."
+      },
+      {
+        "title": "Prototip ve entegrasyon",
+        "body": "Mevcut araçlarınız etrafında odaklı bir asistan, bilgi arama veya iş akışı otomasyonu geliştiririz. İnsan incelemesini ve hata durumlarını tanımlarız.",
+        "output": "Teslimat: çalışan prototip, değerlendirme senaryoları ve entegrasyon dokümantasyonu."
+      },
+      {
+        "title": "Değerlendirme ve mühendislik incelemesi",
+        "body": "Model çıktısını, veri kullanımını, güvenilirliği ve işletim maliyetini birlikte belirlenen ölçütlerle inceleriz.",
+        "output": "Teslimat: bulgular, tekrarlanabilir kontroller ve öncelikli iyileştirme planı."
+      }
+    ],
+    "processTitle": "Uygulamadan önce açık kapsam",
+    "steps": [
+      "Keşif: problemi, mevcut iş akışını ve kısıtları anlatın.",
+      "Kapsam: teslimatları, erişim sınırlarını, kabul ölçütlerini ve ticari şartları yazılı belirleyelim.",
+      "Uygulama ve değerlendirme: odaklı çözümü temsilî senaryolarla test edelim.",
+      "Devir: işletimi, bilinen sınırları ve sonraki kararı belgeleyelim."
+    ],
+    "proofTitle": "Başlangıç noktamız kendi ürünlerimiz.",
+    "proofBody": "Portföyümüz, geliştirdiğimiz ürünleri ve belgelenmiş geliştirme ve yayın durumlarını gösterir. Bunlar kendi mühendislik çalışmalarımızdır; müşteri referans listesi değildir.",
+    "proofLink": "Ürünlerimizi inceleyin",
+    "limits": "Keşif öncesinde gelir artışı, hatasız model çıktısı veya yayın tarihi taahhüt etmeyiz. Üretim erişimi ve yayın ayrı mutabakat gerektirir.",
+    "contactTitle": "Neyi iyileştirmek istediğinizi anlatın.",
+    "contactBody": "İş akışınız, problem ve zaman planınızla başlayın. Parola, API anahtarı veya gizli müşteri verisi göndermeyin. E-posta bağlantısı posta uygulamanızı açar; bu sayfa üzerinden veri gönderilmez.",
+    "cta": "Projenizi konuşalım",
+    "subject": "AI danışmanlığı görüşmesi",
+    "terms": "Uygunluk, ücretlendirme ve kapsam görüşmede netleşir.",
+    "nav": "AI danışmanlığı"
   }
 }

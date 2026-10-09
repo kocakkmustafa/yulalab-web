@@ -5,22 +5,29 @@
     {
       "path": "src/data/projects/burunfarki.ts",
       "publishedSha256": "56dd03bad167b0fc7078b53dfe765975f9300b8500dc27cdd7521087824c876b",
-      "candidateSha256": "74f6c9469c8247da432a9785deac9f767e46a8aaa09e18ab2a5454b6d3114834",
-      "reason": "Align the Burun Farki project contact on both YULALAB locales with the user-approved support@yulalab.com address.",
+      "candidateSha256": "3918d8ea74b02d9ef512ab1138ae2a054965cdc1fb518b275b5cab9ec5803aba",
+      "reason": "Align the Burun Farki project contact on both YULALAB locales with the user-approved support@yulalab.com address. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "eee0097bb87677f2874a971ea4ca5e648309c58a3ffc92aaff1029d8a743b7c0",
-      "reason": "Pin pnpm 10.33.0 for Netlify Corepack and patch only transitive undici 6/7/8 and brace-expansion 1/5 to their reviewed advisory fixes; preserve application and runtime pins.",
+      "candidateSha256": "b0ff823e4f6af8f28b075dda3ea19b8e2970c62ea307edf71eec3a19c3af52d7",
+      "reason": "Pinned upstream braces recursion fix; preserve package identity and raw audit finding. Parent-reviewed exact tsx import patch a0fe490da8223803397ef70fda6deba74c463dda10b8e115d644f61db4298048, source tree62e8d3a3fe20a5cdb95be2294cebb1248c0fb286 (tsx-import-gate-qualification/approval.json SHA2567da9e1c35f2995ffb388aaf5e9fecc873866023c72c095e74b3e41c7c5953b9d): replace CLI launch with node --import tsx; validators, exporter --check, failure propagation and dependency declarations unchanged. Source acceptance only; prior guarded registry attempt FAILED, not runtime or publication acceptance. Candidate-only narrow dependency update for newly reported GHSA-68fv-2mgg-jv7q and GHSA-wq5f-xc86-pv6w: source-map-js 1.2.2 and sharp 0.35.5 with matching platform packages and libvips 1.3.4. Preserve prior braces/forge HOLD evidence. Runtime, audit and publication acceptance are not established by this source change. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. Candidate-only official supported refresh: Next and matching unchanged-rule lint preset 15.5.27, Netlify adapter 5.16.2; preserve existing non-Next resolved lint dependencies and every artifact assertion. Align the Deno workspace declaration with the current package manifest while preserving remote hashes. Both braces paths remain explicit; native/build/provider/publication gates are unrun.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "scripts/verify-public-registry.ts",
+      "publishedSha256": "45452855b847d118cd5107a344615a5a1ff376389e0949b59241c0e610612cea",
+      "candidateSha256": "2d597f00620ce1ad2d53df3527a1f237b38278b6197bce753eadea5d3a1aff7d",
+      "reason": "Use the gate Node executable and local tsx import loader for the same exporter --check; preserve cwd,stdio,validators and failure propagation. Parent-reviewed exact tsx import patch a0fe490da8223803397ef70fda6deba74c463dda10b8e115d644f61db4298048, source tree62e8d3a3fe20a5cdb95be2294cebb1248c0fb286 (tsx-import-gate-qualification/approval.json SHA2567da9e1c35f2995ffb388aaf5e9fecc873866023c72c095e74b3e41c7c5953b9d): replace CLI launch with node --import tsx; validators, exporter --check, failure propagation and dependency declarations unchanged. Source acceptance only; prior guarded registry attempt FAILED, not runtime or publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "README.md",
       "publishedSha256": "ba4212bed0476cc6bf3cd30d23251f1211eabb931fb14c58eb0ea1d73420f0ea",
-      "candidateSha256": "fe339d43338c48cfbc0c46f9342d3e6e58a465a72e8524acbd987b5660792e71",
-      "reason": "Document existing Netlify publication history separately from candidate Node 26 builds and explicit supported Node 24 function runtime; preserve approval and provider-readback requirements.",
+      "candidateSha256": "eb1d2405c7a577e5a5ffd4bd46aae62c0c2880cb98c8c47d4ec988b9328d9c05",
+      "reason": "Document existing Netlify publication history separately from candidate Node 26 builds and explicit supported Node 24 function runtime; preserve approval and provider-readback requirements. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. Candidate-only official supported refresh: Next and matching unchanged-rule lint preset 15.5.27, Netlify adapter 5.16.2; preserve existing non-Next resolved lint dependencies and every artifact assertion. Align the Deno workspace declaration with the current package manifest while preserving remote hashes. Both braces paths remain explicit; native/build/provider/publication gates are unrun.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -33,8 +40,8 @@
     {
       "path": "src/app/sitemap.ts",
       "publishedSha256": "bf1e30dd37f6a64c6afab5dac3b91f0f672a9dad941345d4474eadadb15b4a08",
-      "candidateSha256": "a92d9c9184b55967fb54c366f363c5d9b76c6cac535d7b8624ad929bb2353bfc",
-      "reason": "Advertise the dedicated LifeOS account-deletion page for the Turkish and English site routes.",
+      "candidateSha256": "6534070180e56535d15147f6f4a2d1216345ccf3ce446b97fc1b69131a1b7146",
+      "reason": "Advertise the dedicated LifeOS account-deletion page for the Turkish and English site routes. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -62,15 +69,15 @@
       "path": "pnpm-lock.yaml",
       "publishedSha256": "0214f3938ff0c89a3ae8cdaa211770e922672ab5d8394519bade0fe5bb90bc5a",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "candidateSha256": "200db53f53b45cdb7beb7a686c763d90b4c913a4c26edf2de8e8819d483e908c",
-      "reason": "Lock the reviewed Next, sharp, js-yaml and smol-toml updates plus transitive undici and brace-expansion security patches without changing application source or deployment commands."
+      "candidateSha256": "d92b3b08e7de8dfb7e5ba13593b4cf1530de2c030a44ab5619c41204b5d09392",
+      "reason": "Pinned upstream braces recursion fix; preserve package identity and raw audit finding. Candidate-only narrow dependency update for newly reported GHSA-68fv-2mgg-jv7q and GHSA-wq5f-xc86-pv6w: source-map-js 1.2.2 and sharp 0.35.5 with matching platform packages and libvips 1.3.4. Preserve prior braces/forge HOLD evidence. Runtime, audit and publication acceptance are not established by this source change. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. Candidate-only official supported refresh: Next and matching unchanged-rule lint preset 15.5.27, Netlify adapter 5.16.2; preserve existing non-Next resolved lint dependencies and every artifact assertion. Align the Deno workspace declaration with the current package manifest while preserving remote hashes. Both braces paths remain explicit; native/build/provider/publication gates are unrun."
     },
     {
       "path": "netlify.toml",
       "publishedSha256": "ad306e4e273440ccd8c81daf3919e39e829e4840e57be7b4f12bc151a1659ddd",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "candidateSha256": "173d80a5a8a01ece03f172fe54290baaae234b4e0c74a6828eb4bd0be6a416a9",
-      "reason": "Select the current Node 26.9.0 build toolchain; Functions runtime is explicitly selected by the CLI process and checked separately in generated artifacts."
+      "candidateSha256": "f6ecac6e06578340161d6e92756093fc7fdd3a2ffe1ec399122d752f75ef2455",
+      "reason": "Select the current Node 26.9.0 build toolchain; Functions runtime is explicitly selected by the CLI process and checked separately in generated artifacts. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence."
     },
     {
       "path": "public/portfolio-registry.json",
@@ -89,8 +96,8 @@
     {
       "path": "deno.lock",
       "publishedSha256": "b6e624268f9825b9b67e7bb0965ec88558248bd751a24a307a5b7f11288b3187",
-      "candidateSha256": "2b799c9101047f6c30eeabf9e98366632b2c3ab250569608af75afe44d03de3a",
-      "reason": "Keep the pinned Deno/Netlify edge dependency declaration aligned with the audited exact Next 15.5.24 package so the Linux Node 22 adapter build leaves tracked source bytes unchanged.",
+      "candidateSha256": "98f4d61997ada9048811c000241c273d34b00a2b0de8505718134af11d5a488b",
+      "reason": "Keep the pinned Deno/Netlify edge dependency declaration aligned with the audited exact Next 15.5.24 package so the Linux Node 22 adapter build leaves tracked source bytes unchanged. Candidate-only official supported refresh: Next and matching unchanged-rule lint preset 15.5.27, Netlify adapter 5.16.2; preserve existing non-Next resolved lint dependencies and every artifact assertion. Align the Deno workspace declaration with the current package manifest while preserving remote hashes. Both braces paths remain explicit; native/build/provider/publication gates are unrun.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -117,8 +124,8 @@
     {
       "path": "src/app/[locale]/support/page.tsx",
       "publishedSha256": "406c7a84b6061141671dc8ce0d2ba5497f5ae8b00b159ac92d27105bc279ea7e",
-      "candidateSha256": "2dee5053a731c834a9e733b0ccbe0c0de0b94bfb108ed8caba0bdbcbd92d0a62",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "candidateSha256": "7591f501560c1763c46bfda4ec5467facca35997377a974d723dfa6080c07251",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Candidate-only 2026-10-06 support feedback patch: remove unverified48h claim, encoded bilingual redacted mailto draft; no delivery/provider assertion. Parent independent review and runtime qualification pending.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -159,15 +166,155 @@
     {
       "path": "messages/tr.json",
       "publishedSha256": "79e66db7533af16c84ceff652563524b1cf0542ab28e394e6a147fb98bed93de",
-      "candidateSha256": "f6b0d1308f99387730b433ced71bf4ce065b8dc308121d6badb24a5376975d66",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "candidateSha256": "9f79fa235b0af3765a85e63c2b177862584ae4159616778ff4dda55607f92af6",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "messages/en.json",
       "publishedSha256": "e0c73fe7d41853e2cece3dcf4681c7b9836c5562f4c8d96575bf66573f0e784c",
-      "candidateSha256": "76631f655845a3d45b02b2c266cbb91900646201af9205b64b804baecbf8d359",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy.",
+      "candidateSha256": "a9c53fa708e807e91699ad3a3a4780caade2d1447b0378da69cbb9840eaeccf0",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/layout/Header.tsx",
+      "publishedSha256": "ae9f476dd5984e988fc9c545ef325cd51412ecae405d4617e310be247d02ea90",
+      "candidateSha256": "da6e9ee79a6d06ae98f9ddee0e47e204a1b5a0847b20afaa4e73f635f88cc94b",
+      "reason": "Use a native mobile modal for browser focus containment and background inertness; close on Escape, route changes and the desktop breakpoint. Preserve the closed Studio surface. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/layout/LocaleSwitcher.tsx",
+      "publishedSha256": "d27cbd2dc1a9b9cf0b37bff5ae2e8a2afe585bca6b5c487ee9ea19488537e836",
+      "candidateSha256": "8f3d8ceb32929cf4433fc5cb36d87f5c2e34ab15d88b627f61333125086b60a2",
+      "reason": "Preserve normal page hash sections, including Motion account deletion, during language changes; continue omitting query values.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/middleware.ts",
+      "publishedSha256": "cd5e600b3b22ae655bdec97a23d9d4ebf188ed6e4d87895607edfaa4ceed7766",
+      "candidateSha256": "5cd418d79b5360a06f6ff20f7a97e5bbc520c49ac995499ba710c2d3665f4e9d",
+      "reason": "Resolve fixed Links aliases before Netlify locale rewriting; incoming query values cannot select or contaminate the external destination. EN uses the supported fixed lang=en hub query.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "next.config.mjs",
+      "publishedSha256": "c86affd49cc3f2242c94ecdbfabaae7eb7f05f58e2f609dc026fc54d5d0df823",
+      "candidateSha256": "f4a6efe21fd13c9c0e0413650ca3af208e3d346c3fe3fe842e863c528fa6eaca",
+      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tailwind.config.ts",
+      "publishedSha256": "4e514350d6c14ebe9e458b0fc1b6d8fb71648bab5d4685c554d75354317f9568",
+      "candidateSha256": "2a6087d94c0f433334cd3afcd5c2da108ca2b0c8b1ca61da3858a7508dfdd965",
+      "reason": "Load the same typography plugin through ESM import; Node26 dev TS config loading otherwise throws require-is-not-defined. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/contact/page.tsx",
+      "publishedSha256": "e2077bb2c030d76874d99056bfcc15ba427b2256cbbbbf80cb219a7983ee2272",
+      "candidateSha256": "9841e5ec78298220bbeed96932108539cfd83102f400f03c93425c844ac25f22",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/page.tsx",
+      "publishedSha256": "d2e11c43ff687482b82fc15e16875913aa7028dd6eb59c7a3377a4d1ff73d39a",
+      "candidateSha256": "6440c2b8dd478475e80af6bdebbd8f6caceca7db84ccef501b67d2ffae66fe08",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/contact/MailCard.tsx",
+      "publishedSha256": "789345fd51a5c62ff614742cbe09a6239516125c5761e8f23fd5048be04fe6ff",
+      "candidateSha256": "df65dbcc8627ffa409cd8cfc7905c71550e5009df488fc89144ff0f69f0a55c1",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/ExperienceOverlay.tsx",
+      "publishedSha256": "289a917c767fb3775435bddfea463dddb27ab9dbb2736c2b51db07b638eb233e",
+      "candidateSha256": "2b13e2b97ae002c3d5c23bb93de1a66bac18cd852d9a1a01df1585e0350c5562",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/StaticExperience.tsx",
+      "publishedSha256": "b4299365c24e84819e0040aabc13c43888097dc1eade8362024c0fdc17ff7329",
+      "candidateSha256": "96265c00d019b4acb7ad7cafbfec2553815ebd96463c9bbe84cd7857025c4689",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-08 correction: consulting is secondary navigation as in ExperienceOverlay; retain its existing TR/EN href,copy and style as an untracked anchor. Reserve the existing home_primary_cta event for the portfolio action. Keep the original studio-offer CTA precedence assertions unchanged; targeted local qualification is recorded separately,not publication or provider acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/types.ts",
+      "publishedSha256": "6ea44db9238a40730a02dfb292b2e520648f50725ec4c9e4ebbdeb5c959d32da",
+      "candidateSha256": "ea4952aa7ab49e6cc8f618c9a579fd4cc34c174d2014e2d6ab071ddd8e683f08",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/layout/Footer.tsx",
+      "publishedSha256": "bbe7fd97fda7ca6964c28f5cb7af34f6deebc00959ba4a142607a255c878359b",
+      "candidateSha256": "2fc1c816ff6768c6922486eaa76464e765e6668d646fc3c0f2d5627cafdef8fc",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/[locale]/consulting/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "334290ba09e0e1257cb4d5fcf952b95d4107adc0b9438e6d028d4e24ac66cefd",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/common/StatusPill.tsx",
+      "publishedSha256": "b7b2a85464449f810c9ed8906e66a8df4ba9c7f4d709e208cbf1827bbf683656",
+      "candidateSha256": "aeaaaf9316fd0c7354e52d1c2e38e78be9b495949faeded3c6e450f11d5395e4",
+      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/landing/ProjectCard.tsx",
+      "publishedSha256": "17f679d2471756b3fe893d48a03b701aedbd1ce2a023ca8ce09701f68534e39a",
+      "candidateSha256": "096be83e02cf417af836688a1ce26110db43780846da145a508eff69b8a389f5",
+      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "e2e/products-index.spec.ts",
+      "publishedSha256": "0ac5c1340c84862f8ddbaa27062c1b5a49394264085392676e8600750738747e",
+      "candidateSha256": "e8e82ecee68eba5ea99b79ce48788183654dd4833232caba51aa2dea9322e109",
+      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tests/status-pill.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "f8c8b6bef8c9de494427ed1ee3fc9aa60b3746b0e818f327319ee2289aebb6a5",
+      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tests/support-feedback.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "a5319babc9c69b7ff1b736602cb5ac8f576f934f1751b08be416b7540136738a",
+      "reason": "Candidate-only bilingual support draft rendering, diagnostics/redaction and no-form/no-response-time regression assertions; parent review/runtime qualification pending.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "postcss.config.mjs",
+      "publishedSha256": "e32657baf631d7c5f4dc67b4b2ee0ec8e7d5b3c41860e09cddce7c0377cd80bc",
+      "candidateSha256": "5b0bc4c78be977cd81f947fb5563aaa7cc6d451e6f1c53a3260b7656a7144d20",
+      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/app/globals.css",
+      "publishedSha256": "e5bb0e0c9315609d0d5a25327d1fd6c31076db67d18f457fb378fc4386e1a78d",
+      "candidateSha256": "b02178988694795c6d4f201d9973624efba27bc5369b7a214b1addd42aed5429",
+      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
