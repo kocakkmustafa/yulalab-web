@@ -127,6 +127,31 @@ Cache-Control = "public, max-age=300, must-revalidate"
                 self.assertEqual(result["edgeFormats"], sorted(b["format"] for b in bundles))
                 self.assertEqual(len(result["files"]), 8 + len(bundles))
 
+    def test_provider_publish_swap_preserves_actual_artifact_checks(self):
+        # Exact adapter5.16.2 publishStaticDir rename sequence; no build execution.
+        (self.root / ".next").rename(self.root / ".netlify/.next")
+        (self.root / ".netlify/static").rename(self.root / ".next")
+        options = {"functions_dist": self.root / ".netlify/functions",
+                   "edge_functions_dist": self.root / EDGE, "publish_swapped": True}
+        result = contract.validate(self.root, **options)
+        self.assertEqual(result["status"], "PASS")
+        self.assertEqual(result["buildId"], BUILD_ID)
+        self.assertEqual(result["registryByteParity"], True)
+        self.assertIn("provider build artifact", result["scope"])
+        paths = {file["path"] for file in result["files"]}
+        self.assertIn(".netlify/.next/prerender-manifest.json", paths)
+        self.assertIn(".next/portfolio-registry.json", paths)
+        self.make_zip("wrong-build-identity")
+        with self.assertRaises(ERRORS):
+            contract.validate(self.root, **options)
+
+    def test_publish_swap_requires_provider_roots_and_complete_layout(self):
+        with self.assertRaises(ERRORS):
+            contract.validate(self.root, publish_swapped=True)
+        with self.assertRaises(ERRORS):
+            contract.validate(self.root, functions_dist=self.root / ".netlify/functions",
+                              edge_functions_dist=self.root / EDGE, publish_swapped=True)
+
     def test_unsupported_missing_and_duplicate_bundle_formats(self):
         eszip = self.edge["bundles"][0]
         tar = self.asset("tar", minimal_tar())

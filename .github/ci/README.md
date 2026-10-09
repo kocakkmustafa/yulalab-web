@@ -47,8 +47,9 @@ E2E tests and exercises Next's installed Sharp consumer with an in-memory
 24x16 PNG to 12x8 WebP fixture. It does not claim a local Netlify packaging
 result. A small native plugin at `.github/netlify/artifact-proof` runs the
 existing artifact and render-mode contracts during the connected Netlify
-build's `onPostBuild`, after core Functions/edge bundling and before the
-adapter's publish-directory swap. No local CLI or deployment command is used.
+build's `onPostBuild`, after core Functions/edge bundling. The managed adapter
+may run before local plugins, so the proof requires exactly one complete
+before/after publish-swap layout. No local CLI or deployment command is used.
 Provider execution, runtime behavior and publication are separate gates.
 
 The provider plugin passes Netlify's absolute Functions and edge output roots.

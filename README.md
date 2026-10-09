@@ -192,8 +192,9 @@ localhost tests; it does not produce or accept Netlify packages.
 
 `netlify.toml` retains `pnpm build`, `.next`, the pinned Next.js adapter and
 registry headers. A small native Build Plugin runs the existing render-mode
-and artifact contracts after Netlify packages Functions and middleware, before
-the adapter swaps the publish directory. The contract receives the provider's
+and artifact contracts after Netlify packages Functions and middleware. It
+accepts exactly one complete layout before or after the managed adapter's
+publish-directory swap. The contract receives the provider's
 absolute output directories, checks the same ZIP, ESZIP, middleware, build-ID,
 registry and explicit Node 24 runtime assertions, and fails the build before
 deployment if any assertion fails. Python 3.11 or later is required for its

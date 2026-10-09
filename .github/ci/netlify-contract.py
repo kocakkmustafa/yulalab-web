@@ -100,10 +100,13 @@ def check_tar(data):
     require(f"{MIDDLEWARE}.js" in regular_files, "tar middleware entry missing")
 
 
-def validate(root, *, functions_dist=None, edge_functions_dist=None):
+def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swapped=False):
     root = Path(root).resolve()
     require((functions_dist is None) == (edge_functions_dist is None), "both provider output roots are required")
     provider_outputs = functions_dist is not None
+    require(not publish_swapped or provider_outputs, "publish swap requires provider output roots")
+    build_directory = ".netlify/.next" if publish_swapped else ".next"
+    static_directory = ".next" if publish_swapped else ".netlify/static"
     functions_directory = output_directory(functions_dist if provider_outputs else root / ".netlify/functions")
     edge_directory = output_directory(edge_functions_dist if provider_outputs else root / EDGE_DIRECTORY)
 
@@ -126,10 +129,10 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None):
         "Cache-Control": "public, max-age=300, must-revalidate",
     }}], "registry headers mismatch")
 
-    build_id = read(".next/BUILD_ID").decode().strip()
+    build_id = read(f"{build_directory}/BUILD_ID").decode().strip()
     require(len(build_id) > 5, "missing build identity")
     require(read(f".netlify/functions-internal/{HANDLER}/.next/BUILD_ID").decode().strip() == build_id, "handler build identity mismatch")
-    require(read("public/portfolio-registry.json") == read(".netlify/static/portfolio-registry.json"), "registry byte mismatch")
+    require(read("public/portfolio-registry.json") == read(f"{static_directory}/portfolio-registry.json"), "registry byte mismatch")
     functions = json.loads(regular_file(functions_directory, "manifest.json").read_bytes())
     require(isinstance(functions["functions"], list) and len(functions["functions"]) == 1, "expected one server function")
     handler = functions["functions"][0]
@@ -171,8 +174,8 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None):
         edge_assets.append(asset_path)
 
     paths = [regular_file(root, relative) for relative in
-             ("netlify.toml", "pnpm-lock.yaml", ".next/BUILD_ID",
-              ".next/prerender-manifest.json", ".netlify/static/portfolio-registry.json")]
+             ("netlify.toml", "pnpm-lock.yaml", f"{build_directory}/BUILD_ID",
+              f"{build_directory}/prerender-manifest.json", f"{static_directory}/portfolio-registry.json")]
     paths += [regular_file(functions_directory, "manifest.json"), zip_path,
               regular_file(edge_directory, "manifest.json"), *edge_assets]
     files = []
@@ -190,11 +193,13 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--functions-dist")
     parser.add_argument("--edge-functions-dist")
+    parser.add_argument("--publish-swapped", action="store_true")
     arguments = parser.parse_args()
     try:
         result = validate(Path(__file__).resolve().parents[2],
                           functions_dist=arguments.functions_dist,
-                          edge_functions_dist=arguments.edge_functions_dist)
+                          edge_functions_dist=arguments.edge_functions_dist,
+                          publish_swapped=arguments.publish_swapped)
     except (OSError, ValueError, KeyError, TypeError, tarfile.TarError, zipfile.BadZipFile, EOFError) as error:
         raise SystemExit(f"Netlify artifact contract FAIL: {error}") from error
     print(json.dumps(result, indent=2))
