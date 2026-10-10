@@ -8,6 +8,7 @@ import re
 import tarfile
 import tomllib
 import zipfile
+from collections import deque
 from pathlib import Path, PurePosixPath
 
 HANDLER = "___netlify-server-handler"
@@ -19,6 +20,12 @@ MIDDLEWARE_PATTERN = (
 )
 EDGE_DIRECTORY = ".netlify/edge-functions-dist"
 PROOF_PLUGIN = "./.github/netlify/artifact-proof"
+# Fail closed on excessive archives/graphs; fixtures use smaller patched limits.
+TAR_LIMITS = {"compressed_bytes": 64 * 1024 * 1024, "expanded_bytes": 128 * 1024 * 1024,
+              "members": 20000, "namespace": 50000, "path_bytes": 4096, "depth": 128,
+              "manifest_bytes": 64 * 1024 * 1024, "logical_files": 1000000,
+              "logical_bytes": 1024 * 1024 * 1024, "logical_depth": 128,
+              "reported_links": 64}
 
 
 class ContractError(ValueError):
@@ -90,6 +97,8 @@ def tar_require(condition, message, member):
 
 def tar_member_name(member):
     name = member.name
+    tar_require(len(name.encode()) <= TAR_LIMITS["path_bytes"]
+                and len(PurePosixPath(name).parts) <= TAR_LIMITS["depth"], "tar path bounds exceeded", member)
     tar_require(safe_archive_name(name) and "\0" not in name
                 and not re.match(r"^[A-Za-z]:", name), "unsafe tar member path", member)
     normalized = str(PurePosixPath(name))
@@ -101,6 +110,8 @@ def tar_member_name(member):
 
 def tar_link_target(member, name, directories):
     target = member.linkname
+    tar_require(len(target.encode()) <= TAR_LIMITS["path_bytes"]
+                and len(target.split("/")) <= TAR_LIMITS["depth"], "tar link bounds exceeded", member)
     tar_require(bool(target) and "\0" not in target and "\\" not in target
                 and not PurePosixPath(target).is_absolute()
                 and not re.match(r"^[A-Za-z]:", str(PurePosixPath(target))),
@@ -114,6 +125,7 @@ def tar_link_target(member, name, directories):
             parts.pop()
         elif component not in ("", "."):
             parts.append(component)
+        tar_require(len(parts) <= TAR_LIMITS["depth"], "tar target depth exceeded", member)
         if index < len(components) - 1 and parts:
             # Check raw traversal too: link/../file must not cross a link or a file.
             tar_require("/".join(parts) in directories, "tar link traverses a non-directory", member)
@@ -121,38 +133,132 @@ def tar_link_target(member, name, directories):
     return "/".join(parts)
 
 
+def tar_manifest_bytes(value):
+    return json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=True).encode()
+
+
 def check_tar(data):
-    # gzip.decompress consumes the trailer too, detecting truncated gzip/CRC.
+    require(len(data) <= TAR_LIMITS["compressed_bytes"], "tar compressed byte bound exceeded")
+    # Bounded decompression still consumes/validates gzip trailer and CRC on PASS.
+    with gzip.GzipFile(fileobj=io.BytesIO(data)) as compressed:
+        expanded = compressed.read(TAR_LIMITS["expanded_bytes"] + 1)
+    require(len(expanded) <= TAR_LIMITS["expanded_bytes"], "tar expanded byte bound exceeded")
     members = {}
     regular_files = set()
-    with tarfile.open(fileobj=io.BytesIO(gzip.decompress(data)), mode="r:") as archive:
-        for member in archive.getmembers():
+    records = {}
+    with tarfile.open(fileobj=io.BytesIO(expanded), mode="r:") as archive:
+        for member in archive:
+            require(len(members) < TAR_LIMITS["members"], "tar member bound exceeded")
             name = tar_member_name(member)
             tar_require(name not in members, "duplicate tar member", member)
             members[name] = member
+            tar_require(member.sparse is None, "tar sparse members are forbidden", member)
             regular = member.type in (tarfile.REGTYPE, tarfile.AREGTYPE) and member.sparse is None
             tar_require(regular or member.isdir() or member.issym() or member.islnk(),
                         "tar special members are forbidden", member)
             if regular:
                 regular_files.add(name)
-                tar_require(len(archive.extractfile(member).read()) == member.size, "truncated tar member", member)
-            elif member.issym() or member.islnk():
-                tar_require(member.size == 0, "tar link must not contain payload", member)
+                tar_require(0 <= member.size <= TAR_LIMITS["expanded_bytes"], "tar file size bound exceeded", member)
+                digest = hashlib.sha256()
+                length = 0
+                with archive.extractfile(member) as stream:
+                    while chunk := stream.read(1024 * 1024):
+                        digest.update(chunk)
+                        length += len(chunk)
+                tar_require(length == member.size, "truncated tar member", member)
+                records[name] = {"name": name, "kind": "file", "bytes": length, "sha256": digest.hexdigest()}
+            else:
+                tar_require(member.size == 0, "tar non-file must not contain payload", member)
 
         directories = {name for name, member in members.items() if member.isdir()}
+        namespace = set(members)
         for name, member in members.items():
             for parent in PurePosixPath(name).parents:
                 if str(parent) != ".":
                     tar_require(str(parent) not in members or members[str(parent)].isdir(),
                                 "tar member ancestor is not a directory", member)
                     directories.add(str(parent))
+                    namespace.add(str(parent))
+                    require(len(namespace) + 1 <= TAR_LIMITS["namespace"], "tar namespace bound exceeded")
+        directories.add(".")  # Internal root node; archive root members/targets remain forbidden.
+        for name in directories:
+            records[name] = {"name": name, "kind": "directory", "explicit": name in members}
+        link_targets = {}
         for name, member in members.items():
             if member.issym() or member.islnk():
                 target = tar_link_target(member, name, directories)
-                # No filesystem extraction or recursive link following. Requiring a
-                # direct real file also rejects missing/directory targets, chains/cycles.
-                tar_require(target in regular_files, "tar link target is not a direct regular file", member)
+                # Direct link-to-link and traversal through a link remain forbidden.
+                tar_require(target in regular_files or member.issym() and target in directories,
+                            "tar link target is not a real file or directory", member)
+                link_targets[name] = target
+                records[name] = {"name": name, "kind": "symlink" if member.issym() else "hardlink",
+                                 "rawTarget": member.linkname, "target": target}
     require(f"{MIDDLEWARE}.js" in regular_files, "tar middleware entry missing")
+    require(len(records) <= TAR_LIMITS["namespace"], "tar namespace bound exceeded")
+
+    # Bound/hash canonical metadata before allocating the graph or closure rows.
+    manifest = hashlib.sha256()
+    manifest_size = 0
+    for name in sorted(records):
+        row = tar_manifest_bytes(records[name]) + b"\n"
+        manifest_size += len(row)
+        require(manifest_size <= TAR_LIMITS["manifest_bytes"], "tar manifest byte bound exceeded")
+        manifest.update(row)
+
+    # Entire archive namespace, including implicit directories and every target.
+    # Directory-child + link-target edges form a closed graph; never follow links
+    # on disk or expand virtual alias trees. Bottom-up processing rejects cycles.
+    children = {name: [] for name in records}
+    for name in records:
+        if name != ".":
+            children[str(PurePosixPath(name).parent)].append(name)
+    for name, target in link_targets.items():
+        children[name].append(target)
+    parents = {name: [] for name in records}
+    pending = {name: len(edges) for name, edges in children.items()}
+    for name, edges in children.items():
+        for child in edges:
+            parents[child].append(name)
+    ready = deque(name for name, count in pending.items() if count == 0)
+    closure_hashes = {}
+    file_counts = {}
+    byte_counts = {}
+    depths = {}
+    while ready:
+        name = ready.popleft()
+        file_counts[name] = 1 if name in regular_files else sum(file_counts[child] for child in children[name])
+        require(file_counts[name] <= TAR_LIMITS["logical_files"], "tar logical closure bound exceeded")
+        byte_counts[name] = records[name]["bytes"] if name in regular_files else sum(byte_counts[child] for child in children[name])
+        depths[name] = 1 + max((depths[child] for child in children[name]), default=0)
+        require(byte_counts[name] <= TAR_LIMITS["logical_bytes"], "tar logical byte bound exceeded")
+        require(depths[name] <= TAR_LIMITS["logical_depth"], "tar logical depth bound exceeded")
+        closure_hashes[name] = hashlib.sha256(tar_manifest_bytes({"entry": records[name],
+            "children": [[child, closure_hashes[child]] for child in sorted(children[name])]})).hexdigest()
+        for parent in parents[name]:
+            pending[parent] -= 1
+            if pending[parent] == 0:
+                ready.append(parent)
+    require(len(closure_hashes) == len(records), "tar link/directory cycle")
+    for name, target in link_targets.items():
+        tar_require(file_counts[target] > 0, "tar directory target has no regular file leaves", members[name])
+
+    reported = []
+    for name in sorted(link_targets)[:TAR_LIMITS["reported_links"]]:
+        target = link_targets[name]
+        label = {key: value[:512] if isinstance(value, str) else value for key, value in records[name].items()}
+        reported.append({**label, "metadataTruncated": any(isinstance(value, str) and len(value) > 512
+                         for value in records[name].values()), "targetKind": records[target]["kind"],
+                         "closureSha256": closure_hashes[target], "regularFileLeaves": file_counts[target],
+                         "logicalBytes": byte_counts[target], "logicalDepth": depths[target]})
+    return {"archiveSha256": hashlib.sha256(data).hexdigest(), "compressedBytes": len(data),
+            "expandedBytes": len(expanded), "memberCount": len(members), "namespaceCount": len(records),
+            "regularFileCount": len(regular_files), "directoryCount": len(directories) - 1,
+            "linkCount": len(link_targets), "manifestSha256": manifest.hexdigest(),
+            "closureSha256": closure_hashes["."], "logicalRegularFileLeaves": file_counts["."],
+            "logicalBytes": byte_counts["."], "logicalDepth": depths["."],
+            "links": reported, "reportedLinkCount": len(reported),
+            "allLinksManifestCovered": True, "linkProofsTruncated": len(reported) < len(link_targets),
+            "limits": dict(TAR_LIMITS)}
 
 
 def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swapped=False):
@@ -214,18 +320,21 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swa
     require(len(set(formats)) == len(formats), "duplicate edge format")
     require(set(formats) in ({"eszip2"}, {"eszip2", "tar"}), "unsupported edge formats")
     edge_assets = []
+    tar_inventories = []
     for bundle in bundles:
         extension = r"eszip" if bundle["format"] == "eszip2" else r"tar\.gz"
         asset = bundle["asset"]
         require(isinstance(asset, str) and re.fullmatch(r"[0-9a-f]{64}\." + extension, asset), "unsafe edge asset path or extension")
         asset_path = regular_file(edge_directory, asset)
+        if bundle["format"] == "tar":
+            require(asset_path.stat().st_size <= TAR_LIMITS["compressed_bytes"], "tar compressed byte bound exceeded")
         data = asset_path.read_bytes()
         require(bool(data), "empty edge asset")
         require(hashlib.sha256(data).hexdigest() == asset[:64], "edge asset SHA-256 mismatch")
         if bundle["format"] == "eszip2":
             check_eszip(data)
         else:
-            check_tar(data)
+            tar_inventories.append({"asset": asset, **check_tar(data)})
         edge_assets.append(asset_path)
 
     paths = [regular_file(root, relative) for relative in
@@ -241,7 +350,8 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swa
     scope = "provider build artifact; no deployment or runtime execution" if provider_outputs else "local build artifact; no publication or provider execution"
     return {"status": "PASS", "scope": scope,
             "buildId": build_id, "functionSystem": functions["system"],
-            "registryByteParity": True, "edgeFormats": sorted(formats), "files": files}
+            "registryByteParity": True, "edgeFormats": sorted(formats), "files": files,
+            "tarInventories": tar_inventories}
 
 
 if __name__ == "__main__":

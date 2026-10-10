@@ -63,6 +63,26 @@ def tar_entries(entries):
     return gzip.compress(output.getvalue(), mtime=0)
 
 
+def package_directory_entries(store=".deno"):
+    prefix = f"node_modules/{store}"
+    undici = f"{prefix}/undici-types@7.10.0/node_modules/undici-types"
+    node = f"{prefix}/@types+node@24.2.0/node_modules/@types/node"
+    scoped = f"{prefix}/@scope+pkg@1.0.0_peer@2.0.0/node_modules/@scope/pkg"
+    return [{"name": f"./{MIDDLEWARE}.js"}, {"name": "deno.json", "payload": b"{}"},
+            {"name": ".root-vendor/mod.ts"}, {"name": ".netlify-npm-vendor/module.js"},
+            {"name": f"{undici}/index.d.ts", "payload": b"export interface Fixture {}"},
+            {"name": f"{undici}/package.json", "payload": b'{"name":"undici-types"}'},
+            {"name": f"{node}/index.d.ts"}, {"name": f"{scoped}/lib/index.js"},
+            {"name": f"{prefix}/@types+node@24.2.0/node_modules/undici-types", "type": tarfile.SYMTYPE,
+             "target": "../../undici-types@7.10.0/node_modules/undici-types"},
+            {"name": "node_modules/undici-types", "type": tarfile.SYMTYPE,
+             "target": f"{store}/undici-types@7.10.0/node_modules/undici-types"},
+            {"name": "node_modules/@types/node", "type": tarfile.SYMTYPE,
+             "target": f"../{store}/@types+node@24.2.0/node_modules/@types/node"},
+            {"name": "node_modules/@scope/pkg", "type": tarfile.SYMTYPE,
+             "target": f"../{store}/@scope+pkg@1.0.0_peer@2.0.0/node_modules/@scope/pkg"}]
+
+
 class ArtifactContractTests(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory(prefix="yula-netlify-contract-")
@@ -389,6 +409,158 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.write_json(f"{EDGE}/manifest.json", {**self.edge, "routes": []})
         with self.assertRaisesRegex(contract.ContractError, "expected one middleware route"):
             contract.validate(self.root)
+
+    def test_scoped_unscoped_package_directory_links_and_real_undici_shape(self):
+        for store in (".deno", ".pnpm"):
+            entries = package_directory_entries(store)
+            first = None
+            for order in (entries, list(reversed(entries))):
+                with self.subTest(store=store, reverse=order is not entries):
+                    data = tar_entries(order)
+                    eszip = self.edge["bundles"][0]
+                    self.edge["bundles"] = [eszip, self.asset("tar", data)]
+                    self.write_json(f"{EDGE}/manifest.json", self.edge)
+                    with mock.patch.object(tarfile.TarFile, "extract", side_effect=AssertionError("extraction")), \
+                         mock.patch.object(tarfile.TarFile, "extractall", side_effect=AssertionError("extraction")), \
+                         mock.patch.object(tarfile.TarFile, "_find_link_target", side_effect=AssertionError("link following")):
+                        result = contract.validate(self.root)
+                    receipt = result["tarInventories"][0]
+                    self.assertEqual(result["status"], "PASS")
+                    self.assertEqual(receipt["archiveSha256"], hashlib.sha256(data).hexdigest())
+                    self.assertEqual(receipt["regularFileCount"], 8)
+                    self.assertEqual(receipt["linkCount"], 4)
+                    self.assertTrue(receipt["allLinksManifestCovered"])
+                    self.assertFalse(receipt["linkProofsTruncated"])
+                    self.assertEqual({link["targetKind"] for link in receipt["links"]}, {"directory"})
+                    self.assertTrue(all(link["regularFileLeaves"] > 0 for link in receipt["links"]))
+                    if first:
+                        self.assertEqual(receipt["manifestSha256"], first["manifestSha256"])
+                        self.assertEqual(receipt["closureSha256"], first["closureSha256"])
+                    first = receipt
+
+    def test_directory_closure_covers_nested_direct_dependencies_and_content_hashes(self):
+        entries = [{"name": f"{MIDDLEWARE}.js"}, {"name": "packages/a/index.js"},
+                   {"name": "packages/b/index.js", "payload": b"dependency version one"},
+                   {"name": "packages/a/node_modules/b", "type": tarfile.SYMTYPE, "target": "../../b"},
+                   {"name": "node_modules/a", "type": tarfile.SYMTYPE, "target": "../packages/a"},
+                   {"name": "packages/a/LICENSE", "type": tarfile.LNKTYPE, "target": "licenses/shared"},
+                   {"name": "licenses/shared"}, {"name": "packages/a/empty", "type": tarfile.DIRTYPE}]
+        first = contract.check_tar(tar_entries(entries))
+        root_link = next(link for link in first["links"] if link["name"] == "node_modules/a")
+        self.assertEqual(root_link["regularFileLeaves"], 3)
+        changed = [{**entry, "payload": b"dependency version two"} if entry["name"] == "packages/b/index.js" else entry
+                   for entry in entries]
+        second = contract.check_tar(tar_entries(changed))
+        second_link = next(link for link in second["links"] if link["name"] == "node_modules/a")
+        self.assertNotEqual(first["manifestSha256"], second["manifestSha256"])
+        self.assertNotEqual(root_link["closureSha256"], second_link["closureSha256"])
+        self.assertEqual(first["linkCount"], 3)
+
+    def test_explicit_directory_headers_and_regular_file_hardlinks_remain_supported(self):
+        entries = package_directory_entries()
+        parents = {str(parent) for entry in entries for parent in Path(entry["name"]).parents if str(parent) != "."}
+        headers = [{"name": name + "/", "type": tarfile.DIRTYPE} for name in sorted(parents)]
+        entries += [{"name": "root-hardlink", "type": tarfile.LNKTYPE, "target": "./deno.json"},
+                    {"name": "legacy-file", "type": tarfile.AREGTYPE}]
+        proof = contract.check_tar(tar_entries(headers + entries))
+        self.assertEqual(proof["regularFileCount"], 9)
+        self.assertEqual(next(link for link in proof["links"] if link["name"] == "root-hardlink")["targetKind"], "file")
+
+    def test_directory_targets_reject_nested_cycles_dangling_chains_and_special_members(self):
+        base = [{"name": f"{MIDDLEWARE}.js"}, {"name": "packages/a/index.js"},
+                {"name": "packages/b/index.js"},
+                {"name": "node_modules/a", "type": tarfile.SYMTYPE, "target": "../packages/a"}]
+        cases = [
+            [{"name": "packages/a/loop", "type": tarfile.SYMTYPE, "target": "."}],
+            [{"name": "packages/a/node_modules/b", "type": tarfile.SYMTYPE, "target": "../../b"},
+             {"name": "packages/b/node_modules/a", "type": tarfile.SYMTYPE, "target": "../../a"}],
+            [{"name": "packages/a/unknown", "type": tarfile.SYMTYPE, "target": "../missing"}],
+            [{"name": "packages/a/alias", "type": tarfile.SYMTYPE, "target": "/etc"}],
+            [{"name": "node_modules/chain", "type": tarfile.SYMTYPE, "target": "a"}],
+            [{"name": "node_modules/through-alias", "type": tarfile.SYMTYPE, "target": "a/index.js"}],
+            [{"name": "hard-directory", "type": tarfile.LNKTYPE, "target": "packages/a"}],
+            [{"name": "packages/a/empty", "type": tarfile.DIRTYPE},
+             {"name": "packages/a/empty-alias", "type": tarfile.SYMTYPE, "target": "empty"}],
+            [{"name": "packages/a/device", "type": tarfile.CHRTYPE}],
+            [{"name": "packages/a/pipe", "type": tarfile.FIFOTYPE}],
+            [{"name": "node_modules/a/injected.js"}],
+            [{"name": "./packages/a", "type": tarfile.DIRTYPE}, {"name": "packages/a/", "type": tarfile.DIRTYPE}],
+            [{"name": "packages/a/payload", "type": tarfile.SYMTYPE, "target": "index.js", "size": 1}],
+        ]
+        for entries in cases:
+            with self.subTest(entries=entries):
+                with self.assertRaises(ERRORS):
+                    contract.check_tar(tar_entries(base + entries))
+        # PAX sparse metadata can annotate non-file headers; reject it by policy,
+        # rather than relying on a parser error or an unrelated target rejection.
+        for member_type, target in ((tarfile.DIRTYPE, ""), (tarfile.SYMTYPE, "index.js"),
+                                    (tarfile.LNKTYPE, "packages/a/index.js")):
+            with self.subTest(sparse_type=member_type):
+                sparse = {"name": "packages/a/sparse", "type": member_type, "target": target,
+                          "pax": {"GNU.sparse.map": "0,0"}}
+                data = tar_entries(base + [sparse])
+                with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as archive:
+                    self.assertIsNotNone(archive.getmember(sparse["name"]).sparse)
+                with self.assertRaisesRegex(contract.ContractError, "tar sparse members are forbidden"):
+                    contract.check_tar(data)
+
+    def test_archive_namespace_manifest_and_logical_bounds_fail_closed(self):
+        data = tar_entries(package_directory_entries())
+        proof = contract.check_tar(data)
+        cases = {"compressed_bytes": len(data) - 1, "expanded_bytes": 511, "members": 1,
+                 "namespace": 1, "path_bytes": 1, "depth": 1, "manifest_bytes": 1,
+                 "logical_files": 1, "logical_bytes": 1, "logical_depth": 1}
+        for field, limit in cases.items():
+            with self.subTest(field=field), mock.patch.dict(contract.TAR_LIMITS, {field: limit}):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(data)
+        with mock.patch.dict(contract.TAR_LIMITS, {"manifest_bytes": 1}), \
+             mock.patch.object(contract, "deque", side_effect=AssertionError("graph processing reached")):
+            with self.assertRaisesRegex(contract.ContractError, "manifest byte bound"):
+                contract.check_tar(data)
+        with mock.patch.dict(contract.TAR_LIMITS, {"reported_links": 1}):
+            bounded = contract.check_tar(data)
+            self.assertEqual(bounded["manifestSha256"], proof["manifestSha256"])
+            self.assertEqual(bounded["reportedLinkCount"], 1)
+            self.assertTrue(bounded["linkProofsTruncated"])
+            unsafe = package_directory_entries() + [{"name": "zz-last-link", "type": tarfile.SYMTYPE, "target": "missing"}]
+            with self.assertRaises(contract.ContractError):
+                contract.check_tar(tar_entries(unsafe))
+        # Bound is checked before reading the asset into memory as well.
+        tar = self.asset("tar", data)
+        self.edge["bundles"].append(tar)
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        with mock.patch.dict(contract.TAR_LIMITS, {"compressed_bytes": len(data) - 1}):
+            with self.assertRaisesRegex(contract.ContractError, "compressed byte bound"):
+                contract.validate(self.root)
+
+    def test_acyclic_alias_multiplicity_is_bounded_without_virtual_tree_expansion(self):
+        entries = [{"name": f"{MIDDLEWARE}.js"}, {"name": "groups/L0/file", "payload": b"x"}]
+        for level in range(1, 5):
+            entries += [{"name": f"groups/L{level}/{alias}", "type": tarfile.SYMTYPE,
+                         "target": f"../L{level - 1}"} for alias in ("a", "b")]
+        data = tar_entries(entries)
+        proof = contract.check_tar(data)
+        self.assertGreater(proof["logicalRegularFileLeaves"], proof["regularFileCount"])
+        for field, limit in (("logical_files", 8), ("logical_bytes", 8), ("logical_depth", 3)):
+            with self.subTest(field=field), mock.patch.dict(contract.TAR_LIMITS, {field: limit}):
+                with self.assertRaises(contract.ContractError):
+                    contract.check_tar(data)
+
+    def test_directory_archive_crc_and_complete_asset_hash_are_still_mandatory(self):
+        data = tar_entries(package_directory_entries())
+        tar = self.asset("tar", data)
+        self.edge["bundles"].append(tar)
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        asset = self.root / EDGE / tar["asset"]
+        asset.write_bytes(data + b"mutated")
+        with self.assertRaisesRegex(contract.ContractError, "edge asset SHA-256 mismatch"):
+            contract.validate(self.root)
+        corrupt = bytearray(data)
+        corrupt[-8] ^= 1
+        self.edge["bundles"][-1] = self.asset("tar", bytes(corrupt))
+        self.write_json(f"{EDGE}/manifest.json", self.edge)
+        self.rejected()
 
     def test_server_zip_truncation_and_wrong_build(self):
         path = self.root / self.zip_relative

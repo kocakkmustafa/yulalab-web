@@ -69,10 +69,10 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != '918f9b0a71d56a29bacf2e3a1c24de8cca138ec8':
+        if actual != '198082c1f184fca9d504acc1c9fe244b529f82aa':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
-        receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "31e4e7564c6a6c2aec934f1148d2ea99f88f6d32", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
+        receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
         (evidence / "source-identity.json").write_text(json.dumps(receipt, indent=2) + "\n")
         PY_TREE
       id: identity
