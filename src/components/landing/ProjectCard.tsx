@@ -48,9 +48,9 @@ function CompactCard({ project }: { project: ProjectConfig }) {
       whileHover={{ y: -4, borderColor: project.brand.primary + ALPHA.heavy, transition: HOVER_SPRING }}
       whileTap={{ scale: 0.98, transition: { duration: 0.1 } }}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <ProjectMonogram project={project} size={56} radius={12} />
-        <StatusPill status={project.status} />
+        <StatusPill status={project.status} slug={project.slug} />
       </div>
 
       <div className="mt-7 font-mono text-[11px] tracking-widest uppercase text-ink-300">
@@ -149,11 +149,11 @@ function BigCard({
           </>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-black/30" />
-        <div className="absolute top-5 left-5">
-          <StatusPill status={p.status} />
-        </div>
-        <div className="absolute top-5 right-5 font-mono text-[10.5px] tracking-widest uppercase text-white/80">
-          0{index + 1} / 0{total}
+        <div className="absolute top-5 inset-x-5 flex items-start justify-between gap-3">
+          <StatusPill status={p.status} slug={p.slug} />
+          <span className="shrink-0 font-mono text-[10.5px] tracking-widest uppercase text-white/80">
+            0{index + 1} / 0{total}
+          </span>
         </div>
       </div>
 

@@ -61,6 +61,7 @@ function Contact({
 }) {
   const t = useTranslations("contact");
   const studioT = useTranslations("studio");
+  const consultingT = useTranslations("consulting");
   return (
     <div className="page-enter relative">
       <GlassSheen />
@@ -83,6 +84,10 @@ function Contact({
         <p className="mt-7 max-w-[55ch] text-[16.5px] leading-[1.65] text-ink-300">
           {t("intro")}
         </p>
+      </section>
+
+      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-4">
+        <Link href="/consulting" className="focusable text-ink-100 underline underline-offset-4">{consultingT("cta")}</Link>
       </section>
 
       {enabled ? (

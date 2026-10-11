@@ -12,8 +12,8 @@ import { test, expect } from "@playwright/test";
 // real string is "Yayında" — dotless ı is not i, so a test that uppercases
 // Turkish copy fails for the wrong reason.
 for (const [locale, path, shippedHeading, researchHeading, caveat] of [
-  ["tr", "/projects", "Yayında olanlar", "Araştırma aşamasındakiler", "Henüz yayınlanmadılar"],
-  ["en", "/en/projects", "Shipped", "In research", "Not released yet"],
+  ["tr", "/projects", "Yayın kaydı bulunanlar", "Araştırma aşamasındakiler", "Henüz yayınlanmadılar"],
+  ["en", "/en/projects", "Publication records", "In research", "Not released yet"],
 ] as const) {
   test.describe(`products index (${locale})`, () => {
     test.beforeEach(async ({ page }) => {

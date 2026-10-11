@@ -14,7 +14,9 @@ export function LocaleSwitcher({ onNavigate }: Props) {
   const otherLocale = locale === "tr" ? "en" : "tr";
 
   const handleClick = () => {
-    router.replace(pathname, { locale: otherLocale });
+    // Keep normal page sections, especially account deletion, reachable in
+    // either language. Query values are deliberately not copied between URLs.
+    router.replace(`${pathname}${window.location.hash}`, { locale: otherLocale });
     onNavigate?.();
   };
 
