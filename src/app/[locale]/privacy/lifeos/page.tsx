@@ -4,7 +4,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-09-06";
+const LAST_UPDATED = "2026-10-12";
 
 export async function generateMetadata({
   params,
@@ -70,18 +70,18 @@ function LifeosPrivacy() {
               </p>
             </Section>
 
-            <Section title={isTR ? "Cihaz üstü kalan veriler" : "Data that stays on your device"}>
+            <Section title={isTR ? "Cihazda saklanan içerik" : "Content stored on your device"}>
               <ul className="list-disc pl-5 space-y-2">
                 <li>{isTR ? "Sağlık verileri (Apple Health / Health Connect üzerinden okunan adım, kalp atışı, uyku, egzersiz)" : "Health data (read from Apple Health / Health Connect: steps, heart rate, sleep, exercise)"}</li>
                 <li>{isTR ? "Finans kayıtları (gelir, gider, hedefler)" : "Financial records (income, expenses, goals)"}</li>
                 <li>{isTR ? "Eğitim ve hedef takibi" : "Learning and goal tracking"}</li>
-                <li>{isTR ? "Sesli günlük ve Z-Rapor kayıtları (ses cihazda metne dönüştürülür)" : "Voice journal and Z-Report entries (audio is transcribed on-device)"}</li>
+                <li>{isTR ? "Sesli günlük ve Z-Rapor kayıtları (konuşma tanıma işletim sisteminin hizmetini kullanır)" : "Voice journal and Z-Report entries (speech recognition uses the operating system's service)"}</li>
                 <li>{isTR ? "Fotoğraflar ve diğer ek dosyalar" : "Photos and other attachments"}</li>
               </ul>
               <p className="mt-4">
                 {isTR
-                  ? "Uygulamanın ana veritabanı cihazda SQLCipher + AES-256 ile şifrelenir. Veritabanı anahtarı cihazın Keychain (iOS) veya Keystore (Android) içinde saklanır. Ses, fotoğraf, dışa aktarılan dosyalar ve diğer ek dosyalar ayrı dosyalar olabilir; veritabanı şifrelemesi bu dosyaların tamamını kapsadığı anlamına gelmez."
-                  : "The app's main database is encrypted on-device with SQLCipher + AES-256. Its key is stored in the device's Keychain (iOS) or Keystore (Android). Audio, photos, exports and other attachments may be separate files; database encryption does not mean that it covers every one of those files."}
+                  ? "Ana veritabanının şifreli saklama kapsamı uygulama sürümüne ve platforma bağlıdır. Veritabanı anahtarı platformun güvenli depolama hizmetiyle yönetilir. Ses, fotoğraf, dışa aktarılan dosyalar ve diğer ek dosyalar ayrı dosyalar olabilir; veritabanı şifrelemesi bu dosyaların tamamını kapsadığı anlamına gelmez."
+                  : "The main database's encrypted-storage coverage depends on the app version and platform. The database key is managed through the platform's secure storage service. Audio, photos, exports and other attachments may be separate files; database encryption does not mean that it covers every one of those files."}
               </p>
             </Section>
 
@@ -117,8 +117,8 @@ function LifeosPrivacy() {
             <Section title={isTR ? "HealthKit / Health Connect" : "HealthKit / Health Connect"}>
               <p>
                 {isTR
-                  ? "Sağlık verisini okumak için Apple HealthKit (iOS) ve Android Health Connect izinleri istenir. Bu izinleri opsiyonel olarak verirsiniz. Okunan sağlık verisi cihaz üstünde işlenir, sunucuya GÖNDERİLMEZ, model eğitimi için KULLANILMAZ. Apple Health Veri Kullanım Politikası ile tam uyumludur."
-                  : "We request Apple HealthKit (iOS) and Android Health Connect permissions to read health data. You grant these optionally. Health data is processed on-device, is NOT sent to any server, and is NOT used for model training. Fully compliant with Apple's Health Data Use Policy."}
+                  ? "Sağlık verisini okumak için Apple HealthKit (iOS) ve Android Health Connect izinleri istenir. Bu izinleri opsiyonel olarak verirsiniz. Okunan sağlık verisi cihaz üstünde işlenir, sunucuya GÖNDERİLMEZ, model eğitimi için KULLANILMAZ."
+                  : "We request Apple HealthKit (iOS) and Android Health Connect permissions to read health data. You grant these optionally. Health data is processed on-device, is NOT sent to any server, and is NOT used for model training."}
               </p>
             </Section>
 
@@ -172,8 +172,8 @@ function LifeosPrivacy() {
             <Section title={isTR ? "Veri güvenliği" : "Data security"}>
               <p>
                 {isTR
-                  ? "Ana cihaz veritabanı SQLCipher + AES-256 ile şifrelenir; anahtarı Keychain/Keystore içinde tutulur. Bu koruma kapsamı, ayrı ek dosyalardan ve isteğe bağlı bulut eşzamanlamadan farklıdır. Bulut eşzamanlama için bu sayfada tüm sürümleri kapsayan uçtan uca şifreleme veya sunucunun veriyi okuyamaması garantisi verilmez."
-                  : "The main device database is encrypted with SQLCipher + AES-256, with its key held in Keychain/Keystore. This protection has a different scope from separate attachments and optional cloud sync. This page does not guarantee end-to-end encryption or server unreadability of cloud sync data across all versions."}
+                  ? "Ana veritabanının şifreli saklama kapsamını kullandığınız uygulama sürümü ve platform için kontrol edin; anahtarlar platformun güvenli depolama hizmetiyle yönetilir. Bu koruma kapsamı, ayrı ek dosyalardan ve isteğe bağlı bulut eşzamanlamadan farklıdır. Bulut eşzamanlama için bu sayfada tüm sürümleri kapsayan uçtan uca şifreleme veya sunucunun veriyi okuyamaması garantisi verilmez."
+                  : "Check the main database's encrypted-storage coverage for your app version and platform; keys are managed through the platform's secure storage service. This protection has a different scope from separate attachments and optional cloud sync. This page does not guarantee end-to-end encryption or server unreadability of cloud sync data across all versions."}
               </p>
             </Section>
 

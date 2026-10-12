@@ -206,8 +206,8 @@
       "lifeos": {
         "label": "Cihaz üstü gizlilik",
         "title": "Cihazda saklama, isteğe bağlı senkron.",
-        "claim": "Kişisel kayıtlar SQLCipher ve AES-256 ile cihazda şifrelenir. Yerel modelle yapılan AI işlemleri cihazda çalışır; bulut senkronizasyonu isteğe bağlıdır.",
-        "proof": "→ AES-256 · Offline-first · 0 reklam",
+        "claim": "Temel kayıtlar yerel çalışır. Şifreli saklama kapsamı sürüme ve platforma bağlıdır. Yerel modelle yapılan AI işlemleri cihazda çalışır; bulut senkronizasyonu isteğe bağlıdır.",
+        "proof": "→ Offline-first · İsteğe bağlı senkron",
         "detailLabel": "On-device AI",
         "detailBody": "Yerel AI için desteklenen bir cihaz ve kurulu model gerekir. Model indirme, hesap ve mağaza işlemleri ile açtığınız çökme raporlaması, senkronizasyon ayarından bağımsız ağ yollarıdır. Ayrıntılar LifeOS gizlilik politikasında açıklanır."
       }
@@ -283,7 +283,7 @@
     "otherAlso": "Ayrıca",
     "lifeos": {
       "eyebrow": "Ürün 01 · iOS'ta canlı",
-      "lede": "Yerel-öncelikli kişisel yaşam işletim sistemi. Beş yaşam alanı tek bir sakin arayüzde toplanır; kayıtlar cihazda AES-256 ile şifrelenir. Bulut senkronizasyonu isteğe bağlıdır.",
+      "lede": "Yerel-öncelikli kişisel yaşam işletim sistemi. Beş yaşam alanı tek bir sakin arayüzde toplanır. Bulut senkronizasyonu isteğe bağlıdır; veri kapsamı sürüme göre değişebilir.",
       "s1Kicker": "01 — Ne yapar",
       "a1Title": "Beş yaşam alanı, tek görünüm.",
       "a1Body": "Notlar, alışkanlıklar, planlar ve kayıtlar ayrı uygulamalara dağılmaz. LifeOS bunları tek bir sakin görünümde birleştirir; hangi alanın ne durumda olduğu ekranı doldurmadan görülür.",
@@ -291,11 +291,11 @@
       "a2Body": "Verileriniz cihazda tutulur; senkronizasyon isteğe bağlıdır. Model indirme, hesap ve mağaza işlemleri ile etkinleştirdiğiniz çökme raporlaması, senkron ayarından bağımsız olarak internet kullanabilir.",
       "s2Kicker": "02 — Gizlilik mimarisi",
       "r1k": "Depolama",
-      "r1v": "Cihazda şifreli · bulut isteğe bağlı",
+      "r1v": "Yerel kayıtlar · isteğe bağlı bulut",
       "r2k": "Anahtar",
-      "r2v": "Cihazda üretilir, dışa çıkmaz",
+      "r2v": "Platformun güvenli depolaması",
       "r3k": "Analitik",
-      "r3v": "Yok",
+      "r3v": "Sürüm ve veri tercihine bağlı",
       "r4k": "Hesap",
       "r4v": "Gerekmez",
       "note": "",

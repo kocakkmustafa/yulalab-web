@@ -206,8 +206,8 @@
       "lifeos": {
         "label": "On-device privacy",
         "title": "On-device storage, optional sync.",
-        "claim": "Personal records are encrypted on-device with SQLCipher and AES-256. AI tasks using the local model run on-device; cloud sync is optional.",
-        "proof": "→ AES-256 · Offline-first · 0 ads",
+        "claim": "Core records work locally. Encrypted-storage coverage depends on the release and platform. AI tasks using the local model run on-device; cloud sync is optional.",
+        "proof": "→ Offline-first · Optional sync",
         "detailLabel": "On-device AI",
         "detailBody": "Local AI requires a supported device and an installed model. Model downloads, account and store operations, and crash reporting you enable are separate network paths from sync. The LifeOS privacy policy explains these options."
       }
@@ -283,7 +283,7 @@
     "otherAlso": "Also",
     "lifeos": {
       "eyebrow": "Product 01 · Live on iOS",
-      "lede": "An offline-first personal life operating system. Five life domains gathered into one calm interface, with records encrypted on the device using AES-256. Cloud sync is optional.",
+      "lede": "An offline-first personal life operating system. Five life domains gathered into one calm interface. Cloud sync is optional; data coverage can vary by release.",
       "s1Kicker": "01 — What it does",
       "a1Title": "Five life domains, one view.",
       "a1Body": "Notes, habits, plans and records don't scatter across separate apps. LifeOS gathers them into a single calm view where the state of each domain is visible without crowding the screen.",
@@ -291,11 +291,11 @@
       "a2Body": "Your data is stored on-device; sync is optional. Model downloads, account and store operations, and crash reporting you enable may use the internet independently of the sync setting.",
       "s2Kicker": "02 — Privacy architecture",
       "r1k": "Storage",
-      "r1v": "Encrypted on device · optional cloud",
+      "r1v": "Local records · optional cloud",
       "r2k": "Key",
-      "r2v": "Generated on device, never exported",
+      "r2v": "Platform secure storage",
       "r3k": "Analytics",
-      "r3v": "None",
+      "r3v": "Depends on release and data preferences",
       "r4k": "Account",
       "r4v": "Not required",
       "note": "",
