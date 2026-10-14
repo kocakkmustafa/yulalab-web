@@ -119,8 +119,9 @@ function Support() {
               <FAQ
                 q={isTR ? "Hesabımı nasıl silerim?" : "How do I delete my account?"}
                 a={isTR
-                  ? "Motion için uygulamada Hesap > Hesabı sil yolunu kullanın; uygulamaya erişemiyorsanız support@yulalab.com adresine Motion hesabı silme talebi gönderin. Motion ortak hesabı bütün beş uygulamada silinir; diğer ürünlerde kapsam farklıdır. Braavolabs’ta başka üyeleri olan çalışma alanı kayıtları kalabilir. Aboneliği iptal etmek ayrı bir işlemdir."
-                  : "For Motion, use Account > Delete account in the app, or email support@yulalab.com to request deletion if you cannot access the app. The shared Motion account is deleted across all five apps; other products have different scopes. In Braavolabs, workspace records can remain when other members still belong to that workspace. Cancel subscriptions separately."}
+                  ? "Motion için uygulamada Hesap > Hesabı sil yolunu kullanın; uygulamaya erişemiyorsanız support@yulalab.com adresine Motion hesabı silme talebi gönderin. Motion ortak hesabı bütün beş uygulamada silinir; diğer ürünlerde kapsam farklıdır. Braavolabs’ta başka üyeleri olan çalışma alanı kayıtları kalabilir. LifeOS için hesap ve veri silme kapsamını aşağıdaki bağlantıdan inceleyin. Aboneliği iptal etmek ayrı bir işlemdir."
+                  : "For Motion, use Account > Delete account in the app, or email support@yulalab.com to request deletion if you cannot access the app. The shared Motion account is deleted across all five apps; other products have different scopes. In Braavolabs, workspace records can remain when other members still belong to that workspace. For LifeOS, check the account and data deletion scope using the link below. Cancel subscriptions separately."}
+                links={[{ href: "/delete-account/lifeos", label: isTR ? "LifeOS hesap ve veri silme" : "LifeOS account and data deletion" }]}
               />
               <FAQ
                 q={isTR ? "Geri ödeme alabilir miyim?" : "Can I get a refund?"}
@@ -135,8 +136,8 @@ function Support() {
               <FAQ
                 q={isTR ? "Verim güvende mi?" : "Is my data safe?"}
                 a={isTR
-                  ? "Ürünlerin gizlilik bilgilerini aşağıdaki bağlantıdan okuyabilirsiniz. Kısa cevap: iletişim TLS ile şifrelenir; LifeOS özelinde cihaz verisi SQLCipher + AES-256 ile şifrelenir. Motion ürünleri için uygulama ve sürüme özgü kapsam ayrı açıklanır."
-                  : "You can read the product privacy information using the link below. Short answer: traffic is TLS-encrypted; LifeOS specifically encrypts on-device data with SQLCipher + AES-256. The scope for Motion products is described separately by app and version."}
+                  ? "Ürünlerin gizlilik bilgilerini aşağıdaki bağlantıdan okuyabilirsiniz. İletişim TLS ile şifrelenir. LifeOS veritabanının şifreli saklama kapsamı uygulama sürümüne ve platforma bağlıdır; ek dosyalar ve bulut kopyaları ayrı değerlendirilir. Motion ürünleri için uygulama ve sürüme özgü kapsam ayrı açıklanır."
+                  : "You can read the product privacy information using the link below. Traffic is TLS-encrypted. The encrypted-storage coverage of the LifeOS database depends on the app version and platform; attachments and cloud copies have separate scopes. The scope for Motion products is described separately by app and version."}
                 links={[{ href: "/privacy", label: isTR ? "Gizlilik politikaları" : "Privacy policies" }]}
               />
               <FAQ

@@ -33,8 +33,8 @@
     {
       "path": "src/app/[locale]/privacy/lifeos/page.tsx",
       "publishedSha256": "d7812236da65af0b5766fde98b02e06e000cdb80ba606d4f08604591cc277324",
-      "candidateSha256": "f2539d0f10dd6d816fff2a2789630cf010a6f6f84cb154fcc22e5b3a82bce747",
-      "reason": "Link the LifeOS privacy policy to the dedicated account-deletion request page in both supported locales.",
+      "candidateSha256": "f9ec110729039c39c7d0cf31590c4756a0467b535889a92ecb68b5e75dadcd31",
+      "reason": "Link the LifeOS privacy policy to the dedicated account-deletion request page in both supported locales. 2026-10-12 local public-copy correction: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Local candidate only; no publication or provider acceptance. 2026-10-12 local disclosure follow-up: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Candidate source only; no publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -103,8 +103,8 @@
     {
       "path": "src/data/projects/lifeos.ts",
       "publishedSha256": "7a8f05f3da46ddbd7f5fdb6e484db31bd362c180d64f8b0a9374c07f453adea3",
-      "candidateSha256": "5e79eb843ebb984c01ba9acfb61d878989fc6e09e8310bacac474c1eb38b43a7",
-      "reason": "Stop presenting the old legal microsite as a dedicated LifeOS product website in SoftwareApplication structured data; preserve the verified App Store primary CTA and YULALAB legal routes.",
+      "candidateSha256": "9e54467205b9c685e48a701d99d8e1c3db4c4ebc7ae98cedf9ca472021668765",
+      "reason": "Stop presenting the old legal microsite as a dedicated LifeOS product website in SoftwareApplication structured data; preserve the verified App Store primary CTA and YULALAB legal routes. 2026-10-12 local public-copy correction: Align contact with verified public support and qualify on-device/sync scope. Keep expired claim provenance and store freshness unchanged. Local candidate only; no publication or provider acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -124,8 +124,8 @@
     {
       "path": "src/app/[locale]/support/page.tsx",
       "publishedSha256": "406c7a84b6061141671dc8ce0d2ba5497f5ae8b00b159ac92d27105bc279ea7e",
-      "candidateSha256": "7591f501560c1763c46bfda4ec5467facca35997377a974d723dfa6080c07251",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Candidate-only 2026-10-06 support feedback patch: remove unverified48h claim, encoded bilingual redacted mailto draft; no delivery/provider assertion. Parent independent review and runtime qualification pending.",
+      "candidateSha256": "76c4a550fb1de63127462a4ca7e4883b524547f1a11f62344a7aea5b09793ef5",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Candidate-only 2026-10-06 support feedback patch: remove unverified48h claim, encoded bilingual redacted mailto draft; no delivery/provider assertion. Parent independent review and runtime qualification pending. 2026-10-12 local public-copy correction: Qualify LifeOS privacy scope and point users to its verified account/data deletion guidance. Local candidate only; no publication or provider acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -166,15 +166,15 @@
     {
       "path": "messages/tr.json",
       "publishedSha256": "79e66db7533af16c84ceff652563524b1cf0542ab28e394e6a147fb98bed93de",
-      "candidateSha256": "9f79fa235b0af3765a85e63c2b177862584ae4159616778ff4dda55607f92af6",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending.",
+      "candidateSha256": "b1b7ab3c8a1703b5c909472fd656fc407b82e39b5f8d6e8a3622ee6f3dabf5b0",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "messages/en.json",
       "publishedSha256": "e0c73fe7d41853e2cece3dcf4681c7b9836c5562f4c8d96575bf66573f0e784c",
-      "candidateSha256": "a9c53fa708e807e91699ad3a3a4780caade2d1447b0378da69cbb9840eaeccf0",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending.",
+      "candidateSha256": "0bc5772842a82b57ed6f0bda70b3d8fdb40d2deac5264e6294b7f0e877658f10",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {

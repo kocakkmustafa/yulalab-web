@@ -15,12 +15,12 @@ export const lifeos: ProjectConfig = {
     en: "Run your life like a system.",
   },
   description: {
-    tr: "LifeOS, hayatın 5 alanını (sağlık, finans, ilişkiler, kariyer, anlam) tek bir yerel-öncelikli OS'te yöneten, AES-256 cihaz-üstü şifrelemeli bir kişisel yaşam aracı.",
-    en: "LifeOS unifies five life domains (health, finance, relationships, career, meaning) in a single offline-first OS with AES-256 on-device encryption.",
+    tr: "LifeOS, hayatın 5 alanını (sağlık, finans, ilişkiler, kariyer, anlam) tek bir yerel-öncelikli OS'te yöneten, isteğe bağlı senkronu olan bir kişisel yaşam aracı.",
+    en: "LifeOS unifies five life domains (health, finance, relationships, career, meaning) in a single offline-first OS with optional sync.",
   },
   short: {
-    tr: "Yerel-öncelikli, AES-256 ile cihaz üstünde şifrelenen kişisel yaşam OS'i. Beş yaşam alanı bir arada.",
-    en: "Offline-first, AES-256 on-device encrypted personal life OS. Five life domains in one place.",
+    tr: "Yerel-öncelikli kişisel yaşam OS'i. Beş yaşam alanı bir arada; senkron isteğe bağlıdır.",
+    en: "Offline-first personal life OS. Five life domains in one place; sync is optional.",
   },
   brand: {
     primary: "#C3F400",
@@ -52,8 +52,8 @@ export const lifeos: ProjectConfig = {
     {
       title: { tr: "Yerel-öncelikli", en: "Offline-first" },
       description: {
-        tr: "Veriniz cihazınızda kalır. AES-256 ile şifrelenir, senkron isteğe bağlıdır.",
-        en: "Your data stays on-device. AES-256 encrypted, sync is opt-in.",
+        tr: "Temel kayıtlar yerel çalışır; hesap ve bulut senkronu isteğe bağlıdır. Veri kapsamı sürüme göre değişebilir.",
+        en: "Core records work locally; accounts and cloud sync are optional. Data coverage can vary by release.",
       },
       icon: "Lock",
     },
@@ -100,8 +100,8 @@ export const lifeos: ProjectConfig = {
     { value: "0", label: { tr: "Reklam", en: "Ads" } },
   ],
   vision: {
-    tr: "Bir insanın hayatının kalitesini, cihazının dışına bilgi sızdırmadan, ölçebileceği ve geliştirebileceği bir özel OS.",
-    en: "A private OS where a person can measure and improve life quality without leaking a single byte off-device.",
+    tr: "Bir insanın hayatının kalitesini, kendi veri tercihlerini koruyarak, ölçebileceği ve geliştirebileceği bir özel OS.",
+    en: "A private OS where a person can measure and improve life quality while controlling how their data is used.",
   },
   mission: {
     tr: "Veriyi sahibine geri vermek; gizliliği bir özellik değil, başlangıç koşulu yapmak; sade ve bilimsel araçlarla insana dürüst aynayı tutmak.",
@@ -121,5 +121,5 @@ export const lifeos: ProjectConfig = {
     { kind: "x", href: null },
     { kind: "instagram", href: null },
   ],
-  contactEmail: "kocakmkaan@gmail.com",
+  contactEmail: "support@yulalab.com",
 };
