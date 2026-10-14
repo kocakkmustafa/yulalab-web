@@ -14,7 +14,7 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       YULA_E2E_PORT: '4189'
-      LINKS_COMMIT: 43524f61e28d9bbd73be372ca8bc30feedddb8ad
+      LINKS_COMMIT: ec3df988a746cd7e1c7cd6d46e019b168bd95add
       EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
     services:
       postgres:
@@ -420,21 +420,31 @@ jobs:
         with open(os.environ["GITHUB_OUTPUT"], "a") as output:
             output.write("within=true\n")
         PY_BUDGET
-    - name: Upload normal CI evidence
-      if: ${{ always() && steps.artifact_budget.outputs.within == 'true' }}
-      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-      with:
-        name: web-release-verification-${{ github.event.pull_request.head.sha || github.sha }}
-        path: |
-          ${{ runner.temp }}/verification-evidence/
-          playwright-report/
-          test-results/
-          ${{ runner.temp }}/links-static-manifest.json
-          .next/BUILD_ID
-          .next/prerender-manifest.json
-        retention-days: 3
-        if-no-files-found: error
-      id: upload
+    - name: Record normal CI evidence in free job logs
+      if: ${{ always() }}
+      run: |
+        python3 - <<'PY_LOG_RECEIPT'
+        from pathlib import Path
+        import hashlib, json, os
+        evidence = Path(os.environ['RUNNER_TEMP']) / 'verification-evidence'
+        for name in ['source-identity.json', 'audit_prod.json', 'audit_full.json', 'verification-results.json']:
+            path = evidence / name
+            if path.is_file():
+                print('RAW_EVIDENCE_BEGIN ' + name)
+                print(path.read_text())
+                print('RAW_EVIDENCE_END ' + name)
+        roots = [evidence, Path(os.environ['RUNNER_TEMP']) / 'links-static-manifest.json', Path('.next/BUILD_ID'), Path('.next/prerender-manifest.json')]
+        files = []
+        for root in roots:
+            paths = [root] if root.is_file() else sorted(root.rglob('*')) if root.is_dir() else []
+            for path in paths:
+                if path.is_file():
+                    body = path.read_bytes()
+                    files.append({'path': str(path), 'bytes': len(body), 'sha256': hashlib.sha256(body).hexdigest()})
+        print('CI_EVIDENCE_HASHES ' + json.dumps(files, sort_keys=True))
+        print('No Actions artifact or cache upload; normal tests, raw failures and mandatory provider gates remain unchanged.')
+        PY_LOG_RECEIPT
+      id: log_receipt
     - name: Final gate — technical PASS and explicit known audit risk boundary
       id: final_gate
       if: ${{ always() }}
