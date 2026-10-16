@@ -593,8 +593,8 @@
       "reason": "Hareket ya da 3D katman kullanılmadığında aynı ürünler, kanıtlar ve bağlantılar eksiksiz olarak bu görünümde yer alır."
     },
     "lifecycle": {
-      "live": "Yayında",
-      "beta": "Beta",
+      "live": "Yayın kaydı var",
+      "beta": "Beta kaydı var",
       "research": "Araştırma",
       "archived": "Arşiv"
     }

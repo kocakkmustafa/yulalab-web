@@ -593,8 +593,8 @@
       "reason": "When motion or the 3D layer is unavailable, the same products, evidence, and links remain complete in this view."
     },
     "lifecycle": {
-      "live": "Live",
-      "beta": "Beta",
+      "live": "Publication on record",
+      "beta": "Beta on record",
       "research": "Research",
       "archived": "Archived"
     }

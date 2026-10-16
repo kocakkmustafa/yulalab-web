@@ -609,7 +609,7 @@ test("linear-view control exposes the complete document on demand", async ({ pag
   await expect(page).toHaveURL(/\/transparency$/);
 });
 
-test("no-JS response is the complete linear document and labels live products honestly", async ({ browser }) => {
+test("no-JS response is the complete linear document and labels publication history honestly", async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, locale: "en-US" });
   const page = await context.newPage();
   await page.goto("/en");
@@ -621,7 +621,7 @@ test("no-JS response is the complete linear document and labels live products ho
     has: page.getByRole("heading", { name: "LifeOS", level: 3 }),
   });
   await expect(lifeOS).not.toContainText(/no public build/i);
-  await expect(lifeOS).toContainText(/live/i);
+  await expect(lifeOS).toContainText(/publication on record/i);
   const unknownFreshness = page.locator('[data-freshness="unknown"]');
   await expect(unknownFreshness.first()).toContainText(/freshness check pending/i);
   await expect(page.locator('[data-freshness="current"]')).toHaveCount(0);
@@ -820,3 +820,24 @@ test("all mobile product actions remain reachable with enlarged text", async ({ 
     expect(await panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
   }
 });
+
+for (const [locale, liveLabel, betaLabel] of [
+  ["tr", "Yayın kaydı var", "Beta kaydı var"],
+  ["en", "Publication on record", "Beta on record"],
+] as const) {
+  test(`homepage publication badges describe records rather than current access (${locale})`, async ({ page }) => {
+    const prefix = locale === "en" ? "/en" : "";
+    for (const [progress, slug, lifecycle, label] of [
+      [0.21625, "lifeos", "live", liveLabel],
+      [0.11125, "braavolabs", "beta", betaLabel],
+    ] as const) {
+      await page.goto(`${prefix}/?capture=1&progress=${progress}&tier=low`);
+      await expect(page.locator(`[data-product="${slug}"][data-active="true"] [data-lifecycle="${lifecycle}"]`)).toHaveText(label);
+    }
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto(prefix || "/");
+    const linear = page.locator('[data-experience-static="true"]');
+    await expect(linear.locator('[data-lifecycle="live"]').first()).toHaveText(liveLabel);
+    await expect(linear.locator('[data-lifecycle="beta"]').first()).toHaveText(betaLabel);
+  });
+}
