@@ -344,6 +344,13 @@
       "candidateSha256": "37fa44a897727e109fa565977439dbd0cf7f0b970f3eed298141f990e94cde65",
       "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/data/projects/braavolabs.ts",
+      "publishedSha256": "112f0a6d8198bb011104f8fe7cb4cb81662163805ab0892cdee8ad1fcd5132ff",
+      "candidateSha256": "9b388708d56140408baaa255fea311b1c51af1b0be938c147508a9b6fdb95ad4",
+      "reason": "2026-10-16 common support closeout: Route only the user-facing Braavolabs product contact CTA from hello@braavolabs.com to user-approved support@yulalab.com. Preserve legal identity, auth/transactional identities, lifecycle data and account deletion mechanisms. Local candidate only; no publication, mailbox, DNS or credential change.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
 }

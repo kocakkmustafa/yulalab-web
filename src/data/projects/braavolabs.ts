@@ -132,5 +132,5 @@ export const braavolabs: ProjectConfig = {
     { kind: "x", href: "https://x.com/braavolabs" },
     { kind: "linkedin", href: "https://www.linkedin.com/company/braavolabs" },
   ],
-  contactEmail: "hello@braavolabs.com",
+  contactEmail: "support@yulalab.com",
 };
