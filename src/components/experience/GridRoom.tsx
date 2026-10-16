@@ -26,11 +26,13 @@ export type GridRoomProps = {
 const ROOM_VERTEX_SHADER = /* glsl */ `
   varying vec2 vUv;
   varying float vViewDepth;
+  varying float vFacing;
 
   void main() {
     vUv = uv;
     vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
     vViewDepth = -viewPosition.z;
+    vFacing = abs(dot(normalize(normalMatrix * normal), normalize(-viewPosition.xyz)));
     gl_Position = projectionMatrix * viewPosition;
   }
 `;
@@ -38,8 +40,10 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix;
   uniform float uOpacity;
+  uniform float uGalleryMix;
   varying vec2 vUv;
   varying float vViewDepth;
+  varying float vFacing;
 
   float gridLine(vec2 uv, vec2 density) {
     vec2 coordinate = uv * density;
@@ -49,24 +53,24 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   }
 
   void main() {
-    float minor = gridLine(vUv, vec2(72.0, 40.0));
+    float minor = gridLine(vUv, vec2(144.0, 80.0));
     float major = gridLine(vUv, vec2(18.0, 10.0));
-    float distanceFade = 1.0 - smoothstep(40.0, 90.0, vViewDepth);
+    float distanceFade = 1.0 - smoothstep(45.0, 95.0, vViewDepth);
     float verticalFade = smoothstep(0.0, 0.04, vUv.y) * (1.0 - smoothstep(0.96, 1.0, vUv.y));
-
-    vec3 darkMinor = vec3(0.26, 0.25, 0.32);
-    vec3 darkMajor = vec3(0.64, 0.61, 0.7);
-    vec3 lightMinor = vec3(0.66, 0.64, 0.69);
-    vec3 lightMajor = vec3(0.24, 0.21, 0.29);
-    vec3 color = mix(
-      mix(darkMinor, darkMajor, major),
-      mix(lightMinor, lightMajor, major),
-      uWhiteMix
-    );
     vec2 cell = floor(vUv * vec2(18.0, 10.0));
-    float panel = step(5.5, mod(cell.x + cell.y * 3.0, 7.0));
-    color = mix(color, vec3(0.12, 0.08, 0.21), panel * (1.0 - max(minor, major)) * (1.0 - uWhiteMix));
-    float alpha = (minor * 0.28 + major * 0.68 + panel * 0.055) * distanceFade * verticalFade * uOpacity;
+    float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
+    float filled = smoothstep(0.32, 0.82, cellTone);
+    float wallLight = 0.3 + 0.7 * pow(vFacing, 0.7);
+    vec3 accent = mix(vec3(0.19, 0.08, 0.45), vec3(0.035, 0.23, 0.25), uGalleryMix);
+    vec3 panelTint = mix(accent, vec3(0.26, 0.26, 0.3), smoothstep(0.85, 0.98, cellTone));
+    vec3 panelColor = mix(vec3(0.045, 0.04, 0.065), panelTint, filled * 0.8) * wallLight;
+    vec3 darkLine = mix(vec3(0.13, 0.12, 0.18), vec3(0.25, 0.24, 0.31), major);
+    vec3 lightLine = mix(vec3(0.66, 0.64, 0.69), vec3(0.24, 0.21, 0.29), major);
+    float lineMask = clamp(minor * 0.28 + major * 0.9, 0.0, 1.0);
+    vec3 color = mix(panelColor, darkLine, lineMask);
+    color = mix(color, lightLine, uWhiteMix);
+    float panelAlpha = (0.16 + filled * 0.42) * (1.0 - uWhiteMix);
+    float alpha = max(panelAlpha, minor * 0.2 + major * 0.52) * distanceFade * verticalFade * uOpacity;
 
     if (alpha < 0.006) discard;
     gl_FragColor = vec4(color, alpha);
@@ -98,7 +102,7 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
       smoothstep(0.0, 0.2, vUv.y) *
       (1.0 - smoothstep(0.8, 1.0, vUv.y));
     vec3 color = mix(vec3(0.54, 0.22, 0.88), vec3(0.25, 0.23, 0.28), uWhiteMix);
-    float alpha = dotMask * edgeFade * uOpacity * mix(0.07, 0.045, uWhiteMix);
+    float alpha = dotMask * edgeFade * uOpacity * mix(0.028, 0.025, uWhiteMix);
 
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);
@@ -216,6 +220,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
         uniforms: {
           uWhiteMix: { value: 0 },
           uOpacity: { value: 1 },
+          uGalleryMix: { value: 0 },
         },
         vertexShader: ROOM_VERTEX_SHADER,
         fragmentShader: ROOM_FRAGMENT_SHADER,
@@ -250,6 +255,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
 
   useFrame(() => {
     gridMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
+    gridMaterial.uniforms.uGalleryMix.value = frame.world.worksBackdropMix;
     gridMaterial.uniforms.uOpacity.value = frame.world.roomOpacity * (1 - frame.world.worksBackdropMix * 0.35);
     halftoneMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
     halftoneMaterial.uniforms.uOpacity.value = frame.world.roomOpacity * (1 - frame.world.worksBackdropMix * 0.8);
@@ -273,7 +279,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
 
   return (
     <group>
-      <mesh position={[0, 0, -11.5]} rotation={[0, -Math.PI * 0.08, 0]} scale={[0.84, 1, 1]}>
+      <mesh position={[0, 0, -11.5]} rotation={[0, -Math.PI * 0.08, 0]} scale={[0.62, 1, 1]}>
         <cylinderGeometry
           args={[
             28,

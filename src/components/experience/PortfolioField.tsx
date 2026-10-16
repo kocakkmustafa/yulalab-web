@@ -241,13 +241,23 @@ function ScreenshotLayer({
 }) {
   const loaded = useCardTexture(screenshot.path, tier, onAssetSettled);
   const [width, height] = dimensionsForAspect(loaded.aspect);
-  const layerOpacity = opacity * (layerIndex === 0 ? 1 : 0.28);
+  const detail = layerIndex > 0;
+  const wideCapture = loaded.aspect > 2.5;
+  const layerOpacity = opacity * (detail ? 0.94 : 1);
+  // Keep real wide dashboard strips together; regular captures fan into an
+  // angled side panel rather than being hidden behind the primary image.
+  const position: Vec3 = wideCapture
+    ? [0, detail ? -0.62 : 0.72, -layerIndex * 0.06]
+    : detail ? [2.2, 0.15, -0.6] : [0, 0, 0];
+  const rotation: Vec3 = [0, detail && !wideCapture ? -0.18 : 0, 0];
+  const scale = detail && !wideCapture ? 0.66 : 1;
 
   if (!loaded.texture || loaded.failed) {
     return (
       <group
-        position={[layerIndex * 0.16, -layerIndex * 0.12, -layerIndex * 0.16]}
-        rotation={[0, 0, layerIndex === 0 ? 0 : 0.025]}
+        position={position}
+        rotation={rotation}
+        scale={scale}
       >
         <BrandedFallback compact={layerIndex > 0} opacity={layerOpacity} product={product} />
       </group>
@@ -256,8 +266,9 @@ function ScreenshotLayer({
 
   return (
     <group
-      position={[layerIndex * 0.16, -layerIndex * 0.12, -layerIndex * 0.16]}
-      rotation={[0, 0, layerIndex === 0 ? 0 : 0.025]}
+      position={position}
+      rotation={rotation}
+      scale={scale}
     >
       <mesh position={[0, 0, -0.06]}>
         <boxGeometry args={[width + 0.14, height + 0.14, 0.1]} />
@@ -273,7 +284,7 @@ function ScreenshotLayer({
       <mesh>
         <planeGeometry args={[width, height]} />
         <meshBasicMaterial
-          depthWrite={layerIndex === 0 && layerOpacity > 0.85}
+          depthWrite={layerOpacity > 0.85}
           fog={false}
           map={loaded.texture}
           opacity={layerOpacity}

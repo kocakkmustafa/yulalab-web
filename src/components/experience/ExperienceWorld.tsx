@@ -73,17 +73,17 @@ export function ExperienceWorld({
       <WorldTheme frame={frame} />
       <CameraRig mode={mode} progress={progress} />
 
-      <ambientLight intensity={0.45 + frame.world.themeMix * 0.55} />
+      <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight
         castShadow={tier !== "low"}
-        color={frame.world.themeMix > 0.5 ? "#fffaf0" : "#cbbdff"}
+        color={frame.world.themeMix > 0.5 ? "#fffaf0" : "#ffffff"}
         intensity={2.2}
         position={[6, 9, 8]}
         shadow-mapSize-height={tier === "high" ? 1024 : 512}
         shadow-mapSize-width={tier === "high" ? 1024 : 512}
       />
-      <pointLight color="#33dcff" intensity={24} position={[-7, 2, 4]} />
-      <pointLight color="#ff3fbd" intensity={20} position={[7, -2, -8]} />
+      <pointLight color="#33dcff" intensity={10} position={[-7, 2, 4]} />
+      <pointLight color="#ff3fbd" intensity={4} position={[7, -2, -8]} />
 
       <Environment
         background={false}
@@ -92,28 +92,28 @@ export function ExperienceWorld({
         resolution={environmentResolution}
       >
         <Lightformer
-          color="#e8ddff"
+          color="#ffffff"
           form="rect"
-          intensity={4}
-          position={[-5, 4, 6]}
-          rotation={[0, Math.PI / 4, 0]}
-          scale={[5, 8, 1]}
+          intensity={1.8}
+          position={[0, 0.2, 5]}
+          rotation={[0, 0, -0.28]}
+          scale={[10, 0.8, 1]}
         />
         <Lightformer
-          color="#41d9ff"
-          form="ring"
-          intensity={2.2}
-          position={[4, 1, -6]}
+          color="#ffffff"
+          form="rect"
+          intensity={8}
+          position={[4, 1, 3]}
           rotation={[0, -Math.PI / 3, 0]}
-          scale={5}
+          scale={[1.2, 6, 1]}
         />
         <Lightformer
-          color="#ff54c8"
+          color="#6d11ad"
           form="rect"
-          intensity={2}
-          position={[2, -4, -18]}
+          intensity={1.4}
+          position={[2, -4, -8]}
           rotation={[Math.PI / 2, 0, 0]}
-          scale={[4, 12, 1]}
+          scale={[8, 5, 1]}
         />
       </Environment>
 

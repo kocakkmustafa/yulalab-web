@@ -6,7 +6,11 @@ import { useEffect, useMemo, useRef } from "react";
 import {
   AdditiveBlending,
   Color,
+  DataTexture,
   ExtrudeGeometry,
+  LinearFilter,
+  RepeatWrapping,
+  RGBAFormat,
   ShaderMaterial,
   Shape,
   Texture,
@@ -145,6 +149,32 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
 
   useEffect(() => () => geometry.dispose(), [geometry]);
 
+  // Own deterministic polish variation: a tiny repeating height field bends
+  // broad studio reflections without changing the Y silhouette or its mesh.
+  const chromeBump = useMemo(() => {
+    const size = 128;
+    const pixels = new Uint8Array(size * size * 4);
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const u = x / size * Math.PI * 2;
+        const v = y / size * Math.PI * 2;
+        const height = 0.5 + 0.18 * Math.sin(u * 2 + Math.sin(v * 3))
+          + 0.1 * Math.sin(v * 4 + u);
+        const value = Math.round(height * 255);
+        const offset = (y * size + x) * 4;
+        pixels[offset] = pixels[offset + 1] = pixels[offset + 2] = value;
+        pixels[offset + 3] = 255;
+      }
+    }
+    const texture = new DataTexture(pixels, size, size, RGBAFormat);
+    texture.wrapS = texture.wrapT = RepeatWrapping;
+    texture.minFilter = texture.magFilter = LinearFilter;
+    texture.generateMipmaps = false;
+    texture.needsUpdate = true;
+    return texture;
+  }, []);
+  useEffect(() => () => chromeBump.dispose(), [chromeBump]);
+
   const interactionMix = 1 - smoothstep(segmentProgress(frame.progress, 0.025, 0.075));
   const rotation: Vec3 = [
     frame.glyph.rotation[0] + interactionRotation[0] * interactionMix,
@@ -157,17 +187,16 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const closingVisibility = (1 - frame.world.closingDraw)
     * (1 - servicePresence * 0.78) * galleryVisibility;
   const bodyColor = useMemo(
-    () => new Color("#d6cde6").lerp(new Color("#f8f7f2"), whiteMix),
+    () => new Color("#e5e7ec").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],
   );
   const bodyOpacity = (1 - whiteMix * 0.7)
-    * closingVisibility
-    * (tier === "low" ? 0.82 : 1);
+    * closingVisibility;
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const transmission =
-    tier === "high" ? 0.72 * frame.glyph.glassMix : tier === "medium" ? 0.56 * frame.glyph.glassMix : 0;
+    tier === "high" ? 0.06 * frame.glyph.glassMix : tier === "medium" ? 0.03 * frame.glyph.glassMix : 0;
   const fringeOpacity =
-    (0.022 + frame.glyph.glassMix * (tier === "low" ? 0.14 : 0.055)) * closingVisibility;
+    (0.002 + frame.glyph.glassMix * (tier === "low" ? 0.012 : 0.004)) * closingVisibility;
   const viewportPose = glyphViewportPose(
     frame.progress,
     viewportSize.width / Math.max(1, viewportSize.height),
@@ -206,7 +235,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18;
       causticMaterial.current.uniforms.uGlassMix.value =
-        frame.glyph.glassMix * closingVisibility;
+        frame.glyph.glassMix * closingVisibility * (0.05 + frame.world.visionPortal * 0.95);
       causticMaterial.current.uniforms.uHeroMix.value = frame.overlay.hero;
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
     }
@@ -235,17 +264,19 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         visible={tier === "low" || !glassVisible}
       >
         <meshPhysicalMaterial
-          attenuationColor="#8d6db7"
+          attenuationColor="#ffffff"
+          bumpMap={chromeBump}
+          bumpScale={0.14}
           attenuationDistance={1.6}
           clearcoat={0.92}
           clearcoatRoughness={0.15}
           color={bodyColor}
-          depthWrite={tier !== "low" && bodyOpacity > 0.55}
+          depthWrite={bodyOpacity > 0.55}
           envMapIntensity={tier === "low" ? 1.7 : 1.25}
           ior={1.35}
-          metalness={tier === "low" ? 0.22 : 0.74}
+          metalness={0.96}
           opacity={bodyOpacity}
-          roughness={tier === "low" ? 0.16 : 0.27}
+          roughness={tier === "low" ? 0.2 : 0.15}
           thickness={0}
           transmission={0}
           transparent
@@ -255,27 +286,29 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       {tier !== "low" ? (
         <mesh castShadow geometry={geometry} receiveShadow>
           <MeshTransmissionMaterial
-            anisotropicBlur={tier === "high" ? 0.08 : 0.12}
-            attenuationColor="#9574c5"
-            attenuationDistance={tier === "high" ? 2.8 : 2.2}
+            anisotropicBlur={tier === "high" ? 0.02 : 0.04}
+            attenuationColor="#ffffff"
+            bumpMap={chromeBump}
+            bumpScale={0.14}
+            attenuationDistance={8}
             backsideResolution={1}
-            chromaticAberration={tier === "high" ? 0.045 : 0}
+            chromaticAberration={tier === "high" ? 0.003 : 0}
             clearcoat={1}
             clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
             color={bodyColor}
             depthWrite={bodyOpacity > 0.55}
-            distortion={tier === "high" ? 0.055 : 0}
+            distortion={0}
             distortionScale={0.34}
-            envMapIntensity={tier === "high" ? 2.4 : 1.8}
+            envMapIntensity={tier === "high" ? 1.8 : 1.5}
             ior={1.35}
-            iridescence={tier === "high" ? 0.07 * frame.glyph.glassMix : 0}
+            iridescence={tier === "high" ? 0.02 * frame.glyph.glassMix : 0}
             iridescenceIOR={1.35}
-            metalness={0.2}
+            metalness={0.96}
             opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.08 : 0.15}
+            roughness={tier === "high" ? 0.12 : 0.18}
             samples={tier === "high" ? 3 : 2}
             temporalDistortion={0}
-            thickness={tier === "high" ? 1.1 : 0.68}
+            thickness={tier === "high" ? 0.28 : 0.2}
             transmission={transmission}
             transmissionSampler
             resolution={1}
@@ -289,7 +322,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         <meshBasicMaterial visible={false} />
         <Edges
           color="#ffffff"
-          opacity={(0.12 + whiteMix * 0.84) * closingVisibility}
+          opacity={(0.04 + whiteMix * 0.92) * closingVisibility}
           scale={1.012}
           threshold={18}
           transparent
