@@ -18,10 +18,14 @@ export function useReveal({
 }: Options = {}) {
   const ref = useRef<HTMLElement | null>(null);
   const [seen, setSeen] = useState(false);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const node = ref.current;
-    if (!node) return;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    // Server content remains visible until this optional enhancement exists.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setReady(true);
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -37,5 +41,5 @@ export function useReveal({
     return () => io.disconnect();
   }, [threshold, rootMargin]);
 
-  return { ref, className: seen ? "reveal is-in" : "reveal" } as const;
+  return { ref, ready, seen, className: `reveal${ready ? " is-ready" : ""}${seen ? " is-in" : ""}` } as const;
 }

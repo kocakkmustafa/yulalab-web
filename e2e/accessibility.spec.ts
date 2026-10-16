@@ -152,12 +152,32 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en/projects/burunfarki");
   await expect(page.getByRole("heading", { name: "Verified claims", level: 2 })).toBeVisible();
-  const hidden = await page.evaluate(() =>
-    Array.from(document.querySelectorAll("h1,h2,h3,p")).filter((el) => {
-      const s = getComputedStyle(el);
-      return s.opacity === "0" && el.textContent!.trim().length > 0;
+  const unresolved = await page.locator(".reveal,.word").evaluateAll((elements) =>
+    elements.filter((element) => {
+      const style = getComputedStyle(element);
+      return style.opacity !== "1" || style.transform !== "none" ||
+        style.transitionDuration !== "0s";
     }).length,
   );
-  expect(hidden, "content left invisible when motion is reduced").toBe(0);
+  expect(unresolved, "reveals must resolve immediately, including offscreen ancestors").toBe(0);
   await context.close();
 });
+
+for (const route of ["/en/projects/lifeos", "/en/manifesto", "/en/contact"]) {
+  test(`server reveal content remains visible without JavaScript: ${route}`, async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    try {
+      const page = await context.newPage();
+      await page.goto(route);
+      await expect(page.locator("h1")).toBeVisible();
+      const reveals = page.locator(".reveal,.word");
+      expect(await reveals.count()).toBeGreaterThan(0);
+      expect(await reveals.evaluateAll((elements) => elements.filter((element) => {
+        const style = getComputedStyle(element);
+        return style.opacity !== "1" || style.transform !== "none";
+      }).length)).toBe(0);
+    } finally {
+      await context.close();
+    }
+  });
+}

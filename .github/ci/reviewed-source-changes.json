@@ -180,8 +180,8 @@
     {
       "path": "src/components/layout/Header.tsx",
       "publishedSha256": "ae9f476dd5984e988fc9c545ef325cd51412ecae405d4617e310be247d02ea90",
-      "candidateSha256": "da6e9ee79a6d06ae98f9ddee0e47e204a1b5a0847b20afaa4e73f635f88cc94b",
-      "reason": "Use a native mobile modal for browser focus containment and background inertness; close on Escape, route changes and the desktop breakpoint. Preserve the closed Studio surface. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "candidateSha256": "08d7fe98420c42533343f7837aebdd918d45d52be9de65b1102663d1275335b8",
+      "reason": "Use a native mobile modal for browser focus containment and background inertness; close on Escape, route changes and the desktop breakpoint. Preserve the closed Studio surface. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 local UI correction: Allow short mobile drawers to scroll without shrinking controls and retain minimum separation before the final project action. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -313,8 +313,36 @@
     {
       "path": "src/app/globals.css",
       "publishedSha256": "e5bb0e0c9315609d0d5a25327d1fd6c31076db67d18f457fb378fc4386e1a78d",
-      "candidateSha256": "b02178988694795c6d4f201d9973624efba27bc5369b7a214b1addd42aed5429",
-      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence.",
+      "candidateSha256": "8b27422f35a958edf1cd20b6a591c8f037ff6acb34d11f554e97c5133666676d",
+      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. 2026-10-16 local UI correction: Make Reveal and word-stagger content visible in SSR/no-JavaScript output; hide only after observer enhancement and immediately resolve reduced-motion opacity, transform and delays. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/common/useReveal.ts",
+      "publishedSha256": "c6aa1c4fc86f4969c2670f621bfe550b6ed1abb4356f6524ca2ab4bb830c552c",
+      "candidateSha256": "48477130b55bb8e365de085ced5643ff3ee4bd8a22d015f0fbc51d3751060600",
+      "reason": "2026-10-16 local UI correction: Enable optional reveal animation only when IntersectionObserver exists and motion is permitted, preserving visible server/fallback content. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/common/StaggerWords.tsx",
+      "publishedSha256": "83261e9faca5752740818b4d3ce99ee1a3a1841352962d9725b324bdd9a5d8d4",
+      "candidateSha256": "4a9d72c2cfe0f418b81e70f1166ebba5d86f110833a506d80fc91ab2274ad876",
+      "reason": "2026-10-16 local UI correction: Reuse the progressive reveal hook for word animation while preserving existing per-word timing and markup. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/YulaExperience.tsx",
+      "publishedSha256": "b153d9b014c9ee19eb791b941a035d9bb32576f32c3c7e888085032123ffc259",
+      "candidateSha256": "3a8540c9cca49fb99ef9e12c0c64dc28ba2fb9734980f60398a9db1e6bd87bc9",
+      "reason": "2026-10-16 local UI correction: Map proof and manifesto native anchors through the measured document scroll range, targeting the first proof card and the mission center after viewport resizing. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/Experience.module.css",
+      "publishedSha256": "ccda6219c07b761122590fd55142e6ec720816144fb4f8b280f831c572440402",
+      "candidateSha256": "37fa44a897727e109fa565977439dbd0cf7f0b970f3eed298141f990e94cde65",
+      "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]

@@ -98,3 +98,20 @@ for (const locale of ["tr", "en"] as const) {
     });
   });
 }
+
+for (const locale of ["tr", "en"] as const) {
+  test(`short mobile menu keeps its final action reachable (${locale})`, async ({ page }) => {
+    await page.setViewportSize({ width: 667, height: 375 });
+    const prefix = locale === "en" ? "/en" : "";
+    await page.goto(`${prefix}/contact`);
+    await page.locator("header button[aria-controls='site-mobile-navigation']").click();
+    const panel = page.locator('[data-site-mobile-panel="true"]');
+    expect(await panel.evaluate((node) => getComputedStyle(node).overflowY)).toBe("auto");
+    const action = panel.locator(`a[href='${prefix}/projects']`).last();
+    await action.scrollIntoViewIfNeeded();
+    await expect(action).toBeInViewport({ ratio: 1 });
+    await action.click();
+    await expect(page).toHaveURL(new RegExp(`${prefix}/projects$`));
+    await expect(page.locator("dialog")).not.toBeVisible();
+  });
+}

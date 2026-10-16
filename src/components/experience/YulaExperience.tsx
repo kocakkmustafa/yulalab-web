@@ -101,6 +101,13 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const firstProductCenter = STAGES.portfolio[0] +
     (STAGES.portfolio[1] - STAGES.portfolio[0]) / (2 * Math.max(1, products.length));
 
+  // Start with the first proof card fully exposed, rather than skipping
+  // cards by measuring a percentage of the taller journey element.
+  const proofCount = Math.max(1, products.filter((product) => product.claims.length > 0).length);
+  const firstProofCenter = STAGES.proof[0] +
+    (STAGES.proof[1] - STAGES.proof[0]) / (2 * proofCount);
+  const missionCenter = (STAGES.mission[0] + STAGES.mission[1]) / 2;
+
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {
@@ -322,8 +329,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         <>
           <span id="experience-hero" className={styles.scrollAnchor} style={{ top: 0 }} />
           <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * firstProductCenter }} />
-          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: "50.5%" }} />
-          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: "69%" }} />
+          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: scrollRange * firstProofCenter }} />
+          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * missionCenter }} />
 
           <div
             className={styles.viewport}

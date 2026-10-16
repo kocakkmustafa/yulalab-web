@@ -1,6 +1,7 @@
 "use client";
 
-import { createElement, useEffect, useRef, useState, type ElementType } from "react";
+import { createElement, type ElementType } from "react";
+import { useReveal } from "./useReveal";
 
 type Props = {
   text: string;
@@ -17,26 +18,7 @@ export function StaggerWords({
   className = "",
   as: Tag = "span",
 }: Props) {
-  const ref = useRef<HTMLElement | null>(null);
-  const [seen, setSeen] = useState(false);
-
-  useEffect(() => {
-    const node = ref.current;
-    if (!node) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            setSeen(true);
-            io.unobserve(node);
-          }
-        }
-      },
-      { threshold: 0.2 },
-    );
-    io.observe(node);
-    return () => io.disconnect();
-  }, [text]);
+  const { ref, ready, seen } = useReveal({ threshold: 0.2, rootMargin: "0px" });
 
   const words = text.split(" ");
 
@@ -46,7 +28,7 @@ export function StaggerWords({
     words.map((word, i) => (
       <span
         key={i}
-        className={"word" + (seen ? " is-in" : "")}
+        className={`word${ready ? " is-ready" : ""}${seen ? " is-in" : ""}`}
         style={{ transitionDelay: `${delay + i * stagger}ms` }}
       >
         {word}

@@ -756,3 +756,67 @@ for (const viewport of [
     expect(closingFit!.wordmarkBottom).toBeLessThanOrEqual(closingFit!.contentTop - 6);
   });
 }
+
+test("native journey anchors retain their target after resizing", async ({ page }) => {
+  test.setTimeout(120_000);
+  // CI uses software WebGL. Control only the renderer label so this test
+  // exercises real native scroll geometry outside capture mode. This does
+  // not establish hardware or performance acceptance.
+  await page.addInitScript(() => {
+    const original = WebGL2RenderingContext.prototype.getParameter;
+    WebGL2RenderingContext.prototype.getParameter = function (parameter: number) {
+      return parameter === 37446
+        ? "local anchor geometry test renderer"
+        : original.call(this, parameter);
+    };
+  });
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("/?tier=low");
+  const root = page.locator(ROOT);
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 75_000 });
+  await expect(root).toHaveAttribute("data-loader-visible", "false");
+  for (const viewport of [{ width: 1280, height: 800 }, { width: 1440, height: 900 }]) {
+    await page.setViewportSize(viewport);
+    for (const [anchor, stage] of [["portfolio", "portfolio"], ["proof", "proof"], ["manifesto", "mission"]]) {
+      await page.locator(`header a[href="#experience-${anchor}"]`).first().click();
+      await expect(root).toHaveAttribute("data-stage", stage);
+      await expect.poll(() => page.locator(`#experience-${anchor}`).evaluate(
+        (element) => Math.abs(element.getBoundingClientRect().top),
+      )).toBeLessThan(2);
+      if (anchor === "proof") {
+        await expect(page.locator('[data-experience-stage="proof"] article').first())
+          .toHaveAttribute("data-active", "true");
+      }
+    }
+  }
+});
+
+test("all mobile product actions remain reachable with enlarged text", async ({ page }) => {
+  test.setTimeout(120_000);
+  await page.setViewportSize({ width: 390, height: 667 });
+  for (let index = 0; index < 8; index++) {
+    await openCapture(page, 0.085 + ((index + 0.5) / 8) * (0.505 - 0.085));
+    const panel = page.locator('[data-experience-stage="portfolio"] article[data-active="true"]');
+    await panel.evaluate((element) => {
+      // Snapshot first so nested inline labels receive exactly 200%, too.
+      const styles = Array.from(element.querySelectorAll<HTMLElement>("h2,p,a,span,strong"))
+        .map((node) => ({ node, font: parseFloat(getComputedStyle(node).fontSize), line: getComputedStyle(node).lineHeight }));
+      for (const { node, font, line } of styles) {
+        node.style.fontSize = `${font * 2}px`;
+        if (line !== "normal") node.style.lineHeight = `${parseFloat(line) * 2}px`;
+      }
+    });
+    const action = panel.locator("a");
+    await action.scrollIntoViewIfNeeded();
+    await action.focus();
+    await expect(action).toBeFocused();
+    const fit = await action.evaluate((element) => {
+      const rect = element.getBoundingClientRect();
+      const parent = element.closest("article")!.getBoundingClientRect();
+      return { top: rect.top, bottom: rect.bottom, parentTop: parent.top, parentBottom: parent.bottom, viewport: innerHeight };
+    });
+    expect(fit.top).toBeGreaterThanOrEqual(fit.parentTop);
+    expect(fit.bottom).toBeLessThanOrEqual(Math.min(fit.parentBottom, fit.viewport) + 1);
+    expect(await panel.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+  }
+});

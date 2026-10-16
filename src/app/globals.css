@@ -181,11 +181,15 @@ body:not(:has([data-yula-experience="true"])) main,
    micro-nudge: this is the "something just arrived" signal for section
    headers and stat blocks, not a hover-level detail. */
 .reveal {
-  opacity: 0;
-  transform: translateY(28px) scale(0.98);
+  opacity: 1;
+  transform: none;
   transition:
     opacity 700ms var(--ease-soft),
     transform 700ms var(--ease-soft);
+}
+.reveal.is-ready:not(.is-in) {
+  opacity: 0;
+  transform: translateY(28px) scale(0.98);
 }
 .reveal.is-in {
   opacity: 1;
@@ -195,11 +199,15 @@ body:not(:has([data-yula-experience="true"])) main,
 /* word stagger reveal */
 .word {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(0.6em);
+  opacity: 1;
+  transform: none;
   transition:
     opacity 650ms var(--ease-soft),
     transform 650ms var(--ease-soft);
+}
+.word.is-ready:not(.is-in) {
+  opacity: 0;
+  transform: translateY(0.6em);
 }
 .word.is-in {
   opacity: 1;
@@ -379,7 +387,13 @@ button:hover .arrow-nudge {
     animation-duration: 1ms;
   }
   .reveal,
+  .reveal.is-ready:not(.is-in),
   .word,
+  .word.is-ready:not(.is-in) {
+    opacity: 1;
+    transform: none;
+    transition: none !important;
+  }
   .card-hover,
   .logo-mark,
   .link-wipe::after,

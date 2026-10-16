@@ -160,7 +160,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
         <div
           data-site-mobile-panel="true"
           className={
-            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-white/10 p-6 flex flex-col transition-transform duration-500 " +
+            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-white/10 p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +
             (mobile ? "translate-x-0" : "translate-x-full")
           }
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -194,13 +194,15 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="mt-6 flex items-center gap-2">
             <LocaleSwitcher onNavigate={() => setMobile(false)} />
           </div>
-          <Link
-            href="/projects"
-            onClick={() => setMobile(false)}
-            className="mt-auto inline-flex items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
-          >
-            {t("ctaProjects")} <ArrowUpRight size={14} strokeWidth={2} />
-          </Link>
+          <div className="mt-auto pt-6">
+            <Link
+              href="/projects"
+              onClick={() => setMobile(false)}
+              className="flex items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
+            >
+              {t("ctaProjects")} <ArrowUpRight size={14} strokeWidth={2} />
+            </Link>
+          </div>
         </div>
       </dialog>
     </>
