@@ -843,8 +843,8 @@ for (const [locale, liveLabel, betaLabel] of [
 }
 
 // Normal URLs exercise native history and GPU interaction; no capture override.
-async function openNativeJourney(page: Page) {
-  await page.goto("/");
+async function openNativeJourney(page: Page, pathname = "/") {
+  await page.goto(pathname);
   const root = page.locator(ROOT);
   await expect(root).toHaveAttribute("data-experience-mounted", "true");
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
@@ -986,3 +986,97 @@ test("English native gallery CTA keeps one locale prefix and returns in the same
   await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before)).toBeLessThan(3);
   expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStartedAt);
 });
+
+// Coordinate taps intentionally bypass locator actionability: a visible row's
+// actual center must receive the touch instead of an invisible sibling layer.
+for (const height of [667, 844]) {
+  for (const locale of ["tr", "en"] as const) {
+    test.describe(`native mobile menu ${locale} 390x${height}`, () => {
+      test.use({ hasTouch: true });
+      test("owns center taps and excludes emblem focus until dismissed", async ({ page }, testInfo) => {
+        test.setTimeout(60_000);
+        await page.setViewportSize({ width: 390, height });
+        const root = await openNativeJourney(page, locale === "en" ? "/en" : "/");
+        const control = page.locator('[data-yula-glyph-control="true"]');
+        const menu = page.locator("header details");
+        const summary = menu.locator("summary");
+        const taps: { target: string; x: number; y: number; hit: string | null }[] = [];
+        const center = async (locator: ReturnType<Page["locator"]>) => {
+          const box = await locator.boundingBox();
+          expect(box).not.toBeNull();
+          return { x: box!.x + box!.width / 2, y: box!.y + box!.height / 2 };
+        };
+        for (const [target, stage] of [
+          ["experience-portfolio", "portfolio"],
+          ["experience-manifesto", "mission"],
+          ["experience-proof", "proof"],
+        ]) {
+          const opener = await center(summary);
+          await page.touchscreen.tap(opener.x, opener.y);
+          await expect(menu).toHaveAttribute("open", "");
+          await expect(control).toBeHidden();
+          await control.focus();
+          await expect(control).not.toBeFocused();
+          await summary.focus();
+          for (let index = 0; index < 16; index++) {
+            await page.keyboard.press(index < 8 ? "Tab" : "Shift+Tab");
+            await expect(control).not.toBeFocused();
+          }
+          const link = menu.locator(`a[href="#${target}"]`);
+          const point = await center(link);
+          const hit = await page.evaluate(({ x, y }) =>
+            document.elementFromPoint(x, y)?.closest("a")?.getAttribute("href") ?? null, point);
+          taps.push({ target, ...point, hit });
+          expect(hit).toBe(`#${target}`);
+          if (target === "experience-portfolio") {
+            await testInfo.attach("open-menu", { body: await page.screenshot(), contentType: "image/png" });
+          }
+          await page.touchscreen.tap(point.x, point.y);
+          await expect(page).toHaveURL(new RegExp(`${locale === "en" ? "/en" : "/"}#${target}$`));
+          await expect(menu).not.toHaveAttribute("open", "");
+          await expect(root).toHaveAttribute("data-stage", stage);
+          await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+          await expect(root).toHaveAttribute("data-stage", "hero");
+          await expect(control).toBeVisible();
+          await expect(control).toHaveAttribute("data-glyph-yaw", "0.000");
+        }
+        // Dismissal restores normal touch/keyboard behavior; raising the menu
+        // must not turn the whole semantic overlay into a pointer interceptor.
+        const point = await center(control);
+        await page.touchscreen.tap(point.x, point.y);
+        await expect(control).toHaveAttribute("data-glyph-yaw", "0.120");
+        await control.focus();
+        await page.keyboard.press("ArrowRight");
+        await expect(control).toHaveAttribute("data-glyph-yaw", "0.240");
+        await page.keyboard.press("Home");
+        const session = await page.context().newCDPSession(page);
+        const swipe = async (from: { x: number; y: number }, to: { x: number; y: number }) => {
+          await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [from] });
+          for (let step = 1; step <= 8; step++) {
+            await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [{
+              x: from.x + (to.x - from.x) * step / 8,
+              y: from.y + (to.y - from.y) * step / 8,
+            }] });
+            await page.waitForTimeout(24);
+          }
+          await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+        };
+        await swipe({ x: point.x - 45, y: point.y }, { x: point.x + 45, y: point.y });
+        await expect.poll(async () => Number(await control.getAttribute("data-glyph-yaw"))).toBeGreaterThan(0.2);
+        const horizontalYaw = await control.getAttribute("data-glyph-yaw");
+        expect(await page.evaluate(() => scrollY)).toBeLessThan(3);
+        await control.focus();
+        await page.keyboard.press("Home");
+        await swipe({ x: point.x, y: point.y + 30 }, { x: point.x, y: point.y - 100 });
+        await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(30);
+        await expect(control).toHaveAttribute("data-glyph-yaw", "0.000");
+        await expect(control).toHaveAttribute("data-glyph-pitch", "0.000");
+        await session.detach();
+        await testInfo.attach("native-menu-evidence", {
+          body: JSON.stringify({ locale, viewport: { width: 390, height }, taps, horizontalYaw,
+            verticalScrollY: await page.evaluate(() => scrollY) }), contentType: "application/json",
+        });
+      });
+    });
+  }
+}

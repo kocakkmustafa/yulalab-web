@@ -579,7 +579,7 @@
 
 .glyphControl {
   position: absolute;
-  z-index: 3;
+  z-index: 1;
   top: 50%;
   left: 50%;
   width: clamp(180px, 32vw, 460px);
@@ -1614,6 +1614,11 @@
   .mobileNavigation {
     display: block;
     grid-column: 2;
+  }
+
+  /* Native details state also removes the emblem from hit testing and Tab. */
+  .viewport:has(.mobileNavigation[open]) .glyphControl {
+    display: none;
   }
 
   .mobileNavigation summary {
