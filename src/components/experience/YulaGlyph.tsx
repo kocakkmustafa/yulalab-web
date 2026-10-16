@@ -184,7 +184,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const whiteMix = frame.glyph.outlineMix;
   const servicePresence = frame.world.serviceIn * (1 - frame.world.serviceOut);
   const galleryVisibility = 1 - frame.world.worksBackdropMix * 0.82;
-  const closingVisibility = (1 - frame.world.closingDraw)
+  // Retire the solid emblem before the closing wordmark and contact take over.
+  const closingHandoff = 1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.58));
+  const closingVisibility = closingHandoff
     * (1 - servicePresence * 0.78) * galleryVisibility;
   const bodyColor = useMemo(
     () => new Color("#e5e7ec").lerp(new Color("#f8f7f2"), whiteMix),
