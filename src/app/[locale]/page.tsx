@@ -7,6 +7,7 @@ import type {
 } from "@/components/experience/types";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
+import { developmentPreviews } from "@/data/product-presentations";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProductLifecycle } from "@/lib/types";
 
@@ -100,6 +101,7 @@ export default async function LandingPage({
       slug: project.slug,
       name: project.name,
       monogram: project.monogram,
+      icon: project.visuals.icon,
       lifecycle: record.lifecycle,
       category: project.category[locale],
       tagline: project.tagline[locale],
@@ -123,6 +125,12 @@ export default async function LandingPage({
         alt: locale === "tr" ? screenshot.altTr : screenshot.altEn,
         sourceBuild: screenshot.sourceBuild,
         capturedAt: screenshot.capturedAt,
+      })),
+      developmentPreviews: (developmentPreviews[project.slug] ?? []).map((preview) => ({
+        path: preview.path,
+        alt: preview.alt[locale],
+        sourceBuild: preview.sourceBuild,
+        capturedAt: preview.capturedAt,
       })),
       // Claim prose and every provenance field travel as one indivisible
       // record so the client cannot display a figure without its caveat.

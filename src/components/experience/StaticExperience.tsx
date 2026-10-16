@@ -62,7 +62,10 @@ export function StaticExperience({
           <h2>{copy.navigation.projects}</h2>
         </header>
         <div className={styles.staticProducts}>
-          {products.map((product, index) => (
+          {products.map((product, index) => {
+            const media = product.screenshots.length ? product.screenshots : product.developmentPreviews ?? [];
+            const development = product.screenshots.length === 0 && Boolean(product.developmentPreviews?.length);
+            return (
             <article key={product.slug} className={styles.staticProduct}>
               <div className={styles.productMeta}>
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
@@ -76,9 +79,9 @@ export function StaticExperience({
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
 
-              {product.screenshots.length > 0 ? (
+              {media.length > 0 ? (
                 <div className={styles.staticScreenshots}>
-                  {product.screenshots.map((shot) => (
+                  {media.map((shot) => (
                     <figure key={shot.path}>
                       <img
                         src={shot.path}
@@ -87,6 +90,7 @@ export function StaticExperience({
                         decoding="async"
                       />
                       <figcaption>
+                        {development ? <strong>{copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview"}</strong> : null}
                         <span>{shot.sourceBuild}</span>
                         <time dateTime={shot.capturedAt}>{shot.capturedAt}</time>
                       </figcaption>
@@ -102,7 +106,7 @@ export function StaticExperience({
                       : product.lifecycleLabel
                   }
                 >
-                  <span aria-hidden="true">{product.monogram}</span>
+                  {product.icon ? <img src={product.icon} alt="" loading="lazy" decoding="async" style={{ width: 144, height: 144, objectFit: "contain" }} /> : <span aria-hidden="true">{product.monogram}</span>}
                   <strong>
                     {product.lifecycle === "research"
                       ? copy.portfolio.noPublicBuild
@@ -126,7 +130,8 @@ export function StaticExperience({
                 <ProofLedger copy={copy} product={product} today={today} />
               </div>
             </article>
-          ))}
+            );
+          })}
         </div>
       </section>
 

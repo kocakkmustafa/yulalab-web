@@ -36,7 +36,8 @@ export const lissom: ProjectConfig = {
     mood: "silk-and-breath",
   },
   visuals: {
-    logo: "/projects/lissom/logo.png",
+    logo: "/projects/lissom/icon.png",
+    icon: "/projects/lissom/icon.png",
     screenshots: [],
   },
   features: [

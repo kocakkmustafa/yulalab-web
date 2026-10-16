@@ -169,3 +169,22 @@ export function portfolioViewportComposition(
     yaw: Math.atan2(camera.position[0] - centerX, camera.position[2] - focusPlane),
   };
 }
+
+
+/** Fit source media between the fixed navigation and value copy. Pixels here
+ * are converted through the current camera frustum, so no camera pose changes.
+ */
+export function serviceViewportComposition(width: number, height: number, portal = false) {
+  const mobile = width < 900;
+  const top = mobile ? 220 : 104;
+  const availableHeight = Math.max(80, Math.min(height * 0.46, height - top - (mobile ? 230 : 330)));
+  const mediaHeight = portal
+    ? Math.min(height * 0.72, width * 0.6 * 3.25 / 5.5)
+    : Math.min(availableHeight, width * (mobile ? 0.91 : 0.76) * 3.25 / 5.5);
+  return {
+    centerX: width * (portal ? 0.3 : 0.5),
+    centerY: portal ? height * 0.55 : top + mediaHeight / 2,
+    width: mediaHeight * 5.5 / 3.25,
+    height: mediaHeight,
+  };
+}

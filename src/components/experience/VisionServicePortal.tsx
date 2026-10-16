@@ -8,6 +8,7 @@ import {
   Scene,
   SRGBColorSpace,
   UnsignedByteType,
+  type Texture,
 } from "three";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 import { ServiceCorridorVisual } from "./ValueDioramas";
@@ -17,11 +18,12 @@ export type VisionServicePortalProps = {
   frame: TimelineFrame;
   glyphRotation?: Vec3;
   tier: QualityTier;
+  mediaTextures?: readonly Texture[];
 };
 
 const PORTAL_RESOLUTION: Record<QualityTier, number> = {
-  high: 512,
-  medium: 384,
+  high: 768,
+  medium: 512,
   low: 256,
 };
 
@@ -39,7 +41,7 @@ function fitRenderTarget(width: number, height: number, limit: number) {
  * Renders only the lightweight SERVICE media surfaces into a capped target.
  * The texture is composited by YulaGlyph, so the real extruded Y is the mask.
  */
-export function VisionServicePortal({ frame, tier, glyphRotation }: VisionServicePortalProps) {
+export function VisionServicePortal({ frame, tier, glyphRotation, mediaTextures }: VisionServicePortalProps) {
   const renderer = useThree((state) => state.gl);
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
@@ -98,6 +100,7 @@ export function VisionServicePortal({ frame, tier, glyphRotation }: VisionServic
               opacity={1}
               tier={tier}
               withDioramas={false}
+              mediaTextures={mediaTextures}
             />
           </>,
           portalScene,

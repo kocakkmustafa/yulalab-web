@@ -1,6 +1,8 @@
 import { chromium, expect, test, type Page } from "@playwright/test";
 import { LOCAL_ONLY_BROWSER_ARGS } from "../.github/ci/browser-options";
 
+import { scrollProgressForTimeline } from "../src/components/experience/storyboard";
+
 const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
 
 const ROOT = '[data-yula-experience="true"]';
@@ -457,7 +459,7 @@ test("HUD contains only derived renderer and journey data", async ({ page }) => 
   await openCapture(page, 0.24, "medium");
   const body = page.locator("body");
   await expect(body).toContainText(/RENDER\s*\/\s*MEDIUM/i);
-  await expect(body).toContainText(/SCROLL\s*\/\s*024%/i);
+  await expect(body).toContainText(/SCROLL\s*\/\s*018%/i);
   await expect(body).not.toContainText(/HIGH\s*\/\s*60/i);
   await expect(body).not.toContainText(/\bDRAG\b/i);
   await expect(body).not.toContainText(/SIN\s*X|SIN\s*Q/i);
@@ -868,10 +870,10 @@ test("native history returns to each product without replaying the opening", asy
       await page.evaluate((value) => window.scrollTo({
         top: (document.documentElement.scrollHeight - innerHeight) * value,
         behavior: "instant",
-      }), progress);
+      }), scrollProgressForTimeline(progress));
     }
     await page.waitForFunction((value) => Math.abs(scrollY -
-      (document.documentElement.scrollHeight - innerHeight) * value) < 3, progress);
+      (document.documentElement.scrollHeight - innerHeight) * value) < 3, scrollProgressForTimeline(progress));
     await expect(root).toHaveAttribute("data-active-product", slug);
     const before = await page.evaluate(() => scrollY);
     await expect.poll(() => page.evaluate(() => Boolean(history.state?.__NA && history.state?.__PRIVATE_NEXTJS_INTERNALS_TREE))).toBe(true);
@@ -947,12 +949,12 @@ test("native immediate Back then Forward keeps the last scroll before persistenc
   test.skip(await root.getAttribute("data-experience-fallback") === "true", "Hardware WebGL required for native journey history.");
   await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 30_000 });
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
-  const target = await page.evaluate(() => {
-    const y = Math.round((document.documentElement.scrollHeight - innerHeight) * 0.21625);
+  const target = await page.evaluate((documentProgress) => {
+    const y = Math.round((document.documentElement.scrollHeight - innerHeight) * documentProgress);
     window.scrollTo({ top: y, behavior: "instant" });
     window.history.back();
     return y;
-  });
+  }, scrollProgressForTimeline(0.21625));
   await page.waitForURL("**/projects/lifeos");
   await page.goForward();
   await expect(root).toHaveAttribute("data-experience-mounted", "true");
@@ -973,8 +975,8 @@ test("English native gallery CTA keeps one locale prefix and returns in the same
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
   const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
   await page.locator('header > nav a[href="#experience-portfolio"]').click();
-  await page.waitForFunction(() => Math.abs(scrollY -
-    (document.documentElement.scrollHeight - innerHeight) * 0.11125) < 3);
+  await page.waitForFunction((documentProgress) => Math.abs(scrollY -
+    (document.documentElement.scrollHeight - innerHeight) * documentProgress) < 3, scrollProgressForTimeline(0.11125));
   const link = page.locator('[data-experience-stage="portfolio"] article[data-active="true"] a');
   await expect(link).toHaveAttribute("href", "/en/projects/braavolabs");
   const before = await page.evaluate(() => scrollY);

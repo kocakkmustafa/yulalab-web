@@ -4,6 +4,8 @@ import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
 import { ClaimsSection } from "@/components/projects/ClaimsSection";
+import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
+import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatCards } from "@/components/projects/StatCards";
 import { publicRegistry } from "@/data/public-registry";
 import { presentClaims, presentSurfaces } from "@/lib/proof";
@@ -101,6 +103,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
         {/* hero */}
         <header className="pt-16 pb-16">
+          {project.visuals.icon ? <div className="mb-8"><ProjectMonogram project={project} size={96} radius={20} /></div> : null}
           <Reveal className="flex items-center gap-3 mb-8">
             <span
               aria-hidden
@@ -122,6 +125,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             </p>
           </Reveal>
         </header>
+
+        <DevelopmentPreviewSection slug={project.slug} locale={locale} />
 
         {/* Extracted so it can be rendered in a test; see StatCards. */}
         <Reveal>

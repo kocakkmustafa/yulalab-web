@@ -1,7 +1,9 @@
+import { STORYBOARD, scrollProgressForTimeline, timelineProgressForScroll } from "@/components/experience/storyboard";
 import { describe, expect, it } from "vitest";
 import { Color, Euler, PerspectiveCamera, Vector3 } from "three";
 import {
   glyphViewportPose,
+  serviceViewportComposition,
   portfolioViewportComposition,
   proofLayoutPose,
   shouldLoadPortfolioMedia,
@@ -542,4 +544,45 @@ describe("spatial portfolio composition", () => {
     expect(Math.abs(a.scale - b.scale)).toBeLessThan(0.01);
     expect(new Vector3(...a.center).distanceTo(new Vector3(...b.center))).toBeLessThan(0.02);
   });
+});
+
+
+describe("document storyboard timing", () => {
+  it("is continuous and invertible across every scene boundary in both directions", () => {
+    let previous = -1;
+    for (let step = 0; step <= 10_000; step += 1) {
+      const scroll = step / 10_000;
+      const time = timelineProgressForScroll(scroll);
+      expect(time).toBeGreaterThan(previous);
+      expect(scrollProgressForTimeline(time)).toBeCloseTo(scroll, 12);
+      previous = time;
+    }
+    for (const knot of STORYBOARD) {
+      expect(timelineProgressForScroll(knot.scroll)).toBeCloseTo(knot.timeline, 12);
+      expect(Math.abs(timelineProgressForScroll(knot.scroll + 1e-8) - timelineProgressForScroll(knot.scroll - 1e-8))).toBeLessThan(1e-6);
+    }
+  });
+
+  it("reaches the white mission after the works outro and gives source media room to read", () => {
+    expect(evaluateTimeline(timelineProgressForScroll(0.46), "desktop").stage).toBe("mission");
+    expect(evaluateTimeline(timelineProgressForScroll(0.55), "desktop").stage).toBe("vision");
+    expect(evaluateTimeline(timelineProgressForScroll(0.8), "desktop").stage).toBe("values");
+    expect(scrollProgressForTimeline(0.955) - scrollProgressForTimeline(0.835)).toBeGreaterThan(0.27);
+    expect(timelineProgressForScroll(Number.NaN)).toBe(0);
+    expect(timelineProgressForScroll(-Infinity)).toBe(0);
+    expect(timelineProgressForScroll(Infinity)).toBe(1);
+  });
+});
+
+
+describe("SERVICE media framing", () => {
+  it.each([[1440, 900], [390, 667], [390, 844], [768, 1024], [927, 983]])(
+    "contains the focused source plate clear of fixed navigation and copy at %sx%s", (width, height) => {
+      const media = serviceViewportComposition(width, height);
+      expect(media.centerX - media.width / 2).toBeGreaterThanOrEqual(16);
+      expect(media.centerX + media.width / 2).toBeLessThanOrEqual(width - 16);
+      expect(media.centerY - media.height / 2).toBeGreaterThanOrEqual(104 - 1e-6);
+      expect(media.centerY + media.height / 2).toBeLessThanOrEqual(height - (width < 900 ? 230 : 330));
+    },
+  );
 });

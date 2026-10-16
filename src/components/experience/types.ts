@@ -83,6 +83,7 @@ export type ExperienceProduct = {
   slug: string;
   name: string;
   monogram: string;
+  icon?: string;
   lifecycle: "live" | "beta" | "research" | "archived";
   category: string;
   tagline: string;
@@ -97,6 +98,7 @@ export type ExperienceProduct = {
     background: string;
   };
   screenshots: ExperienceScreenshot[];
+  developmentPreviews?: ExperienceScreenshot[];
   claims: ExperienceClaim[];
   updatedAt: string;
 };

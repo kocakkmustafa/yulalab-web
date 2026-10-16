@@ -17,7 +17,7 @@ and deployment documentation; the current candidate removes that CLI and uses
 the already connected Netlify Git build. The 2026-09-22 candidate also updates the Node build
 target, pins the supported function runtime, patches Next/sharp/YAML/TOML
 advisories, and fixes clock-dependent and Node 26 browser-storage test setup.
-Translations, assets and database code are unchanged. Passing this check is
+That toolchain-only change left translations, assets and database code unchanged. Passing this check is
 not a deployment receipt.
 
 The Links sibling is pinned to
@@ -127,3 +127,26 @@ import order, nested `_document/index` paths, JSX expression hrefs, and URL
 percent decoding. Equal rule IDs and severities do not establish equivalent
 checks; that replacement is not applied. The source version refresh is not
 native execution, build, provider, or security-finding closure evidence.
+
+
+## 2026-10-16 identity and storyboard candidate
+
+The current local visual candidate adopts five user-approved icon masters byte
+for byte and three dated normal-app development captures (two Ostinato, one
+LifeOS). These previews live in `src/data/product-presentations.ts`, separately
+from the immutable publication registry. Research lifecycle, published claim
+records and store-readiness status are unchanged. The legacy default Flutter
+mark is not used as LifeOS product identity in the new presentations.
+
+Each added source module and visual asset is individually pinned by SHA-256 in
+`REVIEWED_VISUAL_ADDITIONS` and the reviewed delta receipt. This is an explicit
+candidate addition, not an extension of the publication baseline or a directory
+wildcard. The workflow tree pin changes only to identify the exact local
+candidate; no workflow was dispatched or pushed by this work.
+
+`storyboard.ts` maps document scroll to the existing camera timeline with a
+continuous inverse for native anchors and history. Owned identity/development
+compositions and four shared SERVICE source plates replace abstract stand-ins
+where reliable imagery exists. Browser and build evidence is held in the task's
+`approved-icon-storyboard-20261016` directory. Local visual acceptance does not
+satisfy the separate Netlify packaging, security, cost or publication gates.

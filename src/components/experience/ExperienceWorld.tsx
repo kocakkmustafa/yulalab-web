@@ -17,6 +17,7 @@ import type {
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
 import { VisionServicePortal } from "./VisionServicePortal";
+import { useShowcaseTextures } from "./useShowcaseTextures";
 import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 
 export type ExperienceWorldProps = {
@@ -67,6 +68,7 @@ export function ExperienceWorld({
     [mode, progress],
   );
   const environmentResolution = tier === "high" ? 256 : tier === "medium" ? 128 : 64;
+  const mediaTextures = useShowcaseTextures(products[0]?.href.startsWith("/en/") ?? false, progress >= 0.705, 1024);
 
   return (
     <>
@@ -118,7 +120,7 @@ export function ExperienceWorld({
       </Environment>
 
       <GridRoom frame={frame} tier={tier} />
-      <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} />
+      <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
       <PortfolioField
         frame={frame}
         mode={mode}
@@ -126,7 +128,7 @@ export function ExperienceWorld({
         products={products}
         tier={tier}
       />
-      <ValueDioramas frame={frame} tier={tier} />
+      <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
     </>
   );
 }

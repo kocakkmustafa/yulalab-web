@@ -106,6 +106,7 @@ const PORTAL_FRAGMENT_SHADER = `
     float targetFeather = smoothstep(0.0, 0.065, min(edgeDistance.x, edgeDistance.y));
     float scan = 0.96 + 0.04 * sin(screenUv.y * 420.0 + uTime * 0.38);
     gl_FragColor = vec4(portal.rgb * scan, portal.a * wipe * targetFeather * uOpacity);
+    #include <colorspace_fragment>
   }
 `;
 
@@ -182,12 +183,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     frame.glyph.rotation[2],
   ];
   const whiteMix = frame.glyph.outlineMix;
-  const servicePresence = frame.world.serviceIn * (1 - frame.world.serviceOut);
   const galleryVisibility = 1 - frame.world.worksBackdropMix * 0.82;
-  // Retire the solid emblem before the closing wordmark and contact take over.
+  // Hand the portal to the readable SERVICE media, then keep the emblem
+  // retired through the closing wordmark/contact.
   const closingHandoff = 1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.58));
   const closingVisibility = closingHandoff
-    * (1 - servicePresence * 0.78) * galleryVisibility;
+    * (1 - frame.world.serviceIn) * galleryVisibility;
   const bodyColor = useMemo(
     () => new Color("#e5e7ec").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],

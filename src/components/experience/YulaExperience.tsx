@@ -17,6 +17,7 @@ import { resolveVisibleFrameDelta } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
+import { scrollProgressForTimeline } from "./storyboard";
 import { evaluateTimeline, STAGES } from "./timeline";
 import type {
   ExperienceCopy,
@@ -508,9 +509,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       ) : (
         <>
           <span id="experience-hero" className={styles.scrollAnchor} style={{ top: 0 }} />
-          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * firstProductCenter }} />
-          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: scrollRange * firstProofCenter }} />
-          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * missionCenter }} />
+          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * scrollProgressForTimeline(firstProductCenter) }} />
+          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(firstProofCenter) }} />
+          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(missionCenter) }} />
 
           <div
             className={styles.viewport}

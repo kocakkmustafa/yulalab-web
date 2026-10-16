@@ -10,6 +10,8 @@ import {
   Texture,
   TextureLoader,
 } from "three";
+import { presentationImageUrl } from "./useShowcaseTextures";
+import { makeIdentityPresentation, type PresentationImage } from "./presentation-canvas";
 import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
 import { portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia, viewportMobileMix } from "./layout";
 import type {
@@ -47,7 +49,7 @@ function imageAspect(texture: Texture): number {
 }
 
 function useCardTexture(
-  path: string,
+  path: string | undefined,
   tier: QualityTier,
   onSettled: (path: string) => void,
 ): LoadedTexture {
@@ -69,9 +71,13 @@ function useCardTexture(
     let loadedTexture: Texture | null = null;
     setState({ texture: null, aspect: DEFAULT_ASPECT, failed: false, status: "loading" });
 
+    if (!path) {
+      setState({ texture: null, aspect: DEFAULT_ASPECT, failed: true, status: "failed" });
+      return;
+    }
     const loader = new TextureLoader();
     loader.load(
-      path,
+      presentationImageUrl(path),
       (texture) => {
         loadedTexture = texture;
         texture.colorSpace = SRGBColorSpace;
@@ -122,7 +128,7 @@ function useCardTexture(
   // Effects run after React has committed the loaded/fallback material. The
   // Canvas lifecycle then waits one additional rendered frame before capture.
   useEffect(() => {
-    if (state.status !== "loading") onSettledRef.current(path);
+    if (path && state.status !== "loading") onSettledRef.current(path);
   }, [path, state.status]);
 
   return state;
@@ -503,6 +509,33 @@ function ResearchWireframe({
   );
 }
 
+function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
+  product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
+}) {
+  const icon = useCardTexture(product.icon, tier, onAssetSettled);
+  const first = useCardTexture(product.developmentPreviews?.[0]?.path, tier, onAssetSettled);
+  const second = useCardTexture(product.developmentPreviews?.[1]?.path, tier, onAssetSettled);
+  const cover = useMemo(() => makeIdentityPresentation(
+    product,
+    icon.texture?.image as PresentationImage | undefined,
+    [first.texture?.image, second.texture?.image].filter(Boolean) as PresentationImage[],
+  ), [product, icon.texture, first.texture, second.texture]);
+  useEffect(() => () => cover.dispose(), [cover]);
+
+  return (
+    <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
+      <mesh position={[0, 0, -0.055]}>
+        <boxGeometry args={[4.02, 2.31, 0.1]} />
+        <meshStandardMaterial color="#131017" opacity={opacity} transparent depthWrite={opacity > 0.9} metalness={0.3} roughness={0.32} />
+      </mesh>
+      <mesh>
+        <planeGeometry args={[3.9, 2.19375]} />
+        <meshBasicMaterial map={cover} opacity={opacity} transparent={opacity < 0.999} depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
+      </mesh>
+    </group>
+  );
+}
+
 function ProductCard({
   product,
   productIndex,
@@ -538,6 +571,10 @@ function ProductCard({
         ))}
       </group>
     );
+  }
+
+  if ((product.icon || product.developmentPreviews?.length) && loadRichMedia) {
+    return <IdentityPresentation product={product} opacity={opacity} tier={tier} onAssetSettled={onAssetSettled} />;
   }
 
   if (product.slug === "lifeos") {
@@ -642,7 +679,7 @@ export function PortfolioField({
   );
   const eligibleMediaProducts = useMemo(
     () => products.slice(0, 8).flatMap((product, index) =>
-      product.screenshots.length > 0 && shouldLoadPortfolioMedia(
+      (product.screenshots.length > 0 || Boolean(product.icon) || Boolean(product.developmentPreviews?.length)) && shouldLoadPortfolioMedia(
         fieldOpacity,
         Math.abs(index - frame.productFloat),
         frame.world.proofMorph,
@@ -671,7 +708,9 @@ export function PortfolioField({
       ...new Set(
         products.slice(0, 8).flatMap((product, index) =>
           requestedMediaProducts.has(index)
-            ? product.screenshots.map((shot) => shot.path)
+            ? product.screenshots.length > 0
+              ? product.screenshots.map((shot) => shot.path)
+              : [product.icon, ...(product.developmentPreviews ?? []).map((shot) => shot.path)].filter((path): path is string => Boolean(path))
             : [],
         ),
       ),
@@ -726,7 +765,7 @@ export function PortfolioField({
             position={pose.position}
             rotation={pose.rotation}
             scale={pose.scale}
-            userData={{ productSlug: product.slug, registryScreenshotOnly: true }}
+            userData={{ productSlug: product.slug, mediaClass: product.screenshots.length ? "publication" : product.developmentPreviews?.length ? "dated-development" : "identity" }}
           >
             <ProductCard
               opacity={fieldOpacity * cardOpacity}

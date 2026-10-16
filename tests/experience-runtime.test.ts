@@ -1,9 +1,12 @@
+import { Texture } from "three";
+import { useShowcaseTextures } from "@/components/experience/useShowcaseTextures";
 // @vitest-environment jsdom
 
 import { act, render, renderHook, screen } from "@testing-library/react";
 import { createElement, type ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
+import { timelineProgressForScroll } from "@/components/experience/storyboard";
 import { createAmbientAudio } from "@/components/experience/audio";
 import { ExperienceCanvas } from "@/components/experience/ExperienceCanvas";
 import { ExperienceErrorBoundary } from "@/components/experience/ExperienceErrorBoundary";
@@ -534,14 +537,14 @@ describe("the single experience progress loop", () => {
     setScrollGeometry(500);
     const frames = installAnimationFrames();
     const { result, unmount } = renderHook(() => useExperienceProgress(true, true));
-    expect(result.current.progress).toBe(0.5);
+    expect(result.current.progress).toBe(timelineProgressForScroll(0.5));
     frames.runNext(16);
     expect(frames.callbacks.size).toBe(0);
     setScrollGeometry(800);
     act(() => window.dispatchEvent(new Event("scroll")));
     frames.runNext(32);
-    expect(result.current.progress).toBeGreaterThan(0.5);
-    expect(result.current.progress).toBeLessThan(0.8);
+    expect(result.current.progress).toBeGreaterThan(timelineProgressForScroll(0.5));
+    expect(result.current.progress).toBeLessThan(timelineProgressForScroll(0.8));
     unmount();
   });
 
@@ -716,5 +719,53 @@ describe("experience error isolation", () => {
 
     expect(screen.getByText("Static experience")).toBeTruthy();
     expect(onError).toHaveBeenCalledWith(error, expect.any(Object));
+  });
+});
+
+
+describe("shared SERVICE source-media ownership", () => {
+  function imageHarness() {
+    const images: Array<{ onload: (() => void) | null }> = [];
+    class ImageMock {
+      width = 100; height = 200; onload: (() => void) | null = null; onerror: (() => void) | null = null; src = "";
+      constructor() { images.push(this); }
+    }
+    vi.stubGlobal("Image", ImageMock);
+    const context = { scale: vi.fn(), createLinearGradient: () => ({ addColorStop: vi.fn() }), fillRect: vi.fn(), strokeRect: vi.fn(), drawImage: vi.fn(), fillText: vi.fn(), measureText: () => ({ width: 20 }) };
+    const canvases = vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockImplementation((() => context) as unknown as HTMLCanvasElement["getContext"]);
+    const disposed = vi.spyOn(Texture.prototype, "dispose");
+    return { images, canvases, disposed, load: async () => { await act(async () => { images.forEach((image) => image.onload?.()); await Promise.resolve(); }); } };
+  }
+
+  it("loads on demand, shares one set through reverse scroll, and releases it on replacement/unmount", async () => {
+    const h = imageHarness();
+    const hook = renderHook(({ enabled, english }) => useShowcaseTextures(english, enabled, 1024), { initialProps: { enabled: false, english: false } });
+    expect(h.images).toHaveLength(0);
+    hook.rerender({ enabled: true, english: false });
+    await h.load();
+    const first = hook.result.current;
+    expect(first).toHaveLength(4);
+    expect(h.canvases).toHaveBeenCalledTimes(4);
+    hook.rerender({ enabled: false, english: false });
+    expect(hook.result.current).toBe(first);
+    expect(h.disposed).not.toHaveBeenCalled();
+    hook.rerender({ enabled: false, english: true });
+    expect(hook.result.current).toHaveLength(0);
+    expect(h.disposed).toHaveBeenCalledTimes(4);
+    await h.load();
+    expect(hook.result.current).toHaveLength(4);
+    hook.unmount();
+    expect(h.disposed).toHaveBeenCalledTimes(8);
+    vi.unstubAllGlobals();
+  });
+
+  it("does not allocate textures when an image finishes after leaving the journey", async () => {
+    const h = imageHarness();
+    const hook = renderHook(() => useShowcaseTextures(false, true, 1024));
+    hook.unmount();
+    await h.load();
+    expect(h.canvases).not.toHaveBeenCalled();
+    expect(h.disposed).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
   });
 });

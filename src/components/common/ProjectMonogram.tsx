@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { ProjectConfig } from "@/lib/types";
 
 type Props = {
@@ -7,6 +8,13 @@ type Props = {
 };
 
 export function ProjectMonogram({ project, size = 64, radius = 14 }: Props) {
+  if (project.visuals.icon) {
+    return (
+      <div className="relative shrink-0 overflow-hidden" style={{ width: size, height: size, borderRadius: radius }} aria-hidden>
+        <Image src={project.visuals.icon} alt="" width={size} height={size} sizes={`${size}px`} style={{ objectFit: "contain" }} />
+      </div>
+    );
+  }
   const text = project.monogram || project.name.slice(0, 1);
   const factor = text.length === 1 ? 0.46 : 0.3;
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { timelineProgressForScroll } from "./storyboard";
 import type { QualityTier } from "./types";
 
 export type CaptureParams = {
@@ -62,7 +63,7 @@ export function parseCaptureParams(search: string): CaptureParams {
 function readDocumentProgress(): number {
   const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
   if (!Number.isFinite(scrollRange) || scrollRange <= 0) return 0;
-  return clamp01(window.scrollY / scrollRange);
+  return timelineProgressForScroll(window.scrollY / scrollRange);
 }
 
 type DampedValue = { position: number; velocity: number };

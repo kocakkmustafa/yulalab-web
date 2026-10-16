@@ -1,20 +1,26 @@
 "use client";
 
 import { RoundedBox } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
   Color,
   DoubleSide,
   PlaneGeometry,
+  Matrix4,
+  Quaternion,
+  Vector3,
   ShaderMaterial,
+  type Texture,
 } from "three";
-import { clamp01, segmentProgress, smoothstep } from "./timeline";
+import { serviceViewportComposition } from "./layout";
+import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 export type ValueDioramasProps = {
   frame: TimelineFrame;
   tier: QualityTier;
+  mediaTextures?: readonly Texture[];
 };
 
 type DioramaProps = {
@@ -42,6 +48,8 @@ const SERVICE_PANEL_VERTEX_SHADER = `
 `;
 
 const SERVICE_PANEL_FRAGMENT_SHADER = `
+  uniform sampler2D uMedia;
+  uniform float uMediaReady;
   uniform vec3 uBackground;
   uniform vec3 uPrimary;
   uniform vec3 uAccent;
@@ -76,10 +84,12 @@ const SERVICE_PANEL_FRAGMENT_SHADER = `
     color += uAccent * gridLine * 0.075;
     color += uPrimary * scan * 0.025;
     color *= 0.92 + vWave * 0.08;
+    color = mix(color, texture2D(uMedia, vUv).rgb, uMediaReady);
 
-    float edge = smoothstep(0.0, 0.16, vUv.x) * smoothstep(0.0, 0.16, 1.0 - vUv.x)
-      * smoothstep(0.0, 0.18, vUv.y) * smoothstep(0.0, 0.18, 1.0 - vUv.y);
-    gl_FragColor = vec4(color, uOpacity * edge * 0.96);
+    float edge = smoothstep(0.0, 0.025, vUv.x) * smoothstep(0.0, 0.025, 1.0 - vUv.x)
+      * smoothstep(0.0, 0.025, vUv.y) * smoothstep(0.0, 0.025, 1.0 - vUv.y);
+    gl_FragColor = vec4(color, uOpacity * edge);
+    #include <colorspace_fragment>
   }
 `;
 
@@ -96,12 +106,14 @@ function CurvedServicePanel({
   opacity,
   showFrame,
   tier,
+  mediaTexture,
 }: {
   index: number;
   motion: number;
   opacity: number;
   showFrame: boolean;
   tier: QualityTier;
+  mediaTexture?: Texture;
 }) {
   const palette = SERVICE_PALETTES[index];
   const geometry = useMemo(() => {
@@ -129,6 +141,8 @@ function CurvedServicePanel({
   const surfaceMaterial = useRef<ShaderMaterial | null>(null);
   const surfaceUniforms = useMemo(
     () => ({
+      uMedia: { value: null },
+      uMediaReady: { value: 0 },
       uBackground: { value: new Color(palette.background) },
       uPrimary: { value: new Color(palette.primary) },
       uAccent: { value: new Color(palette.accent) },
@@ -141,6 +155,8 @@ function CurvedServicePanel({
 
   useFrame(() => {
     if (!surfaceMaterial.current) return;
+    surfaceMaterial.current.uniforms.uMedia.value = mediaTexture ?? null;
+    surfaceMaterial.current.uniforms.uMediaReady.value = mediaTexture ? 1 : 0;
     surfaceMaterial.current.uniforms.uMotion.value = motion;
     surfaceMaterial.current.uniforms.uOpacity.value = opacity;
   // CameraRig settles at -50 and the portal target renders at -40. Updating
@@ -162,7 +178,7 @@ function CurvedServicePanel({
           vertexShader={SERVICE_PANEL_VERTEX_SHADER}
         />
       </mesh>
-      {showFrame ? (
+      {showFrame && !mediaTexture ? (
         <>
           <mesh geometry={geometry} position={[0, 0, 0.012]} scale={1.008}>
             <meshBasicMaterial
@@ -451,7 +467,17 @@ export function ServiceCorridorVisual({
   tier,
   opacity: journeyOpacity,
   withDioramas = true,
+  mediaTextures,
 }: ServiceCorridorVisualProps) {
+  const size = useThree((state) => state.size);
+  const camera = interpolateViewportCamera(frame.progress, size.width);
+  const orientation = useMemo(() => new Quaternion(), []);
+  orientation.setFromRotationMatrix(new Matrix4().lookAt(new Vector3(...camera.position), new Vector3(...camera.target), new Vector3(0, 1, 0)));
+  const depth = 7;
+  const viewHeight = 2 * Math.tan(camera.fov * Math.PI / 360) * depth;
+  const viewWidth = viewHeight * size.width / size.height;
+  const composition = serviceViewportComposition(size.width, size.height, !withDioramas);
+  const baseScale = composition.height / size.height * viewHeight / 3.25;
   const components = [
     TransparencyDiorama,
     CraftDiorama,
@@ -460,22 +486,18 @@ export function ServiceCorridorVisual({
   ] as const;
 
   return (
-    <group visible={journeyOpacity > 0.001}>
+    <group visible={journeyOpacity > 0.001} position={camera.position} quaternion={[orientation.x, orientation.y, orientation.z, orientation.w]}>
       {components.map((Diorama, index) => {
         const difference = index - frame.valueFloat;
         const distance = Math.abs(difference);
         const focus = 1 - smoothstep(clamp01(distance));
         const opacity = journeyOpacity * (0.025 + focus * 0.915);
         const ribbonPhase = difference * 0.82;
-        const focusDepth = -25.4 - frame.valueFloat * 2.25;
-        const showcase = index === components.length - 1
-          ? smoothstep(segmentProgress(frame.progress, 0.925, 0.955))
-          : 0;
-        const scale = (0.62 + focus * 0.23) * (1 + showcase * 0.48);
+        const scale = baseScale * (0.72 + focus * 0.28);
         const position: Vec3 = [
-          Math.sin(ribbonPhase) * 3.2 * (1 - showcase),
-          Math.sin(ribbonPhase * 1.65) * 0.58 * (1 - showcase),
-          focusDepth - (1 - Math.cos(ribbonPhase)) * 1.7,
+          viewWidth * (composition.centerX / size.width - 0.5) + Math.sin(ribbonPhase) * viewWidth * 0.76,
+          viewHeight * (0.5 - composition.centerY / size.height) + Math.sin(ribbonPhase * 1.65) * viewHeight * 0.08,
+          -depth - (1 - Math.cos(ribbonPhase)) * 2.2,
         ];
 
         return (
@@ -484,7 +506,7 @@ export function ServiceCorridorVisual({
             position={position}
             rotation={[
               Math.sin(ribbonPhase * 0.72) * -0.09,
-              -Math.sin(ribbonPhase) * 0.58 * (1 - showcase),
+              -Math.sin(ribbonPhase) * 0.4,
               Math.sin(ribbonPhase * 1.35) * -0.08,
             ]}
             scale={scale}
@@ -495,10 +517,11 @@ export function ServiceCorridorVisual({
               opacity={opacity}
               showFrame={withDioramas}
               tier={tier}
+              mediaTexture={mediaTextures?.[index]}
             />
-            {withDioramas ? (
-              <group position={[0, 0.04, 0.34]} scale={0.45}>
-                <Diorama opacity={opacity} tier={tier} />
+            {withDioramas && !mediaTextures?.[index] ? (
+              <group position={[-2.4, -1.24, -0.16]} scale={0.16}>
+                <Diorama opacity={opacity * 0.12} tier={tier} />
               </group>
             ) : null}
           </group>
@@ -508,7 +531,7 @@ export function ServiceCorridorVisual({
   );
 }
 
-export function ValueDioramas({ frame, tier }: ValueDioramasProps) {
+export function ValueDioramas({ frame, tier, mediaTextures }: ValueDioramasProps) {
   const enter = frame.world.serviceIn;
   const leave = 1 - frame.world.serviceOut;
   return (
@@ -516,6 +539,7 @@ export function ValueDioramas({ frame, tier }: ValueDioramasProps) {
       frame={frame}
       opacity={enter * leave}
       tier={tier}
+      mediaTextures={mediaTextures}
     />
   );
 }

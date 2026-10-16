@@ -36,7 +36,8 @@ export const gravita: ProjectConfig = {
     mood: "forge-and-form",
   },
   visuals: {
-    logo: "/projects/gravita/logo.png",
+    logo: "/projects/gravita/icon.png",
+    icon: "/projects/gravita/icon.png",
     screenshots: [],
   },
   features: [

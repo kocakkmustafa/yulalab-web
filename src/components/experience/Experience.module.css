@@ -2079,3 +2079,13 @@
     animation: none !important;
   }
 }
+
+/* Source-qualified development media stays distinct from publication claims. */
+.previewNote { font: 10px/1.5 var(--font-mono), monospace; color: #b8b1c5; margin-top: 12px; }
+.staticScreenshots figcaption { overflow-wrap: anywhere; }
+
+@media (max-width: 900px) {
+  .valuesHeading h2 { max-width: none; font-size: 28px; line-height: 1.1; }
+  .valuesHeading .kicker { margin-bottom: 8px; }
+  .valuesHeading .previewNote { margin-top: 8px; font-size: 9px; }
+}

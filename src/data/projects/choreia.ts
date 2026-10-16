@@ -36,7 +36,8 @@ export const choreia: ProjectConfig = {
     mood: "stage-and-pulse",
   },
   visuals: {
-    logo: "/projects/choreia/logo.png",
+    logo: "/projects/choreia/icon.png",
+    icon: "/projects/choreia/icon.png",
     screenshots: [],
   },
   features: [

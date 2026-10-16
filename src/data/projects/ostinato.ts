@@ -36,7 +36,8 @@ export const ostinato: ProjectConfig = {
     mood: "wood-and-resonance",
   },
   visuals: {
-    logo: "/projects/ostinato/logo.png",
+    logo: "/projects/ostinato/icon.png",
+    icon: "/projects/ostinato/icon.png",
     screenshots: [],
   },
   features: [

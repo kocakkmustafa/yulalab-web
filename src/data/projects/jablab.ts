@@ -36,7 +36,8 @@ export const jablab: ProjectConfig = {
     mood: "canvas-and-grit",
   },
   visuals: {
-    logo: "/projects/jablab/logo.png",
+    logo: "/projects/jablab/icon.png",
+    icon: "/projects/jablab/icon.png",
     screenshots: [],
   },
   features: [

@@ -13,6 +13,7 @@ import type {
   TimelineFrame,
 } from "./types";
 import styles from "./Experience.module.css";
+import { scrollProgressForTimeline } from "./storyboard";
 import { resolveExperiencePalette } from "./theme";
 
 type ExperienceOverlayProps = {
@@ -357,7 +358,7 @@ export function ExperienceOverlay({
 
       <div className={styles.realHud} aria-hidden="true">
         <span>RENDER / {tier.toUpperCase()}</span>
-        <span>SCROLL / {Math.round(frame.progress * 100).toString().padStart(3, "0")}%</span>
+        <span>SCROLL / {Math.round(scrollProgressForTimeline(frame.progress) * 100).toString().padStart(3, "0")}%</span>
         <span>IOR / {tier === "low" ? "OFF" : "1.35"}</span>
         <span>PRODUCT / {String(frame.productIndex + 1).padStart(2, "0")} OF {String(products.length).padStart(2, "0")}</span>
       </div>
@@ -455,6 +456,11 @@ export function ExperienceOverlay({
               <h2>{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
+              {product.developmentPreviews?.length ? (
+                <p className={styles.previewNote} data-development-preview="true">
+                  {copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview"} · {product.developmentPreviews[0].capturedAt}
+                </p>
+              ) : null}
               <NextLink
                 href={product.href}
                 onClick={() => track({ event: "product_primary_cta", product: product.slug })}
@@ -575,6 +581,7 @@ export function ExperienceOverlay({
         <div className={styles.valuesHeading}>
           <p className={styles.kicker}>{copy.values.kicker}</p>
           <h2 id="experience-values-title">{copy.values.title}</h2>
+          <p className={styles.previewNote}>{copy.locale === "tr" ? "Ürün kimlikleri ve tarihli geliştirme görünümleri" : "Product identities and dated development views"}</p>
         </div>
         <div className={styles.valuePanels}>
           {copy.values.items.map((value, index) => {
