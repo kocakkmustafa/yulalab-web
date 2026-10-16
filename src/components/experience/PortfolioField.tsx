@@ -244,18 +244,21 @@ function ScreenshotLayer({
   const [width, height] = dimensionsForAspect(loaded.aspect);
   const detail = layerIndex > 0;
   const wideCapture = loaded.aspect > 2.5;
-  const compactWideMix = viewportMobileMix(viewportSize.width)
+  const mobileMix = viewportMobileMix(viewportSize.width);
+  const compactWideMix = mobileMix
     * (1 - smoothstep((viewportSize.height - 680) / 120));
   const layerOpacity = opacity * (detail ? 0.94 : 1);
-  // Keep real wide dashboard strips together; regular captures fan into an
-  // angled side panel rather than being hidden behind the primary image.
+  // One dominant, uncropped image anchors the work; supporting captures sit
+  // smaller at the side. Portrait wide strips retain the short-screen layout.
   const position: Vec3 = wideCapture
-    ? [0, detail ? -0.62 + compactWideMix * 0.15 : 0.72, -layerIndex * 0.06]
-    : detail ? [2.2, 0.15, -0.6] : [0, 0, 0];
-  const rotation: Vec3 = [0, detail && !wideCapture ? -0.18 : 0, 0];
-  // Only the wide secondary preview contracts/lifts on short portrait screens;
-  // the primary plane and semantic caption retain their accepted composition.
-  const scale = detail ? (wideCapture ? 1 - compactWideMix * 0.25 : 0.66) : 1;
+    ? detail
+      ? [2.35 * (1 - mobileMix), -0.35 - mobileMix * 0.27 + compactWideMix * 0.15, -0.48 + mobileMix * 0.42]
+      : [0, 0.72, 0]
+    : detail ? [2.5, 0.15, -0.6] : [0, 0, 0];
+  const rotation: Vec3 = [0, detail ? -0.18 * (wideCapture ? 1 - mobileMix : 1) : 0, 0];
+  // The667px portrait detail remains at.75scale/y-.47; taller viewports give
+  // the primary more visual weight without cropping either registered image.
+  const scale = detail ? (wideCapture ? 0.62 + compactWideMix * 0.13 : 0.46) : 1;
 
   if (!loaded.texture || loaded.failed) {
     return (
@@ -608,7 +611,7 @@ function productPose(
   return {
     position: lerpVec3(arcPosition, proof.position, morph),
     rotation: lerpVec3(arcRotation, proof.rotation, morph),
-    scale: lerp(composition.scale * (0.68 + focus * 0.32), proof.scale, morph),
+    scale: lerp(composition.scale * (0.5 + focus * 0.5), proof.scale, morph),
   };
 }
 
@@ -708,10 +711,10 @@ export function PortfolioField({
         const pose = productPose(index, frame, mode, composition);
         const portfolioDistance = Math.abs(index - frame.productFloat);
         const portfolioFocus = 1 - smoothstep(clamp01(portfolioDistance));
-        // Immediate neighbors remain legible as spatial previews; distant
-        // cards stay quiet and retain the existing lazy-media boundary.
+        // Neighboring works remain quiet side planes around the single active
+        // work, with the same existing lazy-media loading boundary.
         const neighborPresence = 1 - smoothstep(segmentProgress(portfolioDistance, 0.75, 2.25));
-        const portfolioOpacity = Math.max(0.045, neighborPresence * 0.45 + portfolioFocus * 0.55);
+        const portfolioOpacity = Math.max(0.045, neighborPresence * 0.24 + portfolioFocus * 0.76);
         const proofDistance = Math.abs(index - frame.proofFloat);
         const proofFocus = 1 - smoothstep(clamp01(proofDistance));
         const proofOpacity = 0.22 + proofFocus * 0.78;
