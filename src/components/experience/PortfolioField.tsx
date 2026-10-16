@@ -11,7 +11,7 @@ import {
   TextureLoader,
 } from "three";
 import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
-import { portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia } from "./layout";
+import { portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia, viewportMobileMix } from "./layout";
 import type {
   ExperienceMode,
   ExperienceProduct,
@@ -240,17 +240,22 @@ function ScreenshotLayer({
   onAssetSettled: (path: string) => void;
 }) {
   const loaded = useCardTexture(screenshot.path, tier, onAssetSettled);
+  const viewportSize = useThree((state) => state.size);
   const [width, height] = dimensionsForAspect(loaded.aspect);
   const detail = layerIndex > 0;
   const wideCapture = loaded.aspect > 2.5;
+  const compactWideMix = viewportMobileMix(viewportSize.width)
+    * (1 - smoothstep((viewportSize.height - 680) / 120));
   const layerOpacity = opacity * (detail ? 0.94 : 1);
   // Keep real wide dashboard strips together; regular captures fan into an
   // angled side panel rather than being hidden behind the primary image.
   const position: Vec3 = wideCapture
-    ? [0, detail ? -0.62 : 0.72, -layerIndex * 0.06]
+    ? [0, detail ? -0.62 + compactWideMix * 0.15 : 0.72, -layerIndex * 0.06]
     : detail ? [2.2, 0.15, -0.6] : [0, 0, 0];
   const rotation: Vec3 = [0, detail && !wideCapture ? -0.18 : 0, 0];
-  const scale = detail && !wideCapture ? 0.66 : 1;
+  // Only the wide secondary preview contracts/lifts on short portrait screens;
+  // the primary plane and semantic caption retain their accepted composition.
+  const scale = detail ? (wideCapture ? 1 - compactWideMix * 0.25 : 0.66) : 1;
 
   if (!loaded.texture || loaded.failed) {
     return (
