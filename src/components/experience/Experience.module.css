@@ -31,13 +31,10 @@
   overflow: hidden;
   background: #09060e;
   opacity: 1;
-  transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.journey[data-loader-visible="true"] .viewport {
-  opacity: 0;
-}
-
+/* The ready scene stays painted behind the opaque loader. Its own exit
+   reveals that scene; fading both layers sequentially creates a black gap. */
 .canvasLayer {
   position: absolute;
   z-index: 0;

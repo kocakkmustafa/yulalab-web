@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- the reader displays the complete original development capture. */
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { track } from "@/lib/analytics/client";
@@ -309,18 +309,95 @@ export function ExperienceClosingContent({ copy, headingId }: ExperienceClosingC
   );
 }
 
+const PREVIEW_HISTORY_KEY = "__yulaDevelopmentPreviewV1";
+type PreviewHistory = {
+  slug: string;
+  scrollY: number;
+  href: string;
+  pathname: string;
+  documentStartedAt: number;
+  scrollRestoration: ScrollRestoration;
+};
+
+function readPreviewHistory(state: unknown): PreviewHistory | null {
+  const saved = (state as Record<string, PreviewHistory> | null)?.[PREVIEW_HISTORY_KEY];
+  return saved && saved.documentStartedAt === performance.timeOrigin
+    && saved.pathname === window.location.pathname
+    && saved.href === window.location.href
+    && (saved.scrollRestoration === "auto" || saved.scrollRestoration === "manual")
+    && typeof saved.slug === "string" && Number.isFinite(saved.scrollY) && saved.scrollY >= 0
+    ? saved : null;
+}
+
 function DevelopmentPreviewDialog({ product, locale, onClose }: { product: ExperienceProduct | null; locale: "tr" | "en"; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
-  useEffect(() => {
+  const focusFrame = useRef(0);
+  const releaseDeferred = useRef<(() => void) | null>(null);
+  useLayoutEffect(() => {
     const dialog = ref.current;
     if (!product || !dialog) return;
+    cancelAnimationFrame(focusFrame.current);
+    releaseDeferred.current?.();
+    const saved = readPreviewHistory(window.history.state);
+    const returnY = saved?.scrollY ?? window.scrollY;
+    const href = window.location.href;
+    const opener = document.getElementById(`development-preview-open-${product.slug}`);
     const previousOverflow = document.body.style.overflow;
+    const root = document.documentElement;
+    const previousBehavior = root.style.scrollBehavior;
+    const previousRestoration = saved?.scrollRestoration ?? window.history.scrollRestoration;
+    // The reader owns one same-URL history entry. Browser traversal must not
+    // restore an older anchor position underneath the modal or its return focus.
+    window.history.scrollRestoration = "manual";
+    root.style.scrollBehavior = "auto";
     document.body.style.overflow = "hidden";
     dialog.showModal();
-    return () => { if (dialog.open) dialog.close(); document.body.style.overflow = previousOverflow; };
+    window.scrollTo({ top: returnY, behavior: "instant" });
+    const positionFrame = requestAnimationFrame(() => window.scrollTo({ top: returnY, behavior: "instant" }));
+    return () => {
+      cancelAnimationFrame(positionFrame);
+      if (dialog.open) dialog.close();
+      document.body.style.overflow = previousOverflow;
+      const release = () => {
+        root.style.scrollBehavior = previousBehavior;
+        if (window.location.href === href) window.history.scrollRestoration = previousRestoration;
+        releaseDeferred.current = null;
+      };
+      if (window.location.href !== href || !dialog.isConnected) { release(); return; }
+      window.scrollTo({ top: returnY, behavior: "instant" });
+      // A rapid Forward/Back can finish before the damped scene reaches its
+      // saved product. Wait only for its opener to leave inert, without scrolling
+      // a focused off-screen card or taking focus after another navigation.
+      const restoreFocus = (remaining: number) => {
+        if (dialog.open || !dialog.isConnected || window.location.href !== href
+          || Math.abs(window.scrollY - returnY) > 3) return;
+        if (opener?.isConnected && !opener.closest("[inert]")) {
+          opener.focus({ preventScroll: true });
+        } else if (remaining > 0) {
+          focusFrame.current = requestAnimationFrame(() => restoreFocus(remaining - 1));
+        } else if (document.activeElement === document.body) {
+          document.querySelector<HTMLElement>("[data-yula-experience] header > a")?.focus({ preventScroll: true });
+        }
+      };
+      // Native history restores persisted scroll after dispatching popstate.
+      // Keep smooth scrolling disabled through that step, then restore the
+      // reader's position before paint and release the original policies.
+      releaseDeferred.current = release;
+      focusFrame.current = requestAnimationFrame(() => {
+        if (!dialog.open && dialog.isConnected && window.location.href === href) {
+          window.scrollTo({ top: returnY, behavior: "instant" });
+        }
+        release();
+        restoreFocus(60);
+      });
+    };
   }, [product]);
+  useLayoutEffect(() => () => {
+    cancelAnimationFrame(focusFrame.current);
+    releaseDeferred.current?.();
+  }, []);
   const shot = product?.developmentPreviews?.[0];
-  return <dialog ref={ref} className={styles.previewDialog} onClose={onClose} onCancel={onClose} aria-labelledby="development-preview-title">
+  return <dialog ref={ref} className={styles.previewDialog} onCancel={(event) => { event.preventDefault(); onClose(); }} aria-labelledby="development-preview-title">
     <header><h2 id="development-preview-title">{product?.name} · {locale === "tr" ? "Geliştirme görünümü" : "Development view"}</h2><button type="button" onClick={onClose} aria-label={locale === "tr" ? "Görüntüyü kapat" : "Close image"}>×</button></header>
     {shot ? <><p>{shot.capturedAt} · {locale === "tr" ? "Tarihli geliştirme sürümü" : "Dated development build"}</p><div className={styles.previewDialogScroll} tabIndex={0} role="region" aria-label={locale === "tr" ? "Tam geliştirme ekranı" : "Complete development screen"}><img src={shot.path} alt={shot.alt} /></div></> : null}
   </dialog>;
@@ -336,7 +413,49 @@ export function ExperienceOverlay({
   onLinearView,
 }: ExperienceOverlayProps) {
   const [previewProduct, setPreviewProduct] = useState<ExperienceProduct | null>(null);
-  const closePreview = useCallback(() => setPreviewProduct(null), []);
+  const previewDismissPending = useRef(false);
+  const previewEntry = useRef<PreviewHistory | null>(null);
+  const openPreview = useCallback((product: ExperienceProduct) => {
+    const saved: PreviewHistory = {
+      slug: product.slug,
+      scrollY: window.scrollY,
+      href: window.location.href,
+      pathname: window.location.pathname,
+      documentStartedAt: performance.timeOrigin,
+      scrollRestoration: window.history.scrollRestoration,
+    };
+    previewEntry.current = saved;
+    // Preserve Next's routing fields and the journey's entry-local snapshot.
+    window.history.pushState({ ...window.history.state, [PREVIEW_HISTORY_KEY]: saved }, "", saved.href);
+    previewDismissPending.current = false;
+    setPreviewProduct(product);
+  }, []);
+  const closePreview = useCallback(() => {
+    if (previewDismissPending.current) return;
+    if (readPreviewHistory(window.history.state)) {
+      previewDismissPending.current = true;
+      window.history.back();
+    } else {
+      previewEntry.current = null;
+      setPreviewProduct(null);
+    }
+  }, []);
+  useEffect(() => {
+    const syncPreview = (event?: PopStateEvent) => {
+      const saved = readPreviewHistory(window.history.state);
+      if (event && previewEntry.current && !saved && window.location.href === previewEntry.current.href) {
+        // Capture the destination entry before native persisted-scroll restore.
+        // Its original policy is released by the dialog after this traversal.
+        window.history.scrollRestoration = "manual";
+      }
+      previewEntry.current = saved;
+      previewDismissPending.current = false;
+      setPreviewProduct(saved ? products.find((product) => product.slug === saved.slug) ?? null : null);
+    };
+    syncPreview();
+    window.addEventListener("popstate", syncPreview, true);
+    return () => window.removeEventListener("popstate", syncPreview, true);
+  }, [products]);
   const closingInteractive =
     stageIs(frame, "closing") && frame.world.closingContent >= 0.2;
   const heroActive = stageSemanticActive(frame, "hero", frame.overlay.hero);
@@ -481,7 +600,7 @@ export function ExperienceOverlay({
               {product.developmentPreviews?.length ? (
                 <p className={styles.previewNote} data-development-preview="true">
                   {product.developmentPreviews[0].captureKind === "onboarding" ? (copy.locale === "tr" ? "İlk başlangıç önizlemesi" : "First-start preview") : (copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview")} · {product.developmentPreviews[0].capturedAt}
-                  <button type="button" className={styles.previewExpand} onClick={() => setPreviewProduct(product)} tabIndex={active ? 0 : -1}>{copy.locale === "tr" ? "Ekranı büyüt" : "Enlarge screen"}</button>
+                  <button type="button" id={`development-preview-open-${product.slug}`} className={styles.previewExpand} onClick={() => openPreview(product)} tabIndex={active ? 0 : -1}>{copy.locale === "tr" ? "Ekranı büyüt" : "Enlarge screen"}</button>
                 </p>
               ) : null}
               <NextLink
