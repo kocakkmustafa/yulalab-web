@@ -577,6 +577,46 @@
   text-transform: uppercase;
 }
 
+.glyphControl {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  left: 50%;
+  width: clamp(180px, 32vw, 460px);
+  height: min(48vh, 440px);
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  color: #d7d0e3;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.glyphControl[data-dragging="true"] { cursor: grabbing; }
+.glyphControl:focus-visible { outline: 1px solid #eee8ff; outline-offset: 8px; }
+.glyphHint {
+  position: absolute;
+  right: 0;
+  bottom: 4px;
+  left: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+.glyphControl:hover .glyphHint,
+.glyphControl:focus-visible .glyphHint { opacity: 1; }
+
+@media (max-width: 900px) {
+  .glyphControl { top: 34vh; width: min(65vw, 420px); height: 30vh; min-height: 180px; }
+}
+
 .scrollCue {
   position: absolute;
   right: auto;
@@ -631,15 +671,13 @@
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(90deg, rgba(9, 6, 14, 0.3) 0%, rgba(9, 6, 14, 0.1) 46%, transparent),
-    repeating-linear-gradient(90deg, transparent 0 11.8%, rgba(255, 255, 255, 0.025) 12% 12.2%);
+  background: linear-gradient(0deg, rgba(9, 6, 14, 0.14), transparent 32%);
 }
 
 .worksBackdrop > span {
   position: absolute;
   inset: -5%;
-  opacity: calc(var(--works-opacity) * 0.18);
+  opacity: calc(var(--works-opacity) * 0.045);
   background-position: center;
   background-size: cover;
   filter: blur(24px) saturate(1.18) contrast(1.08);
@@ -650,7 +688,7 @@
   content: "";
   position: absolute;
   inset: 0;
-  opacity: calc(var(--works-opacity) * 0.24);
+  opacity: calc(var(--works-opacity) * 0.04);
   background-image:
     linear-gradient(var(--works-primary) 1px, transparent 1px),
     linear-gradient(90deg, var(--works-secondary) 1px, transparent 1px);
@@ -697,8 +735,9 @@
     content: "";
     position: absolute;
     z-index: 0;
-    inset: 0;
-    background: radial-gradient(ellipse at 15% 100%, rgba(7, 4, 12, 0.92), rgba(7, 4, 12, 0.35) 45%, transparent 70%);
+    inset: auto 0 0;
+    height: min(320px, 42vh);
+    background: linear-gradient(0deg, rgba(7, 4, 12, 0.92), rgba(7, 4, 12, 0.45) 45%, transparent);
     pointer-events: none;
   }
 
@@ -1197,6 +1236,27 @@
 }
 
 @media (min-width: 768px) and (max-width: 900px) {
+  .heroCopy {
+    top: 54%;
+    right: calc(48px + var(--safe-right));
+    left: calc(48px + var(--safe-left));
+    width: auto;
+    padding: 20px 0 0;
+    border-top: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+    border-left: 0;
+    transform: none;
+  }
+
+  .heroCopy::before {
+    inset: -26px -48px -24px;
+    background: linear-gradient(0deg, rgba(7, 4, 12, 0.97), rgba(7, 4, 12, 0.91) 74%, transparent);
+  }
+
+  .heroCopy h1 { max-width: 25ch; font-size: 40px; }
+  .heroLede { max-width: 54ch; margin-top: 14px; font-size: 13px; }
+  .heroCopy .productLink { margin-top: 16px; }
+  .heroNotice { display: table; max-width: 100%; margin-top: 12px; font-size: 8px; }
+
   .experienceHeader {
     grid-template-columns: auto minmax(0, 1fr) auto;
     column-gap: 18px;
@@ -1657,7 +1717,7 @@
   .heroCopy {
     top: auto;
     right: calc(20px + var(--safe-right));
-    bottom: calc(72px + var(--safe-bottom));
+    bottom: calc(15vh + var(--safe-bottom));
     left: calc(20px + var(--safe-left));
     width: auto;
     margin: 0;
@@ -1669,7 +1729,7 @@
 
   .heroCopy::before {
     inset: -42px -20px -22px;
-    background: linear-gradient(0deg, rgba(7, 4, 12, 0.92), rgba(7, 4, 12, 0.42), transparent);
+    background: linear-gradient(0deg, rgba(7, 4, 12, 0.96), rgba(7, 4, 12, 0.9) 70%, transparent);
   }
 
   .heroCopy h1 {
@@ -1935,6 +1995,8 @@
 }
 
 @media (max-width: 767px) and (max-height: 720px) {
+  .glyphHint { bottom: 18px; }
+
   .closingStage {
     padding-bottom: calc(28px + var(--safe-bottom));
   }

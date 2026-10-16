@@ -12,11 +12,13 @@ import {
   Texture,
   Vector2,
 } from "three";
+import { smoothstep, segmentProgress } from "./timeline";
 import { glyphViewportPose } from "./layout";
-import type { QualityTier, TimelineFrame } from "./types";
+import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 export type YulaGlyphProps = {
   frame: TimelineFrame;
+  interactionRotation?: Vec3;
   tier: QualityTier;
   portalTexture?: Texture | null;
 };
@@ -118,7 +120,7 @@ function makeYShape(): Shape {
   return shape;
 }
 
-export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps) {
+export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotation = [0, 0, 0] }: YulaGlyphProps) {
   const viewportSize = useThree((state) => state.size);
   const renderer = useThree((state) => state.gl);
   const causticMaterial = useRef<ShaderMaterial | null>(null);
@@ -143,6 +145,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
 
   useEffect(() => () => geometry.dispose(), [geometry]);
 
+  const interactionMix = 1 - smoothstep(segmentProgress(frame.progress, 0.025, 0.075));
+  const rotation: Vec3 = [
+    frame.glyph.rotation[0] + interactionRotation[0] * interactionMix,
+    frame.glyph.rotation[1] + interactionRotation[1] * interactionMix,
+    frame.glyph.rotation[2],
+  ];
   const whiteMix = frame.glyph.outlineMix;
   const servicePresence = frame.world.serviceIn * (1 - frame.world.serviceOut);
   const galleryVisibility = 1 - frame.world.worksBackdropMix * 0.82;
@@ -157,7 +165,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
     * (tier === "low" ? 0.82 : 1);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const transmission =
-    tier === "high" ? 0.94 * frame.glyph.glassMix : tier === "medium" ? 0.78 * frame.glyph.glassMix : 0;
+    tier === "high" ? 0.72 * frame.glyph.glassMix : tier === "medium" ? 0.56 * frame.glyph.glassMix : 0;
   const fringeOpacity =
     (0.022 + frame.glyph.glassMix * (tier === "low" ? 0.14 : 0.055)) * closingVisibility;
   const viewportPose = glyphViewportPose(
@@ -216,7 +224,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
   return (
     <group
       position={position}
-      rotation={frame.glyph.rotation}
+      rotation={rotation}
       scale={frame.glyph.scale * viewportPose.scaleMultiplier}
       visible={closingVisibility > 0.001}
     >
@@ -258,11 +266,11 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
             depthWrite={bodyOpacity > 0.55}
             distortion={tier === "high" ? 0.055 : 0}
             distortionScale={0.34}
-            envMapIntensity={tier === "high" ? 1.7 : 1.3}
+            envMapIntensity={tier === "high" ? 2.4 : 1.8}
             ior={1.35}
             iridescence={tier === "high" ? 0.07 * frame.glyph.glassMix : 0}
             iridescenceIOR={1.35}
-            metalness={0.025}
+            metalness={0.2}
             opacity={bodyOpacity}
             roughness={tier === "high" ? 0.08 : 0.15}
             samples={tier === "high" ? 3 : 2}
@@ -298,7 +306,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
         <shaderMaterial
           ref={causticMaterial}
           blending={AdditiveBlending}
-          depthTest={false}
+          depthTest
           depthWrite={false}
           fragmentShader={CAUSTIC_FRAGMENT_SHADER}
           toneMapped={false}

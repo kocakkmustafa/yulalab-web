@@ -841,3 +841,148 @@ for (const [locale, liveLabel, betaLabel] of [
     await expect(linear.locator('[data-lifecycle="beta"]').first()).toHaveText(betaLabel);
   });
 }
+
+// Normal URLs exercise native history and GPU interaction; no capture override.
+async function openNativeJourney(page: Page) {
+  await page.goto("/");
+  const root = page.locator(ROOT);
+  await expect(root).toHaveAttribute("data-experience-mounted", "true");
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  test.skip(await root.getAttribute("data-experience-fallback") === "true",
+    "Normal WebGL interaction requires a hardware renderer; software fallback is covered separately.");
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  return root;
+}
+
+test("native history returns to each product without replaying the opening", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  const root = await openNativeJourney(page);
+  const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
+  const openingEntry = await page.evaluate(() => window.history.state?.__yulaJourneyV1?.entryId);
+  for (const [slug, progress] of [["braavolabs", 0.11125], ["lifeos", 0.21625]] as const) {
+    if (slug === "braavolabs") {
+      await page.locator('header > nav a[href="#experience-portfolio"]').click();
+    } else {
+      await page.evaluate((value) => window.scrollTo({
+        top: (document.documentElement.scrollHeight - innerHeight) * value,
+        behavior: "instant",
+      }), progress);
+    }
+    await page.waitForFunction((value) => Math.abs(scrollY -
+      (document.documentElement.scrollHeight - innerHeight) * value) < 3, progress);
+    await expect(root).toHaveAttribute("data-active-product", slug);
+    const before = await page.evaluate(() => scrollY);
+    await expect.poll(() => page.evaluate(() => Boolean(history.state?.__NA && history.state?.__PRIVATE_NEXTJS_INTERNALS_TREE))).toBe(true);
+    if (slug === "braavolabs") {
+      await expect.poll(() => page.evaluate(() => history.state?.__yulaJourneyV1?.entryId)).not.toBe(openingEntry);
+    }
+    await page.locator(`[data-experience-stage="portfolio"] article[data-active="true"] a[href$="/projects/${slug}"]`).click();
+    await page.waitForURL(`**/projects/${slug}`);
+    for (let traversal = 0; traversal < 2; traversal++) {
+      await page.goBack();
+      await expect(root).toHaveAttribute("data-experience-mounted", "true");
+      expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStartedAt);
+      await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 1_000 });
+      await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before)).toBeLessThan(3);
+      await expect(root).toHaveAttribute("data-active-product", slug);
+      if (traversal === 0) {
+        await page.goForward();
+        await page.waitForURL(`**/projects/${slug}`);
+      }
+    }
+  }
+  await page.locator('[data-experience-stage="portfolio"] article[data-active="true"] a[href$="/projects/lifeos"]').click();
+  await page.waitForURL("**/projects/lifeos");
+  await page.locator("header").getByRole("link", { name: /YULA/i }).first().click();
+  await expect(root).toHaveAttribute("data-loader-visible", "true");
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-stage", "hero");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+  await page.reload();
+  await expect(root).toHaveAttribute("data-loader-visible", "true");
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-stage", "hero");
+  await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
+});
+
+test("native emblem responds to drag and keyboard while wheel keeps document ownership", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await openNativeJourney(page);
+  const control = page.locator('[data-yula-glyph-control="true"]');
+  const box = await control.boundingBox();
+  expect(box).not.toBeNull();
+  const canvas = page.locator("canvas");
+  const before = await canvas.screenshot();
+  await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(box!.x + box!.width / 2 + 90, box!.y + box!.height / 2 + 20, { steps: 8 });
+  await page.mouse.up();
+  await expect.poll(async () => Number(await control.getAttribute("data-glyph-yaw"))).toBeGreaterThan(0.3);
+  expect(await canvas.screenshot()).not.toEqual(before);
+  await control.focus();
+  await page.keyboard.press("Home");
+  await expect(control).toHaveAttribute("data-glyph-yaw", "0.000");
+  await expect(control).toHaveAttribute("data-glyph-pitch", "0.000");
+  await page.keyboard.press("ArrowRight");
+  await expect(control).toHaveAttribute("data-glyph-yaw", "0.120");
+  await page.keyboard.press("Escape");
+  await expect(control).toHaveAttribute("data-glyph-yaw", "0.000");
+  await page.keyboard.press("Enter");
+  await expect(control).toHaveAttribute("data-glyph-yaw", "0.120");
+  await page.mouse.wheel(0, 600);
+  await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
+});
+
+
+test("native immediate Back then Forward keeps the last scroll before persistence", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/projects/lifeos");
+  await page.locator("header").getByRole("link", { name: /YULA/i }).first().click();
+  const root = page.locator(ROOT);
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  test.skip(await root.getAttribute("data-experience-fallback") === "true", "Hardware WebGL required for native journey history.");
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  const target = await page.evaluate(() => {
+    const y = Math.round((document.documentElement.scrollHeight - innerHeight) * 0.21625);
+    window.scrollTo({ top: y, behavior: "instant" });
+    window.history.back();
+    return y;
+  });
+  await page.waitForURL("**/projects/lifeos");
+  await page.goForward();
+  await expect(root).toHaveAttribute("data-experience-mounted", "true");
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 1_000 });
+  await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - target)).toBeLessThan(3);
+  await expect(root).toHaveAttribute("data-active-product", "lifeos");
+});
+
+
+test("English native gallery CTA keeps one locale prefix and returns in the same document", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/en");
+  const root = page.locator(ROOT);
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  test.skip(await root.getAttribute("data-experience-fallback") === "true", "Hardware WebGL required for native journey history.");
+  await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
+  await page.locator('header > nav a[href="#experience-portfolio"]').click();
+  await page.waitForFunction(() => Math.abs(scrollY -
+    (document.documentElement.scrollHeight - innerHeight) * 0.11125) < 3);
+  const link = page.locator('[data-experience-stage="portfolio"] article[data-active="true"] a');
+  await expect(link).toHaveAttribute("href", "/en/projects/braavolabs");
+  const before = await page.evaluate(() => scrollY);
+  await link.click();
+  await page.waitForURL("**/en/projects/braavolabs");
+  expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStartedAt);
+  await page.goBack();
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 1_000 });
+  await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before)).toBeLessThan(3);
+  expect(await page.evaluate(() => performance.timeOrigin)).toBe(documentStartedAt);
+});

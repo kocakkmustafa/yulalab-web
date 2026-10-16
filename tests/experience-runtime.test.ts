@@ -529,6 +529,22 @@ describe("the single experience progress loop", () => {
     expect(frames.cancel).toHaveBeenCalledTimes(1);
   });
 
+  it("starts a history return at the restored document position and damps later input", () => {
+    window.history.replaceState({}, "", "/");
+    setScrollGeometry(500);
+    const frames = installAnimationFrames();
+    const { result, unmount } = renderHook(() => useExperienceProgress(true, true));
+    expect(result.current.progress).toBe(0.5);
+    frames.runNext(16);
+    expect(frames.callbacks.size).toBe(0);
+    setScrollGeometry(800);
+    act(() => window.dispatchEvent(new Event("scroll")));
+    frames.runNext(32);
+    expect(result.current.progress).toBeGreaterThan(0.5);
+    expect(result.current.progress).toBeLessThan(0.8);
+    unmount();
+  });
+
   it("stops requesting frames after the damped value reaches its target", () => {
     window.history.replaceState({}, "", "/");
     setScrollGeometry(0);

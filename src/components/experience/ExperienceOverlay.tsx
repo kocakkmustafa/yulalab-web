@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, type CSSProperties } from "react";
-import { TrackedLink } from "@/components/common/TrackedLink";
+import NextLink from "next/link";
+import { track } from "@/lib/analytics/client";
 import { Link } from "@/i18n/navigation";
 import { siteDate } from "@/lib/public-registry";
 import type {
@@ -130,19 +131,19 @@ export function ExperienceHeader({
 
   return (
     <header className={styles.experienceHeader}>
-      <a
+      <NextLink
         className={styles.experienceBrand}
         href="#experience-hero"
         aria-label={`YULALAB — ${copy.navigation.home}`}
       >
         <span>YULALAB</span>
-      </a>
+      </NextLink>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>
         <Link href="/consulting">{copy.navigation.consulting}</Link>
-        <a href="#experience-portfolio">{copy.navigation.projects}</a>
-        <a href="#experience-manifesto">{copy.navigation.manifesto}</a>
-        <a href="#experience-proof">{copy.navigation.transparency}</a>
+        <NextLink href="#experience-portfolio">{copy.navigation.projects}</NextLink>
+        <NextLink href="#experience-manifesto">{copy.navigation.manifesto}</NextLink>
+        <NextLink href="#experience-proof">{copy.navigation.transparency}</NextLink>
       </nav>
 
       <details
@@ -162,9 +163,9 @@ export function ExperienceHeader({
           onClick={(event) => closeMobileMenu(event.currentTarget.closest("details"))}
         >
           <Link href="/consulting">{copy.navigation.consulting}</Link>
-        <a href="#experience-portfolio">{copy.navigation.projects}</a>
-          <a href="#experience-manifesto">{copy.navigation.manifesto}</a>
-          <a href="#experience-proof">{copy.navigation.transparency}</a>
+        <NextLink href="#experience-portfolio">{copy.navigation.projects}</NextLink>
+          <NextLink href="#experience-manifesto">{copy.navigation.manifesto}</NextLink>
+          <NextLink href="#experience-proof">{copy.navigation.transparency}</NextLink>
         </nav>
       </details>
 
@@ -376,14 +377,17 @@ export function ExperienceOverlay({
           <Link href="/consulting" className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></Link>
           <p className={styles.heroNotice}>{copy.hero.notice}</p>
         </div>
-        <TrackedLink
+        <NextLink
           href="#experience-portfolio"
-          event="home_primary_cta"
+          onClick={() => track({ event: "home_primary_cta" })}
+          onAuxClick={(event) => {
+            if (event.button === 1) track({ event: "home_primary_cta" });
+          }}
           className={styles.scrollCue}
         >
           <span>{copy.hero.scroll}</span>
           <i />
-        </TrackedLink>
+        </NextLink>
       </section>
 
       <section
@@ -451,16 +455,18 @@ export function ExperienceOverlay({
               <h2>{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
-              <TrackedLink
+              <NextLink
                 href={product.href}
-                event="product_primary_cta"
-                product={product.slug}
+                onClick={() => track({ event: "product_primary_cta", product: product.slug })}
+                onAuxClick={(event) => {
+                  if (event.button === 1) track({ event: "product_primary_cta", product: product.slug });
+                }}
                 tabIndex={active ? 0 : -1}
                 className={styles.productLink}
               >
                 {product.ctaLabel}
                 <span aria-hidden="true">↗</span>
-              </TrackedLink>
+              </NextLink>
               {product.screenshots.length > 0 ? (
                 <ul className={styles.srOnly}>
                   {product.screenshots.map((shot) => (

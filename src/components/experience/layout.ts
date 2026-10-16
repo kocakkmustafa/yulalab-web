@@ -70,9 +70,8 @@ export function glyphViewportPose(
   const scaleMultiplier = responsiveScale * openingScale
     * (1 - 0.14 * shortMobileMix * compositionStrength)
     * (1 - 0.2 * mobileMix * mobilePortalStrength);
-  const openingMobileY = lerp(0, 1.15, shortMobileMix)
+  const openingMobileY = (1.8 + 0.5 * mobileMix + 0.2 * shortMobileMix)
     * compactMix
-    * mobileMix
     * compositionStrength;
 
   return {

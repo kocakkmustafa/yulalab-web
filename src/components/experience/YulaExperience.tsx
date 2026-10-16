@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -22,12 +23,14 @@ import type {
   ExperienceMode,
   ExperienceProduct,
   QualityTier,
+  Vec3,
 } from "./types";
 import { useExperienceProgress } from "./useExperienceProgress";
 import styles from "./Experience.module.css";
 
 type ExperienceCanvasProps = {
   products: ExperienceProduct[];
+  glyphRotation?: Vec3;
   progress: number;
   mode: ExperienceMode;
   tier: QualityTier;
@@ -57,6 +60,24 @@ const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
 const LOADER_HOLD_PROGRESS = 0.9;
 const TIER_ORDER: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
 
+// Store only this journey's UI position on its own browser-history entry.
+// Next's routing fields are preserved; fresh entries/reloads retain the opening.
+const JOURNEY_HISTORY_KEY = "__yulaJourneyV1";
+type JourneyHistory = { pathname: string; scrollY: number; documentStartedAt: number; entryId: string };
+// Client-only UI snapshots; never populated during server rendering.
+const latestJourneyPositions = new Map<string, number>();
+let journeyEntrySequence = 0;
+
+function readJourneyReturn(): JourneyHistory | null {
+  const saved = window.history.state?.[JOURNEY_HISTORY_KEY] as JourneyHistory | undefined;
+  const navigation = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+  if (!saved || saved.pathname !== window.location.pathname ||
+      !Number.isFinite(saved.scrollY) || saved.scrollY < 0) return null;
+  return saved.documentStartedAt === performance.timeOrigin || navigation?.type === "back_forward"
+    ? { ...saved, scrollY: latestJourneyPositions.get(saved.entryId) ?? saved.scrollY }
+    : null;
+}
+
 function useMediaQuery(query: string): boolean {
   const [matches, setMatches] = useState(false);
 
@@ -69,6 +90,84 @@ function useMediaQuery(query: string): boolean {
   }, [query]);
 
   return matches;
+}
+
+function GlyphControl({ locale, rotation, onChange }: {
+  locale: "tr" | "en";
+  rotation: Vec3;
+  onChange: (rotation: Vec3) => void;
+}) {
+  const drag = useRef<{ x: number; y: number; rotation: Vec3 } | null>(null);
+  const moved = useRef(false);
+  const [dragging, setDragging] = useState(false);
+  const clamp = (value: number, limit: number) => Math.max(-limit, Math.min(limit, value));
+  const label = locale === "tr" ? "Amblemi döndür" : "Rotate the emblem";
+  const help = locale === "tr"
+    ? "Sürükleyin veya ok tuşlarını kullanın. Home veya Escape ile sıfırlayın."
+    : "Drag or use the arrow keys. Press Home or Escape to reset.";
+  const stop = () => { drag.current = null; setDragging(false); };
+
+  return (
+    <button
+      type="button"
+      className={styles.glyphControl}
+      data-yula-glyph-control="true"
+      data-glyph-pitch={rotation[0].toFixed(3)}
+      data-glyph-yaw={rotation[1].toFixed(3)}
+      data-dragging={dragging ? "true" : "false"}
+      aria-label={label}
+      aria-describedby="yula-glyph-help"
+      title={help}
+      onPointerDown={(event) => {
+        if (event.button !== 0) return;
+        moved.current = false;
+        drag.current = { x: event.clientX, y: event.clientY, rotation };
+        event.currentTarget.setPointerCapture(event.pointerId);
+        setDragging(true);
+      }}
+      onPointerMove={(event) => {
+        const start = drag.current;
+        if (!start) return;
+        const dx = event.clientX - start.x;
+        const dy = event.clientY - start.y;
+        // Vertical touch gestures belong to document scrolling, even when
+        // they start over the emblem. Horizontal gestures can turn the Y.
+        if (event.pointerType === "touch" && Math.max(Math.abs(dx), Math.abs(dy)) < 8) return;
+        if (event.pointerType === "touch" && Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 8) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+          stop();
+          return;
+        }
+        if (Math.abs(dx) + Math.abs(dy) < 3) return;
+        moved.current = true;
+        onChange([clamp(start.rotation[0] + dy * 0.004, 0.35), clamp(start.rotation[1] + dx * 0.005, 0.65), 0]);
+      }}
+      onPointerUp={stop}
+      onPointerCancel={stop}
+      onLostPointerCapture={stop}
+      onClick={(event) => {
+        if (event.detail === 0 || !moved.current) onChange([rotation[0], clamp(rotation[1] + 0.12, 0.65), 0]);
+      }}
+      onKeyDown={(event) => {
+        const steps: Record<string, Vec3> = {
+          ArrowLeft: [0, -0.12, 0], ArrowRight: [0, 0.12, 0],
+          ArrowUp: [-0.08, 0, 0], ArrowDown: [0.08, 0, 0],
+        };
+        if (event.key === "Home" || event.key === "Escape") {
+          event.preventDefault();
+          moved.current = false;
+          onChange([0, 0, 0]);
+        } else if (steps[event.key]) {
+          event.preventDefault();
+          const step = steps[event.key];
+          onChange([clamp(rotation[0] + step[0], 0.35), clamp(rotation[1] + step[1], 0.65), 0]);
+        }
+      }}
+    >
+      <span className={styles.glyphHint}>{label}</span>
+      <span id="yula-glyph-help" className={styles.srOnly}>{help}</span>
+    </button>
+  );
 }
 
 export function YulaExperience({ products, copy }: YulaExperienceProps) {
@@ -85,9 +184,12 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const [loaderVisible, setLoaderVisible] = useState(true);
   const [loaderProgress, setLoaderProgress] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(false);
+  const [glyphRotation, setGlyphRotation] = useState<Vec3>([0, 0, 0]);
   const [forceStatic, setForceStatic] = useState(false);
   const audio = useRef<AmbientAudioController | null>(null);
   const canvasReadyRef = useRef(false);
+  const journeyReturn = useRef<JourneyHistory | null>(null);
+  const returnRestored = useRef(false);
   const timelineEnabled =
     mounted &&
     !forceStatic &&
@@ -95,7 +197,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     !compactViewport &&
     webgl === "available" &&
     !canvasFailed;
-  const { progress, capture, scrollRange } = useExperienceProgress(timelineEnabled);
+  const { progress, capture, scrollRange } = useExperienceProgress(timelineEnabled, journeyReturn.current !== null);
   // Native anchors use document pixels; the timeline uses the scrollable range.
   // Land at the first card's center, after both entry fades have completed.
   const firstProductCenter = STAGES.portfolio[0] +
@@ -108,7 +210,14 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     (STAGES.proof[1] - STAGES.proof[0]) / (2 * proofCount);
   const missionCenter = (STAGES.mission[0] + STAGES.mission[1]) / 2;
 
-  useEffect(() => setMounted(true), []);
+  useLayoutEffect(() => {
+    journeyReturn.current = capture.enabled ? null : readJourneyReturn();
+    if (journeyReturn.current) {
+      setLoaderVisible(false);
+      setLoaderProgress(1);
+    }
+    setMounted(true);
+  }, [capture.enabled]);
 
   useEffect(() => {
     canvasReadyRef.current = canvasReady;
@@ -134,7 +243,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   }, []);
 
   useEffect(() => {
-    if (!mounted || capture.enabled || !loaderVisible) return;
+    if (!mounted || capture.enabled || !loaderVisible || journeyReturn.current) return;
 
     const root = document.documentElement;
     const previousOverflow = root.style.overflow;
@@ -166,6 +275,12 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       webgl !== "available" ||
       canvasFailed
     ) {
+      setLoaderVisible(false);
+      setLoaderProgress(1);
+      return;
+    }
+
+    if (!capture.enabled && journeyReturn.current) {
       setLoaderVisible(false);
       setLoaderProgress(1);
       return;
@@ -242,6 +357,71 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     reducedMotion,
     webgl,
   ]);
+
+  useLayoutEffect(() => {
+    if (!timelineEnabled || !journeyReturn.current || returnRestored.current) return;
+    returnRestored.current = true;
+    // The immersive document must have its final height before restoration.
+    const savedY = journeyReturn.current.scrollY;
+    window.scrollTo({ top: savedY, behavior: "instant" });
+    const frame = requestAnimationFrame(() => window.scrollTo({ top: savedY, behavior: "instant" }));
+    return () => cancelAnimationFrame(frame);
+  }, [timelineEnabled]);
+
+  useEffect(() => {
+    if (!timelineEnabled || capture.enabled || loaderVisible) return;
+    const pathname = window.location.pathname;
+    let pending = 0;
+    let activeEntryId: string | null = null;
+    const remember = (persist = true) => {
+      if (window.location.pathname !== pathname) return;
+      const previous = window.history.state?.[JOURNEY_HISTORY_KEY] as JourneyHistory | undefined;
+      const hasEntry = previous?.pathname === pathname && typeof previous.entryId === "string";
+      const entryId = hasEntry ? previous.entryId : `${performance.timeOrigin}:${++journeyEntrySequence}`;
+      const saved: JourneyHistory = {
+        pathname,
+        scrollY: window.scrollY,
+        documentStartedAt: performance.timeOrigin,
+        entryId,
+      };
+      activeEntryId = entryId;
+      latestJourneyPositions.set(entryId, saved.scrollY);
+      if (latestJourneyPositions.size > 64) {
+        latestJourneyPositions.delete(latestJourneyPositions.keys().next().value!);
+      }
+      if (persist || !hasEntry) {
+        window.history.replaceState({ ...window.history.state, [JOURNEY_HISTORY_KEY]: saved }, "");
+      }
+    };
+    const onScroll = () => {
+      remember(false);
+      clearTimeout(pending);
+      pending = window.setTimeout(() => remember(), 120);
+    };
+    const onLeave = () => remember();
+    const onBeforeNavigate = (event: Event) => {
+      if ((event as Event & { navigationType?: string }).navigationType !== "traverse" ||
+          window.location.pathname !== pathname) return;
+      // The Navigation API fires before traversal changes persisted scroll.
+      // popstate can be too late to read the outgoing document position.
+      // Snapshot only; never mutate or intercept the browser's navigation.
+      if (activeEntryId) latestJourneyPositions.set(activeEntryId, window.scrollY);
+    };
+    const navigation = (window as Window & { navigation?: EventTarget }).navigation;
+    remember();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    // Capture before a Link pushes the destination's history entry.
+    document.addEventListener("click", onLeave, true);
+    window.addEventListener("pagehide", onLeave);
+    navigation?.addEventListener("navigate", onBeforeNavigate);
+    return () => {
+      clearTimeout(pending);
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("click", onLeave, true);
+      window.removeEventListener("pagehide", onLeave);
+      navigation?.removeEventListener("navigate", onBeforeNavigate);
+    };
+  }, [capture.enabled, loaderVisible, timelineEnabled]);
 
   const toggleSound = useCallback(async () => {
     const controller = audio.current ?? createAmbientAudio();
@@ -344,6 +524,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
                   onError={() => setCanvasFailed(true)}
                 >
                   <ExperienceCanvas
+                    glyphRotation={glyphRotation}
                     products={products}
                     progress={renderedProgress}
                     mode={mode}
@@ -365,6 +546,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
               onSoundToggle={() => void toggleSound()}
               onLinearView={() => setForceStatic(true)}
             />
+            {frame.stage === "hero" && frame.overlay.hero > 0.6 ? (
+              <GlyphControl locale={copy.locale} rotation={glyphRotation} onChange={setGlyphRotation} />
+            ) : null}
           </div>
 
         </>

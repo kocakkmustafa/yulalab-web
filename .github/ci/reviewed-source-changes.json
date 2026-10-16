@@ -236,8 +236,8 @@
     {
       "path": "src/components/experience/ExperienceOverlay.tsx",
       "publishedSha256": "289a917c767fb3775435bddfea463dddb27ab9dbb2736c2b51db07b638eb233e",
-      "candidateSha256": "2b13e2b97ae002c3d5c23bb93de1a66bac18cd852d9a1a01df1585e0350c5562",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "candidateSha256": "5226622eb9c76fb6cd26f3f485ebc996fd4a776ad3691336a1f1e7592de1aab6",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 independent visual follow-up: Use public NextLink for fragment and already-localized product destinations, preserving click/middle-click analytics and proper SPA history; no product URL or claim change. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -334,15 +334,15 @@
     {
       "path": "src/components/experience/YulaExperience.tsx",
       "publishedSha256": "b153d9b014c9ee19eb791b941a035d9bb32576f32c3c7e888085032123ffc259",
-      "candidateSha256": "3a8540c9cca49fb99ef9e12c0c64dc28ba2fb9734980f60398a9db1e6bd87bc9",
-      "reason": "2026-10-16 local UI correction: Map proof and manifesto native anchors through the measured document scroll range, targeting the first proof card and the mission center after viewport resizing. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "candidateSha256": "fb4425affde574bf4f11e30fd8ba84b96a8e93693a36045e2ec486e2d781c7e5",
+      "reason": "2026-10-16 local UI correction: Map proof and manifesto native anchors through the measured document scroll range, targeting the first proof card and the mission center after viewport resizing. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 independent visual follow-up: Preserve per-entry journey position and skip opening only on history return; fresh/reload entries retain opening. Bound in-memory snapshots and use optional pre-traversal Navigation API without interception. Provide bounded accessible drag/keyboard control for the existing Y. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/Experience.module.css",
       "publishedSha256": "ccda6219c07b761122590fd55142e6ec720816144fb4f8b280f831c572440402",
-      "candidateSha256": "3fb4b1485f47f9c6e80ad30122cdb775d1971b221bc81b485e2d01f8baee0037",
-      "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 bounded spatial-gallery adaptation: Reduce the fullscreen color wash; keep hero text readable against the enlarged brand wordmark; move desktop project captions below primary media; retain bounded mobile text scrolling; separate tablet navigation from controls. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "candidateSha256": "b00a55b82a2e9dfc841d71887d0c85c88f90d072a406f5f958b8691f6b1b297f",
+      "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 bounded spatial-gallery adaptation: Reduce the fullscreen color wash; keep hero text readable against the enlarged brand wordmark; move desktop project captions below primary media; retain bounded mobile text scrolling; separate tablet navigation from controls. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance. 2026-10-16 independent visual follow-up: Reduce washes over project media, limit caption scrim to its lower region, rebalance tablet/mobile hero and style the accessible emblem hit area without taking vertical touch/wheel ownership. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate. Short-phone visual check also separates the emblem hint from the hero eyebrow; accessible button label/help remain intact.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -355,29 +355,29 @@
     {
       "path": "src/components/experience/GridRoom.tsx",
       "publishedSha256": "c53696e4a3fc775c99fa7745ebdd7a0c8b144a7337639436fec64a3515d00ff4",
-      "candidateSha256": "5bfa899b077f19f14fa4ce164919600956c3a367a8a72c32258591497cb94101",
-      "reason": "2026-10-16 bounded spatial-gallery adaptation: Clarify the existing bowed room with quieter halftone, procedural lit cells and an elliptical grid; tighten and responsively size the own-brand wordmark texture without adding media. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "candidateSha256": "c84b020a9f1f3b511f953a5164a339d00a34785fa9cd3c86f1b54866be496386",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Clarify the existing bowed room with quieter halftone, procedural lit cells and an elliptical grid; tighten and responsively size the own-brand wordmark texture without adding media. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance. 2026-10-16 independent visual follow-up: Extend the existing curved grid vertically with quieter halftone, align own wordmark with portrait Y, and feather the existing physical crossing blade without changing its depth geometry. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/PortfolioField.tsx",
       "publishedSha256": "6239692f7f651a3cd0e58d86605b4aa0d131f58740abb140a9916bdccd1e5c82",
-      "candidateSha256": "2e969342875ef278e76c0f86073effab7d923c8f6d475e483a4706531be6cef7",
-      "reason": "2026-10-16 bounded spatial-gallery adaptation: Normalize primary media size to the same interpolated camera, retain angled neighboring cards and present the existing LifeOS branded fallback with its abstract core; preserve screenshot registry, lazy eligibility, settlement and disposal. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "candidateSha256": "923ed759709553bad435c53949f684abde318e42347ec3f6ba9028f93310bc14",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Normalize primary media size to the same interpolated camera, retain angled neighboring cards and present the existing LifeOS branded fallback with its abstract core; preserve screenshot registry, lazy eligibility, settlement and disposal. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance. 2026-10-16 independent visual follow-up: Make focused real screenshots opaque/depth-writing without fog; quiet secondary layers, end ghost cards before white crossing, and foreground existing distinct research geometry with small own-brand plaques. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/YulaGlyph.tsx",
       "publishedSha256": "c51792e4fc7e31006e369d1c4fbfdc9df1dce477e47624a13cc94adec485ef7a",
-      "candidateSha256": "ec42cd84333a1eaf6b7af8ef1f9e979459aeb413c8e29663451f180b26481439",
-      "reason": "2026-10-16 bounded spatial-gallery adaptation: Lighten the existing own-brand Y material and smoothly yield its body, edges and caustics during the portfolio envelope; preserve timeline, camera and proof collision geometry. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "candidateSha256": "d3f222d7475fd0ef0d510abb45ddce3702ff3b6db3eb278cf7d8ee3eadfd116a",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Lighten the existing own-brand Y material and smoothly yield its body, edges and caustics during the portfolio envelope; preserve timeline, camera and proof collision geometry. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance. 2026-10-16 independent visual follow-up: Apply bounded user rotation only before portfolio/proof, brighten existing chrome/glass material and depth-test caustics against opaque primary media. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/layout.ts",
       "publishedSha256": "2862430b7db9374609e4ae4c9c68cda9425b471fc6080aa243d80b63ad3e6362",
-      "candidateSha256": "37d6f1efd8611190466e1e6451b2ca8fb7d7d399f6f09dfad6a3481297c61ee3",
-      "reason": "2026-10-16 bounded spatial-gallery adaptation: Calculate continuous viewport/frustum-aware gallery composition with bounded primary media size, caption clearance and responsive yaw. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "candidateSha256": "1a6eace3aa9c30fb0f7cb2c775f9c55b00c522233b70217ac48297cc8d117171",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Calculate continuous viewport/frustum-aware gallery composition with bounded primary media size, caption clearance and responsive yaw. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance. 2026-10-16 independent visual follow-up: Raise portrait hero Y continuously with viewport blend, retaining collision-safe short-phone scaling and zero portfolio offset. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -385,6 +385,48 @@
       "publishedSha256": "05b4814ef718e497cb8a5ab27a04df7b1232a0dd67ec3392e625930dd716d4ca",
       "candidateSha256": "81e33ae54b462586700c67083271184052147d11b797b70043089d768731c534",
       "reason": "2026-10-16 bounded spatial-gallery adaptation: Check conservative primary-media bounds for all eight focus centers at four viewports and continuity across the responsive breakpoint; actual stacked media and morph extents checked by local WebGL screenshots. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/useExperienceProgress.ts",
+      "publishedSha256": "f7b10f1b21eafaa9a92c752973229490017486af5059d70c9d333f2620529a39",
+      "candidateSha256": "1ab0282f8711f83da31b20d0a9044c3f2bfe16ef8f5384c9af5c857e129b6877",
+      "reason": "2026-10-16 independent visual follow-up: Seed history-return progress from the restored document position while preserving normal critically damped scroll and single demand loop. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/ExperienceCanvas.tsx",
+      "publishedSha256": "eba796ee44c77ea0d13a69d475fc199c3126741f7d4bb7ee517a7bfb5ad13c39",
+      "candidateSha256": "91e26c56f4e0386b8fb774fe091e7da8c0e454f65aeb7eabe8f58bfc9be28242",
+      "reason": "2026-10-16 independent visual follow-up: Pass user glyph rotation into the existing scene; preserve immutable GL options, quality policy, lazy readiness and render ownership. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/ExperienceWorld.tsx",
+      "publishedSha256": "1338611279fa4251f4c774aee40ac8aec7763be08b7bcb9a66490dec484f9d20",
+      "candidateSha256": "adaa1449023b559d4b227a2c843f5d5b1b19e4cc94bf609f1e6409566484ac65",
+      "reason": "2026-10-16 independent visual follow-up: Pass bounded user rotation through the existing scene and service portal; no new environment resource or frame loop. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/VisionServicePortal.tsx",
+      "publishedSha256": "10f93778b80e8a61c14b318eb5b6932004bbb7aacf380afab46498e67973a622",
+      "candidateSha256": "3aeedb0a2a1fbb70bf7d02cb5983bf2e2118ab376281a8f12826cec3a74bbc14",
+      "reason": "2026-10-16 independent visual follow-up: Pass bounded hero rotation into existing Y geometry; preserve FBO lifetime and portal rendering ownership. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/timeline.ts",
+      "publishedSha256": "70001a92ab3e7011e1a7a1c3decdbd40de4dde3648d7d76e6ae617c6527fc764",
+      "candidateSha256": "6b53a7f6d597a7ee650221e516bbd05a6323f6ebe2cd918de1a5aca7c9676178",
+      "reason": "2026-10-16 independent visual follow-up: Delay whole-room light interpolation until the physical feathered blade leads the crossing; preserve stage times, camera path and proof collision. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tests/experience-runtime.test.ts",
+      "publishedSha256": "3a0865d4e87087aa32403fc65725341bd7f4265c625565623d8b2fe47f4ac1e6",
+      "candidateSha256": "85ec52a6d7320820c04539f3eecb02773720f1ecdae6a6e708f37f31c436e869",
+      "reason": "2026-10-16 independent visual follow-up: Regress restored-position initialization separately from ordinary damping; existing default-loop assertions retained. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]

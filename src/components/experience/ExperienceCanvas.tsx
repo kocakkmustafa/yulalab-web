@@ -13,11 +13,13 @@ import type {
   ExperienceMode,
   ExperienceProduct,
   QualityTier,
+  Vec3,
 } from "./types";
 import { ExperienceWorld } from "./ExperienceWorld";
 
 export type ExperienceCanvasProps = {
   products: ExperienceProduct[];
+  glyphRotation?: Vec3;
   progress: number;
   mode: ExperienceMode;
   tier: QualityTier;
@@ -135,6 +137,7 @@ function CanvasLifecycle({
 }
 
 export function ExperienceCanvas({
+  glyphRotation,
   products,
   progress,
   mode,
@@ -212,6 +215,7 @@ export function ExperienceCanvas({
           tier={tier}
         />
         <ExperienceWorld
+          glyphRotation={glyphRotation}
           mode={mode}
           onAssetsSettled={handleAssetsSettled}
           products={products}

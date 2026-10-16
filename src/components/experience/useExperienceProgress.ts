@@ -86,7 +86,7 @@ function criticallyDampedStep(
   return { position: clamp01(position), velocity };
 }
 
-export function useExperienceProgress(enabled: boolean): {
+export function useExperienceProgress(enabled: boolean, restoreDocumentPosition = false): {
   progress: number;
   capture: CaptureParams;
   scrollRange: number;
@@ -122,6 +122,13 @@ export function useExperienceProgress(enabled: boolean): {
     let animationFrame = 0;
     let previousTimestamp: number | null = null;
     let target = readDocumentProgress();
+    // A restored history entry starts at its actual document position; it
+    // should not animate through every earlier scene from an artificial zero.
+    if (restoreDocumentPosition) {
+      position.current = target;
+      velocity.current = 0;
+      setProgress(target);
+    }
 
     const tick = (timestamp: number) => {
       animationFrame = 0;
@@ -172,7 +179,7 @@ export function useExperienceProgress(enabled: boolean): {
       resizeObserver?.disconnect();
       if (animationFrame !== 0) cancelAnimationFrame(animationFrame);
     };
-  }, [capture.enabled, capture.progress, enabled]);
+  }, [capture.enabled, capture.progress, enabled, restoreDocumentPosition]);
 
   return {
     progress: capture.enabled ? capture.progress : progress,

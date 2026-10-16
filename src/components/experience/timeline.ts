@@ -351,7 +351,7 @@ export function evaluateTimeline(
   // The physical blade enters before the whole environment changes. This
   // preserves a dark upper chamber at mid-crossing, then makes the white
   // manifesto feel spatially earned. Vision opens the route back to dark.
-  const themeMix = Math.pow(whiteMix, 3);
+  const themeMix = smoothstep(segmentProgress(whiteMix, 0.55, 1));
   const proofMorph = smoothstep(segmentProgress(p, STAGES.proof[0], STAGES.proof[1]));
   const closingDraw = smoothstep(segmentProgress(p, STAGES.closing[0], STAGES.closing[1]));
   const worksBackdropMix =

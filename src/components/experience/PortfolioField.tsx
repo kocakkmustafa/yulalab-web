@@ -241,7 +241,7 @@ function ScreenshotLayer({
 }) {
   const loaded = useCardTexture(screenshot.path, tier, onAssetSettled);
   const [width, height] = dimensionsForAspect(loaded.aspect);
-  const layerOpacity = opacity * (layerIndex === 0 ? 1 : 0.82);
+  const layerOpacity = opacity * (layerIndex === 0 ? 1 : 0.28);
 
   if (!loaded.texture || loaded.failed) {
     return (
@@ -273,11 +273,12 @@ function ScreenshotLayer({
       <mesh>
         <planeGeometry args={[width, height]} />
         <meshBasicMaterial
-          depthWrite={false}
+          depthWrite={layerIndex === 0 && layerOpacity > 0.85}
+          fog={false}
           map={loaded.texture}
           opacity={layerOpacity}
           toneMapped={false}
-          transparent
+          transparent={layerOpacity < 0.999}
         />
       </mesh>
     </group>
@@ -375,6 +376,24 @@ function ResearchWireframe({
 
   return (
     <group scale={0.92}>
+      <mesh rotation={[0.25, 0.4, 0]}>
+        {variant === 0 ? <sphereGeometry args={[0.72, radialSegments, tier === "low" ? 12 : 24]} /> : null}
+        {variant === 1 ? <torusKnotGeometry args={[0.7, 0.18, radialSegments * 2, 8, 2, 3]} /> : null}
+        {variant === 2 ? <octahedronGeometry args={[0.82, 0]} /> : null}
+        {variant === 3 ? <torusGeometry args={[0.59, 0.12, 12, radialSegments]} /> : null}
+        {variant === 4 ? <dodecahedronGeometry args={[0.92, 0]} /> : null}
+        <meshStandardMaterial
+          color={product.colors.primary}
+          depthWrite={opacity > 0.9}
+          emissive={product.colors.secondary}
+          emissiveIntensity={0.12}
+          fog={false}
+          metalness={0.72}
+          opacity={opacity}
+          roughness={0.24}
+          transparent
+        />
+      </mesh>
       {variant === 0 && (
         <>
           <mesh>
@@ -516,10 +535,12 @@ function ProductCard({
   if (product.lifecycle === "research") {
     return (
       <group>
-        <BrandedFallback opacity={opacity * 0.9} product={product} />
-        <group position={[0.94, 0.1, -0.22]} rotation={[0.03, -0.12, 0]} scale={0.72}>
+        <group position={[1.24, -0.78, 0.4]} scale={0.28}>
+          <BrandedFallback compact opacity={opacity * 0.82} product={product} />
+        </group>
+        <group rotation={[0.03, -0.12, 0]}>
           <ResearchWireframe
-            opacity={opacity * 0.44}
+            opacity={opacity}
             product={product}
             tier={tier}
             variant={(productIndex - 3 + 5) % 5}
@@ -590,7 +611,7 @@ export function PortfolioField({
     -1.25 - frame.productFloat * 1.36,
   );
   const enter = smoothstep(segmentProgress(frame.progress, 0.065, 0.105));
-  const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.585, 0.675));
+  const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.575, 0.615));
   // The final WORKS card yields to the proof ledger before the cards complete
   // their physical morph. Keeping the geometry faint preserves depth without
   // making the evidence typography compete with eight equally bright objects.

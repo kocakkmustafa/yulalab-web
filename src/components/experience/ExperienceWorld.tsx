@@ -12,6 +12,7 @@ import type {
   ExperienceMode,
   ExperienceProduct,
   QualityTier,
+  Vec3,
   TimelineFrame,
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
@@ -20,6 +21,7 @@ import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 
 export type ExperienceWorldProps = {
   products: ExperienceProduct[];
+  glyphRotation?: Vec3;
   progress: number;
   mode: ExperienceMode;
   tier: QualityTier;
@@ -53,6 +55,7 @@ function WorldTheme({ frame }: { frame: TimelineFrame }) {
 }
 
 export function ExperienceWorld({
+  glyphRotation,
   products,
   progress,
   mode,
@@ -115,7 +118,7 @@ export function ExperienceWorld({
       </Environment>
 
       <GridRoom frame={frame} tier={tier} />
-      <VisionServicePortal frame={frame} tier={tier} />
+      <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} />
       <PortfolioField
         frame={frame}
         mode={mode}
