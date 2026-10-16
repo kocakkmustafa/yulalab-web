@@ -458,7 +458,7 @@ export function ExperienceOverlay({
               <p className={styles.productShort}>{product.short}</p>
               {product.developmentPreviews?.length ? (
                 <p className={styles.previewNote} data-development-preview="true">
-                  {copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview"} · {product.developmentPreviews[0].capturedAt}
+                  {product.developmentPreviews[0].captureKind === "onboarding" ? (copy.locale === "tr" ? "İlk başlangıç önizlemesi" : "First-start preview") : (copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview")} · {product.developmentPreviews[0].capturedAt}
                 </p>
               ) : null}
               <NextLink

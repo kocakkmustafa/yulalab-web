@@ -127,6 +127,7 @@ export default async function LandingPage({
         capturedAt: screenshot.capturedAt,
       })),
       developmentPreviews: (developmentPreviews[project.slug] ?? []).map((preview) => ({
+        captureKind: preview.captureKind,
         path: preview.path,
         alt: preview.alt[locale],
         sourceBuild: preview.sourceBuild,

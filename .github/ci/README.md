@@ -132,8 +132,9 @@ native execution, build, provider, or security-finding closure evidence.
 ## 2026-10-16 identity and storyboard candidate
 
 The current local visual candidate adopts five user-approved icon masters byte
-for byte and three dated normal-app development captures (two Ostinato, one
-LifeOS). These previews live in `src/data/product-presentations.ts`, separately
+for byte and eight dated development captures: seven in-app guest views across
+the five Motion products and one explicitly labelled LifeOS first-start view.
+These previews live in `src/data/product-presentations.ts`, separately
 from the immutable publication registry. Research lifecycle, published claim
 records and store-readiness status are unchanged. The legacy default Flutter
 mark is not used as LifeOS product identity in the new presentations.
@@ -150,3 +151,11 @@ compositions and four shared SERVICE source plates replace abstract stand-ins
 where reliable imagery exists. Browser and build evidence is held in the task's
 `approved-icon-storyboard-20261016` directory. Local visual acceptance does not
 satisfy the separate Netlify packaging, security, cost or publication gates.
+
+
+The later 16 October native handoff supplied five additional clean guest views.
+Their index hashes, asset commits and executable/bundle-tree receipt consistency
+were checked before adoption, alongside a direct pixel/privacy and EXIF audit.
+The five source captures are copied unchanged; no native build, simulator run,
+app-source edit or store/physical-quality acceptance is performed by the site
+integration. New evidence is in `motion-media-integration-20261016`.

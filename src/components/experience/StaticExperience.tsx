@@ -90,7 +90,7 @@ export function StaticExperience({
                         decoding="async"
                       />
                       <figcaption>
-                        {development ? <strong>{copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview"}</strong> : null}
+                        {development ? <strong>{shot.captureKind === "onboarding" ? (copy.locale === "tr" ? "İlk başlangıç geliştirme görünümü" : "First-start development view") : (copy.locale === "tr" ? "Uygulama içi geliştirme görünümü" : "In-app development view")}</strong> : null}
                         <span>{shot.sourceBuild}</span>
                         <time dateTime={shot.capturedAt}>{shot.capturedAt}</time>
                       </figcaption>

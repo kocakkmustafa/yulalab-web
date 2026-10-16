@@ -26,18 +26,23 @@ REVIEWED_TEST_ADDITIONS = {
 # 2026-10-16 approved identity / dated normal-app preview candidate additions.
 REVIEWED_VISUAL_ADDITIONS = {
     "public/projects/choreia/icon.png": "51148ac9504aed95bb952d3b1c67d6234708960ae2d667a8a4864218135659b4",
+    "public/projects/choreia/preview-native-20261016.png": "15b494d95a3cdd77ec7cc1a2b0d789c77d2a0e9b3035bec18fe2cf2eec1cf239",
     "public/projects/gravita/icon.png": "d46a534d11c1c45dd5fde8c85bd8c02ab5d5cc205e502669d66a37c9d6190229",
+    "public/projects/gravita/preview-native-20261016.png": "417e77ab63ab6057857a92c8b345083d10f03d3cd869d57a05096f0020abb536",
     "public/projects/jablab/icon.png": "94e23e1069f0f5f78c6503b12fc2e8e6edab340cfecb3b301bf5976188f7d8c2",
+    "public/projects/jablab/preview-native-20261016.png": "5f6e6ffe9d7da3756f5c811e5f1b1dcc396179e58fa4af699559d820ae1bef45",
     "public/projects/lifeos/preview-onboarding-20261016.png": "20fb36a1a27f80d097ef9bf1881040971cbe6819924014e13344f70664771b85",
     "public/projects/lissom/icon.png": "0d6f1fb86078b14edf3e3bcd65deef5a2c35d3c98fd5865c20932ca5d5c4a242",
+    "public/projects/lissom/preview-native-20261016.png": "14ff246c1fd4d366a491e0ff50ef14ba5ca7743d1b8e79cd4be326a0e92f788f",
     "public/projects/ostinato/icon.png": "6db03e9cdc6da965fc88ed28e6fd7f78aedf02a5d3fe4927bacffdd6b6a57b73",
     "public/projects/ostinato/preview-course-20261016.png": "eb0084ab724970d20101d0d82da2bc861ad161dcf6cfc64a0489262a1ede251a",
+    "public/projects/ostinato/preview-native-20261016.png": "3c09f2db71e40128a659a028ded727c0a1c5c820fb572e3a00a1325ec22ce89f",
     "public/projects/ostinato/preview-written-lesson-20261016.png": "745e683b1b490258e99a1fb8a798e198e4b05c17e11386eb42743b259168e377",
     "src/components/experience/presentation-canvas.ts": "e794cf75c9bd5f276a1ea84f021c6d49bdfe1dcbfacad1e9bb1707c82b0b5843",
     "src/components/experience/storyboard.ts": "91865ba673e2dc3500792e3ce06fa58261bbf747e8c9b368308efb6eebf4c193",
-    "src/components/experience/useShowcaseTextures.ts": "9711fc846660348794a7bfb9d79e511574b1d4bbe17f7d57b6d37f3f463c3803",
-    "src/components/projects/DevelopmentPreviewSection.tsx": "698d6230c4df14c4764e682c676454d29415618714e3d2775657ab9ddd4de8b3",
-    "src/data/product-presentations.ts": "544e895e1250eeb90481509bfd6f7bfae02e67676165ba7708261f99b43df580"
+    "src/components/experience/useShowcaseTextures.ts": "8515c382c47206a4884812e9f62ec36ad5fe8898f0b35ffc3eb1c57e38547083",
+    "src/components/projects/DevelopmentPreviewSection.tsx": "efeaf9104b520db295520f2f0138077c8948417a1bc1e4acda8400c92f2d5178",
+    "src/data/product-presentations.ts": "a3e26a90c4ccce59583277cd719eba27e5f971b78527533d63a7a16ee5d1c6ec"
 }
 # END APPROVED VISUAL ADDITIONS
 require(len(baseline) == len(manifest["files"]), "duplicate publication baseline path")

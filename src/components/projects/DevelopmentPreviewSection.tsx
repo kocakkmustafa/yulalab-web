@@ -24,6 +24,7 @@ export function DevelopmentPreviewSection({ slug, locale }: { slug: string; loca
           <figure key={preview.path} className="rounded-xl border border-white/10 bg-black/20 p-4">
             <img src={preview.path} alt={preview.alt[locale]} loading="lazy" decoding="async" className="w-full h-[min(70vh,680px)] object-contain" />
             <figcaption className="mt-4 text-sm text-ink-300">
+              <p className="font-mono text-xs mb-2">{preview.captureKind === "onboarding" ? (locale === "tr" ? "İlk başlangıç görünümü" : "First-start view") : (locale === "tr" ? "Uygulama içi görünüm" : "In-app view")}</p>
               <p>{preview.alt[locale]}</p>
               <time dateTime={preview.capturedAt}>{preview.capturedAt}</time>
               <details className="mt-2 text-xs">

@@ -62,6 +62,7 @@ export type TimelineFrame = {
 };
 
 export type ExperienceScreenshot = {
+  captureKind?: "functional" | "onboarding";
   path: string;
   alt: string;
   sourceBuild: string;

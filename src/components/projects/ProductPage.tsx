@@ -7,6 +7,7 @@ import { ClaimsSection } from "@/components/projects/ClaimsSection";
 import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatCards } from "@/components/projects/StatCards";
+import { developmentPreviews } from "@/data/product-presentations";
 import { publicRegistry } from "@/data/public-registry";
 import { presentClaims, presentSurfaces } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
@@ -198,7 +199,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           }}
         />
 
-        {/* 03 — interface: an honest empty state, never a fabricated shot */}
+        {/* Only show the empty interface state when no dated development UI exists. */}
+        {!developmentPreviews[project.slug]?.length ? (
         <section className="pb-24">
           <Reveal>
             <p className={`${KICKER} mb-10`}>{t("interfaceKicker")}</p>
@@ -221,6 +223,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             </div>
           </Reveal>
         </section>
+        ) : null}
 
         {/* CTA */}
         <Reveal>

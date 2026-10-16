@@ -93,6 +93,11 @@ describe("approved identity and development sources", () => {
       "/projects/ostinato/preview-written-lesson-20261016.png": "745e683b1b490258e99a1fb8a798e198e4b05c17e11386eb42743b259168e377",
       "/projects/ostinato/preview-course-20261016.png": "eb0084ab724970d20101d0d82da2bc861ad161dcf6cfc64a0489262a1ede251a",
       "/projects/lifeos/preview-onboarding-20261016.png": "20fb36a1a27f80d097ef9bf1881040971cbe6819924014e13344f70664771b85",
+      "/projects/choreia/preview-native-20261016.png": "15b494d95a3cdd77ec7cc1a2b0d789c77d2a0e9b3035bec18fe2cf2eec1cf239",
+      "/projects/jablab/preview-native-20261016.png": "5f6e6ffe9d7da3756f5c811e5f1b1dcc396179e58fa4af699559d820ae1bef45",
+      "/projects/gravita/preview-native-20261016.png": "417e77ab63ab6057857a92c8b345083d10f03d3cd869d57a05096f0020abb536",
+      "/projects/lissom/preview-native-20261016.png": "14ff246c1fd4d366a491e0ff50ef14ba5ca7743d1b8e79cd4be326a0e92f788f",
+      "/projects/ostinato/preview-native-20261016.png": "3c09f2db71e40128a659a028ded727c0a1c5c820fb572e3a00a1325ec22ce89f",
     };
     for (const [slug, previews] of Object.entries(developmentPreviews)) {
       for (const preview of previews ?? []) {
@@ -102,5 +107,22 @@ describe("approved identity and development sources", () => {
         expect(publicRegistry.find((record) => record.slug === slug)?.screenshots.some((shot) => shot.path === preview.path)).toBe(false);
       }
     }
+  });
+});
+
+
+describe("normal Motion media provenance", () => {
+  it("has a normal in-app view for each Motion product without changing research eligibility", () => {
+    for (const slug of ["choreia", "jablab", "gravita", "lissom", "ostinato"]) {
+      const first = developmentPreviews[slug]?.[0];
+      expect(first?.path).toBe(`/projects/${slug}/preview-native-20261016.png`);
+      expect(first?.captureKind).toBe("functional");
+      expect(publicRegistry.find((record) => record.slug === slug)?.lifecycle).toBe("research");
+      expect(publicRegistry.find((record) => record.slug === slug)?.screenshots).toHaveLength(0);
+    }
+  });
+  it("keeps the separate LifeOS first-start view labelled as onboarding", () => {
+    expect(developmentPreviews.lifeos?.[0].captureKind).toBe("onboarding");
+    expect(Object.values(developmentPreviews).flat()).toHaveLength(8);
   });
 });

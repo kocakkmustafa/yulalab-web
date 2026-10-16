@@ -41,8 +41,16 @@ function paintStory(index: number, english: boolean, images: Map<string, HTMLIma
     image("/projects/braavolabs/screenshot-audit-trail.png", 62, 172, 720, 440);
     image("/projects/braavolabs/screenshot-builder.png", 820, 214, 385, 350);
   } else if (index === 1) {
-    approvedIdentityPaths.forEach((path, i) => image(path, 62 + (i % 3) * 202, 208 + Math.floor(i / 3) * 205, 178, 178));
-    image("/projects/ostinato/preview-written-lesson-20261016.png", 810, 76, 360, 560);
+    const names = ["Gravita", "Lissom", "JabLab", "Ostinato", "Choreia"];
+    approvedIdentityPaths.forEach((path, i) => {
+      const x = 58 + i * 235;
+      const slug = path.split("/")[2];
+      image(path, x, 165, 62, 62);
+      c.font = "500 20px system-ui, sans-serif";
+      c.fillStyle = "#f5f1f8";
+      c.fillText(names[i], x + 72, 205);
+      image(`/projects/${slug}/preview-native-20261016.png`, x, 242, 215, 390);
+    });
   } else if (index === 2) {
     c.font = "500 96px system-ui, sans-serif";
     c.fillText("LifeOS", 70, 370);
