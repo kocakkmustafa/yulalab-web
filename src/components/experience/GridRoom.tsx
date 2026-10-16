@@ -1,6 +1,6 @@
 "use client";
 
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo } from "react";
 import {
   BackSide,
@@ -16,6 +16,7 @@ import {
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
 import { CROSSING_BLADE, STAGES } from "./timeline";
+import { viewportMobileMix } from "./layout";
 
 export type GridRoomProps = {
   frame: TimelineFrame;
@@ -53,8 +54,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float distanceFade = 1.0 - smoothstep(26.0, 72.0, vViewDepth);
     float verticalFade = smoothstep(0.0, 0.1, vUv.y) * (1.0 - smoothstep(0.9, 1.0, vUv.y));
 
-    vec3 darkMinor = vec3(0.29, 0.09, 0.55);
-    vec3 darkMajor = vec3(0.68, 0.30, 1.0);
+    vec3 darkMinor = vec3(0.22, 0.19, 0.29);
+    vec3 darkMajor = vec3(0.59, 0.53, 0.69);
     vec3 lightMinor = vec3(0.66, 0.64, 0.69);
     vec3 lightMajor = vec3(0.24, 0.21, 0.29);
     vec3 color = mix(
@@ -62,7 +63,10 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
       mix(lightMinor, lightMajor, major),
       uWhiteMix
     );
-    float alpha = (minor * 0.25 + major * 0.72) * distanceFade * verticalFade * uOpacity;
+    vec2 cell = floor(vUv * vec2(18.0, 7.0));
+    float panel = step(5.5, mod(cell.x + cell.y * 3.0, 7.0));
+    color = mix(color, vec3(0.12, 0.08, 0.21), panel * (1.0 - max(minor, major)) * (1.0 - uWhiteMix));
+    float alpha = (minor * 0.22 + major * 0.72 + panel * 0.055) * distanceFade * verticalFade * uOpacity;
 
     if (alpha < 0.006) discard;
     gl_FragColor = vec4(color, alpha);
@@ -94,7 +98,7 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
       smoothstep(0.0, 0.2, vUv.y) *
       (1.0 - smoothstep(0.8, 1.0, vUv.y));
     vec3 color = mix(vec3(0.54, 0.22, 0.88), vec3(0.25, 0.23, 0.28), uWhiteMix);
-    float alpha = dotMask * edgeFade * uOpacity * mix(0.32, 0.17, uWhiteMix);
+    float alpha = dotMask * edgeFade * uOpacity * mix(0.16, 0.1, uWhiteMix);
 
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);
@@ -103,7 +107,7 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
 
 function makeWordmarkTexture(label: string): CanvasTexture {
   const canvas = document.createElement("canvas");
-  canvas.width = 2048;
+  canvas.width = 1024;
   canvas.height = 512;
   const context = canvas.getContext("2d");
 
@@ -113,11 +117,11 @@ function makeWordmarkTexture(label: string): CanvasTexture {
     context.font = "900 300px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12);
+    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
 
     context.globalCompositeOperation = "destination-out";
     context.globalAlpha = 0.13;
-    context.fillText(label, canvas.width / 2 + 11, canvas.height / 2 + 12);
+    context.fillText(label, canvas.width / 2 + 11, canvas.height / 2 + 12, canvas.width * 0.92);
   }
 
   const texture = new CanvasTexture(canvas);
@@ -202,6 +206,8 @@ function ClosingGeometry({ draw }: { draw: number }) {
 }
 
 export function GridRoom({ frame, tier }: GridRoomProps) {
+  const viewportWidth = useThree((state) => state.size.width);
+  const wordmarkWidth = 14.2 * (1 - viewportMobileMix(viewportWidth) * 0.56);
   const gridMaterial = useMemo(
     () =>
       new ShaderMaterial({
@@ -265,7 +271,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
 
   return (
     <group>
-      <mesh position={[0, 0, -11.5]} rotation={[0, -Math.PI * 0.08, 0]}>
+      <mesh position={[0, 0, -11.5]} rotation={[0, -Math.PI * 0.08, 0]} scale={[0.84, 1, 1]}>
         <cylinderGeometry
           args={[
             28,
@@ -298,7 +304,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
       ))}
 
       <mesh position={[0, 0.1, wordmarkZ]} renderOrder={-2}>
-        <planeGeometry args={[14.2, 3.55]} />
+        <planeGeometry args={[wordmarkWidth, 3.55]} />
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
@@ -317,7 +323,7 @@ export function GridRoom({ frame, tier }: GridRoomProps) {
           depthTest
           depthWrite={false}
           map={worksWordmark}
-          opacity={frame.world.worksBackdropMix * 0.82}
+          opacity={frame.world.worksBackdropMix * 0.08}
           toneMapped={false}
           transparent
         />

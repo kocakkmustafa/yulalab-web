@@ -1,4 +1,4 @@
-import type { ExperienceMode, Vec3 } from "./types";
+import type { CameraPose, ExperienceMode, Vec3 } from "./types";
 
 export type ProofLayoutPose = {
   position: Vec3;
@@ -131,5 +131,42 @@ export function proofLayoutPose(
     position: [(column - 1.5) * 0.68, (0.5 - row) * 1.02, -13.82 - row * 0.12],
     rotation: [row === 0 ? -0.025 : 0.025, 0, 0],
     scale: 0.24,
+  };
+}
+
+/** Keep the gallery's visual scale steady while the camera travels in depth.
+ * Real registry images and branded fallbacks share the same bounded stage. */
+export function portfolioViewportComposition(
+  camera: CameraPose,
+  viewportWidth: number,
+  viewportHeight: number,
+  focusPlane: number,
+) {
+  const width = Number.isFinite(viewportWidth) && viewportWidth > 0 ? viewportWidth : 1280;
+  const height = Number.isFinite(viewportHeight) && viewportHeight > 0 ? viewportHeight : 720;
+  const mobileMix = viewportMobileMix(width);
+  const compactHeight = 1 - smoothstep((height - 560) / 260);
+  const lift = lerp(0.12, 0.2, Math.max(mobileMix, compactHeight));
+  const depthSpan = camera.target[2] - camera.position[2];
+  const alongView = Math.abs(depthSpan) > 0.001
+    ? (focusPlane - camera.position[2]) / depthSpan
+    : 1;
+  const centerX = lerp(camera.position[0], camera.target[0], alongView);
+  const axisY = lerp(camera.position[1], camera.target[1], alongView);
+  const distance = Math.max(0.5, Math.hypot(
+    camera.position[0] - centerX,
+    camera.position[1] - axisY,
+    camera.position[2] - focusPlane,
+  ));
+  const frustumHeight = 2 * distance * Math.tan(camera.fov * Math.PI / 360);
+  const cardWidth = Math.min(
+    frustumHeight * (width / height) * lerp(0.6, 0.8, mobileMix),
+    frustumHeight * lerp(lerp(0.56, 0.4, compactHeight), 0.4, mobileMix) * 1.6,
+  );
+  return {
+    center: [centerX, axisY + frustumHeight * lift, focusPlane] as Vec3,
+    width: cardWidth,
+    scale: cardWidth / 3.9,
+    yaw: Math.atan2(camera.position[0] - centerX, camera.position[2] - focusPlane),
   };
 }

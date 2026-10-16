@@ -10,8 +10,8 @@ import {
   Texture,
   TextureLoader,
 } from "three";
-import { clamp01, segmentProgress, smoothstep } from "./timeline";
-import { proofLayoutPose, shouldLoadPortfolioMedia } from "./layout";
+import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
+import { portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia } from "./layout";
 import type {
   ExperienceMode,
   ExperienceProduct,
@@ -503,7 +503,14 @@ function ProductCard({
   }
 
   if (product.slug === "lifeos") {
-    return <LifeOSCore opacity={opacity} product={product} tier={tier} />;
+    return (
+      <group>
+        <BrandedFallback opacity={opacity} product={product} />
+        <group position={[-0.88, 0.08, 0.1]} scale={0.62}>
+          <LifeOSCore opacity={opacity * 0.24} product={product} tier={tier} />
+        </group>
+      </group>
+    );
   }
 
   if (product.lifecycle === "research") {
@@ -537,20 +544,25 @@ function lerpVec3(a: Vec3, b: Vec3, amount: number): Vec3 {
   ];
 }
 
-function productPose(index: number, frame: TimelineFrame, mode: ExperienceMode) {
+function productPose(
+  index: number,
+  frame: TimelineFrame,
+  mode: ExperienceMode,
+  composition: ReturnType<typeof portfolioViewportComposition>,
+) {
   const difference = index - frame.productFloat;
   const distance = Math.abs(difference);
   const focus = 1 - smoothstep(clamp01(distance));
   const orbitAngle = difference * 0.6;
   const focusPlane = -1.25 - frame.productFloat * 1.36;
   const arcPosition: Vec3 = [
-    Math.sin(orbitAngle) * 3.25,
-    Math.sin(orbitAngle * 0.72) * 0.32,
+    composition.center[0] + Math.sin(orbitAngle) * composition.width * 1.65,
+    composition.center[1] + Math.sin(orbitAngle * 0.72) * 0.24,
     focusPlane - (1 - Math.cos(orbitAngle)) * 1.45 - Math.min(distance, 3) * 0.04,
   ];
   const arcRotation: Vec3 = [
     Math.sin(orbitAngle * 0.5) * 0.025,
-    -orbitAngle * 0.72,
+    composition.yaw - orbitAngle * 0.72,
     -Math.sin(orbitAngle) * 0.018,
   ];
   const proof = proofLayoutPose(index, mode);
@@ -559,7 +571,7 @@ function productPose(index: number, frame: TimelineFrame, mode: ExperienceMode) 
   return {
     position: lerpVec3(arcPosition, proof.position, morph),
     rotation: lerpVec3(arcRotation, proof.rotation, morph),
-    scale: lerp(0.68 + focus * 0.32, proof.scale, morph),
+    scale: lerp(composition.scale * (0.68 + focus * 0.32), proof.scale, morph),
   };
 }
 
@@ -570,6 +582,13 @@ export function PortfolioField({
   tier,
   onAssetsSettled,
 }: PortfolioFieldProps) {
+  const viewport = useThree((state) => state.size);
+  const composition = portfolioViewportComposition(
+    interpolateViewportCamera(frame.progress, viewport.width, mode),
+    viewport.width,
+    viewport.height,
+    -1.25 - frame.productFloat * 1.36,
+  );
   const enter = smoothstep(segmentProgress(frame.progress, 0.065, 0.105));
   const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.585, 0.675));
   // The final WORKS card yields to the proof ledger before the cards complete
@@ -649,10 +668,13 @@ export function PortfolioField({
   return (
     <group visible={fieldOpacity > 0.001}>
       {products.slice(0, 8).map((product, index) => {
-        const pose = productPose(index, frame, mode);
+        const pose = productPose(index, frame, mode, composition);
         const portfolioDistance = Math.abs(index - frame.productFloat);
         const portfolioFocus = 1 - smoothstep(clamp01(portfolioDistance));
-        const portfolioOpacity = lerp(0.045, 1, Math.pow(portfolioFocus, 0.78));
+        // Immediate neighbors remain legible as spatial previews; distant
+        // cards stay quiet and retain the existing lazy-media boundary.
+        const neighborPresence = 1 - smoothstep(segmentProgress(portfolioDistance, 0.75, 2.25));
+        const portfolioOpacity = Math.max(0.045, neighborPresence * 0.45 + portfolioFocus * 0.55);
         const proofDistance = Math.abs(index - frame.proofFloat);
         const proofFocus = 1 - smoothstep(clamp01(proofDistance));
         const proofOpacity = 0.22 + proofFocus * 0.78;

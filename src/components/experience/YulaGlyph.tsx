@@ -145,14 +145,16 @@ export function YulaGlyph({ frame, tier, portalTexture = null }: YulaGlyphProps)
 
   const whiteMix = frame.glyph.outlineMix;
   const servicePresence = frame.world.serviceIn * (1 - frame.world.serviceOut);
-  const closingVisibility = (1 - frame.world.closingDraw) * (1 - servicePresence * 0.78);
+  const galleryVisibility = 1 - frame.world.worksBackdropMix * 0.82;
+  const closingVisibility = (1 - frame.world.closingDraw)
+    * (1 - servicePresence * 0.78) * galleryVisibility;
   const bodyColor = useMemo(
-    () => new Color("#b9a7d8").lerp(new Color("#f8f7f2"), whiteMix),
+    () => new Color("#d6cde6").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],
   );
   const bodyOpacity = (1 - whiteMix * 0.7)
     * closingVisibility
-    * (tier === "low" ? 0.7 : 1);
+    * (tier === "low" ? 0.82 : 1);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const transmission =
     tier === "high" ? 0.94 * frame.glyph.glassMix : tier === "medium" ? 0.78 * frame.glyph.glassMix : 0;

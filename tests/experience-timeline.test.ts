@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { Color, Euler, PerspectiveCamera, Vector3 } from "three";
 import {
   glyphViewportPose,
+  portfolioViewportComposition,
   proofLayoutPose,
   shouldLoadPortfolioMedia,
   viewportMobileMix,
@@ -501,5 +502,44 @@ describe("reference-faithful experience timeline", () => {
     expect(evaluateTimeline(0.805, "desktop").world.themeMix).toBe(1);
     expect(evaluateTimeline(0.855, "desktop").world.themeMix).toBe(0);
     expect(evaluateTimeline(0.98, "desktop").world.themeMix).toBe(0);
+  });
+});
+
+
+describe("spatial portfolio composition", () => {
+  for (const [width, height] of [[1440, 900], [1280, 560], [768, 1024], [390, 844]]) {
+    it(`keeps the focused primary media bounds within the gallery zone at ${width}x${height}`, () => {
+      const widths: number[] = [];
+      for (let index = 0; index < 8; index++) {
+        const progress = 0.085 + ((index + 0.5) / 8) * (0.505 - 0.085);
+        const pose = interpolateViewportCamera(progress, width);
+        const layout = portfolioViewportComposition(pose, width, height, -1.25 - index * 1.36);
+        const camera = new PerspectiveCamera(pose.fov, width / height, 0.05, 130);
+        camera.position.set(...pose.position);
+        camera.lookAt(new Vector3(...pose.target));
+        camera.updateProjectionMatrix();camera.updateMatrixWorld(true);
+        const points = [-1, 1].flatMap((x) => [-1, 1].map((y) =>
+          // Conservative primary-media rectangle: registry images are bounded by 3.9 × 2.65.
+          new Vector3(x * 1.95, y * 2.65 / 2, 0)
+            .multiplyScalar(layout.scale).applyEuler(new Euler(0, layout.yaw, 0))
+            .add(new Vector3(...layout.center)).project(camera),
+        ));
+        for (const point of points) {
+          expect(Math.abs(point.x)).toBeLessThan(0.95);
+          expect(point.y).toBeGreaterThan(-0.45);
+          expect(point.y).toBeLessThan(0.9);
+        }
+        widths.push(Math.max(...points.map((p) => p.x)) - Math.min(...points.map((p) => p.x)));
+      }
+      // Apparent scale is independent of the camera's large travel in depth.
+      expect(Math.max(...widths) / Math.min(...widths)).toBeLessThan(1.15);
+    });
+  }
+  it("blends across the mobile breakpoint without a camera-sized jump", () => {
+    const progress = 0.21625;
+    const a = portfolioViewportComposition(interpolateViewportCamera(progress, 767), 767, 900, -3.97);
+    const b = portfolioViewportComposition(interpolateViewportCamera(progress, 768), 768, 900, -3.97);
+    expect(Math.abs(a.scale - b.scale)).toBeLessThan(0.01);
+    expect(new Vector3(...a.center).distanceTo(new Vector3(...b.center))).toBeLessThan(0.02);
   });
 });

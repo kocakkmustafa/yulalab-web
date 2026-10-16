@@ -341,8 +341,8 @@
     {
       "path": "src/components/experience/Experience.module.css",
       "publishedSha256": "ccda6219c07b761122590fd55142e6ec720816144fb4f8b280f831c572440402",
-      "candidateSha256": "37fa44a897727e109fa565977439dbd0cf7f0b970f3eed298141f990e94cde65",
-      "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "candidateSha256": "3fb4b1485f47f9c6e80ad30122cdb775d1971b221bc81b485e2d01f8baee0037",
+      "reason": "2026-10-16 local UI correction: Allow overflowing mobile product text to scroll inside the bounded panel so all eight product links remain reachable with enlarged text; preserve normal panel geometry and document scroll chaining. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 bounded spatial-gallery adaptation: Reduce the fullscreen color wash; keep hero text readable against the enlarged brand wordmark; move desktop project captions below primary media; retain bounded mobile text scrolling; separate tablet navigation from controls. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -350,6 +350,41 @@
       "publishedSha256": "112f0a6d8198bb011104f8fe7cb4cb81662163805ab0892cdee8ad1fcd5132ff",
       "candidateSha256": "9b388708d56140408baaa255fea311b1c51af1b0be938c147508a9b6fdb95ad4",
       "reason": "2026-10-16 common support closeout: Route only the user-facing Braavolabs product contact CTA from hello@braavolabs.com to user-approved support@yulalab.com. Preserve legal identity, auth/transactional identities, lifecycle data and account deletion mechanisms. Local candidate only; no publication, mailbox, DNS or credential change.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/GridRoom.tsx",
+      "publishedSha256": "c53696e4a3fc775c99fa7745ebdd7a0c8b144a7337639436fec64a3515d00ff4",
+      "candidateSha256": "5bfa899b077f19f14fa4ce164919600956c3a367a8a72c32258591497cb94101",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Clarify the existing bowed room with quieter halftone, procedural lit cells and an elliptical grid; tighten and responsively size the own-brand wordmark texture without adding media. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/PortfolioField.tsx",
+      "publishedSha256": "6239692f7f651a3cd0e58d86605b4aa0d131f58740abb140a9916bdccd1e5c82",
+      "candidateSha256": "2e969342875ef278e76c0f86073effab7d923c8f6d475e483a4706531be6cef7",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Normalize primary media size to the same interpolated camera, retain angled neighboring cards and present the existing LifeOS branded fallback with its abstract core; preserve screenshot registry, lazy eligibility, settlement and disposal. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/YulaGlyph.tsx",
+      "publishedSha256": "c51792e4fc7e31006e369d1c4fbfdc9df1dce477e47624a13cc94adec485ef7a",
+      "candidateSha256": "ec42cd84333a1eaf6b7af8ef1f9e979459aeb413c8e29663451f180b26481439",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Lighten the existing own-brand Y material and smoothly yield its body, edges and caustics during the portfolio envelope; preserve timeline, camera and proof collision geometry. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "src/components/experience/layout.ts",
+      "publishedSha256": "2862430b7db9374609e4ae4c9c68cda9425b471fc6080aa243d80b63ad3e6362",
+      "candidateSha256": "37d6f1efd8611190466e1e6451b2ca8fb7d7d399f6f09dfad6a3481297c61ee3",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Calculate continuous viewport/frustum-aware gallery composition with bounded primary media size, caption clearance and responsive yaw. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
+    },
+    {
+      "path": "tests/experience-timeline.test.ts",
+      "publishedSha256": "05b4814ef718e497cb8a5ab27a04df7b1232a0dd67ec3392e625930dd716d4ca",
+      "candidateSha256": "81e33ae54b462586700c67083271184052147d11b797b70043089d768731c534",
+      "reason": "2026-10-16 bounded spatial-gallery adaptation: Check conservative primary-media bounds for all eight focus centers at four viewports and continuity across the responsive breakpoint; actual stacked media and morph extents checked by local WebGL screenshots. Official JUNNI case images inspected; independent source review and local UI evidence recorded in task reference-space-20261016. Candidate source only, not publication/provider/hardware acceptance.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     }
   ]
