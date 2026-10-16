@@ -37,36 +37,15 @@ export function canvasTexture(canvas: HTMLCanvasElement) {
 }
 
 /** A brand/development presentation, never a fabricated application screen. */
-export function makeIdentityPresentation(product: ExperienceProduct, icon: PresentationImage | undefined, previews: readonly PresentationImage[]) {
+export function makeIdentityPresentation(product: ExperienceProduct, icon: PresentationImage | undefined) {
   const canvas = document.createElement("canvas");
-  canvas.width = 1280;
-  canvas.height = 720;
+  canvas.width = 1280; canvas.height = 720;
   const c = canvas.getContext("2d");
   if (c) {
-    const gradient = c.createLinearGradient(0, 0, 1280, 720);
-    gradient.addColorStop(0, product.colors.background);
-    gradient.addColorStop(1, "#15111b");
-    c.fillStyle = gradient;
-    c.fillRect(0, 0, 1280, 720);
-    c.strokeStyle = "rgba(255,255,255,.14)";
-    c.strokeRect(24, 24, 1232, 672);
-    const english = product.href.startsWith("/en/");
-    const hasPreview = previews.length > 0;
-    if (icon) drawContained(c, icon, hasPreview ? 62 : 682, hasPreview ? 92 : 84, hasPreview ? 224 : 552, hasPreview ? 224 : 552);
-    c.fillStyle = "#f5f1f8";
-    c.font = "500 74px system-ui, sans-serif";
-    c.fillText(product.name, 62, hasPreview && icon ? 412 : 190, 560);
-    c.font = "400 28px system-ui, sans-serif";
-    c.fillStyle = "#ccc7d4";
-    drawLines(c, product.tagline, 64, hasPreview && icon ? 474 : 268, 535, 40, 3);
-    c.font = "500 17px monospace";
-    c.fillStyle = "#b8b0c5";
-    c.fillText(hasPreview ? (english ? "DEVELOPMENT PREVIEW / 2026-10-16" : "GELİŞTİRME ÖNİZLEMESİ / 2026-10-16") : (english ? "PRODUCT IDENTITY" : "ÜRÜN KİMLİĞİ"), 64, 622);
-    c.fillText(product.lifecycleLabel.toLocaleUpperCase(english ? "en-US" : "tr-TR"), 64, 655);
-    if (hasPreview) {
-      const width = previews.length > 1 ? 270 : 438;
-      previews.slice(0, 2).forEach((image, index) => drawContained(c, image, 654 + index * 290, 64 + index * 45, width, 590 - index * 70));
-    }
+    c.fillStyle = product.colors.background; c.fillRect(0, 0, 1280, 720);
+    if (icon) drawContained(c, icon, 364, 60, 552, 552);
+    c.fillStyle = "#c7c0ce"; c.font = "500 18px monospace";
+    c.fillText(product.lifecycleLabel, 50, 665);
   }
   return canvasTexture(canvas);
 }

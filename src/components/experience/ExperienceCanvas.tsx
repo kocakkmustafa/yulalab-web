@@ -41,7 +41,8 @@ const IMMUTABLE_GL_OPTIONS = {
 };
 
 // PerformanceMonitor gets a bounded visible-frame warmup. Afterwards the
-// progress-driven scene sleeps until scroll, resize, tier or visibility wakes it.
+// reading scenes sleep; the hero and SERVICE keep the same owner awake for
+// ambient motion only while visible. Reduced motion uses the static document.
 const PERFORMANCE_WARMUP_SECONDS = 2.5;
 const PORTFOLIO_MEDIA_ENTRY_PROGRESS = 0.065;
 const TRANSMISSION_RESOLUTION_SCALE: Record<QualityTier, number> = {
@@ -117,7 +118,7 @@ function CanvasLifecycle({
   useFrame((_state, delta) => {
     if (
       document.visibilityState === "visible"
-      && visibleWarmupElapsed.current < PERFORMANCE_WARMUP_SECONDS
+      && (visibleWarmupElapsed.current < PERFORMANCE_WARMUP_SECONDS || progress < 0.065 || (progress > 0.785 && progress < 0.965))
     ) {
       visibleWarmupElapsed.current += Math.min(1 / 15, Math.max(0, delta));
       invalidate();

@@ -2089,3 +2089,61 @@
   .valuesHeading .kicker { margin-bottom: 8px; }
   .valuesHeading .previewNote { margin-top: 8px; font-size: 9px; }
 }
+
+/* Real native UI owns the media plane; repeated poster typography is removed. */
+.productPanel h2 { display: flex; align-items: center; gap: 12px; }
+.productPanel h2 img { flex: 0 0 auto; border-radius: 8px; }
+.previewNote:has(.previewExpand) { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.previewExpand { min-height: 44px; border: 0; border-bottom: 1px solid currentColor; background: none; color: inherit; cursor: pointer; font: inherit; }
+.previewExpand:hover { color: #fff; }
+.previewExpand:focus-visible { outline: 2px solid #d6b7ff; outline-offset: 3px; }
+@media (min-width: 768px) {
+  .productPanel[data-development-media="true"] { left: auto; right: 6vw; top: 50%; bottom: auto; width: min(390px, 33vw); transform: translateY(-50%); }
+}
+@media (max-width: 767px) {
+  .productPanel[data-development-media="true"] { bottom: 32px; padding: 10px 14px; max-height: 230px; background: rgba(9,6,14,.94); }
+  .productPanel[data-development-media="true"] .productMeta { display: none; }
+  .productPanel[data-development-media="true"] .lifecycleRow { margin-top: 0; font-size: 7.5px; }
+  .productPanel[data-development-media="true"] h2 { margin-top: 5px; font-size: 30px; line-height: 1; }
+  .productPanel[data-development-media="true"] h2 img { width: 28px; height: 28px; }
+  .productPanel[data-development-media="true"] .productTagline { display: none; }
+  .productPanel[data-development-media="true"] .productShort { margin-top: 7px; font-size: 11px; line-height: 1.35; }
+  .productPanel[data-development-media="true"] .previewNote { margin-top: 0; font-size: 8px; }
+  .productPanel[data-development-media="true"] .productLink { margin-top: 0; padding: 0; min-height: 44px; }
+}
+.previewDialog { width: min(94vw, 540px); max-height: 92dvh; margin: auto; padding: 14px; border: 1px solid #5e5268; border-radius: 12px; background: #100b17; color: #f5efff; }
+.previewDialog::backdrop { background: rgba(4,2,8,.9); }
+.previewDialog header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.previewDialog h2 { margin: 0; font-size: 16px; }
+.previewDialog header button { flex: 0 0 44px; width: 44px; height: 44px; background: none; border: 1px solid #8f7a9f; border-radius: 50%; color: inherit; font-size: 28px; cursor: pointer; }
+.previewDialog p { font: 10px/1.4 ui-monospace, monospace; color: #c3b9ce; }
+.previewDialogScroll { max-height: calc(92dvh - 100px); overflow: auto; overscroll-behavior: contain; }
+.previewDialogScroll img { display: block; width: 100%; height: auto; }
+.previewDialogScroll:focus-visible { outline: 2px solid #c9a9ef; outline-offset: 3px; }
+
+/* SERVICE is a perspective media room, with the explanatory copy in a distinct column. */
+.valuePanel { color: #fff; --experience-muted: #e3ddea; --experience-line: #b9acc4; }
+@media (min-width: 901px) {
+  .valuesStage { display: block; }
+  .valuesHeading { position: absolute; left: 65%; right: 5%; top: 9%; }
+  .valuesHeading h2 { max-width: none; font-size: 32px; }
+  .valuePanels { position: absolute; left: 65%; right: 5%; top: 37%; bottom: auto; min-height: 280px; }
+  .valuePanel { top: 0; bottom: auto; padding: 22px; }
+  .valuePanel h3 { font-size: 54px; }
+}
+@media (max-width: 900px) {
+  .valuesHeading { position: absolute; top: 27px; left: 16px; right: 16px; }
+  .valuesHeading h2 { font-size: 26px; }
+  .valuesHeading .previewNote { font-size: 8px; margin-top: 4px; }
+  .valuePanels { bottom: 38px; min-height: 150px; }
+  .valuePanel { padding: 10px; }
+  .valuePanel h3 { margin-top: 8px; font-size: 38px; }
+  .valuePanel p { margin-top: 8px; font-size: 11px; line-height: 1.4; }
+}
+
+@media (max-width: 900px) {
+  .valuesStage { display: block; }
+  .valuePanels { position: absolute; left: 16px; right: 16px; bottom: 38px; }
+}
+
+.previewDialog { pointer-events: auto; }

@@ -1,7 +1,9 @@
+/* eslint-disable @next/next/no-img-element -- the reader displays the complete original development capture. */
 "use client";
 
-import { useEffect, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
 import NextLink from "next/link";
+import Image from "next/image";
 import { track } from "@/lib/analytics/client";
 import { Link } from "@/i18n/navigation";
 import { siteDate } from "@/lib/public-registry";
@@ -307,6 +309,23 @@ export function ExperienceClosingContent({ copy, headingId }: ExperienceClosingC
   );
 }
 
+function DevelopmentPreviewDialog({ product, locale, onClose }: { product: ExperienceProduct | null; locale: "tr" | "en"; onClose: () => void }) {
+  const ref = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!product || !dialog) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialog.showModal();
+    return () => { if (dialog.open) dialog.close(); document.body.style.overflow = previousOverflow; };
+  }, [product]);
+  const shot = product?.developmentPreviews?.[0];
+  return <dialog ref={ref} className={styles.previewDialog} onClose={onClose} onCancel={onClose} aria-labelledby="development-preview-title">
+    <header><h2 id="development-preview-title">{product?.name} · {locale === "tr" ? "Geliştirme görünümü" : "Development view"}</h2><button type="button" onClick={onClose} aria-label={locale === "tr" ? "Görüntüyü kapat" : "Close image"}>×</button></header>
+    {shot ? <><p>{shot.capturedAt} · {locale === "tr" ? "Tarihli geliştirme sürümü" : "Dated development build"}</p><div className={styles.previewDialogScroll} tabIndex={0} role="region" aria-label={locale === "tr" ? "Tam geliştirme ekranı" : "Complete development screen"}><img src={shot.path} alt={shot.alt} /></div></> : null}
+  </dialog>;
+}
+
 export function ExperienceOverlay({
   copy,
   products,
@@ -316,6 +335,8 @@ export function ExperienceOverlay({
   onSoundToggle,
   onLinearView,
 }: ExperienceOverlayProps) {
+  const [previewProduct, setPreviewProduct] = useState<ExperienceProduct | null>(null);
+  const closePreview = useCallback(() => setPreviewProduct(null), []);
   const closingInteractive =
     stageIs(frame, "closing") && frame.world.closingContent >= 0.2;
   const heroActive = stageSemanticActive(frame, "hero", frame.overlay.hero);
@@ -442,6 +463,7 @@ export function ExperienceOverlay({
               aria-hidden={!active}
               inert={!active}
               data-product={product.slug}
+              data-development-media={product.developmentPreviews?.length ? "true" : undefined}
               data-active={active ? "true" : "false"}
               style={panelStyle}
             >
@@ -453,12 +475,13 @@ export function ExperienceOverlay({
                 <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
                 {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
               </div>
-              <h2>{product.name}</h2>
+              <h2>{product.icon ? <Image src={product.icon} alt="" width={36} height={36} sizes="36px" /> : null}{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
               {product.developmentPreviews?.length ? (
                 <p className={styles.previewNote} data-development-preview="true">
                   {product.developmentPreviews[0].captureKind === "onboarding" ? (copy.locale === "tr" ? "İlk başlangıç önizlemesi" : "First-start preview") : (copy.locale === "tr" ? "Geliştirme önizlemesi" : "Development preview")} · {product.developmentPreviews[0].capturedAt}
+                  <button type="button" className={styles.previewExpand} onClick={() => setPreviewProduct(product)} tabIndex={active ? 0 : -1}>{copy.locale === "tr" ? "Ekranı büyüt" : "Enlarge screen"}</button>
                 </p>
               ) : null}
               <NextLink
@@ -634,6 +657,7 @@ export function ExperienceOverlay({
         <div className={styles.closingWordmark} aria-hidden="true"><span>Y</span>ULA</div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
+      <DevelopmentPreviewDialog product={previewProduct} locale={copy.locale} onClose={closePreview} />
     </div>
   );
 }

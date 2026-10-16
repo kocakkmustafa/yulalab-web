@@ -119,7 +119,7 @@ export function ExperienceWorld({
         />
       </Environment>
 
-      <GridRoom frame={frame} tier={tier} />
+      <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} />
       <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
       <PortfolioField
         frame={frame}

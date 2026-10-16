@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { Color, Euler, PerspectiveCamera, Vector3 } from "three";
 import {
   glyphViewportPose,
+  developmentViewportComposition,
   serviceViewportComposition,
   portfolioViewportComposition,
   proofLayoutPose,
@@ -326,11 +327,12 @@ describe("reference-faithful experience timeline", () => {
     }
   });
 
-  it("keeps the opening Y subordinate to the copy across representative viewports", () => {
+  it("makes the opening Y dominant while keeping it clear of viewport edges", () => {
     const desktop = projectedGlyphBounds(0, "desktop", 1440, 900);
-    expect(desktop.width).toBeLessThanOrEqual(0.35);
-    expect(desktop.height).toBeLessThanOrEqual(0.55);
-    expect(desktop.height).toBeGreaterThanOrEqual(0.42);
+    expect(desktop.width).toBeGreaterThanOrEqual(0.36);
+    expect(desktop.width).toBeLessThanOrEqual(0.52);
+    expect(desktop.height).toBeLessThanOrEqual(0.8);
+    expect(desktop.height).toBeGreaterThanOrEqual(0.6);
     expect(desktop.left).toBeGreaterThanOrEqual(-0.98);
     expect(desktop.right).toBeLessThanOrEqual(0.98);
     expect(desktop.bottom).toBeGreaterThanOrEqual(-0.98);
@@ -370,8 +372,8 @@ describe("reference-faithful experience timeline", () => {
   it("centers the opening Y and gives short phones a collision-safe pose", () => {
     const desktopPose = glyphViewportPose(0, 1440 / 900, 1440);
     expect(Math.abs(desktopPose.offset[0])).toBeLessThanOrEqual(0.05);
-    expect(desktopPose.scaleMultiplier).toBeGreaterThanOrEqual(0.72);
-    expect(desktopPose.scaleMultiplier).toBeLessThan(0.84);
+    expect(desktopPose.scaleMultiplier).toBeGreaterThanOrEqual(1.1);
+    expect(desktopPose.scaleMultiplier).toBeLessThan(1.2);
 
     const tallPhone = glyphViewportPose(0, 390 / 844, 390);
     const shortPhone = glyphViewportPose(0, 390 / 667, 390);
@@ -575,14 +577,26 @@ describe("document storyboard timing", () => {
 });
 
 
-describe("SERVICE media framing", () => {
+describe("real-media framing", () => {
   it.each([[1440, 900], [390, 667], [390, 844], [768, 1024], [927, 983]])(
-    "contains the focused source plate clear of fixed navigation and copy at %sx%s", (width, height) => {
+    "fits the SERVICE foreground window inside %sx%s", (width, height) => {
       const media = serviceViewportComposition(width, height);
-      expect(media.centerX - media.width / 2).toBeGreaterThanOrEqual(16);
-      expect(media.centerX + media.width / 2).toBeLessThanOrEqual(width - 16);
-      expect(media.centerY - media.height / 2).toBeGreaterThanOrEqual(104 - 1e-6);
-      expect(media.centerY + media.height / 2).toBeLessThanOrEqual(height - (width < 900 ? 230 : 330));
+      expect(media.centerX - media.width / 2).toBeGreaterThanOrEqual(8);
+      expect(media.centerX + media.width / 2).toBeLessThanOrEqual(width - 8);
+      expect(media.centerY - media.height / 2).toBeGreaterThanOrEqual(70);
+      expect(media.centerY + media.height / 2).toBeLessThanOrEqual(height - (width < 900 ? 150 : 80));
     },
   );
+  it("gives the short-phone native frame at least twice the former 70px width", () => {
+    const width = 390, height = 667, progress = 0.26875;
+    const pose = interpolateViewportCamera(progress, width);
+    const layout = developmentViewportComposition(pose, width, height, -1.25 - 3 * 1.36);
+    const camera = new PerspectiveCamera(pose.fov, width / height, 0.05, 130);
+    camera.position.set(...pose.position); camera.lookAt(new Vector3(...pose.target)); camera.updateProjectionMatrix(); camera.updateMatrixWorld(true);
+    const nativeWidth = 2.65 * 1206 / 2622;
+    const points = [-1, 1].flatMap(x => [-1, 1].map(y => new Vector3(x * nativeWidth / 2, y * 2.65 / 2, 0).multiplyScalar(layout.scale).applyEuler(new Euler(0, layout.yaw, 0)).add(new Vector3(...layout.center)).project(camera)));
+    const pxWidth = (Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x))) / 2 * width;
+    expect(pxWidth).toBeGreaterThanOrEqual(140);
+    expect(Math.max(...points.map(p => p.y))).toBeLessThan(0.85);
+  });
 });

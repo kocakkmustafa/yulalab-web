@@ -38,9 +38,9 @@ REVIEWED_VISUAL_ADDITIONS = {
     "public/projects/ostinato/preview-course-20261016.png": "eb0084ab724970d20101d0d82da2bc861ad161dcf6cfc64a0489262a1ede251a",
     "public/projects/ostinato/preview-native-20261016.png": "3c09f2db71e40128a659a028ded727c0a1c5c820fb572e3a00a1325ec22ce89f",
     "public/projects/ostinato/preview-written-lesson-20261016.png": "745e683b1b490258e99a1fb8a798e198e4b05c17e11386eb42743b259168e377",
-    "src/components/experience/presentation-canvas.ts": "e794cf75c9bd5f276a1ea84f021c6d49bdfe1dcbfacad1e9bb1707c82b0b5843",
+    "src/components/experience/presentation-canvas.ts": "263df36aca5b6dc08d02e09208d6c37e53d58669301890c67ae6aa187ace4110",
     "src/components/experience/storyboard.ts": "91865ba673e2dc3500792e3ce06fa58261bbf747e8c9b368308efb6eebf4c193",
-    "src/components/experience/useShowcaseTextures.ts": "8515c382c47206a4884812e9f62ec36ad5fe8898f0b35ffc3eb1c57e38547083",
+    "src/components/experience/useShowcaseTextures.ts": "bde62c5f645eaf8b708993d76f9903363457a48bdb43c34d7f38fba1fb6e728d",
     "src/components/projects/DevelopmentPreviewSection.tsx": "efeaf9104b520db295520f2f0138077c8948417a1bc1e4acda8400c92f2d5178",
     "src/data/product-presentations.ts": "a3e26a90c4ccce59583277cd719eba27e5f971b78527533d63a7a16ee5d1c6ec"
 }

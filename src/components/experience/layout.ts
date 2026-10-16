@@ -66,7 +66,7 @@ export function glyphViewportPose(
   const mobilePortalStrength = mobilePortalSettle * (1 - mobilePortalRelease);
   const compactReduction = lerp(0.5, 0.24, mobileMix);
   const responsiveScale = 1 - compactReduction * compactMix * (1 - proofRestore);
-  const openingScale = lerp(lerp(0.8, 0.9, mobileMix), 1, heroExit);
+  const openingScale = lerp(lerp(1.16, 0.9, mobileMix), 1, heroExit);
   const scaleMultiplier = responsiveScale * openingScale
     * (1 - 0.14 * shortMobileMix * compositionStrength)
     * (1 - 0.2 * mobileMix * mobilePortalStrength);
@@ -176,15 +176,32 @@ export function portfolioViewportComposition(
  */
 export function serviceViewportComposition(width: number, height: number, portal = false) {
   const mobile = width < 900;
-  const top = mobile ? 220 : 104;
-  const availableHeight = Math.max(80, Math.min(height * 0.46, height - top - (mobile ? 230 : 330)));
-  const mediaHeight = portal
-    ? Math.min(height * 0.72, width * 0.6 * 3.25 / 5.5)
-    : Math.min(availableHeight, width * (mobile ? 0.91 : 0.76) * 3.25 / 5.5);
+  const mediaHeight = portal ? height * 0.76 : mobile ? Math.max(120, Math.min(height * 0.48, height - 350)) : height * 0.76;
   return {
-    centerX: width * (portal ? 0.3 : 0.5),
-    centerY: portal ? height * 0.55 : top + mediaHeight / 2,
-    width: mediaHeight * 5.5 / 3.25,
+    centerX: width * (portal ? 0.3 : mobile ? 0.5 : 0.33),
+    centerY: portal ? height * 0.55 : mobile ? 150 + mediaHeight / 2 : height * 0.52,
+    width: width * (portal ? 0.65 : mobile ? 0.9 : 0.58),
     height: mediaHeight,
+  };
+}
+
+
+/** Size the actual portrait source, rather than fitting it inside a landscape poster. */
+export function developmentViewportComposition(camera: CameraPose, width: number, height: number, focusPlane: number) {
+  const base = portfolioViewportComposition(camera, width, height, focusPlane);
+  const mobile = viewportMobileMix(width);
+  const top = 76 + (1 - mobile) * 24;
+  const imageHeight = Math.max(140, Math.min(height * (0.72 - mobile * 0.21), height - top - (mobile > 0.5 ? 270 : 90)));
+  const centerY = top + imageHeight / 2;
+  const depthSpan = camera.target[2] - camera.position[2];
+  const alongView = (focusPlane - camera.position[2]) / depthSpan;
+  const axisY = camera.position[1] + (camera.target[1] - camera.position[1]) * alongView;
+  const distance = Math.hypot(base.center[0] - camera.position[0], axisY - camera.position[1], focusPlane - camera.position[2]);
+  const viewHeight = 2 * distance * Math.tan(camera.fov * Math.PI / 360);
+  return {
+    center: [base.center[0] - (1 - mobile) * viewHeight * width / height * 0.16, axisY + viewHeight * (0.5 - centerY / height), focusPlane] as Vec3,
+    width: viewHeight * 0.75,
+    scale: viewHeight * imageHeight / height / 2.65,
+    yaw: base.yaw,
   };
 }

@@ -13,7 +13,7 @@ import {
 import { presentationImageUrl } from "./useShowcaseTextures";
 import { makeIdentityPresentation, type PresentationImage } from "./presentation-canvas";
 import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
-import { portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia, viewportMobileMix } from "./layout";
+import { developmentViewportComposition, portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia, viewportMobileMix } from "./layout";
 import type {
   ExperienceMode,
   ExperienceProduct,
@@ -513,13 +513,7 @@ function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
   product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
 }) {
   const icon = useCardTexture(product.icon, tier, onAssetSettled);
-  const first = useCardTexture(product.developmentPreviews?.[0]?.path, tier, onAssetSettled);
-  const second = useCardTexture(product.developmentPreviews?.[1]?.path, tier, onAssetSettled);
-  const cover = useMemo(() => makeIdentityPresentation(
-    product,
-    icon.texture?.image as PresentationImage | undefined,
-    [first.texture?.image, second.texture?.image].filter(Boolean) as PresentationImage[],
-  ), [product, icon.texture, first.texture, second.texture]);
+  const cover = useMemo(() => makeIdentityPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
   useEffect(() => () => cover.dispose(), [cover]);
 
   return (
@@ -573,7 +567,11 @@ function ProductCard({
     );
   }
 
-  if ((product.icon || product.developmentPreviews?.length) && loadRichMedia) {
+  if (product.developmentPreviews?.length && loadRichMedia) {
+    return <ScreenshotLayer screenshot={product.developmentPreviews[0]} product={product} layerIndex={0} opacity={opacity} tier={tier} onAssetSettled={onAssetSettled} />;
+  }
+
+  if (product.icon && loadRichMedia) {
     return <IdentityPresentation product={product} opacity={opacity} tier={tier} onAssetSettled={onAssetSettled} />;
   }
 
@@ -710,7 +708,8 @@ export function PortfolioField({
           requestedMediaProducts.has(index)
             ? product.screenshots.length > 0
               ? product.screenshots.map((shot) => shot.path)
-              : [product.icon, ...(product.developmentPreviews ?? []).map((shot) => shot.path)].filter((path): path is string => Boolean(path))
+              : product.developmentPreviews?.length ? [product.developmentPreviews[0].path]
+                : [product.icon].filter((path): path is string => Boolean(path))
             : [],
         ),
       ),
@@ -747,7 +746,10 @@ export function PortfolioField({
   return (
     <group visible={fieldOpacity > 0.001}>
       {products.slice(0, 8).map((product, index) => {
-        const pose = productPose(index, frame, mode, composition);
+        const mediaComposition = product.developmentPreviews?.length
+          ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * 1.36)
+          : composition;
+        const pose = productPose(index, frame, mode, mediaComposition);
         const portfolioDistance = Math.abs(index - frame.productFloat);
         const portfolioFocus = 1 - smoothstep(clamp01(portfolioDistance));
         // Neighboring works remain quiet side planes around the single active

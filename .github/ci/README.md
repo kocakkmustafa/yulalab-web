@@ -159,3 +159,22 @@ were checked before adoption, alongside a direct pixel/privacy and EXIF audit.
 The five source captures are copied unchanged; no native build, simulator run,
 app-source edit or store/physical-quality acceptance is performed by the site
 integration. New evidence is in `motion-media-integration-20261016`.
+
+
+## Independent P2 visual correction after f8598965
+
+The current local candidate replaces the repeated landscape development poster
+with the real portrait source, moves its explanation/CTA into a separate DOM
+caption, and provides a keyboard/touch image reader. Approved master and source
+PNG bytes, lifecycle, publication registries and provider gates are unchanged.
+
+The room now uses a dense luminous curved grid and moving illumination; the
+owned Y is larger on desktop. A curved white screen surface replaces the gray
+box face during crossing. SERVICE uses ten individually moving real source
+frames shared with the portal and room projection, instead of four painted
+collages. Each texture has a bounded longest dimension and one disposal owner.
+The existing R3F frame owner animates only the visible hero/SERVICE, sleeping in
+reading scenes and hidden tabs; reduced motion/fallback retains the static view.
+New timing, pixel, input, accessibility and local-test evidence is held in the
+`p2-visual-correction-20261016` task package. This is not exact-reference video,
+physical-device performance, provider/security, CI/deploy or public acceptance.

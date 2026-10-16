@@ -744,18 +744,18 @@ describe("shared SERVICE source-media ownership", () => {
     hook.rerender({ enabled: true, english: false });
     await h.load();
     const first = hook.result.current;
-    expect(first).toHaveLength(4);
-    expect(h.canvases).toHaveBeenCalledTimes(4);
+    expect(first).toHaveLength(10);
+    expect(h.canvases).toHaveBeenCalledTimes(10);
     hook.rerender({ enabled: false, english: false });
     expect(hook.result.current).toBe(first);
     expect(h.disposed).not.toHaveBeenCalled();
     hook.rerender({ enabled: false, english: true });
     expect(hook.result.current).toHaveLength(0);
-    expect(h.disposed).toHaveBeenCalledTimes(4);
+    expect(h.disposed).toHaveBeenCalledTimes(10);
     await h.load();
-    expect(hook.result.current).toHaveLength(4);
+    expect(hook.result.current).toHaveLength(10);
     hook.unmount();
-    expect(h.disposed).toHaveBeenCalledTimes(8);
+    expect(h.disposed).toHaveBeenCalledTimes(20);
     vi.unstubAllGlobals();
   });
 
@@ -767,5 +767,34 @@ describe("shared SERVICE source-media ownership", () => {
     expect(h.canvases).not.toHaveBeenCalled();
     expect(h.disposed).not.toHaveBeenCalled();
     vi.unstubAllGlobals();
+  });
+});
+
+
+describe("ambient scene scheduling", () => {
+  it("uses the existing frame owner for hero/SERVICE, sleeping when hidden or in a reading scene", () => {
+    resetExperienceCanvasHarness();
+    defineValue(document, "visibilityState", "visible");
+    const props = { products: [], progress: 0, mode: "desktop" as const, tier: "high" as const, onTierChange: vi.fn(), onReady: vi.fn(), onContextLost: vi.fn() };
+    const view = render(createElement(ExperienceCanvas, props));
+    act(() => finishCanvasWarmup());
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 6));
+    expect(experienceCanvasHarness.invalidate).toHaveBeenCalledTimes(1);
+    defineValue(document, "visibilityState", "hidden");
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 7));
+    expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
+    defineValue(document, "visibilityState", "visible");
+    view.rerender(createElement(ExperienceCanvas, { ...props, progress: 0.88 }));
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 8));
+    expect(experienceCanvasHarness.invalidate).toHaveBeenCalledTimes(1);
+    view.rerender(createElement(ExperienceCanvas, { ...props, progress: 0.72 }));
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 9));
+    expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
+    expect(experienceCanvasHarness.frameCallbacks.filter(frame => frame.priority > 0)).toHaveLength(0);
+    view.unmount();
   });
 });

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef } from "react";
 import {
   AdditiveBlending,
   Color,
+  type Group,
   DataTexture,
   ExtrudeGeometry,
   LinearFilter,
@@ -128,6 +129,7 @@ function makeYShape(): Shape {
 export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotation = [0, 0, 0] }: YulaGlyphProps) {
   const viewportSize = useThree((state) => state.size);
   const renderer = useThree((state) => state.gl);
+  const glyphGroup = useRef<Group>(null);
   const causticMaterial = useRef<ShaderMaterial | null>(null);
   const portalMaterial = useRef<ShaderMaterial | null>(null);
   const geometry = useMemo(() => {
@@ -183,6 +185,10 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     frame.glyph.rotation[2],
   ];
   const whiteMix = frame.glyph.outlineMix;
+  const outlineColor = useMemo(
+    () => new Color("#ffffff").lerp(new Color("#16171a"), smoothstep(segmentProgress(frame.world.whiteMix, 0.12, 0.38))),
+    [frame.world.whiteMix],
+  );
   const galleryVisibility = 1 - frame.world.worksBackdropMix * 0.82;
   // Hand the portal to the readable SERVICE media, then keep the emblem
   // retired through the closing wordmark/contact.
@@ -234,11 +240,14 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   );
   const drawingBufferSize = useMemo(() => new Vector2(), []);
 
-  useFrame(() => {
+  useFrame((state) => {
+    const time = state.clock.elapsedTime;
+    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + Math.sin(time * 0.26) * 0.012 * frame.overlay.hero, rotation[1] + Math.sin(time * 0.2) * 0.035 * frame.overlay.hero, rotation[2]);
+    chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);
     if (causticMaterial.current) {
-      causticMaterial.current.uniforms.uTime.value = frame.progress * 18;
+      causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
       causticMaterial.current.uniforms.uGlassMix.value =
-        frame.glyph.glassMix * closingVisibility * (0.05 + frame.world.visionPortal * 0.95);
+        frame.glyph.glassMix * closingVisibility * (0.35 + frame.world.visionPortal * 0.65);
       causticMaterial.current.uniforms.uHeroMix.value = frame.overlay.hero;
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
     }
@@ -249,12 +258,13 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       portalMaterial.current.uniforms.uViewport.value.copy(drawingBufferSize);
       portalMaterial.current.uniforms.uReveal.value = frame.world.visionPortal;
       portalMaterial.current.uniforms.uOpacity.value = frame.world.servicePortalOpacity;
-      portalMaterial.current.uniforms.uTime.value = frame.progress * 18;
+      portalMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
     }
   });
 
   return (
     <group
+      ref={glyphGroup}
       position={position}
       rotation={rotation}
       scale={frame.glyph.scale * viewportPose.scaleMultiplier}
@@ -269,7 +279,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
           bumpMap={chromeBump}
-          bumpScale={0.025}
+          bumpScale={0.075}
           attenuationDistance={1.6}
           clearcoat={0.92}
           clearcoatRoughness={0.15}
@@ -292,7 +302,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             anisotropicBlur={tier === "high" ? 0.02 : 0.04}
             attenuationColor="#ffffff"
             bumpMap={chromeBump}
-            bumpScale={0.025}
+            bumpScale={0.075}
             attenuationDistance={8}
             backsideResolution={1}
             chromaticAberration={0}
@@ -308,7 +318,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             iridescenceIOR={1.35}
             metalness={0.96}
             opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.12 : 0.18}
+            roughness={tier === "high" ? 0.075 : 0.11}
             samples={tier === "high" ? 3 : 2}
             temporalDistortion={0}
             thickness={tier === "high" ? 0.28 : 0.2}
@@ -324,10 +334,13 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       <mesh geometry={geometry}>
         <meshBasicMaterial visible={false} />
         <Edges
-          color="#ffffff"
-          opacity={(0.04 + whiteMix * 0.92) * closingVisibility}
+          renderOrder={5}
+          depthTest={false}
+          depthWrite={false}
+          color={outlineColor}
+          opacity={(0.04 + Math.max(whiteMix, frame.world.whiteMix) * 0.96) * closingVisibility}
           scale={1.012}
-          threshold={18}
+          threshold={8}
           transparent
         />
       </mesh>

@@ -5,6 +5,8 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
   Color,
+  type Group,
+  type MeshBasicMaterial,
   DoubleSide,
   PlaneGeometry,
   Matrix4,
@@ -14,7 +16,7 @@ import {
   type Texture,
 } from "three";
 import { serviceViewportComposition } from "./layout";
-import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
+import { clamp01, interpolateViewportCamera, smoothstep } from "./timeline";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 export type ValueDioramasProps = {
@@ -462,6 +464,42 @@ export type ServiceCorridorVisualProps = ValueDioramasProps & {
   withDioramas?: boolean;
 };
 
+function ServiceSourcePlane({ texture, index, count, frame, opacity, portal }: {
+  texture: Texture; index: number; count: number; frame: TimelineFrame; opacity: number; portal: boolean;
+}) {
+  const group = useRef<Group>(null);
+  const material = useRef<MeshBasicMaterial>(null);
+  const size = useThree((state) => state.size);
+  const camera = interpolateViewportCamera(frame.progress, size.width);
+  const composition = serviceViewportComposition(size.width, size.height, portal);
+  const image = texture.image as { width: number; height: number };
+  const ratio = image.width / image.height;
+  const height = 3.25, width = height * ratio;
+  const viewHeight = 2 * Math.tan(camera.fov * Math.PI / 360) * 7;
+  const viewWidth = viewHeight * size.width / size.height;
+  const baseScale = Math.min(viewHeight * composition.height / size.height / height, viewWidth * composition.width / size.width / width);
+  const mediaFloat = frame.valueFloat / 3 * Math.max(0, count - 1);
+  const difference = index - mediaFloat;
+  useFrame((state) => {
+    if (!group.current || !material.current) return;
+    const time = state.clock.elapsedTime;
+    const focus = 1 - smoothstep(clamp01(Math.abs(difference)));
+    const phase = difference * 0.9;
+    group.current.visible = Math.abs(difference) < 3.2 && opacity > 0.001;
+    group.current.position.set(
+      viewWidth * (composition.centerX / size.width - 0.5) + Math.sin(phase) * viewWidth * 0.74 + Math.sin(time * 0.24 + index) * viewWidth * 0.012,
+      viewHeight * (0.5 - composition.centerY / size.height) + Math.sin(phase * 1.4) * viewHeight * 0.12 + Math.cos(time * 0.3 + index) * viewHeight * 0.012,
+      -7 - (1 - Math.cos(phase)) * 3.2,
+    );
+    group.current.rotation.set(Math.sin(time * 0.25 + index) * 0.025, -Math.sin(phase) * 0.66 + Math.sin(time * 0.2) * 0.045, Math.sin(time * 0.18 + index) * 0.018);
+    group.current.scale.setScalar(baseScale * (0.7 + focus * 0.3));
+    material.current.opacity = opacity * (0.08 + focus * 0.92);
+  }, -45);
+  return <group ref={group} userData={{ sourceMedia: texture.userData.sourcePath }}>
+    <mesh renderOrder={1}><planeGeometry args={[width, height]} /><meshBasicMaterial ref={material} map={texture} transparent depthWrite={false} toneMapped={false} fog={false} /></mesh>
+  </group>;
+}
+
 export function ServiceCorridorVisual({
   frame,
   tier,
@@ -487,7 +525,8 @@ export function ServiceCorridorVisual({
 
   return (
     <group visible={journeyOpacity > 0.001} position={camera.position} quaternion={[orientation.x, orientation.y, orientation.z, orientation.w]}>
-      {components.map((Diorama, index) => {
+      {mediaTextures?.length ? mediaTextures.map((texture, index) => <ServiceSourcePlane key={texture.uuid} texture={texture} index={index} count={mediaTextures.length} frame={frame} opacity={journeyOpacity} portal={!withDioramas} />) : null}
+      {!mediaTextures?.length ? components.map((Diorama, index) => {
         const difference = index - frame.valueFloat;
         const distance = Math.abs(difference);
         const focus = 1 - smoothstep(clamp01(distance));
@@ -526,7 +565,7 @@ export function ServiceCorridorVisual({
             ) : null}
           </group>
         );
-      })}
+      }) : null}
     </group>
   );
 }

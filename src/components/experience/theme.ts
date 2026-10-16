@@ -1,12 +1,12 @@
 export const WORLD_DARK_COLOR = "#07030c";
-export const WORLD_LIGHT_COLOR = "#f2f1ed";
+export const WORLD_LIGHT_COLOR = "#e6eef0";
 
 // The renderer keeps its spatial background transition continuous. Text must
 // not follow the same interpolation curve: near the midpoint foreground and
 // background would converge. This switch sits where the interpolated surface
 // luminance is approximately 0.18, so pure white immediately before it and
 // pure black immediately after it both retain at least WCAG AA contrast.
-export const THEME_CONTRAST_SWITCH = 0.202;
+export const THEME_CONTRAST_SWITCH = 0.216;
 
 export type ExperiencePalette = {
   foreground: "#000000" | "#ffffff";
