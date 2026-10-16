@@ -82,8 +82,8 @@ export function ExperienceWorld({
         shadow-mapSize-height={tier === "high" ? 1024 : 512}
         shadow-mapSize-width={tier === "high" ? 1024 : 512}
       />
-      <pointLight color="#33dcff" intensity={10} position={[-7, 2, 4]} />
-      <pointLight color="#ff3fbd" intensity={4} position={[7, -2, -8]} />
+      <pointLight color="#e6e9ef" intensity={4} position={[-7, 2, 4]} />
+      <pointLight color="#f4f1eb" intensity={2} position={[7, -2, -8]} />
 
       <Environment
         background={false}
@@ -108,7 +108,7 @@ export function ExperienceWorld({
           scale={[1.2, 6, 1]}
         />
         <Lightformer
-          color="#6d11ad"
+          color="#c9ced8"
           form="rect"
           intensity={1.4}
           position={[2, -4, -8]}

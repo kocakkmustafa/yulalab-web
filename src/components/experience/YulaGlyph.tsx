@@ -61,9 +61,9 @@ const CAUSTIC_FRAGMENT_SHADER = `
     float chroma = 0.5 + 0.5 * sin(
       vLocalPosition.x * 4.2 - vLocalPosition.y * 2.6 + uTime * 0.18
     );
-    vec3 cyan = vec3(0.18, 0.84, 1.0);
-    vec3 violet = vec3(0.48, 0.22, 1.0);
-    vec3 magenta = vec3(1.0, 0.18, 0.72);
+    vec3 cyan = vec3(0.82, 0.87, 0.95);
+    vec3 violet = vec3(0.72, 0.7, 0.78);
+    vec3 magenta = vec3(0.94, 0.9, 0.88);
     vec3 color = mix(cyan, violet, chroma);
     color = mix(color, magenta, facet * 0.42);
     float heroWhite = uHeroMix * clamp(sweep * 0.82 + rim * 0.42 + diagonal * 0.24, 0.0, 1.0);
@@ -266,7 +266,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
           bumpMap={chromeBump}
-          bumpScale={0.14}
+          bumpScale={0.025}
           attenuationDistance={1.6}
           clearcoat={0.92}
           clearcoatRoughness={0.15}
@@ -289,10 +289,10 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             anisotropicBlur={tier === "high" ? 0.02 : 0.04}
             attenuationColor="#ffffff"
             bumpMap={chromeBump}
-            bumpScale={0.14}
+            bumpScale={0.025}
             attenuationDistance={8}
             backsideResolution={1}
-            chromaticAberration={tier === "high" ? 0.003 : 0}
+            chromaticAberration={0}
             clearcoat={1}
             clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
             color={bodyColor}
@@ -301,7 +301,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             distortionScale={0.34}
             envMapIntensity={tier === "high" ? 1.8 : 1.5}
             ior={1.35}
-            iridescence={tier === "high" ? 0.02 * frame.glyph.glassMix : 0}
+            iridescence={0}
             iridescenceIOR={1.35}
             metalness={0.96}
             opacity={bodyOpacity}
@@ -375,7 +375,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         scale={1.018}
       >
         <meshBasicMaterial
-          color="#39e6ff"
+          color="#cad3df"
           depthWrite={false}
           opacity={fringeOpacity}
           toneMapped={false}
@@ -389,7 +389,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         scale={1.026}
       >
         <meshBasicMaterial
-          color="#ff43c8"
+          color="#ddd5e2"
           depthWrite={false}
           opacity={fringeOpacity * 0.82}
           toneMapped={false}
