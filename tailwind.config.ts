@@ -24,7 +24,8 @@ const config: Config = {
           700: "#1A1A1E",
           600: "#26262C",
           500: "#3A3A42",
-          400: "#6B6B75",
+          // Small muted text must remain readable on dark page and card surfaces.
+          400: "#90909A",
           300: "#9A9AA3",
           200: "#C5C5CC",
           100: "#E5E5EA",

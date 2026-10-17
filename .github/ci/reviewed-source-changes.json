@@ -208,8 +208,8 @@
     {
       "path": "tailwind.config.ts",
       "publishedSha256": "4e514350d6c14ebe9e458b0fc1b6d8fb71648bab5d4685c554d75354317f9568",
-      "candidateSha256": "2a6087d94c0f433334cd3afcd5c2da108ca2b0c8b1ca61da3858a7508dfdd965",
-      "reason": "Load the same typography plugin through ESM import; Node26 dev TS config loading otherwise throws require-is-not-defined. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence.",
+      "candidateSha256": "1b9db6e0caef809b733dd51d4f5b4b5b0cda79fd237564516b3a7e589f277e85",
+      "reason": "Load the same typography plugin through ESM import; Node26 dev TS config loading otherwise throws require-is-not-defined. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. 2026-10-17 local accessibility audit: raise muted ink-400 text from #6B6B75 (3.75:1 on the page background) to #90909A, preserving layout, media, status colors and the 3D experience. Targeted browser contrast verification is recorded in task-9; candidate only, no publication claim.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
