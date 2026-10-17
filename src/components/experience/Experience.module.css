@@ -1311,6 +1311,10 @@
     #0a0710;
 }
 
+.staticExperience [tabindex="-1"] {
+  scroll-margin-top: calc(86px + var(--safe-top));
+}
+
 .staticExperience .experienceHeader {
   position: sticky;
   top: 0;
@@ -1646,6 +1650,9 @@
   }
 
   .mobileNavigation nav {
+    max-height: calc(100dvh - 86px - var(--safe-top) - var(--safe-bottom));
+    overflow-y: auto;
+    overscroll-behavior: contain;
     position: fixed;
     z-index: 30;
     top: calc(70px + var(--safe-top));

@@ -187,6 +187,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [glyphRotation, setGlyphRotation] = useState<Vec3>([0, 0, 0]);
   const [forceStatic, setForceStatic] = useState(false);
+  const linearTarget = useRef<string | null>(null);
   const audio = useRef<AmbientAudioController | null>(null);
   const canvasReadyRef = useRef(false);
   const journeyReturn = useRef<JourneyHistory | null>(null);
@@ -457,6 +458,24 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     [mode, renderedProgress],
   );
   const activeProduct = products[frame.productIndex] ?? products[0];
+  useLayoutEffect(() => {
+    if (!forceStatic || !linearTarget.current) return;
+    const target = document.getElementById(linearTarget.current);
+    linearTarget.current = null;
+    // The linear document has different geometry. Keep the visitor on the
+    // same content and transfer focus before the old scroll can be clamped.
+    target?.scrollIntoView({ block: "start", behavior: "instant" });
+    target?.focus({ preventScroll: true });
+  }, [forceStatic]);
+
+  const showLinearView = () => {
+    linearTarget.current = frame.stage === "portfolio" && activeProduct
+      ? `experience-product-${activeProduct.slug}`
+      : frame.stage === "mission" || frame.stage === "crossing"
+        ? "experience-manifesto"
+        : `experience-${frame.stage}`;
+    setForceStatic(true);
+  };
   // Server markup is the complete linear document. Hydration may promote it
   // to WebGL, but no-JS users and the first accessibility tree keep every
   // product, proof item and trust link discoverable.
@@ -545,7 +564,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
               tier={tier}
               soundEnabled={soundEnabled}
               onSoundToggle={() => void toggleSound()}
-              onLinearView={() => setForceStatic(true)}
+              onLinearView={showLinearView}
             />
             {frame.stage === "hero" && frame.overlay.hero > 0.6 ? (
               <GlyphControl locale={copy.locale} rotation={glyphRotation} onChange={setGlyphRotation} />

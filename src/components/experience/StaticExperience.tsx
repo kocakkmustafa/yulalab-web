@@ -36,7 +36,7 @@ export function StaticExperience({
         onSoundToggle={onSoundToggle}
       />
 
-      <section id="experience-hero" className={styles.staticHero}>
+      <section id="experience-hero" tabIndex={-1} className={styles.staticHero}>
         <p className={styles.kicker}>{copy.hero.eyebrow}</p>
         <h1>{copy.hero.title}</h1>
         <p className={styles.staticLede}>{copy.hero.lede}</p>
@@ -66,7 +66,7 @@ export function StaticExperience({
             const media = product.screenshots.length ? product.screenshots : product.developmentPreviews ?? [];
             const development = product.screenshots.length === 0 && Boolean(product.developmentPreviews?.length);
             return (
-            <article key={product.slug} className={styles.staticProduct}>
+            <article key={product.slug} id={`experience-product-${product.slug}`} tabIndex={-1} className={styles.staticProduct}>
               <div className={styles.productMeta}>
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
                 <span>{product.category}</span>
@@ -135,26 +135,26 @@ export function StaticExperience({
         </div>
       </section>
 
-      <section id="experience-proof" className={`${styles.staticSection} ${styles.staticManifesto}`}>
+      <section id="experience-proof" tabIndex={-1} className={`${styles.staticSection} ${styles.staticManifesto}`}>
         <p className={styles.kicker}>{copy.proof.kicker}</p>
         <h2>{copy.proof.title}</h2>
         <p>{copy.fallback.reason}</p>
       </section>
 
-      <section id="experience-manifesto" className={`${styles.staticSection} ${styles.staticManifesto}`}>
+      <section id="experience-manifesto" tabIndex={-1} className={`${styles.staticSection} ${styles.staticManifesto}`}>
         <article>
           <p className={styles.kicker}>{copy.mission.kicker}</p>
           <h2>{copy.mission.title}</h2>
           <p>{copy.mission.body}</p>
         </article>
-        <article>
+        <article id="experience-vision" tabIndex={-1}>
           <p className={styles.kicker}>{copy.vision.kicker}</p>
           <h2>{copy.vision.title}</h2>
           <p>{copy.vision.body}</p>
         </article>
       </section>
 
-      <section className={styles.staticSection}>
+      <section id="experience-values" tabIndex={-1} className={styles.staticSection}>
         <header className={styles.staticSectionHeading}>
           <p className={styles.kicker}>{copy.values.kicker}</p>
           <h2>{copy.values.title}</h2>
@@ -170,7 +170,7 @@ export function StaticExperience({
         </div>
       </section>
 
-      <footer className={styles.staticClosing}>
+      <footer id="experience-closing" tabIndex={-1} className={styles.staticClosing}>
         <ExperienceClosingContent copy={copy} headingId="static-experience-closing-title" />
       </footer>
     </div>
