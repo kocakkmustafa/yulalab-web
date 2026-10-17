@@ -20,6 +20,7 @@ export async function generateMetadata({
       : "Privacy policy for the Braavolabs application.",
     alternates: {
       canonical: isTR ? "/privacy/braavolabs" : `/${locale}/privacy/braavolabs`,
+      languages: { tr: "/privacy/braavolabs", en: "/en/privacy/braavolabs" },
     },
   };
 }

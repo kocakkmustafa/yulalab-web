@@ -22,6 +22,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/manifesto" : `/${locale}/manifesto`,
+      languages: { tr: "/manifesto", en: "/en/manifesto" },
     },
   };
 }

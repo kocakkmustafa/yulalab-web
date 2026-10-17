@@ -512,3 +512,39 @@ test("production locale routing has bounded canonical redirects", async ({ reque
   expect(invalidLocale.status()).toBe(404);
   expect(invalidLocale.headers().location).toBeUndefined();
 });
+
+test("sitemap pages advertise reciprocal language alternates in their HTML", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto("/support");
+  const sitemap = await page.request.get("/sitemap.xml");
+  expect(sitemap.status()).toBe(200);
+  const entries = await page.evaluate((xml) => {
+    const document = new DOMParser().parseFromString(xml, "application/xml");
+    return Array.from(document.getElementsByTagNameNS("http://www.sitemaps.org/schemas/sitemap/0.9", "url")).map((entry) => ({
+      url: entry.getElementsByTagNameNS("http://www.sitemaps.org/schemas/sitemap/0.9", "loc")[0].textContent!,
+      languages: Object.fromEntries(Array.from(entry.getElementsByTagNameNS("http://www.w3.org/1999/xhtml", "link")).map((link) => [link.getAttribute("hreflang")!, link.getAttribute("href")!])),
+    }));
+  }, await sitemap.text());
+  expect(entries.length).toBeGreaterThan(0);
+  const knownUrls = new Set(entries.map((entry) => entry.url.replace(/\/$/, "")));
+  for (const entry of entries) {
+    const url = new URL(entry.url);
+    expect(url.origin).toBe("https://yulalab.com");
+    expect(Object.keys(entry.languages).sort()).toEqual(["en", "tr"]);
+    for (const alternate of Object.values(entry.languages)) {
+      expect(knownUrls.has(alternate.replace(/\/$/, ""))).toBe(true);
+    }
+    const response = await page.request.get(url.pathname || "/");
+    expect(response.status(), entry.url).toBe(200);
+    const metadata = await page.evaluate((html) => {
+      const document = new DOMParser().parseFromString(html, "text/html");
+      return {
+        canonical: document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.href,
+        languages: Object.fromEntries(Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="alternate"][hreflang]')).map((link) => [link.hreflang, link.href])),
+      };
+    }, await response.text());
+    const normalize = (languages: Record<string, string>) => Object.fromEntries(Object.entries(languages).map(([language, href]) => [language, href.replace(/\/$/, "")]));
+    expect(metadata.canonical?.replace(/\/$/, ""), entry.url).toBe(entry.url.replace(/\/$/, ""));
+    expect(normalize(metadata.languages), entry.url).toEqual(normalize(entry.languages));
+  }
+});

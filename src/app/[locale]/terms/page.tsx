@@ -22,6 +22,7 @@ export async function generateMetadata({
       : "Shared terms of service and end-user license agreement (EULA) for YULA Lab products (LifeOS, Burun Farkı, Braavolabs).",
     alternates: {
       canonical: isTR ? "/terms" : `/${locale}/terms`,
+      languages: { tr: "/terms", en: "/en/terms" },
     },
   };
 }

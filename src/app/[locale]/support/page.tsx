@@ -20,6 +20,7 @@ export async function generateMetadata({
       : "Support and FAQ for Braavolabs, Burun Farkı, LifeOS, and the Motion apps.",
     alternates: {
       canonical: isTR ? "/support" : `/${locale}/support`,
+      languages: { tr: "/support", en: "/en/support" },
     },
   };
 }

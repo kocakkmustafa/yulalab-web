@@ -20,6 +20,7 @@ export async function generateMetadata({
       : "Privacy policy for the Burun Farkı application.",
     alternates: {
       canonical: isTR ? "/privacy/burunfarki" : `/${locale}/privacy/burunfarki`,
+      languages: { tr: "/privacy/burunfarki", en: "/en/privacy/burunfarki" },
     },
   };
 }

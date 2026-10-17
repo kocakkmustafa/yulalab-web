@@ -37,15 +37,9 @@ export default async function ProjectOgImage({
   const foreground = project.brand.foreground;
   const background = project.brand.background;
   const gradient = project.brand.gradient;
-  const statusIsFilled = project.status === "live" || project.status === "beta";
-  const statusLabel =
-    project.status === "live"
-      ? "live"
-      : project.status === "beta"
-        ? "beta"
-        : project.status === "coming-soon"
-          ? "coming soon"
-          : "in development";
+  // Social cards may remain cached after a publication check expires.
+  // Link to the product without freezing a current-availability assertion.
+  const destinationLabel = "Ürün sayfası";
 
   return new ImageResponse(
     (
@@ -250,10 +244,10 @@ export default async function ProjectOgImage({
                 height: 10,
                 border: `2px solid ${accent}`,
                 borderRadius: 9999,
-                background: statusIsFilled ? accent : "transparent",
+                background: "transparent",
               }}
             />
-            <span style={{ display: "flex" }}>{statusLabel}</span>
+            <span style={{ display: "flex" }}>{destinationLabel}</span>
           </div>
         </div>
       </div>

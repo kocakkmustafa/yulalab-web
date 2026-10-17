@@ -20,6 +20,7 @@ export async function generateMetadata({
       : "LifeOS privacy information about on-device storage, optional services and your data rights.",
     alternates: {
       canonical: isTR ? "/privacy/lifeos" : `/${locale}/privacy/lifeos`,
+      languages: { tr: "/privacy/lifeos", en: "/en/privacy/lifeos" },
     },
   };
 }

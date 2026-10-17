@@ -26,6 +26,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/contact" : `/${locale}/contact`,
+      languages: { tr: "/contact", en: "/en/contact" },
     },
   };
 }

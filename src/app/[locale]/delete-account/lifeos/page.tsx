@@ -22,6 +22,7 @@ export async function generateMetadata({
       : "Learn how to request deletion of your LifeOS account and associated data, in the app or without access to it.",
     alternates: {
       canonical: isTR ? "/delete-account/lifeos" : `/${locale}/delete-account/lifeos`,
+      languages: { tr: "/delete-account/lifeos", en: "/en/delete-account/lifeos" },
     },
   };
 }

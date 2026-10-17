@@ -23,6 +23,7 @@ export async function generateMetadata({
       : "Privacy policies for Braavolabs, Burun Farkı and LifeOS.",
     alternates: {
       canonical: isTR ? "/privacy" : `/${locale}/privacy`,
+      languages: { tr: "/privacy", en: "/en/privacy" },
     },
   };
 }

@@ -28,6 +28,7 @@ export async function generateMetadata({
       : "Privacy information and app/version scope for the Motion family: Choreia, Lissom, Gravita, JabLab and Ostinato.",
     alternates: {
       canonical: isTR ? "/privacy/motion" : `/${locale}/privacy/motion`,
+      languages: { tr: "/privacy/motion", en: "/en/privacy/motion" },
     },
   };
 }
