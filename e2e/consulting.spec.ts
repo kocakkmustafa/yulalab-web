@@ -20,14 +20,16 @@ for (const [locale, prefix, title, action] of [
       const email = page.locator("[data-consulting-email]");
       await expect(email).toBeVisible();
       const href = await email.getAttribute("href");
-      expect(href).toMatch(/^mailto:support@yulalab\.com\?subject=/);
+      expect(href).toMatch(/^mailto:yula@yulalab\.com\?subject=/);
+      await expect(page.getByText("yula@yulalab.com", { exact: true })).toBeVisible();
+      await expect(page.locator('footer a[href="mailto:support@yulalab.com"]')).toHaveCount(1);
       expect(decodeURIComponent(href!)).toContain(locale === "tr" ? "AI danışmanlığı görüşmesi" : "AI consulting enquiry");
       await email.focus();
       await expect(email).toBeFocused();
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
       const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
       expect(results.violations.filter(v => v.impact === "serious" || v.impact === "critical")).toEqual([]);
-      await page.screenshot({ path: `../evidence/consulting-${locale}-${width}.png`, fullPage: true });
+      await page.screenshot({ path: test.info().outputPath(`consulting-${locale}-${width}.png`), fullPage: true });
       if (width === 1440) {
         await page.getByRole("link", { name: locale === "tr" ? "Ürünlerimizi inceleyin" : "Explore our products", exact: true }).click();
         await expect(page).toHaveURL(new RegExp(`${prefix}/projects$`));

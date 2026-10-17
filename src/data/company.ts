@@ -56,6 +56,7 @@ export const company: CompanyConfig = {
   },
   contact: {
     email: "support@yulalab.com",
+    consultingEmail: "yula@yulalab.com",
   },
   socials: {
     // linkedin: temporarily removed — the /company/yulalab page 404s

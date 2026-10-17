@@ -193,7 +193,7 @@ export type CompanyConfig = {
   mission: LocalizedString;
   values: { title: LocalizedString; description: LocalizedString }[];
   founder: { name: string; role: LocalizedString; email: string };
-  contact: { email: string; press?: string };
+  contact: { email: string; consultingEmail: string; press?: string };
   socials: ProjectSocials;
   brand: {
     banner: string;

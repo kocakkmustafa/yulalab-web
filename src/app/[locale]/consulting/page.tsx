@@ -18,7 +18,7 @@ export default async function ConsultingPage({ params }: Props) {
   const t = await getTranslations({ locale, namespace: "consulting" });
   const services = t.raw("services") as { title: string; body: string; output: string }[];
   const steps = t.raw("steps") as string[];
-  const email = `mailto:${company.contact.email}?subject=${encodeURIComponent(t("subject"))}`;
+  const email = `mailto:${company.contact.consultingEmail}?subject=${encodeURIComponent(t("subject"))}`;
   return (
     <div className="page-enter max-w-6xl mx-auto px-6 lg:px-10 pt-32 pb-12">
       <section aria-labelledby="consulting-title" className="max-w-3xl">
@@ -51,7 +51,7 @@ export default async function ConsultingPage({ params }: Props) {
         <h2 id="contact-title" className="font-display text-3xl font-semibold">{t("contactTitle")}</h2>
         <p className="mt-5 max-w-3xl text-ink-200 leading-relaxed">{t("contactBody")}</p>
         <a data-consulting-email href={email} className="focusable inline-flex mt-7 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium">{t("cta")} <span aria-hidden="true" className="ml-3">↗</span></a>
-        <p className="mt-5 text-ink-200 [overflow-wrap:anywhere]">{company.contact.email}</p>
+        <p className="mt-5 text-ink-200 [overflow-wrap:anywhere]">{company.contact.consultingEmail}</p>
         <p className="mt-3 text-sm text-ink-300">{t("terms")}</p>
       </section>
     </div>
