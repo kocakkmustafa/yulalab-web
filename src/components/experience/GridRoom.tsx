@@ -45,6 +45,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
   uniform vec3 uBackgroundColor;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
+  uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
   uniform float uProjectionMix; uniform float uProjectionBlend;
   varying vec2 vUv; varying float vViewDepth; varying float vFacing;
   float gridLine(vec2 uv, vec2 density) {
@@ -53,34 +54,63 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec2 distanceToLine = abs(fract(coordinate - 0.5) - 0.5) / derivative;
     return 1.0 - min(min(distanceToLine.x, distanceToLine.y), 1.0);
   }
+  float titleMask(sampler2D atlas, vec2 point) {
+    float bounds = step(0.0, point.x) * step(point.x, 1.0) * step(0.0, point.y) * step(point.y, 1.0);
+    return texture2D(atlas, clamp(point, 0.0, 1.0)).a * bounds;
+  }
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
     float major = gridLine(vUv, vec2(16.0, 8.0));
-    vec2 cell = floor(vUv * vec2(16.0, 8.0));
+    vec2 tile = vUv * vec2(16.0, 8.0);
+    vec2 cell = floor(tile);
+    vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
-    float band = pow(0.5 + 0.5 * sin(vUv.x * 56.0 + vUv.y * 18.0 + uTime * 0.27), 5.0);
-    float wallLight = 0.4 + 0.6 * pow(vFacing, 0.7);
-    vec2 dots = fract(vUv * vec2(1536.0, 768.0)) - 0.5;
-    float dotMask = 1.0 - smoothstep(0.18, 0.38, length(dots));
-    // Independently drawn room: broad dark tiles, fine lines and a blue/violet
-    // light field observed in the public reference. No reference media assets.
-    float glow = pow(0.5 + 0.5 * sin(vUv.x * 13.0 - vUv.y * 8.0 + uTime * 0.12), 4.0);
-    vec3 tint = mix(vec3(0.025, 0.004, 0.16), vec3(0.004, 0.025, 0.13), cellTone);
-    vec3 color = (vec3(0.0004 + band * 0.004 + cellTone * 0.001) + tint * glow * (0.3 + uGalleryMix * 0.2)) * wallLight;
-    color *= 0.64 + dotMask * 0.36;
-    color = mix(color, vec3(0.16), fine * 0.065);
-    color = mix(color, vec3(0.008), major * 0.72);
-    vec2 crossPoint = abs(fract(vUv * vec2(16.0, 8.0)) - 0.5);
-    float cross = max(step(crossPoint.x, 0.008) * step(crossPoint.y, 0.06), step(crossPoint.y, 0.008) * step(crossPoint.x, 0.06));
-    color += vec3(cross * 0.07);
-    vec2 mediaUv = fract(vUv * vec2(3.0, 1.0) + vec2(uTime * 0.008, sin(uTime * 0.12) * 0.025));
+    float joint = smoothstep(0.0, 0.035, min(min(local.x, 1.0 - local.x), min(local.y, 1.0 - local.y)));
+    float wallLight = 0.45 + 0.55 * pow(vFacing, 0.7);
+
+    // Original architectural light panels, drawn in the opaque curved wall.
+    // They also become the real background sampled by the glass glyph.
+    vec2 roomPoint = (vUv - vec2(0.53, 0.5)) * vec2(5.0, 3.2);
+    float envelope = exp(-dot(roomPoint, roomPoint) * 0.48);
+    float diagonal = vUv.x * 5.4 + vUv.y * 2.7;
+    float beam = 1.0 - smoothstep(0.19, 0.30, abs(fract(diagonal) - 0.5));
+    float bay = smoothstep(0.14, 0.24, cellTone) * (0.52 + cellTone * 0.48);
+    float panel = beam * envelope * bay * joint;
+    float wash = exp(-dot(roomPoint - vec2(0.8, -0.2), roomPoint - vec2(0.8, -0.2)) * 1.4);
+    float breath = 0.98 + 0.02 * sin(uTime * 0.12);
+    vec3 tint = mix(vec3(0.014, 0.006, 0.055), vec3(0.004, 0.025, 0.06), cellTone);
+    vec3 color = vec3(0.0007) + tint * envelope * 0.7;
+    color += vec3(0.19, 0.21, 0.28) * panel * breath * (1.0 - uProjectionMix * 0.55);
+    color += vec3(0.009, 0.024, 0.075) * wash * (1.0 - panel);
+    color *= wallLight;
+
+    // Subpixel dots fade out rather than alias as the camera changes depth.
+    vec2 dotCoordinate = vUv * vec2(1536.0, 768.0);
+    float dotDetail = 1.0 - smoothstep(0.6, 1.5, max(fwidth(dotCoordinate.x), fwidth(dotCoordinate.y)));
+    float dotMask = 1.0 - smoothstep(0.18, 0.38, length(fract(dotCoordinate) - 0.5));
+    color *= 1.0 - (1.0 - dotMask) * dotDetail * 0.36;
+
+    // The cylinder's interior reverses horizontal UVs. Correct projected text
+    // and media in this pass; none of these textures come from the reference.
+    vec2 wallUv = vec2(1.0 - vUv.x, vUv.y);
+    vec2 titleUv = (wallUv - vec2(0.26, 0.40)) * vec2(2.4, 5.0);
+    float works = titleMask(uWorksTitle, titleUv);
+    float service = titleMask(uServiceTitle, titleUv);
+    float wallTitle = mix(works * uGalleryMix, service, uProjectionMix);
+    color += vec3(0.30, 0.32, 0.38) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
+
+    vec2 mediaUv = fract(wallUv * vec2(3.0, 1.0));
     vec3 projection = mix(texture2D(uProjectionA, mediaUv).rgb, texture2D(uProjectionB, mediaUv).rgb, uProjectionBlend);
-    color = mix(color, projection * 0.55 + color * 0.5, uProjectionMix);
+    float screenBay = joint * (0.28 + 0.72 * bay) * (0.35 + envelope * 0.65);
+    color = mix(color, projection * 0.22 + color * 0.7, uProjectionMix * screenBay * (1.0 - wallTitle * 0.65));
+    color = mix(color, vec3(0.12), fine * 0.10);
+    color *= 1.0 - major * 0.65;
+    vec2 crossPoint = abs(fract(tile) - 0.5);
+    float cross = max(step(crossPoint.x, 0.005) * step(crossPoint.y, 0.035), step(crossPoint.y, 0.005) * step(crossPoint.x, 0.035));
+    color += vec3(cross * 0.04);
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
-    // The room is opaque so it participates in physical transmission.
-    // Fade radiance to the same world background, rather than ignored alpha.
     gl_FragColor = vec4(mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0)), 1.0);
     #include <colorspace_fragment>
   }
@@ -102,7 +132,12 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     float grid = line(pixel, vec2(22.0));
     vec2 crossPoint = abs(mod(pixel, 180.0) - 90.0);
     float cross = max(step(crossPoint.x, 0.7) * step(crossPoint.y, 6.0), step(crossPoint.y, 0.7) * step(crossPoint.x, 6.0));
-    vec3 color = mix(uColor, vec3(0.32), grid * 0.045 + cross * 0.3);
+    float major = line(pixel, vec2(180.0));
+    vec2 roomPoint = (vUv - vec2(0.44, 0.57)) * vec2(uViewport.x / max(1.0, uViewport.y), 1.0);
+    float vignette = smoothstep(0.1, 1.25, length(roomPoint));
+    float paper = fract(sin(dot(floor(pixel), vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
+    vec3 color = uColor * (1.0 - vignette * 0.075) + vec3(paper * 0.004);
+    color = mix(color, vec3(0.32), grid * 0.065 + major * 0.025 + cross * 0.22);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
@@ -132,8 +167,8 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
       (1.0 - smoothstep(0.84, 1.0, vUv.x)) *
       smoothstep(0.0, 0.2, vUv.y) *
       (1.0 - smoothstep(0.8, 1.0, vUv.y));
-    vec3 color = mix(vec3(0.54, 0.22, 0.88), vec3(0.25, 0.23, 0.28), uWhiteMix);
-    float alpha = dotMask * edgeFade * uOpacity * mix(0.012, 0.012, uWhiteMix);
+    vec3 color = mix(vec3(0.22, 0.38, 0.7), vec3(0.25, 0.23, 0.28), uWhiteMix);
+    float alpha = dotMask * edgeFade * uOpacity * mix(0.045, 0.018, uWhiteMix);
 
     if (alpha < 0.008) discard;
     gl_FragColor = vec4(color, alpha);
@@ -154,9 +189,6 @@ function makeWordmarkTexture(label: string): CanvasTexture {
     context.textBaseline = "middle";
     context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
 
-    context.globalCompositeOperation = "destination-out";
-    context.globalAlpha = 0;
-    context.fillText(label, canvas.width / 2 + 11, canvas.height / 2 + 12, canvas.width * 0.92);
   }
 
   const texture = new CanvasTexture(canvas);
@@ -249,6 +281,9 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
+  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
+  const worksWordmark = useMemo(() => makeWordmarkTexture("WORKS"), []);
+  const serviceWordmark = useMemo(() => makeWordmarkTexture("SERVICE"), []);
   const gridMaterial = useMemo(
     () =>
       new ShaderMaterial({
@@ -258,6 +293,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
           uBackgroundColor: { value: new Color(WORLD_DARK_COLOR) },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
+          uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
           uProjectionMix: { value: 0 }, uProjectionBlend: { value: 0 },
         },
         vertexShader: ROOM_VERTEX_SHADER,
@@ -267,7 +303,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
         side: BackSide,
         toneMapped: false,
       }),
-    [],
+    [serviceWordmark, worksWordmark],
   );
   const halftoneMaterial = useMemo(
     () =>
@@ -285,8 +321,6 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
       }),
     [],
   );
-  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
-  const worksWordmark = useMemo(() => makeWordmarkTexture("WORKS"), []);
   const bladeMaterial = useMemo(() => new ShaderMaterial({
     uniforms: {
       uColor: { value: new Color(WORLD_LIGHT_COLOR) },
@@ -333,8 +367,9 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
       halftoneMaterial.dispose();
       yulaWordmark.dispose();
       worksWordmark.dispose();
+      serviceWordmark.dispose();
     },
-    [bladeMaterial, gridMaterial, halftoneMaterial, worksWordmark, yulaWordmark],
+    [bladeMaterial, gridMaterial, halftoneMaterial, serviceWordmark, worksWordmark, yulaWordmark],
   );
 
   const blade = frame.world.bladeProgress;
@@ -385,19 +420,6 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
           alphaHash
           map={yulaWordmark}
           opacity={frame.world.wordmarkOpacity * (1 - frame.world.worksBackdropMix)}
-          toneMapped={false}
-        />
-      </mesh>
-
-      <mesh position={[0, 0.1, wordmarkZ - 0.02]} renderOrder={-2}>
-        <planeGeometry args={[15.8, 5.2]} />
-        <meshBasicMaterial
-          color="#ffffff"
-          depthTest
-          depthWrite
-          alphaHash
-          map={worksWordmark}
-          opacity={frame.world.worksBackdropMix * 0.28}
           toneMapped={false}
         />
       </mesh>
