@@ -329,7 +329,7 @@
   display: grid;
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  height: calc(70px + var(--safe-top));
+  height: calc(120px + var(--safe-top));
   padding: var(--safe-top) calc(clamp(22px, 3vw, 52px) + var(--safe-right)) 0
     calc(clamp(22px, 3vw, 52px) + var(--safe-left));
   color: inherit;
@@ -342,9 +342,9 @@
   justify-self: start;
   color: inherit;
   font-family: var(--font-display), Manrope, sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.045em;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
   text-decoration: none;
 }
 
@@ -363,11 +363,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(18px, 2.4vw, 38px);
+  gap: clamp(18px, 2.4vw, 40px);
   font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.1em;
 }
 
 .mobileNavigation {
@@ -2151,3 +2150,116 @@
 }
 
 .previewDialog { pointer-events: auto; }
+
+
+/* 2026-10-18 rendered-reference alignment. Independent materials and owned
+   typography; approved product media and the journey mapping are retained. */
+.journey .realHud { display: none; }
+@media (min-width: 768px) {
+  .staticExperience [tabindex="-1"] { scroll-margin-top: calc(136px + var(--safe-top)); }
+}
+.heroCopy {
+  top: auto;
+  right: calc(clamp(28px, 3.5vw, 56px) + var(--safe-right));
+  bottom: calc(44px + var(--safe-bottom));
+  width: min(330px, 25vw);
+  padding: 0;
+  border: 0;
+  transform: none;
+}
+.heroCopy::before {
+  inset: -24px -24px -24px -32px;
+  background: radial-gradient(ellipse at 65% 60%, rgba(0,0,0,.55), transparent 75%);
+}
+.heroCopy .kicker { margin-bottom: 12px; font-size: 10px; letter-spacing: .1em; }
+.heroCopy h1 { max-width: 24ch; font-size: clamp(21px, 1.7vw, 28px); line-height: 1.2; letter-spacing: -.02em; }
+.heroLede { margin-top: 12px; font-size: 12px; line-height: 1.55; }
+.heroCopy .productLink { margin-top: 10px; font-size: 10px; }
+.heroNotice { margin-top: 10px; padding: 0; border: 0; font-size: 8px; line-height: 1.6; letter-spacing: .06em; }
+.manifestoStage h2 {
+  max-width: 26ch;
+  font-size: clamp(28px, 2.5vw, 42px);
+  font-weight: 600;
+  line-height: 1.75;
+  letter-spacing: .025em;
+  text-wrap: initial;
+}
+.manifestoStage:not(.visionStage) h2 { font-weight: 600; line-height: 1.75; }
+.manifestoStage h2 span,
+.manifestoStage:not(.visionStage) h2 span {
+  padding: .05em .18em;
+  color: #fff;
+  background: #050505;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.manifestoStage > p:last-child { max-width: 46ch; font-size: 13px; line-height: 1.7; }
+.valuePanel {
+  border: 0;
+  padding: 24px 0;
+  background: linear-gradient(90deg, rgba(0,0,0,.48), rgba(0,0,0,.15));
+  box-shadow: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.valuePanel h3 { font-size: clamp(32px, 3.2vw, 52px); letter-spacing: -.025em; }
+.closingWordmark {
+  top: 40%;
+  width: clamp(180px, 25vw, 300px);
+  font-size: initial;
+  line-height: 0;
+  text-shadow: none;
+}
+.closingWordmark svg { display: block; width: 100%; height: auto; }
+.closingContent { background: linear-gradient(0deg, rgba(0,0,0,.95), transparent); }
+@media (min-width: 768px) and (max-width: 1120px) {
+  .experienceBrand { font-size: 24px; }
+  .experienceNavigation { font-size: 11px; gap: 18px; }
+  .experienceHeader { column-gap: 16px; }
+  .experienceControls { gap: 6px; }
+}
+@media (min-width: 768px) and (max-width: 900px) {
+  .heroCopy { top: auto; right: 48px; bottom: 48px; left: auto; width: 340px; border: 0; padding: 0; }
+}
+@media (max-width: 767px) {
+  .experienceHeader { height: calc(82px + var(--safe-top)); gap: 4px; padding-inline: calc(12px + var(--safe-left)) calc(12px + var(--safe-right)); }
+  .experienceBrand { font-size: clamp(20px, 6vw, 28px); }
+  .mobileNavigation { grid-column: 3; grid-row: 1; }
+  .mobileNavigation summary { border: 0; border-radius: 0; }
+  .mobileNavigation summary > span { width: 20px; gap: 4px; }
+  .mobileNavigation nav {
+    top: calc(82px + var(--safe-top));
+    right: 12px; left: 12px;
+    max-height: calc(100dvh - 100px - var(--safe-top) - var(--safe-bottom));
+    padding: clamp(16px, 5vh, 48px) 18px;
+    border: 0;
+    background: rgba(0,0,0,.62);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: none;
+  }
+  .mobileNavigation nav a { min-height: 60px; font-size: 18px; line-height: 1.6; font-weight: 500; letter-spacing: .05em; text-transform: none; border-bottom: 0; }
+  .experienceControls { grid-column: 2; grid-row: 1; gap: 3px; }
+  .stage { inset-block-start: calc(82px + var(--safe-top)); }
+  .glyphControl { top: 46vh; width: 84vw; height: 37vh; }
+  .heroCopy { right: calc(66px + var(--safe-right)); bottom: calc(26px + var(--safe-bottom)); left: calc(20px + var(--safe-left)); width: auto; padding: 0; border: 0; }
+  .heroCopy::before { inset: -18px -18px -18px -20px; background: linear-gradient(0deg, rgba(0,0,0,.65), transparent); }
+  .heroCopy h1 { max-width: 24ch; font-size: 21px; line-height: 1.2; }
+  .heroCopy .kicker { font-size: 8px; margin-bottom: 8px; }
+  .heroLede { font-size: 10px; line-height: 1.5; margin-top: 8px; }
+  .heroNotice { font-size: 7px; line-height: 1.5; }
+  .heroCopy .productLink { margin-top: 6px; font-size: 9px; }
+  .scrollCue { right: calc(8px + var(--safe-right)); bottom: calc(24px + var(--safe-bottom)); width: 44px; min-height: 160px; justify-content: center; writing-mode: vertical-rl; font-size: 8px; }
+  .scrollCue i { display: none; }
+  .manifestoStage { justify-content: center; padding-bottom: 10vh; }
+  .manifestoStage h2 { max-width: 25ch; font-size: 24px; line-height: 1.75; }
+  .manifestoStage > p:last-child { max-width: 36ch; font-size: 11px; }
+  .valuePanel { padding: 22px 4px 0; }
+  .closingWordmark { top: 24%; width: min(46vw, 180px); }
+  .closingContent h2 { font-size: clamp(26px, 8vw, 36px); }
+}
+@media (max-height: 640px) and (min-width: 901px) {
+  .experienceHeader { height: 88px; }
+  .heroCopy { bottom: 28px; }
+  .closingWordmark { top: 21%; width: 150px; }
+}

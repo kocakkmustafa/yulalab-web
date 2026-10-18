@@ -18,7 +18,7 @@ import {
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
 import { segmentProgress, smoothstep, STAGES } from "./timeline";
-import { WORLD_LIGHT_COLOR } from "./theme";
+import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
 export type GridRoomProps = {
@@ -43,6 +43,7 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
 
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
+  uniform vec3 uBackgroundColor;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform float uProjectionMix; uniform float uProjectionBlend;
   varying vec2 vUv; varying float vViewDepth; varying float vFacing;
@@ -53,29 +54,34 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     return 1.0 - min(min(distanceToLine.x, distanceToLine.y), 1.0);
   }
   void main() {
-    float fine = gridLine(vUv, vec2(256.0, 128.0));
-    float major = gridLine(vUv, vec2(64.0, 32.0));
-    vec2 cell = floor(vUv * vec2(64.0, 32.0));
+    float fine = gridLine(vUv, vec2(128.0, 64.0));
+    float major = gridLine(vUv, vec2(16.0, 8.0));
+    vec2 cell = floor(vUv * vec2(16.0, 8.0));
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
     float band = pow(0.5 + 0.5 * sin(vUv.x * 56.0 + vUv.y * 18.0 + uTime * 0.27), 5.0);
     float wallLight = 0.4 + 0.6 * pow(vFacing, 0.7);
     vec2 dots = fract(vUv * vec2(1536.0, 768.0)) - 0.5;
     float dotMask = 1.0 - smoothstep(0.18, 0.38, length(dots));
-    vec3 color = vec3(0.015 + band * 0.34 + cellTone * 0.035) * wallLight;
+    // Independently drawn room: broad dark tiles, fine lines and a blue/violet
+    // light field observed in the public reference. No reference media assets.
+    float glow = pow(0.5 + 0.5 * sin(vUv.x * 13.0 - vUv.y * 8.0 + uTime * 0.12), 4.0);
+    vec3 tint = mix(vec3(0.025, 0.004, 0.16), vec3(0.004, 0.025, 0.13), cellTone);
+    vec3 color = (vec3(0.0004 + band * 0.004 + cellTone * 0.001) + tint * glow * (0.3 + uGalleryMix * 0.2)) * wallLight;
     color *= 0.64 + dotMask * 0.36;
-    color = mix(color, vec3(0.4), fine * 0.28);
+    color = mix(color, vec3(0.16), fine * 0.065);
     color = mix(color, vec3(0.008), major * 0.72);
-    vec2 crossPoint = abs(fract(vUv * vec2(32.0, 16.0)) - 0.5);
+    vec2 crossPoint = abs(fract(vUv * vec2(16.0, 8.0)) - 0.5);
     float cross = max(step(crossPoint.x, 0.008) * step(crossPoint.y, 0.06), step(crossPoint.y, 0.008) * step(crossPoint.x, 0.06));
-    color += vec3(cross * 0.28);
+    color += vec3(cross * 0.07);
     vec2 mediaUv = fract(vUv * vec2(3.0, 1.0) + vec2(uTime * 0.008, sin(uTime * 0.12) * 0.025));
     vec3 projection = mix(texture2D(uProjectionA, mediaUv).rgb, texture2D(uProjectionB, mediaUv).rgb, uProjectionBlend);
     color = mix(color, projection * 0.55 + color * 0.5, uProjectionMix);
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
-    if (alpha < 0.004) discard;
-    gl_FragColor = vec4(color, alpha);
+    // The room is opaque so it participates in physical transmission.
+    // Fade radiance to the same world background, rather than ignored alpha.
+    gl_FragColor = vec4(mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0)), 1.0);
     #include <colorspace_fragment>
   }
 `;
@@ -143,13 +149,13 @@ function makeWordmarkTexture(label: string): CanvasTexture {
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "#f2eaff";
-    context.font = "900 300px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+    context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
 
     context.globalCompositeOperation = "destination-out";
-    context.globalAlpha = 0.13;
+    context.globalAlpha = 0;
     context.fillText(label, canvas.width / 2 + 11, canvas.height / 2 + 12, canvas.width * 0.92);
   }
 
@@ -239,20 +245,25 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
   const wordmarkWidth = 14.2 * (1 - viewportMobileMix(viewportWidth) * 0.56);
+  const roomColors = useMemo(() => ({
+    dark: new Color(WORLD_DARK_COLOR),
+    light: new Color(WORLD_LIGHT_COLOR),
+  }), []);
   const gridMaterial = useMemo(
     () =>
       new ShaderMaterial({
         uniforms: {
           uWhiteMix: { value: 0 },
           uOpacity: { value: 1 },
+          uBackgroundColor: { value: new Color(WORLD_DARK_COLOR) },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uProjectionMix: { value: 0 }, uProjectionBlend: { value: 0 },
         },
         vertexShader: ROOM_VERTEX_SHADER,
         fragmentShader: ROOM_FRAGMENT_SHADER,
-        transparent: true,
-        depthWrite: false,
+        transparent: false,
+        depthWrite: true,
         side: BackSide,
         toneMapped: false,
       }),
@@ -305,10 +316,12 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
     bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.815, 0.835));
     bladeMaterial.uniforms.uViewport.value.set(viewport.width, viewport.height);
     gridMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
+    gridMaterial.uniforms.uBackgroundColor.value.copy(roomColors.dark).lerp(roomColors.light, frame.world.themeMix);
     gridMaterial.uniforms.uGalleryMix.value = frame.world.worksBackdropMix;
     // Let the physical white blade soften the room before the global theme settles.
     gridMaterial.uniforms.uOpacity.value = frame.world.roomOpacity
-      * (1 - frame.world.worksBackdropMix * 0.35) * (1 - frame.world.whiteMix * 0.38);
+      * (1 - frame.world.worksBackdropMix * 0.2) * (1 - frame.world.whiteMix * 0.38)
+      * (1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.7)));
     halftoneMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
     halftoneMaterial.uniforms.uOpacity.value = frame.world.roomOpacity * (1 - frame.world.worksBackdropMix * 0.8);
   });
@@ -336,7 +349,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
           args={[
             28,
             28,
-            34,
+            56,
             radialSegments,
             heightSegments,
             true,
@@ -364,28 +377,28 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
       ))}
 
       <mesh position={[0, 0.1 + heroLift, wordmarkZ]} renderOrder={-2}>
-        <planeGeometry args={[wordmarkWidth, 3.55]} />
+        <planeGeometry args={[wordmarkWidth, 5.2]} />
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
-          depthWrite={false}
+          depthWrite
+          alphaHash
           map={yulaWordmark}
           opacity={frame.world.wordmarkOpacity * (1 - frame.world.worksBackdropMix)}
           toneMapped={false}
-          transparent
         />
       </mesh>
 
       <mesh position={[0, 0.1, wordmarkZ - 0.02]} renderOrder={-2}>
-        <planeGeometry args={[15.8, 3.55]} />
+        <planeGeometry args={[15.8, 5.2]} />
         <meshBasicMaterial
           color="#ffffff"
           depthTest
-          depthWrite={false}
+          depthWrite
+          alphaHash
           map={worksWordmark}
-          opacity={frame.world.worksBackdropMix * 0.015}
+          opacity={frame.world.worksBackdropMix * 0.28}
           toneMapped={false}
-          transparent
         />
       </mesh>
 
@@ -394,7 +407,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
         <primitive attach="material" object={bladeMaterial} />
       </mesh>
 
-      <ClosingGeometry draw={frame.world.closingDraw} />
+      <ClosingGeometry draw={frame.world.closingDraw * (1 - frame.world.closingDraw)} />
     </group>
   );
 }

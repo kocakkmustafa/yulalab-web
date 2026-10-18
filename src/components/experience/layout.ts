@@ -66,11 +66,14 @@ export function glyphViewportPose(
   const mobilePortalStrength = mobilePortalSettle * (1 - mobilePortalRelease);
   const compactReduction = lerp(0.5, 0.24, mobileMix);
   const responsiveScale = 1 - compactReduction * compactMix * (1 - proofRestore);
-  const openingScale = lerp(lerp(1.16, 0.9, mobileMix), 1, heroExit);
-  const scaleMultiplier = responsiveScale * openingScale
+  const openingScale = lerp(lerp(1.32, 1.45, mobileMix), 1, heroExit);
+  // A tall narrow viewport needs a horizontal fit as well as the height fit.
+  // Keep the larger reference composition inside 320x900 rather than clipping.
+  const portraitFit = lerp(1, Math.min(1, safeAspect / 0.45), mobileMix * compositionStrength);
+  const scaleMultiplier = responsiveScale * openingScale * portraitFit
     * (1 - 0.14 * shortMobileMix * compositionStrength)
     * (1 - 0.2 * mobileMix * mobilePortalStrength);
-  const openingMobileY = (1.8 + 0.5 * mobileMix + 0.2 * shortMobileMix)
+  const openingMobileY = (0.4 + 0.15 * mobileMix + 0.2 * shortMobileMix)
     * compactMix
     * compositionStrength;
 

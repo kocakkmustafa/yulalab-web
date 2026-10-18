@@ -707,7 +707,7 @@ export function ExperienceOverlay({
         aria-labelledby="experience-vision-title"
       >
         <p className={styles.kicker}>{copy.vision.kicker}</p>
-        <h2 id="experience-vision-title">{copy.vision.title}</h2>
+        <h2 id="experience-vision-title"><span>{copy.vision.title}</span></h2>
         <p>{copy.vision.body}</p>
       </section>
 
@@ -773,7 +773,11 @@ export function ExperienceOverlay({
         inert={!closingInteractive}
         aria-labelledby="experience-closing-title"
       >
-        <div className={styles.closingWordmark} aria-hidden="true"><span>Y</span>ULA</div>
+        <div className={styles.closingWordmark} aria-hidden="true">
+          <svg viewBox="-1.1 -1.1 2.2 2.2" fill="currentColor">
+            <path transform="scale(1 -1)" d="M-.95 .9H-.43L0 .27 .43 .9H.95L.27-.08V-.9H-.27V-.08Z" />
+          </svg>
+        </div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
       <DevelopmentPreviewDialog product={previewProduct} locale={copy.locale} onClose={closePreview} />

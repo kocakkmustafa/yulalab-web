@@ -98,6 +98,7 @@ function BigCard({
   return (
     <MotionLink
       href={`/projects/${p.slug}`}
+      data-project-index-card={p.slug}
       className="group block rounded-3xl overflow-hidden border border-hairline hover:border-hairline-strong bg-surface focusable"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{

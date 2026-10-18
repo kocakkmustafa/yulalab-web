@@ -406,7 +406,7 @@ export function evaluateTimeline(
       wordmarkOpacity:
         p < STAGES.proof[0]
           ? lerp(
-            mode === "mobile" ? 0.46 : 0.94,
+            1,
             0.28,
             smoothstep(segmentProgress(p, STAGES.portfolio[0], STAGES.portfolio[1])),
           )

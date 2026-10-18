@@ -62,9 +62,9 @@ const CAUSTIC_FRAGMENT_SHADER = `
     float chroma = 0.5 + 0.5 * sin(
       vLocalPosition.x * 4.2 - vLocalPosition.y * 2.6 + uTime * 0.18
     );
-    vec3 cyan = vec3(0.82, 0.87, 0.95);
-    vec3 violet = vec3(0.72, 0.7, 0.78);
-    vec3 magenta = vec3(0.94, 0.9, 0.88);
+    vec3 cyan = vec3(0.38, 0.7, 1.0);
+    vec3 violet = vec3(0.4, 0.08, 0.95);
+    vec3 magenta = vec3(0.86, 0.35, 1.0);
     vec3 color = mix(cyan, violet, chroma);
     color = mix(color, magenta, facet * 0.42);
     float heroWhite = uHeroMix * clamp(sweep * 0.82 + rim * 0.42 + diagonal * 0.24, 0.0, 1.0);
@@ -76,7 +76,7 @@ const CAUSTIC_FRAGMENT_SHADER = `
     color = mix(color, mix(cyan, magenta, chroma), portal * 0.72);
 
     float energy = 0.022 + diagonal * 0.16 + sweep * 0.09 + facet * 0.06 + rim * 0.035 + portal * 0.16;
-    energy += uHeroMix * (0.035 + sweep * 0.1 + rim * 0.055);
+    energy += uHeroMix * (0.12 + sweep * 0.1 + rim * 0.055);
     gl_FragColor = vec4(color * (1.1 + diagonal * 1.6), energy * uGlassMix);
   }
 `;
@@ -196,14 +196,14 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const closingVisibility = closingHandoff
     * (1 - frame.world.serviceIn) * galleryVisibility;
   const bodyColor = useMemo(
-    () => new Color("#e5e7ec").lerp(new Color("#f8f7f2"), whiteMix),
-    [whiteMix],
+    () => new Color("#ffffff").lerp(new Color("#e0d3ff"), frame.overlay.hero * 0.42).lerp(new Color("#f8f7f2"), whiteMix),
+    [frame.overlay.hero, whiteMix],
   );
   const bodyOpacity = (1 - whiteMix * 0.7)
     * closingVisibility;
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const transmission =
-    tier === "high" ? 0.06 * frame.glyph.glassMix : tier === "medium" ? 0.03 * frame.glyph.glassMix : 0;
+    tier === "high" ? 0.96 * frame.glyph.glassMix : tier === "medium" ? 0.94 * frame.glyph.glassMix : 0;
   const fringeOpacity =
     (0.002 + frame.glyph.glassMix * (tier === "low" ? 0.012 : 0.004)) * closingVisibility;
   const viewportPose = glyphViewportPose(
@@ -247,7 +247,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
       causticMaterial.current.uniforms.uGlassMix.value =
-        frame.glyph.glassMix * closingVisibility * (0.35 + frame.world.visionPortal * 0.65);
+        frame.glyph.glassMix * closingVisibility * (0.65 + frame.world.visionPortal * 0.35);
       causticMaterial.current.uniforms.uHeroMix.value = frame.overlay.hero;
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
     }
@@ -279,7 +279,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
           bumpMap={chromeBump}
-          bumpScale={0.075}
+          bumpScale={0.012}
           attenuationDistance={1.6}
           clearcoat={0.92}
           clearcoatRoughness={0.15}
@@ -287,7 +287,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
           depthWrite={bodyOpacity > 0.55}
           envMapIntensity={tier === "low" ? 1.7 : 1.25}
           ior={1.35}
-          metalness={0.96}
+          metalness={0.04}
           opacity={bodyOpacity}
           roughness={tier === "low" ? 0.2 : 0.15}
           thickness={0}
@@ -302,26 +302,26 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             anisotropicBlur={tier === "high" ? 0.02 : 0.04}
             attenuationColor="#ffffff"
             bumpMap={chromeBump}
-            bumpScale={0.075}
+            bumpScale={0.012}
             attenuationDistance={8}
             backsideResolution={1}
-            chromaticAberration={0}
+            chromaticAberration={0.025}
             clearcoat={1}
             clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
             color={bodyColor}
             depthWrite={bodyOpacity > 0.55}
-            distortion={0}
+            distortion={0.12}
             distortionScale={0.34}
             envMapIntensity={tier === "high" ? 1.8 : 1.5}
             ior={1.35}
-            iridescence={0}
+            iridescence={0.3}
             iridescenceIOR={1.35}
-            metalness={0.96}
+            metalness={0.04}
             opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.075 : 0.11}
+            roughness={tier === "high" ? 0.08 : 0.1}
             samples={tier === "high" ? 3 : 2}
             temporalDistortion={0}
-            thickness={tier === "high" ? 0.28 : 0.2}
+            thickness={tier === "high" ? 0.55 : 0.45}
             transmission={transmission}
             transmissionSampler
             resolution={1}

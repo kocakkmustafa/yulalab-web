@@ -51,7 +51,7 @@ function ProjectsIndex() {
   const research = toConfigs(partition.research);
 
   return (
-    <div className="page-enter relative">
+    <div className="page-enter relative project-index">
       <GlassSheen />
       <div className="ambient" aria-hidden />
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-32 lg:pt-40 pb-12">

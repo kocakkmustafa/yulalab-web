@@ -339,13 +339,13 @@ describe("reference-faithful experience timeline", () => {
     expect(desktop.top).toBeLessThanOrEqual(0.98);
 
     const tablet = projectedGlyphBounds(0, "desktop", 768, 1024);
-    expect(tablet.width).toBeLessThanOrEqual(0.48);
-    expect(tablet.height).toBeLessThanOrEqual(0.36);
+    expect(tablet.width).toBeLessThanOrEqual(0.54);
+    expect(tablet.height).toBeLessThanOrEqual(0.4);
     expect(tablet.left).toBeGreaterThanOrEqual(-0.98);
     expect(tablet.right).toBeLessThanOrEqual(0.98);
 
     const mobile = projectedGlyphBounds(0, "mobile", 390, 844);
-    expect(mobile.width).toBeLessThanOrEqual(0.58);
+    expect(mobile.width).toBeLessThanOrEqual(0.9);
     expect(mobile.height).toBeGreaterThanOrEqual(0.22);
     expect(mobile.left).toBeGreaterThanOrEqual(-0.98);
     expect(mobile.right).toBeLessThanOrEqual(0.98);
@@ -372,8 +372,8 @@ describe("reference-faithful experience timeline", () => {
   it("centers the opening Y and gives short phones a collision-safe pose", () => {
     const desktopPose = glyphViewportPose(0, 1440 / 900, 1440);
     expect(Math.abs(desktopPose.offset[0])).toBeLessThanOrEqual(0.05);
-    expect(desktopPose.scaleMultiplier).toBeGreaterThanOrEqual(1.1);
-    expect(desktopPose.scaleMultiplier).toBeLessThan(1.2);
+    const desktopBounds = projectedGlyphBounds(0, "desktop", 1440, 900);
+    expect(Math.abs((desktopBounds.left + desktopBounds.right) / 2)).toBeLessThan(0.05);
 
     const tallPhone = glyphViewportPose(0, 390 / 844, 390);
     const shortPhone = glyphViewportPose(0, 390 / 667, 390);

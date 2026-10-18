@@ -289,10 +289,19 @@ describe("home page CTA precedence", () => {
   it("keeps the existing primary CTA as the home page's primary action", () => {
     expect(home).toContain("<YulaExperience");
     for (const renderer of renderers) {
-      expect(renderer.match(/event="home_primary_cta"/g)).toHaveLength(1);
-      expect(renderer).toMatch(
-        /<TrackedLink\s+href="#experience-portfolio"\s+event="home_primary_cta"/,
-      );
+      // The spatial renderer uses native NextLink to retain its journey
+      // document and history. The linear renderer still uses TrackedLink.
+      const candidates = [...renderer.matchAll(/<(TrackedLink|NextLink)\s+href="#experience-portfolio"[\s\S]*?<\/\1>/g)]
+        .map(match => match[0]).filter(link => link.includes("home_primary_cta"));
+      expect(candidates).toHaveLength(1);
+      const primary = candidates[0];
+      if (primary!.startsWith("<TrackedLink")) {
+        expect(primary).toContain('event="home_primary_cta"');
+      } else {
+        expect(primary).toContain('onClick={() => track({ event: "home_primary_cta" })}');
+        expect(primary).toContain('onAuxClick=');
+        expect(primary).toContain('if (event.button === 1) track({ event: "home_primary_cta" })');
+      }
     }
   });
 
