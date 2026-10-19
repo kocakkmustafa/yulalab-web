@@ -82,6 +82,16 @@ export function segmentProgress(progress: number, start: number, end: number): n
   return clamp01((clamp01(progress) - start) / (end - start));
 }
 
+/** Keep the emblem secondary while portfolio cards become the proof ledger.
+ * The same progress-only envelope applies in either scroll direction; the
+ * existing card crossing and camera tracks remain untouched.
+ */
+export function glyphReadingVisibility(frame: TimelineFrame): number {
+  const proofReading = smoothstep(segmentProgress(frame.progress, 0.445, 0.475))
+    * (1 - smoothstep(segmentProgress(frame.progress, STAGES.proof[1], 0.62)));
+  return 1 - Math.max(frame.world.worksBackdropMix, proofReading) * 0.82;
+}
+
 function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }

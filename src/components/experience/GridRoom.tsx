@@ -31,6 +31,7 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
   varying vec2 vUv;
   varying float vViewDepth;
   varying float vFacing;
+  varying vec4 vClipPosition;
 
   void main() {
     vUv = uv;
@@ -38,16 +39,17 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
     vViewDepth = -viewPosition.z;
     vFacing = abs(dot(normalize(normalMatrix * normal), normalize(-viewPosition.xyz)));
     gl_Position = projectionMatrix * viewPosition;
+    vClipPosition = gl_Position;
   }
 `;
 
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
-  uniform vec3 uBackgroundColor;
+  uniform vec3 uBackgroundColor; uniform float uReadingMix;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
   uniform float uProjectionMix; uniform float uProjectionBlend;
-  varying vec2 vUv; varying float vViewDepth; varying float vFacing;
+  varying vec2 vUv; varying float vViewDepth; varying float vFacing; varying vec4 vClipPosition;
   float gridLine(vec2 uv, vec2 density) {
     vec2 coordinate = uv * density;
     vec2 derivative = max(fwidth(coordinate), vec2(0.0001));
@@ -97,17 +99,25 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float works = titleMask(uWorksTitle, titleUv);
     float service = titleMask(uServiceTitle, titleUv);
     float wallTitle = mix(works * uGalleryMix, service, uProjectionMix);
-    color += vec3(0.30, 0.32, 0.38) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
+    color += vec3(0.18, 0.19, 0.23) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
 
-    vec2 mediaUv = fract(wallUv * vec2(3.0, 1.0));
+    // Borrow only broad color from the owned media. The foreground keeps the
+    // complete readable guest screen; the wall no longer repeats its UI/text.
+    vec2 mediaUv = (floor(wallUv * vec2(6.0, 3.0)) + 0.5) / vec2(6.0, 3.0);
     vec3 projection = mix(texture2D(uProjectionA, mediaUv).rgb, texture2D(uProjectionB, mediaUv).rgb, uProjectionBlend);
     float screenBay = joint * (0.28 + 0.72 * bay) * (0.35 + envelope * 0.65);
-    color = mix(color, projection * 0.22 + color * 0.7, uProjectionMix * screenBay * (1.0 - wallTitle * 0.65));
+    color = mix(color, projection * 0.075 + color * 0.8, uProjectionMix * screenBay * (1.0 - wallTitle * 0.65));
     color = mix(color, vec3(0.12), fine * 0.10);
     color *= 1.0 - major * 0.65;
     vec2 crossPoint = abs(fract(tile) - 0.5);
     float cross = max(step(crossPoint.x, 0.005) * step(crossPoint.y, 0.035), step(crossPoint.y, 0.005) * step(crossPoint.x, 0.035));
     color += vec3(cross * 0.04);
+    // Divide interpolated clip coordinates in the fragment, so the reading
+    // column matches in both full-size and scaled transmission render targets.
+    vec2 screenUv = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
+    float readingColumn = smoothstep(0.53, 0.66, screenUv.x) * (1.0 - smoothstep(0.94, 1.0, screenUv.x));
+    float readingHeight = smoothstep(0.10, 0.22, screenUv.y) * (1.0 - smoothstep(0.86, 0.96, screenUv.y));
+    color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(uGalleryMix, uProjectionMix) * 0.8;
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
@@ -291,6 +301,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
           uWhiteMix: { value: 0 },
           uOpacity: { value: 1 },
           uBackgroundColor: { value: new Color(WORLD_DARK_COLOR) },
+          uReadingMix: { value: 0 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -342,6 +353,7 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
     const mediaFloat = frame.valueFloat / 3 * Math.max(0, (mediaTextures?.length ?? 0) - 1);
     const mediaIndex = Math.floor(mediaFloat);
     gridMaterial.uniforms.uTime.value = state.clock.elapsedTime;
+    gridMaterial.uniforms.uReadingMix.value = 1 - viewportMobileMix(viewportWidth);
     gridMaterial.uniforms.uProjectionA.value = mediaTextures?.[mediaIndex] ?? null;
     gridMaterial.uniforms.uProjectionB.value = mediaTextures?.[Math.min(mediaIndex + 1, (mediaTextures?.length ?? 1) - 1)] ?? null;
     gridMaterial.uniforms.uProjectionMix.value = mediaTextures?.length ? frame.world.serviceIn * (1 - frame.world.serviceOut) * 0.82 : 0;

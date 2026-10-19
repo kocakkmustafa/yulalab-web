@@ -21,6 +21,7 @@ import {
   STAGES,
   evaluateTimeline,
   glyphDepthExtent,
+  glyphReadingVisibility,
   interpolateViewportCamera,
   interpolateKeyframes,
   segmentProgress,
@@ -130,6 +131,33 @@ describe("reference-faithful experience timeline", () => {
         );
         expect(visibleStages.length, `visible overlays near ${boundary}`).toBeLessThanOrEqual(1);
       }
+    }
+  });
+
+  it.each(["desktop", "mobile"] as const)("keeps the Y secondary through the portfolio/proof handoff and ledger in %s", (mode) => {
+    for (let step = 0; step <= 140; step += 1) {
+      const p = 0.475 + (STAGES.proof[1] - 0.475) * step / 140;
+      expect(glyphReadingVisibility(evaluateTimeline(p, mode))).toBeCloseTo(0.18, 8);
+    }
+    expect(glyphReadingVisibility(evaluateTimeline(0, mode))).toBe(1);
+    expect(glyphReadingVisibility(evaluateTimeline(0.62, mode))).toBe(1);
+  });
+
+  it("has no glyph flash at the portfolio/proof handoff or on reverse progress", () => {
+    let previous = glyphReadingVisibility(evaluateTimeline(0.46, "desktop"));
+    const forward: number[] = [];
+    for (let step = 1; step <= 1700; step += 1) {
+      const p = 0.46 + step * 0.0001;
+      const visibility = glyphReadingVisibility(evaluateTimeline(p, "desktop"));
+      expect(visibility).toBeGreaterThanOrEqual(0.18 - Number.EPSILON);
+      expect(visibility).toBeLessThanOrEqual(1);
+      expect(Math.abs(visibility - previous)).toBeLessThan(0.004);
+      forward.push(visibility);
+      previous = visibility;
+    }
+    for (let step = 1700; step >= 1; step -= 1) {
+      const p = 0.46 + step * 0.0001;
+      expect(glyphReadingVisibility(evaluateTimeline(p, "desktop"))).toBe(forward[step - 1]);
     }
   });
 
