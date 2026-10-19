@@ -1,5 +1,7 @@
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
+import { publicRegistry } from "@/data/public-registry";
+import { presentSurfaces } from "@/lib/proof";
 
 /** Canonical production origin for absolute schema.org URLs. */
 const ORIGIN = "https://yulalab.com";
@@ -19,7 +21,7 @@ const APP_META: Record<string, { category: string; os: string }> = {
  * Emitted once from the root layout. No social `sameAs` until the handles
  * are verified live — the brand rule forbids advertising dead profiles.
  */
-export function JsonLd() {
+export function JsonLd({ now = new Date() }: { now?: Date } = {}) {
   const organization = {
     "@type": "Organization",
     "@id": `${ORIGIN}/#organization`,
@@ -42,7 +44,15 @@ export function JsonLd() {
     publisher: { "@id": `${ORIGIN}/#organization` },
   };
 
-  const apps = projects.map((p) => {
+  const apps = projects.filter((p) => {
+    const record = publicRegistry.find((entry) => entry.slug === p.slug);
+    if (!record || (record.lifecycle !== "live" && record.lifecycle !== "beta")) return false;
+    const primary = p.links.find((link) => link.kind === (p.primaryCtaKind ?? "web"))?.href;
+    return Boolean(primary && presentSurfaces(record, now).some(({ surface, statusConfirmed }) =>
+      statusConfirmed && (surface.status === "live" || surface.status === "beta") &&
+      surface.url.replace(/\/$/, "") === primary.replace(/\/$/, ""),
+    ));
+  }).map((p) => {
     const meta = APP_META[p.slug] ?? { category: "MobileApplication", os: "iOS" };
     const canonical =
       p.links.find((l) => l.kind === "web" && l.href)?.href ??
@@ -55,7 +65,6 @@ export function JsonLd() {
       operatingSystem: meta.os,
       url: canonical,
       description: p.short.en,
-      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       publisher: { "@id": `${ORIGIN}/#organization` },
     };
   });
