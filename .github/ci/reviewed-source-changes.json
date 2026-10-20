@@ -180,8 +180,8 @@
     {
       "path": "src/components/layout/Header.tsx",
       "publishedSha256": "ae9f476dd5984e988fc9c545ef325cd51412ecae405d4617e310be247d02ea90",
-      "candidateSha256": "08d7fe98420c42533343f7837aebdd918d45d52be9de65b1102663d1275335b8",
-      "reason": "Use a native mobile modal for browser focus containment and background inertness; close on Escape, route changes and the desktop breakpoint. Preserve the closed Studio surface. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 local UI correction: Allow short mobile drawers to scroll without shrinking controls and retain minimum separation before the final project action. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance.",
+      "candidateSha256": "f490840a45cb694d00ecb644b7ed9ebff394653d5cfdd6d94c78a10d3825d4a2",
+      "reason": "User-authorized frontend acceptance: preserve the brand at 1024\u20131279px by using the drawer below1280px and explicitly wrap the two native dialog Tab boundaries. Real Chrome evidence: frontend-acceptance/header-accepted.json and keyboard-accepted.json; local candidate only.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -313,8 +313,8 @@
     {
       "path": "src/app/globals.css",
       "publishedSha256": "e5bb0e0c9315609d0d5a25327d1fd6c31076db67d18f457fb378fc4386e1a78d",
-      "candidateSha256": "6fba7d7b49b7ee07477c6071c3597afe5a39bf65d2f4d9ef13e22788acc60845",
-      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. 2026-10-16 local UI correction: Make Reveal and word-stagger content visible in SSR/no-JavaScript output; hide only after observer enhancement and immediately resolve reduced-motion opacity, transform and delays. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "1640597e8d70e02def040e9960221a71c2e3c0eff55d051b0242d936a10c6c87",
+      "reason": "User-authorized frontend acceptance: preserve the brand at 1024\u20131279px by using the drawer below1280px and explicitly wrap the two native dialog Tab boundaries. Real Chrome evidence: frontend-acceptance/header-accepted.json and keyboard-accepted.json; local candidate only.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -657,7 +657,7 @@
       "path": "src/app/projects/[slug]/opengraph-image.tsx",
       "publishedSha256": "568dc22c0b6f85f31dc40743c6966eb5bb58f7fa189c992dfd9a8ddcd464a55a",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 social preview qualification: replace permanently cached availability badges with the neutral destination label Ürün sayfası. Existing product-page publication checks are expired and already qualified; a static social card must not keep asserting LIVE/BETA. Brand, monogram, tagline and geometry remain unchanged; no provider refresh or availability claim.",
+      "reason": "2026-10-17 social preview qualification: replace permanently cached availability badges with the neutral destination label \u00dcr\u00fcn sayfas\u0131. Existing product-page publication checks are expired and already qualified; a static social card must not keep asserting LIVE/BETA. Brand, monogram, tagline and geometry remain unchanged; no provider refresh or availability claim.",
       "candidateSha256": "082e79d96dc1849dd2d1534691d5cc7019346b5db31a0a08bf7c2237e8fcebd7"
     },
     {

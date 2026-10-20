@@ -448,10 +448,6 @@ body:not(:has([data-yula-experience="true"])) {
 [data-project-index-card] > div:last-child { padding: 20px 0 28px; }
 [data-project-index-card] h3 { font-size: 26px; font-weight: 500; letter-spacing: -.025em; }
 [data-project-index-card] > div:first-child { border: 1px solid rgba(255,255,255,.12); }
-@media (max-width: 1279px) and (min-width: 1024px) {
-  [data-site-header="true"] nav { font-size: 10px; gap: 12px; }
-  [data-site-header="true"] > div > a > span { font-size: 22px; }
-}
 @media (max-width: 767px) {
   [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
   [data-site-header="true"] > div > a > span { font-size: 24px; }

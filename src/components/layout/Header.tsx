@@ -36,6 +36,8 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
   const [mobile, setMobile] = useState(false);
   const menuButton = useRef<HTMLButtonElement>(null);
   const mobileDialog = useRef<HTMLDialogElement>(null);
+  const mobileCloseButton = useRef<HTMLButtonElement>(null);
+  const mobileProjectsLink = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
     setMobile(false);
@@ -51,7 +53,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
   useEffect(() => {
     if (!mobile) return;
     // A modal hidden by the desktop layout must not keep the page inert.
-    const desktop = window.matchMedia("(min-width: 1024px)");
+    const desktop = window.matchMedia("(min-width: 1280px)");
     const onDesktop = () => {
       if (!desktop.matches) return;
       setMobile(false);
@@ -83,7 +85,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2.5 group focusable"
+            className="flex shrink-0 whitespace-nowrap items-center gap-2.5 group focusable"
             aria-label="YULA Lab"
           >
             <YulaMark size={28} />
@@ -92,7 +94,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-4 text-[13.5px] text-ink-200">
+          <nav className="hidden xl:flex items-center gap-4 text-[13.5px] text-ink-200">
             {navigation.map((n) => {
               const isActive =
                 (n.href === "/" && stripped === "/") ||
@@ -124,7 +126,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             ref={menuButton}
             type="button"
             onClick={() => setMobile(true)}
-            className="lg:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
+            className="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
             aria-label={t("menuOpen")}
             aria-expanded={mobile}
             aria-controls="site-mobile-navigation"
@@ -147,8 +149,26 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
           setMobile(false);
         }}
         onClose={() => setMobile(false)}
+        onKeyDown={(event) => {
+          if (
+            !event.currentTarget.open || event.defaultPrevented || event.key !== "Tab" ||
+            event.ctrlKey || event.altKey || event.metaKey
+          ) return;
+          const first = mobileCloseButton.current;
+          const last = mobileProjectsLink.current;
+          if (!first || !last) return;
+          // Keep the two modal boundaries inside the drawer; leave every
+          // intermediate control and browser shortcut to its native behavior.
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        }}
         className={
-          "fixed inset-0 z-50 m-0 h-[100dvh] w-screen max-h-none max-w-none border-0 bg-transparent p-0 text-inherit backdrop:bg-transparent lg:hidden transition-opacity duration-400 " +
+          "fixed inset-0 z-50 m-0 h-[100dvh] w-screen max-h-none max-w-none border-0 bg-transparent p-0 text-inherit backdrop:bg-transparent xl:hidden transition-opacity duration-400 " +
           (mobile ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0")
         }
         style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -171,6 +191,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               <span className="font-display font-semibold">YULA Lab</span>
             </div>
             <button
+              ref={mobileCloseButton}
               type="button"
               onClick={() => setMobile(false)}
               className="w-9 h-9 inline-flex items-center justify-center rounded-md border border-white/10"
@@ -196,6 +217,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
           </div>
           <div className="mt-auto pt-6">
             <Link
+              ref={mobileProjectsLink}
               href="/projects"
               onClick={() => setMobile(false)}
               className="flex items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
