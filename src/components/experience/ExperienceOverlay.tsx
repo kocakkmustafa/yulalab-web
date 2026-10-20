@@ -20,7 +20,7 @@ import type {
 } from "./types";
 import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
-import { resolveExperiencePalette } from "./theme";
+import { ThemeControl } from "@/components/theme/ThemeControl";
 
 type ExperienceOverlayProps = {
   copy: ExperienceCopy;
@@ -59,11 +59,10 @@ function stageStyle(opacity: number): StageStyle {
 }
 
 function overlayStyle(whiteMix: number): OverlayStyle {
-  const palette = resolveExperiencePalette(whiteMix);
   return {
-    "--experience-fg": palette.foreground,
-    "--experience-muted": palette.muted,
-    "--experience-line": palette.line,
+    "--experience-fg": "var(--yula-exp-fg)",
+    "--experience-muted": "var(--yula-exp-muted)",
+    "--experience-line": "var(--yula-exp-line)",
     "--white-mix": whiteMix,
   };
 }
@@ -188,11 +187,12 @@ export function ExperienceHeader({
           </button>
         ) : null}
         <LocaleSwitcher compact />
+        <ThemeControl compact />
         <button
           type="button"
           className={styles.soundButton}
           data-sound-control="true"
-          aria-pressed={soundEnabled}
+          data-sound-enabled={soundEnabled}
           onClick={onSoundToggle}
         >
           <span className={styles.soundBars} aria-hidden="true">

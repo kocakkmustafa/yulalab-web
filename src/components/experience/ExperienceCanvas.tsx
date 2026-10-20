@@ -16,8 +16,10 @@ import type {
   Vec3,
 } from "./types";
 import { ExperienceWorld } from "./ExperienceWorld";
+import type { ResolvedTheme } from "@/lib/theme";
 
 export type ExperienceCanvasProps = {
+  displayTheme?: ResolvedTheme;
   products: ExperienceProduct[];
   glyphRotation?: Vec3;
   progress: number;
@@ -53,10 +55,11 @@ const TRANSMISSION_RESOLUTION_SCALE: Record<QualityTier, number> = {
 
 type CanvasLifecycleProps = Pick<
   ExperienceCanvasProps,
-  "mode" | "onReady" | "onContextLost" | "progress" | "tier"
+  "mode" | "onReady" | "onContextLost" | "progress" | "tier" | "displayTheme"
 > & { assetsSettled: boolean };
 
 function CanvasLifecycle({
+  displayTheme,
   assetsSettled,
   mode,
   onReady,
@@ -92,7 +95,7 @@ function CanvasLifecycle({
 
   useEffect(() => {
     invalidate();
-  }, [invalidate, mode, progress, tier]);
+  }, [displayTheme, invalidate, mode, progress, tier]);
 
   useEffect(() => {
     const wakeVisibleCanvas = () => {
@@ -138,6 +141,7 @@ function CanvasLifecycle({
 }
 
 export function ExperienceCanvas({
+  displayTheme = "dark",
   glyphRotation,
   products,
   progress,
@@ -208,6 +212,7 @@ export function ExperienceCanvas({
         threshold={0.7}
       >
         <CanvasLifecycle
+          displayTheme={displayTheme}
           assetsSettled={assetsSettled}
           mode={mode}
           onContextLost={onContextLost}
@@ -216,6 +221,7 @@ export function ExperienceCanvas({
           tier={tier}
         />
         <ExperienceWorld
+          displayTheme={displayTheme}
           glyphRotation={glyphRotation}
           mode={mode}
           onAssetsSettled={handleAssetsSettled}

@@ -106,7 +106,7 @@
     "value2Title": "Sadelik ve işçilik",
     "value2Body": "Az özellik, iyi bitirilmiş. Eklenmeyen her şey bakım borcu değildir.",
     "value3Title": "Gizlilik",
-    "value3Body": "Veri varsayılan olarak cihazda kalır. Sunucuya gitmeyen veri sızmaz.",
+    "value3Body": "Veri varsayılan olarak cihazda kalır. Sunucuya hiç ulaşmayan veri, o sunucudan sızamaz.",
     "value4Title": "Bilim",
     "value4Body": "Model çıktısı açıklanabilir olmalı. Karar gerekçesi kullanıcıdan saklanmaz.",
     "manifestoKicker": "03 — Manifesto",
@@ -183,7 +183,7 @@
     "title": "Kara kutu değil. Hiçbir zaman.",
     "intro": "YULA Lab'te şeffaflık bir özellik değil — varsayılan. Her ürünümüz aynı söze sahip: modeli, maliyeti, veriyi nasıl tuttuğumuzu açıkça gösteririz. Bir AI ürününü kullanıyorsunuz; gözünüzü kapatmak zorunda değilsiniz.",
     "promiseEyebrow": "Verdiğimiz söz",
-    "promiseBody": "Aldığınız her kararı, harcadığınız her token'ı, sakladığımız her satırı görebilirsiniz. Açıklayamadığımız hiçbir şey ürüne girmez.",
+    "promiseBody": "Ürün sayfalarında kayda aldığımız iddiaları, kaynaklarını ve bilinen sınırlarını paylaşırız. Doğrulama tarihini ve kapsamını birlikte gösterir, süresi dolmuş kayıtları güncel kanıt olarak sunmayız.",
     "pillarsEyebrow": "Üç temel ürün, üç farklı şeffaflık mekaniği",
     "pillarsTitle": "Söylemek değil, kanıtlamak.",
     "readMore": "Detay:",
@@ -191,10 +191,10 @@
       "braavolabs": {
         "label": "Şeffaf maliyet",
         "title": "Her ajan, her token, her saniye.",
-        "claim": "Her pipeline run; hangi ajanın hangi tool'u çağırdığını, kaç token harcadığını ve hangi karara mâl olduğunu açık panelde gösterir. Sürpriz fatura yok.",
+        "claim": "Her pipeline run; hangi ajanın hangi tool'u çağırdığını, kaç token harcadığını ve hangi karara mâl olduğunu açık panelde gösterir. Maliyet kaydı kullanımı izlemenize yardımcı olur; gerçek ücretler sağlayıcınıza bağlıdır.",
         "proof": "→ Primitifler · sağlayıcılar · ürün sayfasında tarihli kanıtlar",
         "detailLabel": "Audit trail",
-        "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; para harcayan aksiyonlar insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
+        "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; parayla ilgili işlemler açık insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
       },
       "burunfarki": {
         "label": "Açık metodoloji",
@@ -221,12 +221,12 @@
         "body": "Dışa aktarma ve silme araçlarının kapsamı ürüne ve sürüme göre değişir. Cihaz verilerini silmek, hesap ve sunucu kayıtlarını silmekten ayrıdır. Mevcut araçlar ve saklama bilgileri için ürünün gizlilik politikasını inceleyin; hesap ve sunucu kayıtlarına ilişkin taleplerinizi support@yulalab.com adresine iletin."
       },
       "noTraining": {
-        "title": "Veriniz model eğitiminde kullanılmaz.",
-        "body": "Müşteri içeriklerinizden model çıkarmıyoruz. BYOK akışında verileriniz seçtiğiniz sağlayıcıya gider; biz aracıyız, yedek değil."
+        "title": "YULA, müşteri içeriğini model eğitiminde kullanmaz.",
+        "body": "Müşteri içeriğini kendi modellerimizi eğitmek için kullanmıyoruz. BYOK ile içerik seçtiğiniz sağlayıcıya iletilir; o sağlayıcının işleme ve saklama şartları ayrıca geçerlidir."
       },
       "noAds": {
-        "title": "Reklam yok, izleme yok.",
-        "body": "Tek gelir modelimiz ödeme yapan kullanıcı. Sizden veri toplayıp üçüncü tarafa satmıyoruz; analitik bile minimumda ve onay-gated."
+        "title": "Reklam için veri satışı yok.",
+        "body": "Verilerinizi reklam amacıyla satmıyoruz. Bu sitedeki ölçüm, barındırma ortamına ve etkinleştirilen yapılandırmaya bağlıdır; veri türleri ve saklama bilgileri gizlilik bildiriminde açıklanır."
       },
       "exitRight": {
         "title": "Çıkış kapısı her zaman açık.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Lokasyon",
     "locationTitle": "Türkiye",
     "locationNote": "Toplantılar Salı – Perşembe, hibrit.",
-    "studioBody": "Bu sayfadaki adres genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusu daha hızlıdır: bütçe aralığı, zamanlama ve kararı veren rol orada sorulur, dolayısıyla ilk yanıt bu üç soruyu tekrar sormakla geçmez.",
+    "studioBody": "Bu sayfadaki adres genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusunda bütçe aralığı, zamanlama ve kararı veren rol birlikte sorulur; böylece talebinizi bu bilgilerle değerlendirebiliriz.",
     "studioEyebrow": "Proje başvurusu",
     "studioLink": "Stüdyo başvurusu",
     "studioTitle": "Bir iş için mi yazıyorsunuz?",
@@ -318,7 +318,7 @@
       "a2Body": "Kural-tabanlı katkı faktörleri her at için ayrı listelenir: hangi değişken sıralamayı yukarı çekti, hangisi aşağı bastırdı. Model beğenmediğiniz bir sonuç verdiğinde nedenini görebilirsiniz.",
       "s2Kicker": "02 — Yöntem",
       "r1k": "Değerlendirme",
-      "r1v": "Zaman sıralı ayrım · geçmişe bakmaz",
+      "r1v": "Zaman sıralı ayrım · gelecek bilgisi kullanılmaz",
       "r2k": "Metrikler",
       "r2v": "Top-1 / Top-3 isabet",
       "r3k": "Açıklama",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — Ne yapar",
       "a1Title": "Primitiflerle kurulan otomasyonlar.",
       "a1Body": "Otomasyonlar hazır şablonlardan değil, birkaç temel yapı taşından kurulur. Her taş tek bir işi yapar; akış bu taşların dizilişinden doğar ve okunabilir kalır.",
-      "a2Title": "Maliyet sürpriz değildir.",
+      "a2Title": "Çalıştırma maliyetlerini izleyin.",
       "a2Body": "Her çalıştırmanın hangi sağlayıcıda kaç token harcadığı ve karşılığındaki tutar defterde durur. Sağlayıcı değiştirmek bir ayar; yeniden yazım gerekmez.",
       "s2Kicker": "02 — Çalışma biçimi",
       "r1k": "Çalıştırma",
@@ -481,9 +481,9 @@
       "ctaBody": "Choreia şu anda geliştiriliyor. Lansmandan haberdar olmak isterseniz yazın.",
       "ctaPrimary": "Yakında",
       "ctaSecondary": "Haberdar ol",
-      "disclaimer": "Choreia bir dans eğitmeni sertifikası veya fizik tedavi aracı değildir; gerçek bir dans hocasının yerini almaz."
+      "disclaimer": "Choreia dans becerisi veya eğitmen yeterliliği için sertifika vermez; fizik tedavi aracı değildir ve gerçek bir dans hocasının yerini almaz."
     },
-    "claimsHeading": "Doğrulanmış iddialar",
+    "claimsHeading": "İddialar ve kaynakları",
     "claimsLapsedHeading": "Yeniden doğrulanmalı",
     "claimsLapsedNote": "Bu iddiaların doğrulama süresi doldu. Yanlış oldukları anlamına gelmez — yalnızca kimsenin yakın zamanda yeniden kontrol etmediği anlamına gelir, bu yüzden güncel sayılmıyorlar.",
     "statVerified": "doğrulama",
@@ -504,7 +504,7 @@
       "privacy": "Gizlilik / veri talebi"
     },
     "product": "Hangi ürün?",
-    "productAny": "Farketmez",
+    "productAny": "Fark etmez",
     "message": "Mesaj",
     "website": "Web sitesi",
     "consent": "{version} tarihli gizlilik bildirimini okudum; mesajımın bana dönüş yapmak için saklanmasını kabul ediyorum.",
@@ -542,7 +542,7 @@
     },
     "loader": {
       "geometry": "Mekânsal eksenler çözümleniyor",
-      "registry": "Kamusal ürün kaydı doğrulanıyor",
+      "registry": "Ürün kaydı hazırlanıyor",
       "material": "Cam ve ışık alanı kalibre ediliyor",
       "ready": "YULA deneyimi hazır"
     },

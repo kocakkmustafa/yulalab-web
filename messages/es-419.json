@@ -162,7 +162,7 @@
     "shippedNote": "Productos con un registro anterior de publicación o beta. Las tarjetas señalan la disponibilidad que necesita una nueva verificación; las fuentes fechadas y los enlaces están en la página de cada producto.",
     "researchHeading": "En investigación",
     "researchNote": "Aún no publicados: sin páginas en tiendas, enlaces de descarga ni números verificados. Se mantienen separados abajo porque darles el mismo peso que a productos publicados haría que parecieran más de lo que son.",
-    "researchToggle": "Mostrar {count} productos en investigación"
+    "researchToggle": "Mostrar productos en investigación ({count})"
   },
   "showcase": {
     "back": "Proyectos",
@@ -183,7 +183,7 @@
     "title": "Sin cajas negras. Nunca.",
     "intro": "En YULA Lab, la transparencia no es una función: es lo habitual. Cada producto hace la misma promesa: puedes ver el modelo, el costo y los datos. Si usas un producto de IA, no deberías tener que cerrar los ojos.",
     "promiseEyebrow": "Nuestra promesa",
-    "promiseBody": "Cada decisión que tomas, cada token que gastas, cada registro que almacenamos: puedes verlo. Nada se publica si no podemos explicarlo.",
+    "promiseBody": "Compartimos en las páginas de producto las afirmaciones registradas, sus fuentes y los límites conocidos. Mostramos las fechas de verificación junto con su alcance y no presentamos los registros vencidos como evidencia actual.",
     "pillarsEyebrow": "Tres productos principales, tres mecanismos de transparencia",
     "pillarsTitle": "No solo lo afirmamos: lo demostramos.",
     "readMore": "Lee más en",
@@ -191,7 +191,7 @@
       "braavolabs": {
         "label": "Costo transparente",
         "title": "Cada agente, cada token, cada segundo.",
-        "claim": "Cada ejecución de un pipeline muestra qué agente llamó a qué herramienta, cuántos tokens gastó y el costo de cada decisión, todo a la vista. Sin cobros inesperados.",
+        "claim": "Cada ejecución de una pipeline muestra qué agente llamó a qué herramienta, cuántos tokens gastó y a qué decisión correspondió el costo, a plena vista. El registro de costos te ayuda a seguir el uso; los cargos reales dependen de tu proveedor.",
         "proof": "→ Primitivas · proveedores · evidencia fechada en la página del producto",
         "detailLabel": "Registro de auditoría",
         "detailBody": "Cada llamada a una herramienta y cada decisión es un registro separado; las acciones que involucran dinero requieren aprobación humana explícita. Exporta la ejecución completa como CSV / JSON y concíliala con tu propia contabilidad."
@@ -221,12 +221,12 @@
         "body": "El alcance de las herramientas de exportación y eliminación varía según el producto y la versión. Eliminar datos del dispositivo es distinto de eliminar la cuenta y los registros del servidor. Consulta la política de privacidad del producto para conocer las herramientas disponibles y la retención de datos; envía las solicitudes sobre cuenta y registros del servidor a support@yulalab.com."
       },
       "noTraining": {
-        "title": "Tus datos no se usan para entrenar modelos.",
-        "body": "No generamos modelos a partir del contenido de clientes. Con BYOK, tus datos van al proveedor que elegiste; los encaminamos, no somos un servicio de respaldo."
+        "title": "YULA no usa el contenido de sus clientes para entrenar modelos.",
+        "body": "No usamos el contenido de nuestros clientes para entrenar nuestros propios modelos. Con BYOK, el contenido se envía al proveedor que elijas; las condiciones de tratamiento y conservación de ese proveedor se aplican por separado."
       },
       "noAds": {
-        "title": "Sin anuncios, sin rastreo.",
-        "body": "Nuestro único modelo de ingresos son los usuarios de pago. No recopilamos tus datos para revenderlos; la analítica es mínima y requiere consentimiento."
+        "title": "No vendemos datos con fines publicitarios.",
+        "body": "No vendemos tus datos con fines publicitarios. La medición en este sitio depende del entorno de alojamiento y de la configuración habilitada; el aviso de privacidad describe los tipos de datos y los plazos de conservación."
       },
       "exitRight": {
         "title": "La puerta de salida siempre está abierta.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Ubicación",
     "locationTitle": "Türkiye",
     "locationNote": "Reuniones de martes a jueves, en modalidad híbrida.",
-    "studioBody": "La dirección de esta página es para correspondencia general. Si tienes un proyecto en mente, la solicitud al Studio es más rápida: pregunta el rango de presupuesto, los plazos y quién decide, para que la primera respuesta no se dedique a esas tres preguntas.",
+    "studioBody": "La dirección de esta página es para correspondencia general. Si tienes un proyecto en mente, la solicitud al Studio reúne tu rango de presupuesto, los plazos y el rol de quien decide, para que podamos evaluar la consulta con esa información.",
     "studioEyebrow": "Consulta sobre un proyecto",
     "studioLink": "Solicitud al Studio",
     "studioTitle": "¿Quieres hablar sobre un trabajo?",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — Qué hace",
       "a1Title": "Automatizaciones construidas con primitivas.",
       "a1Body": "Las automatizaciones se construyen con unos pocos bloques básicos en lugar de plantillas prefabricadas. Cada bloque realiza una tarea; el flujo surge de cómo se organizan y sigue siendo legible.",
-      "a2Title": "El costo nunca es una sorpresa.",
+      "a2Title": "Haz seguimiento de los costos de ejecución.",
       "a2Body": "El registro muestra cuántos tokens gastó cada ejecución con cada proveedor y a cuánto ascendió el costo. Cambiar de proveedor es una configuración, no una reescritura.",
       "s2Kicker": "02 — Cómo funciona",
       "r1k": "Ejecución",
@@ -378,7 +378,7 @@
       "note": "La orientación por cámara y las ventas de pago están desactivadas en la primera versión. El progreso del curso no se sincroniza con tu cuenta Motion.",
       "interfaceNote": "El producto sigue en desarrollo; no dibujamos una pantalla que no existe. Las capturas reales aparecerán aquí cuando la interfaz se estabilice.",
       "ctaTitle": "Próximamente en tu teléfono.",
-      "ctaBody": "Gravita está en desarrollo. Escríbenos si quieres saber cuándo se publique.",
+      "ctaBody": "Gravita está en desarrollo. Escríbenos si quieres recibir noticias de su lanzamiento.",
       "ctaPrimary": "Próximamente",
       "ctaSecondary": "Recibir aviso",
       "disclaimer": "Gravita no es un dispositivo médico y no diagnostica lesiones. Como guía de habilidades de movimiento, no sustituye a un entrenador real."
@@ -403,7 +403,7 @@
       "note": "La orientación por cámara y las ventas de pago están desactivadas en la primera versión. El progreso del curso no se sincroniza con tu cuenta Motion.",
       "interfaceNote": "El producto sigue en desarrollo; no dibujamos una pantalla que no existe. Las capturas reales aparecerán aquí cuando la interfaz se estabilice.",
       "ctaTitle": "Próximamente en tu teléfono.",
-      "ctaBody": "Lissom está en desarrollo. Escríbenos si quieres saber cuándo se publique.",
+      "ctaBody": "Lissom está en desarrollo. Escríbenos si quieres recibir noticias de su lanzamiento.",
       "ctaPrimary": "Próximamente",
       "ctaSecondary": "Recibir aviso",
       "disclaimer": "Lissom no es una herramienta de fisioterapia ni de tratamiento médico. Apoya tu práctica de flexibilidad y movilidad; no sustituye a un profesional calificado."
@@ -428,7 +428,7 @@
       "note": "La orientación por cámara y las ventas de pago están desactivadas en la primera versión. El progreso del curso no se sincroniza con tu cuenta Motion.",
       "interfaceNote": "El producto sigue en desarrollo; no dibujamos una pantalla que no existe. Las capturas reales aparecerán aquí cuando la interfaz se estabilice.",
       "ctaTitle": "Próximamente en tu teléfono.",
-      "ctaBody": "JabLab está en desarrollo. Escríbenos si quieres saber cuándo se publique.",
+      "ctaBody": "JabLab está en desarrollo. Escríbenos si quieres recibir noticias de su lanzamiento.",
       "ctaPrimary": "Próximamente",
       "ctaSecondary": "Recibir aviso",
       "disclaimer": "JabLab no es una herramienta de entrenamiento certificada por una federación; apoya la práctica individual y no sustituye a un entrenador real."
@@ -453,7 +453,7 @@
       "note": "El audio se procesa solo en la memoria temporal del dispositivo; no se graban ni se suben archivos de audio sin procesar. Salir de la pantalla, cambiar de cuenta o pasar la aplicación a segundo plano detiene el micrófono; volver no lo reinicia. La orientación por cámara y las ventas de pago están desactivadas en la primera versión.",
       "interfaceNote": "El producto sigue en desarrollo; no dibujamos una pantalla que no existe. Las capturas reales aparecerán aquí cuando la interfaz se estabilice.",
       "ctaTitle": "Próximamente en tu teléfono.",
-      "ctaBody": "Ostinato está en desarrollo. Escríbenos si quieres saber cuándo se publique.",
+      "ctaBody": "Ostinato está en desarrollo. Escríbenos si quieres recibir noticias de su lanzamiento.",
       "ctaPrimary": "Próximamente",
       "ctaSecondary": "Recibir aviso",
       "disclaimer": "Ostinato no sustituye a un profesor de música; el curso y la observación opcional de notas no certifican la corrección de la técnica ni su dominio."
@@ -478,12 +478,12 @@
       "note": "La orientación por cámara y las ventas de pago están desactivadas en la primera versión. El progreso del curso no se sincroniza con tu cuenta Motion.",
       "interfaceNote": "El producto sigue en desarrollo; no dibujamos una pantalla que no existe. Las capturas reales aparecerán aquí cuando la interfaz se estabilice.",
       "ctaTitle": "Próximamente en tu teléfono.",
-      "ctaBody": "Choreia está en desarrollo. Escríbenos si quieres saber cuándo se publique.",
+      "ctaBody": "Choreia está en desarrollo. Escríbenos si quieres recibir noticias de su lanzamiento.",
       "ctaPrimary": "Próximamente",
       "ctaSecondary": "Recibir aviso",
-      "disclaimer": "Choreia no es una herramienta certificada de enseñanza de baile ni de fisioterapia; no sustituye a un profesor de baile real."
+      "disclaimer": "Choreia no certifica habilidades de baile ni cualificaciones de instructores; no es una herramienta de fisioterapia y no sustituye a un profesor de baile real."
     },
-    "claimsHeading": "Afirmaciones verificadas",
+    "claimsHeading": "Afirmaciones y fuentes",
     "claimsLapsedHeading": "Necesitan nueva verificación",
     "claimsLapsedNote": "Estas afirmaciones superaron su periodo de verificación. Eso no significa que sean incorrectas: solo que nadie las revisó recientemente, por lo que no se consideran actuales.",
     "statVerified": "verificado",
@@ -522,7 +522,7 @@
       "offline": "No pudimos conectarnos con el servidor. Revisa tu conexión e inténtalo de nuevo.",
       "email": "La dirección de correo no parece válida.",
       "consent": "Debes aceptar el aviso de privacidad para continuar.",
-      "message": "El mensaje no puede estar vacío y debe tener menos de 4000 caracteres.",
+      "message": "El mensaje no puede estar vacío y debe tener como máximo 4000 caracteres.",
       "name": "Indica un nombre.",
       "generic": "El envío no se completó. Revisa los datos e inténtalo de nuevo.",
       "uncertain": "No pudimos confirmar el resultado del envío; es posible que tu mensaje haya quedado registrado. El formulario conserva lo que escribiste. Vuelve a intentarlo con el mismo contenido o escribe a soporte por correo electrónico."
@@ -536,13 +536,13 @@
       "manifesto": "Manifiesto",
       "transparency": "Transparencia",
       "contact": "Contacto",
-      "soundOn": "Sonido activado",
-      "soundOff": "Sonido desactivado",
+      "soundOn": "Activar el sonido",
+      "soundOff": "Desactivar el sonido",
       "consulting": "Consultoría en IA"
     },
     "loader": {
       "geometry": "Resolviendo los ejes espaciales",
-      "registry": "Validando el registro público de productos",
+      "registry": "Preparando el registro de productos",
       "material": "Calibrando el vidrio y el campo de luz",
       "ready": "Experiencia YULA lista"
     },

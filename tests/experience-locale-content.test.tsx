@@ -1,11 +1,12 @@
 // @vitest-environment jsdom
 import { createElement, type AnchorHTMLAttributes, type ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { createTranslator, NextIntlClientProvider } from "next-intl";
 import LandingPage from "@/app/[locale]/page";
 import { StaticExperience } from "@/components/experience/StaticExperience";
 import { ExperienceHeader, ProofLedger } from "@/components/experience/ExperienceOverlay";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import type { ExperienceCopy, ExperienceProduct } from "@/components/experience/types";
 import { localePath, SUPPORTED_LOCALES, type Locale } from "@/i18n/locales";
 import { text } from "@/lib/localized";
@@ -17,8 +18,14 @@ import de from "../messages/de.json";
 import fr from "../messages/fr.json";
 import ja from "../messages/ja.json";
 import ar from "../messages/ar.json";
+import itMessages from "../messages/it.json";
+import ko from "../messages/ko.json";
+import id from "../messages/id.json";
+import pl from "../messages/pl.json";
+import hi from "../messages/hi.json";
+import zhHans from "../messages/zh-Hans.json";
 
-const catalogues = { tr, en, "es-419": es, "pt-BR": pt, de, fr, ja, ar };
+const catalogues = { tr, en, "es-419": es, "pt-BR": pt, de, fr, ja, ar, it: itMessages, ko, id, pl, hi, "zh-Hans": zhHans };
 const navigation = vi.hoisted(() => ({ locale: "fr" as Locale, replace: vi.fn() }));
 type AnchorProps = AnchorHTMLAttributes<HTMLAnchorElement> & { href: string };
 vi.mock("next/link", () => ({ default: ({ href, children, ...props }: AnchorProps) => createElement("a", { ...props, href }, children) }));
@@ -43,7 +50,7 @@ async function load(locale: Locale) {
   return (page as ReactElement<{ copy: ExperienceCopy; products: ExperienceProduct[] }>).props;
 }
 function provider(locale: Locale, children: ReactElement) {
-  return <NextIntlClientProvider locale={locale} messages={catalogues[locale]} timeZone="UTC">{children}</NextIntlClientProvider>;
+  return <NextIntlClientProvider locale={locale} messages={catalogues[locale]} timeZone="UTC"><ThemeProvider>{children}</ThemeProvider></NextIntlClientProvider>;
 }
 
 // Actual catalogues/helper and rendered components, with router/server lookup
@@ -59,14 +66,14 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     expect(container.querySelector("#experience-product-lifeos img")?.getAttribute("alt")).toBeTruthy();
   });
 
-  it("exposes all eight native language choices and keeps section navigation", async () => {
+  it("exposes all fourteen native language choices and keeps section navigation", async () => {
     const { copy } = await load(locale);
     window.history.replaceState(null, "", `/${locale}?token=private#experience-proof`);
     const onSoundToggle = vi.fn();
     render(provider(locale, <ExperienceHeader copy={copy} soundEnabled={false} onSoundToggle={onSoundToggle} />));
     const selector = screen.getByRole("combobox", { name: catalogues[locale].header.language });
     expect((selector as HTMLSelectElement).value).toBe(locale);
-    expect(screen.getAllByRole("option").map((option) => (option as HTMLOptionElement).value)).toEqual([...SUPPORTED_LOCALES]);
+    expect(within(selector).getAllByRole("option").map((option) => (option as HTMLOptionElement).value)).toEqual([...SUPPORTED_LOCALES]);
     fireEvent.change(selector, { target: { value: "de" } });
     expect(navigation.replace).toHaveBeenCalledWith("/#experience-proof", { locale: "de" });
     fireEvent.click(screen.getByRole("button", { name: copy.navigation.soundOn }));

@@ -50,7 +50,7 @@ describe.each(SUPPORTED_LOCALES)("actual async contact/studio SSR in %s", (local
     expect(fetch).not.toHaveBeenCalled();
   });
 
-  it("uses a form for TR/EN Studio and a localized mail card for the other six", async () => {
+  it("uses a form for TR/EN Studio and a localized mail card for the other twelve", async () => {
     const result = await StudioPage({ params: Promise.resolve({ locale }) });
     const html = render(result, locale);
     if (locale === "tr" || locale === "en") {

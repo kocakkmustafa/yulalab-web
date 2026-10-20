@@ -6,17 +6,31 @@ import { SUPPORTED_LOCALES } from "../src/i18n/locales";
 
 const root = process.cwd();
 const secondary = SUPPORTED_LOCALES.filter((locale) => locale !== "tr" && locale !== "en");
-const read = (file: string) => JSON.parse(fs.readFileSync(path.join(root, "messages", file), "utf8")) as Record<string, unknown>;
+const read = (file: string): Record<string, unknown> => {
+  const value: unknown = JSON.parse(fs.readFileSync(path.join(root, "messages", file), "utf8"));
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`Expected a catalogue object: ${file}`);
+  return value as Record<string, unknown>;
+};
+function shape(value: unknown): unknown {
+  if (typeof value === "string") return "string";
+  if (Array.isArray(value)) return value.map(shape);
+  if (value && typeof value === "object") return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, child]) => [key, shape(child)]));
+  throw new Error("Catalogue values must be strings, arrays or objects of strings");
+}
 function leaves(value: unknown, prefix = ""): Record<string, string> {
   if (typeof value === "string") return { [prefix]: value };
   if (value && typeof value === "object") return Object.assign({}, ...Object.entries(value).map(([key, child]) => leaves(child, prefix ? `${prefix}.${key}` : key)));
   throw new Error(`Non-string message leaf: ${prefix}`);
 }
 const placeholders = (value: string) => [...value.matchAll(/\{([^{}]+)\}/g)].map((match) => match[1]).sort();
-const source = leaves(read("en.json"));
+const sourceCatalogue = read("en.json");
+const source = leaves(sourceCatalogue);
 const issues: string[] = [];
 for (const locale of SUPPORTED_LOCALES) {
-  const actual = leaves(read(`${locale}.json`));
+  const catalogue = read(`${locale}.json`);
+  const actual = leaves(catalogue);
+  if (JSON.stringify(shape(catalogue)) !== JSON.stringify(shape(sourceCatalogue))) issues.push(`${locale}: message tree shape differs`);
+  if (!Intl.DateTimeFormat.supportedLocalesOf([locale]).length || !Intl.NumberFormat.supportedLocalesOf([locale]).length) issues.push(`${locale}: runtime Intl locale support is unavailable`);
   if (JSON.stringify(Object.keys(actual).sort()) !== JSON.stringify(Object.keys(source).sort())) issues.push(`${locale}: message key set differs`);
   for (const [key, value] of Object.entries(source)) {
     if (typeof actual[key] !== "string" || JSON.stringify(placeholders(actual[key] ?? "")) !== JSON.stringify(placeholders(value))) issues.push(`${locale}: ${key} missing/placeholder mismatch`);
@@ -61,10 +75,13 @@ for (const file of walk(path.join(root, "src"))) {
 }
 for (const locale of secondary) {
   const actual = read(`content-${locale}.json`);
+  for (const [key, translated] of Object.entries(actual)) {
+    if (typeof translated !== "string" || !translated.trim() || JSON.stringify(placeholders(key)) !== JSON.stringify(placeholders(translated))) issues.push(`${locale}: invalid supplemental entry ${JSON.stringify(key)}`);
+  }
   for (const [key, file] of required) {
     const translated = actual[key];
     if (typeof translated !== "string" || !translated.trim() || JSON.stringify(placeholders(key)) !== JSON.stringify(placeholders(translated))) issues.push(`${locale}: missing content/placeholder ${JSON.stringify(key)} in ${path.relative(root, file)}`);
   }
 }
-console.log(JSON.stringify({ locales: SUPPORTED_LOCALES, messageLeaves: Object.keys(source).length, requiredSourcePhrases: required.size, issues }, null, 2));
+console.log(JSON.stringify({ locales: SUPPORTED_LOCALES, messageLeaves: Object.keys(source).length, requiredSourcePhrases: required.size, scope: "catalogue shape, placeholders, source coverage and runtime Intl availability; not translation quality or browser acceptance", intakeLocales: ["tr", "en"], issues }, null, 2));
 if (issues.length) process.exitCode = 1;

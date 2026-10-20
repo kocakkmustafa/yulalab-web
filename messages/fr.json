@@ -162,7 +162,7 @@
     "shippedNote": "Produits ayant déjà fait l’objet d’une publication ou d’une bêta. Les fiches signalent les disponibilités à vérifier de nouveau ; les sources datées et les liens figurent sur chaque page produit.",
     "researchHeading": "En recherche",
     "researchNote": "Pas encore publiés : aucune page de boutique, aucun lien de téléchargement, aucun chiffre vérifié. Ils restent séparés ci-dessous, car leur donner le même poids que les produits publiés leur prêterait plus qu’ils ne sont.",
-    "researchToggle": "Afficher {count} produits en recherche"
+    "researchToggle": "Afficher les produits en recherche ({count})"
   },
   "showcase": {
     "back": "Projets",
@@ -183,7 +183,7 @@
     "title": "Pas de boîtes noires. Jamais.",
     "intro": "Chez YULA Lab, la transparence n’est pas une fonctionnalité : c’est la norme. Chaque produit fait la même promesse : le modèle, le coût et les données vous sont visibles. Utiliser un produit d’IA ne devrait pas exiger de fermer les yeux.",
     "promiseEyebrow": "Notre promesse",
-    "promiseBody": "Chaque décision que vous prenez, chaque token dépensé, chaque ligne stockée : vous pouvez les voir. Rien n’est publié si nous ne pouvons pas l’expliquer.",
+    "promiseBody": "Nous présentons sur les pages des produits les affirmations consignées, leurs sources et les limites connues. Nous indiquons les dates de vérification avec leur périmètre et ne présentons pas les enregistrements périmés comme des preuves actuelles.",
     "pillarsEyebrow": "Trois produits principaux, trois mécanismes de transparence",
     "pillarsTitle": "Nous ne l’affirmons pas seulement : nous le démontrons.",
     "readMore": "En savoir plus sur",
@@ -191,7 +191,7 @@
       "braavolabs": {
         "label": "Coût transparent",
         "title": "Chaque agent, chaque token, chaque seconde.",
-        "claim": "Chaque exécution de pipeline montre quel agent a appelé quel outil, combien de tokens il a dépensés et le coût de chaque décision, en toute visibilité. Pas de factures surprises.",
+        "claim": "Chaque exécution de pipeline montre quel agent a appelé quel outil, combien de tokens il a utilisés et à quelle décision correspondait le coût, en toute visibilité. Le registre des coûts vous aide à suivre l’utilisation ; les frais réels dépendent de votre fournisseur.",
         "proof": "→ Primitives · fournisseurs · preuves datées sur la page du produit",
         "detailLabel": "Journal d’audit",
         "detailBody": "Chaque appel d’outil et chaque décision constitue une ligne distincte ; les actions engageant de l’argent exigent une approbation humaine explicite. Exportez l’exécution complète en CSV / JSON et rapprochez-la de votre propre comptabilité."
@@ -221,12 +221,12 @@
         "body": "La portée des outils d’exportation et de suppression varie selon le produit et la version. Supprimer les données de l’appareil est distinct de supprimer le compte et les données du serveur. Consultez la politique de confidentialité du produit pour les outils disponibles et la conservation des données ; adressez vos demandes concernant le compte et les données du serveur à support@yulalab.com."
       },
       "noTraining": {
-        "title": "Vos données ne servent pas à entraîner des modèles.",
-        "body": "Nous ne créons pas de modèles à partir du contenu des clients. Avec BYOK, vos données vont au fournisseur que vous avez choisi ; nous les acheminons, nous ne sommes pas un service de sauvegarde."
+        "title": "YULA n’utilise pas le contenu de ses clients pour entraîner des modèles.",
+        "body": "Nous n’utilisons pas le contenu de nos clients pour entraîner nos propres modèles. Avec BYOK, le contenu est envoyé au fournisseur que vous choisissez ; les conditions de traitement et de conservation de ce fournisseur s’appliquent séparément."
       },
       "noAds": {
-        "title": "Pas de publicité, pas de suivi.",
-        "body": "Notre seul modèle de revenu repose sur les utilisateurs payants. Nous ne collectons pas vos données pour les revendre ; l’analyse d’usage est minimale et soumise au consentement."
+        "title": "Aucune vente de données à des fins publicitaires.",
+        "body": "Nous ne vendons pas vos données à des fins publicitaires. Les mesures effectuées sur ce site dépendent de l’environnement d’hébergement et de la configuration activée ; la notice de confidentialité décrit les types de données et leur durée de conservation."
       },
       "exitRight": {
         "title": "La porte de sortie reste toujours ouverte.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Localisation",
     "locationTitle": "Türkiye",
     "locationNote": "Réunions du mardi au jeudi, en format hybride.",
-    "studioBody": "L’adresse de cette page est destinée à la correspondance générale. Si vous avez un projet en tête, la candidature au Studio est plus rapide : elle demande la fourchette de budget, le calendrier et qui décide, afin de ne pas consacrer la première réponse à ces trois questions.",
+    "studioBody": "L’adresse de cette page est destinée à la correspondance générale. Si vous avez un projet en tête, la demande au Studio réunit votre fourchette de budget, votre calendrier et votre rôle dans la prise de décision, afin que nous puissions évaluer votre demande à partir de ces informations.",
     "studioEyebrow": "Demande concernant un projet",
     "studioLink": "Candidature au Studio",
     "studioTitle": "Vous souhaitez nous parler d’un travail ?",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — Ce que fait le produit",
       "a1Title": "Des automatisations construites à partir de primitives.",
       "a1Body": "Les automatisations sont construites à partir de quelques blocs de base plutôt que de modèles préfabriqués. Chaque bloc accomplit une tâche ; le flux résulte de leur agencement et reste lisible.",
-      "a2Title": "Le coût n’est jamais une surprise.",
+      "a2Title": "Suivez les coûts d’exécution.",
       "a2Body": "Le registre indique combien de tokens chaque exécution a dépensés chez chaque fournisseur, et pour quel montant. Changer de fournisseur relève d’un réglage, pas d’une réécriture.",
       "s2Kicker": "02 — Fonctionnement",
       "r1k": "Exécution",
@@ -358,7 +358,7 @@
       "ctaSecondary": "Poser une question par e-mail",
       "disclaimer": ""
     },
-    "claimsHeading": "Affirmations vérifiées",
+    "claimsHeading": "Affirmations et sources",
     "claimsLapsedHeading": "À vérifier de nouveau",
     "claimsLapsedNote": "La période de vérification de ces affirmations est dépassée. Cela ne signifie pas qu’elles sont fausses : personne ne les a simplement revérifiées récemment, elles ne sont donc pas considérées comme actuelles.",
     "statVerified": "vérifié",
@@ -463,7 +463,7 @@
       "a1Title": "Cours de Salsa On1 en solo.",
       "r2v": "Cours de Salsa On1 en solo",
       "ctaBody": "Choreia est actuellement en développement. Écrivez-nous pour être informé de sa sortie.",
-      "disclaimer": "Choreia n’est pas un outil certifié d’enseignement de la danse ni de kinésithérapie ; il ne remplace pas un véritable professeur de danse."
+      "disclaimer": "Choreia ne certifie ni les compétences en danse ni les qualifications des enseignants ; ce n’est pas un outil de kinésithérapie et il ne remplace pas un véritable professeur de danse."
     },
     "ostinato": {
       "eyebrow": "Produit 07 · Prochainement · Pratique musicale",
@@ -522,7 +522,7 @@
       "offline": "Impossible de joindre le serveur. Vérifiez votre connexion et réessayez.",
       "email": "Cette adresse e-mail ne semble pas valide.",
       "consent": "Vous devez accepter l’avis de confidentialité pour continuer.",
-      "message": "Le message ne peut pas être vide et doit contenir moins de 4000 caractères.",
+      "message": "Le message ne peut pas être vide et doit contenir au maximum 4000 caractères.",
       "name": "Veuillez indiquer un nom.",
       "generic": "L’envoi n’a pas abouti. Vérifiez les informations et réessayez.",
       "uncertain": "Nous n’avons pas pu confirmer le résultat de l’envoi ; votre message a peut-être été enregistré. Le formulaire conserve vos saisies. Réessayez avec le même contenu ou contactez l’assistance par e-mail."
@@ -536,13 +536,13 @@
       "manifesto": "Manifeste",
       "transparency": "Transparence",
       "contact": "Contact",
-      "soundOn": "Son activé",
-      "soundOff": "Son désactivé",
+      "soundOn": "Activer le son",
+      "soundOff": "Désactiver le son",
       "consulting": "Conseil en IA"
     },
     "loader": {
       "geometry": "Résolution des axes spatiaux",
-      "registry": "Validation du registre public des produits",
+      "registry": "Préparation du registre des produits",
       "material": "Calibrage du verre et du champ lumineux",
       "ready": "Expérience YULA prête"
     },

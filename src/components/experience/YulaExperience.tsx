@@ -30,8 +30,12 @@ import type {
 } from "./types";
 import { useExperienceProgress } from "./useExperienceProgress";
 import styles from "./Experience.module.css";
+import { useTheme } from "@/components/theme/ThemeProvider";
+import type { ResolvedTheme } from "@/lib/theme";
+import { applyExperienceTheme } from "./theme";
 
 type ExperienceCanvasProps = {
+  displayTheme?: ResolvedTheme;
   products: ExperienceProduct[];
   glyphRotation?: Vec3;
   progress: number;
@@ -172,6 +176,7 @@ function GlyphControl({ locale, rotation, onChange }: {
 }
 
 export function YulaExperience({ products, copy }: YulaExperienceProps) {
+  const theme = useTheme();
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const mobile = useMediaQuery("(max-width: 767px)");
@@ -454,8 +459,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const renderedProgress = mounted ? progress : 0;
   const mode: ExperienceMode = mobile ? "mobile" : "desktop";
   const frame = useMemo(
-    () => evaluateTimeline(renderedProgress, mode),
-    [mode, renderedProgress],
+    () => applyExperienceTheme(evaluateTimeline(renderedProgress, mode), theme.resolved),
+    [mode, renderedProgress, theme.resolved],
   );
   const activeProduct = products[frame.productIndex] ?? products[0];
   useLayoutEffect(() => {
@@ -537,13 +542,14 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             aria-hidden={loaderVisible || undefined}
             inert={loaderVisible}
           >
-            {webgl === "available" ? (
+            {webgl === "available" && theme.ready ? (
               <div className={styles.canvasLayer} aria-hidden="true">
                 <ExperienceErrorBoundary
                   fallback={null}
                   onError={() => setCanvasFailed(true)}
                 >
                   <ExperienceCanvas
+                    displayTheme={theme.resolved}
                     glyphRotation={glyphRotation}
                     products={products}
                     progress={renderedProgress}

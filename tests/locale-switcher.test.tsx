@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 
 const navigation = vi.hoisted(() => ({
@@ -19,13 +20,14 @@ afterEach(() => {
 });
 
 describe("LocaleSwitcher", () => {
-  it("exposes all eight self-named choices in compact mode", () => {
+  it("exposes all fourteen self-named choices in compact mode", () => {
     render(<LocaleSwitcher compact />);
-    expect(screen.getAllByRole("option")).toHaveLength(8);
+    expect(screen.getAllByRole("option")).toHaveLength(SUPPORTED_LOCALES.length);
     expect(screen.getByRole("option", {name:"العربية"}).getAttribute("dir")).toBe("rtl");
     expect(screen.getByRole("option", {name:"日本語"}).getAttribute("lang")).toBe("ja");
+    expect(screen.getByRole("option", {name:"简体中文"}).getAttribute("lang")).toBe("zh-Hans");
   });
-  it.each(["tr", "en", "es-419", "pt-BR", "de", "fr", "ja", "ar"])("keeps the account deletion section when leaving %s", (locale) => {
+  it.each(SUPPORTED_LOCALES)("keeps the account deletion section when leaving %s", (locale) => {
     navigation.locale = locale;
     window.history.replaceState({}, "", "/privacy/motion#motion-account-deletion");
     const onNavigate = vi.fn();

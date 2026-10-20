@@ -5,6 +5,9 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 // Security headers applied to every response. Apple/Google submit
 // reviewers (and Lighthouse / Mozilla Observatory) check these.
 const isDev = process.env.NODE_ENV === "development";
+// Exact public UI locales only. Capability pages own a nonce policy, while
+// unrelated and unsupported paths continue to receive the general policy.
+const verificationLocales = ["tr", "en", "es-419", "pt-BR", "de", "fr", "ja", "ar", "it", "ko", "id", "pl", "hi", "zh-Hans"];
 
 const securityHeaders = [
   // HSTS — force HTTPS for 2 years, include subdomains, preload-eligible
@@ -87,7 +90,7 @@ const nextConfig = {
         // Next preserves config headers over route Response headers. The
         // capability document must own its per-response nonce and referrer
         // policy. Middleware canonicalizes encoded spellings before rendering.
-        source: "/:path((?!(?:tr/|en/)?data-request/verify/?$).*)",
+        source: `/:path((?!(?:(?:${verificationLocales.join("|")})/)?data-request/verify/?$).*)`,
         headers: securityHeaders.filter(
           ({ key }) => key === "Content-Security-Policy" || key === "Referrer-Policy",
         ),

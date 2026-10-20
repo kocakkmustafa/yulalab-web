@@ -1,5 +1,9 @@
 # yulalab.com — DEFTER (Bulgu Defteri)
 
+## 2026-10-20 — 14 dil ve tema devamı
+
+Önceki YU3-J13, görsel/erişilebilirlik ve veri hakları ailelerinin devamı: kullanıcı onaylı 14 arayüz dili, açık/koyu/sistem görünümü, bağımsız tam metin karşılaştırmaları ve yerel entegrasyon. [Güncel kabul raporu](../workspace/implementation-01-2026-10-19/theme-14-acceptance/REPORT.tr.md) exact kaynak, test ve gerçek tarayıcı kapsamını; [ops kapıları](../workspace/implementation-01-2026-10-19/frontend-acceptance/OPS-GATES.tr.md) gerçek DB/inbox/scheduler/restore sınırını taşır. Aşağıdaki sekiz dil kaydı kendi tarihli checkpoint'idir. Yeni dil kapsamı backend TR/EN sözleşmesini, yayın veya hukuki kabulü açmaz.
+
 ## 2026-10-20 — onaylı düzeltmeler ve sekiz dil adayı
 
 Kullanıcının 19 Ekim düzeltme ve dil paketi onayıyla mevcut checkout üzerinde çalışıldı. Güncel kanıt: [uygulama 01](../workspace/implementation-01-2026-10-19/STATUS.tr.md). Bu kayıt eski kanıtları yeniden toplamlaştırmaz ve yayın kabulü değildir.

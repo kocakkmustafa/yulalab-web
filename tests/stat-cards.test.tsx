@@ -197,7 +197,7 @@ describe("empty and degraded cases", () => {
         labels={LABELS}
       />,
     );
-    expect(screen.getByText("~%62")).toBeTruthy();
+    expect(screen.getByText("~62%")).toBeTruthy();
     expect(screen.queryByText(/verified/i)).toBeNull();
   });
 });

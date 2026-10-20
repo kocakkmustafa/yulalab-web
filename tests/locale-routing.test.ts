@@ -13,7 +13,7 @@ import { siteOrigin } from "@/lib/site-origin";
 
 afterEach(() => vi.unstubAllEnvs());
 
-describe("eight-language routing and public discovery", () => {
+describe("fourteen-language routing and public discovery", () => {
   it.each(SUPPORTED_LOCALES)("%s transparency metadata lists all approved translations", async (locale) => {
     const meta = await transparencyMetadata({params: Promise.resolve({locale})});
     expect(meta.alternates?.languages).toEqual(localeAlternates("/transparency"));
@@ -33,12 +33,26 @@ describe("eight-language routing and public discovery", () => {
     expect(response.status).toBe(locale === "tr" ? 307 : 209);
     if (locale === "tr") expect(response.headers.get("location")).toBe("https://yulalab.com/privacy");
   });
-  it.each(["it", "xx", "es-MX", "pt-PT"])("unsupported %s prefixes remain 404", (locale) => {
+  it.each(["xx", "es-MX", "pt-PT", "zh", "zh-Hant", "zh-TW", "zh-HK", "zh-MO", "zh-Hant-CN", "zh-Hant-TW"])("unsupported %s prefixes remain 404", (locale) => {
     expect(middleware(new NextRequest(`https://yulalab.com/${locale}/privacy`)).status).toBe(404);
+  });
+  it.each([
+    ["PT-br", "pt-BR"], ["ZH-HANS", "zh-Hans"], ["zh-CN", "zh-Hans"], ["zh-SG", "zh-Hans"], ["EN", "en"],
+  ])("canonicalizes the explicit alias %s without losing query or setting an unrelated language", (alias, canonical) => {
+    const response = middleware(new NextRequest(`https://yulalab.com/${alias}/privacy?view=fixture`));
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(`https://yulalab.com/${canonical}/privacy?view=fixture`);
+    expect(response.headers.get("set-cookie")).toContain(`NEXT_LOCALE=${canonical}`);
+  });
+  it.each(SUPPORTED_LOCALES)("canonicalizes encoded %s capability aliases before their response policy", (locale) => {
+    const encoded = `%${locale.charCodeAt(0).toString(16)}${locale.slice(1)}`;
+    const response = middleware(new NextRequest(`https://yulalab.com/${encoded}/data-request/%76erify`));
+    expect(response.status).toBe(307);
+    expect(response.headers.get("location")).toBe(`https://yulalab.com${locale === "tr" ? "" : "/" + locale}/data-request/verify`);
   });
   it("lists each translated page once without a fabricated modification date", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(25 * 8);
+    expect(entries).toHaveLength(25 * SUPPORTED_LOCALES.length);
     expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
     for (const entry of entries) {
       expect(entry.lastModified).toBeUndefined();

@@ -14,34 +14,34 @@ const config: Config = {
     },
     extend: {
       colors: {
-        // Existing status colors keep their v3 sRGB values during migration.
-        amber: { 300: "#fcd34d", 400: "#fbbf24" },
-        emerald: { 300: "#6ee7b7", 400: "#34d399" },
+        // Status colors retain their dark appearance and gain readable light counterparts.
+        amber: { 300: "var(--yula-warning)", 400: "var(--yula-warning-strong)" },
+        emerald: { 300: "var(--yula-success)", 400: "var(--yula-success-strong)" },
         ink: {
-          900: "#0A0A0B",
-          850: "#0E0E10",
-          800: "#131316",
-          700: "#1A1A1E",
-          600: "#26262C",
-          500: "#3A3A42",
+          900: "rgb(var(--yula-ink-900) / <alpha-value>)",
+          850: "rgb(var(--yula-ink-850) / <alpha-value>)",
+          800: "rgb(var(--yula-ink-800) / <alpha-value>)",
+          700: "rgb(var(--yula-ink-700) / <alpha-value>)",
+          600: "rgb(var(--yula-ink-600) / <alpha-value>)",
+          500: "rgb(var(--yula-ink-500) / <alpha-value>)",
           // Small muted text must remain readable on dark page and card surfaces.
-          400: "#90909A",
-          300: "#9A9AA3",
-          200: "#C5C5CC",
-          100: "#E5E5EA",
-          50: "#F4F4F5",
+          400: "rgb(var(--yula-ink-400) / <alpha-value>)",
+          300: "rgb(var(--yula-ink-300) / <alpha-value>)",
+          200: "rgb(var(--yula-ink-200) / <alpha-value>)",
+          100: "rgb(var(--yula-ink-100) / <alpha-value>)",
+          50: "rgb(var(--yula-ink-50) / <alpha-value>)",
         },
         // Named surface/hairline scale — the alternative to hand-rolled
         // white/[0.04]-style opacity values scattered across ~80 call sites.
         // Each name is a decision made once instead of re-guessed per card.
         surface: {
-          DEFAULT: "rgba(255,255,255,0.02)", // resting card/tile fill
-          raised: "rgba(255,255,255,0.04)", // hover fill
-          inset: "rgba(255,255,255,0.015)", // recessed panel (info boxes)
+          DEFAULT: "var(--yula-surface)", // resting card/tile fill
+          raised: "var(--yula-surface-raised)", // hover fill
+          inset: "var(--yula-surface-inset)", // recessed panel (info boxes)
         },
         hairline: {
-          DEFAULT: "rgba(255,255,255,0.10)", // default 1px border
-          strong: "rgba(255,255,255,0.20)", // hover / active border
+          DEFAULT: "var(--yula-hairline)", // default 1px border
+          strong: "var(--yula-hairline-strong)", // hover / active border
         },
       },
       fontFamily: {

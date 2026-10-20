@@ -162,7 +162,7 @@
     "shippedNote": "Products with a previous publication or beta record. Cards flag availability that needs re-verification; dated sources and links are on each product page.",
     "researchHeading": "In research",
     "researchNote": "Not released yet: no store pages, no download links, no verified numbers. They are kept separate below because giving them the same weight as shipped products would make them look like more than they are.",
-    "researchToggle": "Show {count} products in research"
+    "researchToggle": "Show research products ({count})"
   },
   "showcase": {
     "back": "Projects",
@@ -183,7 +183,7 @@
     "title": "No black boxes. Ever.",
     "intro": "At YULA Lab, transparency isn't a feature — it's the default. Every product makes the same promise: the model, the cost and the data are visible to you. You are using an AI product; you should not have to close your eyes.",
     "promiseEyebrow": "Our promise",
-    "promiseBody": "Every decision you take, every token you spend, every row we store — you can see it. Nothing ships unless we can explain it.",
+    "promiseBody": "We share recorded claims, their sources and known limits on product pages. We show verification dates together with scope, and do not present expired records as current evidence.",
     "pillarsEyebrow": "Three core products, three transparency mechanics",
     "pillarsTitle": "We don't claim it — we prove it.",
     "readMore": "Read more on",
@@ -191,7 +191,7 @@
       "braavolabs": {
         "label": "Transparent cost",
         "title": "Every agent, every token, every second.",
-        "claim": "Every pipeline run shows which agent called which tool, how many tokens it spent and which decision it cost — in plain view. No surprise bills.",
+        "claim": "Every pipeline run shows which agent called which tool, how many tokens it spent and which decision it cost — in plain view. The cost record helps you track usage; actual charges depend on your provider.",
         "proof": "→ Primitives · providers · dated evidence on the product page",
         "detailLabel": "Audit trail",
         "detailBody": "Every tool call and decision is a separate row; money-touching actions require an explicit human approval. Export the full run as CSV / JSON and reconcile against your own accounting."
@@ -221,12 +221,12 @@
         "body": "The scope of export and deletion tools varies by product and version. Deleting device data is separate from deleting account and server-side records. See the product's privacy policy for available tools and retention information; send requests about account and server-side records to support@yulalab.com."
       },
       "noTraining": {
-        "title": "Your data is not used for model training.",
-        "body": "We do not derive models from customer content. With BYOK your data goes to the provider you chose; we are a router, not a backup."
+        "title": "YULA does not use customer content to train models.",
+        "body": "We do not use customer content to train our own models. With BYOK, content is sent to the provider you select; that provider's processing and retention terms apply separately."
       },
       "noAds": {
-        "title": "No ads, no tracking.",
-        "body": "Our only revenue model is paying users. We don't harvest your data to resell it; analytics is minimal and consent-gated."
+        "title": "No sale of data for advertising.",
+        "body": "We do not sell your data for advertising. Measurement on this site depends on the hosting environment and enabled configuration; the privacy notice describes data types and retention."
       },
       "exitRight": {
         "title": "The exit door is always open.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Location",
     "locationTitle": "Türkiye",
     "locationNote": "Meetings Tuesday – Thursday, hybrid.",
-    "studioBody": "The address on this page is for general correspondence. If you have a project in mind, the studio application is faster: it asks for budget band, timing and who decides, so the first reply is not spent asking those three questions.",
+    "studioBody": "The address on this page is for general correspondence. If you have a project in mind, the studio application collects your budget band, timing and decision-making role together, so we can assess the enquiry with that information.",
     "studioEyebrow": "Project enquiry",
     "studioLink": "Studio application",
     "studioTitle": "Writing about a piece of work?",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — What it does",
       "a1Title": "Automations built from primitives.",
       "a1Body": "Automations are built from a handful of building blocks rather than canned templates. Each block does one job; the flow emerges from how they're arranged, and stays readable.",
-      "a2Title": "Cost is never a surprise.",
+      "a2Title": "Track run costs.",
       "a2Body": "How many tokens each run spent with which provider — and what that came to — sits in the ledger. Switching provider is a setting, not a rewrite.",
       "s2Kicker": "02 — How it runs",
       "r1k": "Run",
@@ -481,9 +481,9 @@
       "ctaBody": "Choreia is currently in development. Write to us if you'd like to hear when it launches.",
       "ctaPrimary": "Coming soon",
       "ctaSecondary": "Get notified",
-      "disclaimer": "Choreia is not a certified dance-instruction or physical-therapy tool; it doesn't replace a real dance teacher."
+      "disclaimer": "Choreia does not certify dance skills or instructor qualifications; it is not a physical-therapy tool and does not replace a real dance teacher."
     },
-    "claimsHeading": "Verified claims",
+    "claimsHeading": "Claims and sources",
     "claimsLapsedHeading": "Needs re-verification",
     "claimsLapsedNote": "These claims have outrun their verification window. That does not mean they are wrong — only that nobody has re-checked them recently, so they do not count as current.",
     "statVerified": "verified",
@@ -522,7 +522,7 @@
       "offline": "We could not reach the server. Check your connection and try again.",
       "email": "That email address does not look valid.",
       "consent": "You need to accept the privacy notice to continue.",
-      "message": "The message cannot be empty, and must be under 4000 characters.",
+      "message": "The message cannot be empty and must be at most 4000 characters.",
       "name": "Please give a name.",
       "generic": "That did not send. Could you check the details and try again?",
       "uncertain": "We could not confirm the submission outcome; your message may have been recorded. Your entries are preserved. Retry with the same content, or email support."
@@ -542,7 +542,7 @@
     },
     "loader": {
       "geometry": "Resolving spatial axes",
-      "registry": "Validating the public product registry",
+      "registry": "Preparing the product registry",
       "material": "Calibrating glass and light field",
       "ready": "YULA experience ready"
     },

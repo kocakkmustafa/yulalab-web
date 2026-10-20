@@ -456,15 +456,15 @@
   background: currentColor;
 }
 
-.soundButton[aria-pressed="true"] .soundBars i:nth-child(1) {
+.soundButton[data-sound-enabled="true"] .soundBars i:nth-child(1) {
   height: 8px;
 }
 
-.soundButton[aria-pressed="true"] .soundBars i:nth-child(2) {
+.soundButton[data-sound-enabled="true"] .soundBars i:nth-child(2) {
   height: 12px;
 }
 
-.soundButton[aria-pressed="true"] .soundBars i:nth-child(3) {
+.soundButton[data-sound-enabled="true"] .soundBars i:nth-child(3) {
   height: 6px;
 }
 
@@ -535,9 +535,9 @@
   pointer-events: none;
   background: radial-gradient(
     ellipse at 82% 50%,
-    rgba(7, 4, 12, 0.97) 0%,
-    rgba(7, 4, 12, 0.91) 46%,
-    rgba(7, 4, 12, 0.62) 72%,
+    rgb(var(--yula-exp-rgb) / .97) 0%,
+    rgb(var(--yula-exp-rgb) / .91) 46%,
+    rgb(var(--yula-exp-rgb) / .62) 72%,
     transparent 90%
   );
 }
@@ -593,7 +593,7 @@
 }
 
 .glyphControl[data-dragging="true"] { cursor: grabbing; }
-.glyphControl:focus-visible { outline: 1px solid #eee8ff; outline-offset: 8px; }
+.glyphControl:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 8px; }
 .glyphHint {
   position: absolute;
   right: 0;
@@ -862,9 +862,9 @@
     calc(42px + var(--safe-bottom)) calc(clamp(26px, 5vw, 86px) + var(--safe-left));
   background: linear-gradient(
     90deg,
-    rgba(7, 4, 12, 0.9) 0%,
-    rgba(7, 4, 12, 0.7) 46%,
-    rgba(7, 4, 12, 0.5) 100%
+    rgb(var(--yula-exp-rgb) / .9) 0%,
+    rgb(var(--yula-exp-rgb) / .7) 46%,
+    rgb(var(--yula-exp-rgb) / .5) 100%
   );
 }
 
@@ -2099,7 +2099,7 @@
 .previewNote:has(.previewExpand) { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .previewExpand { min-height: 44px; border: 0; border-bottom: 1px solid currentColor; background: none; color: inherit; cursor: pointer; font: inherit; }
 .previewExpand:hover { color: #fff; }
-.previewExpand:focus-visible { outline: 2px solid #d6b7ff; outline-offset: 3px; }
+.previewExpand:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 3px; }
 @media (min-width: 768px) {
   .productPanel[data-development-media="true"] { left: auto; right: 6vw; top: 50%; bottom: auto; width: min(390px, 33vw); transform: translateY(-50%); }
 }
@@ -2169,7 +2169,7 @@
 }
 .heroCopy::before {
   inset: -24px -24px -24px -32px;
-  background: radial-gradient(ellipse at 65% 60%, rgba(0,0,0,.55), transparent 75%);
+  background: radial-gradient(ellipse at 65% 60%, rgb(var(--yula-exp-rgb) / .55), transparent 75%);
 }
 .heroCopy .kicker { margin-bottom: 12px; font-size: 10px; letter-spacing: .1em; }
 .heroCopy h1 { max-width: 24ch; font-size: clamp(21px, 1.7vw, 28px); line-height: 1.2; letter-spacing: -.02em; }
@@ -2262,4 +2262,39 @@
   .experienceHeader { height: 88px; }
   .heroCopy { bottom: 28px; }
   .closingWordmark { top: 21%; width: 150px; }
+}
+
+/* Theme surfaces share the prepaint CSS tokens with the demand-rendered world.
+   Product media and identity colors keep their original pixels. */
+.journey, .staticJourney, .viewport { color: var(--yula-exp-fg); background: var(--yula-exp-bg); }
+.staticExperience { --experience-fg: var(--yula-exp-fg); --experience-muted: var(--yula-exp-muted); --experience-line: var(--yula-exp-line); background: radial-gradient(circle at 72% 4%, rgba(108,62,163,.12), transparent 30%), var(--yula-exp-bg); }
+.loader { color: var(--yula-exp-fg); background: radial-gradient(circle at 50% 46%, rgba(119,72,185,.14), transparent 34%), var(--yula-exp-bg); }
+.loaderCorner, .loaderReadout li { color: var(--yula-exp-muted); }
+.loaderPercent, .loaderReadout li[data-active="true"] { color: var(--yula-exp-fg); }
+.loader::before { border-color: color-mix(in srgb, var(--yula-exp-line) 35%, transparent); }
+.loaderAxes, .loaderTicks { stroke: color-mix(in srgb, var(--yula-exp-line) 50%, transparent); }
+.loaderGlyphWire, .loaderGlyphGlass { stroke: var(--yula-exp-fg); }
+.loaderReadout li span, .lifecycleRow strong, .noPublicBuild { color: var(--yula-exp-accent); }
+.glyphControl, .previewNote { color: var(--yula-exp-muted); }
+.previewExpand:hover { color: var(--yula-exp-fg); }
+.freshnessState { color: var(--yula-success); }
+.claim[data-freshness="stale"] .freshnessState { color: var(--yula-danger); }
+.mobileNavigation nav { color: var(--yula-exp-fg); background: rgb(var(--yula-exp-rgb) / .94); }
+.staticExperience .experienceHeader { color: var(--yula-exp-fg); background: rgb(var(--yula-exp-rgb) / .86); }
+.proofProduct, .previewDialog { background: rgb(var(--yula-exp-rgb) / .96); color: var(--yula-exp-fg); border-color: var(--yula-exp-line); }
+.previewDialog p { color: var(--yula-exp-muted); }
+.previewDialog header button { border-color: var(--yula-exp-line); }
+.previewDialogScroll:focus-visible { outline-color: var(--yula-focus); }
+.staticScreenshots figure, .staticResearchSurface { background-color: var(--yula-exp-bg); }
+.staticResearchSurface strong { color: var(--yula-exp-fg); border-color: var(--yula-exp-line); }
+.staticProof { background: color-mix(in srgb, var(--yula-exp-fg) 3%, transparent); }
+.valuePanel { color: var(--yula-exp-fg); --experience-muted: var(--yula-exp-muted); --experience-line: var(--yula-exp-line); background: linear-gradient(90deg, rgb(var(--yula-exp-rgb) / .92), rgb(var(--yula-exp-rgb) / .78)); }
+.closingContent { background: linear-gradient(0deg, rgb(var(--yula-exp-rgb) / .97), transparent); }
+@media (min-width: 768px) {
+  .portfolioStage::after { background: linear-gradient(0deg, rgb(var(--yula-exp-rgb) / .94), rgb(var(--yula-exp-rgb) / .55) 45%, transparent); }
+}
+@media (max-width: 767px) {
+  .mobileNavigation nav { background: rgb(var(--yula-exp-rgb) / .94); }
+  .productPanel, .productPanel[data-development-media="true"] { background: rgb(var(--yula-exp-rgb) / .96); }
+  .heroCopy::before { background: linear-gradient(0deg, rgb(var(--yula-exp-rgb) / .9), transparent); }
 }

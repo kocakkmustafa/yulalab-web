@@ -18,9 +18,11 @@ import type {
 import { ValueDioramas } from "./ValueDioramas";
 import { VisionServicePortal } from "./VisionServicePortal";
 import { useShowcaseTextures } from "./useShowcaseTextures";
-import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
+import { applyExperienceTheme, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
+import type { ResolvedTheme } from "@/lib/theme";
 
 export type ExperienceWorldProps = {
+  displayTheme?: ResolvedTheme;
   products: ExperienceProduct[];
   glyphRotation?: Vec3;
   progress: number;
@@ -56,6 +58,7 @@ function WorldTheme({ frame }: { frame: TimelineFrame }) {
 }
 
 export function ExperienceWorld({
+  displayTheme = "dark",
   glyphRotation,
   products,
   progress,
@@ -64,8 +67,8 @@ export function ExperienceWorld({
   onAssetsSettled,
 }: ExperienceWorldProps) {
   const frame = useMemo(
-    () => evaluateTimeline(progress, mode),
-    [mode, progress],
+    () => applyExperienceTheme(evaluateTimeline(progress, mode), displayTheme),
+    [displayTheme, mode, progress],
   );
   const environmentResolution = tier === "high" ? 256 : tier === "medium" ? 128 : 64;
   const mediaTextures = useShowcaseTextures(products[0]?.href.startsWith("/en/") ?? false, progress >= 0.705, 1024);

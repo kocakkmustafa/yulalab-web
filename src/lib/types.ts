@@ -78,8 +78,14 @@ export type ProjectFeature = {
 };
 
 export type ProjectStat = {
-  /** Big numeric / short value (locale-agnostic by default; localized when needed). */
+  /** Original evidence figure / short value. Display formatting never parses or mutates it. */
   value: string;
+  /** Explicit numeric presentation; percent values are ratios (0.29 means 29%). */
+  numericDisplay?: {
+    value: number;
+    unit: "integer" | "percent";
+    approximate?: boolean;
+  };
   /** Caption underneath the value. */
   label: LocalizedString;
   /** Optional supporting line. */

@@ -133,7 +133,7 @@ function OperatingSystem() {
                 </p>
               </div>
               <div className="shrink-0 font-mono text-[11px] text-ink-400">
-                {counts[lvl.kind]} {text(locale, "iddia", "claims")}
+                {text(locale, "iddia", "claims")}: <bdi>{new Intl.NumberFormat(locale).format(counts[lvl.kind])}</bdi>
               </div>
             </div>
           ))}
@@ -155,7 +155,7 @@ function OperatingSystem() {
                   {text(locale, row.labelTr, row.labelEn)}
                 </span>
                 <span className="font-mono text-[11px] text-ink-400">
-                  {row.count} {text(locale, "ürün", "products")}
+                  {text(locale, "ürün", "products")}: <bdi>{new Intl.NumberFormat(locale).format(row.count)}</bdi>
                 </span>
               </div>
               <p className="mt-2 text-[14.5px] leading-relaxed text-ink-300">

@@ -162,7 +162,7 @@
     "shippedNote": "Produkte mit einem früheren Veröffentlichungs- oder Beta-Nachweis. Die Karten kennzeichnen Verfügbarkeitsangaben, die erneut geprüft werden müssen. Datierte Quellen und Links stehen auf der jeweiligen Produktseite.",
     "researchHeading": "In der Forschung",
     "researchNote": "Noch nicht veröffentlicht: keine Store-Seiten, keine Downloadlinks, keine verifizierten Zahlen. Sie stehen unten gesondert, weil eine Gleichstellung mit veröffentlichten Produkten einen falschen Eindruck vermitteln würde.",
-    "researchToggle": "{count} Produkte in der Forschung anzeigen"
+    "researchToggle": "Produkte in der Forschung anzeigen ({count})"
   },
   "showcase": {
     "back": "Projekte",
@@ -183,7 +183,7 @@
     "title": "Keine Blackbox. Niemals.",
     "intro": "Bei YULA Lab ist Transparenz keine Zusatzfunktion, sondern der Standard. Jedes Produkt gibt dasselbe Versprechen: Modell, Kosten und Daten sind für Sie sichtbar. Wer ein KI-Produkt nutzt, sollte dabei nicht die Augen schließen müssen.",
     "promiseEyebrow": "Unser Versprechen",
-    "promiseBody": "Jede Entscheidung, jeder verbrauchte Token, jede gespeicherte Zeile — Sie können alles sehen. Was wir nicht erklären können, veröffentlichen wir nicht.",
+    "promiseBody": "Auf den Produktseiten teilen wir dokumentierte Aussagen, ihre Quellen und bekannten Grenzen. Wir zeigen Prüfdaten zusammen mit dem Prüfumfang und stellen abgelaufene Aufzeichnungen nicht als aktuelle Belege dar.",
     "pillarsEyebrow": "Drei Kernprodukte, drei Mechanismen für Transparenz",
     "pillarsTitle": "Wir behaupten es nicht nur — wir belegen es.",
     "readMore": "Mehr dazu auf",
@@ -191,7 +191,7 @@
       "braavolabs": {
         "label": "Transparente Kosten",
         "title": "Jeder Agent, jeder Token, jede Sekunde.",
-        "claim": "Jeder Pipeline-Durchlauf zeigt offen, welcher Agent welches Werkzeug aufgerufen, wie viele Tokens er verbraucht und was die jeweilige Entscheidung gekostet hat. Keine überraschenden Rechnungen.",
+        "claim": "Jeder Pipeline-Durchlauf zeigt offen, welcher Agent welches Werkzeug aufgerufen, wie viele Tokens er verbraucht und was die jeweilige Entscheidung gekostet hat. Die Kostenaufzeichnung hilft Ihnen, den Verbrauch nachzuverfolgen. Die tatsächlichen Gebühren hängen von Ihrem Anbieter ab.",
         "proof": "→ Primitive · Anbieter · datierte Belege auf der Produktseite",
         "detailLabel": "Prüfprotokoll",
         "detailBody": "Jeder Werkzeugaufruf und jede Entscheidung erhalten eine eigene Zeile. Aktionen mit finanziellen Auswirkungen benötigen die ausdrückliche Freigabe eines Menschen. Der vollständige Durchlauf lässt sich als CSV / JSON exportieren und mit der eigenen Buchhaltung abgleichen."
@@ -221,12 +221,12 @@
         "body": "Der Umfang von Export- und Löschwerkzeugen hängt von Produkt und Version ab. Das Löschen von Gerätedaten ist vom Löschen des Kontos und serverseitiger Aufzeichnungen getrennt. Verfügbare Werkzeuge und Angaben zur Aufbewahrung stehen in der Datenschutzerklärung des Produkts. Anfragen zu Konten und serverseitigen Aufzeichnungen richten Sie an support@yulalab.com."
       },
       "noTraining": {
-        "title": "Ihre Daten werden nicht zum Modelltraining verwendet.",
-        "body": "Wir leiten keine Modelle aus Kundeninhalten ab. Bei BYOK gehen Ihre Daten an den von Ihnen gewählten Anbieter. Wir leiten weiter, wir sind keine Datensicherung."
+        "title": "YULA verwendet Kundeninhalte nicht zum Trainieren von Modellen.",
+        "body": "Wir verwenden Kundeninhalte nicht zum Trainieren unserer eigenen Modelle. Bei BYOK werden Inhalte an den von Ihnen gewählten Anbieter gesendet. Dessen Verarbeitungs- und Aufbewahrungsbedingungen gelten gesondert."
       },
       "noAds": {
-        "title": "Keine Werbung, kein Tracking.",
-        "body": "Unser einziges Erlösmodell sind zahlende Nutzer. Wir sammeln Ihre Daten nicht zum Weiterverkauf. Analysen sind auf ein Minimum beschränkt und setzen eine Einwilligung voraus."
+        "title": "Kein Verkauf von Daten für Werbung.",
+        "body": "Wir verkaufen Ihre Daten nicht für Werbezwecke. Die Messung auf dieser Website hängt von der Hostingumgebung und der aktivierten Konfiguration ab. Angaben zu Datenarten und Aufbewahrung finden Sie im Datenschutzhinweis."
       },
       "exitRight": {
         "title": "Der Ausgang bleibt immer offen.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Standort",
     "locationTitle": "Türkiye",
     "locationNote": "Gespräche Dienstag–Donnerstag, hybrid.",
-    "studioBody": "Die Adresse auf dieser Seite ist für allgemeine Korrespondenz gedacht. Bei einem konkreten Projekt ist die Studio-Anfrage schneller: Sie fragt nach Budgetrahmen, Zeitpunkt und Entscheidungsrolle. So muss die erste Antwort diese drei Punkte nicht erst klären.",
+    "studioBody": "Die Adresse auf dieser Seite ist für allgemeine Korrespondenz gedacht. Bei einem konkreten Projekt erfasst die Studio-Anfrage Budgetrahmen, Zeitrahmen und Entscheidungsrolle zusammen. Damit können wir Ihre Anfrage anhand dieser Informationen beurteilen.",
     "studioEyebrow": "Projektanfrage",
     "studioLink": "Studio-Anfrage",
     "studioTitle": "Geht es um einen konkreten Auftrag?",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — Was es kann",
       "a1Title": "Automatisierungen aus Primitiven.",
       "a1Body": "Automatisierungen entstehen aus wenigen Bausteinen statt aus starren Vorlagen. Jeder Baustein übernimmt eine Aufgabe. Der Ablauf ergibt sich aus ihrer Anordnung und bleibt lesbar.",
-      "a2Title": "Kosten sind nie eine Überraschung.",
+      "a2Title": "Ausführungskosten im Blick.",
       "a2Body": "Wie viele Tokens ein Durchlauf bei welchem Anbieter verbraucht hat und was das gekostet hat, steht im Kostenverzeichnis. Der Anbieterwechsel ist eine Einstellung, kein Neuaufbau.",
       "s2Kicker": "02 — So läuft es",
       "r1k": "Ausführung",
@@ -481,9 +481,9 @@
       "ctaBody": "Choreia ist derzeit in Entwicklung. Schreiben Sie uns, wenn Sie über den Start informiert werden möchten.",
       "ctaPrimary": "Demnächst",
       "ctaSecondary": "Benachrichtigung erhalten",
-      "disclaimer": "Choreia ist kein zertifiziertes Werkzeug für Tanzunterricht oder Physiotherapie. Es ersetzt keinen echten Tanzlehrer."
+      "disclaimer": "Choreia zertifiziert weder Tanzfähigkeiten noch die Qualifikation von Lehrkräften. Es ist kein Werkzeug für Physiotherapie und ersetzt keinen echten Tanzlehrer."
     },
-    "claimsHeading": "Verifizierte Aussagen",
+    "claimsHeading": "Aussagen und Quellen",
     "claimsLapsedHeading": "Erneute Prüfung nötig",
     "claimsLapsedNote": "Diese Aussagen liegen außerhalb ihres Prüfzeitraums. Das bedeutet nicht, dass sie falsch sind. Sie wurden nur zuletzt nicht erneut geprüft und gelten deshalb nicht als aktuell.",
     "statVerified": "verifiziert",
@@ -522,7 +522,7 @@
       "offline": "Der Server war nicht erreichbar. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
       "email": "Diese E-Mail-Adresse scheint ungültig zu sein.",
       "consent": "Sie müssen dem Datenschutzhinweis zustimmen, um fortzufahren.",
-      "message": "Die Nachricht darf nicht leer sein und muss unter 4000 Zeichen lang sein.",
+      "message": "Die Nachricht darf nicht leer sein und höchstens 4000 Zeichen enthalten.",
       "name": "Bitte geben Sie einen Namen an.",
       "generic": "Das wurde nicht gesendet. Bitte prüfen Sie die Angaben und versuchen Sie es erneut.",
       "uncertain": "Das Ergebnis der Übermittlung konnte nicht bestätigt werden. Ihre Nachricht wurde möglicherweise gespeichert. Ihre Eingaben bleiben erhalten. Versuchen Sie es mit demselben Inhalt erneut oder schreiben Sie dem Support eine E-Mail."
@@ -536,13 +536,13 @@
       "manifesto": "Manifest",
       "transparency": "Transparenz",
       "contact": "Kontakt",
-      "soundOn": "Ton an",
-      "soundOff": "Ton aus",
+      "soundOn": "Ton einschalten",
+      "soundOff": "Ton ausschalten",
       "consulting": "KI-Beratung"
     },
     "loader": {
       "geometry": "Raumachsen werden bestimmt",
-      "registry": "Öffentliches Produktverzeichnis wird geprüft",
+      "registry": "Produktverzeichnis wird vorbereitet",
       "material": "Glas und Lichtfeld werden kalibriert",
       "ready": "YULA-Erlebnis bereit"
     },

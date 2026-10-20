@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight, Menu, X } from "@/components/common/icons";
 import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { ThemeControl } from "@/components/theme/ThemeControl";
 
 type NavKey = "consulting" | "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
 type NavItem = {
@@ -112,7 +113,8 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
                 </Link>
               );
             })}
-            <LocaleSwitcher />
+            <LocaleSwitcher compact />
+            <ThemeControl compact />
             <Link
               href="/projects"
               className="ml-1 group inline-flex items-center gap-1.5 rounded-full bg-ink-50 text-ink-900 pl-4 pr-3.5 py-2 text-[13px] font-medium hover:bg-ink-100 transition-colors focusable"
@@ -126,7 +128,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             ref={menuButton}
             type="button"
             onClick={() => setMobile(true)}
-            className="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-white/10 text-ink-100 focusable"
+            className="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-hairline text-ink-100 focusable"
             aria-label={t("menuOpen")}
             aria-expanded={mobile}
             aria-controls="site-mobile-navigation"
@@ -180,7 +182,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
         <div
           data-site-mobile-panel="true"
           className={
-            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-white/10 p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +
+            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-hairline p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +
             (mobile ? "translate-x-0" : "translate-x-full")
           }
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -194,7 +196,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               ref={mobileCloseButton}
               type="button"
               onClick={() => setMobile(false)}
-              className="w-9 h-9 inline-flex items-center justify-center rounded-md border border-white/10"
+              className="w-9 h-9 inline-flex items-center justify-center rounded-md border border-hairline"
               aria-label={t("menuClose")}
             >
               <X size={16} />
@@ -212,8 +214,9 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               </Link>
             ))}
           </nav>
-          <div className="mt-6 flex items-center gap-2">
+          <div className="mt-6 flex flex-wrap items-center gap-2">
             <LocaleSwitcher onNavigate={() => setMobile(false)} />
+            <ThemeControl />
           </div>
           <div className="mt-auto pt-6">
             <Link

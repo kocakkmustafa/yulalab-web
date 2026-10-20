@@ -18,8 +18,8 @@
 
 html,
 body {
-  background: #0a0a0b;
-  color: #f4f4f5;
+  background: rgb(var(--yula-ink-900));
+  color: rgb(var(--yula-ink-50));
 }
 
 body {
@@ -406,7 +406,7 @@ button:hover .arrow-nudge {
 /* Independent editorial ground, measured against the rendered Alche pages.
    Shared by project details, consulting, support and legal routes. */
 body:not(:has([data-yula-experience="true"])) {
-  background: #030407;
+  background: var(--yula-page-bg);
   background-image:
     radial-gradient(ellipse at 76% 35%, rgba(67,42,122,.16), transparent 58%),
     radial-gradient(ellipse at 42% 56%, rgba(20,80,98,.13), transparent 62%),
@@ -427,7 +427,7 @@ body:not(:has([data-yula-experience="true"])) {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M84 90h12M90 84v12' fill='none' stroke='%23b3beca' stroke-width='1'/%3E%3C/svg%3E");
 }
 .glass {
-  background: linear-gradient(150deg, rgba(255,255,255,.035), transparent 65%), rgba(3,4,7,.58);
+  background: linear-gradient(150deg, rgba(255,255,255,.035), transparent 65%), rgb(var(--yula-page-rgb) / .58);
   border-radius: 3px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
   backdrop-filter: blur(12px);
@@ -437,7 +437,7 @@ body:not(:has([data-yula-experience="true"])) {
 [data-site-header="true"] > div > a > .logo-mark { display: none; }
 [data-site-header="true"] > div > a > span { font-size: 26px; font-weight: 600; letter-spacing: .025em; text-transform: uppercase; }
 [data-site-header="true"] nav { font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .025em; }
-[data-site-footer="true"] { font-family: var(--font-mono), monospace; background: rgba(0,0,0,.3); }
+[data-site-footer="true"] { font-family: var(--font-mono), monospace; background: rgb(var(--yula-page-rgb) / .3); }
 [data-site-footer="true"] > div:first-child { max-width: none; padding-inline: clamp(24px, 3.5vw, 50px); }
 .project-index { max-width: 1440px; margin-inline: auto; padding: 220px clamp(24px, 5vw, 72px) 0; display: grid; grid-template-columns: minmax(220px, .38fr) minmax(0, .62fr); gap: 40px; }
 .project-index > section { width: 100%; max-width: none; margin: 0; padding: 80px 0 40px; }
@@ -467,3 +467,123 @@ html[lang="ja"] {
 }
 html[dir="rtl"] :is(h1, h2, h3, p, label, button, summary, select) { letter-spacing: normal; }
 html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-bidi: isolate; }
+
+/* User appearance: CSS system fallback also works before JS or without it. */
+:root {
+  --yula-ink-900: 10 10 11;
+  --yula-ink-850: 14 14 16;
+  --yula-ink-800: 19 19 22;
+  --yula-ink-700: 26 26 30;
+  --yula-ink-600: 38 38 44;
+  --yula-ink-500: 58 58 66;
+  --yula-ink-400: 144 144 154;
+  --yula-ink-300: 154 154 163;
+  --yula-ink-200: 197 197 204;
+  --yula-ink-100: 229 229 234;
+  --yula-ink-50: 244 244 245;
+  --yula-surface: rgba(255,255,255,.02);
+  --yula-surface-raised: rgba(255,255,255,.04);
+  --yula-surface-inset: rgba(255,255,255,.015);
+  --yula-hairline: rgba(255,255,255,.10);
+  --yula-hairline-strong: rgba(255,255,255,.20);
+  --yula-page-bg: #030407;
+  --yula-page-rgb: 3 4 7;
+  --yula-focus: #c4b5fd;
+  --yula-warning: #fcd34d;
+  --yula-warning-strong: #fbbf24;
+  --yula-success: #6ee7b7;
+  --yula-success-strong: #34d399;
+  --yula-exp-bg: #09060e;
+  --yula-exp-rgb: 9 6 14;
+  --yula-exp-fg: #ffffff;
+  --yula-exp-muted: #ded8e8;
+  --yula-exp-line: #b9acc4;
+  color-scheme: dark;
+}
+:root[data-theme="light"] {
+  --yula-ink-900: 245 243 238;
+  --yula-ink-850: 255 253 248;
+  --yula-ink-800: 238 234 226;
+  --yula-ink-700: 228 223 213;
+  --yula-ink-600: 210 203 193;
+  --yula-ink-500: 139 129 117;
+  --yula-ink-400: 101 93 85;
+  --yula-ink-300: 92 85 79;
+  --yula-ink-200: 57 53 47;
+  --yula-ink-100: 33 30 26;
+  --yula-ink-50: 22 19 16;
+  --yula-surface: rgba(0,0,0,.025);
+  --yula-surface-raised: rgba(0,0,0,.055);
+  --yula-surface-inset: rgba(0,0,0,.018);
+  --yula-hairline: rgba(22,19,16,.18);
+  --yula-hairline-strong: rgba(22,19,16,.32);
+  --yula-page-bg: #f5f3ee;
+  --yula-page-rgb: 245 243 238;
+  --yula-focus: #6d36ac;
+  --yula-warning: #795200;
+  --yula-warning-strong: #6b4700;
+  --yula-success: #14663f;
+  --yula-success-strong: #0d5834;
+  --yula-exp-bg: #e6eef0;
+  --yula-exp-rgb: 230 238 240;
+  --yula-exp-fg: #000000;
+  --yula-exp-muted: #333a3c;
+  --yula-exp-line: #50595c;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --yula-ink-900: 245 243 238;
+    --yula-ink-850: 255 253 248;
+    --yula-ink-800: 238 234 226;
+    --yula-ink-700: 228 223 213;
+    --yula-ink-600: 210 203 193;
+    --yula-ink-500: 139 129 117;
+    --yula-ink-400: 101 93 85;
+    --yula-ink-300: 92 85 79;
+    --yula-ink-200: 57 53 47;
+    --yula-ink-100: 33 30 26;
+    --yula-ink-50: 22 19 16;
+    --yula-surface: rgba(0,0,0,.025);
+    --yula-surface-raised: rgba(0,0,0,.055);
+    --yula-surface-inset: rgba(0,0,0,.018);
+    --yula-hairline: rgba(22,19,16,.18);
+    --yula-hairline-strong: rgba(22,19,16,.32);
+    --yula-page-bg: #f5f3ee;
+    --yula-page-rgb: 245 243 238;
+    --yula-focus: #6d36ac;
+    --yula-warning: #795200;
+    --yula-warning-strong: #6b4700;
+    --yula-success: #14663f;
+    --yula-success-strong: #0d5834;
+    --yula-exp-bg: #e6eef0;
+    --yula-exp-rgb: 230 238 240;
+    --yula-exp-fg: #000000;
+    --yula-exp-muted: #333a3c;
+    --yula-exp-line: #50595c;
+    color-scheme: light;
+  }
+}
+
+::selection { background: color-mix(in srgb, rgb(var(--yula-ink-50)) 20%, transparent); }
+.glass { border-color: var(--yula-hairline); }
+:root select, :root form input:not([type="checkbox"]), :root form textarea { border-color: var(--yula-control-line); }
+input, textarea, select { color-scheme: inherit; }
+input[type="checkbox"] { accent-color: var(--yula-focus); }
+.theme-control-group { display: inline-flex; max-width: 100%; min-width: 0; }
+.theme-control { position: relative; display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; min-height: 44px; color: inherit; font-size: 12px; }
+.theme-control select { max-width: 100%; min-width: 0; min-height: 44px; padding: 8px 12px; border: 1px solid var(--yula-control-line); border-radius: 999px; background: rgb(var(--yula-ink-900)); color: rgb(var(--yula-ink-50)); font: inherit; cursor: pointer; }
+.theme-control[data-compact] { flex: 0 0 44px; width: 44px; height: 44px; justify-content: center; border: 1px solid currentColor; border-radius: 999px; }
+.theme-control[data-compact] select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
+.theme-control-symbol { font-size: 21px; line-height: 1; }
+.theme-control:focus-within { outline: 2px solid var(--yula-focus); outline-offset: 4px; }
+.theme-control select:disabled { cursor: wait; }
+html[lang="hi"] { --font-sans: "Nirmala UI", "Kohinoor Devanagari", "Devanagari Sangam MN", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
+html[lang="ko"] { --font-sans: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
+html[lang="zh-Hans"] { --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
+html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,summary,select) { letter-spacing: normal; }
+:root { --yula-exp-accent: #d9b9ff; --yula-danger: #e89db2; --yula-control-line: #777080; }
+:root[data-theme="light"] { --yula-exp-accent: #643399; --yula-danger: #9a2747; --yula-control-line: #7a7067; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) { --yula-exp-accent: #643399; --yula-danger: #9a2747; --yula-control-line: #7a7067; }
+}

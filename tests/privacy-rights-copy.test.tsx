@@ -9,13 +9,13 @@ import BurunfarkiPrivacyPage from "@/app/[locale]/privacy/burunfarki/page";
 
 vi.mock("next-intl/server", () => ({ setRequestLocale: vi.fn() }));
 vi.mock("@/i18n/navigation", () => ({ Link: "a" }));
-// Isolate the six still-being-authored bulk content files. The actual typed
-// rights paragraphs and real page renderers remain under test for all8locales.
+// Isolate supplemental translation lookup. The actual typed rights paragraphs
+// and real page renderers remain under test for every approved locale.
 vi.mock("@/lib/localized", () => ({ text: (locale: string, tr: string, en: string) => locale === "tr" ? tr : en }));
 
 const escaped = (value: string) => renderToStaticMarkup(<>{value}</>);
 
-it("defines all three privacy-copy contracts for exactly the approved eight locales", () => {
+it("defines all three privacy-copy contracts for exactly the approved fourteen locales", () => {
   for (const record of [DATA_RIGHTS_COPY, LANGUAGE_STORAGE_COPY, CHILD_DATA_CONTACT]) {
     expect(Object.keys(record)).toEqual([...SUPPORTED_LOCALES]);
     for (const value of Object.values(record)) expect(value.trim()).not.toBe("");
@@ -30,6 +30,8 @@ describe.each(SUPPORTED_LOCALES)("typed rights paragraphs in %s", (locale) => {
     expect(DATA_RIGHTS_COPY[locale]).toContain("30");
     expect(LANGUAGE_STORAGE_COPY[locale]).toContain("NEXT_LOCALE");
     expect(LANGUAGE_STORAGE_COPY[locale]).toContain("yula.links.locale");
+    expect(LANGUAGE_STORAGE_COPY[locale]).toContain("yula.appearance.v1");
+    expect(LANGUAGE_STORAGE_COPY[locale]).toContain("links.yulalab.com");
   });
 
   it.each([

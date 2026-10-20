@@ -83,10 +83,88 @@ REVIEWED_A3_SOURCE_HASHES = {
     "src/data/product-presentations.ts": "d09e10c47bf4ff3ac19314dc655e5caa5ca5df294509a53465d4e58b2fc305cc",
     "tests/structured-data-honesty.test.tsx": "61a277923bddb9504a3c481e6a19488107cb92726327bb71d1bdd53b06050840"
 }
+# BEGIN REVIEWED THEME14 SOURCE HASHES
+# Exact candidate bytes; older A3/test/visual maps remain historical.
+# Browser/provider/publication acceptance is explicitly open.
+REVIEWED_THEME14_SOURCE_HASHES = {
+    "BITIRME-PROGRAMI.md": "0598f2749b2603c5afe14cf2e702af418e56b5e8032e83feba9aa41e34eb921e",
+    "DEFTER.md": "f4243948026cc152cec4619d4a78c9f80f9491a9b7eb68982d5f20f159d6f289",
+    "README.md": "48419ff9c981e06ee06231b072522455d61c814cbf7ac479e5e80dbeb4a42d6f",
+    "messages/ar.json": "cd97c9d515a404db8ab062441f03507782f1eb9fb12149d41f46fde28a8f2539",
+    "messages/content-ar.json": "fc6bacf6ea388d4e36d2d6299560ae2f36b04deaaf8f9b6ca0e4a0dbb48fa3bd",
+    "messages/content-de.json": "f783f358b14314a9d8cf7b91f3f9694ea346b3cb9fed3a5a0a7e66742d102a84",
+    "messages/content-es-419.json": "1f905b1e7d1ede9db9f46784a7b2327d14a01713824da1ae339c769f6b804f1b",
+    "messages/content-fr.json": "3c9f9b2ddbcdf337b64e310def7a2bb5634bda3eade5607585ab54f804e84c52",
+    "messages/content-hi.json": "765bcabf73532443d1c75c7e5dfa53b1864afc03992eaf70ae592f5013ec24b1",
+    "messages/content-id.json": "30df095fb3b2497fd174081dc9ef10dcd63b5ecc61724956664514a3875b027d",
+    "messages/content-it.json": "7ebf6459c10e5552eca2cfaf9570182be64d88c39eb7c5640bfbe6a1526683f3",
+    "messages/content-ja.json": "28eccc3decb68a62085c502feedbc0417aaea43bbf6bcec1db0cac1f6aa3418b",
+    "messages/content-ko.json": "a20a849f7e928cc0e9c87b9e7205c176c2725a98ba83836153d0f78dfec3fc7d",
+    "messages/content-pl.json": "420d915fcf822d6cc9af5f64f7ddedbce62b4484efd2f43a9ac2634ad4a81fea",
+    "messages/content-pt-BR.json": "b6310df78829b3e16bce301ba4e9be77ee336aea52d957ed8992faf3e4d3dc4b",
+    "messages/content-zh-Hans.json": "5cedadb8e6b325945a78623e7147852e70b58a3a930a9b32fcafab4197ebec49",
+    "messages/de.json": "d86b6c34dd2b9f79cad89efb780d14f2ac80849d82f9e682eed4ad084654bf75",
+    "messages/en.json": "332138b660b72f41af3faa93a4ae322b4d2defa23e4b6b71efdcfbf7371a8e64",
+    "messages/es-419.json": "b77bb738efc9dbb1ebc430dab5b43f310be062ea4560faf230a8aa4a2ddaa54b",
+    "messages/fr.json": "b3538e7db4397e1321adb4ed1481f42f97b4d78dd6d5c0334eaa864ad3babad9",
+    "messages/hi.json": "ddc44bf4918cfc26a239c125450c818f8f19ad6f88a0e4a1c3e8226ea1c2e7b0",
+    "messages/id.json": "54750347c94735fd16d011f01c8fd4462005aebc5c1cabb962b4682de099fe02",
+    "messages/it.json": "e4ff384a5e1a67a4760901e1916b06c715f31d25bd3b59b41d2cc57eab32d6a9",
+    "messages/ja.json": "5db89f3eb01927de79c2fbb23156b5439e01f1558e182db11193329d5ba13943",
+    "messages/ko.json": "b1a8a5e5ce8810a5dce0634dc4aa9a5ecef0eb3dfcede47bab5c6102939adbee",
+    "messages/pl.json": "c73b604f263402f04caa07fa3107f409573aa1260924d2a65130996681555abd",
+    "messages/pt-BR.json": "e4b725856264121ac41c43ac1fc6784e44fd643deba2e5b31053237ce7365698",
+    "messages/tr.json": "0d7d4a4716c1ac72e9a4e65e04b3d28f76f5e69b7591c937da12cb6a93eac1e4",
+    "messages/zh-Hans.json": "f9ca8a9df01d855e075fd79e1ee49ab211133a2db0af7e08fe93f3c2d124fd5a",
+    "next.config.mjs": "3c0c6ef2acd8a5705ec46d648cacdb5de31185a8751db84d5456f7a0d0aded91",
+    "scripts/verify-translations.ts": "fdc76cf42731ab7838deb465823a979e1c7f654b5269ecb45a5b30ed3bbbda12",
+    "src/app/[locale]/data-request/verify/route.ts": "7bac2c97d53e909d73cc1edd7ac6971ed61cd82b2ed08a0b491941f69fe5b324",
+    "src/app/[locale]/layout.tsx": "e768baf0be7c015dc949447f7e24c31d5b4aa5d5bfd95a4b3daed6ac67217520",
+    "src/app/[locale]/operating-system/page.tsx": "35d8b05586d8c2854f041dccc85ce6720858ddd85f82d33149b713ee3051e6df",
+    "src/app/[locale]/privacy/page.tsx": "a87fc9d4c619cf28c22dca2230ebc016b8104df6f5361204a255963f0f5d78c5",
+    "src/app/global-not-found.tsx": "868aaa4a27276f3df13101f0f2d9e57a2b3815a28692a29d46ac6178c26791d7",
+    "src/app/globals.css": "ef5617835158021da52ca20911f3904f46a0b8b92804ae6df4cf2f51433348fd",
+    "src/components/experience/Experience.module.css": "2ea092366eead5233c6a1dda51ea0bb84e9562ebf77bdda02b6d635e4dfd8f26",
+    "src/components/experience/ExperienceCanvas.tsx": "ce6d293f53af614c05d7238a2b8945391927eb3737aa1a39f44fb173e1bd5386",
+    "src/components/experience/ExperienceOverlay.tsx": "2365af374086fd43b34b2a91541fc75d4889287e766b55afc307a4b3f4f6cfc3",
+    "src/components/experience/ExperienceWorld.tsx": "7d467078b542ff14c51289341f85ae32508d6886d352e96439c53bfeff225db7",
+    "src/components/experience/YulaExperience.tsx": "b9e229716bc135a74d45b9b90383c990ae6b100131da278dcfc906336013e20e",
+    "src/components/experience/theme.ts": "547aeeb0e856dbd66503f356063d639f4f724a0c5826b0ac71de5a58d960ad1d",
+    "src/components/layout/Header.tsx": "37a4f5010d25a3f99e731cc54e875e703b0a02b5e605a801d9b70c070c40bf97",
+    "src/components/projects/StatCards.tsx": "2a0a16cf3e3b3eedbfc9116a7b3843db85e117eb6da7f33703a4b34628e4c653",
+    "src/components/theme/ThemeControl.tsx": "f587b1393b2484d5b36d0a8482dd3ce4a4e02b36d9bdb5c412144f20d8bcfc73",
+    "src/components/theme/ThemeProvider.tsx": "60ff212e2d0140f5243a2060bcf63ff8f71f117afba88518d7f174215e4fd06e",
+    "src/components/theme/theme-copy.ts": "d614e9655f272a2b0e0fe86f3cf0bd7b001762f3db9c3b1f6e4c8ae581fa7d7c",
+    "src/data/privacy-copy.ts": "94c5753e6ae551d939a01b8e57f13ce1cb0abf6b0ea174fa98e1a886a3e409dd",
+    "src/data/projects/burunfarki.ts": "ead85cd1f4e9818d14b206b8a42c7792591478e2159de07463d0227aac3fcfb2",
+    "src/data/verification-copy.ts": "04a04e2157c30af20cc1c58da208328d9d48ac3cbb6029783be7f0e930d7cf02",
+    "src/i18n/locales.ts": "397228713653ad4a844884d992387267a5a602e9fb6d30aabe36d0f7c7516ff5",
+    "src/i18n/request.ts": "98f4c0fd5758e1b6dd3f0d1516ddebaeaf41f72cfb25b0d868033dcf1c3c8db8",
+    "src/lib/localized.ts": "69a179dd2ffa5945f14842fd86924157f49efea2a147c734c3270cae14fb214d",
+    "src/lib/theme.ts": "9a9849555fdf19db28fabbcd26287718864abc4b4c47008c44bccfc5385bdbc6",
+    "src/lib/types.ts": "0267deefbb0dc0f591e1d37de14a50cef05a32dcae0e465706c9160a7b362631",
+    "src/middleware.ts": "e732a31babf635f46e5da211ad4d71b455844fd999082ab2f13889ffa18da455",
+    "tailwind.config.ts": "17b4f0065f952e32091828579003756effde1810ea864011e260b437380d53aa",
+    "tests/content-locale-wiring.test.tsx": "9138caf62cdc12bf7e4fbacc2672263caad3bca384c647310d79f21ecec90715",
+    "tests/data-request-verification-page.test.tsx": "9b9b55b79fee198e1f56c0d6cf6ed8d25f81b8122a3bbb460b800f42f0c14844",
+    "tests/experience-locale-content.test.tsx": "df60ff5d3e2ae986df2c3f88fefa6ab3718029d19f319e1e5fb691d4bdc4cffb",
+    "tests/locale-contract.test.ts": "a0cc5fcd56bde86aac5eea302f7e7090c28cb999db35771e5c62028ebb98682f",
+    "tests/locale-pages.test.tsx": "19e2e854be5bae33a799f2b4e6664c0b643ea1cc87b74d05c1a381b4ff52d87d",
+    "tests/locale-request.test.ts": "85ab64df6c54bab649ec5de4a135c692bff165f04cafc6cd05e32f6097e7e80c",
+    "tests/locale-routing.test.ts": "f7d4ec1cae969a0fb076221f6cc9ef4a459401d341385ced92e3c452b786726a",
+    "tests/locale-switcher.test.tsx": "7f02382ba1b685adc83508c026db3265ea7049c47c2bbbd83b8db5099d001b27",
+    "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
+    "tests/stat-cards.test.tsx": "3d66d952481f35b07fe2f076eacd7d0f05bf7cc3bc48713d05cf27223963d3b1",
+    "tests/stat-number-locales.test.tsx": "19d81b2e70dce6325f945a18c821104a49a144e763bad8cdcdef2d5f7bbbd716",
+    "tests/theme-boot.test.ts": "df3d8960b41ec2fa2dd790ecd49eff56d4db6bd4fa8c68514c3a2ffc0753e58e",
+    "tests/theme.test.tsx": "d66c2c066a5560805bb32fea6224eb8dc95750cab583ca4d891b12f407a51164"
+}
+# END REVIEWED THEME14 SOURCE HASHES
 EXPECTED_REVIEWED_HASHES = {
     **REVIEWED_TEST_ADDITIONS,
     **REVIEWED_VISUAL_ADDITIONS,
     **REVIEWED_A3_SOURCE_HASHES,
+    **REVIEWED_THEME14_SOURCE_HASHES,
 }
 require(len(baseline) == len(manifest["files"]), "duplicate publication baseline path")
 reviewed_path = root / ".github/ci/reviewed-source-changes.json"
@@ -146,6 +224,11 @@ require(
 require(
     REVIEWED_A3_SOURCE_HASHES.keys() <= reviewed.keys() | reviewed_additions.keys(),
     f"missing reviewed A3 candidate sources: {sorted(REVIEWED_A3_SOURCE_HASHES.keys() - reviewed.keys() - reviewed_additions.keys())}",
+)
+
+require(
+    REVIEWED_THEME14_SOURCE_HASHES.keys() <= reviewed.keys() | reviewed_additions.keys(),
+    "missing reviewed theme/14-language candidate sources",
 )
 
 for item in manifest["files"]:

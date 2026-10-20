@@ -162,7 +162,7 @@
     "shippedNote": "Produtos com um registro anterior de publicação ou beta. Os cartões sinalizam a disponibilidade que precisa ser verificada novamente; fontes datadas e links estão na página de cada produto.",
     "researchHeading": "Em pesquisa",
     "researchNote": "Ainda não lançados: sem páginas nas lojas, links de download ou números verificados. Ficam separados abaixo, pois dar a eles o mesmo peso de produtos lançados faria parecer que são mais do que realmente são.",
-    "researchToggle": "Mostrar {count} produtos em pesquisa"
+    "researchToggle": "Mostrar produtos em pesquisa ({count})"
   },
   "showcase": {
     "back": "Projetos",
@@ -183,7 +183,7 @@
     "title": "Sem caixas-pretas. Nunca.",
     "intro": "Na YULA Lab, transparência não é uma funcionalidade — é o padrão. Cada produto faz a mesma promessa: o modelo, o custo e os dados ficam visíveis para você. Você usa um produto de IA; não deveria precisar fechar os olhos.",
     "promiseEyebrow": "Nossa promessa",
-    "promiseBody": "Cada decisão que você toma, cada token que gasta, cada registro que armazenamos — você pode ver. Nada é lançado se não pudermos explicar.",
+    "promiseBody": "Compartilhamos nas páginas dos produtos as afirmações registradas, suas fontes e os limites conhecidos. Mostramos as datas de verificação junto com o escopo e não apresentamos registros vencidos como evidência atual.",
     "pillarsEyebrow": "Três produtos principais, três mecanismos de transparência",
     "pillarsTitle": "Não apenas afirmamos — demonstramos.",
     "readMore": "Leia mais em",
@@ -191,7 +191,7 @@
       "braavolabs": {
         "label": "Custo transparente",
         "title": "Cada agente, cada token, cada segundo.",
-        "claim": "Cada execução de pipeline mostra qual agente chamou qual ferramenta, quantos tokens gastou e o custo de cada decisão — tudo à vista. Sem cobranças surpresa.",
+        "claim": "Cada execução de uma pipeline mostra qual agente chamou qual ferramenta, quantos tokens gastou e a qual decisão correspondeu o custo, de forma visível. O registro de custos ajuda você a acompanhar o uso; as cobranças reais dependem do seu provedor.",
         "proof": "→ Primitivas · provedores · evidências datadas na página do produto",
         "detailLabel": "Trilha de auditoria",
         "detailBody": "Cada chamada de ferramenta e decisão é um registro separado; ações que envolvem dinheiro exigem aprovação humana explícita. Exporte a execução completa em CSV / JSON e confira com sua própria contabilidade."
@@ -221,12 +221,12 @@
         "body": "O alcance das ferramentas de exportação e exclusão varia por produto e versão. Excluir dados do dispositivo é diferente de excluir a conta e os registros do servidor. Consulte a política de privacidade do produto para conhecer as ferramentas disponíveis e os prazos de retenção; envie solicitações sobre conta e registros do servidor para support@yulalab.com."
       },
       "noTraining": {
-        "title": "Seus dados não são usados para treinar modelos.",
-        "body": "Não criamos modelos a partir do conteúdo de clientes. Com BYOK, seus dados vão para o provedor escolhido por você; encaminhamos os dados, não somos um serviço de backup."
+        "title": "A YULA não usa conteúdo de clientes para treinar modelos.",
+        "body": "Não usamos conteúdo de clientes para treinar nossos próprios modelos. Com BYOK, o conteúdo é enviado ao provedor que você escolher; os termos de tratamento e retenção desse provedor se aplicam separadamente."
       },
       "noAds": {
-        "title": "Sem anúncios, sem rastreamento.",
-        "body": "Nossa única fonte de receita são os usuários pagantes. Não coletamos seus dados para revendê-los; a análise de uso é mínima e condicionada ao consentimento."
+        "title": "Não vendemos dados para publicidade.",
+        "body": "Não vendemos seus dados para publicidade. A medição neste site depende do ambiente de hospedagem e da configuração habilitada; o aviso de privacidade descreve os tipos de dados e os prazos de retenção."
       },
       "exitRight": {
         "title": "A porta de saída está sempre aberta.",
@@ -248,7 +248,7 @@
     "locationEyebrow": "Localização",
     "locationTitle": "Türkiye",
     "locationNote": "Reuniões de terça a quinta-feira, em formato híbrido.",
-    "studioBody": "O endereço nesta página é para correspondência geral. Se você tem um projeto em mente, a solicitação ao Studio é mais rápida: ela pede a faixa de orçamento, o prazo e quem decide, para que a primeira resposta não seja gasta nessas três perguntas.",
+    "studioBody": "O endereço nesta página é para correspondência geral. Se você tem um projeto em mente, a solicitação ao Studio reúne sua faixa de orçamento, o prazo e o papel de quem toma a decisão, para que possamos avaliar a consulta com essas informações.",
     "studioEyebrow": "Consulta sobre projeto",
     "studioLink": "Solicitação ao Studio",
     "studioTitle": "Quer falar sobre um trabalho?",
@@ -339,7 +339,7 @@
       "s1Kicker": "01 — O que faz",
       "a1Title": "Automações construídas com primitivas.",
       "a1Body": "As automações são montadas com alguns blocos básicos, em vez de modelos prontos e rígidos. Cada bloco faz uma tarefa; o fluxo surge da combinação e continua legível.",
-      "a2Title": "O custo nunca é uma surpresa.",
+      "a2Title": "Acompanhe os custos de execução.",
       "a2Body": "O registro mostra quantos tokens cada execução gastou com cada provedor — e o valor correspondente. Trocar de provedor é uma configuração, não uma reescrita.",
       "s2Kicker": "02 — Como funciona",
       "r1k": "Execução",
@@ -481,9 +481,9 @@
       "ctaBody": "O Choreia está em desenvolvimento. Escreva se quiser saber quando for lançado.",
       "ctaPrimary": "Em breve",
       "ctaSecondary": "Receber aviso",
-      "disclaimer": "O Choreia não é uma ferramenta certificada de ensino de dança nem de fisioterapia; não substitui um professor de dança de verdade."
+      "disclaimer": "O Choreia não certifica habilidades de dança nem qualificações de instrutores; não é uma ferramenta de fisioterapia e não substitui um professor de dança de verdade."
     },
-    "claimsHeading": "Afirmações verificadas",
+    "claimsHeading": "Afirmações e fontes",
     "claimsLapsedHeading": "Precisam de nova verificação",
     "claimsLapsedNote": "O prazo de verificação destas afirmações expirou. Isso não significa que estejam erradas — apenas que ninguém as conferiu recentemente, portanto não são consideradas atuais.",
     "statVerified": "verificado",
@@ -522,7 +522,7 @@
       "offline": "Não foi possível acessar o servidor. Verifique sua conexão e tente novamente.",
       "email": "O endereço de e-mail não parece válido.",
       "consent": "É preciso aceitar o aviso de privacidade para continuar.",
-      "message": "A mensagem não pode ficar vazia e deve ter menos de 4000 caracteres.",
+      "message": "A mensagem não pode ficar vazia e deve ter no máximo 4000 caracteres.",
       "name": "Informe um nome.",
       "generic": "O envio não foi concluído. Confira os dados e tente novamente.",
       "uncertain": "Não foi possível confirmar o resultado do envio; sua mensagem pode ter sido registrada. O formulário manteve os campos preenchidos. Tente novamente com o mesmo conteúdo ou entre em contato com o suporte por e-mail."
@@ -536,13 +536,13 @@
       "manifesto": "Manifesto",
       "transparency": "Transparência",
       "contact": "Contato",
-      "soundOn": "Som ativado",
-      "soundOff": "Som desativado",
+      "soundOn": "Ativar som",
+      "soundOff": "Desativar som",
       "consulting": "Consultoria em IA"
     },
     "loader": {
       "geometry": "Resolvendo os eixos espaciais",
-      "registry": "Validando o registro público de produtos",
+      "registry": "Preparando o registro de produtos",
       "material": "Calibrando o vidro e o campo de luz",
       "ready": "Experiência YULA pronta"
     },

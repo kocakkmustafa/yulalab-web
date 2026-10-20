@@ -15,6 +15,8 @@ import { localeAlternates, OG_LOCALES } from "@/i18n/locales";
 import { siteOrigin } from "@/lib/site-origin";
 import { company } from "@/data/company";
 import { studioEnabled } from "@/server/studio-surface";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { THEME_BOOTSTRAP, THEME_COLORS } from "@/lib/theme";
 
 const inter = Inter({
   subsets: ["latin", "latin-ext"],
@@ -44,7 +46,6 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#09060e",
 };
 
 export function generateStaticParams() {
@@ -113,10 +114,17 @@ export default async function LocaleLayout({
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
       className={`${inter.variable} ${manrope.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content={THEME_COLORS.dark} />
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP }} />
+      </head>
       <body className="bg-ink-900 text-ink-50 antialiased">
         <JsonLd />
         <NextIntlClientProvider>
+          <ThemeProvider>
           {/* reducedMotion="user" makes every Framer Motion animation on the
               site (LandingHero, ProductShot, FeatureCard, ProjectCard, page
               transitions) respect prefers-reduced-motion automatically —
@@ -131,6 +139,7 @@ export default async function LocaleLayout({
             </main>
             <Footer studioEnabled={studioOpen} />
           </MotionConfig>
+          </ThemeProvider>
         </NextIntlClientProvider>
         {process.env.VERCEL === "1" ? <Analytics /> : null}
       </body>

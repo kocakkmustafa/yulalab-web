@@ -64,7 +64,7 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
     expect(copy.values.items.map((item) => item.title)).toEqual(company.values.map((value) => `${locale}::${value.title.en}`));
   });
 
-  it("publishes selected-locale project metadata and all eight alternates", async () => {
+  it("publishes selected-locale project metadata and all approved alternates", async () => {
     const project = projects.find((item) => item.slug === "lifeos")!;
     const metadata = await generateMetadata({ params: Promise.resolve({ locale, slug: project.slug }) });
     expect(metadata.description).toBe(`${locale}::${project.tagline.en}`);

@@ -49,6 +49,15 @@ export function StatCards({
         // whole suite still green.
         const claim = linkedClaimFor(slug, stat, record ? [record] : []);
         const stale = claim ? isExpired(claim.expiresAt, now) : false;
+        const numeric = stat.numericDisplay;
+        // Raw evidence strings can contain technical names (AES-256), units
+        // or locale-specific punctuation. Only explicit numeric metadata is formatted.
+        const value = numeric
+          ? `${numeric.approximate ? "~" : ""}${new Intl.NumberFormat(locale, {
+              style: numeric.unit === "percent" ? "percent" : "decimal",
+              maximumFractionDigits: 0,
+            }).format(numeric.value)}`
+          : stat.value;
 
         return (
           <div key={localized(stat.label, locale)} className="glass glass-accent p-6 lg:p-8">
@@ -56,7 +65,7 @@ export function StatCards({
               {localized(stat.label, locale)}
             </div>
             <div className="font-display font-extralight text-[clamp(26px,3vw,42px)] leading-none tracking-tightest">
-              {stat.value}
+              <bdi>{value}</bdi>
             </div>
             {claim ? (
               <div className="mt-4 font-mono text-[9.5px] tracking-[0.1em] uppercase text-ink-300">

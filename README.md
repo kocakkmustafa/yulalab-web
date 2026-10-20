@@ -18,7 +18,9 @@
 
 A public product-lab site with an interactive portfolio, product pages, support and privacy information. The current public contact flow uses email links. Optional lead intake, data-request verification, attribution and mail/retention handlers also exist in the source; their runtime configuration is separate from the public pages.
 
-Project pages are prerendered and revalidate every 900 seconds so evidence freshness does not remain frozen at build time. API handlers and the standalone verification page are dynamic Node routes. `next-intl` uses TR / EN with `as-needed` locale prefixes (Turkish at the root, English at `/en`).
+Project pages are prerendered and revalidate every 900 seconds so evidence freshness does not remain frozen at build time. API handlers and the standalone verification page are dynamic Node routes. `next-intl` supports `tr,en,es-419,pt-BR,de,fr,ja,ar,it,ko,id,pl,hi,zh-Hans` with `as-needed` locale prefixes (Turkish at the root). The public interface and verification page use these 14 languages; lead/mail/event contracts remain TR/EN. Other interface languages show the localized email alternative. Appearance offers light, dark and system settings, stored per origin as `yula.appearance.v1`; no account or cross-domain synchronization is implied.
+
+Current local acceptance and release limits: [theme and 14-language evidence](../workspace/implementation-01-2026-10-19/theme-14-acceptance/REPORT.tr.md). This source candidate is separate from the deployed site.
 
 ## The ventures we showcase
 
