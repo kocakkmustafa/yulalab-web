@@ -1,3 +1,7 @@
+import { localeAlternates } from "@/i18n/locales";
+import { company } from "@/data/company";
+import { MailCard } from "@/components/contact/MailCard";
+import { supportsLeadIntake } from "@/lib/forms/lead-submission";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
@@ -37,7 +41,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/studio" : `/${locale}/studio`,
-      languages: { tr: "/studio", en: "/en/studio" },
+      languages: localeAlternates("/studio"),
     },
   };
 }
@@ -52,10 +56,10 @@ export default async function StudioPage({
     redirect(locale === "tr" ? "/contact" : `/${locale}/contact`);
   }
   setRequestLocale(locale);
-  return <Studio open={leadsEnabled()} />;
+  return <Studio open={leadsEnabled() && supportsLeadIntake(locale)} intakeLanguageUnavailable={!supportsLeadIntake(locale)} />;
 }
 
-function Studio({ open }: { open: boolean }) {
+function Studio({ open, intakeLanguageUnavailable }: { open: boolean; intakeLanguageUnavailable: boolean }) {
   const t = useTranslations("studio");
   const forList = t.raw("for") as string[];
   const notForList = t.raw("notFor") as string[];
@@ -156,8 +160,9 @@ function Studio({ open }: { open: boolean }) {
         <p className="mt-3 max-w-[58ch] text-[15px] leading-[1.65] text-ink-300">
           {t("applyIntro")}
         </p>
+        {intakeLanguageUnavailable ? <p className="mt-4 text-sm text-ink-200" data-intake-language-notice>{t("form.intakeLanguageNotice")}</p> : null}
         <div className="mt-6">
-          <StudioApplicationForm open={open} />
+          {intakeLanguageUnavailable ? <MailCard label={t("title")} address={company.contact.email} hint={t("form.intakeLanguageNotice")} accent="#C3F400" /> : <StudioApplicationForm open={open} />}
         </div>
       </section>
     </div>

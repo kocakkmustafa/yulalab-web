@@ -54,7 +54,7 @@ describe("every rejection a person can act on has its own message", () => {
     // A key with no message crashes the page on t(), which is a worse
     // outcome than the wrong wording.
     const keys = new Set(
-      ["generic", "closed", "rateLimited", "unavailable", "tooLarge", "offline"].concat(
+      ["generic", "closed", "rateLimited", "unavailable", "tooLarge", "offline", "uncertain"].concat(
         CORRECTABLE,
       ),
     );

@@ -1,3 +1,5 @@
+import { localized, text } from "@/lib/localized";
+import { isLocale, localePath } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { YulaExperience } from "@/components/experience/YulaExperience";
@@ -22,16 +24,11 @@ const CANONICAL_PRODUCT_ORDER = [
   "choreia",
 ] as const;
 
-function isLocale(value: string): value is Locale {
-  return value === "tr" || value === "en";
-}
-
 function localizeInternalRoute(route: string, locale: Locale): string {
   if (!route.startsWith("/") || route.startsWith("//")) {
     throw new Error(`Homepage product CTA must be an internal route: ${route}`);
   }
-  if (locale === "tr") return route;
-  return route === "/" ? "/en" : `/en${route}`;
+  return localePath(locale, route);
 }
 
 export default async function LandingPage({
@@ -103,9 +100,9 @@ export default async function LandingPage({
       monogram: project.monogram,
       icon: project.visuals.icon,
       lifecycle: record.lifecycle,
-      category: project.category[locale],
-      tagline: project.tagline[locale],
-      short: project.short[locale],
+      category: localized(project.category, locale),
+      tagline: localized(project.tagline, locale),
+      short: localized(project.short, locale),
       href: localizeInternalRoute(record.primaryCta.url, locale),
       ctaLabel:
         record.lifecycle === "research"
@@ -122,14 +119,14 @@ export default async function LandingPage({
       // atmosphere assets and product-page mockups are intentionally absent.
       screenshots: record.screenshots.map((screenshot) => ({
         path: screenshot.path,
-        alt: locale === "tr" ? screenshot.altTr : screenshot.altEn,
+        alt: text(locale, screenshot.altTr, screenshot.altEn),
         sourceBuild: screenshot.sourceBuild,
         capturedAt: screenshot.capturedAt,
       })),
       developmentPreviews: (developmentPreviews[project.slug] ?? []).map((preview) => ({
         captureKind: preview.captureKind,
         path: preview.path,
-        alt: preview.alt[locale],
+        alt: localized(preview.alt, locale),
         sourceBuild: preview.sourceBuild,
         capturedAt: preview.capturedAt,
       })),
@@ -138,10 +135,10 @@ export default async function LandingPage({
       claims: record.claims.map((claim) => ({
         id: claim.id,
         figure: claim.figures?.join(" · ") ?? null,
-        statement: locale === "tr" ? claim.statementTr : claim.statementEn,
+        statement: text(locale, claim.statementTr, claim.statementEn),
         evidenceKind: claim.evidenceKind,
         source: claim.source,
-        scope: locale === "tr" ? claim.scopeTr : claim.scopeEn,
+        scope: text(locale, claim.scopeTr, claim.scopeEn),
         verifiedAt: claim.verifiedAt,
         expiresAt: claim.expiresAt,
       })),
@@ -206,19 +203,19 @@ export default async function LandingPage({
     mission: {
       kicker: t("mission.kicker"),
       title: t("mission.title"),
-      body: company.mission[locale],
+      body: localized(company.mission, locale),
     },
     vision: {
       kicker: t("vision.kicker"),
       title: t("vision.title"),
-      body: company.vision[locale],
+      body: localized(company.vision, locale),
     },
     values: {
       kicker: t("values.kicker"),
       title: t("values.title"),
       items: company.values.map((value) => ({
-        title: value.title[locale],
-        description: value.description[locale],
+        title: localized(value.title, locale),
+        description: localized(value.description, locale),
       })),
     },
     closing: {

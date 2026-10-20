@@ -3,7 +3,10 @@ import type { Pool } from "pg";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { createIsolatedSchema, dropSchema } from "./helpers/attribution-db";
-import { drainOutbox, MAX_ATTEMPTS, unconfiguredTransport } from "@/server/mail";
+import {
+  drainOutbox, DRAIN_BATCH_LIMIT, MAX_ATTEMPTS,
+  MailProviderRejectionError, unconfiguredTransport,
+} from "@/server/mail";
 import { createLead } from "@/server/leads";
 import type { MailMessage, MailTransport } from "@/server/mail";
 import {
@@ -77,7 +80,7 @@ function transportThat(behaviour: "succeeds" | "fails"): MailTransport & { sent:
     sent,
     configured: true,
     async send(message) {
-      if (behaviour === "fails") throw new Error("provider unavailable");
+      if (behaviour === "fails") throw new MailProviderRejectionError(503);
       sent.push(message);
     },
   };
@@ -393,13 +396,12 @@ describe("deletion is honoured for every row a lead wrote, not just the receipt"
 
 describe("what is left over after a run", () => {
   it("reports the backlog the batch could not reach", async () => {
-    // Otherwise 150 queued receipts return {delivered: 100, failed: 0} —
-    // the healthiest-looking response body possible while 50 people wait,
-    // and purge_at deletes them undelivered at 30 days.
+    // A small successful batch must still measure the entire backlog.
+    // Admission and scheduler cadence are separate from per-run throughput.
     for (let i = 0; i < 105; i += 1) await queueReceipt();
     const result = await drainOutbox(pool, transportThat("succeeds"));
-    expect(result.delivered).toBe(100);
-    expect(result.remaining).toBe(5);
+    expect(result.delivered).toBe(DRAIN_BATCH_LIMIT);
+    expect(result.remaining).toBe(105 - DRAIN_BATCH_LIMIT);
   });
 
   it("is zero when the queue is genuinely empty", async () => {
@@ -506,13 +508,16 @@ describe("when the database goes away mid-run", () => {
     // DROPping the table: the drain holds a row lock on event_outbox, so a
     // DROP waits on ACCESS EXCLUSIVE and the test hangs instead of failing.
     //
-    // Only connect() fails. Breaking query() too would let the CLOSING
-    // measurement's own catch set `aborted`, and this test would pass with
-    // the connect guard deleted.
+    // One row acquisition fails; a subsequent independent connection can
+    // still measure the queue. Both snapshots now own bounded connections.
     let delivered = 0;
+    let failedOnce = false;
     const failing = {
       connect: async () => {
-        if (delivered >= 1) throw new Error("connection terminated");
+        if (delivered >= 1 && !failedOnce) {
+          failedOnce = true;
+          throw new Error("connection terminated");
+        }
         return pool.connect();
       },
       query: pool.query.bind(pool),
@@ -581,17 +586,26 @@ describe("an error inside the transaction, not just at connect time", () => {
     // remaining: 0 here would claim an empty queue on no evidence.
     await queueReceipt();
     let counts = 0;
-    const realQuery = pool.query.bind(pool);
     const brittle = {
-      connect: pool.connect.bind(pool),
-      query: (...args: unknown[]) => {
-        const sql = typeof args[0] === "string" ? args[0] : "";
-        if (sql.includes("count(*)")) {
-          counts += 1;
-          // 1st = the opening measurement; 2nd = the closing one.
-          if (counts > 1) throw new Error("connection terminated");
-        }
-        return realQuery(...(args as Parameters<typeof realQuery>));
+      connect: async () => {
+        const client = await pool.connect();
+        const original = client.query.bind(client);
+        const originalRelease = client.release.bind(client);
+        client.release = ((...args: unknown[]) => {
+          client.query = original as typeof client.query;
+          client.release = originalRelease;
+          return (originalRelease as (...a: unknown[]) => unknown)(...args);
+        }) as typeof client.release;
+        client.query = ((...args: unknown[]) => {
+          const sql = typeof args[0] === "string" ? args[0] : "";
+          if (sql.includes("count(*)")) {
+            counts += 1;
+            // 1st = the opening measurement; 2nd = the closing one.
+            if (counts > 1) throw new Error("connection terminated");
+          }
+          return original(...(args as Parameters<typeof original>));
+        }) as typeof client.query;
+        return client;
       },
     } as unknown as typeof pool;
 

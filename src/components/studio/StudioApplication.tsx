@@ -1,16 +1,17 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { track } from "@/lib/analytics/client";
 import {
   STUDIO_QUALIFIERS,
-  qualificationSummary,
   validateStudioApplication,
   type StudioApplication,
   type StudioErrorCode,
 } from "@/lib/studio";
+import { studioLeadMessage, submitLead, supportsLeadIntake } from "@/lib/forms/lead-submission";
+import type { Locale } from "@/i18n/routing";
 
 /**
  * The studio application.
@@ -28,7 +29,7 @@ import {
  */
 export function StudioApplicationForm({ open }: { open: boolean }) {
   const t = useTranslations("studio.form");
-  const locale = useLocale() as "tr" | "en";
+  const locale = useLocale() as Locale;
   const id = useId();
 
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -36,6 +37,21 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
   const [receipt, setReceipt] = useState<string | null>(null);
   const [consent, setConsent] = useState(false);
   const started = useRef(false);
+  const inFlight = useRef<AbortController | null>(null);
+  useEffect(() => () => {
+    inFlight.current?.abort();
+    inFlight.current = null;
+  }, []);
+  useEffect(() => {
+    if (open) return;
+    inFlight.current?.abort();
+    inFlight.current = null;
+    setState("idle");
+    setErrorCodes([]);
+    setReceipt(null);
+    setConsent(false);
+    started.current = false;
+  }, [open]);
 
   /** Fired once, on first real interaction — not on render. */
   function markStarted() {
@@ -63,6 +79,14 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    if (inFlight.current) return;
+    // UI translation does not activate the unverified database/mail locales.
+    // Check before reading a draft or constructing the TR/EN intake contract.
+    if (!supportsLeadIntake(locale)) {
+      setErrorCodes([studioErrorKey("studio_not_accepting_submissions", 503)]);
+      setState("error");
+      return;
+    }
     const form = new FormData(event.currentTarget);
 
     // Client-side consent enforcement: the form uses noValidate, so `required`
@@ -87,7 +111,7 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
     // Compose FIRST, then check what actually goes on the wire: the route
     // caps `message`, and a maximal problem plus the qualification summary
     // exceeded it while the visitor saw only "could not send".
-    const message = `${qualificationSummary(application, locale)}\n\n${application.problem}`;
+    const message = studioLeadMessage(application);
     const problems = validateStudioApplication(application, { composedMessage: message });
     if (problems.length) {
       setErrorCodes(problems);
@@ -95,57 +119,46 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
       return;
     }
 
+    const pending = new AbortController();
+    inFlight.current = pending;
     setState("sending");
     setErrorCodes([]);
-    try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          name: application.name,
-          email: application.email,
-          company: application.company,
-          intent: "studio",
-          message,
-          locale,
-          // The server validates these closed enums and derives the routing
-          // verdict. A browser can describe answers, never mint a verdict.
-          budgetBand: application.budgetBand,
-          timing: application.timing,
-          decisionRole: application.decisionRole,
-          // Read from the form, never hardcoded: both were literals, which
-          // made the honeypot inert and made the consent record say "agreed"
-          // regardless of the box.
-          consent,
-          website: String(form.get("website") ?? ""),
-        }),
-      });
-      if (!response.ok) {
-        // The route's own reason, mapped to localized copy — the sibling
-        // form does this and the first version collapsed 400/429/503 into
-        // one sentence, so a person hitting the closed sink was told only
-        // that something failed.
-        const body = (await response.json().catch(() => ({}))) as { error?: string };
-        setErrorCodes([studioErrorKey(body.error, response.status)]);
-        setState("error");
-        return;
-      }
-      const body = (await response.json()) as { receiptId?: string };
-      setReceipt(body.receiptId ?? null);
+    const result = await submitLead({
+      name: application.name,
+      email: application.email,
+      company: application.company,
+      intent: "studio",
+      message,
+      locale,
+      // The server validates these closed enums and derives the routing
+      // verdict. A browser can describe answers, never mint a verdict.
+      budgetBand: application.budgetBand,
+      timing: application.timing,
+      decisionRole: application.decisionRole,
+      // Read from the form, never hardcoded: both were literals, which
+      // made the honeypot inert and made the consent record say "agreed"
+      // regardless of the box.
+      consent,
+      website: String(form.get("website") ?? ""),
+    }, pending.signal);
+    if (inFlight.current !== pending) return;
+    inFlight.current = null;
+    if (result.kind === "accepted") {
+      setReceipt(result.receiptId);
       setState("sent");
       // Anonymous telemetry keeps only the accepted-submission denominator.
       // The qualified numerator is the server-bound `studio-qualified`
       // internal-route record written atomically with the lead.
       track({ event: "studio_application_submitted" });
-    } catch {
-      setErrorCodes(["server"]);
+    } else {
+      setErrorCodes([result.kind === "uncertain" ? "uncertain" : studioErrorKey(result.error, result.status)]);
       setState("error");
     }
   }
 
   if (state === "sent") {
     return (
-      <div className="rounded-2xl border border-hairline bg-surface p-6">
+      <div role="status" className="rounded-2xl border border-hairline bg-surface p-6">
         <h3 className="font-display text-base font-semibold text-ink-50">{t("sentTitle")}</h3>
         {receipt ? (
           <p className="mt-3 font-mono text-[12px] text-ink-300">
@@ -156,20 +169,20 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
     );
   }
 
-  const field = "w-full rounded-xl border border-hairline bg-surface px-4 py-3 text-[15px] text-ink-100";
+  const field = "w-full rounded-xl border border-hairline bg-surface px-4 py-3 text-[15px] text-ink-100 disabled:opacity-60";
   const label = "block font-mono text-[10px] uppercase tracking-widest text-ink-400";
   // Deduped: a long problem tripped both length branches, so the reader saw
   // the same sentence twice and React saw duplicate keys.
   const shown = Array.from(new Set(errorCodes));
 
   return (
-    <form noValidate onSubmit={submit} onFocusCapture={markStarted} className="flex flex-col gap-5">
+    <form noValidate onSubmit={submit} onFocusCapture={markStarted} aria-busy={state === "sending"} className="flex flex-col gap-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label className={label} htmlFor={`${id}-name`}>
             {t("name")}
           </label>
-          <input id={`${id}-name`} name="name" className={`mt-2 ${field}`} autoComplete="name" />
+          <input id={`${id}-name`} name="name" className={`mt-2 ${field}`} autoComplete="name" disabled={state === "sending"} />
         </div>
         <div>
           <label className={label} htmlFor={`${id}-email`}>
@@ -180,7 +193,7 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
             name="email"
             type="email"
             className={`mt-2 ${field}`}
-            autoComplete="email"
+            autoComplete="email" disabled={state === "sending"}
           />
         </div>
       </div>
@@ -193,7 +206,7 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
           id={`${id}-company`}
           name="company"
           className={`mt-2 ${field}`}
-          autoComplete="organization"
+          autoComplete="organization" disabled={state === "sending"}
         />
       </div>
 
@@ -202,15 +215,15 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
       {STUDIO_QUALIFIERS.map((q) => (
         <div key={q.id}>
           <label className={label} htmlFor={`${id}-${q.id}`}>
-            {locale === "tr" ? q.labelTr : q.labelEn}
+            {t(`qualifiers.${q.id}.label`)}
           </label>
-          <select id={`${id}-${q.id}`} name={q.id} className={`mt-2 ${field}`} defaultValue="">
+          <select id={`${id}-${q.id}`} name={q.id} className={`mt-2 ${field}`} defaultValue="" disabled={state === "sending"}>
             <option value="" disabled>
               {t("choose")}
             </option>
             {q.options.map((option) => (
               <option key={option.value} value={option.value}>
-                {locale === "tr" ? option.labelTr : option.labelEn}
+                {t(`qualifiers.${q.id}.options.${option.value}`)}
               </option>
             ))}
           </select>
@@ -221,7 +234,7 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
         <label className={label} htmlFor={`${id}-problem`}>
           {t("problem")}
         </label>
-        <textarea id={`${id}-problem`} name="problem" rows={5} className={`mt-2 ${field}`} />
+        <textarea id={`${id}-problem`} name="problem" rows={5} className={`mt-2 ${field}`} disabled={state === "sending"} />
       </div>
 
       {/* Honeypot. Positioned off-screen rather than hidden by a class an
@@ -237,13 +250,14 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
           overflow: "hidden",
         }}
       >
-        <label htmlFor={`${id}-website`}>Website</label>
+        <label htmlFor={`${id}-website`}>{t("website")}</label>
         <input id={`${id}-website`} name="website" tabIndex={-1} autoComplete="off" aria-hidden="true" />
       </div>
 
       <label className="flex items-start gap-3 text-[13.5px] leading-relaxed text-ink-300">
         <input
           type="checkbox"
+          disabled={state === "sending"}
           checked={consent}
           onChange={(e) => setConsent(e.target.checked)}
           className="mt-1"
@@ -263,10 +277,14 @@ export function StudioApplicationForm({ open }: { open: boolean }) {
           className="rounded-xl border border-hairline bg-surface-inset p-4 text-[13.5px] text-ink-200"
         >
           {shown.map((code) => (
-            <li key={code}>{t(`errors.${code}`)}</li>
+            <li key={code}>
+              {t(`errors.${code}`)}
+              {code === "uncertain" ? <> <a className="underline focusable" href="mailto:support@yulalab.com">support@yulalab.com</a></> : null}
+            </li>
           ))}
         </ul>
       ) : null}
+      <div role="status" aria-live="polite">{state === "sending" ? t("sending") : null}</div>
 
       <button
         type="submit"

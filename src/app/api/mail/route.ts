@@ -30,21 +30,28 @@ export async function GET(request: Request): Promise<Response> {
 
   try {
     const result = await drainOutbox(getPool("mail"), mailTransport());
-    if (result.aborted || (result.dead ?? 0) > 0) {
+    if (
+      result.aborted || result.uncertain > 0 || result.failed > 0 ||
+      result.blocked > 0 || result.skipped > 0 || (result.dead ?? 0) > 0
+    ) {
       /* A non-zero `dead` count means rows exhausted every retry: people who
          will never receive a receipt, and nothing will ever try again. That
          is the precise failure this feature exists to avoid, so it is worth
          a status a monitor notices, not a line in a 200 body.
 
          It stays red until those rows purge, up to thirty days. Accepted
-         deliberately: reaching it takes five provider refusals of the same
-         message, and the remedy is to look at why, not to wait it out. */
+         deliberately: reaching it takes five failed attempts (which can
+         include an uncertain network outcome). The remedy is to reconcile
+         those outcomes, not to infer five definite provider refusals. */
       // 503 so a monitor sees it, WITH the counts that did happen. The
       // sibling purge route makes the same argument: a job that half-worked
       // must not report success — and must not report zero either, which is
       // what discarding the counts on the way out would do.
       return NextResponse.json(result, { status: 503 });
     }
+    // A bounded, successful batch may leave more work. This is not proof
+    // that the whole queue was delivered: the scheduler must inspect the
+    // counts/age and drain often enough before intake can be activated.
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
     // Name only: a driver error can quote the row it was working on, and

@@ -1,8 +1,10 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { CURRENT_NOTICE_VERSION } from "@/lib/consent";
+import { submitLead } from "@/lib/forms/lead-submission";
+import type { Locale } from "@/i18n/routing";
 
 const INTENTS = ["product", "studio", "partnership", "press", "privacy"] as const;
 type Intent = (typeof INTENTS)[number];
@@ -29,32 +31,16 @@ type State =
  * exists to answer "to what did they agree"; if this label and that column
  * can drift, the answer is wrong and nobody finds out.
  *
- * The success message says a receipt was emailed only when one actually
- * was. Nothing sends mail today — the outbox consumer is built but its
- * provider is a founder gate — so it reports what happened: the message was
- * recorded, here is the reference. That sentence is chosen from
- * `mailConfigured`, not written into the copy, because a promise of email
- * that outlives its truth leaves a person waiting for something that was
- * never coming.
+ * A successful API receipt confirms the recorded message, not email
+ * delivery. Provider configuration cannot establish that a worker sent it.
  */
 export function LeadForm({
   products,
-  mailConfigured,
   studioEnabled,
 }: {
   products: { slug: string; name: string }[];
-  /**
-   * Whether this deployment can actually send the receipt.
-   *
-   * A prop rather than a sentence, because the sentence goes stale silently.
-   * "We do not send automatic email yet" is true today and becomes a lie the
-   * moment the provider credentials land — the form is already open at that
-   * point, since both sit behind LEADS_ENABLED — and nothing would have
-   * failed. Computed from `mailTransport().configured`, the same function
-   * that decides whether a receipt is sent at all, so the two cannot
-   * disagree.
-   */
-  mailConfigured: boolean;
+  /** @deprecated Configuration never confirms delivery; retained for callers. */
+  mailConfigured?: boolean;
   /**
    * Server-owned Studio publication truth. When false, the general contact
    * form must neither advertise nor submit the Studio intent: the dedicated
@@ -63,11 +49,16 @@ export function LeadForm({
   studioEnabled: boolean;
 }) {
   const t = useTranslations("leadForm");
-  const locale = useLocale() as "tr" | "en";
+  const locale = useLocale() as Locale;
   const id = useId();
   const intents = studioEnabled ? INTENTS : NON_STUDIO_INTENTS;
   const [intent, setIntent] = useState<Intent>(studioEnabled ? "studio" : "product");
   const [state, setState] = useState<State>({ kind: "idle" });
+  const inFlight = useRef<AbortController | null>(null);
+  useEffect(() => () => {
+    inFlight.current?.abort();
+    inFlight.current = null;
+  }, []);
   // A server prop is stable for this rendered page, but keeping the selected
   // value fail-closed also protects hydration/re-render boundaries: a stale
   // client value cannot post Studio after the server disabled it.
@@ -75,7 +66,8 @@ export function LeadForm({
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (state.kind === "sending") return;
+    // A synchronous latch also covers re-entry before React commits state.
+    if (inFlight.current) return;
     const data = new FormData(event.currentTarget);
 
     // Checked here, not left to `required`. The form sets noValidate, so the
@@ -87,8 +79,6 @@ export function LeadForm({
       setState({ kind: "error", code: "consent" });
       return;
     }
-    setState({ kind: "sending" });
-
     const payload: Record<string, unknown> = {
       name: String(data.get("name") ?? "").trim(),
       email: String(data.get("email") ?? "").trim(),
@@ -114,22 +104,16 @@ export function LeadForm({
     // and a routing rule must never read a slug nobody asked about.
     if (effectiveIntent === "product" && slug) payload.productSlug = slug;
 
-    try {
-      const response = await fetch("/api/leads", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const body = (await response.json()) as { receiptId?: string; error?: string };
-      if (response.ok && body.receiptId) {
-        setState({ kind: "sent", receiptId: body.receiptId });
-        return;
-      }
-      setState({ kind: "error", code: body.error ?? "unknown" });
-    } catch {
-      // A network failure is not a rejection. Saying "we could not reach the
-      // server" is true; "your message was invalid" would not be.
-      setState({ kind: "error", code: "offline" });
+    const pending = new AbortController();
+    inFlight.current = pending;
+    setState({ kind: "sending" });
+    const result = await submitLead(payload, pending.signal);
+    if (inFlight.current !== pending) return;
+    inFlight.current = null;
+    if (result.kind === "accepted") {
+      setState({ kind: "sent", receiptId: result.receiptId });
+    } else {
+      setState({ kind: "error", code: result.kind === "uncertain" ? "uncertain" : result.error ?? "unknown" });
     }
   }
 
@@ -140,7 +124,7 @@ export function LeadForm({
           {t("sentEyebrow")}
         </div>
         <p className="text-[15.5px] leading-[1.65] text-ink-200">
-          {t(mailConfigured ? "sentBodyMailed" : "sentBody")}
+          {t("sentBody")}
         </p>
         <p className="mt-4 font-mono text-[13px] text-ink-100 [overflow-wrap:anywhere]">
           {t("reference")}: {state.receiptId}
@@ -150,30 +134,30 @@ export function LeadForm({
   }
 
   const field =
-    "mt-2 w-full rounded-lg bg-white/[0.04] border border-white/10 px-4 py-3 text-[15px] text-ink-100 placeholder:text-ink-400 focusable";
+    "mt-2 w-full rounded-lg bg-white/[0.04] border border-white/10 px-4 py-3 text-[15px] text-ink-100 placeholder:text-ink-400 disabled:opacity-60 focusable";
   const label = "font-mono text-[11px] tracking-widest uppercase text-ink-300";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="glass p-7 flex flex-col gap-5">
+    <form onSubmit={onSubmit} noValidate aria-busy={state.kind === "sending"} className="glass p-7 flex flex-col gap-5">
       <div>
         <label className={label} htmlFor={`${id}-name`}>
           {t("name")}
         </label>
-        <input id={`${id}-name`} name="name" required maxLength={120} className={field} autoComplete="name" />
+        <input id={`${id}-name`} name="name" required maxLength={120} className={field} autoComplete="name" disabled={state.kind === "sending"} />
       </div>
 
       <div>
         <label className={label} htmlFor={`${id}-email`}>
           {t("email")}
         </label>
-        <input id={`${id}-email`} name="email" type="email" required maxLength={254} className={field} autoComplete="email" />
+        <input id={`${id}-email`} name="email" type="email" required maxLength={254} className={field} autoComplete="email" disabled={state.kind === "sending"} />
       </div>
 
       <div>
         <label className={label} htmlFor={`${id}-company`}>
           {t("company")}
         </label>
-        <input id={`${id}-company`} name="company" maxLength={160} className={field} autoComplete="organization" />
+        <input id={`${id}-company`} name="company" maxLength={160} className={field} autoComplete="organization" disabled={state.kind === "sending"} />
       </div>
 
       <div>
@@ -184,6 +168,7 @@ export function LeadForm({
           id={`${id}-intent`}
           name="intent"
           className={field}
+          disabled={state.kind === "sending"}
           value={effectiveIntent}
           onChange={(e) => {
             const value = e.target.value as Intent;
@@ -203,7 +188,7 @@ export function LeadForm({
           <label className={label} htmlFor={`${id}-product`}>
             {t("product")}
           </label>
-          <select id={`${id}-product`} name="productSlug" className={field} defaultValue="">
+          <select id={`${id}-product`} name="productSlug" className={field} defaultValue="" disabled={state.kind === "sending"}>
             <option value="">{t("productAny")}</option>
             {products.map((product) => (
               <option key={product.slug} value={product.slug}>
@@ -218,7 +203,7 @@ export function LeadForm({
         <label className={label} htmlFor={`${id}-message`}>
           {t("message")}
         </label>
-        <textarea id={`${id}-message`} name="message" required maxLength={4000} rows={6} className={field} />
+        <textarea id={`${id}-message`} name="message" required maxLength={4000} rows={6} className={field} disabled={state.kind === "sending"} />
       </div>
 
       {/* Honeypot. Off-screen rather than display:none, which a bot that
@@ -230,10 +215,10 @@ export function LeadForm({
       </div>
 
       <label className="flex items-start gap-3 text-[14px] leading-[1.6] text-ink-300">
-        <input type="checkbox" name="consent" required className="mt-1 focusable" />
+        <input type="checkbox" name="consent" required className="mt-1 focusable" disabled={state.kind === "sending"} />
         <span>
           {t("consent", { version: CURRENT_NOTICE_VERSION })}{" "}
-          <a className="underline focusable" href={locale === "tr" ? "/privacy" : "/en/privacy"}>
+          <a className="underline focusable" href={locale === "tr" ? "/privacy" : `/${locale}/privacy`}>
             {t("consentLink")}
           </a>
         </span>
@@ -241,8 +226,11 @@ export function LeadForm({
 
       <div role="status" aria-live="polite" className="min-h-[1.5rem] text-[14px] leading-[1.6]">
         {state.kind === "error" ? (
-          <span className="text-[#FF8A8A]">{t(`errors.${errorKey(state.code)}`)}</span>
-        ) : null}
+          <span className="text-[#FF8A8A]">
+            {t(`errors.${errorKey(state.code)}`)}
+            {state.code === "uncertain" ? <> <a className="underline focusable" href="mailto:support@yulalab.com">support@yulalab.com</a></> : null}
+          </span>
+        ) : state.kind === "sending" ? t("sending") : null}
       </div>
 
       <button
@@ -271,6 +259,7 @@ export function errorKey(code: string): string {
     storage_unavailable: "unavailable",
     too_large: "tooLarge",
     offline: "offline",
+    uncertain: "uncertain",
     email: "email",
     consent: "consent",
     message: "message",

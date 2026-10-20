@@ -1,35 +1,41 @@
 "use client";
 
-import { useLocale } from "next-intl";
-import { usePathname } from "@/i18n/navigation";
-import { useRouter } from "@/i18n/navigation";
+import { useId } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/navigation";
+import { isLocale, LOCALE_LABELS, SUPPORTED_LOCALES } from "@/i18n/locales";
 
-type Props = { onNavigate?: () => void };
+type Props = { onNavigate?: () => void; compact?: boolean };
 
-export function LocaleSwitcher({ onNavigate }: Props) {
+export function LocaleSwitcher({ onNavigate, compact = false }: Props) {
+  const id = useId();
   const locale = useLocale();
+  const t = useTranslations("header");
   const pathname = usePathname();
   const router = useRouter();
 
-  const otherLocale = locale === "tr" ? "en" : "tr";
-
-  const handleClick = () => {
-    // Keep normal page sections, especially account deletion, reachable in
-    // either language. Query values are deliberately not copied between URLs.
-    router.replace(`${pathname}${window.location.hash}`, { locale: otherLocale });
-    onNavigate?.();
-  };
-
   return (
-    <button
-      type="button"
-      onClick={handleClick}
-      className="inline-flex items-center gap-1 rounded-full border border-white/10 px-3 py-1.5 text-[11.5px] font-mono tracking-widest uppercase text-ink-200 hover:text-ink-50 hover:border-white/25 transition-colors focusable"
-      aria-label={locale === "tr" ? "TR/EN — İngilizceye geç" : "TR/EN — switch to TR"}
-    >
-      <span className={locale === "tr" ? "text-ink-50" : "opacity-60"}>TR</span>
-      <span className="opacity-30">/</span>
-      <span className={locale === "en" ? "text-ink-50" : "opacity-60"}>EN</span>
-    </button>
+    <label htmlFor={id} className={`relative inline-flex min-w-0 items-center gap-2 text-xs ${compact ? "h-11 w-11 shrink-0 justify-center rounded-full border border-current text-inherit focus-within:outline focus-within:outline-2 focus-within:outline-offset-4" : "text-ink-200"}`}>
+      <span className="sr-only">{t("language")}</span>
+      {compact ? <span aria-hidden="true" dir="ltr" className="font-mono uppercase">{locale.split("-")[0]}</span> : null}
+      <select
+        id={id}
+        value={locale}
+        onChange={(event) => {
+          const nextLocale = event.target.value;
+          if (!isLocale(nextLocale) || nextLocale === locale) return;
+          // Preserve page sections; private query values never cross locales.
+          router.replace(`${pathname}${window.location.hash}`, { locale: nextLocale });
+          onNavigate?.();
+        }}
+        className={compact ? "absolute inset-0 h-full w-full cursor-pointer opacity-0" : "focusable max-w-full rounded-full border border-white/15 bg-ink-900 px-3 py-2 text-[12px] text-ink-50"}
+      >
+        {SUPPORTED_LOCALES.map((language) => (
+          <option key={language} value={language} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>
+            {LOCALE_LABELS[language]}
+          </option>
+        ))}
+      </select>
+    </label>
   );
 }

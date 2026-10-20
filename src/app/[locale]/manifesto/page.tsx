@@ -1,3 +1,5 @@
+import { localized } from "@/lib/localized";
+import { localeAlternates } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
@@ -22,7 +24,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/manifesto" : `/${locale}/manifesto`,
-      languages: { tr: "/manifesto", en: "/en/manifesto" },
+      languages: localeAlternates("/manifesto"),
     },
   };
 }
@@ -85,7 +87,7 @@ function Manifesto() {
           {t("visionEyebrow")}
         </div>
         <p className="font-display text-[28px] md:text-[36px] leading-[1.2] tracking-tight text-ink-50 max-w-[28ch]">
-          {company.vision[locale]}
+          {localized(company.vision, locale)}
         </p>
       </section>
 
@@ -94,7 +96,7 @@ function Manifesto() {
           {t("missionEyebrow")}
         </div>
         <p className="font-display text-[28px] md:text-[36px] leading-[1.2] tracking-tight text-ink-50 max-w-[28ch]">
-          {company.mission[locale]}
+          {localized(company.mission, locale)}
         </p>
       </section>
 
@@ -127,7 +129,7 @@ function Manifesto() {
               {company.founder.name}
             </div>
             <div className="text-sm text-ink-300 mt-1">
-              {company.founder.role[locale]}
+              {localized(company.founder.role, locale)}
             </div>
           </div>
           <Link

@@ -1,3 +1,5 @@
+import { localized } from "@/lib/localized";
+import { localeAlternates } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -51,25 +53,22 @@ export async function generateMetadata({
   if (!project) return notFoundMetadata(lang);
   return {
     title: project.name,
-    description: project.tagline[lang],
+    description: localized(project.tagline, lang),
     alternates: {
       canonical: locale === "tr" ? `/projects/${slug}` : `/${locale}/projects/${slug}`,
-      languages: {
-        tr: `/projects/${slug}`,
-        en: `/en/projects/${slug}`,
-      },
+      languages: localeAlternates(`/projects/${slug}`),
     },
     openGraph: {
-      title: `${project.name} — ${project.tagline[lang]}`,
-      description: project.description[lang],
+      title: `${project.name} — ${localized(project.tagline, lang)}`,
+      description: localized(project.description, lang),
       images: [
         { url: `/projects/${slug}/opengraph-image`, width: 1200, height: 630 },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${project.name} — ${project.tagline[lang]}`,
-      description: project.description[lang],
+      title: `${project.name} — ${localized(project.tagline, lang)}`,
+      description: localized(project.description, lang),
       images: [`/projects/${slug}/opengraph-image`],
     },
   };

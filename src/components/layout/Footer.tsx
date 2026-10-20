@@ -1,3 +1,4 @@
+import { localized } from "@/lib/localized";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { YulaMark } from "@/components/common/YulaMark";
@@ -167,7 +168,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           </div>
           <div className="text-sm text-ink-200">{company.founder.name}</div>
           <div className="text-sm text-ink-300 mt-1">
-            {company.founder.role[locale]}
+            {localized(company.founder.role, locale)}
           </div>
         </div>
       </div>

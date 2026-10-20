@@ -1,3 +1,4 @@
+import { localized } from "@/lib/localized";
 import type { ProductPublicRecord, ProjectStat, Locale } from "@/lib/types";
 import { isExpired } from "@/lib/public-registry";
 import { linkedClaimFor } from "@/lib/stat-provenance";
@@ -50,9 +51,9 @@ export function StatCards({
         const stale = claim ? isExpired(claim.expiresAt, now) : false;
 
         return (
-          <div key={stat.label[locale]} className="glass glass-accent p-6 lg:p-8">
+          <div key={localized(stat.label, locale)} className="glass glass-accent p-6 lg:p-8">
             <div className="font-mono text-[10px] tracking-[0.18em] uppercase text-ink-300 mb-3.5">
-              {stat.label[locale]}
+              {localized(stat.label, locale)}
             </div>
             <div className="font-display font-extralight text-[clamp(26px,3vw,42px)] leading-none tracking-tightest">
               {stat.value}

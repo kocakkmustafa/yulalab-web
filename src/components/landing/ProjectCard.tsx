@@ -1,5 +1,6 @@
 "use client";
 
+import { localized } from "@/lib/localized";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
@@ -54,7 +55,7 @@ function CompactCard({ project }: { project: ProjectConfig }) {
       </div>
 
       <div className="mt-7 font-mono text-[11px] tracking-widest uppercase text-ink-300">
-        {project.category[locale]}
+        {localized(project.category, locale)}
       </div>
       <h3
         className="mt-1.5 font-display text-3xl font-semibold tracking-tight text-ink-50"
@@ -63,7 +64,7 @@ function CompactCard({ project }: { project: ProjectConfig }) {
         {project.name}
       </h3>
       <p className="mt-2 text-[15px] text-ink-300 leading-relaxed">
-        {project.tagline[locale]}
+        {localized(project.tagline, locale)}
       </p>
 
       <div className="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
@@ -160,7 +161,7 @@ function BigCard({
 
       <div className="p-7 lg:p-9">
         <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300">
-          {p.category[locale]}
+          {localized(p.category, locale)}
         </div>
         <h3
           className="mt-2 font-display text-3xl md:text-4xl font-semibold tracking-tightest text-ink-50"
@@ -168,9 +169,9 @@ function BigCard({
         >
           {p.name}
         </h3>
-        <p className="mt-2 text-[15.5px] text-ink-200">{p.tagline[locale]}</p>
+        <p className="mt-2 text-[15.5px] text-ink-200">{localized(p.tagline, locale)}</p>
         <p className="mt-4 text-[14.5px] text-ink-300 leading-relaxed max-w-[60ch]">
-          {p.short[locale]}
+          {localized(p.short, locale)}
         </p>
 
         <div className="mt-7 flex items-center justify-between">

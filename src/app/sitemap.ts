@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { projects } from "@/data/projects";
+import { siteOrigin } from "@/lib/site-origin";
 
 const STATIC_PATHS = [
   "/",
@@ -22,17 +23,6 @@ const STATIC_PATHS = [
   "/privacy/motion",
 ];
 
-function siteOrigin(): string {
-  // Custom domain takes precedence (set as NEXT_PUBLIC_SITE_URL in Vercel).
-  // If absent, fall straight back to the hard-coded canonical — never use the
-  // raw VERCEL_URL alias here, otherwise sitemap.xml on a production deploy
-  // that was built before NEXT_PUBLIC_SITE_URL was wired keeps emitting the
-  // long `yulalab-XXXX-kocakmkaan-4179s-projects.vercel.app` host instead of
-  // the apex everyone actually visits.
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (explicit) return explicit.replace(/\/$/, "");
-  return "https://yulalab.com";
-}
 
 function url(origin: string, locale: string, path: string): string {
   const isDefault = locale === routing.defaultLocale;
@@ -49,7 +39,6 @@ function altLanguages(origin: string, path: string): Record<string, string> {
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const origin = siteOrigin();
-  const lastModified = new Date();
   const dynamicProjectPaths = projects.map((p) => `/projects/${p.slug}`);
   const allPaths = [...STATIC_PATHS, ...dynamicProjectPaths];
 
@@ -70,7 +59,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return routing.locales.flatMap((locale) =>
     allPaths.map((path) => ({
       url: url(origin, locale, path),
-      lastModified,
       changeFrequency: "monthly" as const,
       priority: priorityFor(path, locale === routing.defaultLocale),
       alternates: { languages: altLanguages(origin, path) },

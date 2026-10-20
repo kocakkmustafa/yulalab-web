@@ -1,5 +1,7 @@
 "use client";
 
+import { text } from "@/lib/localized";
+import { localePath } from "@/i18n/locales";
 /* eslint-disable @next/next/no-img-element -- registry captures do not publish
    dimensions; native images preserve each file's intrinsic aspect ratio. */
 import { TrackedLink } from "@/components/common/TrackedLink";
@@ -40,7 +42,7 @@ export function StaticExperience({
         <p className={styles.kicker}>{copy.hero.eyebrow}</p>
         <h1>{copy.hero.title}</h1>
         <p className={styles.staticLede}>{copy.hero.lede}</p>
-        <a href={copy.locale === "tr" ? "/consulting" : "/en/consulting"} className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></a>
+        <a href={localePath(copy.locale, "/consulting")} className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></a>
         <p className={styles.staticNotice}>{copy.hero.notice}</p>
         <TrackedLink
           href="#experience-portfolio"
@@ -90,7 +92,7 @@ export function StaticExperience({
                         decoding="async"
                       />
                       <figcaption>
-                        {development ? <strong>{shot.captureKind === "onboarding" ? (copy.locale === "tr" ? "İlk başlangıç geliştirme görünümü" : "First-start development view") : (copy.locale === "tr" ? "Uygulama içi geliştirme görünümü" : "In-app development view")}</strong> : null}
+                        {development ? <strong>{shot.captureKind === "onboarding" ? (text(copy.locale, "İlk başlangıç geliştirme görünümü", "First-start development view")) : (text(copy.locale, "Uygulama içi geliştirme görünümü", "In-app development view"))}</strong> : null}
                         <span>{shot.sourceBuild}</span>
                         <time dateTime={shot.capturedAt}>{shot.capturedAt}</time>
                       </figcaption>

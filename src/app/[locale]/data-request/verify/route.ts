@@ -9,22 +9,28 @@ const COPY = {
     heading: "Veri talebini doğrula",
     intro: "Bu işlem, talebin e-posta adresinin size ait olduğunu doğrular.",
     button: "Talebi doğrula",
+    retry: "Aynı bağlantıyla yeniden kontrol et",
     sending: "Doğrulanıyor…",
     verified: "E-posta adresi doğrulandı. Talebiniz işleme alınabilir.",
-    failed: "Bu talep doğrulanamadı. Bağlantı geçersiz, süresi dolmuş veya daha önce kullanılmış olabilir.",
+    failed: "Bu bağlantıyla doğrulama sonucu teyit edilemiyor. Bağlantı geçersiz, süresi dolmuş veya daha önce kullanılmış olabilir. Önceki deneme tamamlanmış olabilir; e-posta ile teyit edebilirsiniz.",
+    uncertain: "Doğrulama yanıtı alınamadı. Önceki deneme tamamlanmış olabilir. Aynı bağlantıyla yeniden kontrol edebilir veya e-posta ile teyit edebilirsiniz.",
     noScript: "Talebinizi doğrulamak için JavaScript'i etkinleştirip e-postanızdaki bağlantıyı yeniden açın.",
     contact: "İletişime dön",
+    email: "Talebin durumunu e-posta ile teyit et",
   },
   en: {
     title: "Verify data request · YULA Lab",
     heading: "Verify your data request",
     intro: "This action confirms that the request email address belongs to you.",
     button: "Verify request",
+    retry: "Check again with the same link",
     sending: "Verifying…",
     verified: "The email address was verified. Your request can now be processed.",
-    failed: "This request could not be verified. The link may be invalid, expired, or already used.",
+    failed: "The verification result cannot be confirmed with this link. It may be invalid, expired, or already used. An earlier attempt may have completed; you can confirm by email.",
+    uncertain: "The verification response was not received. An earlier attempt may have completed. You can check again with the same link or confirm by email.",
     noScript: "To verify your request, enable JavaScript and reopen the link in your email.",
     contact: "Back to contact",
+    email: "Confirm the request status by email",
   },
 } as const;
 
@@ -63,25 +69,52 @@ function script(copy: (typeof COPY)[keyof typeof COPY]): string {
   }
   button.hidden = false;
   button.addEventListener("click", async () => {
+    if (button.disabled || button.hidden) return;
     button.disabled = true;
     button.textContent = ${JSON.stringify(copy.sending)};
+    status.textContent = ${JSON.stringify(copy.sending)};
+    status.setAttribute("role", "status");
+    status.setAttribute("aria-busy", "true");
+    const controller = new AbortController();
+    let timeout;
+    const deadline = new Promise((_, reject) => {
+      timeout = setTimeout(() => {
+        reject(new Error("Verification response timed out"));
+        controller.abort();
+      }, 15000);
+    });
     try {
-      const response = await fetch("/api/data-request", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ token })
-      });
-      const body = await response.json();
-      const verified = response.ok && body && body.verified === true;
+      // One deadline covers both headers and the body. Aborting the browser
+      // request cannot prove whether the server already consumed the token.
+      const result = (async () => {
+        const response = await fetch("/api/data-request", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ token }),
+          signal: controller.signal
+        });
+        if (response.status !== 200) throw new Error("Unexpected verification status");
+        const body = await response.json();
+        if (!body || typeof body !== "object" || Array.isArray(body) || typeof body.verified !== "boolean") {
+          throw new Error("Unexpected verification response");
+        }
+        return body.verified;
+      })();
+      const verified = await Promise.race([result, deadline]);
       status.textContent = verified ? ${JSON.stringify(copy.verified)} : ${JSON.stringify(copy.failed)};
       status.setAttribute("role", verified ? "status" : "alert");
+      button.hidden = verified;
     } catch {
-      status.textContent = ${JSON.stringify(copy.failed)};
+      status.textContent = ${JSON.stringify(copy.uncertain)};
       status.setAttribute("role", "alert");
     } finally {
-      button.hidden = true;
+      clearTimeout(timeout);
+      controller.abort();
+      status.removeAttribute("aria-busy");
+      button.disabled = false;
+      button.textContent = ${JSON.stringify(copy.retry)};
     }
-  }, { once: true });
+  });
 })();`;
 }
 
@@ -119,6 +152,8 @@ export async function GET(
     <p id="status" role="status" aria-live="polite" aria-atomic="true"></p>
     <noscript><p>${copy.noScript}</p></noscript>
     <a href="${contactPath}">${copy.contact}</a>
+    <br>
+    <a href="mailto:support@yulalab.com">${copy.email}</a>
   </main>
   <script nonce="${nonce}">${script(copy)}</script>
 </body>

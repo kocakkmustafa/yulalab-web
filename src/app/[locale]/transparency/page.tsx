@@ -1,3 +1,4 @@
+import { localeAlternates } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
@@ -30,10 +31,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/transparency" : `/${locale}/transparency`,
-      languages: {
-        tr: "/transparency",
-        en: "/en/transparency",
-      },
+      languages: localeAlternates("/transparency"),
     },
   };
 }

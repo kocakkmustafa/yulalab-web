@@ -1,5 +1,3 @@
-import type { Locale } from "@/lib/types";
-
 /** Dated normal-app development UI, separate from publication/claim evidence.
  * First-start views remain explicitly distinct from in-app guest screens.
  */
@@ -8,7 +6,7 @@ export type DevelopmentPreview = {
   sourceBuild: string;
   capturedAt: string;
   captureKind: "functional" | "onboarding";
-  alt: Record<Locale, string>;
+  alt: { tr: string; en: string };
 };
 
 export const developmentPreviews: Partial<Record<string, readonly DevelopmentPreview[]>> = {

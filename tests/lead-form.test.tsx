@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { readFileSync } from "node:fs";
@@ -104,8 +104,8 @@ function fillStudio() {
 type FetchMock = ReturnType<typeof stubFetch>;
 
 function stubFetch(status: number, body: unknown) {
-  const fetchMock = vi.fn(
-    async (_url: string | URL | Request, _init?: RequestInit) =>
+  const fetchMock = vi.fn<typeof fetch>(
+    async () =>
       new Response(JSON.stringify(body), { status }),
   );
   vi.stubGlobal("fetch", fetchMock);
@@ -316,14 +316,14 @@ describe("when it does not go through", () => {
     expect(errorKey("not_accepting_submissions")).toBe("closed");
   });
 
-  it("says the server was unreachable rather than blaming the message", async () => {
+  it("keeps a lost response uncertain rather than claiming the write failed", async () => {
     vi.stubGlobal("fetch", vi.fn(async () => {
       throw new TypeError("network");
     }));
     renderForm();
     fill();
     fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit}));
-    await screen.findByText(messages.leadForm.errors.offline);
+    await screen.findByText(messages.leadForm.errors.uncertain);
   });
 });
 
@@ -336,14 +336,13 @@ describe("after it goes through", () => {
     await screen.findByText(messages.leadForm.sentBody as string);
   });
 
-  it("says a copy was emailed once the provider is actually configured", async () => {
-    // The sentence is chosen from the same value that decides whether a
-    // receipt is sent, so it cannot outlive its truth.
+  it("does not claim delivery merely because the provider is configured", async () => {
     stubFetch(201, { receiptId: "YL-0000ABCD" });
     renderForm(true);
     fill();
     fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
-    await screen.findByText(messages.leadForm.sentBodyMailed as string);
+    await screen.findByText(messages.leadForm.sentBody as string);
+    expect(screen.queryByText(messages.leadForm.sentBodyMailed)).toBeNull();
   });
 
   it("shows the reference, because it is the only copy the person gets", async () => {

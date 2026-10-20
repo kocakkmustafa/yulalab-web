@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
-    "build": "pnpm verify:claims && pnpm verify:claims:local && next build",
+    "build": "pnpm verify:translations && pnpm verify:claims && pnpm verify:claims:local && next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
@@ -17,6 +17,7 @@
     "verify:claims": "node --import tsx scripts/verify-public-registry.ts",
     "verify:links": "tsx scripts/verify-public-links.ts",
     "verify:claims:local": "node scripts/verify-claims-local.mjs",
+    "verify:translations": "node --import tsx scripts/verify-translations.ts",
     "verify:render-mode": "node scripts/verify-render-mode.mjs"
   },
   "dependencies": {

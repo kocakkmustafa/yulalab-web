@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 import { routing } from "@/i18n/routing";
+import { isLocale, type Locale } from "@/i18n/locales";
 
 const intl = createMiddleware(routing);
 
@@ -27,7 +28,7 @@ function isMetadataRoute(pathname: string): boolean {
   );
 }
 
-function canonicalRedirect(req: NextRequest, pathname: string, locale: "tr" | "en") {
+function canonicalRedirect(req: NextRequest, pathname: string, locale: Locale) {
   const destination = new URL(req.url);
   destination.pathname = pathname;
   const response = NextResponse.redirect(destination);
@@ -50,9 +51,10 @@ export default function middleware(req: NextRequest) {
   // Next config redirects. Resolve this external alias before locale routing
   // so /links cannot become an unknown localized page. Never forward query
   // values: the destination is the fixed public hub, not a caller's returnTo.
-  if (/^\/(?:tr\/|en\/)?links\/?$/.test(decoded)) {
+  const linksMatch = /^\/(?:([^/]+)\/)?links\/?$/.exec(decoded);
+  if (linksMatch && (!linksMatch[1] || isLocale(linksMatch[1]))) {
     const destination = new URL("https://links.yulalab.com/");
-    if (decoded.startsWith("/en/")) destination.searchParams.set("lang", "en");
+    if (linksMatch[1]) destination.searchParams.set("lang", linksMatch[1]);
     return NextResponse.redirect(destination, 308);
   }
 
@@ -85,7 +87,7 @@ export default function middleware(req: NextRequest) {
 
   const firstSegment = req.nextUrl.pathname.split("/")[1];
   if (
-    /^[a-z]{2}$/.test(firstSegment) &&
+    /^[a-z]{2}(?:-[a-zA-Z0-9]{2,3})?$/.test(firstSegment) &&
     !routing.locales.some((locale) => locale === firstSegment)
   ) {
     return new NextResponse(null, { status: 404 });

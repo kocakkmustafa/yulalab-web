@@ -1,7 +1,8 @@
 import type { PoolClient } from "pg";
 
-// The declared scheduler runs once a day. Count mail jobs, not requests:
-// each lead creates two; a data request creates one.
+// Daily/pending admission budgets, not a drain batch or delivery guarantee.
+// Each lead creates two jobs; a data request creates one. The scheduler must
+// drain the separate small batches often enough before intake is activated.
 export const MAIL_RUN_LIMIT = 100;
 export const LEAD_MAIL_LIMIT = 40;
 export const MAIL_ADMISSION_WINDOW_HOURS = 24;

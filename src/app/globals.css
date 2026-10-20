@@ -458,3 +458,16 @@ body:not(:has([data-yula-experience="true"])) {
   .project-index { display: block; padding: 150px 24px 0; }
   .project-index > section { padding-block: 24px 40px; }
 }
+
+/* Native system fallbacks cover scripts outside the Latin display fonts. */
+html[lang="ar"] {
+  --font-sans: Tahoma, Arial, sans-serif;
+  --font-display: Tahoma, Arial, sans-serif;
+  --font-grotesk: Tahoma, Arial, sans-serif;
+}
+html[lang="ja"] {
+  --font-sans: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  --font-display: "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+}
+html[dir="rtl"] :is(h1, h2, h3, p, label, button, summary, select) { letter-spacing: normal; }
+html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-bidi: isolate; }

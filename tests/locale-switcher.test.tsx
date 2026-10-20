@@ -6,7 +6,7 @@ import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
 const navigation = vi.hoisted(() => ({
   locale: "tr", pathname: "/privacy/motion", replace: vi.fn(),
 }));
-vi.mock("next-intl", () => ({ useLocale: () => navigation.locale }));
+vi.mock("next-intl", () => ({ useLocale: () => navigation.locale, useTranslations: () => () => "Language" }));
 vi.mock("@/i18n/navigation", () => ({
   usePathname: () => navigation.pathname,
   useRouter: () => ({ replace: navigation.replace }),
@@ -19,12 +19,18 @@ afterEach(() => {
 });
 
 describe("LocaleSwitcher", () => {
-  it.each(["tr", "en"])("keeps the account deletion section when leaving %s", (locale) => {
+  it("exposes all eight self-named choices in compact mode", () => {
+    render(<LocaleSwitcher compact />);
+    expect(screen.getAllByRole("option")).toHaveLength(8);
+    expect(screen.getByRole("option", {name:"العربية"}).getAttribute("dir")).toBe("rtl");
+    expect(screen.getByRole("option", {name:"日本語"}).getAttribute("lang")).toBe("ja");
+  });
+  it.each(["tr", "en", "es-419", "pt-BR", "de", "fr", "ja", "ar"])("keeps the account deletion section when leaving %s", (locale) => {
     navigation.locale = locale;
     window.history.replaceState({}, "", "/privacy/motion#motion-account-deletion");
     const onNavigate = vi.fn();
     render(<LocaleSwitcher onNavigate={onNavigate} />);
-    fireEvent.click(screen.getByRole("button", { name: /TR\/EN/ }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Language" }), { target: { value: locale === "tr" ? "en" : "tr" } });
     expect(navigation.replace).toHaveBeenCalledWith(
       "/privacy/motion#motion-account-deletion", { locale: locale === "tr" ? "en" : "tr" },
     );
@@ -34,7 +40,7 @@ describe("LocaleSwitcher", () => {
   it("does not propagate query values to a different locale", () => {
     window.history.replaceState({}, "", "/privacy/motion?email=private%40example.com#motion-account-deletion");
     render(<LocaleSwitcher />);
-    fireEvent.click(screen.getByRole("button", { name: /TR\/EN/ }));
+    fireEvent.change(screen.getByRole("combobox", { name: "Language" }), { target: { value: "en" } });
     expect(navigation.replace).toHaveBeenCalledWith(
       "/privacy/motion#motion-account-deletion", { locale: "en" },
     );

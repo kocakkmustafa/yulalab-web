@@ -1,5 +1,6 @@
 "use client";
 
+import { localized } from "@/lib/localized";
 import { useLocale } from "next-intl";
 import { useReveal } from "@/components/common/useReveal";
 import type { Locale } from "@/lib/types";
@@ -28,11 +29,11 @@ export function ValueCard({ index, title, description }: Props) {
           0{index + 1}
         </span>
         <h3 className="font-display text-[22px] font-semibold tracking-tight text-ink-50">
-          {title[locale]}
+          {localized(title, locale)}
         </h3>
       </div>
       <p className="mt-3 text-[15px] text-ink-300 leading-[1.6] max-w-[40ch]">
-        {description[locale]}
+        {localized(description, locale)}
       </p>
     </div>
   );

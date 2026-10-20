@@ -1,3 +1,5 @@
+import { localeAlternates } from "@/i18n/locales";
+import { localized } from "@/lib/localized";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
@@ -19,7 +21,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/notes" : `/${locale}/notes`,
-      languages: { tr: "/notes", en: "/en/notes" },
+      languages: localeAlternates("/notes"),
     },
   };
 }
@@ -65,10 +67,10 @@ function Notes() {
               {note.date}
             </time>
             <h2 className="mt-3 font-display text-xl font-semibold tracking-tight text-ink-50">
-              {note.title[locale]}
+              {localized(note.title, locale)}
             </h2>
             <p className="mt-2 text-[15px] leading-relaxed text-ink-300">
-              {note.body[locale]}
+              {localized(note.body, locale)}
             </p>
           </article>
         ))}

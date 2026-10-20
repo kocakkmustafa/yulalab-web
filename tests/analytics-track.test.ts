@@ -41,6 +41,18 @@ afterEach(() => {
 });
 
 describe("track()", () => {
+  it.each(["es-419", "pt-BR", "de", "fr", "ja", "ar"])("does not mislabel %s or create an identifier before event-intake activation", (locale) => {
+    window.history.replaceState({}, "", `/${locale}/projects/lifeos?utm_source=sample`);
+    track({ event: "product_view", product: "lifeos" });
+    expect(beacons).toHaveLength(0);
+    expect(window.sessionStorage.length).toBe(0);
+  });
+
+  it.each([["/en/projects/lifeos", "en"], ["/enough", "tr"]])("infers only exact locale segments for %s", async (path, expectedLocale) => {
+    window.history.replaceState({}, "", path);
+    track({ event: "product_view", product: "lifeos" });
+    expect((await payloadOf(0)).locale).toBe(expectedLocale);
+  });
   it("sends one beacon and returns synchronously", () => {
     const result = track({ event: "product_view", product: "lifeos" });
     expect(result).toBeUndefined();

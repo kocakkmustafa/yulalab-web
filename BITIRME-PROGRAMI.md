@@ -1,5 +1,9 @@
 # yulalab.com — BİTİRME PROGRAMI (Y) v1.0
 
+## Güncel devam — 20 Ekim 2026
+
+Sekiz dil ve onaylı dar ürün düzeltmelerinin kanıtı [uygulama 01](../workspace/implementation-01-2026-10-19/STATUS.tr.md) ve DEFTER güncel kesitindedir. Eski Y-DONE, TR/EN, model ve yayın yöntemleri tarihsel kayıttır. Güncel kullanıcı tercihi GPT‑6.1 Sol / ultra; bu kaynak runtime kimliği kanıtı değildir. Tüm yayına hazır kabulü yoktur. N1/formal güvenlik, gerçek provider/DB/scheduler/restore, hukuki kimlik ve görsel/AT kapıları makbuzları olmadan kapanmaz. Yeni worktree, push/merge/deploy veya store upload yapılmadı.
+
 **Tarih:** 2026-07-22 · **Amaç:** Siteyi "pazarlamaya tam hazır" (Y-DONE) hale getirip YULA AI Holding'e bağlamak.
 **Bu dosya kendi kendine yeter** — yeni oturum yalnız bunu + `DEFTER.md`'yi okuyarak başlar. Üst bağlam (istenirse): `holding/plans/HAT-A-PROGRAM.md`.
 

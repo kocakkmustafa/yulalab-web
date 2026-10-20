@@ -1,3 +1,5 @@
+import { localeAlternates } from "@/i18n/locales";
+import { supportsLeadIntake } from "@/lib/forms/lead-submission";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
@@ -26,7 +28,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/contact" : `/${locale}/contact`,
-      languages: { tr: "/contact", en: "/en/contact" },
+      languages: localeAlternates("/contact"),
     },
   };
 }
@@ -44,7 +46,8 @@ export default async function ContactPage({
   // the form's own "closed" message points at.
   return (
     <Contact
-      enabled={leadsEnabled()}
+      enabled={leadsEnabled() && supportsLeadIntake(locale)}
+      intakeLanguageUnavailable={!supportsLeadIntake(locale)}
       mailConfigured={mailTransport().configured}
       studioEnabled={studioEnabled()}
     />
@@ -55,9 +58,11 @@ function Contact({
   enabled,
   mailConfigured,
   studioEnabled,
+  intakeLanguageUnavailable,
 }: {
   enabled: boolean;
   mailConfigured: boolean;
+  intakeLanguageUnavailable: boolean;
   studioEnabled: boolean;
 }) {
   const t = useTranslations("contact");
@@ -90,6 +95,10 @@ function Contact({
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-4">
         <Link href="/consulting" className="focusable text-ink-100 underline underline-offset-4">{consultingT("cta")}</Link>
       </section>
+
+      {intakeLanguageUnavailable ? (
+        <p className="relative max-w-3xl mx-auto px-6 lg:px-10 py-4 text-sm text-ink-200" data-intake-language-notice>{t("intakeLanguageNotice")}</p>
+      ) : null}
 
       {enabled ? (
         <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-6 pb-4">

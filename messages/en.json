@@ -14,7 +14,8 @@
     "menuOpen": "Menu",
     "menuClose": "Close",
     "studio": "Studio",
-    "consulting": "AI consulting"
+    "consulting": "AI consulting",
+    "language": "Language"
   },
   "footer": {
     "tagline": "An independent product lab that uses AI in the right place at the right time, without overstating it.",
@@ -239,7 +240,7 @@
   "contact": {
     "eyebrow": "Contact",
     "title": "Let's talk.",
-    "intro": "An idea, a piece of feedback, a press request, or just hello — email is the fastest way to reach us. We usually reply within 48 hours.",
+    "intro": "Have an idea, feedback, or a press enquiry? You can write to the email address below.",
     "generalLabel": "Support and contact",
     "generalHint": "Contact us for product support, technical questions, partnerships, and press inquiries.",
     "pressLabel": "Press",
@@ -250,7 +251,8 @@
     "studioBody": "The address on this page is for general correspondence. If you have a project in mind, the studio application is faster: it asks for budget band, timing and who decides, so the first reply is not spent asking those three questions.",
     "studioEyebrow": "Project enquiry",
     "studioLink": "Studio application",
-    "studioTitle": "Writing about a piece of work?"
+    "studioTitle": "Writing about a piece of work?",
+    "intakeLanguageNotice": "The online form is not available in this language yet. You can email the address below; the interface language does not promise a reply language or delivery time."
   },
   "notFound": {
     "title": "Page not found.",
@@ -510,7 +512,7 @@
     "submit": "Send",
     "sending": "Sending…",
     "sentEyebrow": "Received",
-    "sentBody": "Your message has been recorded. We do not send automatic email yet, so it is worth keeping the reference below.",
+    "sentBody": "Your message was recorded. Keep the reference below if you need to ask about its status. This screen does not confirm email delivery.",
     "reference": "Reference",
     "errors": {
       "closed": "The form is closed right now. The email address on this page still reaches us.",
@@ -522,7 +524,8 @@
       "consent": "You need to accept the privacy notice to continue.",
       "message": "The message cannot be empty, and must be under 4000 characters.",
       "name": "Please give a name.",
-      "generic": "That did not send. Could you check the details and try again?"
+      "generic": "That did not send. Could you check the details and try again?",
+      "uncertain": "We could not confirm the submission outcome; your message may have been recorded. Your entries are preserved. Retry with the same content, or email support."
     },
     "sentBodyMailed": "Your message has been recorded. We have emailed you a copy along with the reference below."
   },
@@ -615,7 +618,7 @@
       "choose": "Choose",
       "closedAlt": "In the meantime, write to us directly: ",
       "closedAltLink": "contact",
-      "closedBody": "This site is not yet collecting personal data through a form. It stays closed until the legal review and the mail setup are done — that is sequencing, not an omission.",
+      "closedBody": "The application form on this page is currently unavailable. You can write to us through the contact option below.",
       "closedTitle": "Applications are closed right now.",
       "company": "Company (optional)",
       "consent": "I agree to these details being stored so my application can be reviewed.",
@@ -636,14 +639,48 @@
         "problem-long": "That description is too long — could you shorten it?",
         "rate": "The submission limit has been reached. Try again later or contact us by email.",
         "server": "Could not send; please try again.",
-        "timing": "Please choose a timing."
+        "timing": "Please choose a timing.",
+        "uncertain": "We could not confirm the application outcome; it may have been recorded. Your entries are preserved. Retry with the same content, or email support."
       },
       "name": "Name",
       "problem": "The problem you want solved",
       "reference": "Reference",
       "sending": "Sending",
       "sentTitle": "Your application is in.",
-      "submit": "Apply"
+      "submit": "Apply",
+      "website": "Website",
+      "qualifiers": {
+        "budgetBand": {
+          "label": "Budget band",
+          "options": {
+            "under-50k": "A small budget so far",
+            "50-150k": "A mid-sized project budget",
+            "150-400k": "A full product-programme budget",
+            "over-400k": "A multi-phase programme budget",
+            "unsure": "Not decided yet"
+          }
+        },
+        "timing": {
+          "label": "Timing",
+          "options": {
+            "now": "Ready now",
+            "1-3-months": "In 1-3 months",
+            "3-6-months": "In 3-6 months",
+            "exploring": "Still exploring"
+          }
+        },
+        "decisionRole": {
+          "label": "Who decides",
+          "options": {
+            "founder": "Founder",
+            "exec": "Executive",
+            "product-lead": "Product lead",
+            "advisor": "Advisor",
+            "other": "Other"
+          }
+        }
+      },
+      "intakeLanguageNotice": "The online form is not available in this language yet. You can email the address below; the interface language does not promise a reply language or delivery time."
     },
     "intro": "The discipline we hold our own products to, applied to yours: every claim sourced, every figure dated, everything stale visibly stale.",
     "noPromiseBody": "We do not guarantee an outcome — we publish what the measurement says, including when we dislike it. We do not provide capital or investment. We have not yet completed an engagement for an outside client, and we would rather write that here than leave it out.",

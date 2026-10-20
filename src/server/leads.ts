@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { PoolClient } from "pg";
+import type { PoolClient, QueryResultRow } from "pg";
 import { assertMailAdmission, lockMailAdmission } from "@/server/mail-admission";
 
 /**
@@ -65,10 +65,22 @@ export function receiptIdFor(leadId: string): string {
  * remains the database uniqueness backstop; the transaction also recognizes
  * matching content within 24 hours so midnight does not break retries.
  */
-export function dedupeKey(input: Pick<LeadInput, "email" | "message" | "intent">, now: Date): string {
+function productScope(input: Pick<LeadInput, "intent" | "productSlug">): string | null {
+  return input.intent === "product" ? input.productSlug?.trim() || null : null;
+}
+
+export function dedupeKey(
+  input: Pick<LeadInput, "email" | "message" | "intent" | "productSlug">,
+  now: Date,
+): string {
   const day = now.toISOString().slice(0, 10);
   return createHash("sha256")
-    .update(`${input.email.trim().toLowerCase()}|${input.message.trim()}|${input.intent}|${day}`)
+    // Structured fields avoid delimiter ambiguity. The stored product scope
+    // must agree with the rolling lookup below, including legacy day hashes.
+    .update(JSON.stringify([
+      input.email.trim().toLowerCase(), input.message.trim(), input.intent,
+      productScope(input), day,
+    ]))
     .digest("hex");
 }
 
@@ -104,6 +116,76 @@ type Queryable = Pick<PoolClient, "query">;
 /** Just enough of a Pool to be swapped in a test. */
 export type Connectable = { connect: () => Promise<PoolClient> };
 
+/** Application waiting budgets, not proof of remote SQL cancellation. */
+export const LEAD_TRANSACTION_BUDGET_MS = 10_000;
+export const LEAD_DB_TIMEOUT_MS = 1_000;
+
+class LeadTransactionTimeoutError extends Error {
+  constructor(stage: "connect" | "query" | "rollback") {
+    super(`lead ${stage} deadline exceeded`);
+    this.name = "LeadTransactionTimeoutError";
+  }
+}
+
+class LeadCommitUncertainError extends Error {
+  constructor() {
+    super("lead commit outcome is unknown");
+    this.name = "LeadCommitUncertainError";
+  }
+}
+
+// Race one I/O operation, so late settlement cannot resume the transaction.
+// The settlement check also covers a delayed timer after event-loop work.
+async function withinLeadBudget<T>(
+  operation: () => Promise<T>,
+  deadline: number,
+  stage: "connect" | "query" | "rollback",
+  onTimeout: () => void,
+): Promise<T> {
+  const timeout = () => {
+    onTimeout();
+    return new LeadTransactionTimeoutError(stage);
+  };
+  const remaining = deadline - performance.now();
+  if (remaining <= 0) throw timeout();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await new Promise<T>((resolve, reject) => {
+      timer = setTimeout(() => reject(timeout()), remaining);
+      Promise.resolve().then(() => {
+        if (performance.now() >= deadline) throw timeout();
+        return operation();
+      }).then(
+        (value) => performance.now() >= deadline ? reject(timeout()) : resolve(value),
+        (error) => reject(performance.now() >= deadline ? timeout() : error),
+      );
+    });
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}
+
+async function acquireLeadClient(pool: Connectable, deadline: number): Promise<PoolClient> {
+  let abandoned = false;
+  let acquired: PoolClient | undefined;
+  let released = false;
+  const abandon = () => {
+    abandoned = true;
+    if (acquired && !released) {
+      released = true;
+      acquired.release(true);
+    }
+  };
+  return withinLeadBudget(async () => {
+    acquired = await pool.connect();
+    if (abandoned || performance.now() >= deadline) {
+      abandon();
+      throw new LeadTransactionTimeoutError("connect");
+    }
+    return acquired;
+  }, deadline, "connect", abandon);
+}
+
 /**
  * Writes the lead, its consent and both outbox rows atomically.
  *
@@ -118,6 +200,9 @@ export async function createLead(
   input: LeadInput,
   { now }: { now: Date },
 ): Promise<LeadResult> {
+  const deadline = performance.now() + LEAD_TRANSACTION_BUDGET_MS;
+  // Keep one bounded rollback opportunity after ordinary, settled SQL errors.
+  const workDeadline = deadline - LEAD_DB_TIMEOUT_MS;
   const key = dedupeKey(input, now);
 
   // A DEDICATED connection, not pool.query().
@@ -129,8 +214,16 @@ export async function createLead(
   // BEGIN and ROLLBACK SURVIVED the rollback. Sequential queries on an idle
   // pool reuse the same connection, which is why a test can pass while
   // production, under concurrent submissions, splits a lead from its consent.
-  const db = (await pool.connect()) as PoolClient;
+  const client = await acquireLeadClient(pool, Math.min(workDeadline, performance.now() + LEAD_DB_TIMEOUT_MS));
   let poisoned = false;
+  let commitStarted = false;
+  const query = <R extends QueryResultRow = QueryResultRow>(text: string, values?: unknown[]) =>
+    withinLeadBudget(() => {
+      if (text === "COMMIT") commitStarted = true;
+      return client.query<R>(text, values);
+    }, Math.min(workDeadline, performance.now() + LEAD_DB_TIMEOUT_MS), "query", () => { poisoned = true; });
+  // The caller and admission helpers use only the promise/string overload.
+  const db: Queryable = { query: query as PoolClient["query"] };
 
   try {
     await db.query("BEGIN");
@@ -140,13 +233,13 @@ export async function createLead(
     // Different content must never be acknowledged as if it had been stored.
     const duplicate = await db.query<{ id: string }>(
       `SELECT id FROM leads
-        WHERE dedupe_key = $1 OR (
+        WHERE (dedupe_key = $1 OR (
           created_at > $2::timestamptz - interval '24 hours'
           AND lower(btrim(email)) = lower(btrim($3::text))
           AND message = $4 AND intent = $5
-        )
+        )) AND product_slug IS NOT DISTINCT FROM $6::text
         ORDER BY created_at DESC LIMIT 1`,
-      [key, now, input.email.trim(), input.message.trim(), input.intent],
+      [key, now, input.email.trim(), input.message.trim(), input.intent, productScope(input)],
     );
     if (duplicate.rows[0]) {
       await db.query("COMMIT");
@@ -181,7 +274,7 @@ export async function createLead(
         input.email.trim(),
         input.company?.trim() || null,
         input.intent,
-        input.intent === "product" ? (input.productSlug ?? null) : null,
+        productScope(input),
         input.message.trim(),
         input.locale,
         key,
@@ -192,7 +285,11 @@ export async function createLead(
       // Someone else won the race with the identical submission. Return
       // THEIR receipt rather than an error: from the person's point of view
       // their message did arrive, once.
-      const existing = await db.query("SELECT id FROM leads WHERE dedupe_key = $1", [key]);
+      const existing = await db.query(
+        "SELECT id FROM leads WHERE dedupe_key = $1 AND product_slug IS NOT DISTINCT FROM $2::text",
+        [key, productScope(input)],
+      );
+      if (!existing.rows[0]) throw new Error("lead dedupe record is unavailable");
       await db.query("COMMIT");
       return { receiptId: receiptIdFor(existing.rows[0].id) };
     }
@@ -231,6 +328,16 @@ export async function createLead(
     await db.query("COMMIT");
     return { receiptId: receiptIdFor(leadId) };
   } catch (error) {
+    // A missing COMMIT acknowledgement cannot be turned into a known failure
+    // by issuing ROLLBACK. Close this client and let the existing API/client
+    // unavailable/uncertain path reconcile a same-content retry.
+    if (commitStarted) {
+      poisoned = true;
+      throw new LeadCommitUncertainError();
+    }
+    // Do not queue ROLLBACK behind a query/lock that ignored its timeout.
+    // Destroying our client is not a claim of confirmed server cancellation.
+    if (poisoned) throw error;
     // A failed ROLLBACK leaves the connection in an aborted transaction.
     // Returning it to the pool hands the next caller a broken one, so it is
     // destroyed instead. BEGIN is inside the try for the same reason: a
@@ -238,7 +345,9 @@ export async function createLead(
     // finally entirely and leaked the client permanently — at max:1 that
     // bricks the instance.
     let rollbackFailed = false;
-    await db.query("ROLLBACK").catch(() => {
+    await withinLeadBudget(() => client.query("ROLLBACK"),
+      Math.min(deadline, performance.now() + LEAD_DB_TIMEOUT_MS),
+      "rollback", () => { poisoned = true; }).catch(() => {
       rollbackFailed = true;
     });
     poisoned = rollbackFailed;
@@ -249,7 +358,7 @@ export async function createLead(
     }
     throw error;
   } finally {
-    db.release(poisoned ? true : undefined);
+    client.release(poisoned ? true : undefined);
   }
 }
 

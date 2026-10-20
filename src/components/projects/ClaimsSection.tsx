@@ -1,3 +1,4 @@
+import type { Locale } from "@/lib/types";
 import type { PresentedClaim } from "@/lib/proof";
 import { ProofCard } from "@/components/common/ProofCard";
 
@@ -23,7 +24,7 @@ export function ClaimsSection({
   labels,
 }: {
   presented: PresentedClaim[];
-  locale: "tr" | "en";
+  locale: Locale;
   labels: { heading: string; lapsedHeading: string; lapsedNote: string };
 }) {
   const verified = presented.filter((p) => p.kind === "verified");

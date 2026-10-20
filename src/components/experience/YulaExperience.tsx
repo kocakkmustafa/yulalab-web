@@ -1,5 +1,7 @@
 "use client";
 
+import { text } from "@/lib/localized";
+import type { Locale } from "@/lib/types";
 import dynamic from "next/dynamic";
 import {
   useCallback,
@@ -94,7 +96,7 @@ function useMediaQuery(query: string): boolean {
 }
 
 function GlyphControl({ locale, rotation, onChange }: {
-  locale: "tr" | "en";
+  locale: Locale;
   rotation: Vec3;
   onChange: (rotation: Vec3) => void;
 }) {
@@ -102,10 +104,8 @@ function GlyphControl({ locale, rotation, onChange }: {
   const moved = useRef(false);
   const [dragging, setDragging] = useState(false);
   const clamp = (value: number, limit: number) => Math.max(-limit, Math.min(limit, value));
-  const label = locale === "tr" ? "Amblemi döndür" : "Rotate the emblem";
-  const help = locale === "tr"
-    ? "Sürükleyin veya ok tuşlarını kullanın. Home veya Escape ile sıfırlayın."
-    : "Drag or use the arrow keys. Press Home or Escape to reset.";
+  const label = text(locale, "Amblemi döndür", "Rotate the emblem");
+  const help = text(locale, "Sürükleyin veya ok tuşlarını kullanın. Home veya Escape ile sıfırlayın.", "Drag or use the arrow keys. Press Home or Escape to reset.");
   const stop = () => { drag.current = null; setDragging(false); };
 
   return (

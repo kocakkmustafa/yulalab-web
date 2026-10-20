@@ -1,3 +1,4 @@
+import { text } from "@/lib/localized";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
@@ -41,8 +42,8 @@ export async function generateMetadata({
   if (!study) return notFoundMetadata(locale as Locale);
   const tr = locale === "tr";
   return {
-    title: tr ? study.titleTr : study.titleEn,
-    description: `${tr ? study.outcome.metricTr : study.outcome.metricEn} — ${study.outcome.figure}`,
+    title: text(locale, study.titleTr, study.titleEn),
+    description: `${text(locale, study.outcome.metricTr, study.outcome.metricEn)} — ${study.outcome.figure}`,
     alternates: {
       canonical: tr ? `/case-studies/${slug}` : `/${locale}/case-studies/${slug}`,
     },

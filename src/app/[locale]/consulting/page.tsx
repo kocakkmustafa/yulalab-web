@@ -1,3 +1,4 @@
+import { localeAlternates } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -8,8 +9,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "consulting" });
   return { title: t("nav"), description: t("intro"), alternates: {
-    canonical: locale === "tr" ? "/consulting" : "/en/consulting",
-    languages: { tr: "/consulting", en: "/en/consulting" },
+    canonical: locale === "tr" ? "/consulting" : `/${locale}/consulting`,
+    languages: localeAlternates("/consulting"),
   } };
 }
 export default async function ConsultingPage({ params }: Props) {

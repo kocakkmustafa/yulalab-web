@@ -3,7 +3,7 @@ export type LocalizedString = {
   en: string;
 };
 
-export type Locale = "tr" | "en";
+export type { Locale } from "@/i18n/locales";
 
 export type ProjectStatus = "live" | "beta" | "coming-soon" | "in-development";
 

@@ -14,7 +14,8 @@
     "menuOpen": "Menü",
     "menuClose": "Kapat",
     "studio": "Stüdyo",
-    "consulting": "AI danışmanlığı"
+    "consulting": "AI danışmanlığı",
+    "language": "Dil"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
@@ -239,7 +240,7 @@
   "contact": {
     "eyebrow": "İletişim",
     "title": "Konuşalım.",
-    "intro": "Bir fikir, bir geri bildirim, bir basın talebi ya da sadece bir merhaba — bize ulaşmanın en hızlı yolu e-posta. Genelde 48 saat içinde dönüyoruz.",
+    "intro": "Bir fikrin, geri bildirimin veya basın talebin mi var? Aşağıdaki e-posta adresinden bize yazabilirsin.",
     "generalLabel": "Destek ve iletişim",
     "generalHint": "Ürün desteği, teknik sorular, iş birliği ve basın talepleri için bize yazın.",
     "pressLabel": "Basın",
@@ -250,7 +251,8 @@
     "studioBody": "Bu sayfadaki adres genel yazışma içindir. Bir proje düşünüyorsanız stüdyo başvurusu daha hızlıdır: bütçe aralığı, zamanlama ve kararı veren rol orada sorulur, dolayısıyla ilk yanıt bu üç soruyu tekrar sormakla geçmez.",
     "studioEyebrow": "Proje başvurusu",
     "studioLink": "Stüdyo başvurusu",
-    "studioTitle": "Bir iş için mi yazıyorsunuz?"
+    "studioTitle": "Bir iş için mi yazıyorsunuz?",
+    "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir."
   },
   "notFound": {
     "title": "Sayfa bulunamadı.",
@@ -510,7 +512,7 @@
     "submit": "Gönder",
     "sending": "Gönderiliyor…",
     "sentEyebrow": "Alındı",
-    "sentBody": "Mesajın kaydedildi. Şu anda otomatik e-posta göndermiyoruz, bu yüzden aşağıdaki referans numarasını saklaman işine yarar.",
+    "sentBody": "Mesajın kaydedildi. Durumunu sormak için aşağıdaki referans numarasını sakla. Bu ekran e-posta teslimini doğrulamaz.",
     "reference": "Referans",
     "errors": {
       "closed": "Form şu anda kapalı. Bu sayfadaki e-posta adresinden bize ulaşabilirsin.",
@@ -522,7 +524,8 @@
       "consent": "Devam etmek için gizlilik bildirimini onaylaman gerekiyor.",
       "message": "Mesaj boş olamaz; en fazla 4000 karakter.",
       "name": "Ad alanı gerekli.",
-      "generic": "Gönderilemedi. Bilgileri kontrol edip tekrar dener misin?"
+      "generic": "Gönderilemedi. Bilgileri kontrol edip tekrar dener misin?",
+      "uncertain": "Gönderimin sonucunu doğrulayamadık; mesajın kaydedilmiş olabilir. Alanlarını koruduk. Aynı içerikle tekrar deneyebilir veya destek için e-posta gönderebilirsin."
     },
     "sentBodyMailed": "Mesajın kaydedildi. Aşağıdaki referans numarasıyla birlikte e-posta ile de bir kopyasını gönderdik."
   },
@@ -615,7 +618,7 @@
       "choose": "Seçin",
       "closedAlt": "Bu arada doğrudan yazabilirsiniz: ",
       "closedAltLink": "iletişim",
-      "closedBody": "Bu site henüz form üzerinden kişisel veri toplamıyor. Hukuk incelemesi ve e-posta altyapısı tamamlanana kadar kapalı kalacak — bu bir eksiklik değil, sıralama.",
+      "closedBody": "Bu sayfadaki başvuru formu şu anda kullanıma açık değil. Aşağıdaki iletişim yolundan bize yazabilirsin.",
       "closedTitle": "Başvuru formu şu an kapalı.",
       "company": "Şirket (isteğe bağlı)",
       "consent": "Başvurumun değerlendirilmesi için bu bilgilerin saklanmasını onaylıyorum.",
@@ -636,14 +639,48 @@
         "problem-long": "Açıklama çok uzun; kısaltır mısınız?",
         "rate": "Başvuru sınırına ulaşıldı. Daha sonra tekrar deneyin veya e-postayla iletişime geçin.",
         "server": "Gönderilemedi; lütfen tekrar deneyin.",
-        "timing": "Başlama zamanını seçin."
+        "timing": "Başlama zamanını seçin.",
+        "uncertain": "Başvurunun sonucunu doğrulayamadık; kaydedilmiş olabilir. Alanlarını koruduk. Aynı içerikle tekrar deneyebilir veya destek için e-posta gönderebilirsin."
       },
       "name": "Ad",
       "problem": "Çözmek istediğiniz problem",
       "reference": "Referans",
       "sending": "Gönderiliyor",
       "sentTitle": "Başvurunuz alındı.",
-      "submit": "Başvur"
+      "submit": "Başvur",
+      "website": "Web sitesi",
+      "qualifiers": {
+        "budgetBand": {
+          "label": "Ayrılan bütçe aralığı",
+          "options": {
+            "under-50k": "Henüz küçük bir bütçe",
+            "50-150k": "Orta ölçekli bir proje bütçesi",
+            "150-400k": "Tam bir ürün programı bütçesi",
+            "over-400k": "Çok dönemli bir program bütçesi",
+            "unsure": "Henüz belirlenmedi"
+          }
+        },
+        "timing": {
+          "label": "Başlama zamanı",
+          "options": {
+            "now": "Hazırız",
+            "1-3-months": "1-3 ay içinde",
+            "3-6-months": "3-6 ay içinde",
+            "exploring": "Araştırma aşamasında"
+          }
+        },
+        "decisionRole": {
+          "label": "Bu kararı veren rol",
+          "options": {
+            "founder": "Kurucu",
+            "exec": "Yönetici",
+            "product-lead": "Ürün lideri",
+            "advisor": "Danışman",
+            "other": "Diğer"
+          }
+        }
+      },
+      "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir."
     },
     "intro": "Kendi ürünlerimize uyguladığımız disiplini sizin ürününüze uygularız: her iddia kaynaklı, her rakam tarihli, bayatlayan her şey görünür.",
     "noPromiseBody": "Sonuç garantisi vermeyiz — ölçüm ne derse onu yayınlarız, hoşumuza gitmese de. Sermaye ya da yatırım sağlamıyoruz. Bugüne kadar hiçbir dış müşteri işini tamamlamadık; bunu gizlemek yerine yazıyoruz.",

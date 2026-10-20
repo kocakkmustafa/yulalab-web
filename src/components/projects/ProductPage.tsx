@@ -37,7 +37,7 @@ const ROW =
   "flex items-baseline justify-between gap-5 py-4 border-t border-white/10";
 const ROW_KEY =
   "font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400";
-const ROW_VAL = "font-grotesk text-[15.5px] text-right";
+const ROW_VAL = "font-grotesk text-[15.5px] text-end";
 
 export function ProductPage({ project }: { project: ProjectConfig }) {
   const t = useTranslations("product");
@@ -217,7 +217,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               >
                 {project.monogram}
               </span>
-              <span className="absolute left-5 bottom-4 max-w-[48ch] font-mono text-[10.5px] leading-[1.7] tracking-[0.13em] uppercase text-ink-400">
+              <span className="absolute start-5 bottom-4 max-w-[48ch] font-mono text-[10.5px] leading-[1.7] tracking-[0.13em] uppercase text-ink-400">
                 {p.interfaceNote}
               </span>
             </div>

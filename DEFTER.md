@@ -1,5 +1,20 @@
 # yulalab.com — DEFTER (Bulgu Defteri)
 
+## 2026-10-20 — onaylı düzeltmeler ve sekiz dil adayı
+
+Kullanıcının 19 Ekim düzeltme ve dil paketi onayıyla mevcut checkout üzerinde çalışıldı. Güncel kanıt: [uygulama 01](../workspace/implementation-01-2026-10-19/STATUS.tr.md). Bu kayıt eski kanıtları yeniden toplamlaştırmaz ve yayın kabulü değildir.
+
+| Mevcut kök / kapsam | Bu adayda sonuç | Açık kalan kabul |
+|---|---|---|
+| Y-P0-001 / Y-P0-003 / YU3-J02 | Kaynaksız sıfır fiyat Offer kaldırıldı; SoftwareApplication yalnız taze ve doğrulanmış live/beta primary yüzeyle çıkar. 3 dar SSR testi geçti. | Exact sağlayıcı paketi, canlı HTML ve arama motoru sonucu |
+| Y-P1-002 / Y-P1-004 | Ürün kapsamlı dedupe; 10 sn lead transaction/1 sn I/O sınırı; canonical Studio enum mesajı; senkron submit kilidi, 15 sn fetch/body sınırı, strict receipt ve belirsiz sonuçta draft. Yerel React/fake I/O testleri geçti. | Gerçek SQL, eski belirsiz Studio kayıtlarının mutabakatı, inbox/teslim |
+| Y-P1-002-MAIL | Batch10, 20 sn worker bütçesi; bounded I/O ve uncertain sonucu; doğrulama sayfasında 15 sn sınır/yeniden kontrol. | Gerçek scheduler, queue yaşı, provider, DB cancellation, dolu restore ve veri talebini yerine getirme |
+| YU3-J13 | Sitemap sahte build tarihini lastmod yapmıyor; metadata/sitemap origin aynı. 8 dilde alternates/route/menu ve Arapça dir bağlandı. | Yerel build geçti; gerçek görsel/RTL/AT/cihaz ve sağlayıcı kabulü açık |
+| Hukuk / veri hakları | KVKK m11/m13 ile GDPR m12/m15–22 koşulları ve süreleri ayrıldı. Kanıtsız anında tüm kayıtları silme metni daraltıldı. Dil tercihi depolaması açıklandı. | Controller kimliği/adresi, uygulanabilirlik, çocuk/yaş hedefi ve uzman görüşü |
+| Kullanıcı onaylı dil kapsamı | TR, EN, es-419, pt-BR, DE, FR, JA, AR: 615 ana metin; altı yeni dilde533 ek metin. Build öncesi kaynak kapsamı/placeholder guardı eklendi. | Ana dil editörü, gerçek cihaz, ekran okuyucu ve görsel anlam kabulü |
+
+Yeni altı arayüz dili TR/EN DB/mail/event sözleşmesini aktive etmez. Bu dillerde form yerine açık e-posta seçeneği gösterilir; event kaydı yanlışlıkla Türkçe yazılmaz. UI dili insan yanıt dili/SLA garantisi değildir. Lead/Studio/attribution/cron canlı aktivasyonu yapılmadı. Önceki formal güvenlik terminali ve Netlify adapter inceleme reddi korunur; ret deploy başarısızlığı sayılmaz. Push/deploy/CI/upload yapılmadı.
+
 Format: FABLE_PLAN v2.0 §5C (holding). Kapanış kanıtı zorunlu. Kaynak tarama: 2026-07-22.
 
 | ID | Tür | Şiddet | Bulgu | Durum | Kapanış kanıtı |

@@ -1,3 +1,4 @@
+import { localeAlternates } from "@/i18n/locales";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useTranslations } from "next-intl";
@@ -21,7 +22,7 @@ export async function generateMetadata({
     description: t("intro"),
     alternates: {
       canonical: locale === "tr" ? "/projects" : `/${locale}/projects`,
-      languages: { tr: "/projects", en: "/en/projects" },
+      languages: localeAlternates("/projects"),
     },
   };
 }

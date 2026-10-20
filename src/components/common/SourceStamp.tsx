@@ -1,4 +1,16 @@
-import type { EvidenceKind } from "@/lib/types";
+import { localized, text } from "@/lib/localized";
+import type { EvidenceKind, Locale } from "@/lib/types";
+
+const EVIDENCE_LABELS: Record<EvidenceKind, { tr: string; en: string }> = {
+  measured: { tr: "ölçüldü", en: "measured" },
+  "source-code-verified": { tr: "kaynak kodda doğrulandı", en: "verified in source code" },
+  "self-reported": { tr: "kendi beyanımız", en: "self-reported" },
+  "third-party-verified": { tr: "üçüncü tarafça doğrulandı", en: "third-party verified" },
+};
+
+export function evidenceKindLabel(kind: EvidenceKind, locale: Locale): string {
+  return localized(EVIDENCE_LABELS[kind], locale);
+}
 
 /**
  * Provenance for one public assertion: how it was established, when it was
@@ -21,26 +33,18 @@ export function SourceStamp({
   verifiedAt: string;
   source: string;
   scope?: string;
-  locale: "tr" | "en";
+  locale: Locale;
   /** Set when the verification window has closed. */
   expiredOn?: string;
 }) {
-  const isTR = locale === "tr";
-  const KIND: Record<EvidenceKind, { tr: string; en: string }> = {
-    measured: { tr: "ölçüldü", en: "measured" },
-    "source-code-verified": { tr: "kaynak kodda doğrulandı", en: "verified in source code" },
-    "self-reported": { tr: "kendi beyanımız", en: "self-reported" },
-    "third-party-verified": { tr: "üçüncü tarafça doğrulandı", en: "third-party verified" },
-  };
-
   const external = /^https?:\/\//.test(source);
 
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-300">
-      <span>{KIND[evidenceKind][isTR ? "tr" : "en"]}</span>
+      <span>{evidenceKindLabel(evidenceKind, locale)}</span>
       <span aria-hidden>·</span>
       <span>
-        {isTR ? "doğrulama" : "verified"} {verifiedAt}
+        {text(locale, "doğrulama", "verified")} {verifiedAt}
       </span>
       {expiredOn ? (
         <>
@@ -48,9 +52,7 @@ export function SourceStamp({
           {/* Stated in words, not just styling: this is the difference
               between "we checked" and "we have not checked lately". */}
           <span className="text-amber-300/90 normal-case tracking-normal">
-            {isTR
-              ? `yeniden doğrulanmalı — süre ${expiredOn} tarihinde doldu`
-              : `needs re-verification — window closed ${expiredOn}`}
+            {text(locale, "yeniden doğrulanmalı — süre {expiredOn} tarihinde doldu", "needs re-verification — window closed {expiredOn}", { "expiredOn": expiredOn })}
           </span>
         </>
       ) : null}
@@ -63,7 +65,7 @@ export function SourceStamp({
             rel="noreferrer"
             className="underline underline-offset-2 hover:text-ink-100 focusable"
           >
-            {isTR ? "kaynak" : "source"}
+            {text(locale, "kaynak", "source")}
           </a>
         </>
       ) : (
@@ -81,7 +83,7 @@ export function SourceStamp({
               that fixed it. `anywhere` rather than `break-word` because only
               `anywhere` shrinks min-content width. */}
           <span className="normal-case tracking-normal text-ink-300 [overflow-wrap:anywhere]">
-            {isTR ? "iç kayıt" : "internal record"}: {source}
+            {text(locale, "iç kayıt", "internal record")}: {source}
           </span>
         </>
       )}

@@ -16,4 +16,4 @@
  * person is agreeing to. `tests/privacy-claim-anchor.test.ts` and the lead
  * tests anchor the pairing.
  */
-export const CURRENT_NOTICE_VERSION = "2026-09-06";
+export const CURRENT_NOTICE_VERSION = "2026-10-20";

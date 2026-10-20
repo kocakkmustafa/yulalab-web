@@ -1,5 +1,4 @@
-import type { Pool, PoolClient } from "pg";
-import { MAIL_RUN_LIMIT } from "@/server/mail-admission";
+import type { Pool, PoolClient, QueryResult, QueryResultRow } from "pg";
 import {
   dataRequestTokenKeyForId,
   dataRequestTokenKeyring,
@@ -30,8 +29,9 @@ import {
  * arrive.
  *
  * Delivery is at-least-once, not exactly-once. If the provider accepts a
- * message and the COMMIT that records it then fails, the row stays claimable
- * and a later run sends it again. The alternative — stamping the row before
+ * message and the COMMIT that records it is not acknowledged, the database
+ * outcome is unknown: the row may remain claimable, or may be committed.
+ * A later run can send it again. The alternative — stamping the row before
  * the send — trades a duplicate receipt for a lost one, and a person who
  * receives two acknowledgements is better served than one who receives
  * none.
@@ -42,8 +42,78 @@ export const MAX_ATTEMPTS = 5;
 /** How long one send may take before it is treated as a failure. */
 export const SEND_TIMEOUT_MS = 10_000;
 
-/** Bounded so one run cannot hold a connection for an unbounded time. */
-const BATCH_LIMIT = MAIL_RUN_LIMIT;
+/** Drain size is independent from the daily/pending admission budget. */
+export const DRAIN_BATCH_LIMIT = 10;
+/** Application guard, not proof of a particular provider's runtime limit. */
+export const DRAIN_TIME_BUDGET_MS = 20_000;
+export const DRAIN_DB_TIMEOUT_MS = 1_000;
+const DRAIN_TAIL_RESERVE_MS = 2_000;
+const MIN_ROW_BUDGET_MS = SEND_TIMEOUT_MS + 3 * DRAIN_DB_TIMEOUT_MS;
+
+/** A returned HTTP rejection, unlike a lost response or send timeout. */
+export class MailProviderRejectionError extends Error {
+  constructor(status: number) {
+    super(`sendgrid rejected the message: ${status}`);
+    this.name = "MailProviderRejectionError";
+  }
+}
+
+class MailDrainTimeoutError extends Error {
+  constructor(readonly stage: "connect" | "query" | "send") {
+    super(`mail ${stage} deadline exceeded`);
+    this.name = "MailDrainTimeoutError";
+  }
+}
+
+type Queryable = {
+  query<R extends QueryResultRow = QueryResultRow>(text: string, values?: unknown[]): Promise<QueryResult<R>>;
+};
+
+/** Race one operation only: its late settlement cannot resume row processing. */
+async function withinBudget<T>(
+  operation: () => Promise<T>,
+  deadline: number,
+  limitMs: number,
+  stage: "connect" | "query" | "send",
+  onTimeout: () => void,
+): Promise<T> {
+  const remaining = Math.min(limitMs, deadline - performance.now());
+  if (remaining <= 0) throw new MailDrainTimeoutError(stage);
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await new Promise<T>((resolve, reject) => {
+      timer = setTimeout(() => {
+        onTimeout();
+        reject(new MailDrainTimeoutError(stage));
+      }, remaining);
+      // Both handlers remain attached after timeout, consuming late rejection
+      // without allowing it to start a send, stamp, or another SQL statement.
+      Promise.resolve().then(operation).then(resolve, reject);
+    });
+  } finally {
+    if (timer !== undefined) clearTimeout(timer);
+  }
+}
+
+async function acquireClient(pool: Pool, deadline: number): Promise<PoolClient> {
+  let abandoned = false;
+  return withinBudget(async () => {
+    const client = await pool.connect();
+    if (abandoned || performance.now() >= deadline) {
+      client.release(true);
+      throw new MailDrainTimeoutError("connect");
+    }
+    return client;
+  }, deadline, DRAIN_DB_TIMEOUT_MS, "connect", () => { abandoned = true; });
+}
+
+function boundedQueries(db: PoolClient, deadline: number, onTimeout: () => void): Queryable {
+  return {
+    query<R extends QueryResultRow = QueryResultRow>(text: string, values?: unknown[]) {
+      return withinBudget(() => db.query<R>(text, values), deadline, DRAIN_DB_TIMEOUT_MS, "query", onTimeout);
+    },
+  };
+}
 
 export type OutboxEventType =
   | "lead_receipt"
@@ -68,7 +138,7 @@ export interface MailTransport {
    * credentials arrive.
    */
   readonly configured: boolean;
-  send(message: MailMessage): Promise<void>;
+  send(message: MailMessage, options?: { signal?: AbortSignal }): Promise<void>;
 }
 
 export function unconfiguredTransport(): MailTransport {
@@ -83,8 +153,12 @@ export function unconfiguredTransport(): MailTransport {
 export interface DrainResult {
   /** Handed to the provider and stamped. */
   delivered: number;
-  /** Attempted and refused by the provider; retried on a later run. */
+  /** Failed attempts whose retry counter was committed; see `uncertain`. */
   failed: number;
+  /** A started send or provider acceptance could not be durably reconciled. */
+  uncertain: number;
+  /** Stopped before claiming more work to preserve the total time budget. */
+  budgetExhausted: boolean;
   /** Not attempted, because the transport is not configured. */
   skipped: number;
   /** The record this row belonged to is gone, so there is nobody to send to. */
@@ -96,8 +170,8 @@ export interface DrainResult {
    * could not measure it — reporting 0 for "I do not know" is the failure
    * this whole file is about.
    *
-   * Without it a run that hits BATCH_LIMIT returns the healthiest-looking
-   * body possible — {delivered: 100, failed: 0} — while the queue grows
+   * Without it a run that hits DRAIN_BATCH_LIMIT returns the healthiest-looking
+   * body possible — {delivered: 10, failed: 0} — while the queue grows
    * behind it and `purge_at` deletes the overflow, undelivered, at thirty
    * days. Same argument as the whole-backlog `blocked` count: a number
    * capped by the batch size reads as steady exactly while it gets worse.
@@ -235,7 +309,7 @@ export function dataRequestDeliveryMissingConfig(): string[] {
  * address been copied into the payload, an honoured "delete my data" would
  * still have left a live address sitting in a queue for thirty days.
  */
-async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolution> {
+async function resolveRecipient(db: Queryable, row: OutboxRow): Promise<Resolution> {
   if (!isDeliverable(row.event_type)) return { kind: "blocked" };
 
   if (row.event_type === "lead_receipt") {
@@ -316,72 +390,56 @@ async function resolveRecipient(db: PoolClient, row: OutboxRow): Promise<Resolut
 }
 
 /**
- * Sends what is pending and returns what happened.
- *
- * Rows are claimed one at a time with FOR UPDATE SKIP LOCKED, one row per
- * transaction, so the lock is held across a single send rather than the
- * whole run.
- *
- * What each half actually buys, measured rather than assumed — dropping
- * SKIP LOCKED and re-running the concurrency test passes:
- *
- *   FOR UPDATE gives exactly-once. A second worker blocks on the lock, and
- *   under READ COMMITTED Postgres re-evaluates `delivered_at IS NULL` once
- *   the lock is granted — so after the first worker commits, the row no
- *   longer matches and the second skips it. The lock, not SKIP LOCKED, is
- *   what stops one person getting two receipts.
- *
- *   SKIP LOCKED gives liveness. The lock is held across a network call to
- *   the mail provider; without it every other worker queues behind the
- *   slowest send in flight, and N instances do the work of one.
+ * Claims are serialized by a row lock inside one transaction per message.
+ * SKIP LOCKED lets independent workers progress; it does not make an external
+ * provider effect exactly-once. A lost send/COMMIT response remains uncertain.
+ * No new claim starts without enough headroom for one send and its writes.
  */
 export async function drainOutbox(
   pool: Pool,
   transport: MailTransport,
 ): Promise<DrainResult> {
+  const deadline = performance.now() + DRAIN_TIME_BUDGET_MS;
+  const workDeadline = deadline - DRAIN_TAIL_RESERVE_MS;
   const result: DrainResult = {
-    delivered: 0,
-    failed: 0,
-    skipped: 0,
-    dropped: 0,
-    blocked: 0,
-    remaining: null,
-    dead: null,
-    aborted: false,
-    missingConfig: [],
+    delivered: 0, failed: 0, uncertain: 0, budgetExhausted: false,
+    skipped: 0, dropped: 0, blocked: 0, remaining: null, dead: null,
+    aborted: false, missingConfig: [],
   };
-
   const deliverable = deliverableEventTypes();
   const pending = async () => {
-    const { rows } = await pool.query<{
-      deliverable: number;
-      unaddressable: number;
-      dead: number;
-    }>(
-      `SELECT
-         count(*) FILTER (
-           WHERE attempts < $1 AND event_type = ANY($2::text[]))::int      AS deliverable,
-         count(*) FILTER (
-           WHERE attempts < $1 AND NOT (event_type = ANY($2::text[])))::int AS unaddressable,
-         count(*) FILTER (WHERE attempts >= $1)::int                        AS dead
-       FROM event_outbox
-       WHERE delivered_at IS NULL`,
-      [MAX_ATTEMPTS, deliverable],
-    );
-    return rows[0];
+    // Own the connection so a timed-out query can be destroyed rather than
+    // silently returning an occupied connection to a serverless pool.
+    const db = await acquireClient(pool, deadline);
+    let poisoned = false;
+    try {
+      const { rows } = await boundedQueries(db, deadline, () => { poisoned = true; }).query<{
+        deliverable: number; unaddressable: number; dead: number;
+      }>(
+        `SELECT
+           count(*) FILTER (
+             WHERE attempts < $1 AND event_type = ANY($2::text[]))::int AS deliverable,
+           count(*) FILTER (
+             WHERE attempts < $1 AND NOT (event_type = ANY($2::text[])))::int AS unaddressable,
+           count(*) FILTER (WHERE attempts >= $1)::int AS dead
+         FROM event_outbox WHERE delivered_at IS NULL`,
+        [MAX_ATTEMPTS, deliverable],
+      );
+      if (!rows[0]) throw new Error("outbox counts are unavailable");
+      return rows[0];
+    } finally {
+      db.release(poisoned ? true : undefined);
+    }
   };
 
-  // The whole backlog, not the handful that fitted in one batch.
-  //
-  // Blocked rows are never retired, so they sit at the front of
-  // `ORDER BY created_at` until they purge thirty days later. Examining one
-  // used to cost a slot in the batch — so a backlog larger than BATCH_LIMIT
-  // meant real receipts were never reached, not on that run and not on any
-  // later run either, because the backlog does not move. The claim query
-  // excludes them in SQL instead: the batch bounds WORK DONE, not rows
-  // looked at. `deliverable` is read ONCE here rather than per row, so the
-  // SQL filter and the resolver cannot disagree mid-run.
-  const before = await pending();
+  // Count the whole backlog, including types that are blocked by config.
+  let before: Awaited<ReturnType<typeof pending>>;
+  try {
+    before = await pending();
+  } catch {
+    result.aborted = true;
+    return result; // Counts remain unknown, never a fabricated empty queue.
+  }
   result.blocked = before.unaddressable;
   const identity = resolveMailIdentity();
   result.missingConfig = [...new Set([
@@ -389,157 +447,134 @@ export async function drainOutbox(
     ...mailIdentityDiagnosticCodes(identity.internalRoute),
     ...missingTemplates(),
   ])];
-
   if (!transport.configured) {
-    // Only the rows credentials would actually help. Counting the
-    // permanently-unaddressable ones here too would inflate the one number
-    // that means "mail is waiting on the founder gate".
     result.skipped = before.deliverable;
     result.remaining = before.deliverable;
     result.dead = before.dead;
     return result;
   }
 
-  // Rows this run has already handled. A failed row stays claimable — that
-  // is the point of the retry — but must not be re-claimed by the SAME run,
-  // or one bad provider minute would spend every attempt a row will ever
-  // get, in a loop, in seconds.
   const handled: string[] = [];
-
-  for (let i = 0; i < BATCH_LIMIT; i += 1) {
-    // Acquired inside its own guard, not as a bare `await` in the loop
-    // header. A pool that cannot hand out a connection is the same class of
-    // failure as one that fails mid-transaction, and letting it throw past
-    // here discarded every count the run had already earned.
+  for (let i = 0; i < DRAIN_BATCH_LIMIT; i += 1) {
+    if (workDeadline - performance.now() < MIN_ROW_BUDGET_MS) {
+      result.budgetExhausted = true;
+      break;
+    }
     let db: PoolClient;
     try {
-      db = (await pool.connect()) as PoolClient;
+      db = await acquireClient(pool, workDeadline);
     } catch {
       result.aborted = true;
       break;
     }
     let poisoned = false;
+    let providerAccepted = false;
+    const queries = boundedQueries(db, workDeadline, () => { poisoned = true; });
     try {
-      await db.query("BEGIN");
-      const claimed = await db.query<OutboxRow>(
+      await queries.query("BEGIN");
+      const claimed = await queries.query<OutboxRow>(
         `SELECT id, event_type, aggregate_id, payload_json
            FROM event_outbox
           WHERE delivered_at IS NULL
             AND attempts < $1
             AND id <> ALL($2::uuid[])
             AND event_type = ANY($3::text[])
-          ORDER BY created_at
+          ORDER BY created_at, id
           LIMIT 1
           FOR UPDATE SKIP LOCKED`,
         [MAX_ATTEMPTS, handled, deliverable],
       );
       if (!claimed.rowCount) {
-        await db.query("COMMIT");
+        await queries.query("COMMIT");
         break;
       }
-
       const row = claimed.rows[0];
       handled.push(row.id);
-      const resolution = await resolveRecipient(db, row);
-
+      const resolution = await resolveRecipient(queries, row);
       if (resolution.kind === "blocked") {
-        // Unreachable while isDeliverable and the claim query agree, which is
-        // the point of them sharing one declaration. Left in because the
-        // alternative to refusing here is sending to an address we do not
-        // have; counted, not silently skipped.
-        await db.query("COMMIT");
+        await queries.query("COMMIT");
         result.blocked += 1;
         continue;
       }
-
       if (resolution.kind === "dropped") {
-        // DELETED, not retired by spending its attempts.
-        //
-        // Two reasons, and the second only became visible once `dead` was
-        // counted. First: the row points at a lead that has been erased, so
-        // an outbox row carrying that pointer is residual data about a
-        // person we promised to forget — leaving it for `purge_at` keeps it
-        // thirty more days. Second: retiring it with attempts = MAX made it
-        // indistinguishable from a row the provider refused five times, so
-        // any count of genuinely-failed deliveries would have been inflated
-        // by every honoured deletion.
-        await db.query("DELETE FROM event_outbox WHERE id = $1", [row.id]);
-        await db.query("COMMIT");
+        await queries.query("DELETE FROM event_outbox WHERE id = $1", [row.id]);
+        await queries.query("COMMIT");
         result.dropped += 1;
         continue;
       }
 
+      const controller = new AbortController();
+      // Verification needs its sent/expiry update as well as the outbox
+      // stamp and COMMIT; ordinary receipts need only the latter two.
+      const deliveryWriteBudgetMs = (resolution.verification ? 3 : 2) * DRAIN_DB_TIMEOUT_MS;
+      let sendStarted = false;
       try {
-        await transport.send({
-          outboxId: row.id,
-          eventType: row.event_type,
-          to: resolution.to,
-          locale: resolution.locale,
-          data: resolution.data ?? row.payload_json,
-        });
-      } catch {
-        // The provider's error is deliberately not carried further: it can
-        // quote the recipient address back in its message, and this runs on
-        // a path that logs. The count is what a caller needs.
-        await db.query("UPDATE event_outbox SET attempts = attempts + 1 WHERE id = $1", [row.id]);
-        await db.query("COMMIT");
+        // A transport must honor cancellation when possible. The bounded
+        // await also covers a faulty double/provider that ignores the signal.
+        await withinBudget(() => {
+          sendStarted = true;
+          return transport.send({
+            outboxId: row.id, eventType: row.event_type, to: resolution.to,
+            locale: resolution.locale, data: resolution.data ?? row.payload_json,
+          }, { signal: controller.signal });
+        }, workDeadline - deliveryWriteBudgetMs,
+        SEND_TIMEOUT_MS, "send", () => { controller.abort(); });
+        providerAccepted = true;
+      } catch (error) {
+        if (!sendStarted) {
+          result.budgetExhausted = true;
+          throw error; // No send started; do not invent a failed attempt.
+        }
+        // Only an explicit HTTP rejection establishes a known failed send.
+        // A generic network error/timeout may follow provider acceptance.
+        const uncertain = !(error instanceof MailProviderRejectionError);
+        if (uncertain) result.uncertain += 1;
+        await queries.query("UPDATE event_outbox SET attempts = attempts + 1 WHERE id = $1", [row.id]);
+        await queries.query("COMMIT");
         result.failed += 1;
+        if (uncertain) {
+          result.aborted = true;
+          break; // Never start another send after abandoning one in flight.
+        }
         continue;
       }
 
-      // A rejected provider call must not consume the person's 24-hour
-      // capability window. Stamp only after provider acceptance, while the
-      // outbox row is still locked, and commit it with delivered_at below.
-      //
-      // There is deliberately no exactly-once claim across SendGrid and
-      // PostgreSQL: if the provider accepts and this transaction then fails,
-      // retrying sends the same deterministic token with the same outboxId
-      // correlation. That at-least-once duplicate is safer than losing the
-      // only verification message.
       if (resolution.verification) {
-        const refreshed = await db.query(
+        const refreshed = await queries.query(
           `UPDATE data_requests
               SET verification_sent_at = COALESCE(verification_sent_at, now()),
                   verification_expires_at = COALESCE(verification_expires_at, now() + interval '24 hours'),
                   purge_at = GREATEST(purge_at, now() + interval '24 hours')
-            WHERE id = $1
-              AND verification_state = 'pending'
+            WHERE id = $1 AND verification_state = 'pending'
               AND verification_token_key_id = $2
             RETURNING verification_sent_at, verification_expires_at`,
           [resolution.verification.requestId, resolution.verification.tokenKeyId],
         );
-        if (!refreshed.rowCount) {
-          throw new Error("verification delivery state changed after provider acceptance");
-        }
+        if (!refreshed.rowCount) throw new Error("verification delivery state changed after provider acceptance");
       }
-
-      // now(), not a timestamp passed in from the caller.
-      //
-      // `created_at` is written by the database, and `delivered_after_creation`
-      // compares the two. An injected clock that is even slightly behind — a
-      // value captured before the row was written, a container whose time has
-      // drifted — makes EVERY delivery fail that check, and the rejection
-      // escapes the per-row handler and stops the whole run. One clock skew
-      // would take the queue down. This is the same two-sources-for-one-time
-      // drift that migration 0002 removed from `retention_until`; the fix is
-      // the same one: let the clock that wrote the row write the stamp.
-      await db.query(
+      // Keep the database's clock and delivery/expiry writes in one commit.
+      await queries.query(
         `UPDATE event_outbox
             SET delivered_at = now(),
                 purge_at = GREATEST(purge_at, now() + interval '24 hours')
           WHERE id = $1`,
         [row.id],
       );
-      await db.query("COMMIT");
+      await queries.query("COMMIT");
       result.delivered += 1;
     } catch (error) {
-      let rollbackFailed = false;
-      await db.query("ROLLBACK").catch(() => {
-        rollbackFailed = true;
-      });
-      poisoned = rollbackFailed;
-      // Name only: a driver error can quote the row it was working on, and
-      // that row points at a person.
+      if (providerAccepted) result.uncertain += 1;
+      // A query timeout can leave SQL in flight: do not queue ROLLBACK behind
+      // it. Destroy the owned connection. That is not proof of remote SQL
+      // cancellation or of the outcome of an unacknowledged COMMIT.
+      if (!poisoned) {
+        try {
+          await withinBudget(() => db.query("ROLLBACK"), deadline,
+            DRAIN_DB_TIMEOUT_MS, "query", () => { poisoned = true; });
+        } catch {
+          poisoned = true;
+        }
+      }
       console.error("outbox drain aborted", error instanceof Error ? error.name : "unknown");
       result.aborted = true;
     } finally {
@@ -553,11 +588,7 @@ export async function drainOutbox(
     result.remaining = after.deliverable;
     result.dead = after.dead;
   } catch {
-    // The likeliest reason a drain aborts is the database, which is exactly
-    // when this measurement fails too. Throwing here discarded the counts
-    // of work that DID happen — the run that delivered 99 and then lost the
-    // connection reported nothing at all. They stay null: unknown, not zero.
-    result.aborted = true;
+    result.aborted = true; // Preserve completed counts; unknown remains null.
   }
   return result;
 }
@@ -580,7 +611,7 @@ export function sendgridTransport(
 ): MailTransport {
   return {
     configured: true,
-    async send(message) {
+    async send(message, options) {
       const response = await fetchImpl("https://api.sendgrid.com/v3/mail/send", {
         method: "POST",
         // A fetch that HANGS rather than rejecting would hold this row's
@@ -589,7 +620,9 @@ export function sendgridTransport(
         // but not hangs, and `ORDER BY created_at` hands the same row back
         // first on every later run. That is a poison row that blocks the
         // whole queue, deterministically and invisibly.
-        signal: AbortSignal.timeout(timeoutMs),
+        signal: options?.signal
+          ? AbortSignal.any([options.signal, AbortSignal.timeout(timeoutMs)])
+          : AbortSignal.timeout(timeoutMs),
         headers: {
           authorization: `Bearer ${apiKey}`,
           "content-type": "application/json",
@@ -614,7 +647,7 @@ export function sendgridTransport(
       if (!response.ok) {
         // Status only. The provider echoes the recipient address back in its
         // error bodies, and this throw reaches a log.
-        throw new Error(`sendgrid rejected the message: ${response.status}`);
+        throw new MailProviderRejectionError(response.status);
       }
     },
   };

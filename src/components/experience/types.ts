@@ -1,3 +1,4 @@
+import type { EvidenceKind, Locale } from "@/lib/types";
 export type ExperienceMode = "desktop" | "mobile";
 export type QualityTier = "high" | "medium" | "low";
 export type ExperienceStage =
@@ -73,7 +74,7 @@ export type ExperienceClaim = {
   id: string;
   figure: string | null;
   statement: string;
-  evidenceKind: string;
+  evidenceKind: EvidenceKind;
   source: string;
   scope: string;
   verifiedAt: string;
@@ -110,7 +111,7 @@ export type ExperienceValue = {
 };
 
 export type ExperienceCopy = {
-  locale: "tr" | "en";
+  locale: Locale;
   navigation: {
     home: string;
     consulting: string;

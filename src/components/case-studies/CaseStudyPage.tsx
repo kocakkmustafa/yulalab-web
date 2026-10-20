@@ -1,3 +1,4 @@
+import { text } from "@/lib/localized";
 import { useLocale } from "next-intl";
 import type { CaseStudy } from "@/lib/case-studies";
 import { registryFigure } from "@/lib/figure-match";
@@ -28,8 +29,7 @@ export function CaseStudyPage({
   claim: ProductPublicRecord["claims"][number];
 }) {
   const locale = useLocale() as Locale;
-  const tr = locale === "tr";
-  const pick = (a: string, b: string) => (tr ? a : b);
+  const pick = (a: string, b: string) => text(locale, a, b);
 
   return (
     <article className="mx-auto max-w-3xl px-6 pb-24 pt-32 lg:px-10 lg:pt-40">
@@ -41,47 +41,43 @@ export function CaseStudyPage({
           the whole thing needs re-checking. */}
       <div className="mt-7 rounded-2xl border border-hairline bg-surface-inset p-5">
         <div className="font-mono text-[10px] uppercase tracking-widest text-ink-400">
-          {tr ? "İzin ve kapsam" : "Permission and scope"}
+          {text(locale, "İzin ve kapsam", "Permission and scope")}
         </div>
         <p className="mt-2 text-[14px] leading-relaxed text-ink-200">
           {study.permission.kind === "self-owned"
-            ? tr
-              ? "YULA'nın kendi ürünü — bu vaka kendi işimizi anlatıyor."
-              : "A YULA-owned product — this case describes our own work."
-            : tr
-              ? `Yazılı izin: ${study.permission.grantedBy} (${study.permission.grantedAt})`
-              : `Written permission: ${study.permission.grantedBy} (${study.permission.grantedAt})`}
+            ? text(locale, "YULA'nın kendi ürünü — bu vaka kendi işimizi anlatıyor.", "A YULA-owned product — this case describes our own work.")
+            : text(locale, "Yazılı izin: {study.permission.grantedBy} ({study.permission.grantedAt})", "Written permission: {study.permission.grantedBy} ({study.permission.grantedAt})", { "study.permission.grantedBy": study.permission.grantedBy, "study.permission.grantedAt": study.permission.grantedAt })}
         </p>
         <p className="mt-1 text-[14px] leading-relaxed text-ink-300">
           {pick(study.permission.scopeTr, study.permission.scopeEn)}
         </p>
         <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-ink-400">
-          {tr ? "doğrulandı" : "verified"} {study.verifiedAt} ·{" "}
-          {tr ? "geçerlilik" : "valid until"} {study.expiresAt}
+          {text(locale, "doğrulandı", "verified")} {study.verifiedAt} ·{" "}
+          {text(locale, "geçerlilik", "valid until")} {study.expiresAt}
         </p>
       </div>
 
-      <Section title={tr ? "Başlangıç durumu" : "Baseline"}>
+      <Section title={text(locale, "Başlangıç durumu", "Baseline")}>
         {pick(study.baselineTr, study.baselineEn)}
       </Section>
-      <Section title={tr ? "Kısıt" : "Constraint"}>
+      <Section title={text(locale, "Kısıt", "Constraint")}>
         {pick(study.constraintTr, study.constraintEn)}
       </Section>
 
       <div className="mt-10">
         <h2 className="font-display text-xl font-semibold tracking-tight text-ink-50">
-          {tr ? "Karar kaydı" : "Decision log"}
+          {text(locale, "Karar kaydı", "Decision log")}
         </h2>
         <ol className="mt-4 space-y-4">
           {study.decisions.map((d, i) => (
-            <li key={i} className="border-l border-hairline pl-4">
+            <li key={i} className="border-s border-hairline ps-4">
               <div className="font-mono text-[10px] uppercase tracking-widest text-ink-400">
                 {/* SITE_TIME_ZONE, not the server's: formatting a UTC
                     midnight in a western zone rendered the previous day —
                     the same off-by-one src/lib/public-registry.ts documents.
                     The day is kept; a decision log without days is a diary
                     of months. */}
-                {new Intl.DateTimeFormat(locale === "tr" ? "tr-TR" : "en-GB", {
+                {new Intl.DateTimeFormat(locale, {
                   timeZone: SITE_TIME_ZONE,
                   year: "numeric",
                   month: "long",
@@ -98,7 +94,7 @@ export function CaseStudyPage({
 
       <div className="mt-10">
         <h2 className="font-display text-xl font-semibold tracking-tight text-ink-50">
-          {tr ? "Artefaktlar" : "Artifacts"}
+          {text(locale, "Artefaktlar", "Artifacts")}
         </h2>
         <ul className="mt-4 space-y-2">
           {study.artifacts.map((a) => (
@@ -115,7 +111,7 @@ export function CaseStudyPage({
 
       <div className="mt-10 rounded-2xl border border-hairline bg-surface p-6">
         <h2 className="font-display text-xl font-semibold tracking-tight text-ink-50">
-          {tr ? "Ölçülen sonuç" : "Measured outcome"}
+          {text(locale, "Ölçülen sonuç", "Measured outcome")}
         </h2>
         {/* Composed: the label is the case's, the NUMERAL is the registry's.
             No sentence the author typed can put a figure on this page. */}
@@ -128,21 +124,21 @@ export function CaseStudyPage({
             {registryFigure(claim, study.outcome.figure)}
           </span>
         </div>
-        <p className="mt-4 border-l border-hairline pl-4 text-[14px] leading-relaxed text-ink-300">
+        <p className="mt-4 border-s border-hairline ps-4 text-[14px] leading-relaxed text-ink-300">
           {pick(claim.statementTr, claim.statementEn)}
         </p>
         <p className="mt-3 font-mono text-[10px] uppercase tracking-widest text-ink-400">
-          {tr ? "kaynak iddia" : "source claim"}: {study.outcome.claimId}
-          {` · ${tr ? "doğrulandı" : "verified"} ${claim.verifiedAt}`}
+          {text(locale, "kaynak iddia", "source claim")}: {study.outcome.claimId}
+          {` · ${text(locale, "doğrulandı", "verified")} ${claim.verifiedAt}`}
         </p>
       </div>
 
       {/* Mandatory, and placed with the same weight as the outcome: a case
           study that only reports what worked is an advertisement. */}
-      <Section title={tr ? "Ne başarısız oldu" : "What failed"}>
+      <Section title={text(locale, "Ne başarısız oldu", "What failed")}>
         {pick(study.failureTr, study.failureEn)}
       </Section>
-      <Section title={tr ? "Sonrasında ne değişti" : "What changed after"}>
+      <Section title={text(locale, "Sonrasında ne değişti", "What changed after")}>
         {pick(study.changedAfterTr, study.changedAfterEn)}
       </Section>
     </article>

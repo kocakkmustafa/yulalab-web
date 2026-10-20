@@ -11,6 +11,8 @@ import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
+import { localeAlternates, OG_LOCALES } from "@/i18n/locales";
+import { siteOrigin } from "@/lib/site-origin";
 import { company } from "@/data/company";
 import { studioEnabled } from "@/server/studio-surface";
 
@@ -49,12 +51,6 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-function siteOrigin(): string {
-  const explicit = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (explicit) return explicit.replace(/\/$/, "");
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return "https://yulalab.com";
-}
 
 export async function generateMetadata({
   params,
@@ -74,7 +70,7 @@ export async function generateMetadata({
     authors: [{ name: company.founder.name }],
     openGraph: {
       type: "website",
-      locale: locale === "tr" ? "tr_TR" : "en_US",
+      locale: OG_LOCALES[locale as keyof typeof OG_LOCALES],
       siteName: company.name,
       title: t("title"),
       description: t("description"),
@@ -88,10 +84,7 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: locale === "tr" ? "/" : `/${locale}`,
-      languages: {
-        tr: "/",
-        en: "/en",
-      },
+      languages: localeAlternates(),
     },
     icons: {
       icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
@@ -118,6 +111,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
+      dir={locale === "ar" ? "rtl" : "ltr"}
       className={`${inter.variable} ${manrope.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
     >
       <body className="bg-ink-900 text-ink-50 antialiased">

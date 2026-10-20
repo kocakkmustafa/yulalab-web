@@ -12,7 +12,7 @@
     {
       "path": "package.json",
       "publishedSha256": "69a42b8eb270dbbf561c71b747f0dbf12ddc11842f1d74704a2fc37c28fba809",
-      "candidateSha256": "b0ff823e4f6af8f28b075dda3ea19b8e2970c62ea307edf71eec3a19c3af52d7",
+      "candidateSha256": "e96e5068921e6856e7e8c6aec13b9c97d5da602845b66dedd5b87422de65fcc5",
       "reason": "Pinned upstream braces recursion fix; preserve package identity and raw audit finding. Parent-reviewed exact tsx import patch a0fe490da8223803397ef70fda6deba74c463dda10b8e115d644f61db4298048, source tree62e8d3a3fe20a5cdb95be2294cebb1248c0fb286 (tsx-import-gate-qualification/approval.json SHA2567da9e1c35f2995ffb388aaf5e9fecc873866023c72c095e74b3e41c7c5953b9d): replace CLI launch with node --import tsx; validators, exporter --check, failure propagation and dependency declarations unchanged. Source acceptance only; prior guarded registry attempt FAILED, not runtime or publication acceptance. Candidate-only narrow dependency update for newly reported GHSA-68fv-2mgg-jv7q and GHSA-wq5f-xc86-pv6w: source-map-js 1.2.2 and sharp 0.35.5 with matching platform packages and libvips 1.3.4. Preserve prior braces/forge HOLD evidence. Runtime, audit and publication acceptance are not established by this source change. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. Candidate-only official supported refresh: Next and matching unchanged-rule lint preset 15.5.27, Netlify adapter 5.16.2; preserve existing non-Next resolved lint dependencies and every artifact assertion. Align the Deno workspace declaration with the current package manifest while preserving remote hashes. Both braces paths remain explicit; native/build/provider/publication gates are unrun.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
@@ -33,22 +33,22 @@
     {
       "path": "src/app/[locale]/privacy/lifeos/page.tsx",
       "publishedSha256": "d7812236da65af0b5766fde98b02e06e000cdb80ba606d4f08604591cc277324",
-      "candidateSha256": "65b44daff07c0b521a6b81340f81f4599b565b500f68c1932a5c2a91263cd522",
-      "reason": "Link the LifeOS privacy policy to the dedicated account-deletion request page in both supported locales. 2026-10-12 local public-copy correction: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Local candidate only; no publication or provider acceptance. 2026-10-12 local disclosure follow-up: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Candidate source only; no publication acceptance. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
+      "candidateSha256": "9715aa7abe91dd786337c306664b766e932e5865037e83b554c149195555d5f1",
+      "reason": "Link the LifeOS privacy policy to the dedicated account-deletion request page in both supported locales. 2026-10-12 local public-copy correction: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Local candidate only; no publication or provider acceptance. 2026-10-12 local disclosure follow-up: Remove universal on-device transcription and encryption guarantees unsupported by current source/native acceptance; preserve separate attachments/cloud/account disclosures. Candidate source only; no publication acceptance. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/sitemap.ts",
       "publishedSha256": "bf1e30dd37f6a64c6afab5dac3b91f0f672a9dad941345d4474eadadb15b4a08",
-      "candidateSha256": "6534070180e56535d15147f6f4a2d1216345ccf3ce446b97fc1b69131a1b7146",
-      "reason": "Advertise the dedicated LifeOS account-deletion page for the Turkish and English site routes. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "candidateSha256": "f8ca31dd1bea14a512bf474f59f4a2d414dd68ff40929eafffb092c6762e0424",
+      "reason": "Advertise the dedicated LifeOS account-deletion page for the Turkish and English site routes. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/delete-account/lifeos/page.tsx",
       "publishedSha256": null,
-      "candidateSha256": "0550f3d574889d4ce5dbc8143bb96b71d500fa7508b02f3adfb6681a590aa6f2",
-      "reason": "Add a LifeOS-specific, bilingual, off-app account-and-data deletion request path with honest scope and retention information for Google Play; explain optional partial tracker and account-linked data deletion without closing the account. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
+      "candidateSha256": "aaf88d0735bad0f05e285906eb56976ba1b768d926f8c2f7da05e28d934afdb8",
+      "reason": "Add a LifeOS-specific, bilingual, off-app account-and-data deletion request path with honest scope and retention information for Google Play; explain optional partial tracker and account-linked data deletion without closing the account. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -117,15 +117,15 @@
     {
       "path": "src/app/[locale]/privacy/motion/page.tsx",
       "publishedSha256": "c8e100e471f37fa98e1bc4166a1dec7fa371e9a8b318823af1a747a0f8cf5ed8",
-      "candidateSha256": "dc8ce89a44b4fbdc609832efb0a5576dfe32a3e3398f861388628afdcd734b08",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Disclose retained provider IP/user-agent/platform diagnostics, approximate IP-derived location and salted bcrypt credentials for account/security operations; clarify provider logs and backups are not instantly erased with account deletion. Exact source and aggregate provider records reviewed; no GPS/device ID, advertising or production acceptance added. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
+      "candidateSha256": "f767cfcf42c782fe3fe17898f44d5076e9b15d2132d2485c99feade73e2d5c65",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Disclose retained provider IP/user-agent/platform diagnostics, approximate IP-derived location and salted bcrypt credentials for account/security operations; clarify provider logs and backups are not instantly erased with account deletion. Exact source and aggregate provider records reviewed; no GPS/device ID, advertising or production acceptance added. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/support/page.tsx",
       "publishedSha256": "406c7a84b6061141671dc8ce0d2ba5497f5ae8b00b159ac92d27105bc279ea7e",
-      "candidateSha256": "5eb25ebc6adef6ad9dbee7888882f75a8ed8b660a58e7b1ca82f419f738317ba",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Candidate-only 2026-10-06 support feedback patch: remove unverified48h claim, encoded bilingual redacted mailto draft; no delivery/provider assertion. Parent independent review and runtime qualification pending. 2026-10-12 local public-copy correction: Qualify LifeOS privacy scope and point users to its verified account/data deletion guidance. Local candidate only; no publication or provider acceptance. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
+      "candidateSha256": "10dcecc693ce4f3e292d6fe63ec6451d2c5043a1d5ce0c26a4b8e721cbe410fa",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. Candidate-only 2026-10-06 support feedback patch: remove unverified48h claim, encoded bilingual redacted mailto draft; no delivery/provider assertion. Parent independent review and runtime qualification pending. 2026-10-12 local public-copy correction: Qualify LifeOS privacy scope and point users to its verified account/data deletion guidance. Local candidate only; no publication or provider acceptance. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -166,15 +166,15 @@
     {
       "path": "messages/tr.json",
       "publishedSha256": "79e66db7533af16c84ceff652563524b1cf0542ab28e394e6a147fb98bed93de",
-      "candidateSha256": "8140a2e62cb2128b736d75c64cfbf8188b1c8223b5acb763e7057977e949dd57",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance. 2026-10-16 homepage copy correction: Qualify live/beta experience badges as historical publication/beta records, matching available source evidence without asserting current product or domain access. Registry lifecycle, links and product data unchanged. Candidate source only; not publication acceptance.",
+      "candidateSha256": "d9642d9340f8a3ba51ec37c0da8254db942905785c41ed066cbc39544ace21d6",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance. 2026-10-16 homepage copy correction: Qualify live/beta experience badges as historical publication/beta records, matching available source evidence without asserting current product or domain access. Registry lifecycle, links and product data unchanged. Candidate source only; not publication acceptance. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "messages/en.json",
       "publishedSha256": "e0c73fe7d41853e2cece3dcf4681c7b9836c5562f4c8d96575bf66573f0e784c",
-      "candidateSha256": "622315375abc60f6d1ab877c80a33cb1e8ba49a80db031c0dc8af237efc50e0f",
-      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance. 2026-10-16 homepage copy correction: Qualify live/beta experience badges as historical publication/beta records, matching available source evidence without asserting current product or domain access. Registry lifecycle, links and product data unchanged. Candidate source only; not publication acceptance.",
+      "candidateSha256": "fcfc456b4202905efbe12275e08bdd8e0ab8c363ca189aab04c2486623ed5b19",
+      "reason": "Align the five-app Motion first-release TR/EN scope with disabled paid sales and camera coaching, course self-report separated from camera skill scores, and Ostinato's optional user-started RAM-only approximate single-note guitar observation. Preserve account and deletion scope, layouts and store availability; this candidate does not establish publication or validated sensor accuracy. AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. 2026-10-12 local disclosure follow-up: Align LifeOS homepage and product translations with version/platform-specific storage scope; remove unconditional zero-analytics/encryption/key-export guarantees. Candidate source only; no publication acceptance. 2026-10-16 homepage copy correction: Qualify live/beta experience badges as historical publication/beta records, matching available source evidence without asserting current product or domain access. Registry lifecycle, links and product data unchanged. Candidate source only; not publication acceptance. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -187,15 +187,15 @@
     {
       "path": "src/components/layout/LocaleSwitcher.tsx",
       "publishedSha256": "d27cbd2dc1a9b9cf0b37bff5ae2e8a2afe585bca6b5c487ee9ea19488537e836",
-      "candidateSha256": "8f3d8ceb32929cf4433fc5cb36d87f5c2e34ab15d88b627f61333125086b60a2",
-      "reason": "Preserve normal page hash sections, including Motion account deletion, during language changes; continue omitting query values.",
+      "candidateSha256": "9fbddde8ef70b49b70d416d222422a56794c338031b78eb64b98ae84a9e3183e",
+      "reason": "Preserve normal page hash sections, including Motion account deletion, during language changes; continue omitting query values. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/middleware.ts",
       "publishedSha256": "cd5e600b3b22ae655bdec97a23d9d4ebf188ed6e4d87895607edfaa4ceed7766",
-      "candidateSha256": "5cd418d79b5360a06f6ff20f7a97e5bbc520c49ac995499ba710c2d3665f4e9d",
-      "reason": "Resolve fixed Links aliases before Netlify locale rewriting; incoming query values cannot select or contaminate the external destination. EN uses the supported fixed lang=en hub query.",
+      "candidateSha256": "9b54c6b07147bfd6722b7f04d5d3d4f00e35161d24a645e89f63d2540fd4878d",
+      "reason": "Resolve fixed Links aliases before Netlify locale rewriting; incoming query values cannot select or contaminate the external destination. EN uses the supported fixed lang=en hub query. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -215,15 +215,15 @@
     {
       "path": "src/app/[locale]/contact/page.tsx",
       "publishedSha256": "e2077bb2c030d76874d99056bfcc15ba427b2256cbbbbf80cb219a7983ee2272",
-      "candidateSha256": "6605f1116f11a4abc98fb9d65b3675a3fed8b5a6dc19473e38e2f84f81ad9d06",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
+      "candidateSha256": "6b7974eec7475d88db30572cd4810962e35ca6f4a859b48cc7008e238c98ed62",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/page.tsx",
       "publishedSha256": "d2e11c43ff687482b82fc15e16875913aa7028dd6eb59c7a3377a4d1ff73d39a",
-      "candidateSha256": "cfe3fa797f467e8ac16f77a7cca41044a952cd07144dc4ae41b95087cd8465f5",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016.",
+      "candidateSha256": "39a5b61e00901d0dd77d71ebcc68d0f2f14d407ea7ac20d8260a3dff1bcc330c",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -236,36 +236,36 @@
     {
       "path": "src/components/experience/ExperienceOverlay.tsx",
       "publishedSha256": "289a917c767fb3775435bddfea463dddb27ab9dbb2736c2b51db07b638eb233e",
-      "candidateSha256": "d59973ad0b0e07a341efba49edf7d07d6537c2e8f1a0912b6c562f56232c9b23",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 independent visual follow-up: Use public NextLink for fragment and already-localized product destinations, preserving click/middle-click analytics and proper SPA history; no product URL or claim change. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-16 independent P2 visual correction: Dense luminous room and larger moving owned Y; direct full portrait media with a zoom reader and preserved description/CTA; independent real media planes and shared room projection replace collages; curved white rise replaces the gray box. New local timing, scroll, history, reduced-motion/fallback and focus/touch evidence in task p2-visual-correction-20261016. No exact-reference, synthetic product UI, store/provider/security/publication acceptance. Prior phase: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-16 reader interaction regression: give the native development preview one same-URL, document-local browser-history entry; Back, Forward, Escape, click and touch close restore scroll, overflow and appropriate opener focus without consuming an underlying anchor. Preserve Next routing metadata. Measure and remove the separate transparent-loader/hidden-scene handoff gap. Add real Chrome TR/EN desktop/short-mobile history/focus and opening-paint regressions. Prior three P2 visual scene fixes and all public assets/registries stay byte-identical. Local evidence reader-history-20261016; no provider/security/publication/physical-device acceptance. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open.",
+      "candidateSha256": "f4be4c02f552c037a84233495f984ec40715b2a5d8d30d48de3cdc2bdf0fcf33",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 independent visual follow-up: Use public NextLink for fragment and already-localized product destinations, preserving click/middle-click analytics and proper SPA history; no product URL or claim change. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-16 independent P2 visual correction: Dense luminous room and larger moving owned Y; direct full portrait media with a zoom reader and preserved description/CTA; independent real media planes and shared room projection replace collages; curved white rise replaces the gray box. New local timing, scroll, history, reduced-motion/fallback and focus/touch evidence in task p2-visual-correction-20261016. No exact-reference, synthetic product UI, store/provider/security/publication acceptance. Prior phase: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-16 reader interaction regression: give the native development preview one same-URL, document-local browser-history entry; Back, Forward, Escape, click and touch close restore scroll, overflow and appropriate opener focus without consuming an underlying anchor. Preserve Next routing metadata. Measure and remove the separate transparent-loader/hidden-scene handoff gap. Add real Chrome TR/EN desktop/short-mobile history/focus and opening-paint regressions. Prior three P2 visual scene fixes and all public assets/registries stay byte-identical. Local evidence reader-history-20261016; no provider/security/publication/physical-device acceptance. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/StaticExperience.tsx",
       "publishedSha256": "b4299365c24e84819e0040aabc13c43888097dc1eade8362024c0fdc17ff7329",
-      "candidateSha256": "fa07c511220104b21a1d39ccbdb9d1feab7aa060709d30adcebcd6369e929ee7",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-08 correction: consulting is secondary navigation as in ExperienceOverlay; retain its existing TR/EN href,copy and style as an untracked anchor. Reserve the existing home_primary_cta event for the portfolio action. Keep the original studio-offer CTA precedence assertions unchanged; targeted local qualification is recorded separately,not publication or provider acceptance. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-17 local interaction follow-up: preserve current content and keyboard focus when choosing the linear view, and keep enlarged mobile menu text scrollable on short screens. Local candidate only; no reference, provider or publication acceptance.",
+      "candidateSha256": "6178c917c675061a14a832d966368276a97392bfe2bec45a9f8eec8b5588f7ed",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. Candidate-only 2026-10-08 correction: consulting is secondary navigation as in ExperienceOverlay; retain its existing TR/EN href,copy and style as an untracked anchor. Reserve the existing home_primary_cta event for the portfolio action. Keep the original studio-offer CTA precedence assertions unchanged; targeted local qualification is recorded separately,not publication or provider acceptance. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-17 local interaction follow-up: preserve current content and keyboard focus when choosing the linear view, and keep enlarged mobile menu text scrollable on short screens. Local candidate only; no reference, provider or publication acceptance. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/experience/types.ts",
       "publishedSha256": "6ea44db9238a40730a02dfb292b2e520648f50725ec4c9e4ebbdeb5c959d32da",
-      "candidateSha256": "33c7ab2a9d6b0c71c6ca96df6de185c02c195ced1a1d982bfefa6ca961ff6c37",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016.",
+      "candidateSha256": "42c636f0f65d6a6be89f1001d10da2f7cc80caa0df3b6640ee6576bbb0289e5c",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/layout/Footer.tsx",
       "publishedSha256": "bbe7fd97fda7ca6964c28f5cb7af34f6deebc00959ba4a142607a255c878359b",
-      "candidateSha256": "2fc1c816ff6768c6922486eaa76464e765e6668d646fc3c0f2d5627cafdef8fc",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion.",
+      "candidateSha256": "e774a37a65145a393f9e4a1d3e87555506cb9afe66ffd2657162ca13dc3b0b81",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/consulting/page.tsx",
       "publishedSha256": null,
-      "candidateSha256": "bd7af230ed3f6ccd0d0052a6c4a7a6ff1ea0366b86725688885e2800873ff4b1",
-      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-17 receipt alignment for already committed and locally accepted 2ed8cf774effbe4eeca158dae02099c37de9d563: consulting CTA and visible address use consultingEmail, shared support remains unchanged. Metadata-only alignment; no new publication acceptance.",
+      "candidateSha256": "f973fb940f1659f59ae52551b0a91787415a02d603d5dad4737160378332051b",
+      "reason": "AI consulting/source clarity patch independently accepted by parent review (c9d8b5445ee8d356d092f583c384b7108dec666e8fe86b9ef5964dc246be76a5); applied as hunks on preserved Site276 source. Combined qualification and subsequent independent review remain candidate-only. TR wording refined; no publication assertion. 2026-10-17 receipt alignment for already committed and locally accepted 2ed8cf774effbe4eeca158dae02099c37de9d563: consulting CTA and visible address use consultingEmail, shared support remains unchanged. Metadata-only alignment; no new publication acceptance. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -278,8 +278,8 @@
     {
       "path": "src/components/landing/ProjectCard.tsx",
       "publishedSha256": "17f679d2471756b3fe893d48a03b701aedbd1ce2a023ca8ce09701f68534e39a",
-      "candidateSha256": "38a8af5a09ab3b33addff6afcd8b64f8fb9b0aa44a5c89848ea76760d2133d89",
-      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open.",
+      "candidateSha256": "47a4eb63c73d8975336f93e1b29cba2f8e06ff56cb72b3ef9bb199f3e7de5b40",
+      "reason": "Candidate-only 2026-10-06 card freshness overlay; independent review and runtime/build qualification pending. Preserve registry dates, lifecycle partitions, historical publication evidence and existing assertions. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -313,8 +313,8 @@
     {
       "path": "src/app/globals.css",
       "publishedSha256": "e5bb0e0c9315609d0d5a25327d1fd6c31076db67d18f457fb378fc4386e1a78d",
-      "candidateSha256": "e195b1bf2d49f2d1f9a5549abb8c691ea316ef9ec87af20a0705f76c4452c608",
-      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. 2026-10-16 local UI correction: Make Reveal and word-stagger content visible in SSR/no-JavaScript output; hide only after observer enhancement and immediately resolve reduced-motion opacity, transform and delays. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open.",
+      "candidateSha256": "6fba7d7b49b7ee07477c6071c3597afe5a39bf65d2f4d9ef13e22788acc60845",
+      "reason": "Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. 2026-10-16 local UI correction: Make Reveal and word-stagger content visible in SSR/no-JavaScript output; hide only after observer enhancement and immediately resolve reduced-motion opacity, transform and delays. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -334,8 +334,8 @@
     {
       "path": "src/components/experience/YulaExperience.tsx",
       "publishedSha256": "b153d9b014c9ee19eb791b941a035d9bb32576f32c3c7e888085032123ffc259",
-      "candidateSha256": "694722fa7fd07f9ad835a219c38f6d10b5ebaff9fb613c9a370f33f5bbf80ef5",
-      "reason": "2026-10-16 local UI correction: Map proof and manifesto native anchors through the measured document scroll range, targeting the first proof card and the mission center after viewport resizing. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 independent visual follow-up: Preserve per-entry journey position and skip opening only on history return; fresh/reload entries retain opening. Bound in-memory snapshots and use optional pre-traversal Navigation API without interception. Provide bounded accessible drag/keyboard control for the existing Y. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-17 local interaction follow-up: preserve current content and keyboard focus when choosing the linear view, and keep enlarged mobile menu text scrollable on short screens. Local candidate only; no reference, provider or publication acceptance.",
+      "candidateSha256": "14c25f928f29d096fb6c096f6c415a57a9ca0bb32f30ceb5c4f4c5e8995f0fbc",
+      "reason": "2026-10-16 local UI correction: Map proof and manifesto native anchors through the measured document scroll range, targeting the first proof card and the mission center after viewport resizing. Independent source review found no actionable UI blocker; targeted browser regressions and staged local screenshots recorded in task ui-review-20261016. Candidate source only; not provider, hardware, reference-video or publication acceptance. 2026-10-16 independent visual follow-up: Preserve per-entry journey position and skip opening only on history return; fresh/reload entries retain opening. Bound in-memory snapshots and use optional pre-traversal Navigation API without interception. Provide bounded accessible drag/keyboard control for the existing Y. Targeted native Chrome155/M4 Metal navigation, pointer and pixel evidence recorded in task visual-followup-20261016. Candidate source only; full independent visual reacceptance and publication/provider acceptance remain separate. 2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-17 local interaction follow-up: preserve current content and keyboard focus when choosing the linear view, and keep enlarged mobile menu text scrollable on short screens. Local candidate only; no reference, provider or publication acceptance. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -523,22 +523,22 @@
     {
       "path": "src/components/projects/DevelopmentPreviewSection.tsx",
       "publishedSha256": null,
-      "candidateSha256": "efeaf9104b520db295520f2f0138077c8948417a1bc1e4acda8400c92f2d5178",
-      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016.",
+      "candidateSha256": "bcf341219391618be4da8cc01dd45a91c594424344a9ca6f3c1347c1be047dae",
+      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/components/projects/ProductPage.tsx",
       "publishedSha256": "6bfc2afe79b2bdfc136c31ecd8ad797b95ce785046c828a9da5d26d0c48fec4b",
-      "candidateSha256": "568f29e4039ea33f12b9e54981ec4594bb9a9e0730185c99977b931fd985fc4e",
-      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016.",
+      "candidateSha256": "8d56c06d1cf43e39ad2947f85d12cb1ea84de246f59dc5d98587a3200ddfc40a",
+      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/data/product-presentations.ts",
       "publishedSha256": null,
-      "candidateSha256": "a3e26a90c4ccce59583277cd719eba27e5f971b78527533d63a7a16ee5d1c6ec",
-      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016.",
+      "candidateSha256": "d09e10c47bf4ff3ac19314dc655e5caa5ca5df294509a53465d4e58b2fc305cc",
+      "reason": "2026-10-16 authorized identity/storyboard: Integrate five exact approved icon masters and three provenance-checked normal-app development views, separately from publication evidence. Present owned brand/development film cards and four shared SERVICE source plates, with whole images and bounded resource ownership. Allocate scroll time from measured public reference sections while retaining physical camera poses and invert native anchors/history. Source hashes, unchanged publication registries, real Chrome scenes and local tests are recorded in task approved-icon-storyboard-20261016. Local visual candidate only; not exact-reference, native functionality, security/provider packaging, public release or store-readiness acceptance. 2026-10-16 native media continuation: Integrate five unedited normal-main guest UI captures after index SHA256, source-commit, binary-tree/executable receipt, pixel privacy and EXIF audit. Source native-20261016; asset commits aea5112d/e2626bd3/63b8c999/b720e494/c4370ed3. Keep research/publication eligibility unchanged, distinguish LifeOS first-start UI from functional guest views, and use the five real views with approved masters in the existing owned gallery/SERVICE composition. Not store readiness, physical coaching quality, native reacceptance, security/provider acceptance or publication. Local evidence in task motion-media-integration-20261016. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -600,58 +600,58 @@
     {
       "path": "src/lib/types.ts",
       "publishedSha256": "bc2588d4530ab1a511b96db2ba5b6c9892a760b673c8b8b268e66dd39f73d5f4",
-      "candidateSha256": "3cc44a2aabfc4a9a92d8eb46e9e695d0af3cbf8c07ed6f962b6aa4639266a612",
-      "reason": "2026-10-17 receipt alignment for already committed 2ed8cf774effbe4eeca158dae02099c37de9d563: separate consultingEmail yula@yulalab.com from shared support, with matching CompanyConfig type. Previous local 141 tests/TSC and four TR/EN Chrome checks are in task-2/RESULT.json; this update changes only the stale source receipt, not those product files or publication status.",
+      "candidateSha256": "b02a560c748d6cb8ecb05ac965ffb12e9ea75e16337645d4f4b37ff38c6c082c",
+      "reason": "2026-10-17 receipt alignment for already committed 2ed8cf774effbe4eeca158dae02099c37de9d563: separate consultingEmail yula@yulalab.com from shared support, with matching CompanyConfig type. Previous local 141 tests/TSC and four TR/EN Chrome checks are in task-2/RESULT.json; this update changes only the stale source receipt, not those product files or publication status. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "src/app/[locale]/manifesto/page.tsx",
       "publishedSha256": "a6e75096e6566813b798a43f0b187d5bb98cb42656a53bc47154b157d7d3d071",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "ef32da11d6920d1f5707f2d11cc27d01648a2d2502ec95bc50e08513db101924"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "6190544028451d0e0e9a800640308b9f848c12541268082ddb262cb323ad1063"
     },
     {
       "path": "src/app/[locale]/notes/page.tsx",
       "publishedSha256": "ce7327c864851844bcc699a2d04b4748cec40c6bb42d59fbb416f5f9c43a7537",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "0f13c78ac8c04cd082e7da0c9a2952c1f6d76de6441c7a93c5ba7c7096281563"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "a30dee6d88fc24c44c53a26f00d4f474a874c06bc5c8217ffb91f36596c0a2c1"
     },
     {
       "path": "src/app/[locale]/privacy/page.tsx",
       "publishedSha256": "e5b9fde4a204b9f9246fbff5c23970a6d82c1631d42d6ac680b845f069457fb7",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "f175390bf35e8ba6f14d25301b433f03506b880f1b18c62fa651ab534aebe83e"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "c3efd53fa47f94477e09f08e973cd39264d1f6204df4f1725628d0fcdc26e600"
     },
     {
       "path": "src/app/[locale]/privacy/braavolabs/page.tsx",
       "publishedSha256": "5359bb645b70686c009cee01abab27f317a23f3d25c6a5a141ba2359c7c96f0b",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "1adc80d288c089443b2d9fd0a617a983fdca45d1bed75917a90f89ae21095a3c"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "572dd340e9091e85eb2daa17c720890c4219465f7f639701f9bbeda7fd4dbfd0"
     },
     {
       "path": "src/app/[locale]/privacy/burunfarki/page.tsx",
       "publishedSha256": "1dab6996c531705a73e941fd8865ec40d5a8c542b93f8e3005c3608ed2daaa0d",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "670c304508167c820715b286160729165009188ecccc7355e0eeba4660ca55a8"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "fbe3d4251dd7b1273b6a0a168ecbf1153108489bbb022e5380d90dc1c5821ac2"
     },
     {
       "path": "src/app/[locale]/projects/page.tsx",
       "publishedSha256": "591b130fbb8d5cc72a0125d708ef3fbe4131443402cfc617a309df29fbf9edbc",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open.",
-      "candidateSha256": "2e9b188c29ad829eceaab310464641fb59ee11de7a92940fb6ce861d110ac2f5"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "39f937b73aa77faef8d626c808fc7294ad7f85dba8069ef0e44ba1f6ae3e4372"
     },
     {
       "path": "src/app/[locale]/terms/page.tsx",
       "publishedSha256": "f08f9daea1680246d4b109a8e46af6a096a7ff8f9609ab44a279a9047dde0b36",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion.",
-      "candidateSha256": "87708008c8c10ce75fb318c46a825e6d40fa37c6c8900905fe5aa87cbeb0fe13"
+      "reason": "2026-10-17 local SEO qualification: supply reciprocal TR/EN hreflang links for this exact route; the locale layout languages are replaced by page alternates. Sitemap/HTML comparison exposed absent alternates in both locales. Canonical, content, visuals and client runtime are unchanged. Candidate only; no provider/publication assertion. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification.",
+      "candidateSha256": "0c82654fb6728e14c78cd21a892fad99194d05d08ad9cba5b886c1790dfc3c90"
     },
     {
       "path": "src/app/projects/[slug]/opengraph-image.tsx",
@@ -666,6 +666,426 @@
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "2026-10-18 local rendered-reference adaptation against observed Alche desktop/mobile and the accessible 13.84s reel: owned glass/refraction, room grid/material fade, typography, hero/manifesto/closing and editorial surfaces. Preserve Yula text/claims, approved media, storyboard, navigation/history and 2D focus clearance. Source/CPU acceptance only; final browser motion/touch/a11y and Netlify/provider/publication gates remain open.",
       "candidateSha256": "52b5ef67b42d724962ecb6eb55162ef33b4ddb2622801ec69a6d7d8f9c71ac18"
+    },
+    {
+      "path": "src/app/[locale]/case-studies/[slug]/page.tsx",
+      "publishedSha256": "bc03efe1d54f96765f9d0eff7b77f20c30e5db9b14dd30ed8e48e90967661418",
+      "candidateSha256": "6444f6122941575525505388868c706c09d0031eb501cc3252243ceaf0f251fe",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/case-studies/page.tsx",
+      "publishedSha256": "f7fbdd46af9ee12b61470c1419e76dc20d6749170d7c28753a98c0a8d2b8d680",
+      "candidateSha256": "9f0e3a52a3e1383b595857dca8ebfda58792e060ccbd618c672b12ce72215526",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/data-request/verify/route.ts",
+      "publishedSha256": "e8a0ac2e6889ccf736234070144e0e919d0d04ffd4e2f0251e2b76a9b7804835",
+      "candidateSha256": "69fcfd010333ac5af4d490683915bf2832ae2ded1e8458a3a6296eaac34129a3",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/layout.tsx",
+      "publishedSha256": "28f9ba4495eb5a4c6d2d59b184d5b4b4da1bda45ce29f135c6afcbef688633c0",
+      "candidateSha256": "5a001f134554d8b0d42b170b3cc6030445420a7fcb5abe2d152ec03e43aa002f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/operating-system/page.tsx",
+      "publishedSha256": "55c48ec575492606c34e19251f058a0b0a936f94bad4d446ffc41ee2c0f72b31",
+      "candidateSha256": "fe7394971926ced17265c994890de88baacd2ae316eb55b6863f7ef1f2224f5c",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/projects/[slug]/page.tsx",
+      "publishedSha256": "858d066cede2eb464f8c066109148d4352e7ab859653c6a47decad6019dc18b7",
+      "candidateSha256": "eb6f82a2b0914dedbd0d2f6be9b80469527e209026608dd43bc15fd6a054c0f0",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/[locale]/studio/page.tsx",
+      "publishedSha256": "d666f554505956c49bbe79b1320a821159f46b18e7841abbce130d61f10d319d",
+      "candidateSha256": "a3f41f5958adaf2f6283fc8a1cef6e3fd475598488226a5a37dccb1a8954770a",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/app/api/mail/route.ts",
+      "publishedSha256": "f395d63c102ba2a408d24f962654864acbb262f993006e55e30b60e2cb9dd1af",
+      "candidateSha256": "aa669fb4c9b2c6036fbe5f66a4b407ba2808080a6189ddee76b330f88e36d653",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/case-studies/CaseStudyPage.tsx",
+      "publishedSha256": "0492ad9b39a49d7e1511e38a826daa0be0342d6386f68f68581781ce9c4e66ae",
+      "candidateSha256": "204714f19d6be795c91d0a6d42e72c5b87d7e9823749b50d20d7873f35ace593",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/common/JsonLd.tsx",
+      "publishedSha256": "cb8bfef11d39d048126221d8c62326cb6be44076a7ada8021fcce98e5ea51bc8",
+      "candidateSha256": "23387f8e9652ae58e54a0e08c3962ec295d3c30b6f840812ec4104f97edf367a",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/common/ProofCard.tsx",
+      "publishedSha256": "cf6b62a2d84f7b1cbe696344a4a6d5c665fd2e0235d95eea46dd1959c672ce90",
+      "candidateSha256": "84bcd50786f28ae6237b4ebb3e347a0b9ab6aa663192ae3b979b0fa6a4c3050b",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/common/SourceStamp.tsx",
+      "publishedSha256": "6c1ed2e020caf6203f2106054e04c8d3e53b511844933a6125e337935b2dbea1",
+      "candidateSha256": "06edea43741e99640ba2fb5106709dc54f3cbd5087911c48b134ee65cf0408ea",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/contact/LeadForm.tsx",
+      "publishedSha256": "9c2366cffd54f0a1180d15e98a0bcdf6a586caafe6d111656b401f6376142f17",
+      "candidateSha256": "f3bb1bee73b24b3176c2fd6d133cc673ec9a2ab794329deb4b504ee173206ac2",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/manifesto/ValueCard.tsx",
+      "publishedSha256": "f3acc47750420983e28809782a916ea9a466f6bd6af7e925eccbfc4b9a2b8057",
+      "candidateSha256": "82e75ca99ef14ef674420e22530795900308da3489eb423c261985a47fc834e5",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/projects/ClaimsSection.tsx",
+      "publishedSha256": "a43d3da0a9dd0603ea80e92b6398453edbdb0726d094d6b50d0c96270b1794e7",
+      "candidateSha256": "a1ae84e2037a7720aaf5010a5b84d21930883bf89d6023ab1346cdafcdb36bcd",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/projects/StatCards.tsx",
+      "publishedSha256": "d30b89490179406518cbd51a5f28cbfa46f2af073710ee3f39c496ec7fa68db2",
+      "candidateSha256": "1728dcc95e4e72218b2863dd0c2a38eb58626fc02598904965e026bf4016e43a",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/components/studio/StudioApplication.tsx",
+      "publishedSha256": "8666c5ac7127404178b1c6d1aabe2bdc315d23c689006cd84acd3f7459d7d9cf",
+      "candidateSha256": "2a522b52d0cba60379706462761fb73ca9d48ab5a37ccfe4b56ea1fc9da846e0",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/i18n/routing.ts",
+      "publishedSha256": "429d08499e37759b39460f044fb8cd18423231eaf48d542e0ba76ba3a41ae839",
+      "candidateSha256": "d6c57b02d6cf9cbcc9a2ee8ab913495819e163653426b0e70fa065d65725459f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/analytics/client.ts",
+      "publishedSha256": "853d79e21c9808a9b3d149d95ddc438839b9defdbe60721a59949fbf93c54f96",
+      "candidateSha256": "4052b7ee72a28331159db434621e32e2024ea16dc3b883ba79f8db3050c89c41",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/consent.ts",
+      "publishedSha256": "00a7f341318220e578e0169a1bb07f5973be1eba38da508677e96f246e67ad11",
+      "candidateSha256": "52e715b63b10153225020b111bf9112ca7b1873aa0490e6d67008a91f51ac03f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/not-found-metadata.ts",
+      "publishedSha256": "968a15cafe6a9312b5bc0c25df5af8a3a35dd7642a10d92ce95a725c392af45c",
+      "candidateSha256": "d7f8f5ecc8ba22b58bdd77dd5bd409c1ff4d528194abf4e9f992a1bf0bee7f98",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/server/leads.ts",
+      "publishedSha256": "184885ed3bcb0be526090f2cb56d8728b5acbddab1a1f426e786f159abc120c4",
+      "candidateSha256": "0cec5937c86f88fd5963025fc8f3c292fe1ab368f10eddb37d80f1767ef05764",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/server/mail-admission.ts",
+      "publishedSha256": "9a164eb4b51bb5f39806dc66d326e6bfcf42a6696635fc3949e9dc72527b97be",
+      "candidateSha256": "05b170219ef79a5039527864766f5b373a74ba7d381ab2fb87c7452610e4407b",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/server/mail.ts",
+      "publishedSha256": "f2a040f26c3e42b2e268a1209ac7df27d7616647093a90900bd392c6363b5619",
+      "candidateSha256": "0c5c051e8ccfca950d18c4e2d60018deb6a1ae4edb71af8bceb34a0db90277c9",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/analytics-track.test.ts",
+      "publishedSha256": "ce8be26e3037494d43d2183ba8fc63391a9112972e2963388e923d048522e267",
+      "candidateSha256": "b81c5ccf3bdc6920d9a9ff0a2945ae165a9042b5562ff3fb50b5bdc1d1226bca",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/data-request-verification-page.test.tsx",
+      "publishedSha256": "c15a4cae726fcac8c5c2022999086d8adeb01919dfa3ffc66ff8fb9710261265",
+      "candidateSha256": "899fe67f353368cd6f18b5e976d05f805def94ef677c2c6915a94385d416485e",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/lead-error-parity.test.ts",
+      "publishedSha256": "49fd79ae16dafe91a9362c4455b6add6230c6cbfb9e97ccdb4f284eb8ef4f81d",
+      "candidateSha256": "617e44223c21494be410e5f94f8a5ade8678adf6e696481af1e1b378d0adc996",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/lead-form.test.tsx",
+      "publishedSha256": "14a56dc34f77b79e8c9930ee944573946da377c067a2a41c3245a1f1a73d28d4",
+      "candidateSha256": "b16b3701b0dc98caae183d37f89fbf4a9dca50c3e4150475f97c828890890855",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/locale-switcher.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "2e9b82eace261f4f664d93bf467f4e242ddd436497d4724b1d1ac4cffd41b812",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/mail.test.ts",
+      "publishedSha256": "db495d0204120ee3a383350b71f87b27d0570e72f06d3543bbc94fb8f3ad4141",
+      "candidateSha256": "e9d24a6f63f34b4b83b03a47ae08b6901f79782dbe4cfd9606a6177c51200c06",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/ar.json",
+      "publishedSha256": null,
+      "candidateSha256": "c4ee1cb7eca6b829c11eacbdd44cb703cbfaef2bf535dd6babe23c43020cca0f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-ar.json",
+      "publishedSha256": null,
+      "candidateSha256": "880b3415812f4b2472d7b7e48322449e0cce7cac52497d788957456cb071246b",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-de.json",
+      "publishedSha256": null,
+      "candidateSha256": "58e6fd76f40049feca3593e5e6c30b771b210681f0e97619c5cda37a90fc4f5d",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-es-419.json",
+      "publishedSha256": null,
+      "candidateSha256": "ef2d31760504d236b87318b42a5ea5788ceb9ef313a43098662b2d77a69d73b6",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-fr.json",
+      "publishedSha256": null,
+      "candidateSha256": "af243dea4a8a0d9b9ba90767d735f6232d371e7d47e83ee519502a9a7361924f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-ja.json",
+      "publishedSha256": null,
+      "candidateSha256": "920462e126e904b66f65a4e8a46d8b87596a943ac4cf581039ef6c8527ede8f0",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/content-pt-BR.json",
+      "publishedSha256": null,
+      "candidateSha256": "f0975c9bf8d24e406da92207395122fe075840219acb6453a023615d464565de",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/de.json",
+      "publishedSha256": null,
+      "candidateSha256": "b075ecc631e25f565bdab4aa9862525e38470438d8b8e674b4366ff1e8c1b5b8",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/es-419.json",
+      "publishedSha256": null,
+      "candidateSha256": "d6d377b1774421ecb1bbd806acba83a93edb2b2e98a8795ffae7c33889f6250b",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/fr.json",
+      "publishedSha256": null,
+      "candidateSha256": "977f7907da8068cf7d1abe22ba15126edba15aa2166aea797bc424d0e7724855",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/ja.json",
+      "publishedSha256": null,
+      "candidateSha256": "3c0b1b8bdd2b5e1b3b758dff454d37f93256a0aca79bb257e0fa4e3a15ce0748",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "messages/pt-BR.json",
+      "publishedSha256": null,
+      "candidateSha256": "88a7f9490f7be6473910434776938423af73e9154f68eeb919b443d6a1073ae6",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "scripts/verify-translations.ts",
+      "publishedSha256": null,
+      "candidateSha256": "615a5cebda801876cf5e5db702f1c74912b42a729b4209545ee845705f13b8c6",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/data/privacy-copy.ts",
+      "publishedSha256": null,
+      "candidateSha256": "3472ba7a84bd419575d31c7e7e508722466e146e537b74b6725e594786c85e43",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/i18n/locales.ts",
+      "publishedSha256": null,
+      "candidateSha256": "97c8e19bf9e8bf033ffd4f7f666f952db4a5fd32923e74ebb9faf09dae5b29b9",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/forms/lead-submission.ts",
+      "publishedSha256": null,
+      "candidateSha256": "19fb481176f13ff446f758afdf36856f5924bcd7efcff1478146c9e642552356",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/localized.ts",
+      "publishedSha256": null,
+      "candidateSha256": "5118cf3b4a79e6814cb98ede8330db6ea1b49bedcf27a9281e0a1bd477ad71e8",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "src/lib/site-origin.ts",
+      "publishedSha256": null,
+      "candidateSha256": "eb11a1a5a776609d82332d11868430552f9981775456dddaad96fb46f1c19657",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/client-forms.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "5f59ef47c009d614afe31236b67187f9d912948f84c12d550abdd06e707f9d8e",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/content-locale-wiring.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "bcebf074d3721383b1f6335163cfc9e0aa12bc74d782bdcaad5f65fb34bdd6b0",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/experience-locale-content.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "4dfe2b02a52943e98969e274c6df4a7d9f4428834934d9878502ca0115ea0645",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/leads-contract.test.ts",
+      "publishedSha256": null,
+      "candidateSha256": "0a243539b35253a45091645573013e461beb0950e38e2a5bb5a1d1a06d0bcd93",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/locale-pages.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "76737ca816c60796b328dec02270f489b47e17fc7309e1f501db9ce393cb14f9",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/locale-routing.test.ts",
+      "publishedSha256": null,
+      "candidateSha256": "0941c8dd5914894041791b111a0ce3c4b39ab95cb849740e2eefcab48a62a006",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/mail-budget.test.ts",
+      "publishedSha256": null,
+      "candidateSha256": "bef4a1f7a86c28c4ce048e7b4dd14cd6594793a82de0454e20aefa444074f5a8",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "tests/privacy-rights-copy.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "f1e1a25f3c65857d4661accd04092edc3eaab1094a8f138b71292de95f43e0f1",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+    },
+    {
+      "path": "DEFTER.md",
+      "publishedSha256": "be7d066472cbf0f0386a23c2b5f05464dc4aba257be006f5748c112032357be7",
+      "candidateSha256": "28c91a3283c058d88a0894dc50c3f63aea52b3b638b4517f91cad73ee5fb5e20",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 root-owned A3 documentation receipt alignment: root finalized this document after the source/test/message snapshot. Record its current candidate bytes while preserving the immutable published baseline. The described local checks do not establish provider, publication, browser, real-device, live-database or security acceptance; final staged exact tree remains root-owned."
+    },
+    {
+      "path": "BITIRME-PROGRAMI.md",
+      "publishedSha256": "f7af1e6b9c258ad1f8f76f0dd2819214eae11d6cfa1f2c541dcb6cb06e1d080c",
+      "candidateSha256": "1c1411c49b867afd7ee87556231cee8cf9f8dfeddb8aa44fedcc7a98da8b074a",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-10-20 root-owned A3 documentation receipt alignment: root finalized this document after the source/test/message snapshot. Record its current candidate bytes while preserving the immutable published baseline. The described local checks do not establish provider, publication, browser, real-device, live-database or security acceptance; final staged exact tree remains root-owned."
+    },
+    {
+      "path": "src/app/[locale]/transparency/page.tsx",
+      "publishedSha256": "af656f8c365f51308eee56a69f1b00503ac870699134ea52eec2a2ef18092106",
+      "candidateSha256": "b33d4baf3bc59b98c20a7b5180cffbfa0357a7d718f67a67a351997fb23d0ab1",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "User-approved local implementation 01: typed eight-language coverage and structured-data regression. Exact source/local tests only; no publication/provider/security acceptance."
+    },
+    {
+      "path": "tests/structured-data-honesty.test.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "61a277923bddb9504a3c481e6a19488107cb92726327bb71d1bdd53b06050840",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "User-approved local implementation 01: typed eight-language coverage and structured-data regression. Exact source/local tests only; no publication/provider/security acceptance."
     }
   ]
 }

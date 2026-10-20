@@ -1,3 +1,4 @@
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
@@ -40,7 +41,7 @@ export function JsonLd({ now = new Date() }: { now?: Date } = {}) {
     "@id": `${ORIGIN}/#website`,
     url: ORIGIN,
     name: company.name,
-    inLanguage: ["tr", "en"],
+    inLanguage: SUPPORTED_LOCALES,
     publisher: { "@id": `${ORIGIN}/#organization` },
   };
 

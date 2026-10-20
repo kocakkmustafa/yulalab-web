@@ -45,6 +45,49 @@ REVIEWED_VISUAL_ADDITIONS = {
     "src/data/product-presentations.ts": "a3e26a90c4ccce59583277cd719eba27e5f971b78527533d63a7a16ee5d1c6ec"
 }
 # END APPROVED VISUAL ADDITIONS
+# 2026-10-20 user-approved A3 source/test/message candidate snapshot.
+# Historical test/visual hashes above remain unchanged. This exact candidate set
+# explicitly supersedes only two earlier visual-source hashes; it does not
+# establish a publication, provider, device or security acceptance.
+# Evidence: workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json
+# This helper has no self hash in the candidate set.
+REVIEWED_A3_SOURCE_HASHES = {
+    "messages/ar.json": "c4ee1cb7eca6b829c11eacbdd44cb703cbfaef2bf535dd6babe23c43020cca0f",
+    "messages/content-ar.json": "880b3415812f4b2472d7b7e48322449e0cce7cac52497d788957456cb071246b",
+    "messages/content-de.json": "58e6fd76f40049feca3593e5e6c30b771b210681f0e97619c5cda37a90fc4f5d",
+    "messages/content-es-419.json": "ef2d31760504d236b87318b42a5ea5788ceb9ef313a43098662b2d77a69d73b6",
+    "messages/content-fr.json": "af243dea4a8a0d9b9ba90767d735f6232d371e7d47e83ee519502a9a7361924f",
+    "messages/content-ja.json": "920462e126e904b66f65a4e8a46d8b87596a943ac4cf581039ef6c8527ede8f0",
+    "messages/content-pt-BR.json": "f0975c9bf8d24e406da92207395122fe075840219acb6453a023615d464565de",
+    "messages/de.json": "b075ecc631e25f565bdab4aa9862525e38470438d8b8e674b4366ff1e8c1b5b8",
+    "messages/es-419.json": "d6d377b1774421ecb1bbd806acba83a93edb2b2e98a8795ffae7c33889f6250b",
+    "messages/fr.json": "977f7907da8068cf7d1abe22ba15126edba15aa2166aea797bc424d0e7724855",
+    "messages/ja.json": "3c0b1b8bdd2b5e1b3b758dff454d37f93256a0aca79bb257e0fa4e3a15ce0748",
+    "messages/pt-BR.json": "88a7f9490f7be6473910434776938423af73e9154f68eeb919b443d6a1073ae6",
+    "scripts/verify-translations.ts": "615a5cebda801876cf5e5db702f1c74912b42a729b4209545ee845705f13b8c6",
+    "src/data/privacy-copy.ts": "3472ba7a84bd419575d31c7e7e508722466e146e537b74b6725e594786c85e43",
+    "src/i18n/locales.ts": "97c8e19bf9e8bf033ffd4f7f666f952db4a5fd32923e74ebb9faf09dae5b29b9",
+    "src/lib/forms/lead-submission.ts": "19fb481176f13ff446f758afdf36856f5924bcd7efcff1478146c9e642552356",
+    "src/lib/localized.ts": "5118cf3b4a79e6814cb98ede8330db6ea1b49bedcf27a9281e0a1bd477ad71e8",
+    "src/lib/site-origin.ts": "eb11a1a5a776609d82332d11868430552f9981775456dddaad96fb46f1c19657",
+    "tests/client-forms.test.tsx": "5f59ef47c009d614afe31236b67187f9d912948f84c12d550abdd06e707f9d8e",
+    "tests/content-locale-wiring.test.tsx": "bcebf074d3721383b1f6335163cfc9e0aa12bc74d782bdcaad5f65fb34bdd6b0",
+    "tests/experience-locale-content.test.tsx": "4dfe2b02a52943e98969e274c6df4a7d9f4428834934d9878502ca0115ea0645",
+    "tests/leads-contract.test.ts": "0a243539b35253a45091645573013e461beb0950e38e2a5bb5a1d1a06d0bcd93",
+    "tests/locale-pages.test.tsx": "76737ca816c60796b328dec02270f489b47e17fc7309e1f501db9ce393cb14f9",
+    "tests/locale-routing.test.ts": "0941c8dd5914894041791b111a0ce3c4b39ab95cb849740e2eefcab48a62a006",
+    "tests/locale-switcher.test.tsx": "2e9b82eace261f4f664d93bf467f4e242ddd436497d4724b1d1ac4cffd41b812",
+    "tests/mail-budget.test.ts": "bef4a1f7a86c28c4ce048e7b4dd14cd6594793a82de0454e20aefa444074f5a8",
+    "tests/privacy-rights-copy.test.tsx": "f1e1a25f3c65857d4661accd04092edc3eaab1094a8f138b71292de95f43e0f1",
+    "src/components/projects/DevelopmentPreviewSection.tsx": "bcf341219391618be4da8cc01dd45a91c594424344a9ca6f3c1347c1be047dae",
+    "src/data/product-presentations.ts": "d09e10c47bf4ff3ac19314dc655e5caa5ca5df294509a53465d4e58b2fc305cc",
+    "tests/structured-data-honesty.test.tsx": "61a277923bddb9504a3c481e6a19488107cb92726327bb71d1bdd53b06050840"
+}
+EXPECTED_REVIEWED_HASHES = {
+    **REVIEWED_TEST_ADDITIONS,
+    **REVIEWED_VISUAL_ADDITIONS,
+    **REVIEWED_A3_SOURCE_HASHES,
+}
 require(len(baseline) == len(manifest["files"]), "duplicate publication baseline path")
 reviewed_path = root / ".github/ci/reviewed-source-changes.json"
 reviewed = {}
@@ -73,14 +116,14 @@ if reviewed_path.exists():
         else:
             require(
                 (relative.startswith("src/app/") and path.suffix in {".ts", ".tsx"}
-                 or relative in REVIEWED_TEST_ADDITIONS or relative in REVIEWED_VISUAL_ADDITIONS)
+                 or relative in EXPECTED_REVIEWED_HASHES)
                 and change.get("publishedSha256") is None,
                 f"unreviewed source addition: {relative}",
             )
         candidate_hash = change.get("candidateSha256")
-        if relative in REVIEWED_TEST_ADDITIONS or relative in REVIEWED_VISUAL_ADDITIONS:
+        if relative in EXPECTED_REVIEWED_HASHES:
             require(
-                candidate_hash == {**REVIEWED_TEST_ADDITIONS, **REVIEWED_VISUAL_ADDITIONS}[relative],
+                candidate_hash == EXPECTED_REVIEWED_HASHES[relative],
                 f"reviewed candidate addition hash mismatch: {relative}",
             )
         require(
@@ -99,6 +142,10 @@ if reviewed_path.exists():
 require(
     REVIEWED_TEST_ADDITIONS.keys() | REVIEWED_VISUAL_ADDITIONS.keys() <= reviewed_additions.keys(),
     f"missing reviewed test additions: {sorted(REVIEWED_TEST_ADDITIONS.keys() - reviewed_additions.keys())}",
+)
+require(
+    REVIEWED_A3_SOURCE_HASHES.keys() <= reviewed.keys() | reviewed_additions.keys(),
+    f"missing reviewed A3 candidate sources: {sorted(REVIEWED_A3_SOURCE_HASHES.keys() - reviewed.keys() - reviewed_additions.keys())}",
 )
 
 for item in manifest["files"]:

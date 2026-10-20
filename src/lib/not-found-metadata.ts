@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/lib/types";
+import { OG_LOCALES, localePath } from "@/i18n/locales";
+import { text } from "@/lib/localized";
+import { siteOrigin } from "@/lib/site-origin";
 
-const ORIGIN = "https://yulalab.com";
+const ORIGIN = siteOrigin();
 
 const copy = {
   tr: {
@@ -16,10 +19,15 @@ const copy = {
     ogLocale: "en_US",
     canonical: `${ORIGIN}/en`,
   },
-} as const satisfies Record<Locale, object>;
+} as const;
 
 export function notFoundMetadata(locale: Locale): Metadata {
-  const localized = copy[locale];
+  const localized = {
+    title: text(locale, copy.tr.title, copy.en.title),
+    description: text(locale, copy.tr.description, copy.en.description),
+    ogLocale: OG_LOCALES[locale],
+    canonical: `${ORIGIN}${localePath(locale)}`,
+  };
   return {
     metadataBase: new URL(ORIGIN),
     title: localized.title,

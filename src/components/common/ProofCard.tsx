@@ -1,3 +1,5 @@
+import type { Locale } from "@/lib/types";
+import { text } from "@/lib/localized";
 import type { PresentedClaim } from "@/lib/proof";
 import { SourceStamp } from "./SourceStamp";
 
@@ -14,11 +16,11 @@ export function ProofCard({
   locale,
 }: {
   presented: PresentedClaim;
-  locale: "tr" | "en";
+  locale: Locale;
 }) {
   const { claim } = presented;
   const lapsed = presented.kind === "lapsed";
-  const statement = locale === "tr" ? claim.statementTr : claim.statementEn;
+  const statement = text(locale, claim.statementTr, claim.statementEn);
 
   return (
     <li
@@ -34,7 +36,7 @@ export function ProofCard({
         evidenceKind={claim.evidenceKind}
         verifiedAt={claim.verifiedAt}
         source={claim.source}
-        scope={locale === "tr" ? claim.scopeTr : claim.scopeEn}
+        scope={text(locale, claim.scopeTr, claim.scopeEn)}
         locale={locale}
         expiredOn={lapsed ? presented.expiredOn : undefined}
       />
