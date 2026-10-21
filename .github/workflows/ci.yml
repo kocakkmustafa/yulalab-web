@@ -14,7 +14,7 @@ jobs:
     env:
       NEXT_TELEMETRY_DISABLED: '1'
       YULA_E2E_PORT: '4189'
-      LINKS_COMMIT: e94b65682ba33296a69ef7f0b6f4c12d474848a1
+      LINKS_COMMIT: 066b9e1df96d4b5fc36ab1e877f060dd11787371
       EXPECTED_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
     services:
       postgres:
