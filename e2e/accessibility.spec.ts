@@ -68,8 +68,8 @@ for (const [label, path] of ROUTES) {
 }
 
 for (const [locale, path, homeName, linearName, languageName] of [
-  ["tr", "/?capture=1&progress=0&tier=low", "YULALAB — Ana sayfa", "2D — Doğrusal deneyim", "EN — English"],
-  ["en", "/en?capture=1&progress=0&tier=low", "YULALAB — Home", "2D — Linear experience", "TR — Türkçe"],
+  ["tr", "/?capture=1&progress=0&tier=low", "YULALAB — Ana sayfa", "2D — Doğrusal deneyim", "Dil"],
+  ["en", "/en?capture=1&progress=0&tier=low", "YULALAB — Home", "2D — Linear experience", "Language"],
 ] as const) {
   test(`visible control labels remain inside their accessible names (${locale})`, async ({ page }) => {
     await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -79,7 +79,8 @@ for (const [locale, path, homeName, linearName, languageName] of [
     });
     await expect(page.getByRole("link", { name: homeName, exact: true })).toBeAttached();
     await expect(page.getByRole("button", { name: linearName, exact: true })).toBeAttached();
-    await expect(page.getByRole("link", { name: languageName, exact: true })).toBeAttached();
+    // Fourteen languages: the switcher is a labelled native <select>, not a TR/EN link.
+    await expect(page.getByRole("combobox", { name: languageName, exact: true })).toBeAttached();
 
     const results = await new AxeBuilder({ page })
       .withRules(["label-content-name-mismatch"])
@@ -151,7 +152,7 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: "reduce" });
   const page = await context.newPage();
   await page.goto("/en/projects/burunfarki");
-  await expect(page.getByRole("heading", { name: "Verified claims", level: 2 })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Claims and sources", level: 2 })).toBeVisible();
   const unresolved = await page.locator(".reveal,.word").evaluateAll((elements) =>
     elements.filter((element) => {
       const style = getComputedStyle(element);

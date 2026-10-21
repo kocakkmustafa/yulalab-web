@@ -114,7 +114,8 @@ for (const locale of ["tr", "en"] as const) {
     try {
       await page.goto(`http://127.0.0.1:${e2ePort}${route}#token=${TOKEN}`);
       await expect(page.getByRole("button")).toHaveCount(0);
-      await expect(page.locator("noscript")).toHaveText(VERIFICATION_COPY[locale].noScript);
+      // Playwright text matchers skip <noscript> content, so read the parsed DOM text.
+      expect(await page.locator("noscript").evaluate((element) => element.textContent?.trim())).toBe(VERIFICATION_COPY[locale].noScript);
       await expect(page.getByRole("combobox")).toBeDisabled();
       await expect(page.getByRole("link", { name: VERIFICATION_COPY[locale].contact })).toHaveAttribute("href", localePath(locale, "/contact"));
       await expect(page.getByRole("link", { name: VERIFICATION_COPY[locale].email })).toHaveAttribute("href", "mailto:support@yulalab.com");

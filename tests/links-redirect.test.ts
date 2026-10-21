@@ -11,8 +11,10 @@ describe("canonical Links redirect before locale rewriting", () => {
     "redirects %s directly to the static hub", (path) => {
       const response = middleware(new NextRequest(`https://yulalab.com${path}?returnTo=https://evil.example&email=private`));
       expect(response.status).toBe(308);
+      // Only an explicit locale prefix is forwarded (as ?lang=); caller query values never are.
+      const prefix = /^\/(tr|en)\/links$/.exec(path)?.[1];
       expect(response.headers.get("location")).toBe(
-        `https://links.yulalab.com/${path.startsWith("/en/") ? "?lang=en" : ""}`,
+        `https://links.yulalab.com/${prefix ? `?lang=${prefix}` : ""}`,
       );
       expect(intl).not.toHaveBeenCalled();
     },

@@ -315,7 +315,9 @@ for (const viewport of LOADER_VIEWPORTS) {
         expect(metrics!.blueprintHeight).toBeLessThanOrEqual(viewport.height * 0.73);
         expect(metrics!.viewportAriaHidden).toBe("true");
         expect(metrics!.viewportInert).toBe(true);
-        expect(metrics!.viewportOpacity).toBe(0);
+        // The ready scene stays painted behind the opaque loader (no sequential
+        // fade, which produced a black gap); it is hidden from AT and inert instead.
+        expect(metrics!.viewportOpacity).toBe(1);
         expect(metrics!.tabbableCount).toBe(0);
         await context.close();
       }

@@ -14,7 +14,9 @@ test("Links aliases redirect before locale rewriting with no forwarded query", a
   for (const path of ["/links", "/tr/links", "/en/links"]) {
     const response = await request.get(`${path}?returnTo=https://evil.example&email=private`, { maxRedirects: 0 });
     expect(response.status()).toBe(308);
-    expect(response.headers().location).toBe(`https://links.yulalab.com/${path.startsWith("/en/") ? "?lang=en" : ""}`);
+    // Only an explicit locale prefix is forwarded (as ?lang=); caller query values never are.
+    const prefix = /^\/([^/]+)\/links$/.exec(path)?.[1];
+    expect(response.headers().location).toBe(`https://links.yulalab.com/${prefix ? `?lang=${prefix}` : ""}`);
   }
 });
 
@@ -62,7 +64,9 @@ for (const locale of ["tr", "en"] as const) {
       await page.goto(`${prefix}/privacy/motion#motion-account-deletion`);
       await page.getByRole("button", { name: menuName, exact: true }).click();
       const dialog = page.getByRole("dialog", { name: menuName, exact: true });
-      await dialog.getByRole("button", { name: /TR\/EN/ }).click();
+      await dialog
+        .getByRole("combobox", { name: locale === "tr" ? "Dil" : "Language", exact: true })
+        .selectOption(locale === "tr" ? "en" : "tr");
       const otherPrefix = locale === "tr" ? "/en" : "";
       await expect(page).toHaveURL(new RegExp(`${otherPrefix}/privacy/motion#motion-account-deletion$`));
       await expect(page.locator("dialog")).not.toBeVisible();

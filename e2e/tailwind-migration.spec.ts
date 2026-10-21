@@ -44,6 +44,8 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 320, height: 800 
 }
 
 test("status colors, font variables, gradients and focus transitions retain their behavior", async ({ page }) => {
+  // Dark palette values; the light theme deliberately remaps status colours for contrast.
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("/en/support");
   const styles = await page.evaluate(() => {
     const host = document.createElement("div");

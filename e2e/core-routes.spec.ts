@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { SUPPORTED_LOCALES } from "../src/i18n/locales";
 
 const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
 
@@ -348,7 +349,8 @@ for (const routeCase of DYNAMIC_MISSING_ROUTE_CASES) {
 }
 
 test("unsupported locale fails closed before locale rendering", async ({ request }) => {
-  const response = await request.get("/fr/__yula_missing_route__", { maxRedirects: 0 });
+  // "sv" is outside the fourteen supported locales (fr became supported).
+  const response = await request.get("/sv/__yula_missing_route__", { maxRedirects: 0 });
   expect(response.status()).toBe(404);
   expect(response.headers().location).toBeUndefined();
   expect(response.headers()["x-middleware-rewrite"]).toBeUndefined();
@@ -386,11 +388,11 @@ test("products index links to every product detail page", async ({
 test("language switcher moves between TR and EN on the same page", async ({
   page,
 }) => {
-  // LocaleSwitcher is a <button> that navigates client-side via next-intl's
-  // router (not a plain <a href>) — see src/components/layout/LocaleSwitcher.tsx.
+  // LocaleSwitcher is a labelled native <select> of the fourteen locales that
+  // navigates client-side via next-intl's router — see
+  // src/components/layout/LocaleSwitcher.tsx.
   await page.goto("/manifesto");
-  const switchToEn = page.getByRole("button", { name: /İngilizceye geç/i });
-  await switchToEn.click();
+  await page.locator("header").getByRole("combobox", { name: "Dil", exact: true }).selectOption("en");
   await expect(page).toHaveURL(/\/en\/manifesto$/);
 });
 
@@ -506,7 +508,7 @@ test("production locale routing has bounded canonical redirects", async ({ reque
     expect(response.headers().location).toBeUndefined();
   }
 
-  const invalidLocale = await request.get(`http://127.0.0.1:${e2ePort}/fr/contact`, {
+  const invalidLocale = await request.get(`http://127.0.0.1:${e2ePort}/sv/contact`, {
     maxRedirects: 0,
   });
   expect(invalidLocale.status()).toBe(404);
@@ -530,7 +532,7 @@ test("sitemap pages advertise reciprocal language alternates in their HTML", asy
   for (const entry of entries) {
     const url = new URL(entry.url);
     expect(url.origin).toBe("https://yulalab.com");
-    expect(Object.keys(entry.languages).sort()).toEqual(["en", "tr"]);
+    expect(Object.keys(entry.languages).sort()).toEqual([...SUPPORTED_LOCALES].sort());
     for (const alternate of Object.values(entry.languages)) {
       expect(knownUrls.has(alternate.replace(/\/$/, ""))).toBe(true);
     }

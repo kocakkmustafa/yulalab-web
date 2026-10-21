@@ -182,7 +182,14 @@ describe("studio page copy", () => {
   it("shows no numeric band to the applicant", () => {
     for (const loc of ["tr", "en"] as const) {
       const copy = JSON.parse(readFileSync(join(root, `messages/${loc}.json`), "utf8"));
-      expect(JSON.stringify(copy.studio)).not.toMatch(/\d+\s?k\b/i);
+      // Only displayed strings count; option keys such as "under-50k" are identifiers.
+      const shown: string[] = [];
+      const collect = (value: unknown): void => {
+        if (typeof value === "string") shown.push(value);
+        else if (value && typeof value === "object") Object.values(value).forEach(collect);
+      };
+      collect(copy.studio);
+      expect(shown.join("\n")).not.toMatch(/\d+\s?k\b/i);
     }
   });
 });

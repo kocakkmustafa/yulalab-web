@@ -9,8 +9,8 @@ import { test, expect } from "@playwright/test";
  * the exact defect the feature was built to eliminate.
  */
 for (const [locale, path, heading] of [
-  ["tr", "/projects/burunfarki", "Doğrulanmış iddialar"],
-  ["en", "/en/projects/burunfarki", "Verified claims"],
+  ["tr", "/projects/burunfarki", "İddialar ve kaynakları"],
+  ["en", "/en/projects/burunfarki", "Claims and sources"],
 ] as const) {
   test.describe(`claims section (${locale})`, () => {
     test.beforeEach(async ({ page }) => {
@@ -62,7 +62,7 @@ test("a product with no claims renders no claims section at all", async ({ page 
   // Motion products have zero claims; an empty section with a heading would
   // promise proof that does not exist.
   await page.goto("/en/projects/choreia");
-  await expect(page.getByRole("heading", { name: "Verified claims" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Claims and sources" })).toHaveCount(0);
 });
 
 /**
@@ -78,7 +78,9 @@ test("a stat backed by a claim carries provenance, fresh or lapsed", async ({ pa
   // single thing this site must never do casually. A lapsed claim is a
   // correct state, not a broken test.
   await page.goto("/en/projects/burunfarki");
-  const top3 = page.getByText("~%62", { exact: true }).first();
+  // Stat values are locale-formatted since the 14-language release: EN shows
+  // the percent sign after the number.
+  const top3 = page.getByText("~62%", { exact: true }).first();
   await expect(top3).toBeVisible();
   const card = top3.locator("xpath=ancestor::div[contains(@class,'glass')][1]");
   await expect(card).toContainText(/verified \d{4}-\d{2}-\d{2}|needs re-verification/i);
