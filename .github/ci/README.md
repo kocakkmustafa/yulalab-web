@@ -20,13 +20,12 @@ advisories, and fixes clock-dependent and Node 26 browser-storage test setup.
 That toolchain-only change left translations, assets and database code unchanged. Passing this check is
 not a deployment receipt.
 
-The Links sibling is pinned to
-`43524f61e28d9bbd73be372ca8bc30feedddb8ad`, the existing main revision with
-the stale technical banner removed. Its own immutable publication manifest
+The Links sibling is pinned by `LINKS_COMMIT` in `ci.yml` (2026-10-22:
+`066b9e1df96d4b5fc36ab1e877f060dd11787371`, the released fourteen-language hub). Its own immutable publication manifest
 and reviewed candidate deltas are verified separately by the web workflow.
 
 The workflow runs all existing unit tests with disposable PostgreSQL 17,
-lint, typecheck, content and URL-shape checks, Next build, provider artifact-contract fixtures, and all existing Playwright tests. Local E2E uses port 4189;
+lint, typecheck, content and URL-shape checks, Next build, provider artifact-contract fixtures, and every Playwright test except the `@hardware-webgl` set (see below). Local E2E uses port 4189;
 `YULA_E2E_PORT` may select another isolated local port. Public URL reachability
 is intentionally not requested. Every assertion remains in the baseline
 test suites; local/browser results do not establish canonical hostname or
@@ -178,3 +177,26 @@ reading scenes and hidden tabs; reduced motion/fallback retains the static view.
 New timing, pixel, input, accessibility and local-test evidence is held in the
 `p2-visual-correction-20261016` task package. This is not exact-reference video,
 physical-device performance, provider/security, CI/deploy or public acceptance.
+
+## Separate hardware-WebGL gate (`@hardware-webgl`)
+
+Native-journey E2E tests (the 3D document, development reader, history,
+emblem and mobile menu) need a GPU renderer. GitHub-hosted runners only
+expose SwiftShader, where the product deliberately serves its static
+fallback, so these tests are tagged `@hardware-webgl` and CI runs
+`playwright test --grep-invert @hardware-webgl`. Every test CI does run must
+pass with zero skips; the tag is not a skip list.
+
+Before any production deploy the tagged set runs as a separate mandatory
+local gate on the exact candidate SHA, on a machine with hardware WebGL:
+
+```bash
+pnpm build
+YULA_E2E_PORT=4189 pnpm exec playwright test --grep @hardware-webgl --workers=1 --retries=0
+```
+
+Use a Chrome/Chromium with GPU acceleration (for example a config override
+with `channel: "chrome"`); the receipt must show 0 failed, 0 skipped and 0
+flaky for the exact SHA. The 2026-10-22 release receipt is
+`scratch/2026-10-21-yulalab-release/GPU-GATE-242e6792.json` in the workspace
+(20/20). Adding a native-journey test means tagging it in the same change.
