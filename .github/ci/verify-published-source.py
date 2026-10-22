@@ -126,7 +126,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/app/globals.css": "ef5617835158021da52ca20911f3904f46a0b8b92804ae6df4cf2f51433348fd",
     "src/components/experience/Experience.module.css": "2ea092366eead5233c6a1dda51ea0bb84e9562ebf77bdda02b6d635e4dfd8f26",
     "src/components/experience/ExperienceCanvas.tsx": "ce6d293f53af614c05d7238a2b8945391927eb3737aa1a39f44fb173e1bd5386",
-    "src/components/experience/ExperienceOverlay.tsx": "2365af374086fd43b34b2a91541fc75d4889287e766b55afc307a4b3f4f6cfc3",
+    "src/components/experience/ExperienceOverlay.tsx": "dbe4502c7368f993d7eb5897ea26500644bc9b07b36accdce3a065da22d64552",
     "src/components/experience/ExperienceWorld.tsx": "7d467078b542ff14c51289341f85ae32508d6886d352e96439c53bfeff225db7",
     "src/components/experience/YulaExperience.tsx": "b9e229716bc135a74d45b9b90383c990ae6b100131da278dcfc906336013e20e",
     "src/components/experience/theme.ts": "547aeeb0e856dbd66503f356063d639f4f724a0c5826b0ac71de5a58d960ad1d",

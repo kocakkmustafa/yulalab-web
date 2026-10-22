@@ -3,7 +3,7 @@
 
 import { text } from "@/lib/localized";
 import type { Locale } from "@/lib/types";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { track } from "@/lib/analytics/client";
@@ -101,16 +101,16 @@ function exclusivePanelFocus(
 }
 
 /** Europe/Istanbul is the registry's documented freshness boundary. */
+const noSiteDateSubscription = () => () => {};
+
+/**
+ * Server and hydration render without a date (freshness "pending"), so the
+ * markup matches. A view mounted after hydration — the 2D linear switch —
+ * gets the date in its first render; otherwise the pending labels collapse a
+ * frame later and shift the section the switch has just scrolled to.
+ */
 export function useExperienceSiteDate(): string | null {
-  const [today, setToday] = useState<string | null>(null);
-
-  useEffect(() => {
-    setToday(
-      siteDate(new Date()),
-    );
-  }, []);
-
-  return today;
+  return useSyncExternalStore(noSiteDateSubscription, () => siteDate(new Date()), () => null);
 }
 
 export type ExperienceHeaderProps = {
