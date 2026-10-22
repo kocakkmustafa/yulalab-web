@@ -1177,10 +1177,13 @@ for (const height of [667, 844]) {
           }
           await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
         };
+        // Measure the swipe's own effect: returning from an anchor jump can leave
+        // a few pixels of residual smooth scroll that the gesture did not cause.
+        const scrollBeforeSwipe = await page.evaluate(() => scrollY);
         await swipe({ x: point.x - 45, y: point.y }, { x: point.x + 45, y: point.y });
         await expect.poll(async () => Number(await control.getAttribute("data-glyph-yaw"))).toBeGreaterThan(0.2);
         const horizontalYaw = await control.getAttribute("data-glyph-yaw");
-        expect(await page.evaluate(() => scrollY)).toBeLessThan(3);
+        expect(Math.abs(await page.evaluate(() => scrollY) - scrollBeforeSwipe)).toBeLessThan(3);
         await control.focus();
         await page.keyboard.press("Home");
         await swipe({ x: point.x, y: point.y + 30 }, { x: point.x, y: point.y - 100 });
