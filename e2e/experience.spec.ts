@@ -7,21 +7,6 @@ const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
 
 const ROOT = '[data-yula-experience="true"]';
 
-// CI uses software WebGL, which the product deliberately routes to its static
-// fallback. Native-journey tests control only the renderer label so they
-// exercise the real native document in CI. This does not establish hardware
-// or performance acceptance.
-async function labelRendererForNativeJourney(page: Page) {
-  await page.addInitScript(() => {
-    const original = WebGL2RenderingContext.prototype.getParameter;
-    WebGL2RenderingContext.prototype.getParameter = function (parameter: number) {
-      return parameter === 37446
-        ? "local anchor geometry test renderer"
-        : original.call(this, parameter);
-    };
-  });
-}
-
 // Headless Chromium shares a finite GPU context pool. These tests exercise
 // full WebGL scenes, so serial execution removes context starvation without
 // changing the application's runtime or lowering its capture tier.
@@ -793,8 +778,7 @@ test("native journey anchors retain their target after resizing", async ({ page 
   await page.goto("/?tier=low");
   const root = page.locator(ROOT);
   await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 75_000 });
-  // The loader exit follows readiness; software WebGL in CI can exceed the 5s default.
-  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
+  await expect(root).toHaveAttribute("data-loader-visible", "false");
   for (const viewport of [{ width: 1280, height: 800 }, { width: 1440, height: 900 }]) {
     await page.setViewportSize(viewport);
     for (const [anchor, stage] of [["portfolio", "portfolio"], ["proof", "proof"], ["manifesto", "mission"]]) {
@@ -864,7 +848,6 @@ for (const [locale, liveLabel, betaLabel] of [
 
 // Normal URLs exercise native history and GPU interaction; no capture override.
 async function openNativeJourney(page: Page, pathname = "/") {
-  await labelRendererForNativeJourney(page);
   await page.goto(pathname);
   const root = page.locator(ROOT);
   await expect(root).toHaveAttribute("data-experience-mounted", "true");
@@ -1073,7 +1056,6 @@ test("native emblem responds to drag and keyboard while wheel keeps document own
 test("native immediate Back then Forward keeps the last scroll before persistence", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
-  await labelRendererForNativeJourney(page);
   await page.goto("/projects/lifeos");
   await page.locator("header").getByRole("link", { name: /YULA/i }).first().click();
   const root = page.locator(ROOT);
@@ -1099,7 +1081,6 @@ test("native immediate Back then Forward keeps the last scroll before persistenc
 test("English native gallery CTA keeps one locale prefix and returns in the same document", async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
-  await labelRendererForNativeJourney(page);
   await page.goto("/en");
   const root = page.locator(ROOT);
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });

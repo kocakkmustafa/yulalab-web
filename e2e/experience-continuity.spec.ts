@@ -5,21 +5,6 @@ import { scrollProgressForTimeline } from "../src/components/experience/storyboa
 test.use({ hasTouch: true });
 
 const ROOT = '[data-yula-experience="true"]';
-
-// CI uses software WebGL, which the product deliberately routes to its static
-// fallback. Native-journey tests control only the renderer label so they
-// exercise the real native document in CI. This does not establish hardware
-// or performance acceptance.
-async function labelRendererForNativeJourney(page: Page) {
-  await page.addInitScript(() => {
-    const original = WebGL2RenderingContext.prototype.getParameter;
-    WebGL2RenderingContext.prototype.getParameter = function (parameter: number) {
-      return parameter === 37446
-        ? "local anchor geometry test renderer"
-        : original.call(this, parameter);
-    };
-  });
-}
 const PRODUCTS = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
 
 test.beforeEach(async ({ page }) => {
@@ -28,7 +13,6 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function openJourney(page: Page, path: string) {
-  await labelRendererForNativeJourney(page);
   await page.goto(path);
   const root = page.locator(ROOT);
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
