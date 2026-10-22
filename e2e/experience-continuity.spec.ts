@@ -26,7 +26,7 @@ async function scrollTimeline(page: Page, progress: number) {
 }
 
 for (const locale of ["tr", "en"] as const) {
-  test(`linear view retains the current content and keyboard focus (${locale})`, async ({ page }, testInfo) => {
+  test(`linear view retains the current content and keyboard focus (${locale})`, { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
     await page.setViewportSize({ width: 390, height: 667 });
     for (const [progress, target] of [
@@ -81,7 +81,7 @@ for (const locale of ["tr", "en"] as const) {
 for (const viewport of [{ width: 390, height: 667 }, { width: 1440, height: 900 }]) {
   test.describe(`English complete product journey ${viewport.width}x${viewport.height}`, () => {
     test.use({ hasTouch: true, viewport });
-    test("keeps every introduction, image and local route reachable", async ({ page }, testInfo) => {
+    test("keeps every introduction, image and local route reachable", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
       test.setTimeout(180_000);
       const errors: string[] = [];
       page.on("pageerror", error => errors.push(error.message));
@@ -128,7 +128,7 @@ for (const viewport of [{ width: 390, height: 667 }, { width: 1440, height: 900 
   });
 }
 
-test("English touch scrolling survives the image reader and compact layouts", async ({ page }, testInfo) => {
+test("English touch scrolling survives the image reader and compact layouts", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 390, height: 667 });
   const root = await openJourney(page, "/en");
@@ -152,6 +152,8 @@ test("English touch scrolling survives the image reader and compact layouts", as
   const reader = page.getByRole("dialog", {name:/Development view/});
   const region = reader.getByRole("region", {name:"Complete development screen"});
   await expect.poll(() => reader.locator("img").evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  // The image can report its natural size before layout makes the region overflow.
+  await expect.poll(() => region.evaluate(node => node.scrollHeight - node.clientHeight)).toBeGreaterThan(50);
   const before = await page.evaluate(() => scrollY);
   const box = await region.boundingBox();
   expect(box).not.toBeNull();
@@ -177,7 +179,7 @@ test("English touch scrolling survives the image reader and compact layouts", as
   await testInfo.attach("touch-and-layout",{body:JSON.stringify({documentTouchY,readerTouchY,layouts}),contentType:"application/json"});
 });
 
-test("English project Back and Forward retain the same journey document", async ({ page }, testInfo) => {
+test("English project Back and Forward retain the same journey document", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
   test.setTimeout(60_000);
   await page.setViewportSize({width:390,height:667});
   const root = await openJourney(page, "/en");

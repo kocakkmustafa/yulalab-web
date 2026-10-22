@@ -761,7 +761,7 @@ for (const viewport of [
   });
 }
 
-test("native journey anchors retain their target after resizing", async ({ page }) => {
+test("native journey anchors retain their target after resizing", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(120_000);
   // CI uses software WebGL. Control only the renderer label so this test
   // exercises real native scroll geometry outside capture mode. This does
@@ -859,7 +859,7 @@ async function openNativeJourney(page: Page, pathname = "/") {
   return root;
 }
 
-test("native opening keeps the ready hero painted through the loader exit", async ({ page }, testInfo) => {
+test("native opening keeps the ready hero painted through the loader exit", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
   await page.addInitScript(() => {
     const samples: { ms: number; loader: boolean; ready: boolean; progress: number; combinedAlpha: number }[] = [];
     (window as Window & { openingPaintSamples?: typeof samples }).openingPaintSamples = samples;
@@ -887,7 +887,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 667 
   for (const locale of ["tr", "en"] as const) {
     test.describe(`native development reader ${locale} ${viewport.width}x${viewport.height}`, () => {
       test.use({ hasTouch: true });
-      test("owns Back/Forward and every dismissal without losing position or focus", async ({ page }, testInfo) => {
+      test("owns Back/Forward and every dismissal without losing position or focus", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
         test.setTimeout(90_000);
         await page.setViewportSize(viewport);
         const root = await openNativeJourney(page, locale === "en" ? "/en" : "/");
@@ -971,7 +971,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 667 
   }
 }
 
-test("native history returns to each product without replaying the opening", async ({ page }) => {
+test("native history returns to each product without replaying the opening", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   const root = await openNativeJourney(page);
@@ -1023,7 +1023,7 @@ test("native history returns to each product without replaying the opening", asy
   await expect.poll(() => page.evaluate(() => scrollY)).toBe(0);
 });
 
-test("native emblem responds to drag and keyboard while wheel keeps document ownership", async ({ page }) => {
+test("native emblem responds to drag and keyboard while wheel keeps document ownership", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await openNativeJourney(page);
@@ -1053,7 +1053,7 @@ test("native emblem responds to drag and keyboard while wheel keeps document own
 });
 
 
-test("native immediate Back then Forward keeps the last scroll before persistence", async ({ page }) => {
+test("native immediate Back then Forward keeps the last scroll before persistence", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/projects/lifeos");
@@ -1078,7 +1078,7 @@ test("native immediate Back then Forward keeps the last scroll before persistenc
 });
 
 
-test("English native gallery CTA keeps one locale prefix and returns in the same document", async ({ page }) => {
+test("English native gallery CTA keeps one locale prefix and returns in the same document", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/en");
@@ -1109,7 +1109,7 @@ for (const height of [667, 844]) {
   for (const locale of ["tr", "en"] as const) {
     test.describe(`native mobile menu ${locale} 390x${height}`, () => {
       test.use({ hasTouch: true });
-      test("owns center taps and excludes emblem focus until dismissed", async ({ page }, testInfo) => {
+      test("owns center taps and excludes emblem focus until dismissed", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
         test.setTimeout(60_000);
         await page.setViewportSize({ width: 390, height });
         const root = await openNativeJourney(page, locale === "en" ? "/en" : "/");
