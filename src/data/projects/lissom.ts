@@ -15,12 +15,12 @@ export const lissom: ProjectConfig = {
     en: "Build a movement habit with short practice.",
   },
   description: {
-    tr: "Lissom'un ilk sürümü, Hatha yoga kursuyla okuma ve pratik adımları sunar. Kurs ilerlemesi cihazda öz bildirimle kaydedilir; kamera ölçümü, beceri puanı veya otomatik yeniden test değildir. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
-    en: "Lissom's first release offers reading and practice steps through a Hatha yoga course. Course progress is saved on the device by self-report; it is not a camera measurement, skill score or automatic re-test. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Lissom'un ilk sürümü, Hatha yoga kursuyla okuma ve pratik adımları sunar. Kurs ilerlemesi cihazda öz bildirimle kaydedilir; kamera ölçümü, beceri puanı veya otomatik yeniden test değildir. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "Lissom's first release offers reading and practice steps through a Hatha yoga course. Course progress is saved on the device by self-report; it is not a camera measurement, skill score or automatic re-test. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   short: {
-    tr: "Hatha yoga kursu ve cihazda öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
-    en: "A Hatha yoga course with on-device, self-reported progress. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Hatha yoga kursu ve cihazda öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "A Hatha yoga course with on-device, self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#6EE7C8",

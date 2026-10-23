@@ -15,12 +15,12 @@ export const jablab: ProjectConfig = {
     en: "Practise shadow boxing step by step.",
   },
   description: {
-    tr: "JabLab'ın ilk sürümü, temas içermeyen solo boks kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda ayrı kaydedilir; kamera beceri puanı veya teknik onay üretilmez. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
-    en: "JabLab's first release focuses on a non-contact solo boxing course. Reading, practice and self-reported completion are recorded separately on the device; no camera skill score or technique certification is produced. Camera coaching and paid sales are disabled in the first release.",
+    tr: "JabLab'ın ilk sürümü, temas içermeyen solo boks kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda ayrı kaydedilir; kamera beceri puanı veya teknik onay üretilmez. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "JabLab's first release focuses on a non-contact solo boxing course. Reading, practice and self-reported completion are recorded separately on the device; no camera skill score or technique certification is produced. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   short: {
-    tr: "Temas içermeyen solo boks kursu ve öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
-    en: "A non-contact solo boxing course with self-reported progress. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Temas içermeyen solo boks kursu ve öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "A non-contact solo boxing course with self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#FF3B3B",
