@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 import { LOCAL_ONLY_BROWSER_ARGS } from "./.github/ci/browser-options";
+import { E2E_MOTION_CONSENT_ENDPOINT } from "./e2e/motion-consent-endpoint";
 
 const port = Number(process.env.YULA_E2E_PORT ?? "4173");
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error("Invalid YULA_E2E_PORT");
@@ -34,6 +35,9 @@ export default defineConfig({
     // rebuilding here avoids paying for the ~400-page SSG build twice per
     // CI run. Run `pnpm build` yourself first for local `pnpm test:e2e`.
     command: `pnpm exec next start -p ${port}`,
+    // Points /motion/consent at a fake Supabase project that the specs intercept;
+    // never set on the provider (see src/data/motion-consent-config.ts).
+    env: { YULA_MOTION_CONSENT_ENDPOINT: E2E_MOTION_CONSENT_ENDPOINT },
     // Keep the readiness probe on the public default-locale entry point.
     // Do not bind `next start` to 127.0.0.1: Next 15 normalizes loopback
     // rewrites to localhost, which can turn next-intl's internal /tr rewrite

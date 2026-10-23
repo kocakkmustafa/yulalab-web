@@ -90,7 +90,8 @@ const nextConfig = {
         // Next preserves config headers over route Response headers. The
         // capability document must own its per-response nonce and referrer
         // policy. Middleware canonicalizes encoded spellings before rendering.
-        source: `/:path((?!(?:(?:${verificationLocales.join("|")})/)?data-request/verify/?$).*)`,
+        // The Motion parental-consent page owns its policy the same way.
+        source: `/:path((?!(?:(?:${verificationLocales.join("|")})/)?(?:data-request/verify|motion/consent)/?$).*)`,
         headers: securityHeaders.filter(
           ({ key }) => key === "Content-Security-Policy" || key === "Referrer-Policy",
         ),
