@@ -6,13 +6,16 @@ import { E2E_MOTION_CONSENT_ENDPOINT } from "./motion-consent-endpoint";
 
 // Localhost-only: the page is pointed at a fake Supabase project through
 // playwright.config.ts and every call to it is fulfilled here. This proves the
-// page contract and browser CORS behaviour, not the live Motion Core function.
+// page contract, not the live Motion Core function. Chromium does not apply
+// CORS to responses fulfilled by page.route, so the function's
+// Access-Control-Allow-Origin requirement is only provable against the live
+// function (YUL-10); the header below just mirrors the expected response.
 const e2ePort = Number(process.env.YULA_E2E_PORT ?? "4173");
 const ORIGIN = `http://127.0.0.1:${e2ePort}`;
 const TOKEN = "Q2xhdWRlLW1vdGlvbi1jb25zZW50LWUyZS10b2tlbjAx".slice(0, 43);
 const PENDING = { status: "pending", teenEmail: "t***@example.com", expiresAt: "2026-10-30T12:00:00.000Z" };
 
-type Step = { status: number; body: unknown; cors?: boolean };
+type Step = { status: number; body: unknown };
 
 async function fakeFunction(page: Page, steps: Step[]) {
   const posts: { body: unknown; request: Request }[] = [];
@@ -25,7 +28,7 @@ async function fakeFunction(page: Page, steps: Step[]) {
     await route.fulfill({
       status: step.status,
       contentType: "application/json",
-      headers: step.cors === false ? {} : { "access-control-allow-origin": ORIGIN },
+      headers: { "access-control-allow-origin": ORIGIN },
       body: JSON.stringify(step.body),
     });
   });
@@ -129,13 +132,6 @@ for (const [status, key] of [[404, "invalid"], [410, "expired"], [503, "serverEr
     await expect(page.getByRole("button", { name: MOTION_CONSENT_COPY.en.retry })).toBeVisible({ visible: status === 503 });
   });
 }
-
-test("without Access-Control-Allow-Origin from Motion Core the browser blocks the answer", async ({ page }) => {
-  const fake = await fakeFunction(page, [{ status: 200, body: { ...PENDING, locale: "en" }, cors: false }]);
-  await page.goto(`/en/motion/consent#token=${TOKEN}`);
-  await expect(page.getByRole("alert")).toHaveText(MOTION_CONSENT_COPY.en.serverError);
-  expect(fake.methods).toEqual(["POST"]);
-});
 
 test("a malformed fragment never contacts the function", async ({ page }) => {
   const fake = await fakeFunction(page, []);
