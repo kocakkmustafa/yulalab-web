@@ -194,15 +194,15 @@
     {
       "path": "src/middleware.ts",
       "publishedSha256": "cd5e600b3b22ae655bdec97a23d9d4ebf188ed6e4d87895607edfaa4ceed7766",
-      "candidateSha256": "e732a31babf635f46e5da211ad4d71b455844fd999082ab2f13889ffa18da455",
-      "reason": "Resolve fixed Links aliases before Netlify locale rewriting; incoming query values cannot select or contaminate the external destination. EN uses the supported fixed lang=en hub query. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance.",
+      "candidateSha256": "d7cf2e17e6c2f70e58aac46c0491b6cffa609979230b543fae3994a604e60041",
+      "reason": "Resolve fixed Links aliases before Netlify locale rewriting; incoming query values cannot select or contaminate the external destination. EN uses the supported fixed lang=en hub query. 2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
       "path": "next.config.mjs",
       "publishedSha256": "c86affd49cc3f2242c94ecdbfabaae7eb7f05f58e2f609dc026fc54d5d0df823",
-      "candidateSha256": "3c0c6ef2acd8a5705ec46d648cacdb5de31185a8751db84d5456f7a0d0aded91",
-      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance.",
+      "candidateSha256": "6c3c742d020238703e82c1c9c86c7fdf37690a48d4d710d04902d213f5a39416",
+      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS.",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -1268,6 +1268,13 @@
       "candidateSha256": "9c1a96306a5702d68d1415172b3b72900eba710a88809d324124db6b4d58ecdf",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "2026-10-22 release CI alignment: oracle follows the 14-language candidate (heading 'Claims and sources'/'İddialar ve kaynakları' because lapsed claims are not verified; EN stat locale format '~62%'). Render, heading, list semantics and provenance checks unchanged."
+    },
+    {
+      "path": "src/app/[locale]/motion/consent/route.ts",
+      "publishedSha256": null,
+      "candidateSha256": "dfc29ae2c0982314ced3cf293b326e0d656cb1228e726f01101eec2488198207",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS."
     }
   ]
 }
