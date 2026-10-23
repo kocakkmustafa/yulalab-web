@@ -5,6 +5,7 @@ import { localePath } from "@/i18n/locales";
 /* eslint-disable @next/next/no-img-element -- registry captures do not publish
    dimensions; native images preserve each file's intrinsic aspect ratio. */
 import { TrackedLink } from "@/components/common/TrackedLink";
+import { IMAGE_DIMENSIONS } from "@/data/image-dimensions";
 import type { ExperienceCopy, ExperienceProduct } from "./types";
 import {
   ExperienceClosingContent,
@@ -83,11 +84,16 @@ export function StaticExperience({
 
               {media.length > 0 ? (
                 <div className={styles.staticScreenshots}>
-                  {media.map((shot) => (
+                  {media.map((shot) => {
+                    // Intrinsic size reserves the box before the lazy image arrives.
+                    const size = IMAGE_DIMENSIONS[shot.path];
+                    return (
                     <figure key={shot.path}>
                       <img
                         src={shot.path}
                         alt={shot.alt}
+                        width={size?.width}
+                        height={size?.height}
                         loading="lazy"
                         decoding="async"
                       />
@@ -97,7 +103,8 @@ export function StaticExperience({
                         <time dateTime={shot.capturedAt}>{shot.capturedAt}</time>
                       </figcaption>
                     </figure>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div
