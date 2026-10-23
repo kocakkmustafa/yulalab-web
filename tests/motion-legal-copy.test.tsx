@@ -72,10 +72,15 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
       ]) {
         expect(html).toContain(escaped(text(locale, tr, en)));
       }
-      const controller = escaped(text(locale, "Veri sorumlusu: {controller}.", "The data controller is {controller}.", {
-        controller: `${company.legalName} — ${company.founder.name}`,
-      }));
-      expect(html).toContain(controller);
+      // The data-roles controller must equal the Contact section's controller, whatever
+      // company record is current (the REL-03 publisher record replaces both together).
+      const label = escaped(text(locale, "Veri Sorumlusu", "Data Controller"));
+      const contact = new RegExp(`${label.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}: ([^<]+)<br`).exec(html)?.[1];
+      expect(contact).toContain(escaped(company.legalName));
+      const controller = text(locale, "Veri sorumlusu: {controller}.", "The data controller is {controller}.", {
+        controller: "@@CONTROLLER@@",
+      });
+      expect(html).toContain(escaped(controller).replace("@@CONTROLLER@@", contact!));
       expect(html).not.toContain(`>${escaped(text(locale, "Çocuklar", "Children"))}</h2>`);
       expect(html).not.toMatch(RETIRED_SALES);
       expect(html).not.toMatch(PLACEHOLDER);
