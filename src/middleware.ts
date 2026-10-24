@@ -62,12 +62,13 @@ export default function middleware(req: NextRequest) {
   // Config headers match the encoded URL, while route matching can decode
   // segments. Canonicalize capability aliases before a successful response
   // so the generic policy cannot mask the route's random nonce policy.
-  const capability = /^\/(?:([^/]+)\/)?data-request\/verify\/?$/.exec(decoded);
+  // The Motion parental-consent page is the same kind of capability document.
+  const capability = /^\/(?:([^/]+)\/)?(data-request\/verify|motion\/consent)\/?$/.exec(decoded);
   const capabilityLocale = capability?.[1] ? normalizeLocale(capability[1]) : "tr";
   if (capability && capabilityLocale) {
     const canonical = capabilityLocale === "tr"
-      ? "/data-request/verify"
-      : `/${capabilityLocale}/data-request/verify`;
+      ? `/${capability[2]}`
+      : `/${capabilityLocale}/${capability[2]}`;
     if (pathname !== canonical) {
       return canonicalRedirect(req, canonical, capabilityLocale);
     }

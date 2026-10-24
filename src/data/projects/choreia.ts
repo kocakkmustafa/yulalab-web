@@ -15,12 +15,12 @@ export const choreia: ProjectConfig = {
     en: "Practise salsa steps at your own pace.",
   },
   description: {
-    tr: "Choreia'nın ilk sürümü, solo Salsa On1 kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda kaydedilir; kamera beceri puanı veya dans ustalığı onayı üretilmez. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
-    en: "Choreia's first release focuses on a solo Salsa On1 course. Reading, practice and self-reported completion are saved on the device; no camera skill score or dance mastery certification is produced. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Choreia'nın ilk sürümü, solo Salsa On1 kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda kaydedilir; kamera beceri puanı veya dans ustalığı onayı üretilmez. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "Choreia's first release focuses on a solo Salsa On1 course. Reading, practice and self-reported completion are saved on the device; no camera skill score or dance mastery certification is produced. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   short: {
-    tr: "Solo Salsa On1 kursu ve öz bildirimli ilerleme. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
-    en: "A solo Salsa On1 course with self-reported progress. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Solo Salsa On1 kursu ve öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "A solo Salsa On1 course with self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#FF3DA6",

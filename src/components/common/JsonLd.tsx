@@ -28,6 +28,7 @@ export function JsonLd({ now = new Date() }: { now?: Date } = {}) {
     "@id": `${ORIGIN}/#organization`,
     name: company.name,
     legalName: company.legalName,
+    address: `${company.publisher.address}, ${company.publisher.country}`,
     url: ORIGIN,
     email: company.contact.email,
     logo: `${ORIGIN}/brand/yulalab-banner.png`,

@@ -193,6 +193,8 @@ export type ProjectConfig = {
 export type CompanyConfig = {
   name: string;
   legalName: string;
+  /** Published publisher / data-controller record (REL-03). */
+  publisher: { controller: string; address: string; country: string };
   tagline: LocalizedString;
   shortDescription: LocalizedString;
   vision: LocalizedString;

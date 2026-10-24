@@ -15,12 +15,12 @@ export const ostinato: ProjectConfig = {
     en: "Build your guitar practice step by step.",
   },
   description: {
-    tr: "Ostinato'nun ilk sürümü, gitar kursu ve cihazda öz bildirimli ilerlemeye odaklanır. İstersen tek nota gözlemini başlatıp mikrofon izni verebilirsin; ses yalnız geçici cihaz belleğinde işlenir, kaydedilmez veya yüklenmez. Gözlem doğruluk ya da ustalık puanı üretmez; kurs mikrofonsuz tamamlanabilir. Kamera koçluğu ve ücretli satış ilk sürümde kapalıdır.",
-    en: "Ostinato's first release focuses on a guitar course and on-device, self-reported progress. You can choose to start single-note observation and grant microphone permission; audio is processed only in temporary device memory, never recorded or uploaded. Observation does not produce a correctness or mastery score; the course can be completed without the microphone. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Ostinato'nun ilk sürümü, gitar kursu ve cihazda öz bildirimli ilerlemeye odaklanır. İstersen tek nota gözlemini başlatıp mikrofon izni verebilirsin; ses yalnız geçici cihaz belleğinde işlenir, kaydedilmez veya yüklenmez. Gözlem doğruluk ya da ustalık puanı üretmez; kurs mikrofonsuz tamamlanabilir. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "Ostinato's first release focuses on a guitar course and on-device, self-reported progress. You can choose to start single-note observation and grant microphone permission; audio is processed only in temporary device memory, never recorded or uploaded. Observation does not produce a correctness or mastery score; the course can be completed without the microphone. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   short: {
-    tr: "Gitar kursu, öz bildirimli ilerleme ve isteğe bağlı tek nota gözlemi. İlk sürümde kamera koçluğu ve ücretli satış kapalıdır.",
-    en: "A guitar course, self-reported progress and optional single-note observation. Camera coaching and paid sales are disabled in the first release.",
+    tr: "Gitar kursu, öz bildirimli ilerleme ve isteğe bağlı tek nota gözlemi. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
+    en: "A guitar course, self-reported progress and optional single-note observation. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#D8A657",
