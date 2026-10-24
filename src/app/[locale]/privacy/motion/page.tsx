@@ -10,8 +10,8 @@ import { MOTION_PARENTAL_CONSENT_LIVE } from "@/data/motion-release";
 
 const LAST_UPDATED = "2026-09-27";
 
-// Same controller as the Contact section below; REL-03 replaces both with the confirmed record.
-const CONTROLLER = `${company.legalName} — ${company.founder.name}`;
+// Same controller line as the Contact section below (the confirmed REL-03 record).
+const CONTROLLER = CONTROLLER_LINE;
 
 const APPS = [
   "Choreia: Learn to Dance",
