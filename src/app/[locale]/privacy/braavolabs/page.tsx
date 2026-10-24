@@ -9,7 +9,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-10-20";
+const LAST_UPDATED = "2026-10-24";
 
 export async function generateMetadata({
   params,

@@ -8,7 +8,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { company, CONTROLLER_LINE } from "@/data/company";
 import { MOTION_PARENTAL_CONSENT_LIVE } from "@/data/motion-release";
 
-const LAST_UPDATED = "2026-09-27";
+const LAST_UPDATED = "2026-10-24";
 
 // Same controller line as the Contact section below (the confirmed REL-03 record).
 const CONTROLLER = CONTROLLER_LINE;

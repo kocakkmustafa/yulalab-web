@@ -8,7 +8,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { company, CONTROLLER_LINE } from "@/data/company";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
-const LAST_UPDATED = "2026-09-06";
+const LAST_UPDATED = "2026-10-24";
 
 export async function generateMetadata({
   params,
