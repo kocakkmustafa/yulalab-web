@@ -3,6 +3,11 @@ import type { CompanyConfig } from "@/lib/types";
 export const company: CompanyConfig = {
   name: "YULA Lab",
   legalName: "YULA Lab",
+  publisher: {
+    controller: "YULA Lab — Mustafa Kaan Koçak",
+    address: "Yeniköy Mahallesi, Bülbül Caddesi No: 50/6, Melikgazi/Kayseri",
+    country: "Türkiye",
+  },
   tagline: {
     tr: "Geleceğin ürünlerini bugün tasarlıyoruz.",
     en: "We design tomorrow's products today.",
@@ -68,3 +73,8 @@ export const company: CompanyConfig = {
     banner: "/brand/yulalab-banner.png",
   },
 };
+
+/** Published data-controller line: the confirmed controller, prefixed by the legal name unless it already names it. */
+export const CONTROLLER_LINE = company.publisher.controller.includes(company.legalName)
+  ? company.publisher.controller
+  : `${company.legalName} — ${company.publisher.controller}`;

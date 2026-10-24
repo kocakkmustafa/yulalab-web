@@ -5,7 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
-import { company } from "@/data/company";
+import { company, CONTROLLER_LINE } from "@/data/company";
 import { MOTION_PARENTAL_CONSENT_LIVE } from "@/data/motion-release";
 
 const LAST_UPDATED = "2026-09-27";
@@ -206,14 +206,15 @@ function MotionPrivacy() {
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: YULA Lab — Mustafa Kaan Koçak
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}
                 <br />
                 {text(locale, "E-posta", "Email")}:{" "}
                 <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">
                   support@yulalab.com
                 </a>
                 <br />
-                {text(locale, "Konum", "Location")}: Türkiye
+                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
+                {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>
           </div>

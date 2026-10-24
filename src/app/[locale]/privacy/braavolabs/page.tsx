@@ -1,3 +1,4 @@
+import { company, CONTROLLER_LINE } from "@/data/company";
 import { DATA_RIGHTS_COPY, CHILD_DATA_CONTACT } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -148,9 +149,10 @@ function BraavolabsPrivacy() {
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: YULA Lab — Mustafa Kaan Koçak<br />
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}<br />
                 {text(locale, "E-posta", "Email")}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
-                {text(locale, "Konum", "Location")}: Türkiye
+                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
+                {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>
           </div>

@@ -5,7 +5,7 @@ import { setRequestLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
-import { company } from "@/data/company";
+import { company, CONTROLLER_LINE } from "@/data/company";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
 const LAST_UPDATED = "2026-09-06";
@@ -159,7 +159,9 @@ function Terms() {
 
             <Section title={text(locale, "13. İletişim", "13. Contact")}>
               <p>
-                {text(locale, "Sağlayıcı", "Provider")}: {company.legalName} — {company.founder.name}
+                {text(locale, "Sağlayıcı", "Provider")}: {CONTROLLER_LINE}
+                <br />
+                {text(locale, "Adres", "Address")}: {company.publisher.address}, {company.publisher.country}
                 <br />
                 {text(locale, "E-posta", "Email")}:{" "}
                 <a href={`mailto:${company.contact.email}`} className="link-wipe text-ink-50">

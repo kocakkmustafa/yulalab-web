@@ -1,3 +1,4 @@
+import { company, CONTROLLER_LINE } from "@/data/company";
 import { LANGUAGE_STORAGE_COPY } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -179,6 +180,22 @@ function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
             </p>
             <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
               {text(locale, "Size makbuz göndermek ve mesajınızı doğru kişiye yönlendirmek için ayrı bir gönderim kuyruğu kullanılır. O kuyruk mesajınızın metnini TAŞIMAZ — kayıt numarası, dil, hangi konu olduğu ve nereye yönlendirileceği bulunur. Kuyruk kayıtları için 30, iletişim kayıtları için 180 günlük saklama süresi tanımlıdır; ilgili tarih her kayıtta tutulur. Teslim edilen bildirimlerin saklama tarihi, teslimatın ardından en az 24 saat kalacak şekilde uzatılabilir. Süresi dolan kayıtlar yetkili temizlik işi çalıştığında silinir.", "A separate delivery queue is used to send you a receipt and route your message to the right person. That queue does NOT carry the text of your message — it carries the record number, language, what the enquiry is about, and where it should go. The retention period is 30 days for queue records and 180 days for contact records; the relevant date is stored on each record. Delivered notifications may have their retention date extended to allow at least 24 hours after delivery. Expired records are removed when the authorized cleanup job runs.")}
+            </p>
+          </div>
+
+          <div className="mt-16 pt-10 border-t border-white/10" data-publisher-identity>
+            <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300 mb-3">
+              {text(locale, "Veri Sorumlusu", "Data Controller")}
+            </div>
+            <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {CONTROLLER_LINE}
+              <br />
+              {text(locale, "Adres", "Address")}: {company.publisher.address}, {company.publisher.country}
+              <br />
+              {text(locale, "E-posta", "Email")}:{" "}
+              <a href={`mailto:${company.contact.email}`} className="link-wipe text-ink-50">
+                {company.contact.email}
+              </a>
             </p>
           </div>
 
