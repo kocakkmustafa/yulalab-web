@@ -175,7 +175,11 @@ test("English touch scrolling survives the image reader and compact layouts", { 
   const before = await page.evaluate(() => scrollY);
   const box = await region.boundingBox();
   expect(box).not.toBeNull();
-  await swipe(box!.x + box!.width / 2, box!.y + box!.height - 25, box!.y + 35);
+  // Start inside the reader, not 25px above its bottom edge: at 390x667 the emulated
+  // viewport fills the window, and a touch that close to the bottom can fall outside
+  // the window's real drawing area — Chrome then delivers the touch events but never
+  // turns them into a scroll ("Position out of bounds" for synthesized gestures).
+  await swipe(box!.x + box!.width / 2, box!.y + box!.height * 0.75, box!.y + box!.height * 0.25);
   await expect.poll(() => region.evaluate(node => node.scrollTop)).toBeGreaterThan(50);
   expect(await page.evaluate(() => scrollY)).toBe(before);
   const readerTouchY = await region.evaluate(node => node.scrollTop);
