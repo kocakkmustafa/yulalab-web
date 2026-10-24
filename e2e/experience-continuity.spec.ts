@@ -22,7 +22,23 @@ async function openJourney(page: Page, path: string) {
 }
 
 async function scrollTimeline(page: Page, progress: number) {
-  await page.evaluate(value => scrollTo({ top: (document.documentElement.scrollHeight - innerHeight) * value, behavior: "instant" }), scrollProgressForTimeline(progress));
+  // Act only on a settled native document. After history navigation the experience
+  // briefly re-initialises (data-experience-ready="false") and restores the saved
+  // scroll position, which can overwrite an earlier scrollTo; re-issue until the
+  // target position holds for two frames.
+  await expect(page.locator(ROOT)).toHaveAttribute("data-experience-ready", "true");
+  await expect.poll(() => page.evaluate(async value => {
+    const top = (document.documentElement.scrollHeight - innerHeight) * value;
+    scrollTo({ top, behavior: "instant" });
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    return Math.abs(scrollY - top) <= 2;
+  }, scrollProgressForTimeline(progress))).toBe(true);
+}
+
+async function settledDialog(page: Page) {
+  // Touch input and overflow measurements are only meaningful once the reader's
+  // opening animation has finished.
+  await page.waitForFunction(() => document.getAnimations().every(animation => animation.playState !== "running"));
 }
 
 for (const locale of ["tr", "en"] as const) {
@@ -151,13 +167,19 @@ test("English touch scrolling survives the image reader and compact layouts", { 
   await page.getByRole("button", {name:"Enlarge screen"}).tap();
   const reader = page.getByRole("dialog", {name:/Development view/});
   const region = reader.getByRole("region", {name:"Complete development screen"});
+  await expect(reader).toBeVisible();
+  await settledDialog(page);
   await expect.poll(() => reader.locator("img").evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
   // The image can report its natural size before layout makes the region overflow.
   await expect.poll(() => region.evaluate(node => node.scrollHeight - node.clientHeight)).toBeGreaterThan(50);
   const before = await page.evaluate(() => scrollY);
   const box = await region.boundingBox();
   expect(box).not.toBeNull();
-  await swipe(box!.x + box!.width / 2, box!.y + box!.height - 25, box!.y + 35);
+  // Start inside the reader, not 25px above its bottom edge: at 390x667 the emulated
+  // viewport fills the window, and a touch that close to the bottom can fall outside
+  // the window's real drawing area — Chrome then delivers the touch events but never
+  // turns them into a scroll ("Position out of bounds" for synthesized gestures).
+  await swipe(box!.x + box!.width / 2, box!.y + box!.height * 0.75, box!.y + box!.height * 0.25);
   await expect.poll(() => region.evaluate(node => node.scrollTop)).toBeGreaterThan(50);
   expect(await page.evaluate(() => scrollY)).toBe(before);
   const readerTouchY = await region.evaluate(node => node.scrollTop);
