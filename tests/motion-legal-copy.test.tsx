@@ -34,6 +34,11 @@ const RETIRED_KEYS = [
   "5. Burun Farkı — special terms",
   "6. Intellectual property",
   "12. Contact",
+  // YUL-13: replaced by the final Core text (country from the store region, policy-neutral teen
+  // purchase sentence, Workspace sends account and parental-approval mail).
+  "When you create an account you declare your birth month and year (we do not ask for the day) and your country; they are stored with your account to decide which account features and protections apply, and after the first declaration they can be corrected only through support.",
+  "Accounts awaiting parental approval are not offered purchases; purchases by users under 18 are subject to the store's family and parental controls.",
+  "Google (Workspace) sends parental-approval emails on our behalf.",
 ];
 const RETIRED_PREFIXES = [
   "These terms apply to all products developed by YULA Lab — LifeOS, Burun Farkı and Braavolabs (",
@@ -69,6 +74,10 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         ["Saklama süreleri", "Retention"],
         ["Veri rolleri ve alt işleyenler", "Data roles and processors"],
         ["Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days."],
+        [
+          "Motion+ deneme kaydı (mağaza, uygulama, ilk işlem referansı, başlangıç zamanı): ücretsiz denemenin hesap başına bir kez kullanılması için; hesap silinince hemen silinir.",
+          "Motion+ trial record (store, app, original transaction reference, start time): kept so the free trial is used once per account; deleted immediately with the account.",
+        ],
       ]) {
         expect(html).toContain(escaped(text(locale, tr, en)));
       }
@@ -104,7 +113,7 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         expect(html).toContain("data-motion-parental-approval");
         expect(html).toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
         expect(html).toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
-        expect(html).toContain(escaped(text(locale, "Google (Workspace) veli onayı e-postalarını bizim adımıza gönderir.", "Google (Workspace) sends parental-approval emails on our behalf.")));
+        expect(html).toContain(escaped(text(locale, "Google (Google Workspace) hesap ve veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends account and parental-approval emails on our behalf.")));
       } finally {
         vi.doUnmock("@/data/motion-release");
         vi.resetModules();
