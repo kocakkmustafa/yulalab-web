@@ -88,6 +88,19 @@ describe("security headers (Y-P0-002 — Apple/Google reviewers + Lighthouse che
     it("upgrades insecure requests", () => {
       expect(csp).toContain("upgrade-insecure-requests");
     });
+
+    it("lists no third-party origin (fonts, analytics and images are all served from this origin)", () => {
+      expect(csp).not.toMatch(/https?:|wss?:|\*/);
+      expect(csp).toContain("img-src 'self' data: blob:;");
+      expect(csp).toContain("connect-src 'self';");
+    });
+
+    it("frames nothing, and no project asset is a live embed that would need a frame-src origin", async () => {
+      expect(csp).toContain("frame-src 'none'");
+      const { projects } = await import("@/data/projects");
+      const live = projects.flatMap((p) => p.visuals.screenshots.filter((asset) => asset.kind === "live"));
+      expect(live).toEqual([]);
+    });
   });
 });
 

@@ -29,26 +29,27 @@ const securityHeaders = [
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
   },
-  // Tight CSP — allows inline styles (used by Next.js for CSS-in-JS),
-  // Vercel Analytics (if added later), and Google Fonts. `unsafe-eval` is
-  // added only in dev: Next.js's Fast Refresh runtime calls eval() to patch
-  // modules in place, and without it HMR silently breaks (React Refresh
-  // throws, falls back to full reloads / stale chunks). Production never
-  // gets this relaxation.
+  // Tight CSP — first party only. Inline styles are used by Next.js for
+  // CSS-in-JS. next/font self-hosts the Google fonts at build time, Vercel
+  // Analytics (rendered only when VERCEL=1) loads /_vercel/insights from this
+  // origin, and next/image is served from /_next/image (the Netlify Image CDN
+  // rewrites it on this origin), so no third-party origin is listed.
+  // `unsafe-eval` is added only in dev: Next.js's Fast Refresh runtime calls
+  // eval() to patch modules in place, and without it HMR silently breaks
+  // (React Refresh throws, falls back to full reloads / stale chunks).
+  // Production never gets this relaxation.
   {
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://vercel.live https://va.vercel-scripts.com`,
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' data: https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https:",
-      "connect-src 'self' https://vitals.vercel-insights.com https://vercel.live wss://vercel.live",
-      // Burun Farkı's own CSP scopes frame-ancestors to this site
-      // specifically (see burunfark-web vercel.json) — this is the other
-      // half of that handshake, letting us embed its live /dogruluk page
-      // as product proof instead of a static screenshot.
-      "frame-src https://burunfark.com",
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+      "style-src 'self' 'unsafe-inline'",
+      "font-src 'self' data:",
+      "img-src 'self' data: blob:",
+      "connect-src 'self'",
+      // No project embeds a live page (ProjectAsset kind "live" is unused;
+      // captures only). Re-enabling an embed needs its origin listed here.
+      "frame-src 'none'",
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",

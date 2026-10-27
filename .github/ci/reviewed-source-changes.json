@@ -201,8 +201,8 @@
     {
       "path": "next.config.mjs",
       "publishedSha256": "c86affd49cc3f2242c94ecdbfabaae7eb7f05f58e2f609dc026fc54d5d0df823",
-      "candidateSha256": "6c3c742d020238703e82c1c9c86c7fdf37690a48d4d710d04902d213f5a39416",
-      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS.",
+      "candidateSha256": "73365bc728c08151b8b36e76ad99515d30d511ea3533fe1838d44449ef455814",
+      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS. EK-6 (2026-10-27): CSP lists first-party sources only; unused Vercel, Google Fonts, burunfark.com frame and https: image sources removed",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
@@ -1282,6 +1282,13 @@
       "candidateSha256": "28b1e6e4117514660fde44cebf7485881b32ee26597fd6bac27ecd1fd8e1ae9b",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "YUL-14 2026-10-27: shared Motion account deletion web page (/delete-account/motion, 14 languages; Play delete-without-reinstall URL for the five Motion listings), sitemap entry, 12 catalogues."
+    },
+    {
+      "path": "tests/headers.test.ts",
+      "publishedSha256": "3ce3ef4a637e0a653bce3d097433da7d834b9845fd37390d00c48c03ee2ddf34",
+      "candidateSha256": "2e2c09930f8e23608c27af348be56be0660183bea4662e33d167ec8fc31c6ccc",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "EK-6 (2026-10-27): CSP lists first-party sources only; unused Vercel, Google Fonts, burunfark.com frame and https: image sources removed"
     }
   ]
 }
