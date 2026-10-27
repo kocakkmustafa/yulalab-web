@@ -39,6 +39,7 @@ const STATIC_ROUTES = [
   "/privacy",
   "/privacy/lifeos",
   "/delete-account/lifeos",
+  "/delete-account/motion",
   "/privacy/motion",
   "/terms",
   "/notes",
@@ -109,6 +110,31 @@ for (const localeCase of [
     await expect(page.getByRole("link", { name: new RegExp(localeCase.data) })).toHaveAttribute(
       "href", "mailto:support@yulalab.com?subject=LifeOS%20data%20deletion",
     );
+  });
+}
+
+// Shared account deletion URL of the five Motion store listings (Play: request without the app).
+for (const localeCase of [
+  {
+    path: "/delete-account/motion",
+    canonical: "https://yulalab.com/delete-account/motion",
+    account: "E-postayla silme talebi gönder",
+  },
+  {
+    path: "/en/delete-account/motion",
+    canonical: "https://yulalab.com/en/delete-account/motion",
+    account: "Email an account deletion request",
+  },
+] as const) {
+  test(`${localeCase.path} offers Motion account deletion without the app`, async ({ page }) => {
+    const response = await page.goto(localeCase.path);
+    expect(response?.status()).toBe(200);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(/Motion/i);
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", localeCase.canonical);
+    await expect(page.getByRole("link", { name: new RegExp(localeCase.account) })).toHaveAttribute(
+      "href", "mailto:support@yulalab.com?subject=Motion%20account%20deletion",
+    );
+    await expect(page.locator("[data-motion-deletion-steps] > li")).toHaveCount(3);
   });
 }
 

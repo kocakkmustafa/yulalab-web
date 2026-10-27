@@ -18,6 +18,7 @@ const STATIC_PATHS = [
   "/privacy",
   "/privacy/lifeos",
   "/delete-account/lifeos",
+  "/delete-account/motion",
   "/privacy/braavolabs",
   "/privacy/burunfarki",
   "/privacy/motion",
