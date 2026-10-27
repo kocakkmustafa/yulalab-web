@@ -39,6 +39,9 @@ const RETIRED_KEYS = [
   "When you create an account you declare your birth month and year (we do not ask for the day) and your country; they are stored with your account to decide which account features and protections apply, and after the first declaration they can be corrected only through support.",
   "Accounts awaiting parental approval are not offered purchases; purchases by users under 18 are subject to the store's family and parental controls.",
   "Google (Workspace) sends parental-approval emails on our behalf.",
+  // K-2 (2026-10-27): five apps use store family controls; the policy-neutral sentence gives way to
+  // Core yayın profili §9 variant (B).
+  "Purchases by users under 18 are subject to the store's family and parental controls.",
 ];
 const RETIRED_PREFIXES = [
   "These terms apply to all products developed by YULA Lab — LifeOS, Burun Farkı and Braavolabs (",
