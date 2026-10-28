@@ -3,11 +3,13 @@
  *
  * The Supabase project ref and the function URL are public identifiers, not
  * secrets; the function runs with `verify_jwt = false`, so no key is sent.
- * Keep `null` until Motion Core publishes the live function with
- * `Access-Control-Allow-Origin: https://yulalab.com`; the page then shows an
- * "unavailable" state and its CSP allows no connection at all.
+ * Motion production project `aljdbngmeqwmsqhvfeau` (Yönetim read-only check, 2026-10-27);
+ * set after Motion Core deployed the function with the R1 CORS contract for
+ * https://yulalab.com and https://www.yulalab.com (K-3; no preview origin, so a
+ * preview deploy cannot call it). The page CSP allows exactly this URL in `connect-src`.
  */
-export const MOTION_CONSENT_ENDPOINT: string | null = null;
+export const MOTION_CONSENT_ENDPOINT: string | null =
+  "https://aljdbngmeqwmsqhvfeau.supabase.co/functions/v1/motion-parental-consent";
 
 export const MOTION_CONSENT_ENDPOINT_PATTERN =
   /^https:\/\/[a-z0-9]{20}\.supabase\.co\/functions\/v1\/motion-parental-consent$/;

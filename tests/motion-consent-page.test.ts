@@ -6,6 +6,8 @@ import { THEME_BOOTSTRAP } from "@/lib/theme";
 import { MOTION_CONSENT_COPY } from "@/data/motion-consent-copy";
 import { MOTION_CONSENT_ENDPOINT, motionConsentEndpoint } from "@/data/motion-consent-config";
 
+const LIVE_ENDPOINT = "https://aljdbngmeqwmsqhvfeau.supabase.co/functions/v1/motion-parental-consent";
+
 const ENDPOINT = "https://e2eyulamotionconsent.supabase.co/functions/v1/motion-parental-consent";
 const TOKEN = "Abc-_".repeat(8) + "xyz"; // 43 base64url characters, the Core link-token shape
 const windows: JSDOM[] = [];
@@ -76,8 +78,8 @@ describe("Motion parental-consent capability route", () => {
   });
 
   it("accepts only the exact Supabase function shape for the endpoint", () => {
-    expect(MOTION_CONSENT_ENDPOINT).toBeNull();
-    expect(motionConsentEndpoint({})).toBeNull();
+    expect(MOTION_CONSENT_ENDPOINT).toBe(LIVE_ENDPOINT);
+    expect(motionConsentEndpoint({})).toBe(LIVE_ENDPOINT);
     expect(motionConsentEndpoint({ YULA_MOTION_CONSENT_ENDPOINT: ENDPOINT })).toBe(ENDPOINT);
     for (const value of [
       "http://e2eyulamotionconsent.supabase.co/functions/v1/motion-parental-consent",
@@ -104,8 +106,8 @@ describe("Motion parental-consent capability route", () => {
     expect(csp).toContain(`script-src 'nonce-${nonces[0]}'`);
     expect(csp).toContain(`style-src 'nonce-${nonces[0]}'`);
     expect(csp).toContain("default-src 'none'");
-    expect(csp).toContain("connect-src 'none'");
-    expect(csp).not.toMatch(/unsafe-inline|unsafe-eval|https?:\/\//);
+    expect(csp).toContain(`connect-src ${LIVE_ENDPOINT}`);
+    expect(csp.replace(LIVE_ENDPOINT, "")).not.toMatch(/unsafe-inline|unsafe-eval|https?:\/\//);
     expect(html).not.toMatch(/vercel|analytics|google|<link\b|<iframe\b|<img\b|@import|url\(/i);
     expect(html).toContain(`<html lang="${locale}" dir="${locale === "ar" ? "rtl" : "ltr"}">`);
     expect(html).toContain('<meta name="robots" content="noindex,nofollow,noarchive">');
@@ -125,6 +127,8 @@ describe("Motion parental-consent capability route", () => {
   });
 
   it("shows the unavailable state without any request while no function is configured", async () => {
+    // A value outside the function shape disables the page (no fallback to the live constant).
+    vi.stubEnv("YULA_MOTION_CONSENT_ENDPOINT", "disabled");
     const page = await mount("tr", []);
     expect(page.calls).toHaveLength(0);
     expect(page.$("status").textContent).toBe(MOTION_CONSENT_COPY.tr.unavailable);
