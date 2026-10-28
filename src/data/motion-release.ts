@@ -8,4 +8,4 @@
  * parental-approval section of the Motion privacy page, its retention row and the
  * Workspace processor sentence.
  */
-export const MOTION_PARENTAL_CONSENT_LIVE = false;
+export const MOTION_PARENTAL_CONSENT_LIVE = true;

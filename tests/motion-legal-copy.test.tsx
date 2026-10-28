@@ -49,8 +49,9 @@ const RETIRED_PREFIXES = [
 ];
 
 describe("Motion legal copy (privacy/motion + terms)", () => {
-  it("keeps parental-approval copy behind the Core-live switch until it is flipped on purpose", () => {
-    expect(MOTION_PARENTAL_CONSENT_LIVE).toBe(false);
+  it("publishes parental-approval copy only after the Core-live check flipped the switch", () => {
+    // Flipped after the YUL-10/YUL-15 live CORS check and CORE-07 3.1 + 2.2b (Workspace SMTP).
+    expect(MOTION_PARENTAL_CONSENT_LIVE).toBe(true);
   });
 
   it.each(["src/app/[locale]/privacy/motion/page.tsx", "src/app/[locale]/terms/page.tsx"])(
@@ -98,13 +99,21 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
       expect(html).not.toMatch(PLACEHOLDER);
     });
 
-    it("does not render parental-approval copy while Core consent is not live", async () => {
-      const html = await render(MotionPrivacyPage, locale);
-      expect(html).not.toContain("data-motion-parental-approval");
-      // Heading match only: in some languages the title is also a substring of the teen paragraph.
-      expect(html).not.toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
-      expect(html).not.toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
-      expect(html).not.toContain("Workspace");
+    it("does not render parental-approval copy when the switch is off", async () => {
+      vi.resetModules();
+      vi.doMock("@/data/motion-release", () => ({ MOTION_PARENTAL_CONSENT_LIVE: false }));
+      try {
+        const { default: OffPage } = await import("@/app/[locale]/privacy/motion/page");
+        const html = await render(OffPage, locale);
+        expect(html).not.toContain("data-motion-parental-approval");
+        // Heading match only: in some languages the title is also a substring of the teen paragraph.
+        expect(html).not.toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
+        expect(html).not.toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
+        expect(html).not.toContain("Workspace");
+      } finally {
+        vi.doUnmock("@/data/motion-release");
+        vi.resetModules();
+      }
     });
 
     it("renders the parental-approval copy in this language once the switch is on", async () => {
