@@ -108,7 +108,8 @@ describe("Motion parental-consent capability route", () => {
     expect(csp).toContain("default-src 'none'");
     expect(csp).toContain(`connect-src ${LIVE_ENDPOINT}`);
     expect(csp.replace(LIVE_ENDPOINT, "")).not.toMatch(/unsafe-inline|unsafe-eval|https?:\/\//);
-    expect(html).not.toMatch(/vercel|analytics|google|<link\b|<iframe\b|<img\b|@import|url\(/i);
+    // The visible copy names "Apple or Google" accounts (Ek D), so match Google hosts, not the word.
+    expect(html).not.toMatch(/vercel|analytics|google(?:apis|tagmanager|usercontent|-analytics)|gstatic|<link\b|<iframe\b|<img\b|@import|url\(/i);
     expect(html).toContain(`<html lang="${locale}" dir="${locale === "ar" ? "rtl" : "ltr"}">`);
     expect(html).toContain('<meta name="robots" content="noindex,nofollow,noarchive">');
     expect(html).toContain(MOTION_CONSENT_COPY[locale].heading.replaceAll("'", "&#39;"));
