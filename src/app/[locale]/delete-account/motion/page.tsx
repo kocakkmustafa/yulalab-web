@@ -6,7 +6,7 @@ import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { company } from "@/data/company";
 
-const LAST_UPDATED = "2026-10-27";
+const LAST_UPDATED = "2026-10-30";
 const REQUEST_EMAIL = "support@yulalab.com";
 // Same subject as the request link on privacy/motion#motion-account-deletion.
 const REQUEST_HREF = `mailto:${REQUEST_EMAIL}?subject=Motion%20account%20deletion`;
@@ -107,9 +107,9 @@ export default async function MotionAccountDeletionPage({
             <Section title={text(locale, "Saklanan kayıtlar ve süreleri", "Records that are kept, and for how long")}>
               <p>{text(locale, "Hesap silindiğinde sunucudaki ürün verileri hemen silinir. Yedekler en fazla 30 günlük bir döngüde tutulur; bir yedekten geri dönülürse, o tarihten sonra silinmiş hesaplar yeniden silinir.", "When an account is deleted, its product data on the server is deleted immediately. Backups are kept on a cycle of at most 30 days; if a backup is ever restored, accounts deleted after that point are deleted again.")}</p>
               <ul className="mt-4 space-y-2">
-                <li>· {text(locale, "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için.", "Deletion receipt (one-way digest of the account ID): kept so other devices can recognise the deletion.")}</li>
+                <li>· {text(locale, "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için 3 yıl.", "Deletion receipt (one-way digest of the account ID): kept for 3 years so other devices can recognise the deletion.")}</li>
                 <li>· {text(locale, "Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days.")}</li>
-                <li>· {text(locale, "Kapanan destek yazışmaları: 90 gün.", "Closed support conversations: 90 days.")} {text(locale, "Silme talebi e-postanız da bir destek yazışmasıdır ve kapandıktan sonra 90 gün saklanır.", "Your deletion request email is also a support conversation and is kept for 90 days after it is closed.")}</li>
+                <li>· {text(locale, "Destek yazışmaları: son iletiden 90 gün sonra silinir, en geç 120 gün içinde kalıcı olarak kaldırılır.", "Support conversations: deleted 90 days after the last message and permanently removed within 120 days at the latest.")} {text(locale, "Silme talebi e-postanız da bir destek yazışmasıdır ve kapandıktan sonra 90 gün saklanır.", "Your deletion request email is also a support conversation and is kept for 90 days after it is closed.")}</li>
                 <li>· {text(locale, "Apple ve Google, ödeme ve fatura kayıtlarını kendi politikalarına göre yasal süre boyunca tutar.", "Apple and Google keep payment and invoice records for the legally required period under their own policies.")}</li>
               </ul>
             </Section>

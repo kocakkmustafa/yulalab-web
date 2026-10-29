@@ -5,13 +5,10 @@ import { setRequestLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { MOTION_PARENTAL_CONSENT_LIVE } from "@/data/motion-release";
 
-const LAST_UPDATED = "2026-10-27";
-
-// Same controller line as the Contact section below (the confirmed REL-03 record).
-const CONTROLLER = CONTROLLER_LINE;
+const LAST_UPDATED = "2026-10-30";
 
 const APPS = [
   "Choreia: Learn to Dance",
@@ -99,6 +96,18 @@ function MotionPrivacy() {
               </p>
             </Section>
 
+            <Section title={text(locale, "Neden ve hangi dayanakla işliyoruz", "Why and on what legal basis we process data")}>
+              <ul className="space-y-2">
+                <li>· {text(locale, "Hesabın açılması, giriş ve beş uygulamada ortak hesap — veriler: e-posta, parola özeti, hesap kimliği, görünen ad. Hukuki sebep: sözleşmenin kurulması ve ifası (KVKK md. 5/2-c; GDPR md. 6/1-b).", "Creating the account, sign-in and the shared account across the five apps — data: email, password hash, account ID, display name. Legal basis: entering into and performing the contract (KVKK art. 5(2)(c); GDPR art. 6(1)(b)).")}</li>
+                <li>· {text(locale, "Abonelik doğrulama ve deneme hakkı — veriler: mağaza işlem referansları, hak kayıtları, deneme kaydı. Hukuki sebep: sözleşmenin kurulması ve ifası (KVKK md. 5/2-c; GDPR md. 6/1-b).", "Subscription verification and trial eligibility — data: store transaction references, entitlement and trial records. Legal basis: entering into and performing the contract (KVKK art. 5(2)(c); GDPR art. 6(1)(b)).")}</li>
+                <li>· {text(locale, "Güvenlik ve teknik işletim — veriler: IP adresi, kullanıcı aracısı, IP'ye dayalı yaklaşık konum, istek kayıtları. Hukuki sebep: hizmet güvenliğine ilişkin meşru menfaat (KVKK md. 5/2-f; GDPR md. 6/1-f).", "Security and technical operation — data: IP address, user agent, IP-based approximate location, request logs. Legal basis: legitimate interest in service security (KVKK art. 5(2)(f); GDPR art. 6(1)(f)).")}</li>
+                <li>· {text(locale, "Destek ve hak başvuruları — veriler: yazışmalar. Hukuki sebep: hukuki yükümlülük ve sözleşmenin ifası (KVKK md. 5/2-ç ve 5/2-c; GDPR md. 6/1-c ve 6/1-b).", "Support and rights requests — data: correspondence. Legal basis: legal obligation and performance of the contract (KVKK art. 5(2)(ç) and 5(2)(c); GDPR art. 6(1)(c) and 6(1)(b)).")}</li>
+              </ul>
+              <p className="mt-3">
+                {text(locale, "Hesap açmak için e-posta, parola, doğum ay/yılı ve ülke gereklidir. Bunları vermezseniz hesap açılamaz, ama uygulamaları misafir olarak cihazınızda kullanabilirsiniz. Meşru menfaate dayanan işlemelere itiraz edebilirsiniz.", "Email, password, birth month/year and country are required to create an account. Without them no account can be created, but you can still use the apps as a guest on your device. You can object to processing based on legitimate interests.")}
+              </p>
+            </Section>
+
             <Section title={text(locale, "Sağlayıcı günlükleri ve yaklaşık konum", "Provider logs and approximate location")}>
               <p>
                 {text(locale, "Motion hesap hizmetlerine gönderilen istekler, Supabase ve hizmet sağlayıcılarının sakladığı operasyonel günlüklere IP adresi, kullanıcı aracısı (user agent), işletim sistemi, platform ve çalışma ortamı sürümleri ile istek ve kimlik doğrulama olaylarının teknik ayrıntılarını ekleyebilir. Bunlar teknik hizmet bilgileridir; uygulamalar benzersiz bir cihaz kimliği göndermez. Sağlayıcı günlükleri ayrıca IP adresine dayanan yaklaşık ülke, bölge ve şehir bilgisi içerir. Bu konum bilgisi GPS'ten alınmaz ve uygulamalar konum izni istemez.", "Requests to Motion account services can add your IP address, user agent, operating system, platform and runtime versions, and request and authentication metadata to operational logs retained by Supabase and service providers. These are technical service details; the apps do not send a unique device ID. Provider logs also contain approximate country, region and city information based on the IP address. This location does not come from GPS, and the apps do not request location permission.")}
@@ -162,6 +171,7 @@ function MotionPrivacy() {
               <Section title={text(locale, "Veli veya vasi onayı", "Parent or guardian approval")}>
                 <p data-motion-parental-approval>
                   {text(locale, "Onay gereken gençler, ebeveyn veya vasilerinin e-posta adresini girer. Bu adrese bir onay bağlantısı gönderilir; 10 dakika sonra yeni bağlantı istenebilir ve günde en fazla 5 bağlantı gönderilir. Adresin kendisi veritabanımızda saklanmaz, yalnız tek yönlü özeti (tekrarlanan istekleri sınırlamak için) tutulur; ancak gönderilen onay e-postasının bir kopyası, adres ve bağlantı dahil, e-posta hesabımızın gönderilmiş postalar klasöründe kalır. Bağlantı 7 gün geçerlidir ve onay sayfasında gencin e-posta adresi maskeli gösterilir. Onaylanırsa hesap özellikleri açılır; reddedilirse hesap silinir. 30 gün içinde onaylanmayan hesap silinir.", "Teens who need approval enter a parent's or guardian's email address. An approval link is sent to it; a new link can be requested after 10 minutes, and at most 5 links are sent per day. The address itself is not stored in our database, only a one-way digest used to limit repeated requests; however, a copy of the sent approval email, including the address and the link, stays in the sent-mail folder of our email account. The link works for 7 days and the approval page shows the teen's email address masked. If approved, account features open; if declined, the account is deleted. An account not approved within 30 days is deleted.")}
+                  {" "}{text(locale, "Bu kopya 30 gün sonra silinir ve en geç 60 gün içinde kalıcı olarak kaldırılır.", "This copy is deleted after 30 days and permanently removed within 60 days at the latest.")}
                   {" "}{text(locale, "Hesabın silinmesi (veli reddi veya 30 gün içinde onay verilmemesi dahil) Apple veya Google'dan alınmış bir aboneliği iptal etmez; yinelenen ödemeyi durdurmak için aboneliği mağaza hesabından iptal edin, iade için Apple veya Google'a başvurun.", "Deleting the account, including after a parent declines or no approval is given within 30 days, does not cancel a subscription bought from Apple or Google; cancel it in the store account to stop renewal, and contact Apple or Google about refunds.")}
                 </p>
               </Section>
@@ -170,21 +180,36 @@ function MotionPrivacy() {
             <Section title={text(locale, "Saklama süreleri", "Retention")}>
               <ul className="space-y-2">
                 <li>· {text(locale, "Hesap ve ürün verileri: hesap silinene kadar; silmede hemen.", "Account and product data: until the account is deleted; immediately on deletion.")}</li>
-                <li>· {text(locale, "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için.", "Deletion receipt (one-way digest of the account ID): kept so other devices can recognise the deletion.")}</li>
+                <li>· {text(locale, "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için 3 yıl.", "Deletion receipt (one-way digest of the account ID): kept for 3 years so other devices can recognise the deletion.")}</li>
                 <li>· {text(locale, "Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days.")}</li>
                 <li>· {text(locale, "Yedekler: en fazla 30 günlük döngü; geri dönüşte silmeler yeniden uygulanır.", "Backups: cycle of at most 30 days; deletions are reapplied after any restore.")}</li>
                 {MOTION_PARENTAL_CONSENT_LIVE && (
-                  <li>· {text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")}</li>
+                  <>
+                    <li>· {text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")}</li>
+                    <li>· {text(locale, "Gönderilen veli onayı e-postasının kopyası: 30 gün sonra silinir, en geç 60 gün içinde kalıcı olarak kaldırılır.", "Copy of a sent parental-approval email: deleted after 30 days and permanently removed within 60 days at the latest.")}</li>
+                  </>
                 )}
-                <li>· {text(locale, "Kapanan destek yazışmaları: 90 gün.", "Closed support conversations: 90 days.")}</li>
+                <li>· {text(locale, "Destek yazışmaları: son iletiden 90 gün sonra silinir, en geç 120 gün içinde kalıcı olarak kaldırılır.", "Support conversations: deleted 90 days after the last message and permanently removed within 120 days at the latest.")}</li>
                 <li>· {text(locale, "Abonelik hakkı kayıtları (uygulama, ürün, mağaza işlem referansı, durum, bitiş): abonelik süresince ve hesap silinene kadar; silmede hemen. Ödeme ve fatura kayıtlarını Apple/Google yasal süre boyunca tutar.", "Subscription entitlement records (app, product, store transaction reference, state, expiry): for the subscription and until the account is deleted; immediately on deletion. Apple/Google keep payment and invoice records for the legally required period.")}</li>
                 <li>· {text(locale, "Motion+ deneme kaydı (mağaza, uygulama, ilk işlem referansı, başlangıç zamanı): ücretsiz denemenin hesap başına bir kez kullanılması için; hesap silinince hemen silinir.", "Motion+ trial record (store, app, original transaction reference, start time): kept so the free trial is used once per account; deleted immediately with the account.")}</li>
               </ul>
             </Section>
 
             <Section title={text(locale, "Haklarınız", "Your rights")}>
-              <p>
-                {text(locale, "Hesap profilinizi uygulamada görebilir ve görünen adınızı düzeltebilirsiniz. Verilerinize erişim, düzeltme veya silme taleplerinizi hesap e-postanız ve uygulama adıyla support@yulalab.com adresine iletebilirsiniz. Uygulanabilir KVKK ve GDPR hakları saklıdır.", "You can view your account profile and correct your display name in the app. Send requests to access, correct or delete data to support@yulalab.com with your account email and app name. Applicable rights under Turkish data protection law (KVKK) and GDPR remain available.")}{" "}
+              <p>{text(locale, "KVKK md. 11 uyarınca şu haklara sahipsiniz:", "Under KVKK article 11 you have the right to:")}</p>
+              <ul className="mt-3 space-y-2">
+                <li>· {text(locale, "kişisel verilerinizin işlenip işlenmediğini öğrenme ve işlenmişse bilgi isteme;", "learn whether your personal data is processed and, if so, request information about it;")}</li>
+                <li>· {text(locale, "işlenme amacını ve verilerin bu amaca uygun kullanılıp kullanılmadığını öğrenme;", "learn the purpose of processing and whether data is used in line with it;")}</li>
+                <li>· {text(locale, "verilerin yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme;", "know the third parties in Türkiye or abroad to whom data is transferred;")}</li>
+                <li>· {text(locale, "eksik veya yanlış işlenmiş verilerin düzeltilmesini isteme;", "request correction of incomplete or inaccurate data;")}</li>
+                <li>· {text(locale, "KVKK md. 7 çerçevesinde silinmesini veya yok edilmesini isteme;", "request erasure or destruction under KVKK article 7;")}</li>
+                <li>· {text(locale, "bu işlemlerin, verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme;", "request that these actions be notified to third parties who received the data;")}</li>
+                <li>· {text(locale, "yalnız otomatik sistemlerle yapılan analiz sonucunda aleyhinize çıkan bir sonuca itiraz etme;", "object to an adverse outcome arising solely from automated analysis;")}</li>
+                <li>· {text(locale, "kanuna aykırı işleme nedeniyle zarara uğrarsanız zararın giderilmesini isteme.", "claim compensation for damage caused by unlawful processing.")}</li>
+              </ul>
+              <p className="mt-3">
+                {text(locale, "AB veya Birleşik Krallık'ta bulunuyorsanız GDPR md. 15–22 kapsamında erişim, düzeltme, silme, işlemeyi kısıtlama, veri taşınabilirliği ve itiraz haklarınız da vardır. İzne dayanan işlemelerde izninizi istediğiniz zaman geri alabilirsiniz.", "If you are in the EU or UK, you also have the rights of access, rectification, erasure, restriction, data portability and objection under GDPR articles 15–22. Where processing is based on your permission, you can withdraw it at any time.")}{" "}
+                {text(locale, "Taleplerinizi hesap e-postanızdan support@yulalab.com adresine iletebilirsiniz; en geç 30 gün içinde ücretsiz yanıtlarız. Kişisel Verileri Koruma Kurulu'na veya bulunduğunuz yerdeki veri koruma otoritesine şikâyette bulunma hakkınız saklıdır. Hesap profilinizi uygulamada görebilir, görünen adınızı düzeltebilirsiniz.", "Send requests from your account email to support@yulalab.com; we reply free of charge within 30 days. You have the right to lodge a complaint with the Turkish Personal Data Protection Board or the data protection authority where you live. You can view your account profile and correct your display name in the app.")}{" "}
                 {text(locale, "Ebeveyn veya vasiler, gencin hesabıyla ilgili taleplerini aynı adrese iletebilir. Yanlış beyan edilen doğum tarihi destek üzerinden düzeltilir.", "Parents or guardians can send requests about a teen's account to the same address. An incorrectly declared birth date is corrected through support.")}
               </p>
             </Section>
@@ -197,7 +222,7 @@ function MotionPrivacy() {
 
             <Section title={text(locale, "Veri rolleri ve alt işleyenler", "Data roles and processors")}>
               <p data-motion-data-roles>
-                {text(locale, "Veri sorumlusu: {controller}.", "The data controller is {controller}.", { controller: CONTROLLER })}{" "}
+                {text(locale, "Veri sorumlusu: {controller}.", "The data controller is {controller}.", { controller: providerLine(locale) })}{" "}
                 {text(locale, "Supabase (Frankfurt, AB) hesap, kimlik doğrulama ve veritabanı hizmetini bizim adımıza sağlar.", "Supabase (Frankfurt, EU) provides the account, authentication and database service on our behalf.")}{" "}
                 {text(locale, "Resend (Resend, Inc., ABD) hesap e-postalarını (kayıt doğrulama ve parola sıfırlama) gönderir; Netlify (Netlify, Inc., ABD) bu web sitesini ve veli onayı sayfasını barındırır; ikisi de bizim adımıza çalışır.", "Resend (Resend, Inc., USA) sends account emails (sign-up confirmation and password reset), and Netlify (Netlify, Inc., USA) hosts this website and the parental-approval page, both on our behalf.")}{" "}
                 {MOTION_PARENTAL_CONSENT_LIVE && (
@@ -211,14 +236,13 @@ function MotionPrivacy() {
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {providerLine(locale)}
                 <br />
                 {text(locale, "E-posta", "Email")}:{" "}
                 <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">
                   support@yulalab.com
                 </a>
                 <br />
-                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
                 {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>

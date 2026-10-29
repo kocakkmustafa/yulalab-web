@@ -1,4 +1,4 @@
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { DATA_RIGHTS_COPY, CHILD_DATA_CONTACT } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -9,7 +9,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-10-24";
+const LAST_UPDATED = "2026-10-30";
 
 export async function generateMetadata({
   params,
@@ -125,6 +125,9 @@ function BraavolabsPrivacy() {
               <p>
                 {text(locale, "Hesap silme, kullanıcı kaydınızı kaldırır. Çalışma alanının son üyesiyseniz çalışma alanı kayıtları da silinir; başka üyeler varsa çalışma alanı içeriği, etkinlik ve mağaza abonelik kayıtları o çalışma alanında kalır. Silme kapsamı ve geçerli saklama yükümlülükleri doğrulanmış talebiniz için açıklanır. Aboneliği iptal etmek ayrı bir işlemdir.", "Account deletion removes your user record. If you are the workspace's last member, workspace records are also deleted; if other members remain, workspace content, activity and store subscription records remain with that workspace. The deletion scope and applicable retention obligations are explained for your verified request. Subscription cancellation is a separate action.")}
               </p>
+              <p className="mt-4">
+                {text(locale, "Hata kayıtları (Sentry) en fazla 90 gün saklanır.", "Error logs (Sentry) are kept for at most 90 days.")}
+              </p>
             </Section>
 
             <Section title={text(locale, "Çocuklar", "Children")}>
@@ -136,6 +139,9 @@ function BraavolabsPrivacy() {
             <Section title={text(locale, "Haklarınız", "Your rights")}>
               <p>
                 {DATA_RIGHTS_COPY[locale as Locale]}
+              </p>
+              <p className="mt-4">
+                {text(locale, "Bu haklar erişim, düzeltme, silme, işlemeyi kısıtlama, taşınabilirlik, itiraz ve rızayı geri almayı kapsar. Yanıtımızı yeterli bulmazsanız Kişisel Verileri Koruma Kurulu'na veya AB'de yaşadığınız ya da çalıştığınız yerdeki denetim makamına şikâyette bulunabilirsiniz. Hakkınızda hukuki sonuç doğuran otomatik karar vermeyiz. Hesap verilerini vermek hizmet için zorunludur; vermezseniz hesap açılamaz.", "These rights cover access, rectification, erasure, restriction, portability, objection and withdrawal of consent. If you are not satisfied with our answer, you can complain to the Turkish Personal Data Protection Board or to the supervisory authority where you live or work in the EU. We do not make automated decisions that produce legal effects about you. Account data is required for the service; without it we cannot open an account.")}
               </p>
             </Section>
 
@@ -153,9 +159,8 @@ function BraavolabsPrivacy() {
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}<br />
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {providerLine(locale)}<br />
                 {text(locale, "E-posta", "Email")}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
-                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
                 {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>

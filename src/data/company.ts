@@ -1,11 +1,14 @@
 import type { CompanyConfig } from "@/lib/types";
+import { text } from "@/lib/localized";
 
 export const company: CompanyConfig = {
   name: "YULA Lab",
   legalName: "YULA Lab",
+  // Founder decision 2026-10-29: sole proprietorship without a registered trade name; the site
+  // publishes the support email only (no postal address, phone or tax details).
   publisher: {
-    controller: "YULA Lab — Mustafa Kaan Koçak",
-    address: "Yeniköy Mahallesi, Bülbül Caddesi No: 50/6, Melikgazi/Kayseri",
+    controller: "Mustafa Kaan Koçak (YULA Lab)",
+    businessType: { tr: "şahıs işletmesi", en: "sole proprietorship" },
     country: "Türkiye",
   },
   tagline: {
@@ -78,3 +81,9 @@ export const company: CompanyConfig = {
 export const CONTROLLER_LINE = company.publisher.controller.includes(company.legalName)
   ? company.publisher.controller
   : `${company.legalName} — ${company.publisher.controller}`;
+
+/** Provider / data-controller line with the business type, as shown in the legal pages' contact sections. */
+export function providerLine(locale: string): string {
+  const { tr, en } = company.publisher.businessType;
+  return `${CONTROLLER_LINE} — ${text(locale, tr, en)}`;
+}

@@ -45,6 +45,13 @@ const RETIRED_KEYS = [
   // Legal pre-review 2026-10-29 (factual fixes): account mail goes through Resend, not Workspace; the
   // approval link can be resent and a sent copy stays in the mailbox.
   "Google (Google Workspace) sends account and parental-approval emails on our behalf.",
+  // Counsel-approved additions + founder retention decisions (2026-10-29): rights section rewritten
+  // (KVKK art. 11 list), support and deletion-receipt periods stated, terms renumbered after LifeOS §7.
+  "You can view your account profile and correct your display name in the app. Send requests to access, correct or delete data to support@yulalab.com with your account email and app name. Applicable rights under Turkish data protection law (KVKK) and GDPR remain available.",
+  "Closed support conversations: 90 days.",
+  "Deletion receipt (one-way digest of the account ID): kept so other devices can recognise the deletion.",
+  "7. Intellectual property",
+  "13. Contact",
   "Teens who need approval enter a parent's or guardian's email address. One approval link is sent to it; the address itself is not stored, only a one-way digest used to limit repeated requests. The link works for 7 days and the approval page shows the teen's email address masked. If approved, account features open; if declined, the account is deleted. An account not approved within 30 days is deleted.",
 ];
 const RETIRED_PREFIXES = [
@@ -82,6 +89,16 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         ["Saklama süreleri", "Retention"],
         ["Veri rolleri ve alt işleyenler", "Data roles and processors"],
         ["Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days."],
+        ["Neden ve hangi dayanakla işliyoruz", "Why and on what legal basis we process data"],
+        ["KVKK md. 11 uyarınca şu haklara sahipsiniz:", "Under KVKK article 11 you have the right to:"],
+        [
+          "Destek yazışmaları: son iletiden 90 gün sonra silinir, en geç 120 gün içinde kalıcı olarak kaldırılır.",
+          "Support conversations: deleted 90 days after the last message and permanently removed within 120 days at the latest.",
+        ],
+        [
+          "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için 3 yıl.",
+          "Deletion receipt (one-way digest of the account ID): kept for 3 years so other devices can recognise the deletion.",
+        ],
         [
           "Motion+ deneme kaydı (mağaza, uygulama, ilk işlem referansı, başlangıç zamanı): ücretsiz denemenin hesap başına bir kez kullanılması için; hesap silinince hemen silinir.",
           "Motion+ trial record (store, app, original transaction reference, start time): kept so the free trial is used once per account; deleted immediately with the account.",
@@ -113,6 +130,7 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         // Heading match only: in some languages the title is also a substring of the teen paragraph.
         expect(html).not.toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
         expect(html).not.toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
+        expect(html).not.toContain(escaped(text(locale, "Gönderilen veli onayı e-postasının kopyası: 30 gün sonra silinir, en geç 60 gün içinde kalıcı olarak kaldırılır.", "Copy of a sent parental-approval email: deleted after 30 days and permanently removed within 60 days at the latest.")));
         expect(html).not.toContain("Workspace");
       } finally {
         vi.doUnmock("@/data/motion-release");
@@ -129,6 +147,8 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         expect(html).toContain("data-motion-parental-approval");
         expect(html).toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
         expect(html).toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
+        expect(html).toContain(escaped(text(locale, "Gönderilen veli onayı e-postasının kopyası: 30 gün sonra silinir, en geç 60 gün içinde kalıcı olarak kaldırılır.", "Copy of a sent parental-approval email: deleted after 30 days and permanently removed within 60 days at the latest.")));
+        expect(html).toContain(escaped(text(locale, "Bu kopya 30 gün sonra silinir ve en geç 60 gün içinde kalıcı olarak kaldırılır.", "This copy is deleted after 30 days and permanently removed within 60 days at the latest.")));
         expect(html).toContain(escaped(text(locale, "Google (Google Workspace) veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends parental-approval emails on our behalf.")));
       } finally {
         vi.doUnmock("@/data/motion-release");
@@ -136,12 +156,13 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
       }
     });
 
-    it("renders the Motion special terms as section 5 and numbers sections 1–13 in order", async () => {
+    it("renders the Motion special terms as section 5, LifeOS as section 7, and numbers sections 1–14 in order", async () => {
       const html = await render(TermsPage, locale);
       expect(html).toContain(escaped(text(locale, "5. Motion uygulamaları — özel şartlar", "5. Motion apps — special terms")));
+      expect(html).toContain(escaped(text(locale, "7. LifeOS — özel şartlar", "7. LifeOS — special terms")));
       expect(html).toContain("data-motion-terms");
       const numbers = [...html.matchAll(/<h2[^>]*>\s*(\d+)\.\s/g)].map((match) => Number(match[1]));
-      expect(numbers).toEqual(Array.from({ length: 13 }, (_, index) => index + 1));
+      expect(numbers).toEqual(Array.from({ length: 14 }, (_, index) => index + 1));
       expect(html).not.toMatch(RETIRED_SALES);
     });
   });

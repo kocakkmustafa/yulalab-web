@@ -1,4 +1,4 @@
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { LANGUAGE_STORAGE_COPY } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -188,9 +188,9 @@ function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
               {text(locale, "Veri Sorumlusu", "Data Controller")}
             </div>
             <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
-              {CONTROLLER_LINE}
+              {providerLine(locale)}
               <br />
-              {text(locale, "Adres", "Address")}: {company.publisher.address}, {company.publisher.country}
+              {text(locale, "Konum", "Location")}: {company.publisher.country}
               <br />
               {text(locale, "E-posta", "Email")}:{" "}
               <a href={`mailto:${company.contact.email}`} className="link-wipe text-ink-50">
@@ -205,6 +205,9 @@ function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
             </div>
             <p className="text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
               {text(locale, "Veri kategorileri, üçüncü taraflar, saklama süreleri ve hak taleplerinin kapsamı ilgili ürünün gizlilik bilgilerinde ele alınır. Motion sayfası geliştirme aşamasındaki ürünler için genel kapsam bilgisidir; uygulama ve sürüme özgü ayrıntılar için bizimle iletişime geçebilirsiniz.", "Data categories, third parties, retention periods and the scope of rights requests are addressed in the relevant product privacy information. The Motion page provides general scope information for products in development; contact us for app- and version-specific details.")}
+            </p>
+            <p className="mt-4 text-[15px] leading-[1.65] text-ink-200 max-w-[60ch]">
+              {text(locale, "Bu metin birden çok dilde sunulur. Çeviriler arasında fark olması hâlinde Türkçe metin esas alınır; bu, bulunduğunuz ülkenin tüketicilere tanıdığı emredici hakları sınırlamaz.", "This text is provided in several languages. If translations differ, the Turkish version prevails; this does not limit mandatory consumer rights in your country.")}
             </p>
             <div className="mt-6">
               <Link

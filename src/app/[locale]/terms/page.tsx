@@ -5,10 +5,10 @@ import { setRequestLocale } from "next-intl/server";
 import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
-const LAST_UPDATED = "2026-10-27";
+const LAST_UPDATED = "2026-10-30";
 
 export async function generateMetadata({
   params,
@@ -75,6 +75,9 @@ function Terms() {
             </Link>
             {text(locale, " sayfasına bakabilirsiniz.", " page.")}
           </p>
+          <p className="mt-3 text-[15.5px] leading-[1.75] text-ink-300">
+            {text(locale, "Bu metin birden çok dilde sunulur. Çeviriler arasında fark olması hâlinde Türkçe metin esas alınır; bu, bulunduğunuz ülkenin tüketicilere tanıdığı emredici hakları sınırlamaz.", "This text is provided in several languages. If translations differ, the Turkish version prevails; this does not limit mandatory consumer rights in your country.")}
+          </p>
 
           <div className="mt-10 text-[15.5px] leading-[1.75] text-ink-200 space-y-8">
             <Section title={text(locale, "1. Kabul", "1. Acceptance")}>
@@ -89,13 +92,13 @@ function Terms() {
                 {text(locale, "YULA Lab, size Hizmetleri kişisel ve (Braavolabs için hesabınıza tanımlı) ticari amaçlarla kullanmanız için sınırlı, münhasır olmayan, devredilemez ve geri alınabilir bir lisans verir. Uygulamayı kopyalayamaz, tersine mühendislik uygulayamaz, kaynak koda dönüştüremez veya izinsiz dağıtamazsınız.", "YULA Lab grants you a limited, non-exclusive, non-transferable, revocable license to use the Services for personal and (for Braavolabs) internal business purposes. You may not copy, reverse-engineer, decompile, or distribute the app without authorization.")}
               </p>
               <p className="mt-3">
-                {text(locale, "iOS uygulamaları için bu EULA, Apple'ın standart Lisanslı Uygulama Son Kullanıcı Lisans Sözleşmesi ile birlikte geçerlidir; çelişki halinde bu belgedeki koşullar esas alınır. Apple, uygulamanın üçüncü-taraf yararlanıcısıdır ve bu şartları size karşı uygulama hakkına sahiptir.", "For iOS apps, this EULA applies together with Apple's standard Licensed Application End User License Agreement; in case of conflict, the terms in this document govern. Apple is a third-party beneficiary of this agreement and may enforce it against you.")}
+                {text(locale, "iOS uygulamalarında Apple'ın standart Lisanslı Uygulama Son Kullanıcı Lisans Sözleşmesi (https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) geçerlidir; bu şartlar onu tamamlar. Bu sözleşme yalnız sizinle YULA Lab arasındadır; Apple'ın uygulamanın bakımı, desteği, garantisi veya uygulamaya ilişkin talepler bakımından bir yükümlülüğü yoktur. Apple ve iştirakleri bu şartların üçüncü taraf lehtarıdır.", "For iOS apps, Apple's standard Licensed Application End User License Agreement (https://www.apple.com/legal/internet-services/itunes/dev/stdeula/) applies and these terms supplement it. This agreement is between you and YULA Lab only; Apple has no obligation for maintenance, support, warranty or claims relating to the app. Apple and its subsidiaries are third-party beneficiaries of these terms.")}
               </p>
             </Section>
 
             <Section title={text(locale, "3. Abonelikler ve ödemeler", "3. Subscriptions and payments")}>
               <p>
-                {text(locale, "Ücretli özellikler, Apple App Store ve Google Play üzerinden yönetilen otomatik yenilenen aboneliklerle sunulur. Ödeme, mağaza hesabınızdan tahsil edilir. Abonelik, mevcut dönemin bitiminden en az 24 saat önce iptal edilmezse otomatik yenilenir. Yenilemeyi ve iptali mağaza hesabınızın ayarlarından yönetebilirsiniz; ücret iadeleri ilgili mağazanın politikasına tabidir.", "Paid features are offered via auto-renewing subscriptions managed through the Apple App Store and Google Play. Payment is charged to your store account. Subscriptions renew automatically unless cancelled at least 24 hours before the end of the current period. You manage renewal and cancellation from your store account settings; refunds are subject to the respective store's policy.")}{" "}
+                {text(locale, "Ücretli özellikler, Apple App Store ve Google Play üzerinden yönetilen otomatik yenilenen aboneliklerle sunulur. Ödeme, mağaza hesabınızdan tahsil edilir. Aboneliğiniz, mevcut dönem bitmeden mağaza hesabınızdan iptal edilmedikçe aynı süre için, mağazanın gösterdiği fiyatla otomatik yenilenir (App Store'da dönem bitiminden en az 24 saat önce iptal etmeniz gerekir). İadeler mağazanın politikasına tabidir; tüketici mevzuatından doğan emredici haklarınız saklıdır.", "Paid features are offered via auto-renewing subscriptions managed through the Apple App Store and Google Play. Payment is charged to your store account. Your subscription renews automatically for the same period at the price shown by the store unless you cancel it in your store account before the current period ends (on the App Store, at least 24 hours before). Refunds are subject to the store's policy; your mandatory consumer rights remain unaffected.")}{" "}
                 {text(locale, "Motion uygulamalarında fiyatlar mağazanın gösterdiği yerel fiyattır; ücretsiz deneme sunulursa süresi ve yenileme tutarı satın alma ekranında gösterilir.", "Motion prices are the local prices shown by the store; if a free trial is offered, its length and the renewal price are shown on the purchase screen.")}
               </p>
             </Section>
@@ -122,47 +125,54 @@ function Terms() {
               </p>
             </Section>
 
-            <Section title={text(locale, "7. Fikri mülkiyet", "7. Intellectual property")}>
+            <Section title={text(locale, "7. LifeOS — özel şartlar", "7. LifeOS — special terms")}>
+              <p>
+                {text(locale, "Çevrimiçi yapay zekâ (uygulamada sunulduğunda): yeni hesaplarda, hesap açılışından itibaren 24 saat içinde en fazla 20 istek ücretsizdir. Sonrasında yalnız Premium abonelere, her gün (UTC 00:00'da sıfırlanır) en fazla 20 istekle sunulur. Sunucuya kabul edilen bir istek teknik bir hatayla sonuçlansa da kotadan düşer. Elle kayıt sınırsız ve ücretsizdir.", "Online AI (when offered in the app): new accounts get up to 20 free requests within 24 hours of account creation. After that it is available to Premium subscribers only, up to 20 requests per day (resets at 00:00 UTC). A request accepted by the server counts toward the limit even if it ends in a technical error. Manual logging is unlimited and free.")}
+              </p>
+              <p className="mt-3">
+                {text(locale, "Yapay zekâ çıktıları: Çevrimiçi yapay zekâ yanıtları ve otomatik çıkarımlar yapay zekâ tarafından üretilir; hatalı, eksik veya güncel olmayabilir. Kaydetmeden önce kontrol etmeniz gerekir. Bu çıktılar ve LifeOS'un sağlık/finans özetleri tıbbi, psikolojik, finansal, yatırım veya hukuki tavsiye değildir; teşhis veya tedavi amacı taşımaz. Acil bir durumda 112'yi arayın. Yapay zekâya başkalarına ait kişisel verileri yazmayın.", "AI outputs: online AI answers and automatic extractions are generated by artificial intelligence and may be wrong, incomplete or outdated; review them before saving. They, and LifeOS health/finance summaries, are not medical, psychological, financial, investment or legal advice and are not intended to diagnose or treat. In an emergency, call your local emergency number. Do not enter other people's personal data into AI.")}
+              </p>
+            </Section>
+
+            <Section title={text(locale, "8. Fikri mülkiyet", "8. Intellectual property")}>
               <p>
                 {text(locale, "Hizmetlerin tüm hakları, adı, logosu, tasarımı, yazılımı ve içeriği YULA Lab'e aittir. Ürettiğiniz kişisel verileriniz ve içerikleriniz size aittir; ilgili Gizlilik Politikasında açıklandığı gibi işlenir.", "All rights, name, logo, design, software, and content of the Services belong to YULA Lab. Your personal data and the content you create remain yours; they are processed as described in the relevant Privacy Policy.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "8. Garanti reddi", "8. Disclaimer of warranties")}>
+            <Section title={text(locale, "9. Garanti reddi", "9. Disclaimer of warranties")}>
               <p>
                 {text(locale, "Hizmetler olduğu gibi ve mevcut olduğu ölçüde sunulur. Kesintisizlik, hatasızlık veya belirli bir amaca uygunluk garantisi verilmez. Yasal olarak verilmesi zorunlu garantiler saklıdır.", "The Services are provided on an as-is and as-available basis. No warranty of uninterrupted, error-free operation or fitness for a particular purpose is given. Warranties that cannot be excluded by law are reserved.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "9. Sorumluluğun sınırlanması", "9. Limitation of liability")}>
+            <Section title={text(locale, "10. Sorumluluğun sınırlanması", "10. Limitation of liability")}>
               <p>
-                {text(locale, "Yürürlükteki yasaların izin verdiği azami ölçüde, YULA Lab dolaylı, arızi veya sonuç niteliğindeki zararlardan sorumlu değildir. Toplam sorumluluk, talebi doğuran olaydan önceki 12 ayda ödediğiniz tutarla sınırlıdır.", "To the maximum extent permitted by law, YULA Lab is not liable for indirect, incidental, or consequential damages. Total liability is limited to the amount you paid in the 12 months preceding the event giving rise to the claim.")}
+                {text(locale, "Kanunun izin verdiği ölçüde, hafif ihmalden doğan dolaylı zararlardan ve düzenli yedekle önlenebilecek veri kaybından sorumlu değiliz. Bu sınırlama; kast veya ağır ihmal, hayat ve sağlığa verilen zararlar ile tüketici mevzuatı ve diğer emredici hükümlerden doğan sorumluluğumuzu kapsamaz.", "To the extent permitted by law, we are not liable for indirect damage caused by slight negligence or for data loss that regular backups would have prevented. This limitation does not apply to intent or gross negligence, injury to life or health, or liability under consumer protection law or other mandatory rules.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "10. Fesih", "10. Termination")}>
+            <Section title={text(locale, "11. Fesih", "11. Termination")}>
               <p>
                 {text(locale, "Bu şartları ihlal etmeniz halinde erişiminizi askıya alabilir veya sonlandırabiliriz. Hesabınızı istediğiniz zaman kapatabilirsiniz; kapanışta verileriniz ilgili Gizlilik Politikasında belirtilen sürelerde silinir.", "We may suspend or terminate your access if you breach these terms. You may close your account at any time; upon closure your data is deleted within the periods stated in the relevant Privacy Policy.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "11. Uygulanacak hukuk", "11. Governing law")}>
+            <Section title={text(locale, "12. Uygulanacak hukuk", "12. Governing law")}>
               <p>
-                {text(locale, "Bu şartlar Türkiye Cumhuriyeti hukukuna tabidir. Tüketici mevzuatının size tanıdığı haklar saklıdır.", "These terms are governed by the laws of the Republic of Türkiye. Rights granted to you by consumer legislation are reserved.")}
+                {text(locale, "Bu şartlar Türkiye Cumhuriyeti hukukuna tabidir. Tüketiciyseniz 6502 sayılı Kanun uyarınca yerleşim yerinizdeki tüketici hakem heyetine veya tüketici mahkemesine başvurabilirsiniz. Türkiye dışında yaşıyorsanız, ülkenizin tüketiciyi koruyan emredici hükümleri ve mahkemelere başvurma hakkınız saklıdır.", "These terms are governed by the laws of the Republic of Türkiye. If you are a consumer in Türkiye, you may apply to the consumer arbitration committee or consumer court of your place of residence. If you live elsewhere, the mandatory consumer protection rules of your country and your right to sue there are not affected.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "12. Değişiklikler", "12. Changes")}>
+            <Section title={text(locale, "13. Değişiklikler", "13. Changes")}>
               <p>
-                {text(locale, "Bu şartları zaman zaman güncelleyebiliriz. Önemli değişiklikler uygun bir şekilde duyurulur ve Son güncelleme tarihi değişir. Değişiklikten sonra Hizmetleri kullanmaya devam etmeniz güncel şartları kabul ettiğiniz anlamına gelir.", "We may update these terms from time to time. Significant changes will be announced appropriately and the Last updated date will change. Continuing to use the Services after a change means you accept the updated terms.")}
+                {text(locale, "Bu şartlarda önemli bir değişiklik yaptığımızda, yürürlüğe girmeden en az 30 gün önce uygulama içinde ve/veya e-postayla bildiririz. Kabul etmiyorsanız yürürlükten önce hesabınızı kapatabilir ve aboneliğinizi mağazadan iptal edebilirsiniz; yasal haklarınız saklıdır.", "We will notify you of significant changes to these terms in the app and/or by email at least 30 days before they take effect. If you do not agree, you may close your account and cancel your subscription in the store before that date; your statutory rights are unaffected.")}
               </p>
             </Section>
 
-            <Section title={text(locale, "13. İletişim", "13. Contact")}>
+            <Section title={text(locale, "14. İletişim", "14. Contact")}>
               <p>
-                {text(locale, "Sağlayıcı", "Provider")}: {CONTROLLER_LINE}
-                <br />
-                {text(locale, "Adres", "Address")}: {company.publisher.address}, {company.publisher.country}
+                {text(locale, "Sağlayıcı", "Provider")}: {providerLine(locale)}
                 <br />
                 {text(locale, "E-posta", "Email")}:{" "}
                 <a href={`mailto:${company.contact.email}`} className="link-wipe text-ink-50">

@@ -39,7 +39,14 @@ const SHARED: Array<[string, string]> = [
     "When an account is deleted, its product data on the server is deleted immediately. Backups are kept on a cycle of at most 30 days; if a backup is ever restored, accounts deleted after that point are deleted again.",
   ],
   ["Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days."],
-  ["Kapanan destek yazışmaları: 90 gün.", "Closed support conversations: 90 days."],
+  [
+    "Destek yazışmaları: son iletiden 90 gün sonra silinir, en geç 120 gün içinde kalıcı olarak kaldırılır.",
+    "Support conversations: deleted 90 days after the last message and permanently removed within 120 days at the latest.",
+  ],
+  [
+    "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için 3 yıl.",
+    "Deletion receipt (one-way digest of the account ID): kept for 3 years so other devices can recognise the deletion.",
+  ],
 ];
 
 describe.each(SUPPORTED_LOCALES)("Motion account deletion page (%s)", (locale) => {

@@ -1,4 +1,4 @@
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { DATA_RIGHTS_COPY, CHILD_DATA_CONTACT } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -9,7 +9,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-10-24";
+const LAST_UPDATED = "2026-10-30";
 
 export async function generateMetadata({
   params,
@@ -128,7 +128,19 @@ function LifeosPrivacy() {
 
             <Section title={text(locale, "Veri saklama", "Data retention")}>
               <p>
-                {text(locale, "Cihaz verisi siz silene kadar kalır. Hesap silme işlemi ile cihazdaki dosyaların silinmesi ayrı işlemlerdir. Hesap silme işleminin tamamlandığını belgeleyen makbuz kayıtları, hesap silindikten sonra da kullanıcı kimliğiyle birlikte tutulabilir. Bu nedenle tüm sunucu kayıtlarının 30 gün içinde silineceğine dair genel bir garanti vermiyoruz. Hesabınızla ilişkili kayıtların kapsamı, saklama süresi ve silme talebi için support@yulalab.com adresine yazabilirsiniz.", "Device data is kept until you delete it. Deleting an account and removing files from your device are separate actions. Receipts documenting completion of an account deletion may retain the user identifier after the account has been deleted. We therefore do not give a blanket guarantee that all server-side records are removed within 30 days. For the scope and retention period of records associated with your account, or a deletion request, contact support@yulalab.com.")}
+                {text(locale, "Cihaz verisi siz silene kadar kalır; hesap silme ile cihazdaki dosyaların silinmesi ayrı işlemlerdir. Hesap silme talebiniz en geç 30 gün içinde sonuçlandırılır. Sunucu tarafındaki kayıtlar şu sürelerle saklanır:", "Device data is kept until you delete it; deleting an account and removing files from your device are separate actions. Account deletion requests are completed within 30 days at the latest. Server-side records are kept as follows:")}
+              </p>
+              <ul className="mt-3 list-disc pl-5 space-y-2">
+                <li>{text(locale, "Hesap verileri: hesap silinene kadar.", "Account data: until the account is deleted.")}</li>
+                <li>{text(locale, "Abonelik kayıtları: hesapla birlikte silinir.", "Subscription records: deleted with the account.")}</li>
+                <li>{text(locale, "Mağaza bildirim kaydı (hesap bağı kaldırılmış): ödeme uyuşmazlıklarının ispatı için 10 yıl.", "Store notification log (unlinked from the account): 10 years, to evidence payment disputes.")}</li>
+                <li>{text(locale, "Hesap silme makbuzu (kullanıcı kimliği ve tarih): silmenin ispatı için 3 yıl.", "Account deletion receipt (user ID and date): 3 years, to prove the deletion.")}</li>
+                <li>{text(locale, "Çevrimiçi yapay zekâ kullanım kayıtları: hesap silinince silinir.", "Online AI usage records: deleted with the account.")}</li>
+                <li>{text(locale, "Çökme raporları (Sentry): en fazla 90 gün.", "Crash reports (Sentry): at most 90 days.")}</li>
+                <li>{text(locale, "Destek yazışmaları: son iletiden 90 gün sonra silinir, en geç 120 gün içinde kalıcı olarak kaldırılır.", "Support conversations: deleted 90 days after the last message and permanently removed within 120 days at the latest.")}</li>
+              </ul>
+              <p className="mt-4">
+                {text(locale, "Süresi dolan kayıtlar silinir veya anonim hâle getirilir. Kayıtlarınızın kapsamı veya silme talebi için support@yulalab.com adresine yazabilirsiniz.", "Expired records are deleted or anonymised. For the scope of your records or a deletion request, contact support@yulalab.com.")}
               </p>
             </Section>
 
@@ -149,6 +161,9 @@ function LifeosPrivacy() {
                 {DATA_RIGHTS_COPY[locale as Locale]}
               </p>
               <p className="mt-4">
+                {text(locale, "Açık rızaya dayanan işlemeler için rızanızı dilediğiniz zaman geri alabilirsiniz; bu, geri almadan önceki işlemeyi etkilemez. LifeOS hakkınızda hukuki sonuç doğuran otomatik karar vermez. Başvurunuz reddedilir, yanıt yetersiz bulunur veya süresinde yanıt verilmezse, yanıtı öğrendiğiniz tarihten itibaren 30 gün ve her hâlde başvuru tarihinden itibaren 60 gün içinde Kişisel Verileri Koruma Kurulu'na şikâyette bulunabilirsiniz. GDPR kapsamındaysanız, bulunduğunuz ülkenin veri koruma otoritesine şikâyet hakkınız vardır.", "Where processing relies on consent, you may withdraw it at any time without affecting prior processing. LifeOS makes no automated decisions with legal effects about you. If your request is rejected, the answer is insufficient or not given in time, you may complain to the Turkish Personal Data Protection Board within 30 days of learning the answer and in any case within 60 days of your request. Where the GDPR applies, you may lodge a complaint with the data protection authority of your country.")}
+              </p>
+              <p className="mt-4">
                 {text(locale, "Hesap silme adımları ve uygulama dışından talep yolu: ", "Account deletion steps and the request path outside the app: ")}
                 <Link href="/delete-account/lifeos" className="link-wipe text-ink-50">
                   {text(locale, "LifeOS hesabını ve verilerini silme", "Delete your LifeOS account and data")}
@@ -164,15 +179,17 @@ function LifeosPrivacy() {
 
             <Section title={text(locale, "Değişiklikler", "Changes")}>
               <p>
-                {text(locale, "Bu politikayı zaman zaman güncelleyebiliriz. Önemli değişiklikleri uygulama içi bildirimle ve 'Son güncelleme' tarihiyle duyururuz.", "We may update this policy from time to time. Significant changes will be announced via in-app notice and reflected in the 'Last updated' date.")}
+                {text(locale, "Bu politikayı değiştirdiğimizde güncel metni bu sayfada yayımlarız; önemli değişiklikleri yürürlükten en az 30 gün önce uygulama içinde bildiririz. Yeni bir işleme açık rızaya dayanıyorsa, başlamadan önce ayrıca rızanızı isteriz.", "When we change this policy we publish the current version on this page and announce significant changes in the app at least 30 days before they take effect. If a new processing activity relies on consent, we will ask for your consent before it starts.")}
+              </p>
+              <p className="mt-4">
+                {text(locale, "Bu metin birden çok dilde sunulur. Çeviriler arasında fark olması hâlinde Türkçe metin esas alınır; bu, bulunduğunuz ülkenin tüketicilere tanıdığı emredici hakları sınırlamaz.", "This text is provided in several languages. If translations differ, the Turkish version prevails; this does not limit mandatory consumer rights in your country.")}
               </p>
             </Section>
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}<br />
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {providerLine(locale)}<br />
                 {text(locale, "E-posta", "Email")}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
-                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
                 {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>

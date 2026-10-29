@@ -1,4 +1,4 @@
-import { company, CONTROLLER_LINE } from "@/data/company";
+import { company, providerLine } from "@/data/company";
 import { DATA_RIGHTS_COPY } from "@/data/privacy-copy";
 import type { Locale } from "@/i18n/locales";
 import { localeAlternates } from "@/i18n/locales";
@@ -9,7 +9,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 
-const LAST_UPDATED = "2026-10-24";
+const LAST_UPDATED = "2026-10-30";
 
 export async function generateMetadata({
   params,
@@ -160,9 +160,8 @@ function BurunfarkiPrivacy() {
 
             <Section title={text(locale, "İletişim", "Contact")}>
               <p>
-                {text(locale, "Veri Sorumlusu", "Data Controller")}: {CONTROLLER_LINE}<br />
+                {text(locale, "Veri Sorumlusu", "Data Controller")}: {providerLine(locale)}<br />
                 {text(locale, "E-posta", "Email")}: <a href="mailto:support@yulalab.com" className="link-wipe text-ink-50">support@yulalab.com</a><br />
-                {text(locale, "Adres", "Address")}: {company.publisher.address}<br />
                 {text(locale, "Konum", "Location")}: {company.publisher.country}
               </p>
             </Section>
