@@ -100,7 +100,7 @@ export default async function MotionAccountDeletionPage({
             </Section>
 
             <Section title={text(locale, "Silinen veriler", "Data that is deleted")}>
-              <p>{text(locale, "Silme; ortak Motion hesabını, e-posta adresini ve parola özetini, görünen adı, doğum ayı ve yılını, ülkeyi, abonelik hakkı kayıtlarını ve Motion+ deneme kaydını kapsar.", "Deletion covers the shared Motion account, its email address and password hash, the display name, birth month and year, country, subscription entitlement records and the Motion+ trial record.")}</p>
+              <p>{text(locale, "Silme; ortak Motion hesabını, e-posta adresini ve parola özetini, görünen adı, doğum ayı ve yılını, ülkeyi, abonelik hakkı kayıtlarını, Motion+ deneme kaydını ve veli onayı kaydını (veli e-postasının tek yönlü özeti, durum ve tarihler) kapsar.", "Deletion covers the shared Motion account, its email address and password hash, the display name, birth month and year, country, subscription entitlement records, the Motion+ trial record and the parental-approval record (one-way digest of the parent's email, status and dates).")}</p>
               <p className="mt-4">{text(locale, "Kurs ilerlemesi ve çalışma geçmişi yalnız cihazda tutulur. Hesaba bağlı yerel geçmiş yukarıda anlatıldığı gibi temizlenir; misafir kayıtlarını silmek için uygulamanın verilerini cihaz ayarlarından silin veya uygulamayı kaldırın.", "Course progress and practice history are kept only on the device. Account-linked local history is cleared as described above; to delete guest records, clear the app's data in your device settings or uninstall the app.")}</p>
             </Section>
 

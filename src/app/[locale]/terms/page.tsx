@@ -19,7 +19,7 @@ export async function generateMetadata({
   const isTR = locale === "tr";
   return {
     title: text(locale, "Kullanım Şartları", "Terms of Service"),
-    description: text(locale, "YULA Lab ürünleri (LifeOS, Burun Farkı, Braavolabs) için ortak kullanım şartları ve son kullanıcı lisans sözleşmesi (EULA).", "Shared terms of service and end-user license agreement (EULA) for YULA Lab products (LifeOS, Burun Farkı, Braavolabs)."),
+    description: text(locale, "YULA Lab ürünleri (LifeOS, Burun Farkı, Braavolabs ve Motion uygulamaları) için ortak kullanım şartları ve son kullanıcı lisans sözleşmesi (EULA).", "Shared terms of service and end-user license agreement (EULA) for YULA Lab products (LifeOS, Burun Farkı, Braavolabs and the Motion apps)."),
     alternates: {
       canonical: isTR ? "/terms" : `/${locale}/terms`,
       languages: localeAlternates("/terms"),

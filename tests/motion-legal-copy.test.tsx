@@ -42,6 +42,10 @@ const RETIRED_KEYS = [
   // K-2 (2026-10-27): five apps use store family controls; the policy-neutral sentence gives way to
   // Core yayın profili §9 variant (B).
   "Purchases by users under 18 are subject to the store's family and parental controls.",
+  // Legal pre-review 2026-10-29 (factual fixes): account mail goes through Resend, not Workspace; the
+  // approval link can be resent and a sent copy stays in the mailbox.
+  "Google (Google Workspace) sends account and parental-approval emails on our behalf.",
+  "Teens who need approval enter a parent's or guardian's email address. One approval link is sent to it; the address itself is not stored, only a one-way digest used to limit repeated requests. The link works for 7 days and the approval page shows the teen's email address masked. If approved, account features open; if declined, the account is deleted. An account not approved within 30 days is deleted.",
 ];
 const RETIRED_PREFIXES = [
   "These terms apply to all products developed by YULA Lab — LifeOS, Burun Farkı and Braavolabs (",
@@ -125,7 +129,7 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         expect(html).toContain("data-motion-parental-approval");
         expect(html).toContain(`>${escaped(text(locale, "Veli veya vasi onayı", "Parent or guardian approval"))}</h2>`);
         expect(html).toContain(escaped(text(locale, "Onaylanmamış genç hesabı: 30 gün.", "Unapproved teen account: 30 days.")));
-        expect(html).toContain(escaped(text(locale, "Google (Google Workspace) hesap ve veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends account and parental-approval emails on our behalf.")));
+        expect(html).toContain(escaped(text(locale, "Google (Google Workspace) veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends parental-approval emails on our behalf.")));
       } finally {
         vi.doUnmock("@/data/motion-release");
         vi.resetModules();

@@ -75,7 +75,7 @@ function BraavolabsPrivacy() {
               <ul className="list-disc pl-5 space-y-2">
                 <li>
                   <strong className="text-ink-100">{text(locale, "Hesap bilgileri", "Account information")}</strong>:
-                  {" "}{text(locale, "E-posta, ad, hashlanmış parola (Argon2id). Üçüncü taraf sağlayıcılarla SSO seçtiğinizde sağlayıcının kimlik tokenı alınır.", "Email, name, hashed password (Argon2id). If you sign in via a third-party SSO provider, we receive that provider's identity token.")}
+                  {" "}{text(locale, "E-posta, ad, hashlanmış parola (bcrypt). Üçüncü taraf sağlayıcılarla SSO seçtiğinizde sağlayıcının kimlik tokenı alınır.", "Email, name, hashed password (bcrypt). If you sign in via a third-party SSO provider, we receive that provider's identity token.")}
                 </li>
                 <li>
                   <strong className="text-ink-100">{text(locale, "Uygulama kullanım verileri", "Application usage data")}</strong>:
@@ -87,7 +87,7 @@ function BraavolabsPrivacy() {
                 </li>
                 <li>
                   <strong className="text-ink-100">{text(locale, "Çökme raporları", "Crash reports")}</strong>:
-                  {" "}{text(locale, "Anonim çökme yığın izleri (Sentry). Kişiyi tanımlayan bilgi içermez.", "Anonymous crash stack traces via Sentry. No personally identifying information is attached.")}
+                  {" "}{text(locale, "Çökme ve performans tanılama verileri (Sentry): hata yığın izleri, cihaz ve işletim sistemi bilgisi, oturum verileri. Gizli değerler ve kişisel alanlar gönderilmeden önce temizlenir; Sentry gönderim sırasında IP adresinizi alabilir.", "Crash and performance diagnostics via Sentry: error stack traces, device and operating-system details and session data. Secrets and personal fields are scrubbed before sending; Sentry may receive your IP address when the data is sent.")}
                 </li>
                 <li>
                   <strong className="text-ink-100">{text(locale, "Satın alma bilgileri", "Purchase information")}</strong>:
@@ -104,7 +104,11 @@ function BraavolabsPrivacy() {
                 </li>
                 <li>
                   <strong className="text-ink-100">Sentry</strong>:
-                  {" "}{text(locale, "Çökme raporlaması (anonim). DSN üzerinden yalnızca uygulama tarafından oluşturulmuş hata bilgisi gider.", "Crash reporting (anonymous). Only application-generated error data is sent via the DSN.")}
+                  {" "}{text(locale, "Çökme ve performans raporlaması; gizli değerler ve kişisel alanlar gönderilmeden önce temizlenir.", "Crash and performance reporting; secrets and personal fields are scrubbed before sending.")}
+                </li>
+                <li>
+                  <strong className="text-ink-100">Anthropic / Groq</strong>:
+                  {" "}{text(locale, "Kendi sağlayıcı anahtarınızı eklemediyseniz AI özelliklerindeki istem ve içerik bizim adımıza Anthropic'e, sınırlı sayıda başlangıç çalıştırmasında Groq'a gönderilir. Kendi anahtarınızı eklerseniz içerik, seçtiğiniz sağlayıcıya onun koşullarıyla gider.", "Without a provider key of your own, prompts and content in AI features are sent on our behalf to Anthropic, and to Groq for a limited number of starter runs. With your own key, content goes to the provider you selected under its terms.")}
                 </li>
                 <li>
                   <strong className="text-ink-100">Expo / EAS Push</strong>:
@@ -137,7 +141,7 @@ function BraavolabsPrivacy() {
 
             <Section title={text(locale, "Veri güvenliği", "Data security")}>
               <p>
-                {text(locale, "İletişim TLS 1.2+ ile şifrelenir. Parolalar Argon2id ile hashlenir. Veritabanı yedekleri AES-256-CBC ile şifrelenir. Üçüncü taraf entegrasyon token'ları kullanıcı başına özel anahtar ile şifrelenir.", "Communication is encrypted with TLS 1.2+. Passwords are hashed with Argon2id. Database backups are encrypted with AES-256-CBC. Third-party integration tokens are encrypted per-user.")}
+                {text(locale, "İletişim TLS 1.2+ ile şifrelenir. Parolalar bcrypt ile hashlenir. Veritabanı yedekleri gzip ile sıkıştırılarak saklanır. Üçüncü taraf entegrasyon token'ları kullanıcı başına özel anahtar ile şifrelenir.", "Communication is encrypted with TLS 1.2+. Passwords are hashed with bcrypt. Database backups are stored gzip-compressed. Third-party integration tokens are encrypted per-user.")}
               </p>
             </Section>
 

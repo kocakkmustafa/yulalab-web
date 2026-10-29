@@ -3,8 +3,8 @@
  * services are live. Flip in a dedicated commit after the live check, never ahead of it.
  *
  * MOTION_PARENTAL_CONSENT_LIVE: Core `motion-parental-consent` answers yulalab.com with
- * CORS, parental-approval mail is sent through Google Workspace, Supabase Auth account
- * mail uses the same Workspace SMTP, and `/[locale]/motion/consent` is deployed. Gates the
+ * CORS, parental-approval mail is sent through Google Workspace (Supabase Auth account mail
+ * goes through Resend), and `/[locale]/motion/consent` is deployed. Gates the
  * parental-approval section of the Motion privacy page, its retention row and the
  * Workspace processor sentence.
  */

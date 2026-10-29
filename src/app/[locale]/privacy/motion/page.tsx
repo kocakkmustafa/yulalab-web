@@ -161,7 +161,7 @@ function MotionPrivacy() {
             {MOTION_PARENTAL_CONSENT_LIVE && (
               <Section title={text(locale, "Veli veya vasi onayı", "Parent or guardian approval")}>
                 <p data-motion-parental-approval>
-                  {text(locale, "Onay gereken gençler, ebeveyn veya vasilerinin e-posta adresini girer. Bu adrese bir kez onay bağlantısı gönderilir; adresin kendisi saklanmaz, yalnız tek yönlü özeti (tekrarlanan istekleri sınırlamak için) tutulur. Bağlantı 7 gün geçerlidir ve onay sayfasında gencin e-posta adresi maskeli gösterilir. Onaylanırsa hesap özellikleri açılır; reddedilirse hesap silinir. 30 gün içinde onaylanmayan hesap silinir.", "Teens who need approval enter a parent's or guardian's email address. One approval link is sent to it; the address itself is not stored, only a one-way digest used to limit repeated requests. The link works for 7 days and the approval page shows the teen's email address masked. If approved, account features open; if declined, the account is deleted. An account not approved within 30 days is deleted.")}
+                  {text(locale, "Onay gereken gençler, ebeveyn veya vasilerinin e-posta adresini girer. Bu adrese bir onay bağlantısı gönderilir; 10 dakika sonra yeni bağlantı istenebilir ve günde en fazla 5 bağlantı gönderilir. Adresin kendisi veritabanımızda saklanmaz, yalnız tek yönlü özeti (tekrarlanan istekleri sınırlamak için) tutulur; ancak gönderilen onay e-postasının bir kopyası, adres ve bağlantı dahil, e-posta hesabımızın gönderilmiş postalar klasöründe kalır. Bağlantı 7 gün geçerlidir ve onay sayfasında gencin e-posta adresi maskeli gösterilir. Onaylanırsa hesap özellikleri açılır; reddedilirse hesap silinir. 30 gün içinde onaylanmayan hesap silinir.", "Teens who need approval enter a parent's or guardian's email address. An approval link is sent to it; a new link can be requested after 10 minutes, and at most 5 links are sent per day. The address itself is not stored in our database, only a one-way digest used to limit repeated requests; however, a copy of the sent approval email, including the address and the link, stays in the sent-mail folder of our email account. The link works for 7 days and the approval page shows the teen's email address masked. If approved, account features open; if declined, the account is deleted. An account not approved within 30 days is deleted.")}
                 </p>
               </Section>
             )}
@@ -198,9 +198,10 @@ function MotionPrivacy() {
               <p data-motion-data-roles>
                 {text(locale, "Veri sorumlusu: {controller}.", "The data controller is {controller}.", { controller: CONTROLLER })}{" "}
                 {text(locale, "Supabase (Frankfurt, AB) hesap, kimlik doğrulama ve veritabanı hizmetini bizim adımıza sağlar.", "Supabase (Frankfurt, EU) provides the account, authentication and database service on our behalf.")}{" "}
+                {text(locale, "Resend (Resend, Inc., ABD) hesap e-postalarını (kayıt doğrulama ve parola sıfırlama) gönderir; Netlify (Netlify, Inc., ABD) bu web sitesini ve veli onayı sayfasını barındırır; ikisi de bizim adımıza çalışır.", "Resend (Resend, Inc., USA) sends account emails (sign-up confirmation and password reset), and Netlify (Netlify, Inc., USA) hosts this website and the parental-approval page, both on our behalf.")}{" "}
                 {MOTION_PARENTAL_CONSENT_LIVE && (
                   <>
-                    {text(locale, "Google (Google Workspace) hesap ve veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends account and parental-approval emails on our behalf.")}{" "}
+                    {text(locale, "Google (Google Workspace) veli onayı e-postalarını bizim adımıza gönderir.", "Google (Google Workspace) sends parental-approval emails on our behalf.")}{" "}
                   </>
                 )}
                 {text(locale, "Apple ve Google, mağaza satın almaları ve abonelikler için kendi politikalarıyla bağımsız veri sorumlusudur.", "Apple and Google act as independent controllers for store purchases and subscriptions under their own policies.")}

@@ -67,13 +67,13 @@ function LifeosPrivacy() {
           <div className="mt-10 text-[15.5px] leading-[1.75] text-ink-200 space-y-8">
             <Section title={text(locale, "Tek satırlık özet", "One-line summary")}>
               <p className="text-ink-100">
-                {text(locale, "LifeOS, cihaz üstü veri saklamayı temel alan offline-first bir uygulamadır. Hesap, satın alma durumu, çökme raporlaması ve isteğe bağlı bulut yedekleme için işlenen veriler aşağıda ayrı ayrı açıklanır. Cihazda tutulan içerikle bu hizmetlere gönderilen hesap ve hizmet verileri aynı kapsamda değildir.", "LifeOS is an offline-first app built around on-device data storage. Data processed for accounts, purchase state, crash reporting and optional cloud backup is described separately below. Content kept on your device is distinct from the account and service data sent to those services.")}
+                {text(locale, "LifeOS, cihaz üstü veri saklamayı temel alan offline-first bir uygulamadır. Hesap, satın alma durumu, çökme raporlaması ve isteğe bağlı çevrimiçi yapay zekâ için işlenen veriler aşağıda ayrı ayrı açıklanır. Cihazda tutulan içerikle bu hizmetlere gönderilen hesap ve hizmet verileri aynı kapsamda değildir.", "LifeOS is an offline-first app built around on-device data storage. Data processed for accounts, purchase state, crash reporting and optional online AI is described separately below. Content kept on your device is distinct from the account and service data sent to those services.")}
               </p>
             </Section>
 
             <Section title={text(locale, "Cihazda saklanan içerik", "Content stored on your device")}>
               <ul className="list-disc pl-5 space-y-2">
-                <li>{text(locale, "Sağlık verileri (Apple Health / Health Connect üzerinden okunan adım, kalp atışı, uyku, egzersiz)", "Health data (read from Apple Health / Health Connect: steps, heart rate, sleep, exercise)")}</li>
+                <li>{text(locale, "Sağlık verileri (Apple Health / Health Connect üzerinden okunan adım, kalp atışı, uyku, egzersiz, kilo ve kan oksijeni; döngü takibini açarsanız ayrı izinle adet kayıtları)", "Health data (read from Apple Health / Health Connect: steps, heart rate, sleep, exercise, weight and blood oxygen; if you turn on cycle tracking, menstruation records with a separate permission)")}</li>
                 <li>{text(locale, "Finans kayıtları (gelir, gider, hedefler)", "Financial records (income, expenses, goals)")}</li>
                 <li>{text(locale, "Eğitim ve hedef takibi", "Learning and goal tracking")}</li>
                 <li>{text(locale, "Sesli günlük ve Z-Rapor kayıtları (konuşma tanıma işletim sisteminin hizmetini kullanır)", "Voice journal and Z-Report entries (speech recognition uses the operating system's service)")}</li>
@@ -96,11 +96,15 @@ function LifeosPrivacy() {
                 </li>
                 <li>
                   <strong className="text-ink-100">{text(locale, "Satın alma durumu", "Purchase state")}</strong>:
-                  {" "}{text(locale, "Apple App Store / Google Play makbuz doğrulaması. Sadece aktif/pasif ve seviye (Plus / Pro) bilgisi saklanır.", "Apple App Store / Google Play receipt validation. We only store active/inactive and tier (Plus / Pro).")}
+                  {" "}{text(locale, "Apple App Store / Google Play bildirimleriyle doğrulanır. Hesabınıza bağlı olarak ürün ve plan, abonelik durumu, dönem, bitiş ve ek süre tarihleri, otomatik yenileme durumu, mağaza işlem kimlikleri, ortam (canlı/test), bildirim türü ve mağazanın gönderdiği imzalı bildirim içeriği (fiyat, para birimi ve mağaza ülkesi içerebilir) saklanır. Kart bilgileriniz bize ulaşmaz. Hesap silinince abonelik kayıtları silinir; mağaza bildirim kaydı ise hesabınızla bağı kaldırılarak tutulur.", "Validated with Apple App Store / Google Play notifications. Linked to your account, we store the product and plan, subscription status, period, expiry and grace dates, auto-renew status, store transaction IDs, environment (production/test), notification type and the signed notification content sent by the store (which may include price, currency and storefront country). Your card details never reach us. Deleting your account deletes subscription records; the store notification log is kept with the link to your account removed.")}
                 </li>
                 <li>
-                  <strong className="text-ink-100">{text(locale, "Bulut eşzamanlama (isteğe bağlı)", "Cloud sync (optional)")}</strong>:
-                  {" "}{text(locale, "Bulut eşzamanlamayı etkinleştirirseniz, eşzamanlama kapsamındaki kayıtlar Supabase hizmetine aktarılabilir. Cihazdaki veritabanının şifreli olması, bulut kopyasının uçtan uca şifreli olduğu anlamına gelmez. Aktarılan veri kapsamı ve şifreleme özellikleri için kullandığınız sürümün uygulama içi bilgilerini kontrol edin; kişisel içerik göndermeden önce destek ekibinden açıklama isteyebilirsiniz.", "If you enable cloud sync, records included in sync may be transferred to Supabase. Encryption of the database on your device does not mean that the cloud copy is end-to-end encrypted. Check the in-app information for your version for the data included and the available encryption features; you can ask support for clarification before sending personal content.")}
+                  <strong className="text-ink-100">{text(locale, "Çevrimiçi yapay zekâ (isteğe bağlı)", "Online AI (optional)")}</strong>:
+                  {" "}{text(locale, "Uygulamada sunulduğunda ve kullanmayı seçerseniz, her istekte ekranda gösterilip onayladığınız metin LifeOS sunucusu üzerinden Anthropic PBC'ye (ABD) iletilir ve bir Claude modeliyle işlenir. Anthropic'e hesap kimliğiniz veya e-posta adresiniz gönderilmez; sunucumuz metni ve yanıtı saklamaz.", "When it is offered in the app and you choose to use it, the text shown to you and approved by you for each request is sent through the LifeOS server to Anthropic PBC (USA) and processed by a Claude model. Your account ID and email address are not sent to Anthropic, and our server does not store the text or the reply.")}
+                </li>
+                <li>
+                  <strong className="text-ink-100">{text(locale, "Bulut eşzamanlama", "Cloud sync")}</strong>:
+                  {" "}{text(locale, "Bu sürümde bulut eşzamanlama sunulmuyor; kayıtlarınız cihazınızda kalır.", "Cloud sync is not offered in this version; your records stay on your device.")}
                 </li>
               </ul>
             </Section>
@@ -113,10 +117,12 @@ function LifeosPrivacy() {
 
             <Section title={text(locale, "Üçüncü taraflar", "Third parties")}>
               <ul className="list-disc pl-5 space-y-2">
-                <li><strong className="text-ink-100">Supabase</strong>: {text(locale, "Hesap kaydı ve opsiyonel bulut yedek. AB içi (Frankfurt) sunucularda barınır.", "Account registration and optional cloud backup. Hosted on EU (Frankfurt) servers.")}</li>
+                <li><strong className="text-ink-100">Supabase</strong>: {text(locale, "Hesap kaydı, abonelik doğrulaması, hesap silme ve (kullanırsanız) çevrimiçi yapay zekâ geçidi. AB içi (Frankfurt) sunucularda barınır.", "Account registration, subscription validation, account deletion and, if you use it, the online AI gateway. Hosted on EU (Frankfurt) servers.")}</li>
                 <li><strong className="text-ink-100">Apple HealthKit / Health Connect</strong>: {text(locale, "Sağlık verisi okuma izni (opsiyonel).", "Health data read permission (optional).")}</li>
                 <li><strong className="text-ink-100">Apple App Store / Google Play</strong>: {text(locale, "Abonelik ödemesi ve makbuz doğrulama.", "Subscription payments and receipt validation.")}</li>
                 <li><strong className="text-ink-100">Sentry</strong>: {text(locale, "Çökme raporları; uygulamadaki raporlama tercihine bağlıdır.", "Crash reports, subject to your reporting preference in the app.")}</li>
+                <li><strong className="text-ink-100">Anthropic PBC</strong>: {text(locale, "Onayladığınız çevrimiçi yapay zekâ isteklerini işler.", "Processes the online AI requests you approve.")}</li>
+                <li><strong className="text-ink-100">{text(locale, "İsteğe bağlı harici kaynaklar", "Optional external sources")}</strong>: {text(locale, "Kripto fiyatlarını kullanırsanız cihazınız varlık kodlarını doğrudan CoinGecko'ya gönderir ve IP adresiniz sağlayıcıya ulaşır. Bir Hugging Face anahtarı kaydederseniz anahtar yalnız doğrulama için Hugging Face'e gönderilir ve cihazınızın güvenli deposunda kalır. Sesli giriş işletim sisteminin (Apple/Google) konuşma tanıma hizmetini kullanır; cihazınıza ve ayarlarınıza göre ses bu sağlayıcılarca ağ üzerinden işlenebilir.", "If you use crypto prices, your device sends asset codes directly to CoinGecko, which receives your IP address. If you save a Hugging Face key, it is sent to Hugging Face only for validation and stays in your device's secure storage. Voice input uses the operating system's (Apple/Google) speech recognition; depending on your device and settings, audio may be processed by those providers over the network.")}</li>
               </ul>
             </Section>
 
