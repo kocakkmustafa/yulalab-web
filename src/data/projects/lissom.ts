@@ -74,11 +74,8 @@ export const lissom: ProjectConfig = {
       icon: "Lock",
     },
   ],
-  stats: [
-    { value: "47", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "lissom-free-lessons" },
-    { value: "120", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "lissom-free-lessons" },
-    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "lissom-free-lessons" },
-  ],
+  // Lesson counts are stated in the copy; a stat card would need a registry claim.
+  stats: [],
   vision: {
     tr: "Esnekliği ve hareketliliği kısa, düzenli pratiklerle sürdürülebilir bir alışkanlığa çevirmek.",
     en: "Turn flexibility and mobility into a sustainable habit through short, regular practice.",

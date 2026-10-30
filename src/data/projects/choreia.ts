@@ -74,11 +74,8 @@ export const choreia: ProjectConfig = {
       icon: "Lock",
     },
   ],
-  stats: [
-    { value: "33", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "choreia-free-lessons" },
-    { value: "88", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "choreia-free-lessons" },
-    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "choreia-free-lessons" },
-  ],
+  // Lesson counts are stated in the copy; a stat card would need a registry claim.
+  stats: [],
   vision: {
     tr: "Dans pratiğini kendi odanda, kendi hızında sürdürebilmek.",
     en: "Dance practice you can keep up in your own room, at your own pace.",

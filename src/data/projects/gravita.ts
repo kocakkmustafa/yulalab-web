@@ -74,11 +74,8 @@ export const gravita: ProjectConfig = {
       icon: "Lock",
     },
   ],
-  stats: [
-    { value: "44", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "gravita-free-lessons" },
-    { value: "117", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "gravita-free-lessons" },
-    { value: "7", label: { tr: "Kurs", en: "Courses" }, claimId: "gravita-free-lessons" },
-  ],
+  // Lesson counts are stated in the copy; a stat card would need a registry claim.
+  stats: [],
   vision: {
     tr: "Kuvvet ve beceri pratiğini herkesin kendi temposunda, anlaşılır adımlarla kurabilmesi.",
     en: "Strength and skill practice that anyone can build at their own pace, in clear steps.",

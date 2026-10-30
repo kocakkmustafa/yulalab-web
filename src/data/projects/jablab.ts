@@ -74,11 +74,8 @@ export const jablab: ProjectConfig = {
       icon: "Lock",
     },
   ],
-  stats: [
-    { value: "39", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "jablab-free-lessons" },
-    { value: "129", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "jablab-free-lessons" },
-    { value: "7", label: { tr: "Kurs", en: "Courses" }, claimId: "jablab-free-lessons" },
-  ],
+  // Lesson counts are stated in the copy; a stat card would need a registry claim.
+  stats: [],
   vision: {
     tr: "Antrenman arkadaşı veya salon olmadan da düzenli sürdürülebilen bir solo pratik.",
     en: "Solo practice you can keep up regularly, without a training partner or a gym.",

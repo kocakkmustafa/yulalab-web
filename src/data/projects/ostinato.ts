@@ -74,11 +74,8 @@ export const ostinato: ProjectConfig = {
       icon: "Lock",
     },
   ],
-  stats: [
-    { value: "44", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "ostinato-free-lessons" },
-    { value: "155", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "ostinato-free-lessons" },
-    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "ostinato-free-lessons" },
-  ],
+  // Lesson counts are stated in the copy; a stat card would need a registry claim.
+  stats: [],
   vision: {
     tr: "Enstrüman pratiğinin, öğretmen olmadan geçen saatlerini de değerli kılmak.",
     en: "Make the hours you practice without a teacher count too.",
