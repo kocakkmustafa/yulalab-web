@@ -1,4 +1,5 @@
-import { localeAlternates } from "@/i18n/locales";
+import { localeAlternates, type Locale } from "@/i18n/locales";
+import { MOTION_STORE_NAMES } from "@/data/motion-store-names";
 import { text } from "@/lib/localized";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
@@ -9,14 +10,6 @@ import { company, providerLine } from "@/data/company";
 import { MOTION_PARENTAL_CONSENT_LIVE } from "@/data/motion-release";
 
 const LAST_UPDATED = "2026-10-30";
-
-const APPS = [
-  "Choreia: Learn to Dance",
-  "Lissom: Mobility & Yoga",
-  "Gravita: Skills & Strength",
-  "JabLab: Shadow Training",
-  "Ostinato: Music Practice",
-];
 
 export async function generateMetadata({
   params,
@@ -73,7 +66,7 @@ function MotionPrivacy() {
             {text(locale, "Bu politika, aşağıdaki beş Motion uygulamasının ilk mağaza sürümündeki ortak hesap ve uygulamaya özgü yerel veri kullanımını açıklar:", "This policy describes the shared account and app-specific local data use in the first store release of these five Motion apps:")}
           </p>
           <ul className="mt-3 space-y-1 text-[15px] leading-[1.6] text-ink-200">
-            {APPS.map((a) => (
+            {MOTION_STORE_NAMES[locale as Locale].map((a) => (
               <li key={a}>· {a}</li>
             ))}
           </ul>

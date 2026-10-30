@@ -11,16 +11,16 @@ export const lifeos: ProjectConfig = {
     en: "Personal Life Operating System",
   },
   tagline: {
-    tr: "Hayatını yönet, AI ile geliş.",
+    tr: "Hayatını tek bir sistemde topla.",
     en: "Run your life like a system.",
   },
   description: {
-    tr: "LifeOS, hayatın 5 alanını (sağlık, finans, ilişkiler, kariyer, anlam) tek bir yerel-öncelikli OS'te yöneten, isteğe bağlı senkronu olan bir kişisel yaşam aracı.",
-    en: "LifeOS unifies five life domains (health, finance, relationships, career, meaning) in a single offline-first OS with optional sync.",
+    tr: "LifeOS beş yaşam alanını (sağlık, finans, varlıklar, eğitim ve yaşam) çevrimdışı öncelikli tek bir uygulamada toplar. Kayıtlar cihazında kalır ve hesap gerekmez; bazı özellikler App Store aboneliği gerektirir.",
+    en: "LifeOS brings five life areas (health, finance, assets, education and life) into one offline-first app. Records stay on your device and no account is needed; some features need an App Store subscription.",
   },
   short: {
-    tr: "Yerel-öncelikli kişisel yaşam OS'i. Beş yaşam alanı bir arada; senkron isteğe bağlıdır.",
-    en: "Offline-first personal life OS. Five life domains in one place; sync is optional.",
+    tr: "Çevrimdışı öncelikli kişisel yaşam uygulaması. Beş yaşam alanı bir arada; hesap gerekmez.",
+    en: "Offline-first personal life app. Five life areas in one place; no account needed.",
   },
   brand: {
     primary: "#C3F400",
@@ -43,48 +43,32 @@ export const lifeos: ProjectConfig = {
     {
       title: { tr: "Beş alan, tek panel", en: "Five domains, one panel" },
       description: {
-        tr: "Sağlık, finans, ilişkiler, kariyer, anlam. Her alan, kanıta dayalı bir ölçüm setiyle.",
-        en: "Health, finance, relationships, career, meaning. Each with an evidence-based measurement set.",
+        tr: "Sağlık, finans, varlıklar, eğitim ve yaşam.",
+        en: "Health, finance, assets, education and life.",
       },
       icon: "LayoutDashboard",
     },
     {
       title: { tr: "Yerel-öncelikli", en: "Offline-first" },
       description: {
-        tr: "Temel kayıtlar yerel çalışır; hesap ve bulut senkronu isteğe bağlıdır. Veri kapsamı sürüme göre değişebilir.",
-        en: "Core records work locally; accounts and cloud sync are optional. Data coverage can vary by release.",
+        tr: "Temel kayıtlar yerel çalışır; hesap gerekmez ve bu sürümde bulut senkronu sunulmaz.",
+        en: "Core records work locally; no account is needed and cloud sync is not offered in this version.",
       },
       icon: "Lock",
     },
     {
-      title: { tr: "AI koç (özel)", en: "AI coach (private)" },
+      title: { tr: "Sağlık verisi, yalnız okuma", en: "Health data, read-only" },
       description: {
-        tr: "Yerel modelle yapılan AI işlemleri cihazda çalışır. Kullanılabilirlik, cihaz desteğine ve modelin kurulmasına bağlıdır.",
-        en: "AI tasks using the local model run on-device. Availability depends on device support and model installation.",
+        tr: "İzin verirsen adım, kalp atışı, uyku, egzersiz, kilo ve kan oksijeni Apple Health veya Health Connect'ten okunur ve cihazda işlenir; sunucuya gönderilmez.",
+        en: "With your permission, steps, heart rate, sleep, workouts, weight and blood oxygen are read from Apple Health or Health Connect and processed on the device; they are not sent to a server.",
       },
-      icon: "Cpu",
-    },
-    {
-      title: { tr: "Yöntemler ve araçlar", en: "Methods and tools" },
-      description: {
-        tr: "PERMA, alışkanlık şablonları ve FIRE planlama araçları.",
-        en: "PERMA, habit templates and FIRE planning tools.",
-      },
-      icon: "Microscope",
-    },
-    {
-      title: { tr: "Anlamlı raporlar", en: "Meaningful reports" },
-      description: {
-        tr: "Skor değil — hikaye. Bu hafta nerede ilerlediniz, nerede yavaşladınız.",
-        en: "Stories, not scores. Where you moved this week, where you slowed down.",
-      },
-      icon: "FileText",
+      icon: "ShieldCheck",
     },
     {
       title: { tr: "Sıfır reklam", en: "Zero ads" },
       description: {
-        tr: "Tek model: ödeme yapan kullanıcı. Sizi ürün haline getirmiyoruz.",
-        en: "Single model: paying users. You're not the product.",
+        tr: "Reklam ve reklam takibi yok.",
+        en: "No ads and no ad tracking.",
       },
       icon: "Sparkles",
     },

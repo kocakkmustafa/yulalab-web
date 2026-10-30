@@ -17,8 +17,8 @@ export const developmentPreviews: Partial<Record<string, readonly DevelopmentPre
       "capturedAt": "2026-10-16",
       "captureKind": "functional",
       "alt": {
-        "tr": "Ostinato normal iOS geliştirme ana ekranı. Yazılı dersler ve duruş referans kataloğu görünür; canlı kamera pratiği ve abonelikler kapalıdır.",
-        "en": "Ostinato home in the normal iOS development build. Written lessons and the posture-reference catalogue are visible; live camera practice and subscriptions are off."
+        "tr": "Ostinato normal iOS geliştirme ana ekranı. Yazılı dersler ve duruş referans kataloğu görünür; bu geliştirme sürümünde canlı kamera pratiği ve abonelikler kapalıydı.",
+        "en": "Ostinato home in the normal iOS development build. Written lessons and the posture-reference catalogue are visible; live camera practice and subscriptions were off in that development build."
       }
     },
     {

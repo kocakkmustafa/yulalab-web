@@ -1,4 +1,5 @@
-import { localeAlternates } from "@/i18n/locales";
+import { localeAlternates, type Locale } from "@/i18n/locales";
+import { MOTION_STORE_NAMES } from "@/data/motion-store-names";
 import { text } from "@/lib/localized";
 import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
@@ -10,15 +11,6 @@ const LAST_UPDATED = "2026-10-30";
 const REQUEST_EMAIL = "support@yulalab.com";
 // Same subject as the request link on privacy/motion#motion-account-deletion.
 const REQUEST_HREF = `mailto:${REQUEST_EMAIL}?subject=Motion%20account%20deletion`;
-
-// Store listing names, as on privacy/motion.
-const APPS = [
-  "Choreia: Learn to Dance",
-  "Lissom: Mobility & Yoga",
-  "Gravita: Skills & Strength",
-  "JabLab: Shadow Training",
-  "Ostinato: Music Practice",
-];
 
 export async function generateMetadata({
   params,
@@ -71,7 +63,7 @@ export default async function MotionAccountDeletionPage({
             {text(locale, "Bu sayfa, {publisher} tarafından geliştirilen ve tek bir Motion hesabını paylaşan beş Motion uygulamasını kapsar:", "This page covers the five Motion apps developed by {publisher}, which share one Motion account:", { publisher: company.legalName })}
           </p>
           <ul className="mt-3 space-y-1 text-[15.5px] leading-[1.75] text-ink-200" data-motion-deletion-apps>
-            {APPS.map((app) => (
+            {MOTION_STORE_NAMES[locale as Locale].map((app) => (
               <li key={app}>· {app}</li>
             ))}
           </ul>

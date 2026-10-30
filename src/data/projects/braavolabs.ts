@@ -58,16 +58,16 @@ export const braavolabs: ProjectConfig = {
     {
       title: { tr: "Primitive katmanı", en: "Primitive layer" },
       description: {
-        tr: "Bellek, plan, eylem, gözlem — 9 yeniden kullanılabilir primitif üzerine inşa edilir.",
-        en: "Memory, plan, action, observation — built on 9 reusable primitives.",
+        tr: "Edinim, satış, teslimat, içerik, operasyon, finans, analitik, bellek ve yönetişim: 9 yeniden kullanılabilir primitif.",
+        en: "Acquisition, sales, delivery, content, operations, finance, analytics, memory and governance: 9 reusable primitives.",
       },
       icon: "LayoutGrid",
     },
     {
       title: { tr: "Çoklu sağlayıcı", en: "Multi-provider" },
       description: {
-        tr: "OpenAI, Anthropic, Mistral, Gemini ve 10 daha — tek arayüzden, tek faturalama mantığıyla.",
-        en: "OpenAI, Anthropic, Mistral, Gemini and 10 more — one interface, one billing logic.",
+        tr: "OpenAI, Anthropic, Mistral, Gemini ve 10 sağlayıcı daha; kendi anahtarlarınla tek arayüzden bağlanırsın.",
+        en: "OpenAI, Anthropic, Mistral, Gemini and 10 more providers, connected with your own keys in one interface.",
       },
       icon: "KeyRound",
     },
@@ -80,26 +80,26 @@ export const braavolabs: ProjectConfig = {
       icon: "FileSearch",
     },
     {
-      title: { tr: "Görev grafiği", en: "Task graph" },
+      title: { tr: "Harcama onayı", en: "Spend approval" },
       description: {
-        tr: "Ajanlar arası bağımlılığı görsel grafikle çiz; insan onayı gereken düğümleri işaretle.",
-        en: "Draw inter-agent dependencies as a visual graph; mark nodes that need human approval.",
-      },
-      icon: "Network",
-    },
-    {
-      title: { tr: "Politika motoru", en: "Policy engine" },
-      description: {
-        tr: "Roller, izinler, kotalar. Bir ajan asla limitin ötesine geçmez — tasarımdan gelir.",
-        en: "Roles, permissions, quotas. Agents can't drift past their limits — by design.",
+        tr: "Para harcayan adımlar açık bir insan onayını bekler; her adım denetim izinde görünür.",
+        en: "Steps that spend money wait for an explicit human approval; every step shows in the audit trail.",
       },
       icon: "ShieldCheck",
     },
     {
-      title: { tr: "6 dil, 1 ekip", en: "6 languages, 1 team" },
+      title: { tr: "Politika motoru", en: "Policy engine" },
       description: {
-        tr: "Türkçe, İngilizce, Almanca, Fransızca, İspanyolca, Arapça — aynı bağlam, aynı bellek.",
-        en: "Turkish, English, German, French, Spanish, Arabic — same context, same memory.",
+        tr: "Roller, izinler ve kesin bütçe durdurmaları.",
+        en: "Roles, permissions and hard budget stops.",
+      },
+      icon: "Network",
+    },
+    {
+      title: { tr: "14 dil", en: "14 languages" },
+      description: {
+        tr: "Braavolabs mobil uygulaması 14 dilde kullanılabilir.",
+        en: "The Braavolabs mobile app is available in 14 languages.",
       },
       icon: "Globe",
     },
@@ -115,7 +115,7 @@ export const braavolabs: ProjectConfig = {
       label: { tr: "LLM Sağlayıcı", en: "LLM Providers" },
       claimId: "braavolabs-provider-count",
     },
-    { value: "6", label: { tr: "Dil", en: "Languages" } },
+    { value: "14", label: { tr: "Dil (mobil uygulama)", en: "Languages (mobile app)" } },
   ],
   vision: {
     tr: "Her küçük ekibin, kendi otonom dijital iş gücünü onlarca dakika içinde kurabildiği bir dünya.",

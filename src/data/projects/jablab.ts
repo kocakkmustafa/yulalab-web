@@ -7,20 +7,20 @@ export const jablab: ProjectConfig = {
   kind: ["mobile"],
   status: "coming-soon",
   category: {
-    tr: "Solo Boks Koçu",
-    en: "Solo Boxing & Shadow Training Coach",
+    tr: "Solo Dövüş Sanatları Pratiği",
+    en: "Solo Martial Arts Practice",
   },
   tagline: {
-    tr: "Gölge boksunu adım adım çalış.",
-    en: "Practise shadow boxing step by step.",
+    tr: "Gölge antrenmanını adım adım çalış.",
+    en: "Practise shadow training step by step.",
   },
   description: {
-    tr: "JabLab'ın ilk sürümü, temas içermeyen solo boks kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda ayrı kaydedilir; kamera beceri puanı veya teknik onay üretilmez. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "JabLab's first release focuses on a non-contact solo boxing course. Reading, practice and self-reported completion are recorded separately on the device; no camera skill score or technique certification is produced. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "JabLab, temas içermeyen solo pratik için yazılı kurslar sunar: boks, kickboks, Muay Thai, karate ve tai chi. 129 dersin 39'u ücretsizdir ve hesap gerektirmez; kalan dersler ve bağımsız pratik aşaması JabLab üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Canlı kamera koçluğu bu sürümde kapalıdır.",
+    en: "JabLab offers written courses for non-contact solo practice: boxing, kickboxing, Muay Thai, karate and tai chi. 39 of the 129 lessons are free and need no account; the remaining lessons and the independent practice stage open with a JabLab membership or Motion+ subscription through the App Store and Google Play. Live camera coaching is off in this release.",
   },
   short: {
-    tr: "Temas içermeyen solo boks kursu ve öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "A non-contact solo boxing course with self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Boks, kickboks, Muay Thai, karate ve tai chi için yazılı solo kurslar. 129 dersin 39'u ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera koçluğu kapalı.",
+    en: "Written solo courses in boxing, kickboxing, Muay Thai, karate and tai chi. 39 of 129 lessons are free; the rest open by subscription through the App Store and Google Play. Camera coaching is off.",
   },
   brand: {
     primary: "#FF3B3B",
@@ -42,51 +42,45 @@ export const jablab: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Solo boks kursu", en: "A solo boxing course" },
+      title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Okuma ve temas içermeyen pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
-        en: "Follow reading and non-contact practice steps without camera or microphone permission.",
-      },
-      icon: "Eye",
-    },
-    {
-      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
-      description: {
-        tr: "Okuma, pratik ve tamamlanma ayrı kayıtlardır. Tamamlanmayı kendin bildirirsin; bu bir kamera beceri puanı değildir.",
-        en: "Reading, practice and completion are separate records. You report completion yourself; it is not a camera skill score.",
-      },
-      icon: "BadgeCheck",
-    },
-    {
-      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
-      description: {
-        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
-        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
+        tr: "Solo boks (39 ders); Kickboks A, Muay Thai A ve Karate A (16'şar ders); Taikyoku Shodan (10); Tai Chi temelleri (14) ve yazılı Yang ailesi 16 formu (18). Temas yoktur.",
+        en: "Solo boxing (39 lessons); Kickboxing A, Muay Thai A and Karate A (16 each); Taikyoku Shodan (10); Tai Chi foundations (14) and the written Yang family 16 form (18). No contact.",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
+      title: { tr: "Ücretsiz kısım", en: "Free part" },
       description: {
-        tr: "Gard, duruş, kombinasyon ve denge için kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kapalıdır.",
-        en: "Camera feedback on guard, stance, combinations and balance is a goal for a later stage; it is disabled in the first release.",
+        tr: "Her kursun ilk dersleri ücretsizdir: boksta ilk iki modül (10 ders); Kickboks, Muay Thai, Karate ve Tai Chi'de 5'er; Taikyoku Shodan'da 3 ve Yang 16'da 6 ders. Ücretsiz dersler için hesap gerekmez.",
+        en: "The first lessons of every course are free: the first two boxing modules (10 lessons); 5 each in Kickboxing, Muay Thai, Karate and Tai Chi; 3 in Taikyoku Shodan and 6 in Yang 16. Free lessons need no account.",
       },
-      icon: "Microscope",
+      icon: "Eye",
+    },
+    {
+      title: { tr: "Abonelik", en: "Subscription" },
+      description: {
+        tr: "Uygulama üyeliği bu uygulamadaki ücretli dersleri açar; Motion+ beş Motion uygulamasında bugün açık olan ücretli dersleri ve pratiği açar. Kamera koçluğu ve henüz yayımlanmamış dersler dahil değildir. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; fiyat ülkeye göre değişir ve App Store ya da Google Play'de gösterilir. İptal mağaza hesabından yapılır.",
+        en: "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.",
+      },
+      icon: "BadgeCheck",
+    },
+    {
+      title: { tr: "Kamera kapalı", en: "Camera off" },
+      description: {
+        tr: "Canlı kamera koçluğu bu sürümde kapalıdır; kamera puanı, form düzeltmesi veya otomatik sayım yoktur. İlerlemeyi kendin kaydedersin; bu bir beceri puanı değildir.",
+        en: "Live camera coaching is off in this release; there is no camera score, form correction or automatic counting. You record progress yourself; it is not a skill score.",
+      },
+      icon: "Lock",
     },
   ],
   stats: [
-    { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    {
-      value: "Solo",
-      label: {
-        tr: "İlk kurs · temas içermeyen boks",
-        en: "First course · non-contact boxing",
-      },
-    },
+    { value: "39/129", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
+    { value: "7", label: { tr: "Kurs", en: "Courses" } },
   ],
   vision: {
-    tr: "Antrenman arkadaşı olmadan da doğru geri bildirim alabildiğin bir solo boks pratiği.",
-    en: "Solo boxing practice that gives you real feedback, even without a training partner.",
+    tr: "Antrenman arkadaşı veya salon olmadan da düzenli sürdürülebilen bir solo pratik.",
+    en: "Solo practice you can keep up regularly, without a training partner or a gym.",
   },
   mission: {
     tr: "Solo boks pratiğini anlaşılır dersler ve dürüst ilerleme kayıtlarıyla desteklemek.",

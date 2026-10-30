@@ -7,20 +7,20 @@ export const choreia: ProjectConfig = {
   kind: ["mobile"],
   status: "coming-soon",
   category: {
-    tr: "Global Dans Koçu",
-    en: "Global Dance Coach",
+    tr: "Solo Dans Pratiği",
+    en: "Solo Dance Practice",
   },
   tagline: {
-    tr: "Salsa adımlarını kendi hızında çalış.",
-    en: "Practise salsa steps at your own pace.",
+    tr: "Dans adımlarını kendi hızında çalış.",
+    en: "Practise dance steps at your own pace.",
   },
   description: {
-    tr: "Choreia'nın ilk sürümü, solo Salsa On1 kursuna odaklanır. Okuma, pratik ve öz bildirimli tamamlanma cihazda kaydedilir; kamera beceri puanı veya dans ustalığı onayı üretilmez. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "Choreia's first release focuses on a solo Salsa On1 course. Reading, practice and self-reported completion are saved on the device; no camera skill score or dance mastery certification is produced. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Choreia beş yazılı solo dans kursu sunar: Salsa On1, Hip-Hop temelleri, Line Dance, düşük tempolu Latin Fusion ve özgün kısa form dans. 88 dersin 33'ü ücretsizdir ve hesap gerektirmez; kalanı Choreia üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Canlı kamera pratiği bu sürümde kapalıdır.",
+    en: "Choreia offers five written solo dance courses: Salsa On1, Hip-Hop foundations, Line Dance, low-impact Latin Fusion and original short-form dance. 33 of the 88 lessons are free and need no account; the rest open with a Choreia membership or Motion+ subscription through the App Store and Google Play. Live camera practice is off in this release.",
   },
   short: {
-    tr: "Solo Salsa On1 kursu ve öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "A solo Salsa On1 course with self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Salsa On1, Hip-Hop, Line Dance, Latin Fusion ve kısa form dans için yazılı solo kurslar. 88 dersin 33'ü ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera kapalı.",
+    en: "Written solo courses in Salsa On1, Hip-Hop, Line Dance, Latin Fusion and short-form dance. 33 of 88 lessons are free; the rest open by subscription through the App Store and Google Play. Camera is off.",
   },
   brand: {
     primary: "#FF3DA6",
@@ -42,51 +42,45 @@ export const choreia: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Solo Salsa On1 kursu", en: "A solo Salsa On1 course" },
+      title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Okuma ve pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
-        en: "Follow reading and practice steps without camera or microphone permission.",
-      },
-      icon: "Eye",
-    },
-    {
-      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
-      description: {
-        tr: "Okuma, pratik ve tamamlanma ayrı kayıtlardır. Tamamlanmayı kendin bildirirsin; kamera beceri puanı değildir.",
-        en: "Reading, practice and completion are separate records. You report completion yourself; it is not a camera skill score.",
-      },
-      icon: "Microscope",
-    },
-    {
-      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
-      description: {
-        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
-        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
+        tr: "Salsa On1 solo yolculuk (48 ders), Hip-Hop temelleri (8), Line Dance başlangıç (12), düşük tempolu Latin Fusion temelleri (10) ve özgün kısa form dans (10).",
+        en: "Salsa On1 solo journey (48 lessons), Hip-Hop foundations (8), Line Dance beginner (12), low-impact Latin Fusion foundations (10) and original short-form dance (10).",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
+      title: { tr: "Ücretsiz kısım", en: "Free part" },
       description: {
-        tr: "Adım, zamanlama ve form için kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kapalıdır.",
-        en: "Camera feedback on steps, timing and form is a goal for a later stage; it is disabled in the first release.",
+        tr: "Salsa'da 8 modülün ilk 3'ü (18 ders), Hip-Hop'ta 3, Line Dance, Latin Fusion ve kısa form dansta 4'er ders ücretsizdir. Ücretsiz dersler için hesap veya kamera gerekmez.",
+        en: "The first 3 of 8 Salsa modules (18 lessons), 3 Hip-Hop lessons and 4 lessons each in Line Dance, Latin Fusion and short-form dance are free. Free lessons need no account or camera.",
       },
-      icon: "Globe",
+      icon: "Eye",
+    },
+    {
+      title: { tr: "Abonelik", en: "Subscription" },
+      description: {
+        tr: "Uygulama üyeliği bu uygulamadaki ücretli dersleri açar; Motion+ beş Motion uygulamasında bugün açık olan ücretli dersleri ve pratiği açar. Kamera koçluğu ve henüz yayımlanmamış dersler dahil değildir. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; fiyat ülkeye göre değişir ve App Store ya da Google Play'de gösterilir. İptal mağaza hesabından yapılır.",
+        en: "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.",
+      },
+      icon: "BadgeCheck",
+    },
+    {
+      title: { tr: "Kamera kapalı", en: "Camera off" },
+      description: {
+        tr: "Canlı kamera koçluğu bu sürümde kapalıdır; kamera puanı, form düzeltmesi veya otomatik sayım yoktur. İlerlemeyi kendin kaydedersin; bu bir beceri puanı değildir.",
+        en: "Live camera coaching is off in this release; there is no camera score, form correction or automatic counting. You record progress yourself; it is not a skill score.",
+      },
+      icon: "Lock",
     },
   ],
   stats: [
-    { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    {
-      value: "Salsa",
-      label: {
-        tr: "İlk kurs · solo On1",
-        en: "First course · solo On1",
-      },
-    },
+    { value: "33/88", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
+    { value: "5", label: { tr: "Kurs", en: "Courses" } },
   ],
   vision: {
-    tr: "Herkesin, dünyanın her yerinden bir dans hocasına kendi salonunda ulaşabildiği bir dünya.",
-    en: "A world where everyone can reach a dance teacher from anywhere, right in their own living room.",
+    tr: "Dans pratiğini kendi odanda, kendi hızında sürdürebilmek.",
+    en: "Dance practice you can keep up in your own room, at your own pace.",
   },
   mission: {
     tr: "Dans pratiğini anlaşılır kurs adımları ve dürüst ilerleme kayıtlarıyla desteklemek.",

@@ -7,20 +7,20 @@ export const gravita: ProjectConfig = {
   kind: ["mobile"],
   status: "coming-soon",
   category: {
-    tr: "Handstand & Vücut Becerileri Koçu",
-    en: "Handstand, Bodyweight Skills & Strength Coach",
+    tr: "Kalistenik ve Kuvvet Pratiği",
+    en: "Calisthenics & Strength Practice",
   },
   tagline: {
-    tr: "Adım adım çalış, ilerlemeni kendin kaydet.",
-    en: "Practice step by step and record your progress.",
+    tr: "Vücut ağırlığı pratiğini adım adım kur.",
+    en: "Build your bodyweight practice step by step.",
   },
   description: {
-    tr: "Gravita'nın ilk sürümü, handstand ve vücut ağırlığı becerileri için temel bir kursa odaklanır. Okuma, pratik ve öz bildirimli ilerleme cihazda kaydedilir; kamera beceri puanı veya ustalık onayı üretilmez. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "Gravita's first release focuses on a foundation course for handstand and bodyweight skills. Reading, practice and self-reported progress are saved on the device; no camera skill score or mastery certification is produced. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Gravita, kuvvet ve beceri temelleri için yedi yazılı kurs sunar: 56 derslik kalistenik kursu, dambıl ve kettlebell yolları, halter, alçak halka ve el desteği temelleri. 117 dersin 44'ü ücretsizdir; kalan dersler, program oluşturma ve yeni seans kaydı Gravita üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Canlı kamera koçluğu bu sürümde kapalıdır.",
+    en: "Gravita offers seven written courses on strength and skill foundations: a 56-lesson calisthenics course, dumbbell and kettlebell paths, and barbell, low-ring and hand-support foundations. 44 of the 117 lessons are free; the remaining lessons, program creation and logging new sessions open with a Gravita membership or Motion+ subscription through the App Store and Google Play. Live camera coaching is off in this release.",
   },
   short: {
-    tr: "Handstand ve vücut becerileri için kurs ve öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "A handstand and bodyweight-skills course with self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Kalistenik, dambıl ve kettlebell, halter, halka ve el desteği için yedi yazılı kurs. 117 dersin 44'ü ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera koçluğu kapalı.",
+    en: "Seven written courses in calisthenics, dumbbell and kettlebell, barbell, rings and hand support. 44 of 117 lessons are free; the rest open by subscription through the App Store and Google Play. Camera coaching is off.",
   },
   brand: {
     primary: "#FF6A45",
@@ -42,44 +42,45 @@ export const gravita: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Temel beceri kursu", en: "A foundation skills course" },
+      title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Okuma ve pratik adımlarıyla çalışırsın; kursu kullanmak için kamera izni gerekmez.",
-        en: "Work through reading and practice steps; the course does not require camera permission.",
+        tr: "Kalistenik: eksiksiz temel (56 ders); dambıl ve kettlebell yazılı temeller (12), kontrollü kullanım (11) ve geçişler (2); halter, alçak halka ve el desteği temelleri (12'şer ders).",
+        en: "Calisthenics: a complete foundation (56 lessons); dumbbell and kettlebell written foundations (12), controlled handling (11) and transitions (2); barbell, low-ring and hand-support foundations (12 lessons each).",
+      },
+      icon: "Sparkles",
+    },
+    {
+      title: { tr: "Ücretsiz kısım", en: "Free part" },
+      description: {
+        tr: "Her kursun baştaki modülleri ücretsizdir; 117 dersin 44'ü. Kalistenik kursunda 56 dersin 21'i ücretsizdir; kurs misafir olarak, hesap açmadan incelenebilir.",
+        en: "The opening modules of each course are free, 44 of 117 lessons in all. In the calisthenics course 21 of 56 lessons are free; you can explore it as a guest, without an account.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
+      title: { tr: "Abonelik", en: "Subscription" },
       description: {
-        tr: "Okuma, pratik ve tamamlanma kayıtları ayrıdır. Tamamlanma kendi bildiriminle kaydedilir; kamera beceri puanı değildir.",
-        en: "Reading, practice and completion are separate records. Completion is saved by your own report; it is not a camera skill score.",
+        tr: "Uygulama üyeliği bu uygulamadaki ücretli dersleri açar; Motion+ beş Motion uygulamasında bugün açık olan ücretli dersleri ve pratiği açar. Kamera koçluğu ve henüz yayımlanmamış dersler dahil değildir. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; fiyat ülkeye göre değişir ve App Store ya da Google Play'de gösterilir. İptal mağaza hesabından yapılır.",
+        en: "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.",
       },
-      icon: "TrendingUp",
+      icon: "BadgeCheck",
     },
     {
-      title: { tr: "Cihazda analiz hedefi", en: "On-device analysis goal" },
+      title: { tr: "Kamera kapalı", en: "Camera off" },
       description: {
-        tr: "Cihazda kamera geri bildirimi sonraki aşama hedefidir; ilk sürümde kamera koçluğu kapalıdır.",
-        en: "On-device camera feedback is a goal for a later stage; camera coaching is disabled in the first release.",
+        tr: "Canlı kamera koçluğu bu sürümde kapalıdır; kamera puanı, form düzeltmesi veya otomatik sayım yoktur. İlerlemeyi kendin kaydedersin; bu bir beceri puanı değildir.",
+        en: "Live camera coaching is off in this release; there is no camera score, form correction or automatic counting. You record progress yourself; it is not a skill score.",
       },
       icon: "Lock",
     },
-    {
-      title: { tr: "Cihazdaki çalışma kaydı", en: "On-device practice records" },
-      description: {
-        tr: "Kurs ilerlemen bu uygulamanın cihazdaki alanında tutulur; Motion hesabına eşitlenmez.",
-        en: "Course progress stays in this app's local device storage; it is not synced to your Motion account.",
-      },
-      icon: "Microscope",
-    },
   ],
   stats: [
-    { value: "···", label: { tr: "Lansman", en: "Launch" } },
+    { value: "44/117", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
+    { value: "7", label: { tr: "Kurs", en: "Courses" } },
   ],
   vision: {
-    tr: "Herkesin, kişisel bir hareket koçuna cebinden ulaşabildiği bir dünya.",
-    en: "A world where everyone carries a personal movement coach in their pocket.",
+    tr: "Kuvvet ve beceri pratiğini herkesin kendi temposunda, anlaşılır adımlarla kurabilmesi.",
+    en: "Strength and skill practice that anyone can build at their own pace, in clear steps.",
   },
   mission: {
     tr: "Vücut becerisi pratiğini anlaşılır kurs adımları ve dürüst ilerleme kayıtlarıyla desteklemek.",

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import { text } from "@/lib/localized";
 import { company } from "@/data/company";
+import { MOTION_STORE_NAMES } from "@/data/motion-store-names";
 import MotionAccountDeletionPage, { generateMetadata } from "@/app/[locale]/delete-account/motion/page";
 import MotionPrivacyPage from "@/app/[locale]/privacy/motion/page";
 
@@ -19,9 +20,10 @@ const render = async (
   return renderToStaticMarkup(<NextIntlClientProvider locale={locale} messages={{}}>{element}</NextIntlClientProvider>);
 };
 
-const APPS = [
+// English store names; every locale renders its own listing names from MOTION_STORE_NAMES.
+const APPS_EN = [
   "Choreia: Learn to Dance",
-  "Lissom: Mobility & Yoga",
+  "Lissom: Yoga & Mobility",
   "Gravita: Skills & Strength",
   "JabLab: Shadow Training",
   "Ostinato: Music Practice",
@@ -52,7 +54,11 @@ const SHARED: Array<[string, string]> = [
 describe.each(SUPPORTED_LOCALES)("Motion account deletion page (%s)", (locale) => {
   it("names the five apps and the publisher, and links the email request without the app", async () => {
     const html = await render(MotionAccountDeletionPage, locale);
-    for (const app of APPS) expect(html).toContain(escaped(app));
+    const apps = MOTION_STORE_NAMES[locale];
+    expect(apps).toHaveLength(5);
+    if (locale === "en") expect(apps).toEqual(APPS_EN);
+    for (const app of apps) expect(html).toContain(escaped(app));
+    expect(html).not.toContain("Mobility &amp; Yoga");
     expect(html).toContain(escaped(company.legalName));
     expect(html).not.toContain("{publisher}");
     expect(html).toContain('href="mailto:support@yulalab.com?subject=Motion%20account%20deletion"');

@@ -11,16 +11,16 @@ export const ostinato: ProjectConfig = {
     en: "Instrument & Music Practice Coach",
   },
   tagline: {
-    tr: "Gitar pratiğini adım adım kur.",
-    en: "Build your guitar practice step by step.",
+    tr: "Enstrüman pratiğini adım adım kur.",
+    en: "Build your instrument practice step by step.",
   },
   description: {
-    tr: "Ostinato'nun ilk sürümü, gitar kursu ve cihazda öz bildirimli ilerlemeye odaklanır. İstersen tek nota gözlemini başlatıp mikrofon izni verebilirsin; ses yalnız geçici cihaz belleğinde işlenir, kaydedilmez veya yüklenmez. Gözlem doğruluk ya da ustalık puanı üretmez; kurs mikrofonsuz tamamlanabilir. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "Ostinato's first release focuses on a guitar course and on-device, self-reported progress. You can choose to start single-note observation and grant microphone permission; audio is processed only in temporary device memory, never recorded or uploaded. Observation does not produce a correctness or mastery score; the course can be completed without the microphone. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Ostinato beş yazılı başlangıç kursu sunar: gitar, piyano ve klavye, ukulele, bas ve şan. 155 dersin 44'ü ücretsizdir ve hesap gerektirmez; sonraki dersler Ostinato üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Gitar kursunda isteğe bağlı tek nota gözlemi için mikrofonu sen başlatırsın; ses kaydedilmez veya yüklenmez. Canlı kamera pratiği bu sürümde kapalıdır.",
+    en: "Ostinato offers five written beginner courses: guitar, piano and keyboard, ukulele, bass and voice. 44 of the 155 lessons are free and need no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. In the guitar course you can start the microphone for optional single-note observation; audio is not recorded or uploaded. Live camera practice is off in this release.",
   },
   short: {
-    tr: "Gitar kursu, öz bildirimli ilerleme ve isteğe bağlı tek nota gözlemi. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "A guitar course, self-reported progress and optional single-note observation. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Gitar, piyano, ukulele, bas ve şan için yazılı başlangıç kursları. 155 dersin 44'ü ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera kapalı, mikrofon isteğe bağlı.",
+    en: "Written beginner courses in guitar, piano, ukulele, bass and voice. 44 of 155 lessons are free; the rest open by subscription through the App Store and Google Play. Camera off, microphone optional.",
   },
   brand: {
     primary: "#D8A657",
@@ -42,41 +42,41 @@ export const ostinato: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Gitar kursu", en: "A guitar course" },
+      title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Okuma ve pratik adımlarıyla çalışırsın. Kurs kamera izni gerektirmez ve mikrofonsuz tamamlanabilir.",
-        en: "Work through reading and practice steps. The course does not require camera permission and can be completed without the microphone.",
+        tr: "Gitar: ilk sesten bağımsız çalmaya (60 ders); piyano ve klavye (25), ukulele (24), dört telli bas (24) ve şan (22) için başlangıç temelleri.",
+        en: "Guitar from first sound to independent playing (60 lessons), and beginner foundations in piano and keyboard (25), ukulele (24), four-string bass (24) and voice (22).",
+      },
+      icon: "Sparkles",
+    },
+    {
+      title: { tr: "Ücretsiz kısım", en: "Free part" },
+      description: {
+        tr: "Gitarda 1–12. dersler, piyano, ukulele, bas ve şanda ilk 8 ders ücretsizdir. Ücretsiz dersler hesap, kamera veya mikrofon olmadan çalışır; ilerleme kayıtların her zaman görünür kalır.",
+        en: "Lessons 1–12 of guitar and the first 8 lessons of piano, ukulele, bass and voice are free. Free lessons work without an account, camera or microphone; your progress records always stay visible.",
       },
       icon: "Eye",
     },
     {
-      title: { tr: "İsteğe bağlı tek nota gözlemi", en: "Optional single-note observation" },
+      title: { tr: "Abonelik", en: "Subscription" },
       description: {
-        tr: "Mikrofonu sen başlatır ve işletim sistemi iznini sen verirsin. Yaklaşık nota gösterimi akor, zamanlama, doğruluk veya ustalık değerlendirmesi değildir.",
-        en: "You start the microphone and grant operating-system permission. The approximate note display does not assess chords, timing, correctness or mastery.",
+        tr: "Uygulama üyeliği bu uygulamadaki ücretli dersleri açar; Motion+ beş Motion uygulamasında bugün açık olan ücretli dersleri ve pratiği açar. Kamera koçluğu ve henüz yayımlanmamış dersler dahil değildir. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; fiyat ülkeye göre değişir ve App Store ya da Google Play'de gösterilir. İptal mağaza hesabından yapılır.",
+        en: "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.",
       },
-      icon: "Microscope",
+      icon: "BadgeCheck",
     },
     {
-      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
+      title: { tr: "Kamera kapalı, mikrofon isteğe bağlı", en: "Camera off, microphone optional" },
       description: {
-        tr: "Okuma, pratik ve tamamlanma cihazda ayrı kaydedilir. Nota gözlemi dersi tamamlamaz veya beceri puanı vermez.",
-        en: "Reading, practice and completion are recorded separately on the device. Note observation does not complete a lesson or award a skill score.",
+        tr: "Canlı kamera pratiği bu sürümde kapalıdır. Gitar kursunda istersen tek nota gözlemi için mikrofonu başlatırsın; ses yalnız cihazın geçici belleğinde işlenir, kaydedilmez veya yüklenmez ve doğruluk puanı vermez.",
+        en: "Live camera practice is off in this release. In the guitar course you can choose to start the microphone to observe a single note; audio is processed only in temporary device memory, is not recorded or uploaded, and gives no correctness score.",
       },
-      icon: "TrendingUp",
-    },
-    {
-      title: { tr: "Geçici bellekte ses", en: "Audio in temporary memory" },
-      description: {
-        tr: "Ham ses dosyası kaydedilmez veya yüklenmez. Ekrandan çıkış, hesap değişimi veya arka plana geçiş mikrofonu durdurur; geri dönüşte kendiliğinden başlamaz. Kamera koçluğu ilk sürümde kapalıdır.",
-        en: "Raw audio files are not recorded or uploaded. Leaving the screen, changing account or moving to the background stops the microphone; returning does not restart it. Camera coaching is disabled in the first release.",
-      },
-      icon: "Cpu",
+      icon: "Lock",
     },
   ],
   stats: [
-    { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    { value: "Guitar", label: { tr: "İlk enstrüman", en: "First instrument" } },
+    { value: "44/155", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
+    { value: "5", label: { tr: "Kurs", en: "Courses" } },
   ],
   vision: {
     tr: "Enstrüman pratiğinin, öğretmen olmadan geçen saatlerini de değerli kılmak.",

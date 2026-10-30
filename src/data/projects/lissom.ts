@@ -7,20 +7,20 @@ export const lissom: ProjectConfig = {
   kind: ["mobile"],
   status: "coming-soon",
   category: {
-    tr: "Esneklik & Mobilite Koçu",
-    en: "Flexibility & Mobility Coach",
+    tr: "Yoga ve Mobilite",
+    en: "Yoga & Mobility",
   },
   tagline: {
     tr: "Kısa pratiklerle hareket alışkanlığı kur.",
     en: "Build a movement habit with short practice.",
   },
   description: {
-    tr: "Lissom'un ilk sürümü, Hatha yoga kursuyla okuma ve pratik adımları sunar. Kurs ilerlemesi cihazda öz bildirimle kaydedilir; kamera ölçümü, beceri puanı veya otomatik yeniden test değildir. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "Lissom's first release offers reading and practice steps through a Hatha yoga course. Course progress is saved on the device by self-report; it is not a camera measurement, skill score or automatic re-test. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Lissom beş yazılı yoga kursu sunar: Hatha, sandalye ve ofis yogası, destekli ayakta Vinyasa, destekli Yin ve Ashtanga temelleri. 120 dersin 47'si ücretsizdir ve hesap gerektirmez; kalan dersler Lissom üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Canlı kamera ölçümü bu sürümde kapalıdır.",
+    en: "Lissom offers five written yoga courses: Hatha, chair and office yoga, supported standing Vinyasa, supported Yin and Ashtanga foundations. 47 of the 120 lessons are free and need no account; the remaining lessons open with a Lissom membership or Motion+ subscription through the App Store and Google Play. Live camera measurement is off in this release.",
   },
   short: {
-    tr: "Hatha yoga kursu ve cihazda öz bildirimli ilerleme. Kamera koçluğu ilk sürümde kapalıdır; her kursun ilk modülü ücretsizdir, kalan dersler ve bağımsız pratik App Store ve Google Play üzerinden abonelikle sunulur.",
-    en: "A Hatha yoga course with on-device, self-reported progress. Camera coaching is disabled in the first release; the first module of each course is free, and the remaining lessons and independent practice are offered by subscription through the App Store and Google Play.",
+    tr: "Hatha, sandalye ve ofis, Vinyasa, Yin ve Ashtanga için yazılı yoga kursları. 120 dersin 47'si ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera kapalı.",
+    en: "Written yoga courses in Hatha, chair and office, Vinyasa, Yin and Ashtanga. 47 of 120 lessons are free; the rest open by subscription through the App Store and Google Play. Camera is off.",
   },
   brand: {
     primary: "#6EE7C8",
@@ -42,48 +42,45 @@ export const lissom: ProjectConfig = {
   },
   features: [
     {
-      title: { tr: "Hatha yoga kursu", en: "A Hatha yoga course" },
+      title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Kursun okuma ve pratik adımlarını kamera veya mikrofon izni olmadan izlersin.",
-        en: "Follow the course's reading and practice steps without camera or microphone permission.",
-      },
-      icon: "Eye",
-    },
-    {
-      title: { tr: "Pratik adımları", en: "Practice steps" },
-      description: {
-        tr: "Ders metinleri ve pratik adımlarıyla çalışırsın; kamera ölçümünden otomatik kişisel program üretilmez.",
-        en: "Work with lesson text and practice steps; no personal routine is generated automatically from a camera measurement.",
+        tr: "Hatha (60 ders), sandalye ve ofis yogası (15), destekli ayakta Vinyasa (14), destekli Yin (12) ve Ashtanga temelleri (19).",
+        en: "Hatha (60 lessons), chair and office yoga (15), supported standing Vinyasa (14), supported Yin (12) and Ashtanga foundations (19).",
       },
       icon: "Sparkles",
     },
     {
-      title: { tr: "Öz bildirimli ilerleme", en: "Self-reported progress" },
+      title: { tr: "Ücretsiz kısım", en: "Free part" },
       description: {
-        tr: "Okuma, pratik ve tamamlanmayı kendin kaydedersin. Bu kayıtlar bu cihazda tutulur; hareket kapasitesi ölçümü değildir.",
-        en: "Record reading, practice and completion yourself. These records stay on this device; they are not range-of-motion measurements.",
+        tr: "Her kursun ilk bölümü ücretsizdir: Hatha'da 60 dersin ilk 24'ü, sandalye ve ofiste 6, Vinyasa ve Yin'de 5'er, Ashtanga'da 7 ders. Ücretsiz dersler için hesap veya kamera gerekmez.",
+        en: "The first part of every course is free: the first 24 of 60 Hatha lessons, 6 in chair and office, 5 each in Vinyasa and Yin, and 7 in Ashtanga. Free lessons need no account or camera.",
       },
-      icon: "TrendingUp",
+      icon: "Eye",
     },
     {
-      title: { tr: "Kamera sonraki aşamada", en: "Camera at a later stage" },
+      title: { tr: "Abonelik", en: "Subscription" },
       description: {
-        tr: "Kamera tabanlı mobilite geri bildirimi sonraki aşama hedefidir; ilk sürümde kamera koçluğu kapalıdır.",
-        en: "Camera-based mobility feedback is a goal for a later stage; camera coaching is disabled in the first release.",
+        tr: "Uygulama üyeliği bu uygulamadaki ücretli dersleri açar; Motion+ beş Motion uygulamasında bugün açık olan ücretli dersleri ve pratiği açar. Kamera koçluğu ve henüz yayımlanmamış dersler dahil değildir. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; fiyat ülkeye göre değişir ve App Store ya da Google Play'de gösterilir. İptal mağaza hesabından yapılır.",
+        en: "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.",
       },
-      icon: "Microscope",
+      icon: "BadgeCheck",
+    },
+    {
+      title: { tr: "Kamera kapalı", en: "Camera off" },
+      description: {
+        tr: "Canlı kamera koçluğu bu sürümde kapalıdır; kamera puanı, form düzeltmesi veya otomatik sayım yoktur. İlerlemeyi kendin kaydedersin; bu bir beceri puanı değildir.",
+        en: "Live camera coaching is off in this release; there is no camera score, form correction or automatic counting. You record progress yourself; it is not a skill score.",
+      },
+      icon: "Lock",
     },
   ],
   stats: [
-    { value: "···", label: { tr: "Lansman", en: "Launch" } },
-    {
-      value: "Hatha",
-      label: { tr: "İlk kurs", en: "First course" },
-    },
+    { value: "47/120", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
+    { value: "5", label: { tr: "Kurs", en: "Courses" } },
   ],
   vision: {
-    tr: "Esnekliği bir yetenek değil, ölçülüp geliştirilebilen bir alışkanlık haline getirmek.",
-    en: "Turn flexibility from a talent into a habit you can measure and build.",
+    tr: "Esnekliği ve hareketliliği kısa, düzenli pratiklerle sürdürülebilir bir alışkanlığa çevirmek.",
+    en: "Turn flexibility and mobility into a sustainable habit through short, regular practice.",
   },
   mission: {
     tr: "Yoga pratiğini anlaşılır dersler ve sürdürülebilir çalışma alışkanlıklarıyla desteklemek.",

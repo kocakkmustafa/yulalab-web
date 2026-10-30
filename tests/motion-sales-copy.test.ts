@@ -28,16 +28,19 @@ describe("Motion sales-open copy", () => {
     expect(read(rel)).not.toMatch(RETIRED);
   });
 
-  it.each(MOTION)("%s states the free first module and store subscription in TR and EN", (slug) => {
+  // The free part is the app's own count (2026-10-30 rewrite); the stat card
+  // and the prose must name the same "free of total" pair.
+  it.each(MOTION)("%s states its free lessons and store subscription in TR and EN", (slug) => {
     const project = projects.find((p) => p.slug === slug)!;
+    const [free, total] = project.stats[0].value.split("/");
     for (const text of [project.short.en, project.description.en]) {
-      expect(text).toMatch(/first module of each course is free/);
+      expect(text).toMatch(new RegExp(`${free} of (?:the )?${total} lessons are free`));
       expect(text).toMatch(/subscription through the App Store and Google Play/);
-      expect(text).toMatch(/Camera coaching is disabled/);
+      expect(text).toMatch(/[Cc]amera (?:(?:coaching|measurement|practice) is |is )?off/);
     }
     for (const text of [project.short.tr, project.description.tr]) {
-      expect(text).toMatch(/ilk modülü ücretsizdir/);
-      expect(text).toMatch(/App Store ve Google Play üzerinden abonelikle sunulur/);
+      expect(text).toMatch(new RegExp(`${total} dersin ${free}'\\p{L}+ ücretsiz`, "u"));
+      expect(text).toMatch(/App Store ve Google Play üzerinden/);
     }
   });
 });
