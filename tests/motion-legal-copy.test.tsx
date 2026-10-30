@@ -89,6 +89,10 @@ describe("Motion legal copy (privacy/motion + terms)", () => {
         ["Saklama süreleri", "Retention"],
         ["Veri rolleri ve alt işleyenler", "Data roles and processors"],
         ["Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days."],
+        [
+          "Oturum kaydı (IP adresi ve kullanıcı aracısı dahil): oturum açık kaldıkça; çıkışta, oturum sona erdiğinde veya hesap silindiğinde silinir.",
+          "Session record (including IP address and user agent): while the session stays active; deleted on sign-out, when the session ends or when the account is deleted.",
+        ],
         ["Neden ve hangi dayanakla işliyoruz", "Why and on what legal basis we process data"],
         ["KVKK md. 11 uyarınca şu haklara sahipsiniz:", "Under KVKK article 11 you have the right to:"],
         [
