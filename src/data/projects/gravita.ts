@@ -75,8 +75,9 @@ export const gravita: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "44/117", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
-    { value: "7", label: { tr: "Kurs", en: "Courses" } },
+    { value: "44", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "gravita-free-lessons" },
+    { value: "117", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "gravita-free-lessons" },
+    { value: "7", label: { tr: "Kurs", en: "Courses" }, claimId: "gravita-free-lessons" },
   ],
   vision: {
     tr: "Kuvvet ve beceri pratiğini herkesin kendi temposunda, anlaşılır adımlarla kurabilmesi.",

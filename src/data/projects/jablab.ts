@@ -75,8 +75,9 @@ export const jablab: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "39/129", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
-    { value: "7", label: { tr: "Kurs", en: "Courses" } },
+    { value: "39", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "jablab-free-lessons" },
+    { value: "129", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "jablab-free-lessons" },
+    { value: "7", label: { tr: "Kurs", en: "Courses" }, claimId: "jablab-free-lessons" },
   ],
   vision: {
     tr: "Antrenman arkadaşı veya salon olmadan da düzenli sürdürülebilen bir solo pratik.",

@@ -28,11 +28,11 @@ describe("Motion sales-open copy", () => {
     expect(read(rel)).not.toMatch(RETIRED);
   });
 
-  // The free part is the app's own count (2026-10-30 rewrite); the stat card
-  // and the prose must name the same "free of total" pair.
+  // The free part is the app's own count (2026-10-30 rewrite); the stat cards
+  // (free lessons, lessons in all) and the prose must name the same pair.
   it.each(MOTION)("%s states its free lessons and store subscription in TR and EN", (slug) => {
     const project = projects.find((p) => p.slug === slug)!;
-    const [free, total] = project.stats[0].value.split("/");
+    const [free, total] = [project.stats[0].value, project.stats[1].value];
     for (const text of [project.short.en, project.description.en]) {
       expect(text).toMatch(new RegExp(`${free} of (?:the )?${total} lessons are free`));
       expect(text).toMatch(/subscription through the App Store and Google Play/);

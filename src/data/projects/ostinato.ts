@@ -75,8 +75,9 @@ export const ostinato: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "44/155", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
-    { value: "5", label: { tr: "Kurs", en: "Courses" } },
+    { value: "44", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "ostinato-free-lessons" },
+    { value: "155", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "ostinato-free-lessons" },
+    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "ostinato-free-lessons" },
   ],
   vision: {
     tr: "Enstrüman pratiğinin, öğretmen olmadan geçen saatlerini de değerli kılmak.",

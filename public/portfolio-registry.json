@@ -228,10 +228,28 @@
         "url": "/projects/gravita"
       },
       "screenshots": [],
-      "claims": [],
+      "claims": [
+        {
+          "id": "gravita-free-lessons",
+          "figures": [
+            "44",
+            "117",
+            "7"
+          ],
+          "statementTr": "7 kursta 117 ders; 44 tanesi ücretsiz.",
+          "statementEn": "117 lessons in 7 courses; 44 of them are free.",
+          "evidenceKind": "source-code-verified",
+          "source": "ventures/gravita/app@597ea5c lib/app/paywall_policy.dart:36-50 (module-aligned free count, 44/117) + content/courses/*.v1.json; Gravita 1.0.0(5)",
+          "scopeTr": "Güncel aday sürümün içeriği; mağazada yayımlanmış bir sürüm değildir, kaynak sürümü belirtir. Ders sayısı içerik kalitesi veya sonuç iddiası değildir.",
+          "scopeEn": "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.",
+          "owner": "gravita",
+          "verifiedAt": "2026-10-30",
+          "expiresAt": "2026-11-29"
+        }
+      ],
       "privacyUrl": "/privacy/motion",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-19"
+      "updatedAt": "2026-10-30"
     },
     {
       "slug": "lissom",
@@ -244,10 +262,28 @@
         "url": "/projects/lissom"
       },
       "screenshots": [],
-      "claims": [],
+      "claims": [
+        {
+          "id": "lissom-free-lessons",
+          "figures": [
+            "47",
+            "120",
+            "5"
+          ],
+          "statementTr": "5 kursta 120 ders; 47 tanesi ücretsiz.",
+          "statementEn": "120 lessons in 5 courses; 47 of them are free.",
+          "evidenceKind": "source-code-verified",
+          "source": "ventures/lissom/app@f66a3fa lib/app/course_access.dart:16-35 (kFreeModuleIds) + config/courses/*.v1.json; Lissom 1.0.0(5)",
+          "scopeTr": "Güncel aday sürümün içeriği; mağazada yayımlanmış bir sürüm değildir, kaynak sürümü belirtir. Ders sayısı içerik kalitesi veya sonuç iddiası değildir.",
+          "scopeEn": "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.",
+          "owner": "lissom",
+          "verifiedAt": "2026-10-30",
+          "expiresAt": "2026-11-29"
+        }
+      ],
       "privacyUrl": "/privacy/motion",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-19"
+      "updatedAt": "2026-10-30"
     },
     {
       "slug": "jablab",
@@ -260,10 +296,28 @@
         "url": "/projects/jablab"
       },
       "screenshots": [],
-      "claims": [],
+      "claims": [
+        {
+          "id": "jablab-free-lessons",
+          "figures": [
+            "39",
+            "129",
+            "7"
+          ],
+          "statementTr": "7 kursta 129 ders; 39 tanesi ücretsiz.",
+          "statementEn": "129 lessons in 7 courses; 39 of them are free.",
+          "evidenceKind": "source-code-verified",
+          "source": "ventures/jablab/app@1f7ac4d lib/app/course_access.dart:26-45 (freeLessonCount, courseLessonCount); JabLab 1.0.0(5)",
+          "scopeTr": "Güncel aday sürümün içeriği; mağazada yayımlanmış bir sürüm değildir, kaynak sürümü belirtir. Ders sayısı içerik kalitesi veya sonuç iddiası değildir.",
+          "scopeEn": "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.",
+          "owner": "jablab",
+          "verifiedAt": "2026-10-30",
+          "expiresAt": "2026-11-29"
+        }
+      ],
       "privacyUrl": "/privacy/motion",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-19"
+      "updatedAt": "2026-10-30"
     },
     {
       "slug": "ostinato",
@@ -276,10 +330,28 @@
         "url": "/projects/ostinato"
       },
       "screenshots": [],
-      "claims": [],
+      "claims": [
+        {
+          "id": "ostinato-free-lessons",
+          "figures": [
+            "44",
+            "155",
+            "5"
+          ],
+          "statementTr": "5 kursta 155 ders; 44 tanesi ücretsiz.",
+          "statementEn": "155 lessons in 5 courses; 44 of them are free.",
+          "evidenceKind": "source-code-verified",
+          "source": "ventures/ostinato/app@89764c1 lib/app/course_access.dart:14-34 (ostinatoFreeLessonCounts, ostinatoCourseShapes); Ostinato 1.0.0(8)",
+          "scopeTr": "Güncel aday sürümün içeriği; mağazada yayımlanmış bir sürüm değildir, kaynak sürümü belirtir. Ders sayısı içerik kalitesi veya sonuç iddiası değildir.",
+          "scopeEn": "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.",
+          "owner": "ostinato",
+          "verifiedAt": "2026-10-30",
+          "expiresAt": "2026-11-29"
+        }
+      ],
       "privacyUrl": "/privacy/motion",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-19"
+      "updatedAt": "2026-10-30"
     },
     {
       "slug": "choreia",
@@ -292,10 +364,28 @@
         "url": "/projects/choreia"
       },
       "screenshots": [],
-      "claims": [],
+      "claims": [
+        {
+          "id": "choreia-free-lessons",
+          "figures": [
+            "33",
+            "88",
+            "5"
+          ],
+          "statementTr": "5 kursta 88 ders; 33 tanesi ücretsiz.",
+          "statementEn": "88 lessons in 5 courses; 33 of them are free.",
+          "evidenceKind": "source-code-verified",
+          "source": "ventures/choreia/app@b56a6a0 lib/app/course/course_access.dart:29-38 (freeLessons) + content/*course*.json; Choreia 1.0.0(7)",
+          "scopeTr": "Güncel aday sürümün içeriği; mağazada yayımlanmış bir sürüm değildir, kaynak sürümü belirtir. Ders sayısı içerik kalitesi veya sonuç iddiası değildir.",
+          "scopeEn": "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.",
+          "owner": "choreia",
+          "verifiedAt": "2026-10-30",
+          "expiresAt": "2026-11-29"
+        }
+      ],
       "privacyUrl": "/privacy/motion",
       "supportUrl": "/support",
-      "updatedAt": "2026-08-19"
+      "updatedAt": "2026-10-30"
     }
   ]
 }

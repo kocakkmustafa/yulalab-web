@@ -75,8 +75,9 @@ export const lissom: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "47/120", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
-    { value: "5", label: { tr: "Kurs", en: "Courses" } },
+    { value: "47", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "lissom-free-lessons" },
+    { value: "120", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "lissom-free-lessons" },
+    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "lissom-free-lessons" },
   ],
   vision: {
     tr: "Esnekliği ve hareketliliği kısa, düzenli pratiklerle sürdürülebilir bir alışkanlığa çevirmek.",

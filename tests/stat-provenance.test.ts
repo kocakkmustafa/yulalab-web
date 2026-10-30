@@ -72,6 +72,22 @@ describe("stats that restate a registry claim must be linked to it", () => {
       ["burunfarki", "Top-3 (live tracking)", "~%62", "burunfarki-topk-accuracy"],
       ["burunfarki", "live-tracked races", "1.225", "burunfarki-topk-accuracy"],
       ["lifeos", "On-device encryption", "AES-256", "lifeos-on-device-encryption"],
+      // Motion lesson counts per candidate build (2026-10-30).
+      ["jablab", "Free lessons", "39", "jablab-free-lessons"],
+      ["jablab", "Lessons in all", "129", "jablab-free-lessons"],
+      ["jablab", "Courses", "7", "jablab-free-lessons"],
+      ["gravita", "Free lessons", "44", "gravita-free-lessons"],
+      ["gravita", "Lessons in all", "117", "gravita-free-lessons"],
+      ["gravita", "Courses", "7", "gravita-free-lessons"],
+      ["lissom", "Free lessons", "47", "lissom-free-lessons"],
+      ["lissom", "Lessons in all", "120", "lissom-free-lessons"],
+      ["lissom", "Courses", "5", "lissom-free-lessons"],
+      ["ostinato", "Free lessons", "44", "ostinato-free-lessons"],
+      ["ostinato", "Lessons in all", "155", "ostinato-free-lessons"],
+      ["ostinato", "Courses", "5", "ostinato-free-lessons"],
+      ["choreia", "Free lessons", "33", "choreia-free-lessons"],
+      ["choreia", "Lessons in all", "88", "choreia-free-lessons"],
+      ["choreia", "Courses", "5", "choreia-free-lessons"],
     ] as const;
 
     const actual = projects
@@ -206,9 +222,11 @@ describe("the remaining unsourced numbers are counted, not hidden", () => {
     // Not asserted to be zero: several of these are structural product facts
     // ("5 life domains", "0 ads") rather than measurements, and inventing
     // sources for them would be worse than saying so. What this pins is the
-    // SIZE of the gap, so it cannot quietly grow.
+    // SIZE of the gap, so it cannot quietly grow. 2026-10-30: the Motion
+    // lesson counts link to registry claims, leaving LifeOS "5"/"0" and the
+    // Braavolabs mobile-app language count.
     const unsourced = unsourcedQuantitativeStats(projects, publicRegistry);
-    expect(unsourced.length).toBeLessThanOrEqual(11);
+    expect(unsourced.length).toBeLessThanOrEqual(3);
   });
 
   it("does not count a linked stat as unsourced", () => {

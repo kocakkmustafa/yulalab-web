@@ -75,8 +75,9 @@ export const choreia: ProjectConfig = {
     },
   ],
   stats: [
-    { value: "33/88", label: { tr: "Ücretsiz ders / toplam", en: "Free lessons / total" } },
-    { value: "5", label: { tr: "Kurs", en: "Courses" } },
+    { value: "33", label: { tr: "Ücretsiz ders", en: "Free lessons" }, claimId: "choreia-free-lessons" },
+    { value: "88", label: { tr: "Toplam ders", en: "Lessons in all" }, claimId: "choreia-free-lessons" },
+    { value: "5", label: { tr: "Kurs", en: "Courses" }, claimId: "choreia-free-lessons" },
   ],
   vision: {
     tr: "Dans pratiğini kendi odanda, kendi hızında sürdürebilmek.",

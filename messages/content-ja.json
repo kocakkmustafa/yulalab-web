@@ -554,7 +554,6 @@
   "An app membership opens the paid lessons in this app; Motion+ unlocks the paid lessons and practice available today in all five Motion apps. Camera coaching and lessons not yet released are not included. Eligible new subscribers start with a 14-day free trial; the price varies by country and is shown in the App Store or Google Play. Cancel in your store account.": "アプリのメンバーシップでは、このアプリの有料レッスンが利用できます。Motion+では、五つのMotionアプリすべてで現在提供中の有料レッスンと練習が利用できます。カメラコーチングと未公開のレッスンは含まれません。対象となる新規登録者は14日間の無料トライアルから始められます。価格は国によって異なり、App StoreまたはGoogle Playに表示されます。解約はストアのアカウントから行えます。",
   "Camera off": "カメラはオフ",
   "Live camera coaching is off in this release; there is no camera score, form correction or automatic counting. You record progress yourself; it is not a skill score.": "このリリースではライブカメラコーチングを無効にしています。カメラによるスコア、フォームの修正、自動カウントはありません。進捗はご自身で記録するもので、スキルスコアではありません。",
-  "Free lessons / total": "無料レッスン / 全体",
   "Calisthenics & Strength Practice": "カリステニクスと筋力の練習",
   "Build your bodyweight practice step by step.": "自重トレーニングを一歩ずつ組み立てる。",
   "Strength and skill practice that anyone can build at their own pace, in clear steps.": "筋力とスキルの練習を、誰もが自分のペースで、わかりやすい手順で積み上げられるように。",
@@ -598,5 +597,13 @@
   "The Braavolabs mobile app is available in 14 languages.": "Braavolabsのモバイルアプリは14言語で利用できます。",
   "Languages (mobile app)": "言語（モバイルアプリ）",
   "The five Motion apps share one optional account; free lessons can be used without an account. The first lessons of every course are free; the numbers for each app are on its project page. An app membership opens the paid lessons in that app, and Motion+ unlocks the paid lessons and practice available today in all five; eligible new subscribers start with a 14-day free trial. Subscriptions are bought through the App Store and Google Play, and the price is shown in the store. Live camera coaching is off in this release of all five apps; self-reported progress is not a camera skill score. Ostinato's guitar course offers optional single-note observation processed in device memory; you choose to start it and grant microphone permission. The other four apps do not request microphone access. Account deletion affects the whole Motion account; other apps clear that account's local history when they can check the online deletion receipt. Other YULA Lab products may have different flows.": "五つのMotionアプリは、任意の一つのアカウントを共有します。無料レッスンはアカウントなしで利用できます。すべてのコースで最初のレッスンが無料で、アプリごとの数は各プロジェクトページに記載しています。アプリのメンバーシップではそのアプリの有料レッスンが、Motion+では五つすべてのアプリで現在提供中の有料レッスンと練習が利用できます。対象となる新規登録者は14日間の無料トライアルから始められます。サブスクリプションはApp StoreとGoogle Playで購入でき、価格はストアに表示されます。このリリースでは、五つのアプリすべてでライブカメラコーチングを無効にしています。自己申告の進捗は、カメラによるスキルスコアではありません。Ostinatoのギターコースには、端末のメモリ内で処理される任意の単音観測があります。観測はご自身で開始し、マイクの使用を許可します。ほかの四つのアプリはマイクへのアクセスを求めません。アカウントの削除はMotionアカウント全体に及びます。ほかのアプリは、オンラインの削除記録を確認できたときに、そのアカウントのローカル履歴を消去します。ほかのYULA Lab製品では流れが異なる場合があります。",
-  "Ostinato home in the normal iOS development build. Written lessons and the posture-reference catalogue are visible; live camera practice and subscriptions were off in that development build.": "通常のiOS開発ビルドでのOstinatoのホーム画面。文章のレッスンと姿勢リファレンスのカタログが表示されています。この開発ビルドでは、ライブカメラ練習とサブスクリプションは無効でした。"
+  "Ostinato home in the normal iOS development build. Written lessons and the posture-reference catalogue are visible; live camera practice and subscriptions were off in that development build.": "通常のiOS開発ビルドでのOstinatoのホーム画面。文章のレッスンと姿勢リファレンスのカタログが表示されています。この開発ビルドでは、ライブカメラ練習とサブスクリプションは無効でした。",
+  "Free lessons": "無料レッスン",
+  "Lessons in all": "レッスン総数",
+  "129 lessons in 7 courses; 39 of them are free.": "7コースで全129レッスン、そのうち39レッスンが無料です。",
+  "Content of the current candidate build, not a published store version; the source names the build. A lesson count is not a claim about content quality or results.": "現在の候補ビルドの内容であり、ストアで公開されたバージョンではありません。ビルドは出典に記載しています。レッスン数は内容の質や成果を示すものではありません。",
+  "117 lessons in 7 courses; 44 of them are free.": "7コースで全117レッスン、そのうち44レッスンが無料です。",
+  "120 lessons in 5 courses; 47 of them are free.": "5コースで全120レッスン、そのうち47レッスンが無料です。",
+  "155 lessons in 5 courses; 44 of them are free.": "5コースで全155レッスン、そのうち44レッスンが無料です。",
+  "88 lessons in 5 courses; 33 of them are free.": "5コースで全88レッスン、そのうち33レッスンが無料です。"
 }
