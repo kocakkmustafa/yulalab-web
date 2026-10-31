@@ -738,6 +738,11 @@
         "title": "Evaluación y revisión de ingeniería",
         "body": "Revisar las salidas del modelo, el manejo de datos, la confiabilidad y el costo operativo frente a los criterios acordados.",
         "output": "Entrega: hallazgos, verificaciones reproducibles y un plan de mejora priorizado."
+      },
+      {
+        "title": "Desarrollo de productos para personas",
+        "body": "Convertimos tu idea de app o producto web en un plan completo y luego en un producto listo para la tienda: diseño, desarrollo y preparación del lanzamiento en un solo equipo.",
+        "output": "Entregable: un plan de producto, una app funcional y una versión lista para la tienda o la web."
       }
     ],
     "processTitle": "Un alcance claro antes de construir",
@@ -748,7 +753,7 @@
       "Transferencia: documentar la operación, los límites conocidos y la siguiente decisión."
     ],
     "proofTitle": "Nuestros propios productos son el punto de partida.",
-    "proofBody": "Nuestro portafolio muestra los productos que construimos y su estado documentado de desarrollo y publicación. Es nuestro propio trabajo de ingeniería, no una lista de trabajos para clientes.",
+    "proofBody": "Nuestro portafolio presenta los productos que desarrollamos con nuestro propio equipo. Son nuestro propio trabajo de ingeniería, no una lista de proyectos de clientes.",
     "proofLink": "Explora nuestros productos",
     "limits": "No prometemos un aumento de ingresos, salidas perfectas del modelo ni una fecha de lanzamiento antes del descubrimiento. El acceso a producción y el despliegue requieren un acuerdo separado.",
     "contactTitle": "Cuéntanos qué quieres mejorar.",

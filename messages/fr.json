@@ -738,6 +738,11 @@
         "title": "Évaluation et revue d’ingénierie",
         "body": "Examiner les sorties du modèle, le traitement des données, la fiabilité et le coût d’exploitation selon les critères convenus.",
         "output": "Livrable : des constats, des vérifications reproductibles et un plan d’amélioration priorisé."
+      },
+      {
+        "title": "Création de produit pour les particuliers",
+        "body": "Nous transformons votre idée d’application ou de produit web en un plan complet, puis en un produit prêt pour les stores : design, développement et préparation de la publication dans une seule équipe.",
+        "output": "Livrable : un plan produit, une application fonctionnelle et une version prête pour les stores ou le web."
       }
     ],
     "processTitle": "Un périmètre clair avant de construire",
@@ -748,7 +753,7 @@
       "Passation : documenter l’exploitation, les limites connues et la prochaine décision."
     ],
     "proofTitle": "Nos propres produits sont le point de départ.",
-    "proofBody": "Notre portfolio présente les produits que nous construisons et leur statut documenté de développement et de publication. Il s’agit de notre propre travail d’ingénierie, pas d’une liste de missions clients.",
+    "proofBody": "Notre portfolio présente les produits que nous développons avec notre propre équipe. Ce sont nos propres travaux d’ingénierie, pas une liste de missions clients.",
     "proofLink": "Explorer nos produits",
     "limits": "Nous ne promettons ni hausse de revenus, ni sorties de modèle parfaites, ni date de publication avant la phase de découverte. L’accès à la production et le déploiement nécessitent un accord distinct.",
     "contactTitle": "Dites-nous ce que vous souhaitez améliorer.",

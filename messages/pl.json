@@ -738,6 +738,11 @@
         "title": "Ewaluacja i przegląd inżynierski",
         "body": "Oceniamy wyniki modeli, przetwarzanie danych, niezawodność i koszty działania według uzgodnionych kryteriów.",
         "output": "Rezultat: ustalenia, odtwarzalne sprawdzenia i plan usprawnień według priorytetów."
+      },
+      {
+        "title": "Tworzenie produktów dla osób prywatnych",
+        "body": "Zamieniamy pomysł na aplikację lub produkt internetowy w kompletny plan, a potem w produkt gotowy do sklepu: projekt, rozwój i przygotowanie do publikacji w jednym zespole.",
+        "output": "Rezultat: plan produktu, działająca aplikacja i wersja gotowa do sklepu lub sieci."
       }
     ],
     "processTitle": "Jasny zakres przed budową",
@@ -748,7 +753,7 @@
       "Przekazanie: dokumentacja działania, znanych ograniczeń i kolejnej decyzji."
     ],
     "proofTitle": "Punktem wyjścia są nasze własne produkty.",
-    "proofBody": "Portfolio pokazuje nasze produkty oraz udokumentowany stan ich rozwoju i publikacji. To nasza własna praca inżynierska, a nie lista zleceń klientów.",
+    "proofBody": "Nasze portfolio przedstawia produkty, które tworzymy z własnym zespołem. To nasza własna praca inżynierska, a nie lista projektów dla klientów.",
     "proofLink": "Poznaj nasze produkty",
     "limits": "Przed rozpoznaniem nie obiecujemy wzrostu przychodów, idealnych wyników modelu ani daty wydania. Dostęp do środowiska produkcyjnego i wdrożenie wymagają osobnej umowy.",
     "contactTitle": "Powiedz, co chcesz usprawnić.",

@@ -738,6 +738,11 @@
         "title": "Evaluation and engineering review",
         "body": "Review model outputs, data handling, reliability and operating cost against agreed criteria.",
         "output": "Deliverable: findings, reproducible checks and a prioritized improvement plan."
+      },
+      {
+        "title": "Product build for individuals",
+        "body": "We turn your app or web product idea into a complete plan, then into a store-ready product: design, development and release preparation in one team.",
+        "output": "Deliverable: a product plan, a working app and a build ready for the store or the web."
       }
     ],
     "processTitle": "A clear scope before a build",
@@ -748,7 +753,7 @@
       "Handover: document operation, known limits and the next decision."
     ],
     "proofTitle": "Our own products are the starting point.",
-    "proofBody": "Our portfolio shows the products we build and their documented development and publication status. It is our own engineering work, not a list of client engagements.",
+    "proofBody": "Our portfolio introduces the products we build with our own team. They are our own engineering work, not a list of client engagements.",
     "proofLink": "Explore our products",
     "limits": "We do not promise a revenue increase, perfect model output or a release date before discovery. Production access and deployment require a separate agreement.",
     "contactTitle": "Tell us what you want to improve.",

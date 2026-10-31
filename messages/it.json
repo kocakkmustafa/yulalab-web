@@ -738,6 +738,11 @@
         "title": "Valutazione e revisione ingegneristica",
         "body": "Esamina risultati dei modelli, trattamento dei dati, affidabilità e costi operativi secondo criteri concordati.",
         "output": "Consegna: rilievi, verifiche riproducibili e piano di miglioramento con priorità."
+      },
+      {
+        "title": "Sviluppo di prodotti per privati",
+        "body": "Trasformiamo la tua idea di app o di prodotto web in un piano completo e poi in un prodotto pronto per lo store: design, sviluppo e preparazione al lancio in un unico team.",
+        "output": "Risultato: un piano di prodotto, un'app funzionante e una build pronta per lo store o per il web."
       }
     ],
     "processTitle": "Un ambito chiaro prima dello sviluppo",
@@ -748,7 +753,7 @@
       "Passaggio delle consegne: documentare gestione, limiti noti e prossima decisione."
     ],
     "proofTitle": "Il punto di partenza sono i nostri prodotti.",
-    "proofBody": "Il portfolio mostra i prodotti che realizziamo e il loro stato documentato di sviluppo e pubblicazione. È il nostro lavoro ingegneristico, non un elenco di incarichi per clienti.",
+    "proofBody": "Il nostro portfolio presenta i prodotti che sviluppiamo con il nostro team. Sono il nostro lavoro di ingegneria, non un elenco di progetti per clienti.",
     "proofLink": "Esplora i nostri prodotti",
     "limits": "Prima dell'analisi iniziale non promettiamo aumenti di ricavi, risultati perfetti dei modelli o una data di rilascio. Accesso alla produzione e distribuzione richiedono un accordo separato.",
     "contactTitle": "Raccontaci cosa vuoi migliorare.",

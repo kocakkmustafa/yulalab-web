@@ -738,6 +738,11 @@
         "title": "Değerlendirme ve mühendislik incelemesi",
         "body": "Model çıktısını, veri kullanımını, güvenilirliği ve işletim maliyetini birlikte belirlenen ölçütlerle inceleriz.",
         "output": "Teslimat: bulgular, tekrarlanabilir kontroller ve öncelikli iyileştirme planı."
+      },
+      {
+        "title": "Bireysel ürün geliştirme",
+        "body": "Uygulama ya da web ürünü fikrinizi kapsamlı bir plana, sonra mağazaya hazır bir ürüne dönüştürürüz; tasarım, geliştirme ve yayın hazırlığı tek ekipte.",
+        "output": "Teslimat: ürün planı, çalışan uygulama ve mağazaya ya da web'e hazır sürüm."
       }
     ],
     "processTitle": "Uygulamadan önce açık kapsam",
@@ -748,7 +753,7 @@
       "Devir: işletimi, bilinen sınırları ve sonraki kararı belgeleyelim."
     ],
     "proofTitle": "Başlangıç noktamız kendi ürünlerimiz.",
-    "proofBody": "Portföyümüz, geliştirdiğimiz ürünleri ve belgelenmiş geliştirme ve yayın durumlarını gösterir. Bunlar kendi mühendislik çalışmalarımızdır; müşteri referans listesi değildir.",
+    "proofBody": "Portföyümüz, kendi ekibimizle geliştirdiğimiz ürünleri tanıtır. Bunlar kendi mühendislik çalışmalarımızdır; müşteri referans listesi değildir.",
     "proofLink": "Ürünlerimizi inceleyin",
     "limits": "Keşif öncesinde gelir artışı, hatasız model çıktısı veya yayın tarihi taahhüt etmeyiz. Üretim erişimi ve yayın ayrı mutabakat gerektirir.",
     "contactTitle": "Neyi iyileştirmek istediğinizi anlatın.",

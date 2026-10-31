@@ -738,6 +738,11 @@
         "title": "Evaluasi dan tinjauan rekayasa",
         "body": "Tinjau keluaran model, penanganan data, keandalan, dan biaya operasional berdasarkan kriteria yang disepakati.",
         "output": "Hasil: temuan, pemeriksaan yang dapat diulang, dan rencana perbaikan berprioritas."
+      },
+      {
+        "title": "Pengembangan produk untuk perorangan",
+        "body": "Kami mengubah ide aplikasi atau produk web Anda menjadi rencana lengkap, lalu menjadi produk yang siap masuk toko: desain, pengembangan, dan persiapan rilis dalam satu tim.",
+        "output": "Hasil: rencana produk, aplikasi yang berfungsi, dan versi yang siap untuk toko atau web."
       }
     ],
     "processTitle": "Cakupan jelas sebelum membangun",
@@ -748,7 +753,7 @@
       "Serah terima: dokumentasikan pengoperasian, batasan yang diketahui, dan keputusan berikutnya."
     ],
     "proofTitle": "Produk kami sendiri adalah titik awalnya.",
-    "proofBody": "Portofolio kami menampilkan produk yang kami bangun beserta status pengembangan dan publikasi yang terdokumentasi. Itu adalah hasil rekayasa kami sendiri, bukan daftar penugasan klien.",
+    "proofBody": "Portofolio kami memperkenalkan produk yang kami kembangkan dengan tim kami sendiri. Ini adalah karya rekayasa kami sendiri, bukan daftar proyek klien.",
     "proofLink": "Jelajahi produk kami",
     "limits": "Kami tidak menjanjikan kenaikan pendapatan, keluaran model yang sempurna, atau tanggal rilis sebelum penjajakan. Akses dan penerapan ke produksi memerlukan kesepakatan terpisah.",
     "contactTitle": "Ceritakan apa yang ingin Anda tingkatkan.",

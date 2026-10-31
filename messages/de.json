@@ -738,6 +738,11 @@
         "title": "Evaluation und Engineering-Review",
         "body": "Modellausgaben, Datenverarbeitung, Zuverlässigkeit und Betriebskosten anhand vereinbarter Kriterien prüfen.",
         "output": "Ergebnis: Befunde, reproduzierbare Prüfungen und ein priorisierter Verbesserungsplan."
+      },
+      {
+        "title": "Produktentwicklung für Einzelpersonen",
+        "body": "Wir machen aus Ihrer Idee für eine App oder ein Webprodukt einen vollständigen Plan und daraus ein Produkt, das bereit für den Store ist: Design, Entwicklung und Veröffentlichungsvorbereitung in einem Team.",
+        "output": "Ergebnis: ein Produktplan, eine funktionierende App und ein Build, der für den Store oder das Web bereit ist."
       }
     ],
     "processTitle": "Ein klarer Umfang vor der Umsetzung",
@@ -748,7 +753,7 @@
       "Übergabe: Betrieb, bekannte Grenzen und die nächste Entscheidung dokumentieren."
     ],
     "proofTitle": "Unsere eigenen Produkte sind der Ausgangspunkt.",
-    "proofBody": "Unser Portfolio zeigt die von uns entwickelten Produkte und ihren dokumentierten Entwicklungs- und Veröffentlichungsstand. Es ist unsere eigene Ingenieursarbeit, keine Liste von Kundenaufträgen.",
+    "proofBody": "Unser Portfolio stellt die Produkte vor, die wir mit unserem eigenen Team entwickeln. Sie sind unsere eigene Engineering-Arbeit, keine Liste von Kundenprojekten.",
     "proofLink": "Unsere Produkte entdecken",
     "limits": "Vor der Bestandsaufnahme versprechen wir weder Umsatzsteigerungen noch fehlerfreie Modellausgaben oder einen Veröffentlichungstermin. Produktionszugriff und Deployment erfordern eine gesonderte Vereinbarung.",
     "contactTitle": "Was möchten Sie verbessern?",
