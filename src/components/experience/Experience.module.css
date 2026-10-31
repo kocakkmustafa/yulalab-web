@@ -6,7 +6,7 @@
   min-height: 2520vh;
   overflow-x: clip;
   color: #f7f4ff;
-  background: #09060e;
+  background: #050505;
   font-family: var(--font-sans), Inter, system-ui, sans-serif;
 }
 
@@ -29,7 +29,7 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: #09060e;
+  background: #050505;
   opacity: 1;
 }
 

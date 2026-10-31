@@ -493,7 +493,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-warning-strong: #fbbf24;
   --yula-success: #6ee7b7;
   --yula-success-strong: #34d399;
-  --yula-exp-bg: #09060e;
+  --yula-exp-bg: #050505;
   --yula-exp-rgb: 9 6 14;
   --yula-exp-fg: #ffffff;
   --yula-exp-muted: #ded8e8;
