@@ -883,93 +883,9 @@ test("native opening keeps the ready hero painted through the loader exit", { ta
   await testInfo.attach("opening-paint-handoff", { body: JSON.stringify(handoff), contentType: "application/json" });
 });
 
-for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 667 }]) {
-  for (const locale of ["tr", "en"] as const) {
-    test.describe(`native development reader ${locale} ${viewport.width}x${viewport.height}`, () => {
-      test.use({ hasTouch: true });
-      test("owns Back/Forward and every dismissal without losing position or focus", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
-        test.setTimeout(90_000);
-        await page.setViewportSize(viewport);
-        const root = await openNativeJourney(page, locale === "en" ? "/en" : "/");
-        await page.locator('header > a[href="#experience-hero"]').click();
-        await page.waitForURL((url) => url.hash === "#experience-hero");
-        // Let the native hash navigation finish before reproducing the scroll.
-        await page.evaluate(() => new Promise<void>((resolve) => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
-        const target = await page.evaluate(() => {
-          const y = (document.documentElement.scrollHeight - innerHeight) * 0.2;
-          scrollTo({ top: y, behavior: "instant" });
-          return y;
-        });
-        await expect(root).toHaveAttribute("data-active-product", "gravita");
-        await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - target)).toBeLessThan(3);
-        const opener = page.locator("#development-preview-open-gravita");
-        const dialog = page.getByRole("dialog", { name: /Gravita/ });
-        const close = dialog.getByRole("button", { name: locale === "tr" ? "Görüntüyü kapat" : "Close image" });
-        const before = await page.evaluate(() => ({ href: location.href, y: scrollY, overflow: document.body.style.overflow, restoration: history.scrollRestoration, behavior: document.documentElement.style.scrollBehavior, entries: history.length }));
-        const observations: { action: string; href: string; y: number; dialogs: number; overflow: string; activeId: string }[] = [];
-        const record = async (action: string) => observations.push(await page.evaluate((action) => ({ action, href: location.href, y: scrollY, dialogs: document.querySelectorAll("dialog[open]").length, overflow: document.body.style.overflow, activeId: document.activeElement?.id ?? "" }), action));
-        const opened = async () => {
-          await expect(dialog).toBeVisible();
-          await expect.poll(() => page.evaluate(() => location.href)).toBe(before.href);
-          await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before.y)).toBeLessThan(3);
-          expect(await page.evaluate(() => document.body.style.overflow)).toBe("hidden");
-          expect(await page.evaluate(() => Boolean(history.state.__NA && history.state.__PRIVATE_NEXTJS_INTERNALS_TREE))).toBe(true);
-        };
-        const dismissed = async (action: string) => {
-          await expect(dialog).not.toBeVisible();
-          await expect.poll(() => page.evaluate(() => location.href)).toBe(before.href);
-          await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before.y)).toBeLessThan(3);
-          await expect.poll(() => page.evaluate(() => document.body.style.overflow)).toBe(before.overflow);
-          await expect.poll(() => page.evaluate(() => history.scrollRestoration)).toBe(before.restoration);
-          await expect.poll(() => page.evaluate(() => document.documentElement.style.scrollBehavior)).toBe(before.behavior);
-          await expect(opener).toBeFocused();
-          // Native restoration can start a smooth scroll after the first
-          // correct frame. Observe a full 1.4s, rather than accepting that frame.
-          const stability = await page.evaluate(() => new Promise<{ y: number; activeId: string }[]>((resolve) => {
-            const start = performance.now(), samples: { y: number; activeId: string }[] = [];
-            const sample = () => {
-              samples.push({ y: scrollY, activeId: document.activeElement?.id ?? "" });
-              if (performance.now() - start < 1400) requestAnimationFrame(sample);
-              else resolve(samples);
-            };
-            requestAnimationFrame(sample);
-          }));
-          expect(Math.max(...stability.map((sample) => Math.abs(sample.y - before.y)))).toBeLessThan(3);
-          expect(stability.every((sample) => sample.activeId === "development-preview-open-gravita")).toBe(true);
-          await record(action);
-        };
-        await opener.click();
-        await opened();
-        expect(await page.evaluate(() => history.length)).toBe(before.entries + 1);
-        await page.goBack();
-        await dismissed("browser Back");
-        for (const action of ["Escape", "close button", "touch close", "repeated Escape"] as const) {
-          await page.goForward();
-          await opened();
-          if (action === "Escape" || action === "repeated Escape") {
-            await page.keyboard.press("Escape");
-            if (action === "repeated Escape") await page.keyboard.press("Escape");
-          } else if (action === "touch close") await close.tap();
-          else await close.click();
-          await dismissed(action);
-          expect(await page.evaluate(() => history.length)).toBe(before.entries + 1);
-        }
-        // With the reader closed, Back still traverses the real page entry.
-        await page.goBack();
-        await page.waitForURL((url) => !url.hash);
-        await expect(dialog).not.toBeVisible();
-        expect(await page.evaluate(() => document.body.style.overflow)).toBe(before.overflow);
-        await page.goForward();
-        await expect(dialog).not.toBeVisible();
-        await page.goForward();
-        await opened();
-        await close.tap();
-        await dismissed("Forward from underlying page then touch close");
-        await testInfo.attach("reader-history-focus-and-scroll", { body: JSON.stringify({ viewport, locale, before, observations }), contentType: "application/json" });
-      });
-    });
-  }
-}
+// The home journey no longer opens dated development captures (founder
+// decision 2026-10-31: products are introduced by their app icons), so the
+// native development-reader history test left with that reader.
 
 test("native history returns to each product without replaying the opening", { tag: "@hardware-webgl" }, async ({ page }) => {
   test.setTimeout(90_000);

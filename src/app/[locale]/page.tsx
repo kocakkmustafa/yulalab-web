@@ -9,7 +9,6 @@ import type {
 } from "@/components/experience/types";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
-import { developmentPreviews } from "@/data/product-presentations";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProductLifecycle } from "@/lib/types";
 
@@ -115,21 +114,11 @@ export default async function LandingPage({
         accent: project.brand.accent,
         background: project.brand.background,
       },
-      // Only registry-declared captures can enter the experience. Project
-      // atmosphere assets and product-page mockups are intentionally absent.
-      screenshots: record.screenshots.map((screenshot) => ({
-        path: screenshot.path,
-        alt: text(locale, screenshot.altTr, screenshot.altEn),
-        sourceBuild: screenshot.sourceBuild,
-        capturedAt: screenshot.capturedAt,
-      })),
-      developmentPreviews: (developmentPreviews[project.slug] ?? []).map((preview) => ({
-        captureKind: preview.captureKind,
-        path: preview.path,
-        alt: localized(preview.alt, locale),
-        sourceBuild: preview.sourceBuild,
-        capturedAt: preview.capturedAt,
-      })),
+      // Founder decision 2026-10-31 (K1): the home journey introduces every
+      // product by its approved app icon, not by screenshots or dated
+      // development captures. Those stay on each product page.
+      screenshots: [],
+      developmentPreviews: [],
       // Claim prose and every provenance field travel as one indivisible
       // record so the client cannot display a figure without its caveat.
       claims: record.claims.map((claim) => ({

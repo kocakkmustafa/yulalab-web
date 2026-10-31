@@ -661,7 +661,7 @@ export function ExperienceOverlay({
               data-active={active ? "true" : "false"}
               style={style}
             >
-              <h3>{product.name}</h3>
+              <h3>{product.icon ? <Image src={product.icon} alt="" width={28} height={28} sizes="28px" /> : null}{product.name}</h3>
               <ProofLedger compact copy={copy} product={product} today={today} />
             </article>
             );

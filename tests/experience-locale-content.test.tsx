@@ -63,7 +63,8 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     expect(container.querySelector("#experience-product-braavolabs")?.textContent).toContain(products[0].category);
     expect(products[0].category).not.toBe("Autonomous AI Company OS");
     expect(products[0].short).not.toBe("An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.");
-    expect(container.querySelector("#experience-product-lifeos img")?.getAttribute("alt")).toBeTruthy();
+    // Home introduces products by app icon (founder decision 2026-10-31).
+    expect(container.querySelector("#experience-product-lifeos img")?.getAttribute("src")).toBe("/projects/lifeos/icon.png");
   });
 
   it("exposes all fourteen native language choices and keeps section navigation", async () => {
