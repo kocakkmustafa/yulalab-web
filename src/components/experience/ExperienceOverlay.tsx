@@ -139,9 +139,9 @@ export function ExperienceHeader({
       <NextLink
         className={styles.experienceBrand}
         href="#experience-hero"
-        aria-label={`YULALAB — ${copy.navigation.home}`}
+        aria-label={`YULA Lab — ${copy.navigation.home}`}
       >
-        <span>YULALAB</span>
+        <span>YULA Lab</span>
       </NextLink>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>

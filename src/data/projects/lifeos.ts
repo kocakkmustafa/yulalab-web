@@ -37,6 +37,7 @@ export const lifeos: ProjectConfig = {
   },
   visuals: {
     logo: "/projects/lifeos/icon.png",
+    icon: "/projects/lifeos/icon.png",
     screenshots: [],
   },
   features: [

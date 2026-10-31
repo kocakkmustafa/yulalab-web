@@ -435,7 +435,7 @@ body:not(:has([data-yula-experience="true"])) {
 }
 [data-site-header="true"] > div { max-width: none; height: 100px; padding-inline: clamp(24px, 3.5vw, 50px); }
 [data-site-header="true"] > div > a > .logo-mark { display: none; }
-[data-site-header="true"] > div > a > span { font-size: 26px; font-weight: 600; letter-spacing: .025em; text-transform: uppercase; }
+[data-site-header="true"] > div > a > span { font-size: 26px; font-weight: 600; letter-spacing: .015em; }
 [data-site-header="true"] nav { font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .025em; }
 [data-site-footer="true"] { font-family: var(--font-mono), monospace; background: rgb(var(--yula-page-rgb) / .3); }
 [data-site-footer="true"] > div:first-child { max-width: none; padding-inline: clamp(24px, 3.5vw, 50px); }
