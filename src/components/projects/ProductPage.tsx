@@ -5,6 +5,7 @@ import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
 import { ClaimsSection } from "@/components/projects/ClaimsSection";
 import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
+import { ProductFaq, ProductFeatures } from "@/components/projects/ProductShowcase";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatCards } from "@/components/projects/StatCards";
 import { developmentPreviews } from "@/data/product-presentations";
@@ -127,6 +128,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </header>
 
+        <ProductFeatures slug={project.slug} locale={locale} />
+
         <DevelopmentPreviewSection slug={project.slug} locale={locale} />
 
         {/* Extracted so it can be rendered in a test; see StatCards. */}
@@ -224,6 +227,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </section>
         ) : null}
+
+        <ProductFaq slug={project.slug} locale={locale} />
 
         {/* CTA */}
         <Reveal>

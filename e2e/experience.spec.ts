@@ -438,8 +438,10 @@ test("an app not yet in a store reads as coming soon, never as a shipped build",
   const root = await openCapture(page, gravitaCenter);
   await expect(root).toHaveAttribute("data-active-product", "gravita");
   const panel = page.locator('[data-product="gravita"]').first();
-  await expect(panel).toContainText(/Coming soon|Yakında/i);
-  await expect(panel).not.toContainText(/App Store|Google Play|Live|Yayında/);
+  await expect(panel.locator("[data-lifecycle]")).toHaveText(/^(Coming soon|Yakında)$/i);
+  // The copy may say subscriptions go through the stores; the panel itself
+  // must offer no store download link.
+  await expect(panel.locator('a[href*="apps.apple.com"], a[href*="play.google.com"]')).toHaveCount(0);
 });
 
 test("proof exposes provenance and freshness fields", async ({ page }) => {
