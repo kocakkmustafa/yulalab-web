@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { ProductFaq, ProductFeatures } from "@/components/projects/ProductShowcase";
+import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
 import { productShowcase, SHOWCASE_LABELS } from "@/data/product-showcase";
 import { projects } from "@/data/projects";
 
@@ -64,6 +64,54 @@ describe("finished-product showcase", () => {
     for (const item of productShowcase.lifeos.faq) {
       expect(screen.getByText(item.question.en).closest("summary")).not.toBeNull();
     }
+  });
+
+  it("draws Braavolabs' Company as a labelled org chart under the General Manager", () => {
+    const company = productShowcase.braavolabs.company!;
+    expect(company.roadmap).toBe(true);
+    render(<ProductCompany slug="braavolabs" locale="tr" />);
+    expect(screen.getByRole("heading", { name: "Şirket" })).toBeTruthy();
+    expect(screen.getByText(SHOWCASE_LABELS.roadmap.tr)).toBeTruthy();
+    const org = screen.getByRole("list", { name: company.head.name.tr });
+    const names = Array.from(org.querySelectorAll("li > div")).map((node) => node.textContent);
+    expect(names).toEqual([
+      "Pazar Analisti",
+      "İçerik ve Sosyal Medya Sorumlusu",
+      "Müşteri Sesi Analisti",
+      "Finans Takipçisi",
+      "Teknik Lider",
+      "Sürüm ve Bağımlılık Takipçisi",
+    ]);
+    cleanup();
+    const { container } = render(<ProductCompany slug="lifeos" locale="en" />);
+    expect(container.innerHTML).toBe("");
+  });
+
+  // Founder decision K6 (2026-10-31): one store-app price, TRY in Turkish and
+  // USD elsewhere; Braavolabs Individual is monthly only; coming-soon apps
+  // keep their label beside the price.
+  it("shows the approved prices in the visitor's currency", () => {
+    const text = (slug: string, locale: "tr" | "en" | "de", comingSoon?: string) => {
+      const { container } = render(<ProductPrice slug={slug} locale={locale} comingSoon={comingSoon} />);
+      const content = container.textContent ?? "";
+      cleanup();
+      return content;
+    };
+    const ostinatoTr = text("ostinato", "tr", "Yakında");
+    expect(ostinatoTr).toContain("₺299,99");
+    expect(ostinatoTr).toContain("₺1.499,99");
+    expect(ostinatoTr).toContain("Yakında");
+    expect(ostinatoTr).not.toContain("$");
+    const lifeosEn = text("lifeos", "en");
+    expect(lifeosEn).toContain("$11.99");
+    expect(lifeosEn).toContain("$69.99");
+    expect(lifeosEn).not.toContain("Coming soon");
+    expect(text("gravita", "de")).toMatch(/11,99\s?\$/);
+    const braavo = text("braavolabs", "tr");
+    expect(braavo).toContain("Individual");
+    expect(braavo).toMatch(/\$19,99/);
+    expect(braavo).not.toContain("yıllık");
+    expect(text("burunfarki", "en")).toBe("");
   });
 
   it("renders nothing for a product without a showcase", () => {

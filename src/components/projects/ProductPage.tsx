@@ -3,14 +3,10 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
-import { ClaimsSection } from "@/components/projects/ClaimsSection";
 import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
-import { ProductFaq, ProductFeatures } from "@/components/projects/ProductShowcase";
+import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
-import { StatCards } from "@/components/projects/StatCards";
 import { developmentPreviews } from "@/data/product-presentations";
-import { publicRegistry } from "@/data/public-registry";
-import { presentClaims, presentSurfaces } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -42,29 +38,18 @@ const ROW_VAL = "font-grotesk text-[15.5px] text-end";
 
 export function ProductPage({ project }: { project: ProjectConfig }) {
   const t = useTranslations("product");
+  const tStatus = useTranslations("status");
   const locale = useLocale() as Locale;
   const p = t.raw(project.slug) as Record<string, string>;
   const accent = ACCENT[project.slug] ?? "#7FD8DC";
 
   const others = projects.filter((o) => o.slug !== project.slug);
 
-  // Freshness is evaluated at render time, not at build time: a claim nobody
-  // re-checked for 24 hours is not a code regression, and failing the build
-  // on days nobody deploys would train everyone to ignore the gate. See
-  // ../workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md.
-  const registryRecord = publicRegistry.find((r) => r.slug === project.slug);
-  const now = new Date();
-  const presented = registryRecord ? presentClaims(registryRecord, now) : [];
+  // Founder decision 2026-10-31: the product page introduces the finished
+  // product. Publication status, dated claims and their freshness live on
+  // /transparency, not here.
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
-  const publication = registryRecord
-    ? presentSurfaces(registryRecord, now).find(
-        ({ surface }) => surface.url.replace(/\/$/, "") === web?.replace(/\/$/, ""),
-      )
-    : undefined;
-  const publicationAvailable = publication?.statusConfirmed &&
-    (publication.surface.status === "live" || publication.surface.status === "beta");
-  const needsPublicationCheck = Boolean(web) && !publicationAvailable;
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
@@ -113,7 +98,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               style={{ background: accent, boxShadow: `0 0 10px ${accent}b3` }}
             />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
-              {needsPublicationCheck ? t("availabilityUnverified") : p.eyebrow}
+              {p.eyebrow}
             </span>
           </Reveal>
           <Reveal delay={80}>
@@ -130,22 +115,10 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
         <ProductFeatures slug={project.slug} locale={locale} />
 
+        <ProductCompany slug={project.slug} locale={locale} />
+
         <DevelopmentPreviewSection slug={project.slug} locale={locale} />
 
-        {/* Extracted so it can be rendered in a test; see StatCards. */}
-        <Reveal>
-          <StatCards
-            slug={project.slug}
-            stats={project.stats}
-            record={registryRecord}
-            locale={locale}
-            now={now}
-            labels={{
-              verified: t("statVerified"),
-              needsReverification: t("statNeedsReverification"),
-            }}
-          />
-        </Reveal>
 
         {/* 01 — what it does */}
         <section className="pb-24">
@@ -191,16 +164,6 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </section>
 
-        {/* Extracted so it can be rendered in a test; see ClaimsSection. */}
-        <ClaimsSection
-          presented={presented}
-          locale={locale}
-          labels={{
-            heading: t("claimsHeading"),
-            lapsedHeading: t("claimsLapsedHeading"),
-            lapsedNote: t("claimsLapsedNote"),
-          }}
-        />
 
         {/* Only show the empty interface state when no dated development UI exists. */}
         {!developmentPreviews[project.slug]?.length ? (
@@ -228,6 +191,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
         </section>
         ) : null}
 
+        <ProductPrice
+          slug={project.slug}
+          locale={locale}
+          comingSoon={project.status === "coming-soon" || project.status === "in-development" ? tStatus("comingSoon") : undefined}
+        />
+
         <ProductFaq slug={project.slug} locale={locale} />
 
         {/* CTA */}
@@ -235,16 +204,11 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           <section className="pb-24">
             <div className="glass p-8 lg:p-16 text-center">
               <h2 className="font-display font-light text-[clamp(24px,3vw,40px)] tracking-tight mb-4">
-                {needsPublicationCheck ? t("availabilityUnverified") : p.ctaTitle}
+                {p.ctaTitle}
               </h2>
               <p className="mx-auto max-w-[46ch] text-[15px] leading-[1.72] text-ink-300 mb-8">
                 {p.ctaBody}
               </p>
-              {needsPublicationCheck && publication && (
-                <p className="mb-6 text-sm text-ink-300">
-                  {t("availabilityCheckedAt", { date: publication.surface.verifiedAt })}
-                </p>
-              )}
               <div className="flex flex-wrap gap-3 justify-center">
                 {/* the primary action only renders when there is a real
                     destination — a dead CTA is worse than none */}

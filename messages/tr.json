@@ -284,7 +284,7 @@
     "otherNext": "Sonraki ürün",
     "otherAlso": "Ayrıca",
     "lifeos": {
-      "eyebrow": "Ürün 01 · iOS'ta canlı",
+      "eyebrow": "Ürün 01 · Kişisel yaşam işletim sistemi",
       "lede": "Gündelik hayatın için ikinci beyin: sağlık, finans, varlıklar, eğitim ve yaşam tek bir sakin görünümde. Kayıtların önce cihazında tutulur ve LifeOS seninle birlikte büyür.",
       "s1Kicker": "01 — Ne yapar",
       "a1Title": "Beş yaşam alanı, tek görünüm.",
@@ -302,15 +302,15 @@
       "r4v": "Gerekmez",
       "note": "",
       "interfaceNote": "Arayüz kesinleşmeden ekran görüntüsü yayımlanmıyor. Var olmayan bir ekranı çizmiyoruz.",
-      "ctaTitle": "iOS'ta yayında.",
+      "ctaTitle": "LifeOS'u indir.",
       "ctaBody": "Kurulumdan sonra hesap açmanız gerekmez. Deneyip silmek de meşru bir sonuçtur.",
       "ctaPrimary": "App Store'da aç",
       "ctaSecondary": "Destek",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Ürün 02 · Yayında · Analiz aracı",
-      "lede": "Şeffaf AI at yarışı analiz platformu. Modelin sıralamaları, gerekçeleri ve geçmiş sonuçları birlikte gösterilir. Tarihli performans kayıtlarını ve ölçüm kapsamını aşağıdaki kanıt bölümünde inceleyebilirsiniz. Geliştirme çalışmaları şu anda beklemede; bu sayfa yeni bir yayın veya güncel mağaza erişimi taahhüdü değildir.",
+      "eyebrow": "Ürün 02 · Analiz aracı",
+      "lede": "Şeffaf AI at yarışı analiz platformu. Modelin sıralamaları, gerekçeleri ve geçmiş sonuçları birlikte gösterilir; tahminler yarıştan önce kayda geçer.",
       "s1Kicker": "01 — Ne yapar, ne yapmaz",
       "a1Title": "Yarışı okur, kupon vermez.",
       "a1Body": "Platform bir yarışın verisini alır, modelin sıralamasını ve bu sıralamayı oluşturan etkenleri gösterir. Bahis oranı üretmez, kupon önermez, garanti vermez. Karar kullanıcıdadır.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı bir bahis ürünü değildir, bahis aracılığı yapmaz. Geçmiş performans gelecekteki sonucun güvencesi değildir."
     },
     "braavolabs": {
-      "eyebrow": "Ürün 03 · Beta · herkese açık önizleme",
-      "lede": "AI şirketin: senin için çalışan ajanlar ve otomasyonlar, her çalıştırmanın maliyeti görünür; web'den ve telefonundan yönetilir.",
+      "eyebrow": "Ürün 03 · Kendi AI şirketin",
+      "lede": "Sohbet, kodlama ajanı, zamanlanmış görevler ve bilgisayarında çalışan hazır ajanlardan bir AI şirketi. Her çalıştırmanın maliyeti görünür; web'den ve telefonundan yönetilir.",
       "s1Kicker": "01 — Ne yapar",
-      "a1Title": "Primitiflerle kurulan otomasyonlar.",
-      "a1Body": "Otomasyonlar hazır şablonlardan değil, birkaç temel yapı taşından kurulur. Her taş tek bir işi yapar; akış bu taşların dizilişinden doğar ve okunabilir kalır.",
+      "a1Title": "Okunur kalan otomasyonlar.",
+      "a1Body": "Otomasyonlar hazır şablonlardan değil, her biri tek iş yapan yapı taşlarından kurulur; akış, onları nasıl dizdiğinden doğar.",
       "a2Title": "Çalıştırma maliyetlerini izleyin.",
       "a2Body": "Her çalıştırmanın hangi sağlayıcıda kaç token harcadığı ve karşılığındaki tutar defterde durur. Sağlayıcı değiştirmek bir ayar; yeniden yazım gerekmez.",
       "s2Kicker": "02 — Çalışma biçimi",
@@ -352,7 +352,7 @@
       "r4v": "Sessizce yutulmaz · akış durur",
       "note": "",
       "interfaceNote": "Gerçek ekran görüntüsü beta yapısından alınır.",
-      "ctaTitle": "Braavolabs herkese açık önizlemede.",
+      "ctaTitle": "Braavolabs ile başla.",
       "ctaBody": "Kayıt braavolabs.com üzerinden; iOS uygulaması App Store'da. Kurulum ve kullanım için e-postayla sorabilirsin.",
       "ctaPrimary": "Braavolabs’ı aç",
       "ctaSecondary": "E-posta ile sor",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · BAĞIMSIZ ÜRÜN LABORATUVARI",
       "title": "Az sayıda ürün. Uzun süre düşünülmüş.",
       "lede": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
-      "notice": "Ürün durumu ve yayın kanıtı her ürünün sayfasında gösterilir.",
+      "notice": "Kayıtlar ve kaynaklar şeffaflık sayfasında.",
       "scroll": "Kaydırarak ilerleyin"
     },
     "portfolio": {

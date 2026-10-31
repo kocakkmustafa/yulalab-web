@@ -28,18 +28,19 @@ describe("an internal record", () => {
     expect(screen.queryByRole("link")).toBeNull();
   });
 
-  it("says plainly that it is an internal record", () => {
-    // Showing a private repo path under the word "source" invites the
-    // reader to go check something they have no access to. Naming it is the
-    // difference between provenance and provenance theatre.
-    render(<SourceStamp {...base} source={internal} />);
-    expect(screen.getByText(/internal record/i)).toBeTruthy();
-    expect(screen.getByText(new RegExp(internal.slice(0, 30)))).toBeTruthy();
+  // Founder decision K9 (2026-10-31): the internal path is not shown at
+  // all; the evidence kind and the verification date carry the provenance.
+  it("shows only the evidence kind and date, never the internal path", () => {
+    const { container } = render(<SourceStamp {...base} source={internal} />);
+    expect(container.textContent).not.toContain("ventures/");
+    expect(container.textContent).not.toMatch(/internal record/i);
+    expect(screen.getByText(new RegExp(base.verifiedAt))).toBeTruthy();
   });
 
-  it("says it in Turkish too", () => {
-    render(<SourceStamp {...base} locale="tr" source={internal} />);
-    expect(screen.getByText(/iç kayıt/i)).toBeTruthy();
+  it("hides it in Turkish too", () => {
+    const { container } = render(<SourceStamp {...base} locale="tr" source={internal} />);
+    expect(container.textContent).not.toContain("ventures/");
+    expect(container.textContent).not.toMatch(/iç kayıt/i);
   });
 });
 

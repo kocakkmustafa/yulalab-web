@@ -284,7 +284,7 @@
     "otherNext": "Produk berikutnya",
     "otherAlso": "Lainnya",
     "lifeos": {
-      "eyebrow": "Produk 01 · Tersedia di iOS",
+      "eyebrow": "Produk 01 · Sistem operasi kehidupan pribadi",
       "lede": "Otak kedua untuk kehidupan sehari-hari: kesehatan, keuangan, aset, pendidikan, dan kehidupan dalam satu tampilan yang tenang. Catatan Anda disimpan terlebih dahulu di perangkat Anda, dan LifeOS tumbuh bersama Anda.",
       "s1Kicker": "01 — Fungsinya",
       "a1Title": "Lima ranah kehidupan, satu tampilan.",
@@ -302,15 +302,15 @@
       "r4v": "Tidak diperlukan",
       "note": "",
       "interfaceNote": "Tangkapan layar belum dipublikasikan sampai antarmuka mantap. Kami tidak menggambar layar yang belum ada.",
-      "ctaTitle": "Tersedia di iOS.",
+      "ctaTitle": "Unduh LifeOS.",
       "ctaBody": "Tidak perlu akun setelah pemasangan. Mencoba lalu menghapusnya juga merupakan pilihan yang sah.",
       "ctaPrimary": "Buka di App Store",
       "ctaSecondary": "Bantuan",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Produk 02 · Tersedia · Alat analisis",
-      "lede": "Platform analisis pacuan kuda berbasis AI yang transparan. Peringkat model, alasannya, dan hasil terdahulu ditampilkan bersama. Jelajahi catatan kinerja bertanggal dan cakupan pengukuran pada bagian bukti di bawah. Pengembangan sedang ditangguhkan; halaman ini tidak menjanjikan rilis baru atau ketersediaan toko saat ini.",
+      "eyebrow": "Produk 02 · Alat analisis",
+      "lede": "Platform analisis pacuan kuda berbasis AI yang transparan. Peringkat model, alasannya, dan hasil sebelumnya ditampilkan bersama; prediksi dicatat sebelum setiap balapan.",
       "s1Kicker": "01 — Yang dilakukan dan tidak dilakukan",
       "a1Title": "Menganalisis balapan, bukan memberikan slip taruhan.",
       "a1Body": "Platform mengolah data balapan dan menampilkan peringkat model beserta faktor penyusunnya. Platform tidak membuat peluang taruhan, menyarankan taruhan, atau menjamin apa pun. Keputusan ada pada pengguna.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı bukan produk taruhan dan tidak menjadi perantara taruhan. Kinerja masa lalu tidak menjamin hasil di masa depan."
     },
     "braavolabs": {
-      "eyebrow": "Produk 03 · Beta · pratinjau publik",
-      "lede": "Perusahaan AI Anda: agen dan otomatisasi yang bekerja untuk Anda, dengan biaya setiap eksekusi yang selalu terlihat, dikelola dari web dan ponsel Anda.",
+      "eyebrow": "Produk 03 · Perusahaan AI milik Anda sendiri",
+      "lede": "Obrolan, agen pemrograman, tugas terjadwal, dan perusahaan AI berisi agen siap pakai yang berjalan di komputer Anda. Biaya setiap eksekusi selalu terlihat, dan semuanya dikelola dari web dan ponsel Anda.",
       "s1Kicker": "01 — Fungsinya",
-      "a1Title": "Otomatisasi yang dibangun dari primitif.",
-      "a1Body": "Otomatisasi dibangun dari sejumlah blok dasar, bukan templat siap pakai. Setiap blok menjalankan satu tugas; alurnya terbentuk dari susunan blok dan tetap mudah dibaca.",
+      "a1Title": "Otomatisasi yang tetap mudah dibaca.",
+      "a1Body": "Otomatisasi dibangun dari blok-blok yang masing-masing menjalankan satu tugas, bukan dari templat siap pakai; alurnya terbentuk dari cara Anda menyusunnya.",
       "a2Title": "Pantau biaya eksekusi.",
       "a2Body": "Buku besar menampilkan token yang dipakai setiap eksekusi, penyedianya, dan biayanya. Mengganti penyedia cukup melalui pengaturan, bukan menulis ulang sistem.",
       "s2Kicker": "02 — Cara kerjanya",
@@ -352,7 +352,7 @@
       "r4v": "Tidak pernah diabaikan · alur berhenti",
       "note": "",
       "interfaceNote": "Tangkapan layar asli diambil dari versi beta.",
-      "ctaTitle": "Braavolabs dalam pratinjau publik.",
+      "ctaTitle": "Mulai dengan Braavolabs.",
       "ctaBody": "Daftar di braavolabs.com; aplikasi iOS tersedia di App Store. Tanyakan penyiapan dan penggunaan lewat email.",
       "ctaPrimary": "Buka Braavolabs",
       "ctaSecondary": "Tanyakan lewat email",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · LABORATORIUM PRODUK INDEPENDEN",
       "title": "Sedikit produk. Dipikirkan dengan matang.",
       "lede": "YULA Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi.",
-      "notice": "Status produk dan bukti publikasi ditampilkan pada setiap halaman produk.",
+      "notice": "Catatan dan sumber ada di halaman transparansi.",
       "scroll": "Gulir untuk melanjutkan"
     },
     "portfolio": {

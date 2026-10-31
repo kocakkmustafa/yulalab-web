@@ -18,6 +18,9 @@ import { getProjectBySlug } from "@/data/projects";
 import { company } from "@/data/company";
 import type { Locale, ProjectConfig } from "@/lib/types";
 import { GlassSheen } from "@/components/common/GlassSheen";
+import { ProofCard } from "@/components/common/ProofCard";
+import { publicRegistry } from "@/data/public-registry";
+import { presentClaims } from "@/lib/proof";
 
 export async function generateMetadata({
   params,
@@ -66,6 +69,11 @@ function Transparency() {
   const locale = useLocale() as Locale;
 
   const pillars: PillarSlug[] = ["braavolabs", "burunfarki", "lifeos"];
+  const tp = useTranslations("product");
+  const now = new Date();
+  const records = publicRegistry
+    .map((record) => ({ record, presented: presentClaims(record, now) }))
+    .filter(({ presented }) => presented.length > 0);
 
   return (
     <div className="page-enter relative">
@@ -170,6 +178,30 @@ function Transparency() {
             ),
           )}
         </ul>
+      </section>
+
+      {/* PRODUCT RECORDS — dated claims and their freshness, moved here from
+          the product pages (founder decision 2026-10-31), which now introduce
+          the finished products. Lapsed claims stay visible and marked. */}
+      <section className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-24 pb-8" aria-labelledby="product-records-heading">
+        <h2 id="product-records-heading" className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-10">
+          {tp("claimsHeading")}
+        </h2>
+        <div className="space-y-14">
+          {records.map(({ record, presented }) => (
+            <div key={record.slug}>
+              <h3 className="font-display text-2xl font-semibold tracking-tight text-ink-50 mb-6">
+                {record.name}
+              </h3>
+              <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
+                {presented.map((item) => (
+                  <ProofCard key={item.claim.id} presented={item} locale={locale} />
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="mt-10 max-w-[62ch] text-[14px] leading-[1.7] text-ink-400">{tp("claimsLapsedNote")}</p>
       </section>
 
       {/* CTA */}

@@ -284,7 +284,7 @@
     "otherNext": "Próximo producto",
     "otherAlso": "También",
     "lifeos": {
-      "eyebrow": "Producto 01 · Disponible en iOS",
+      "eyebrow": "Producto 01 · Sistema operativo para la vida personal",
       "lede": "Un segundo cerebro para la vida diaria: salud, finanzas, bienes, educación y vida en una sola vista tranquila. Tus registros se quedan primero en tu dispositivo, y LifeOS crece contigo.",
       "s1Kicker": "01 — Qué hace",
       "a1Title": "Cinco ámbitos de la vida, una vista.",
@@ -302,15 +302,15 @@
       "r4v": "No es obligatoria",
       "note": "",
       "interfaceNote": "No se publican capturas hasta que la interfaz se estabilice. No dibujamos una pantalla que no existe.",
-      "ctaTitle": "Disponible en iOS.",
+      "ctaTitle": "Descarga LifeOS.",
       "ctaBody": "No se necesita una cuenta después de instalar. Probarlo y eliminarlo también es un resultado legítimo.",
       "ctaPrimary": "Abrir en App Store",
       "ctaSecondary": "Soporte",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Producto 02 · Disponible · Herramienta de análisis",
-      "lede": "Una plataforma transparente de análisis de carreras de caballos con IA. Las clasificaciones del modelo, sus justificaciones y los resultados anteriores aparecen juntos. Consulta los registros fechados de rendimiento y el alcance de la medición en la sección de evidencia de abajo. El desarrollo está suspendido por ahora; esta página no promete una nueva versión ni disponibilidad actual en tiendas.",
+      "eyebrow": "Producto 02 · Herramienta de análisis",
+      "lede": "Una plataforma transparente de análisis de carreras de caballos con IA. Las clasificaciones del modelo, su razonamiento y los resultados pasados aparecen juntos; los pronósticos se registran antes de cada carrera.",
       "s1Kicker": "01 — Qué hace y qué no hace",
       "a1Title": "Analiza la carrera; no te entrega un boleto de apuesta.",
       "a1Body": "La plataforma toma los datos de una carrera y muestra la clasificación del modelo junto con los factores que la produjeron. No genera cuotas, no recomienda apuestas y no garantiza resultados. La decisión es del usuario.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı no es un producto de apuestas y no intermedia apuestas. El rendimiento pasado no garantiza resultados futuros."
     },
     "braavolabs": {
-      "eyebrow": "Producto 03 · Beta · vista previa pública",
-      "lede": "Tu empresa de IA: agentes y automatizaciones que trabajan para ti, con el costo de cada ejecución a la vista, gestionados desde la web y tu teléfono.",
+      "eyebrow": "Producto 03 · Tu propia empresa de IA",
+      "lede": "Chat, un agente de código, tareas programadas y una empresa de IA formada por agentes listos para usar que se ejecutan en tu computadora. El costo de cada ejecución está a la vista, y todo se gestiona desde la web y tu teléfono.",
       "s1Kicker": "01 — Qué hace",
-      "a1Title": "Automatizaciones construidas con primitivas.",
-      "a1Body": "Las automatizaciones se construyen con unos pocos bloques básicos en lugar de plantillas prefabricadas. Cada bloque realiza una tarea; el flujo surge de cómo se organizan y sigue siendo legible.",
+      "a1Title": "Automatizaciones que siguen siendo legibles.",
+      "a1Body": "Las automatizaciones se construyen con bloques que hacen una sola tarea cada uno, en lugar de plantillas prefabricadas; el flujo surge de cómo los organizas.",
       "a2Title": "Haz seguimiento de los costos de ejecución.",
       "a2Body": "El registro muestra cuántos tokens gastó cada ejecución con cada proveedor y a cuánto ascendió el costo. Cambiar de proveedor es una configuración, no una reescritura.",
       "s2Kicker": "02 — Cómo funciona",
@@ -352,7 +352,7 @@
       "r4v": "Nunca se ignoran · el flujo se detiene",
       "note": "",
       "interfaceNote": "Las capturas reales se toman de la versión beta.",
-      "ctaTitle": "Braavolabs está en vista previa pública.",
+      "ctaTitle": "Empieza con Braavolabs.",
       "ctaBody": "Regístrate en braavolabs.com; la aplicación para iOS está en App Store. Consulta por correo sobre la configuración y el uso.",
       "ctaPrimary": "Abrir Braavolabs",
       "ctaSecondary": "Preguntar por correo",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · LABORATORIO INDEPENDIENTE DE PRODUCTOS",
       "title": "Pocos productos. Pensados durante mucho tiempo.",
       "lede": "YULA Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados.",
-      "notice": "El estado y la evidencia de publicación aparecen en la página de cada producto.",
+      "notice": "Los registros y las fuentes están en la página de transparencia.",
       "scroll": "Desplázate para continuar"
     },
     "portfolio": {

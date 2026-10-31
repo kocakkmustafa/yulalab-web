@@ -69,12 +69,14 @@ export default async function LandingPage({
     );
   }
 
+  // Founder decisions 2026-10-31: the home journey introduces finished
+  // products, so it states no publication status; an app not yet in a store
+  // reads "Coming soon" (K2). Publication evidence lives on /transparency.
   const lifecycleLabels: Record<ProductLifecycle, string> = {
-    live: t("lifecycle.live"),
-    beta: t("lifecycle.beta"),
-    // Founder decision 2026-10-31 (K2): apps not yet in a store read "Coming soon".
+    live: "",
+    beta: "",
     research: tStatus("comingSoon"),
-    archived: t("lifecycle.archived"),
+    archived: "",
   };
 
   const experienceProducts: ExperienceProduct[] = projects.map((project) => {

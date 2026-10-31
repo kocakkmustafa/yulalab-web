@@ -284,7 +284,7 @@
     "otherNext": "Next product",
     "otherAlso": "Also",
     "lifeos": {
-      "eyebrow": "Product 01 · Live on iOS",
+      "eyebrow": "Product 01 · Personal life operating system",
       "lede": "A second brain for everyday life: health, finance, assets, education and life in one calm view. Your records stay on your device first, and LifeOS grows with you.",
       "s1Kicker": "01 — What it does",
       "a1Title": "Five life domains, one view.",
@@ -302,15 +302,15 @@
       "r4v": "Not required",
       "note": "",
       "interfaceNote": "No screenshots published until the interface settles. We don't draw a screen that doesn't exist.",
-      "ctaTitle": "Live on iOS.",
+      "ctaTitle": "Get LifeOS.",
       "ctaBody": "No account needed after install. Trying it and deleting it is a legitimate outcome too.",
       "ctaPrimary": "Open in the App Store",
       "ctaSecondary": "Support",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Product 02 · Live · Analysis tool",
-      "lede": "A transparent AI horse-racing analysis platform. Model rankings, their reasoning and past results appear together. Explore the dated performance records and measurement scope in the evidence section below. Development is currently on hold; this page does not promise a new release or current store availability.",
+      "eyebrow": "Product 02 · Analysis tool",
+      "lede": "A transparent AI horse-racing analysis platform. Model rankings, their reasoning and past results appear together; predictions are recorded before each race.",
       "s1Kicker": "01 — What it does, and doesn't",
       "a1Title": "It reads the race; it doesn't hand you a slip.",
       "a1Body": "The platform takes a race's data and shows the model's ranking along with the factors that produced it. It generates no odds, recommends no bets, guarantees nothing. The decision is the user's.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı is not a betting product and does not broker bets. Past performance is no guarantee of future results."
     },
     "braavolabs": {
-      "eyebrow": "Product 03 · Beta · public preview",
-      "lede": "Your AI company: agents and automations that work for you, with the cost of every run in view, managed from the web and your phone.",
+      "eyebrow": "Product 03 · Your own AI company",
+      "lede": "Chat, a coding agent, scheduled tasks and an AI company of ready-made agents running on your computer. The cost of every run is in view, managed from the web and your phone.",
       "s1Kicker": "01 — What it does",
-      "a1Title": "Automations built from primitives.",
-      "a1Body": "Automations are built from a handful of building blocks rather than canned templates. Each block does one job; the flow emerges from how they're arranged, and stays readable.",
+      "a1Title": "Automations that stay readable.",
+      "a1Body": "Automations are built from building blocks that each do one job, rather than canned templates; the flow comes from how you arrange them.",
       "a2Title": "Track run costs.",
       "a2Body": "How many tokens each run spent with which provider — and what that came to — sits in the ledger. Switching provider is a setting, not a rewrite.",
       "s2Kicker": "02 — How it runs",
@@ -352,7 +352,7 @@
       "r4v": "Never swallowed · the flow stops",
       "note": "",
       "interfaceNote": "Real screenshots are captured from the beta build.",
-      "ctaTitle": "Braavolabs is in public preview.",
+      "ctaTitle": "Start with Braavolabs.",
       "ctaBody": "Sign up at braavolabs.com; the iOS app is on the App Store. Ask about setup and usage by email.",
       "ctaPrimary": "Open Braavolabs",
       "ctaSecondary": "Ask by email",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · INDEPENDENT PRODUCT LAB",
       "title": "Few products. Thought about for a long time.",
       "lede": "YULA Lab develops its own products and offers AI consulting: from workflow assessment to prototypes, integrations and evaluation.",
-      "notice": "Product status and publication evidence are shown on each product page.",
+      "notice": "Records and sources are on the transparency page.",
       "scroll": "Scroll to continue"
     },
     "portfolio": {

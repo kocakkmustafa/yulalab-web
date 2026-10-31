@@ -585,9 +585,11 @@ export function ExperienceOverlay({
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
                 <span>{product.category}</span>
               </div>
-              <div className={styles.lifecycleRow}>
-                <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-              </div>
+              {product.lifecycleLabel ? (
+                <div className={styles.lifecycleRow}>
+                  <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
+                </div>
+              ) : null}
               <h2>{product.icon ? <Image src={product.icon} alt="" width={36} height={36} sizes="36px" /> : null}{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>

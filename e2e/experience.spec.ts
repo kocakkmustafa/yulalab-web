@@ -828,24 +828,23 @@ test("all mobile product actions remain reachable with enlarged text", async ({ 
   }
 });
 
-for (const [locale, liveLabel, betaLabel] of [
-  ["tr", "Yayın kaydı var", "Beta kaydı var"],
-  ["en", "Publication on record", "Beta on record"],
-] as const) {
-  test(`homepage publication badges describe records rather than current access (${locale})`, async ({ page }) => {
+// Founder decision 2026-10-31: the home journey introduces finished products
+// and states no publication status; only an app not yet in a store carries a
+// "Coming soon" chip. Publication evidence lives on /transparency.
+for (const [locale, comingSoon] of [["tr", "Yakında"], ["en", "Coming soon"]] as const) {
+  test(`homepage states no publication status for released products (${locale})`, async ({ page }) => {
     const prefix = locale === "en" ? "/en" : "";
-    for (const [progress, slug, lifecycle, label] of [
-      [0.21625, "lifeos", "live", liveLabel],
-      [0.11125, "braavolabs", "beta", betaLabel],
-    ] as const) {
+    for (const [progress, slug] of [[0.21625, "lifeos"], [0.11125, "braavolabs"]] as const) {
       await page.goto(`${prefix}/?capture=1&progress=${progress}&tier=low`);
-      await expect(page.locator(`[data-product="${slug}"][data-active="true"] [data-lifecycle="${lifecycle}"]`)).toHaveText(label);
+      const panel = page.locator(`[data-product="${slug}"][data-active="true"]`);
+      await expect(panel).toBeVisible();
+      await expect(panel.locator("[data-lifecycle]")).toHaveCount(0);
     }
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(prefix || "/");
     const linear = page.locator('[data-experience-static="true"]');
-    await expect(linear.locator('[data-lifecycle="live"]').first()).toHaveText(liveLabel);
-    await expect(linear.locator('[data-lifecycle="beta"]').first()).toHaveText(betaLabel);
+    await expect(linear.locator('[data-lifecycle="live"], [data-lifecycle="beta"]')).toHaveCount(0);
+    await expect(linear.locator('[data-lifecycle="research"]').first()).toHaveText(comingSoon);
   });
 }
 

@@ -15,12 +15,46 @@ type Copy = { tr: string; en: string };
 
 export type ShowcaseFeature = { title: Copy; body: Copy; roadmap?: true };
 export type ShowcaseQuestion = { question: Copy; answer: Copy };
-export type ProductShowcase = { features: ShowcaseFeature[]; faq: ShowcaseQuestion[] };
+export type CompanyRole = { name: Copy; reports?: CompanyRole[] };
+export type ShowcaseCompany = { title: Copy; body: Copy; roadmap?: true; head: CompanyRole };
+/**
+ * Founder decision K6 (2026-10-31). Store apps share one price: TRY in the
+ * Turkish locale, USD in every other. Amounts are in major units and are
+ * formatted per locale with Intl.NumberFormat.
+ */
+export type ShowcasePrice = {
+  plan?: string;
+  monthly: { TRY?: number; USD: number };
+  yearly?: { TRY?: number; USD: number };
+  /** Store subscription: the price shown in the App Store / Google Play applies. */
+  store: boolean;
+};
+
+const STORE_APP_PRICE: ShowcasePrice = {
+  monthly: { TRY: 299.99, USD: 11.99 },
+  yearly: { TRY: 1499.99, USD: 69.99 },
+  store: true,
+};
+
+export type ProductShowcase = {
+  features: ShowcaseFeature[];
+  faq: ShowcaseQuestion[];
+  price?: ShowcasePrice;
+  /** Braavolabs' "Company": a ready-made agent org (founder naming, 2026-10-31). */
+  company?: ShowcaseCompany;
+};
 
 export const SHOWCASE_LABELS = {
   features: { tr: "Özellikler", en: "Features" },
   roadmap: { tr: "Yol haritasında", en: "On the roadmap" },
   faq: { tr: "Sık sorulanlar", en: "Questions" },
+  pricing: { tr: "Fiyat", en: "Pricing" },
+  perMonth: { tr: "aylık", en: "per month" },
+  perYear: { tr: "yıllık", en: "per year" },
+  storePriceNote: {
+    tr: "Fiyatlar ülkeye göre değişebilir; App Store'da ya da Google Play'de gösterilen fiyat geçerlidir.",
+    en: "Prices can vary by country; the price shown in the App Store or Google Play applies.",
+  },
 } as const satisfies Record<string, Copy>;
 
 const CAMERA_TODAY: ShowcaseQuestion = {
@@ -41,6 +75,7 @@ const FREE_START: ShowcaseQuestion = {
 
 export const productShowcase: Record<string, ProductShowcase> = {
   lifeos: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Anlat, kaydolsun.", en: "Say it, and it's logged." },
@@ -120,15 +155,8 @@ export const productShowcase: Record<string, ProductShowcase> = {
     ],
   },
   braavolabs: {
+    price: { plan: "Individual", monthly: { USD: 19.99 }, store: false },
     features: [
-      {
-        title: { tr: "AI şirketin.", en: "Your AI company." },
-        body: {
-          tr: "Finans, sosyal medya ve pazar takibi gibi hazır ajanları işe al. Hepsi şirket bağlamını paylaşır; kimin neyden sorumlu olduğunu tek şemada görürsün.",
-          en: "Hire ready-made agents for finance, social media and market watch. They share your company context, and one chart shows who is responsible for what.",
-        },
-        roadmap: true,
-      },
       {
         title: { tr: "Sohbet ve kodlama ajanı.", en: "Chat and a coding agent." },
         body: {
@@ -191,6 +219,13 @@ export const productShowcase: Record<string, ProductShowcase> = {
         },
       },
       {
+        question: { tr: "Şirket'te hangi ajanlar var?", en: "Which agents are in Company?" },
+        answer: {
+          tr: "İlk sette Genel Müdür'ün altında Pazar Analisti, İçerik ve Sosyal Medya Sorumlusu, Müşteri Sesi Analisti, Finans Takipçisi, Teknik Lider ve Sürüm ve Bağımlılık Takipçisi var. Şirket yol haritasında.",
+          en: "The first set has a Market Analyst, a Content and Social Media Lead, a Customer Voice Analyst, a Finance Tracker, a Tech Lead and a Release and Dependency Tracker under a General Manager. Company is on the roadmap.",
+        },
+      },
+      {
         question: { tr: "Verilerim nerede tutulur?", en: "Where is my data kept?" },
         answer: {
           tr: "Hangi verinin nerede işlendiği Braavolabs gizlilik politikasında yazılı.",
@@ -198,8 +233,32 @@ export const productShowcase: Record<string, ProductShowcase> = {
         },
       },
     ],
+    company: {
+      title: { tr: "Şirket", en: "Company" },
+      body: {
+        tr: "Bilgisayarında yerel çalışan, hazır ajanlardan oluşan bir AI şirketi. Her ajan şirketinin bağlamını paylaşır; org şeması ve her ajanın modeli, eforu ve durumu tek panelde görünür.",
+        en: "An AI company of ready-made agents running locally on your computer. Every agent shares your company's context; the org chart and each agent's model, effort and status sit in one panel.",
+      },
+      roadmap: true,
+      head: {
+        name: { tr: "Genel Müdür", en: "General Manager" },
+        reports: [
+          { name: { tr: "Pazar Analisti", en: "Market Analyst" } },
+          {
+            name: { tr: "İçerik ve Sosyal Medya Sorumlusu", en: "Content and Social Media Lead" },
+            reports: [{ name: { tr: "Müşteri Sesi Analisti", en: "Customer Voice Analyst" } }],
+          },
+          { name: { tr: "Finans Takipçisi", en: "Finance Tracker" } },
+          {
+            name: { tr: "Teknik Lider", en: "Tech Lead" },
+            reports: [{ name: { tr: "Sürüm ve Bağımlılık Takipçisi", en: "Release and Dependency Tracker" } }],
+          },
+        ],
+      },
+    },
   },
   ostinato: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Dört alan, uzun bir yol.", en: "Four paths, a long road." },
@@ -274,6 +333,7 @@ export const productShowcase: Record<string, ProductShowcase> = {
     ],
   },
   jablab: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Beş disiplin, derin kurslar.", en: "Five disciplines, deep courses." },
@@ -341,6 +401,7 @@ export const productShowcase: Record<string, ProductShowcase> = {
     ],
   },
   gravita: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Adım adım güç ve beceri.", en: "Strength and skill, step by step." },
@@ -407,6 +468,7 @@ export const productShowcase: Record<string, ProductShowcase> = {
     ],
   },
   lissom: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Beş yoga kursu.", en: "Five yoga courses." },
@@ -473,6 +535,7 @@ export const productShowcase: Record<string, ProductShowcase> = {
     ],
   },
   choreia: {
+    price: STORE_APP_PRICE,
     features: [
       {
         title: { tr: "Beş solo dans kursu.", en: "Five solo dance courses." },

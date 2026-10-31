@@ -284,7 +284,7 @@
     "otherNext": "Nächstes Produkt",
     "otherAlso": "Außerdem",
     "lifeos": {
-      "eyebrow": "Produkt 01 · Auf iOS veröffentlicht",
+      "eyebrow": "Produkt 01 · Persönliches Lebens-Betriebssystem",
       "lede": "Ein zweites Gehirn für den Alltag: Gesundheit, Finanzen, Vermögen, Bildung und Leben in einer ruhigen Ansicht. Ihre Aufzeichnungen bleiben vorrangig auf Ihrem Gerät, und LifeOS wächst mit Ihnen.",
       "s1Kicker": "01 — Was es kann",
       "a1Title": "Fünf Lebensbereiche, eine Ansicht.",
@@ -302,15 +302,15 @@
       "r4v": "Nicht erforderlich",
       "note": "",
       "interfaceNote": "Screenshots veröffentlichen wir erst, wenn die Oberfläche feststeht. Wir zeichnen keinen Bildschirm, den es nicht gibt.",
-      "ctaTitle": "Auf iOS veröffentlicht.",
+      "ctaTitle": "Laden Sie LifeOS herunter.",
       "ctaBody": "Nach der Installation ist kein Konto nötig. Ausprobieren und wieder löschen ist ebenfalls ein legitimes Ergebnis.",
       "ctaPrimary": "Im App Store öffnen",
       "ctaSecondary": "Support",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Produkt 02 · Veröffentlicht · Analysewerkzeug",
-      "lede": "Eine transparente KI-Analyseplattform für Pferderennen. Modellranglisten, ihre Begründungen und vergangene Ergebnisse erscheinen gemeinsam. Datierte Leistungsnachweise und den Messumfang finden Sie im nachfolgenden Belegabschnitt. Die Entwicklung ist derzeit pausiert. Diese Seite verspricht weder ein neues Release noch eine aktuelle Verfügbarkeit im Store.",
+      "eyebrow": "Produkt 02 · Analysewerkzeug",
+      "lede": "Eine transparente KI-Plattform zur Analyse von Pferderennen. Die Ranglisten des Modells, ihre Begründungen und vergangene Ergebnisse erscheinen zusammen; Prognosen werden vor jedem Rennen festgehalten.",
       "s1Kicker": "01 — Was es kann und was nicht",
       "a1Title": "Es analysiert das Rennen, es stellt keinen Wettschein aus.",
       "a1Body": "Die Plattform verarbeitet Renndaten und zeigt die Modellrangliste samt den ausschlaggebenden Faktoren. Sie erzeugt keine Quoten, empfiehlt keine Wetten und garantiert nichts. Die Entscheidung liegt beim Nutzer.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı ist kein Wettprodukt und vermittelt keine Wetten. Vergangene Ergebnisse sind keine Garantie für künftige Resultate."
     },
     "braavolabs": {
-      "eyebrow": "Produkt 03 · Beta · öffentliche Vorschau",
-      "lede": "Ihr KI-Unternehmen: Agenten und Automatisierungen, die für Sie arbeiten, mit den Kosten jeder Ausführung im Blick, gesteuert über das Web und Ihr Smartphone.",
+      "eyebrow": "Produkt 03 · Ihr eigenes KI-Unternehmen",
+      "lede": "Chat, ein Coding-Agent, geplante Aufgaben und ein KI-Unternehmen aus fertigen Agenten, die auf Ihrem Computer laufen. Die Kosten jeder Ausführung bleiben im Blick, gesteuert über das Web und Ihr Smartphone.",
       "s1Kicker": "01 — Was es kann",
-      "a1Title": "Automatisierungen aus Primitiven.",
-      "a1Body": "Automatisierungen entstehen aus wenigen Bausteinen statt aus starren Vorlagen. Jeder Baustein übernimmt eine Aufgabe. Der Ablauf ergibt sich aus ihrer Anordnung und bleibt lesbar.",
+      "a1Title": "Automatisierungen, die lesbar bleiben.",
+      "a1Body": "Automatisierungen entstehen aus Bausteinen, die jeweils eine Aufgabe übernehmen, statt aus starren Vorlagen; der Ablauf ergibt sich aus ihrer Anordnung.",
       "a2Title": "Ausführungskosten im Blick.",
       "a2Body": "Wie viele Tokens ein Durchlauf bei welchem Anbieter verbraucht hat und was das gekostet hat, steht im Kostenverzeichnis. Der Anbieterwechsel ist eine Einstellung, kein Neuaufbau.",
       "s2Kicker": "02 — So läuft es",
@@ -352,7 +352,7 @@
       "r4v": "Nie unterdrückt · der Ablauf stoppt",
       "note": "",
       "interfaceNote": "Echte Screenshots werden aus dem Beta-Build aufgenommen.",
-      "ctaTitle": "Braavolabs ist in der öffentlichen Vorschau.",
+      "ctaTitle": "Starten Sie mit Braavolabs.",
       "ctaBody": "Registrieren Sie sich auf braavolabs.com; die iOS-App ist im App Store erhältlich. Fragen zu Einrichtung und Nutzung stellen Sie gern per E-Mail.",
       "ctaPrimary": "Braavolabs öffnen",
       "ctaSecondary": "Per E-Mail fragen",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · UNABHÄNGIGES PRODUKTLABOR",
       "title": "Wenige Produkte. Lange durchdacht.",
       "lede": "YULA Lab entwickelt eigene Produkte und bietet KI-Beratung: von der Analyse von Arbeitsabläufen bis zu Prototypen, Integrationen und Evaluation.",
-      "notice": "Produktstatus und Veröffentlichungsbelege stehen auf der jeweiligen Produktseite.",
+      "notice": "Aufzeichnungen und Quellen stehen auf der Transparenzseite.",
       "scroll": "Zum Fortfahren scrollen"
     },
     "portfolio": {

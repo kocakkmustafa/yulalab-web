@@ -284,7 +284,7 @@
     "otherNext": "Prossimo prodotto",
     "otherAlso": "Anche",
     "lifeos": {
-      "eyebrow": "Prodotto 01 · Disponibile su iOS",
+      "eyebrow": "Prodotto 01 · Sistema operativo per la vita personale",
       "lede": "Un secondo cervello per la vita di tutti i giorni: salute, finanze, beni, istruzione e vita in un'unica vista serena. I tuoi dati restano innanzitutto sul tuo dispositivo, e LifeOS cresce con te.",
       "s1Kicker": "01 — Cosa fa",
       "a1Title": "Cinque ambiti della vita, un'unica vista.",
@@ -302,15 +302,15 @@
       "r4v": "Non necessario",
       "note": "",
       "interfaceNote": "Non pubblichiamo schermate finché l'interfaccia non è definita. Non disegniamo schermate che non esistono.",
-      "ctaTitle": "Disponibile su iOS.",
+      "ctaTitle": "Scarica LifeOS.",
       "ctaBody": "Dopo l'installazione non serve un account. Anche provarlo e poi eliminarlo è una scelta legittima.",
       "ctaPrimary": "Apri nell'App Store",
       "ctaSecondary": "Assistenza",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Prodotto 02 · Disponibile · Strumento di analisi",
-      "lede": "Una piattaforma trasparente di analisi ippica basata sull'AI. Classifiche del modello, motivazioni e risultati passati appaiono insieme. Consulta le prestazioni datate e l'ambito delle misurazioni nelle prove qui sotto. Lo sviluppo è attualmente sospeso; questa pagina non promette una nuova versione o l'attuale disponibilità negli store.",
+      "eyebrow": "Prodotto 02 · Strumento di analisi",
+      "lede": "Una piattaforma trasparente di analisi delle corse ippiche basata sull'AI. Le classifiche del modello, le loro motivazioni e i risultati passati compaiono insieme; i pronostici vengono registrati prima di ogni corsa.",
       "s1Kicker": "01 — Cosa fa e cosa no",
       "a1Title": "Analizza la corsa; non ti dà una schedina.",
       "a1Body": "La piattaforma analizza i dati di una corsa e mostra la classifica del modello con i fattori che l'hanno determinata. Non genera quote, non consiglia scommesse e non garantisce nulla. La decisione spetta all'utente.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı non è un prodotto di scommesse e non intermedia scommesse. Le prestazioni passate non garantiscono risultati futuri."
     },
     "braavolabs": {
-      "eyebrow": "Prodotto 03 · Beta · anteprima pubblica",
-      "lede": "La tua azienda AI: agenti e automazioni che lavorano per te, con il costo di ogni esecuzione sempre in vista, gestiti dal web e dal telefono.",
+      "eyebrow": "Prodotto 03 · Un'azienda AI tutta tua",
+      "lede": "Chat, un agente di programmazione, attività pianificate e un'azienda AI fatta di agenti già pronti che girano sul tuo computer. Il costo di ogni esecuzione è sempre in vista, e tutto si gestisce dal web e dal telefono.",
       "s1Kicker": "01 — Cosa fa",
-      "a1Title": "Automazioni costruite con primitive.",
-      "a1Body": "Le automazioni nascono da pochi blocchi fondamentali, non da modelli preconfezionati. Ogni blocco svolge un compito; il flusso emerge dalla loro disposizione e resta leggibile.",
+      "a1Title": "Automazioni che restano leggibili.",
+      "a1Body": "Le automazioni nascono da blocchi che svolgono ciascuno un solo compito, non da modelli preconfezionati; il flusso emerge da come li disponi.",
       "a2Title": "Tieni traccia dei costi di esecuzione.",
       "a2Body": "Il registro mostra quanti token ogni esecuzione ha consumato, con quale fornitore e a quale costo. Cambiare fornitore è un'impostazione, non una riscrittura.",
       "s2Kicker": "02 — Come funziona",
@@ -352,7 +352,7 @@
       "r4v": "Mai ignorati · il flusso si interrompe",
       "note": "",
       "interfaceNote": "Le schermate reali sono tratte dalla versione beta.",
-      "ctaTitle": "Braavolabs è in anteprima pubblica.",
+      "ctaTitle": "Inizia con Braavolabs.",
       "ctaBody": "Registrati su braavolabs.com; l'app iOS è sull'App Store. Per configurazione e utilizzo, scrivici via e-mail.",
       "ctaPrimary": "Apri Braavolabs",
       "ctaSecondary": "Chiedi via e-mail",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · LABORATORIO DI PRODOTTI INDIPENDENTE",
       "title": "Pochi prodotti. Pensati a lungo.",
       "lede": "YULA Lab sviluppa prodotti propri e offre consulenza sull'AI: dall'analisi dei flussi di lavoro a prototipi, integrazioni e valutazione.",
-      "notice": "Lo stato del prodotto e le prove di pubblicazione sono nella pagina di ogni prodotto.",
+      "notice": "Registri e fonti sono nella pagina sulla trasparenza.",
       "scroll": "Scorri per continuare"
     },
     "portfolio": {

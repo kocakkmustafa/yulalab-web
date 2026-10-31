@@ -284,7 +284,7 @@
     "otherNext": "Następny produkt",
     "otherAlso": "Zobacz też",
     "lifeos": {
-      "eyebrow": "Produkt 01 · Dostępny na iOS",
+      "eyebrow": "Produkt 01 · Osobisty system operacyjny życia",
       "lede": "Drugi mózg na co dzień: zdrowie, finanse, majątek, edukacja i życie w jednym spokojnym widoku. Twoje zapisy zostają przede wszystkim na Twoim urządzeniu, a LifeOS rośnie razem z Tobą.",
       "s1Kicker": "01 — Co robi",
       "a1Title": "Pięć obszarów życia, jeden widok.",
@@ -302,15 +302,15 @@
       "r4v": "Niewymagane",
       "note": "",
       "interfaceNote": "Nie publikujemy zrzutów, dopóki interfejs się nie ustabilizuje. Nie rysujemy ekranów, które nie istnieją.",
-      "ctaTitle": "Dostępny na iOS.",
+      "ctaTitle": "Pobierz LifeOS.",
       "ctaBody": "Po instalacji konto nie jest wymagane. Wypróbowanie i usunięcie aplikacji też jest pełnoprawnym wyborem.",
       "ctaPrimary": "Otwórz w App Store",
       "ctaSecondary": "Pomoc",
       "disclaimer": ""
     },
     "burunfarki": {
-      "eyebrow": "Produkt 02 · Dostępny · Narzędzie analityczne",
-      "lede": "Przejrzysta platforma analizy wyścigów konnych z AI. Rankingi modelu, ich uzasadnienie i wcześniejsze wyniki są przedstawiane razem. Datowane wyniki i zakres pomiaru znajdziesz poniżej. Rozwój jest obecnie wstrzymany; strona nie obiecuje nowego wydania ani bieżącej dostępności w sklepie.",
+      "eyebrow": "Produkt 02 · Narzędzie analityczne",
+      "lede": "Przejrzysta platforma do analizy wyścigów konnych oparta na AI. Rankingi modelu, ich uzasadnienia i wcześniejsze wyniki są widoczne razem; prognozy są zapisywane przed każdym wyścigiem.",
       "s1Kicker": "01 — Co robi, a czego nie",
       "a1Title": "Analizuje wyścig; nie podaje kuponu.",
       "a1Body": "Platforma analizuje dane wyścigu i pokazuje ranking modelu oraz jego czynniki. Nie wyznacza kursów, nie zaleca zakładów i niczego nie gwarantuje. Decyzja należy do użytkownika.",
@@ -334,11 +334,11 @@
       "disclaimer": "Burun Farkı nie jest produktem bukmacherskim i nie pośredniczy w zakładach. Wyniki historyczne nie gwarantują przyszłych rezultatów."
     },
     "braavolabs": {
-      "eyebrow": "Produkt 03 · Beta · publiczna wersja zapoznawcza",
-      "lede": "Twoja firma AI: agenci i automatyzacje, które pracują dla Ciebie, z widocznym kosztem każdego uruchomienia, zarządzane z przeglądarki i z telefonu.",
+      "eyebrow": "Produkt 03 · Twoja własna firma AI",
+      "lede": "Czat, agent do kodowania, zaplanowane zadania i firma AI złożona z gotowych agentów działających na Twoim komputerze. Koszt każdego uruchomienia jest widoczny, a całością zarządzasz z przeglądarki i z telefonu.",
       "s1Kicker": "01 — Co robi",
-      "a1Title": "Automatyzacje z elementów składowych.",
-      "a1Body": "Automatyzacje powstają z kilku elementów zamiast gotowych szablonów. Każdy wykonuje jedno zadanie; sposób ich ułożenia tworzy czytelny przepływ.",
+      "a1Title": "Automatyzacje, które pozostają czytelne.",
+      "a1Body": "Automatyzacje powstają z elementów, z których każdy wykonuje jedno zadanie, zamiast z gotowych szablonów; przepływ wynika ze sposobu, w jaki je ułożysz.",
       "a2Title": "Śledź koszty uruchomień.",
       "a2Body": "Rejestr pokazuje, ile tokenów zużyto u danego dostawcy i ile to kosztowało. Zmiana dostawcy to ustawienie, nie przepisywanie kodu.",
       "s2Kicker": "02 — Jak działa",
@@ -352,7 +352,7 @@
       "r4v": "Nie są ukrywane · proces się zatrzymuje",
       "note": "",
       "interfaceNote": "Prawdziwe zrzuty pochodzą z wersji beta.",
-      "ctaTitle": "Braavolabs jest w publicznej wersji zapoznawczej.",
+      "ctaTitle": "Zacznij z Braavolabs.",
       "ctaBody": "Zarejestruj się na braavolabs.com; aplikacja na iOS jest w App Store. O konfigurację i użytkowanie zapytaj e-mailem.",
       "ctaPrimary": "Otwórz Braavolabs",
       "ctaSecondary": "Zapytaj e-mailem",
@@ -550,7 +550,7 @@
       "eyebrow": "YULA LAB · NIEZALEŻNE LABORATORIUM PRODUKTÓW",
       "title": "Niewiele produktów. Długo i starannie przemyślanych.",
       "lede": "YULA Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację.",
-      "notice": "Status produktu i dowody publikacji znajdują się na jego stronie.",
+      "notice": "Zapisy i źródła są na stronie przejrzystości.",
       "scroll": "Przewiń, aby kontynuować"
     },
     "portfolio": {

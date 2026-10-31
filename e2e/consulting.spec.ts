@@ -36,7 +36,7 @@ for (const [locale, prefix, title, action] of [
         await page.goto(`${prefix}/contact`);
         await expect(page.getByRole("link", { name: action, exact: true })).toHaveAttribute("href", `${prefix}/consulting`);
         await page.goto(`${prefix}/projects/burunfarki`);
-        await expect(page.getByText(locale === "tr" ? /Geliştirme çalışmaları şu anda beklemede/ : /Development is currently on hold/)).toBeVisible();
+        await expect(page.getByText(locale === "tr" ? /tahminler yarıştan önce kayda geçer/ : /predictions are recorded before each race/)).toBeVisible();
         await page.goto(prefix || "/");
         await expect(page.locator('[data-experience-static="true"]')).toBeVisible();
         await expect(page.getByRole("link", { name: locale === "tr" ? "AI danışmanlığı" : "AI consulting", exact: true }).first()).toHaveAttribute("href", `${prefix}/consulting`);
