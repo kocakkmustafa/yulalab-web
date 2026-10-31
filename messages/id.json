@@ -538,6 +538,8 @@
       "contact": "Kontak",
       "soundOn": "Suara aktif",
       "soundOff": "Suara nonaktif",
+      "soundPrompt": "Situs ini memiliki suara. Aktifkan?",
+      "soundSkip": "Lanjutkan tanpa suara",
       "consulting": "Konsultasi AI"
     },
     "loader": {

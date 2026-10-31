@@ -19,6 +19,7 @@ import { resolveVisibleFrameDelta } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
+import { SoundPrompt } from "./SoundPrompt";
 import { scrollProgressForTimeline } from "./storyboard";
 import { evaluateTimeline, STAGES } from "./timeline";
 import type {
@@ -578,6 +579,13 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             />
             {frame.stage === "hero" && frame.overlay.hero > 0.6 ? (
               <GlyphControl locale={copy.locale} rotation={glyphRotation} onChange={setGlyphRotation} />
+            ) : null}
+            {!capture.enabled && !loaderVisible ? (
+              <SoundPrompt
+                copy={{ prompt: copy.navigation.soundPrompt, on: copy.navigation.soundOn, skip: copy.navigation.soundSkip }}
+                soundEnabled={soundEnabled}
+                onSoundToggle={() => void toggleSound()}
+              />
             ) : null}
           </div>
 

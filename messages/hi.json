@@ -538,6 +538,8 @@
       "contact": "संपर्क",
       "soundOn": "ध्वनि चालू",
       "soundOff": "ध्वनि बंद",
+      "soundPrompt": "इस साइट में ध्वनि है। चालू करें?",
+      "soundSkip": "बिना ध्वनि के जारी रखें",
       "consulting": "AI परामर्श"
     },
     "loader": {

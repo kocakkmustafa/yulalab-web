@@ -538,6 +538,8 @@
       "contact": "İletişim",
       "soundOn": "Sesi aç",
       "soundOff": "Sesi kapat",
+      "soundPrompt": "Bu sitede ses var. Açalım mı?",
+      "soundSkip": "Sessiz devam et",
       "consulting": "AI danışmanlığı"
     },
     "loader": {

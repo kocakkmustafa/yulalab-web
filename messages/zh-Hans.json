@@ -538,6 +538,8 @@
       "contact": "联系我们",
       "soundOn": "开启声音",
       "soundOff": "关闭声音",
+      "soundPrompt": "本网站包含声音。要开启吗？",
+      "soundSkip": "不开声音继续",
       "consulting": "AI 咨询"
     },
     "loader": {

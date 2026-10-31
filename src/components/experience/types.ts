@@ -121,6 +121,8 @@ export type ExperienceCopy = {
     contact: string;
     soundOn: string;
     soundOff: string;
+    soundPrompt: string;
+    soundSkip: string;
   };
   loader: readonly [string, string, string, string];
   hero: {

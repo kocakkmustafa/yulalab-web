@@ -165,6 +165,8 @@ export default async function LandingPage({
       contact: t("navigation.contact"),
       soundOn: t("navigation.soundOn"),
       soundOff: t("navigation.soundOff"),
+      soundPrompt: t("navigation.soundPrompt"),
+      soundSkip: t("navigation.soundSkip"),
     },
     loader: [
       t("loader.geometry"),

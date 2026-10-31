@@ -538,6 +538,8 @@
       "contact": "Kontakt",
       "soundOn": "Ton einschalten",
       "soundOff": "Ton ausschalten",
+      "soundPrompt": "Diese Seite hat Ton. Einschalten?",
+      "soundSkip": "Ohne Ton fortfahren",
       "consulting": "KI-Beratung"
     },
     "loader": {

@@ -538,6 +538,8 @@
       "contact": "Contact",
       "soundOn": "Sound on",
       "soundOff": "Sound off",
+      "soundPrompt": "This site has sound. Turn it on?",
+      "soundSkip": "Continue without sound",
       "consulting": "AI consulting"
     },
     "loader": {

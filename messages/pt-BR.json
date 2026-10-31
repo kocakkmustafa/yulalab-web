@@ -538,6 +538,8 @@
       "contact": "Contato",
       "soundOn": "Ativar som",
       "soundOff": "Desativar som",
+      "soundPrompt": "Este site tem som. Quer ativar?",
+      "soundSkip": "Continuar sem som",
       "consulting": "Consultoria em IA"
     },
     "loader": {

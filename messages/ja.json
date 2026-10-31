@@ -538,6 +538,8 @@
       "contact": "お問い合わせ",
       "soundOn": "音声をオンにする",
       "soundOff": "音声をオフにする",
+      "soundPrompt": "このサイトにはサウンドがあります。オンにしますか？",
+      "soundSkip": "サウンドなしで続ける",
       "consulting": "AIコンサルティング"
     },
     "loader": {

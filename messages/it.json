@@ -538,6 +538,8 @@
       "contact": "Contatti",
       "soundOn": "Audio attivo",
       "soundOff": "Audio disattivato",
+      "soundPrompt": "Questo sito ha l’audio. Lo attiviamo?",
+      "soundSkip": "Continua senza audio",
       "consulting": "Consulenza sull'AI"
     },
     "loader": {
