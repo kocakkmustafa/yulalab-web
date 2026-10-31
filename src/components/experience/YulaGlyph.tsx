@@ -20,6 +20,7 @@ import {
   Vector3,
 } from "three";
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
+import { composeGlyphRotation } from "./instruments";
 import { glyphViewportPose } from "./layout";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
@@ -187,12 +188,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   }, []);
   useEffect(() => () => chromeBump.dispose(), [chromeBump]);
 
-  const interactionMix = 1 - smoothstep(segmentProgress(frame.progress, 0.025, 0.075));
-  const rotation: Vec3 = [
-    frame.glyph.rotation[0] + interactionRotation[0] * interactionMix,
-    frame.glyph.rotation[1] + interactionRotation[1] * interactionMix,
-    frame.glyph.rotation[2],
-  ];
+  const rotation = composeGlyphRotation(frame, interactionRotation);
   const whiteMix = frame.glyph.outlineMix;
   const outlineColor = useMemo(
     () => new Color("#ffffff").lerp(new Color("#16171a"), smoothstep(segmentProgress(frame.world.whiteMix, 0.12, 0.38))),

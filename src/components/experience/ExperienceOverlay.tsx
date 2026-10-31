@@ -17,16 +17,19 @@ import type {
   ExperienceStage,
   QualityTier,
   TimelineFrame,
+  Vec3,
 } from "./types";
 import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
+import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
   copy: ExperienceCopy;
   products: ExperienceProduct[];
   frame: TimelineFrame;
   tier: QualityTier;
+  glyphRotation?: Vec3;
   soundEnabled: boolean;
   onSoundToggle: () => void;
   onLinearView: () => void;
@@ -72,6 +75,7 @@ function stageIs(frame: TimelineFrame, stage: ExperienceStage): boolean {
 }
 
 const SEMANTIC_VISIBILITY_THRESHOLD = 0.01;
+const NO_ROTATION: Vec3 = [0, 0, 0];
 
 function stageSemanticActive(
   frame: TimelineFrame,
@@ -403,6 +407,7 @@ export function ExperienceOverlay({
   products,
   frame,
   tier,
+  glyphRotation = NO_ROTATION,
   soundEnabled,
   onSoundToggle,
   onLinearView,
@@ -490,6 +495,8 @@ export function ExperienceOverlay({
         onSoundToggle={onSoundToggle}
         onLinearView={onLinearView}
       />
+
+      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} />
 
       <div className={styles.realHud} aria-hidden="true">
         <span>RENDER / {tier.toUpperCase()}</span>

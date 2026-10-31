@@ -33,6 +33,25 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis (useSmoothScroll) owns wheel easing on the journey; native smooth
+   scrolling would ease every frame it writes a second time. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 ::selection {
   background: rgba(255, 255, 255, 0.18);
 }

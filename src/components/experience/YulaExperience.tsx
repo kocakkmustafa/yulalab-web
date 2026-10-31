@@ -29,6 +29,7 @@ import type {
   Vec3,
 } from "./types";
 import { useExperienceProgress } from "./useExperienceProgress";
+import { useSmoothScroll } from "./useSmoothScroll";
 import styles from "./Experience.module.css";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import type { ResolvedTheme } from "@/lib/theme";
@@ -205,6 +206,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     webgl === "available" &&
     !canvasFailed;
   const { progress, capture, scrollRange } = useExperienceProgress(timelineEnabled, journeyReturn.current !== null);
+  // Desktop wheel only; the opening card locks scrolling until it leaves.
+  useSmoothScroll(timelineEnabled && !capture.enabled && !loaderVisible && !mobile);
   // Native anchors use document pixels; the timeline uses the scrollable range.
   // Land at the first card's center, after both entry fades have completed.
   const firstProductCenter = STAGES.portfolio[0] +
@@ -568,6 +571,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
               products={products}
               frame={frame}
               tier={tier}
+              glyphRotation={glyphRotation}
               soundEnabled={soundEnabled}
               onSoundToggle={() => void toggleSound()}
               onLinearView={showLinearView}
