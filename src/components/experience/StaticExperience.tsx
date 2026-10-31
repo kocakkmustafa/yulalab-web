@@ -76,7 +76,6 @@ export function StaticExperience({
               </div>
               <div className={styles.lifecycleRow}>
                 <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-                {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
               </div>
               <h3>{product.name}</h3>
               <p className={styles.productTagline}>{product.tagline}</p>

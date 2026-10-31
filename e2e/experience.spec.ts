@@ -433,12 +433,13 @@ test("proof descriptions are semantically neutral at focus-slot boundaries", asy
   expect(await boundaryPanel.evaluate((element) => element.hasAttribute("inert"))).toBe(true);
 });
 
-test("research is written as research and never as a shipped build", async ({ page }) => {
+test("an app not yet in a store reads as coming soon, never as a shipped build", async ({ page }) => {
   const gravitaCenter = 0.085 + ((3 + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085);
   const root = await openCapture(page, gravitaCenter);
   await expect(root).toHaveAttribute("data-active-product", "gravita");
-  await expect(page.locator("body")).toContainText(/NO PUBLIC BUILD|PUBLIC BUILD YOK/i);
-  await expect(page.locator("body")).toContainText(/Read research (brief|note)|Araştırma notunu oku/i);
+  const panel = page.locator('[data-product="gravita"]').first();
+  await expect(panel).toContainText(/Coming soon|Yakında/i);
+  await expect(panel).not.toContainText(/App Store|Google Play|Live|Yayında/);
 });
 
 test("proof exposes provenance and freshness fields", async ({ page }) => {

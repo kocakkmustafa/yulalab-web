@@ -43,6 +43,7 @@ export default async function LandingPage({
   const locale = rawLocale;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "experience" });
+  const tStatus = await getTranslations({ locale, namespace: "status" });
 
   const projectSlugs = projects.map((project) => project.slug);
   if (projectSlugs.join("|") !== CANONICAL_PRODUCT_ORDER.join("|")) {
@@ -71,7 +72,8 @@ export default async function LandingPage({
   const lifecycleLabels: Record<ProductLifecycle, string> = {
     live: t("lifecycle.live"),
     beta: t("lifecycle.beta"),
-    research: t("lifecycle.research"),
+    // Founder decision 2026-10-31 (K2): apps not yet in a store read "Coming soon".
+    research: tStatus("comingSoon"),
     archived: t("lifecycle.archived"),
   };
 
@@ -103,10 +105,7 @@ export default async function LandingPage({
       tagline: localized(project.tagline, locale),
       short: localized(project.short, locale),
       href: localizeInternalRoute(record.primaryCta.url, locale),
-      ctaLabel:
-        record.lifecycle === "research"
-          ? t("portfolio.researchAction")
-          : t("portfolio.liveAction"),
+      ctaLabel: t("portfolio.liveAction"),
       lifecycleLabel: lifecycleLabels[record.lifecycle],
       colors: {
         primary: project.brand.primary,
@@ -176,7 +175,7 @@ export default async function LandingPage({
       kicker: t("portfolio.kicker"),
       liveAction: t("portfolio.liveAction"),
       researchAction: t("portfolio.researchAction"),
-      noPublicBuild: t("portfolio.noPublicBuild"),
+      noPublicBuild: tStatus("comingSoon"),
       productCounter: t("portfolio.productCounter"),
     },
     proof: {

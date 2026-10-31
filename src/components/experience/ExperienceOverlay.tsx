@@ -587,7 +587,6 @@ export function ExperienceOverlay({
               </div>
               <div className={styles.lifecycleRow}>
                 <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-                {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
               </div>
               <h2>{product.icon ? <Image src={product.icon} alt="" width={36} height={36} sizes="36px" /> : null}{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
