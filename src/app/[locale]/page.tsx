@@ -156,6 +156,26 @@ export default async function LandingPage({
 
   const copy: ExperienceCopy = {
     locale,
+    instruments: {
+      top: t("instruments.top"),
+      works: t("instruments.works"),
+      proof: t("instruments.proof"),
+      crossing: t("instruments.crossing"),
+      mission: t("instruments.mission"),
+      vision: t("instruments.vision"),
+      values: t("instruments.values"),
+      contact: t("instruments.contact"),
+      glyph: t("instruments.glyph"),
+      quality: t("instruments.quality"),
+      scroll: t("instruments.scroll"),
+      refraction: t("instruments.refraction"),
+      product: t("instruments.product"),
+      off: t("instruments.off"),
+      tierLow: t("instruments.tierLow"),
+      tierMedium: t("instruments.tierMedium"),
+      tierHigh: t("instruments.tierHigh"),
+      wallService: t("instruments.wallService"),
+    },
     navigation: {
       home: t("navigation.home"),
       consulting: t("navigation.consulting"),

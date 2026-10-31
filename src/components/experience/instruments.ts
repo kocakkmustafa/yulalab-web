@@ -1,5 +1,5 @@
 import { segmentProgress, smoothstep, STAGES } from "./timeline";
-import type { ExperienceStage, TimelineFrame, Vec3 } from "./types";
+import type { ExperienceInstrumentCopy, ExperienceStage, TimelineFrame, Vec3 } from "./types";
 
 /**
  * The glyph's rendered orientation: the timeline pose plus the visitor's drag,
@@ -76,15 +76,15 @@ export function projectAxes(rotation: Vec3): ProjectedAxis[] {
     .sort((a, b) => a.depth - b.depth);
 }
 
-export const RULER_STAGES: readonly { stage: ExperienceStage; label: string }[] = [
-  { stage: "hero", label: "TOP" },
-  { stage: "portfolio", label: "WORKS" },
-  { stage: "proof", label: "PROOF" },
-  { stage: "crossing", label: "CROSSING" },
-  { stage: "mission", label: "MISSION" },
-  { stage: "vision", label: "VISION" },
-  { stage: "values", label: "VALUES" },
-  { stage: "closing", label: "CONTACT" },
+export const RULER_STAGES: readonly { stage: ExperienceStage; label: keyof ExperienceInstrumentCopy }[] = [
+  { stage: "hero", label: "top" },
+  { stage: "portfolio", label: "works" },
+  { stage: "proof", label: "proof" },
+  { stage: "crossing", label: "crossing" },
+  { stage: "mission", label: "mission" },
+  { stage: "vision", label: "vision" },
+  { stage: "values", label: "values" },
+  { stage: "closing", label: "contact" },
 ];
 
 /** Fraction of the ruler (0 top, 1 bottom) where a stage begins. */

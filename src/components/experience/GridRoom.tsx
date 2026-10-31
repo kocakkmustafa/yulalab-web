@@ -21,10 +21,16 @@ import { segmentProgress, smoothstep, STAGES } from "./timeline";
 import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
+export type WallTitles = { works: string; service: string };
+
+const ENGLISH_WALL_TITLES: WallTitles = { works: "WORKS", service: "SERVICE" };
+
 export type GridRoomProps = {
   frame: TimelineFrame;
   tier: QualityTier;
   mediaTextures?: readonly Texture[];
+  /** Wall titles in the visitor's language, already upper-cased. */
+  wallTitles?: WallTitles;
 };
 
 const ROOM_VERTEX_SHADER = /* glsl */ `
@@ -282,7 +288,7 @@ function ClosingGeometry({ draw }: { draw: number }) {
   );
 }
 
-export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
+export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL_TITLES }: GridRoomProps) {
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
@@ -292,8 +298,8 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
   const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
-  const worksWordmark = useMemo(() => makeWordmarkTexture("WORKS"), []);
-  const serviceWordmark = useMemo(() => makeWordmarkTexture("SERVICE"), []);
+  const worksWordmark = useMemo(() => makeWordmarkTexture(wallTitles.works), [wallTitles.works]);
+  const serviceWordmark = useMemo(() => makeWordmarkTexture(wallTitles.service), [wallTitles.service]);
   const gridMaterial = useMemo(
     () =>
       new ShaderMaterial({

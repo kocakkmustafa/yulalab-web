@@ -602,6 +602,26 @@
       "beta": "베타 이력 있음",
       "research": "연구",
       "archived": "보관됨"
+    },
+    "instruments": {
+      "top": "처음",
+      "works": "프로젝트",
+      "proof": "기록",
+      "crossing": "전환",
+      "mission": "미션",
+      "vision": "비전",
+      "values": "가치",
+      "contact": "문의",
+      "glyph": "Y 글리프 · 회전",
+      "quality": "품질",
+      "scroll": "스크롤",
+      "refraction": "굴절",
+      "product": "제품",
+      "off": "끔",
+      "tierLow": "낮음",
+      "tierMedium": "중간",
+      "tierHigh": "높음",
+      "wallService": "서비스"
     }
   },
   "studio": {

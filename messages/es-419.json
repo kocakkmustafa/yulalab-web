@@ -602,6 +602,26 @@
       "beta": "Beta registrada",
       "research": "Investigación",
       "archived": "Archivado"
+    },
+    "instruments": {
+      "top": "Inicio",
+      "works": "Proyectos",
+      "proof": "Registros",
+      "crossing": "Transición",
+      "mission": "Misión",
+      "vision": "Visión",
+      "values": "Valores",
+      "contact": "Contacto",
+      "glyph": "Glifo Y · rotación",
+      "quality": "Calidad",
+      "scroll": "Desplazamiento",
+      "refraction": "Refracción",
+      "product": "Producto",
+      "off": "Desactivada",
+      "tierLow": "Baja",
+      "tierMedium": "Media",
+      "tierHigh": "Alta",
+      "wallService": "Servicio"
     }
   },
   "studio": {

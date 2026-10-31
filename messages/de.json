@@ -602,6 +602,26 @@
       "beta": "Beta dokumentiert",
       "research": "Forschung",
       "archived": "Archiviert"
+    },
+    "instruments": {
+      "top": "Anfang",
+      "works": "Projekte",
+      "proof": "Nachweise",
+      "crossing": "Übergang",
+      "mission": "Mission",
+      "vision": "Vision",
+      "values": "Werte",
+      "contact": "Kontakt",
+      "glyph": "Y-Glyphe · Drehung",
+      "quality": "Qualität",
+      "scroll": "Scrollen",
+      "refraction": "Brechung",
+      "product": "Produkt",
+      "off": "Aus",
+      "tierLow": "Niedrig",
+      "tierMedium": "Mittel",
+      "tierHigh": "Hoch",
+      "wallService": "Service"
     }
   },
   "studio": {

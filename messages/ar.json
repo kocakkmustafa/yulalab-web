@@ -602,6 +602,26 @@
       "beta": "له سجل إصدار تجريبي",
       "research": "قيد البحث",
       "archived": "مؤرشف"
+    },
+    "instruments": {
+      "top": "البداية",
+      "works": "المشاريع",
+      "proof": "السجلات",
+      "crossing": "العبور",
+      "mission": "المهمة",
+      "vision": "الرؤية",
+      "values": "القيم",
+      "contact": "التواصل",
+      "glyph": "رمز Y · الدوران",
+      "quality": "الجودة",
+      "scroll": "التمرير",
+      "refraction": "الانكسار",
+      "product": "المنتج",
+      "off": "متوقف",
+      "tierLow": "منخفضة",
+      "tierMedium": "متوسطة",
+      "tierHigh": "عالية",
+      "wallService": "الخدمة"
     }
   },
   "studio": {

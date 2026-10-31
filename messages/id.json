@@ -602,6 +602,26 @@
       "beta": "Beta tercatat",
       "research": "Penelitian",
       "archived": "Diarsipkan"
+    },
+    "instruments": {
+      "top": "Awal",
+      "works": "Proyek",
+      "proof": "Bukti",
+      "crossing": "Peralihan",
+      "mission": "Misi",
+      "vision": "Visi",
+      "values": "Nilai",
+      "contact": "Kontak",
+      "glyph": "Glif Y · rotasi",
+      "quality": "Kualitas",
+      "scroll": "Gulir",
+      "refraction": "Refraksi",
+      "product": "Produk",
+      "off": "Mati",
+      "tierLow": "Rendah",
+      "tierMedium": "Sedang",
+      "tierHigh": "Tinggi",
+      "wallService": "Layanan"
     }
   },
   "studio": {

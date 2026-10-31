@@ -602,6 +602,26 @@
       "beta": "有测试版记录",
       "research": "研究阶段",
       "archived": "已归档"
+    },
+    "instruments": {
+      "top": "顶部",
+      "works": "项目",
+      "proof": "记录",
+      "crossing": "过渡",
+      "mission": "使命",
+      "vision": "愿景",
+      "values": "价值观",
+      "contact": "联系",
+      "glyph": "Y 字形 · 旋转",
+      "quality": "画质",
+      "scroll": "滚动",
+      "refraction": "折射",
+      "product": "产品",
+      "off": "关闭",
+      "tierLow": "低",
+      "tierMedium": "中",
+      "tierHigh": "高",
+      "wallService": "服务"
     }
   },
   "studio": {

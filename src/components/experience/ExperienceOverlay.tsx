@@ -76,6 +76,7 @@ function stageIs(frame: TimelineFrame, stage: ExperienceStage): boolean {
 
 const SEMANTIC_VISIBILITY_THRESHOLD = 0.01;
 const NO_ROTATION: Vec3 = [0, 0, 0];
+const TIER_LABEL = { low: "tierLow", medium: "tierMedium", high: "tierHigh" } as const;
 
 function stageSemanticActive(
   frame: TimelineFrame,
@@ -496,13 +497,13 @@ export function ExperienceOverlay({
         onLinearView={onLinearView}
       />
 
-      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} />
+      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} />
 
       <div className={styles.realHud} aria-hidden="true">
-        <span>RENDER / {tier.toUpperCase()}</span>
-        <span>SCROLL / {Math.round(scrollProgressForTimeline(frame.progress) * 100).toString().padStart(3, "0")}%</span>
-        <span>IOR / {tier === "low" ? "OFF" : "1.35"}</span>
-        <span>PRODUCT / {String(frame.productIndex + 1).padStart(2, "0")} OF {String(products.length).padStart(2, "0")}</span>
+        <span>{copy.instruments.quality} / {copy.instruments[TIER_LABEL[tier]]}</span>
+        <span>{copy.instruments.scroll} / <bdi>{Math.round(scrollProgressForTimeline(frame.progress) * 100).toString().padStart(3, "0")}%</bdi></span>
+        <span>{copy.instruments.refraction} / {tier === "low" ? copy.instruments.off : <bdi>1.35</bdi>}</span>
+        <span>{copy.instruments.product} / <bdi>{String(frame.productIndex + 1).padStart(2, "0")}/{String(products.length).padStart(2, "0")}</bdi></span>
       </div>
 
       <section

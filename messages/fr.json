@@ -602,6 +602,26 @@
       "beta": "Bêta répertoriée",
       "research": "Recherche",
       "archived": "Archivé"
+    },
+    "instruments": {
+      "top": "Début",
+      "works": "Projets",
+      "proof": "Preuves",
+      "crossing": "Passage",
+      "mission": "Mission",
+      "vision": "Vision",
+      "values": "Valeurs",
+      "contact": "Contact",
+      "glyph": "Glyphe Y · rotation",
+      "quality": "Qualité",
+      "scroll": "Défilement",
+      "refraction": "Réfraction",
+      "product": "Produit",
+      "off": "Désactivée",
+      "tierLow": "Basse",
+      "tierMedium": "Moyenne",
+      "tierHigh": "Haute",
+      "wallService": "Service"
     }
   },
   "studio": {

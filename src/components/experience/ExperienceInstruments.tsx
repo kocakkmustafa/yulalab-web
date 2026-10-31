@@ -9,7 +9,7 @@ import {
   RULER_STAGES,
   rulerOffset,
 } from "./instruments";
-import type { TimelineFrame, Vec3 } from "./types";
+import type { ExperienceInstrumentCopy, TimelineFrame, Vec3 } from "./types";
 import styles from "./Experience.module.css";
 
 type RulerStyle = CSSProperties & { "--ruler-offset": number };
@@ -25,9 +25,11 @@ const GIZMO_RADIUS = 34;
 export function ExperienceInstruments({
   frame,
   glyphRotation,
+  copy,
 }: {
   frame: TimelineFrame;
   glyphRotation: Vec3;
+  copy: ExperienceInstrumentCopy;
 }) {
   const rotation = composeGlyphRotation(frame, glyphRotation);
   const quaternion = eulerToQuaternion(rotation);
@@ -45,7 +47,7 @@ export function ExperienceInstruments({
             style={{ "--ruler-offset": rulerOffset(stage) } as RulerStyle}
           >
             <i />
-            <b dir="ltr">{label}</b>
+            <b>{copy[label]}</b>
           </span>
         ))}
         <span
@@ -54,10 +56,10 @@ export function ExperienceInstruments({
         />
       </div>
 
-      {/* Latin instrument text and signed numbers keep LTR order in every locale. */}
-      <div className={styles.glyphReadout} data-visible={glyphVisible ? "true" : "false"} dir="ltr">
-        <p>Y-GLYPH QUATERNION</p>
-        <p className={styles.glyphValues}>
+      {/* Signed numbers keep LTR order in every locale; the label follows the page. */}
+      <div className={styles.glyphReadout} data-visible={glyphVisible ? "true" : "false"}>
+        <p>{copy.glyph}</p>
+        <p className={styles.glyphValues} dir="ltr">
           {quaternion.map((value, index) => (
             <span key={index}>{formatQuaternionComponent(value)}</span>
           ))}

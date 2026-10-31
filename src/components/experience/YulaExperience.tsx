@@ -46,6 +46,7 @@ type ExperienceCanvasProps = {
   onTierChange: (tier: QualityTier) => void;
   onReady: () => void;
   onContextLost: () => void;
+  wallTitles?: { works: string; service: string };
 };
 
 const ExperienceCanvas = dynamic<ExperienceCanvasProps>(
@@ -462,6 +463,13 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   // take effect immediately after mount, avoiding a mismatched active panel.
   const renderedProgress = mounted ? progress : 0;
   const mode: ExperienceMode = mobile ? "mobile" : "desktop";
+  const wallTitles = useMemo(
+    () => ({
+      works: copy.instruments.works.toLocaleUpperCase(copy.locale),
+      service: copy.instruments.wallService.toLocaleUpperCase(copy.locale),
+    }),
+    [copy.instruments.works, copy.instruments.wallService, copy.locale],
+  );
   const frame = useMemo(
     () => applyExperienceTheme(evaluateTimeline(renderedProgress, mode), theme.resolved),
     [mode, renderedProgress, theme.resolved],
@@ -556,6 +564,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
                     displayTheme={theme.resolved}
                     glyphRotation={glyphRotation}
                     products={products}
+                    wallTitles={wallTitles}
                     progress={renderedProgress}
                     mode={mode}
                     tier={tier}

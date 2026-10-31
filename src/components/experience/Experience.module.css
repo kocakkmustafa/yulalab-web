@@ -520,12 +520,6 @@
   background-position: right;
 }
 
-/* The readout is dir="ltr"; place it on the RTL inline end by hand. */
-[dir="rtl"] .glyphReadout {
-  right: auto;
-  left: calc(clamp(22px, 3vw, 52px) + var(--safe-left));
-  justify-items: start;
-}
 
 .rulerMark,
 .rulerCursor {
@@ -576,7 +570,7 @@
 .glyphReadout {
   position: absolute;
   top: calc(96px + var(--safe-top));
-  right: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
+  inset-inline-end: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
   display: grid;
   justify-items: end;
   gap: 8px;

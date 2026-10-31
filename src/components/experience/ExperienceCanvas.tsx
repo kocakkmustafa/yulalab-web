@@ -16,6 +16,7 @@ import type {
   Vec3,
 } from "./types";
 import { ExperienceWorld } from "./ExperienceWorld";
+import type { WallTitles } from "./GridRoom";
 import type { ResolvedTheme } from "@/lib/theme";
 
 export type ExperienceCanvasProps = {
@@ -28,6 +29,7 @@ export type ExperienceCanvasProps = {
   onTierChange: (tier: QualityTier) => void;
   onReady: () => void;
   onContextLost: () => void;
+  wallTitles?: WallTitles;
 };
 
 // Antialiasing is a WebGL context-creation option, so it is intentionally
@@ -150,6 +152,7 @@ export function ExperienceCanvas({
   onTierChange,
   onReady,
   onContextLost,
+  wallTitles,
 }: ExperienceCanvasProps) {
   const quality = QUALITY[tier];
   const assetKey = products
@@ -226,6 +229,7 @@ export function ExperienceCanvas({
           mode={mode}
           onAssetsSettled={handleAssetsSettled}
           products={products}
+          wallTitles={wallTitles}
           progress={progress}
           tier={tier}
         />

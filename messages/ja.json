@@ -602,6 +602,26 @@
       "beta": "ベータ版記録あり",
       "research": "研究段階",
       "archived": "アーカイブ済み"
+    },
+    "instruments": {
+      "top": "トップ",
+      "works": "プロジェクト",
+      "proof": "記録",
+      "crossing": "移行",
+      "mission": "ミッション",
+      "vision": "ビジョン",
+      "values": "価値観",
+      "contact": "お問い合わせ",
+      "glyph": "Yグリフ · 回転",
+      "quality": "画質",
+      "scroll": "スクロール",
+      "refraction": "屈折",
+      "product": "製品",
+      "off": "オフ",
+      "tierLow": "低",
+      "tierMedium": "中",
+      "tierHigh": "高",
+      "wallService": "サービス"
     }
   },
   "studio": {
