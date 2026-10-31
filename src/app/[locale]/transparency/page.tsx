@@ -21,6 +21,8 @@ import { GlassSheen } from "@/components/common/GlassSheen";
 import { ProofCard } from "@/components/common/ProofCard";
 import { publicRegistry } from "@/data/public-registry";
 import { presentClaims } from "@/lib/proof";
+import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
+import { developmentPreviews } from "@/data/product-presentations";
 
 export async function generateMetadata({
   params,
@@ -202,6 +204,20 @@ function Transparency() {
           ))}
         </div>
         <p className="mt-10 max-w-[62ch] text-[14px] leading-[1.7] text-ink-400">{tp("claimsLapsedNote")}</p>
+      </section>
+
+      {/* Dated development captures, moved here from the product pages
+          (founder review 2026-11-01): they document a build at a date, so they
+          belong with the evidence, not with the finished-product pages. */}
+      <section className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-8 pb-8">
+        {Object.keys(developmentPreviews).map((slug) => (
+          <div key={slug}>
+            <h3 className="mt-10 font-display text-2xl font-semibold tracking-tight text-ink-50">
+              {getProjectBySlug(slug)?.name ?? slug}
+            </h3>
+            <DevelopmentPreviewSection slug={slug} locale={locale} />
+          </div>
+        ))}
       </section>
 
       {/* CTA */}

@@ -261,14 +261,6 @@ export const productShowcase: Record<string, ProductShowcase> = {
     price: STORE_APP_PRICE,
     features: [
       {
-        title: { tr: "Dört alan, uzun bir yol.", en: "Four paths, a long road." },
-        body: {
-          tr: "Gitar, şan, piyano ve kulak eğitimi; ilk sesten orta seviyeye uzanan yaklaşık 690 derslik bir yol.",
-          en: "Guitar, voice, piano and ear training: a path of around 690 lessons from your first note to intermediate level.",
-        },
-        roadmap: true,
-      },
-      {
         title: { tr: "Dürüst nota geri bildirimi.", en: "Honest note feedback." },
         body: {
           tr: "Her nota için üç sonuç: doğru, farklı nota ya da duyamadım. Emin olamadığında tahmin etmez.",

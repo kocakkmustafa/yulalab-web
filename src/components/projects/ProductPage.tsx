@@ -3,10 +3,8 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
-import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
 import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
-import { developmentPreviews } from "@/data/product-presentations";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -126,7 +124,6 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
         <ProductCompany slug={project.slug} locale={locale} />
 
-        <DevelopmentPreviewSection slug={project.slug} locale={locale} />
 
 
         {/* 01 — what it does */}
@@ -174,31 +171,6 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
         </section>
 
 
-        {/* Only show the empty interface state when no dated development UI exists. */}
-        {!developmentPreviews[project.slug]?.length ? (
-        <section className="pb-24">
-          <Reveal>
-            <p className={`${KICKER} mb-10`}>{t("interfaceKicker")}</p>
-          </Reveal>
-          <Reveal>
-            <div className="glass glass-accent relative min-h-[clamp(240px,36vh,400px)] grid place-items-center overflow-hidden">
-              <span
-                aria-hidden
-                className="font-display font-extralight leading-none tracking-tightest select-none"
-                style={{
-                  fontSize: "clamp(90px,14vw,200px)",
-                  color: "rgba(244,244,245,0.08)",
-                }}
-              >
-                {project.monogram}
-              </span>
-              <span className="absolute start-5 bottom-4 max-w-[48ch] font-mono text-[10.5px] leading-[1.7] tracking-[0.13em] uppercase text-ink-400">
-                {p.interfaceNote}
-              </span>
-            </div>
-          </Reveal>
-        </section>
-        ) : null}
 
         <ProductPrice
           slug={project.slug}

@@ -108,10 +108,7 @@ export function StaticExperience({
                   })}
                 </div>
               ) : (
-                <div
-                  className={styles.staticResearchSurface}
-                  aria-label={product.lifecycleLabel || product.name}
-                >
+                <div className={styles.staticResearchSurface}>
                   {product.icon ? <img src={product.icon} alt="" loading="lazy" decoding="async" style={{ width: 144, height: 144, objectFit: "contain" }} /> : <span aria-hidden="true">{product.monogram}</span>}
                   {product.lifecycleLabel ? <strong>{product.lifecycleLabel}</strong> : null}
                 </div>
