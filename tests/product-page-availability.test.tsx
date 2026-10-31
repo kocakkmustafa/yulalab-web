@@ -7,6 +7,7 @@ import { ProductPage } from "@/components/projects/ProductPage";
 import { lifeos } from "@/data/projects/lifeos";
 import { burunfarki } from "@/data/projects/burunfarki";
 import { braavolabs } from "@/data/projects/braavolabs";
+import { ostinato } from "@/data/projects/ostinato";
 import { publicRegistry } from "@/data/public-registry";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
@@ -63,5 +64,22 @@ describe.each(["tr", "en"] as const)("%s product page without publication status
       expect(eyebrow).not.toMatch(/canlı|yayında|beta|önizleme|live|preview/i);
       cleanup();
     }
+  });
+
+  it("offers every listed store once and a notify-me email for apps not in a store yet", () => {
+    renderAt(braavolabs, new Date("2027-06-01T12:00:00+03:00"));
+    const appStore = screen.getByRole("link", { name: /^App Store/ });
+    expect(appStore.getAttribute("href")).toBe("https://apps.apple.com/us/app/braavolabs/id6771440905");
+    cleanup();
+
+    renderAt(lifeos, new Date("2027-06-01T12:00:00+03:00"));
+    // The App Store is LifeOS' primary action; it must not appear twice.
+    expect(document.querySelectorAll(`a[href="${surface.url}"]`)).toHaveLength(1);
+    expect(screen.queryByText(/Çıkınca haber ver|Notify me at launch/)).toBeNull();
+    cleanup();
+
+    renderAt(ostinato, new Date("2027-06-01T12:00:00+03:00"));
+    const notify = screen.getByRole("link", { name: locale === "tr" ? "Çıkınca haber ver" : "Notify me at launch" });
+    expect(notify.getAttribute("href")).toMatch(/^mailto:[^?]+\?subject=Ostinato%20%E2%80%94%20/);
   });
 });

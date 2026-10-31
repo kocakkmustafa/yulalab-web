@@ -12,6 +12,7 @@ import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
 import { company } from "@/data/company";
+import { localized } from "@/lib/localized";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
 /**
@@ -28,6 +29,9 @@ const ACCENT: Record<string, string> = {
   burunfarki: "#7FD8B0",
   braavolabs: "#D8B87F",
 };
+
+const STORE_NAME = { appstore: "App Store", playstore: "Google Play" } as const;
+const NOTIFY_ME = { tr: "Çıkınca haber ver", en: "Notify me at launch" };
 
 const KICKER = "font-mono text-[11px] tracking-[0.22em] uppercase text-ink-400";
 const ROW =
@@ -50,6 +54,11 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   // /transparency, not here.
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
+  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
+  const storeLinks = project.links.filter(
+    (link): link is { kind: "appstore" | "playstore"; href: string } =>
+      (link.kind === "appstore" || link.kind === "playstore") && Boolean(link.href) && link.kind !== ctaKind,
+  );
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
@@ -194,7 +203,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
         <ProductPrice
           slug={project.slug}
           locale={locale}
-          comingSoon={project.status === "coming-soon" || project.status === "in-development" ? tStatus("comingSoon") : undefined}
+          comingSoon={comingSoon ? tStatus("comingSoon") : undefined}
         />
 
         <ProductFaq slug={project.slug} locale={locale} />
@@ -228,6 +237,30 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                     {p.ctaPrimary}
                     <ArrowUpRight size={13} strokeWidth={2} className="arrow-nudge" />
                   </TrackedLink>
+                ) : null}
+                {/* Store buttons for every listed store not already used as the
+                    primary action. Brand names stay untranslated. */}
+                {storeLinks.map((link) => (
+                  <TrackedLink
+                    key={link.kind}
+                    href={link.href}
+                    event="store_outbound"
+                    product={project.slug}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2.5 px-6 py-4 text-sm rounded-[10px] border border-white/15 text-ink-100 hover:border-white/30 transition-colors focusable"
+                  >
+                    {STORE_NAME[link.kind]}
+                    <ArrowUpRight size={13} strokeWidth={2} className="arrow-nudge" />
+                  </TrackedLink>
+                ))}
+                {comingSoon ? (
+                  <a
+                    href={`mailto:${project.contactEmail ?? company.contact.email}?subject=${encodeURIComponent(`${project.name} — ${localized(NOTIFY_ME, locale)}`)}`}
+                    className="inline-flex items-center px-6 py-4 text-sm rounded-[10px] border border-white/15 text-ink-100 hover:border-white/30 transition-colors focusable"
+                  >
+                    {localized(NOTIFY_ME, locale)}
+                  </a>
                 ) : null}
                 <a
                   href={`mailto:${project.contactEmail ?? company.contact.email}`}
