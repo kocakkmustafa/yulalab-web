@@ -560,7 +560,8 @@
       "liveAction": "استكشف",
       "researchAction": "اقرأ ملخّص البحث",
       "noPublicBuild": "لا توجد نسخة متاحة للعامة",
-      "productCounter": "المنتج"
+      "productCounter": "المنتج",
+      "allProjects": "كل المشاريع"
     },
     "proof": {
       "kicker": "سجل الأدلة",

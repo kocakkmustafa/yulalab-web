@@ -201,6 +201,7 @@ export default async function LandingPage({
       researchAction: t("portfolio.researchAction"),
       noPublicBuild: tStatus("comingSoon"),
       productCounter: t("portfolio.productCounter"),
+      allProjects: t("portfolio.allProjects"),
     },
     proof: {
       kicker: t("proof.kicker"),

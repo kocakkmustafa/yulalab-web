@@ -42,6 +42,7 @@ type StageStyle = CSSProperties & {
 type PanelStyle = CSSProperties & {
   "--panel-opacity": number;
   "--panel-offset": number;
+  "--panel-blur"?: number;
 };
 
 type WorksBackdropStyle = CSSProperties & {
@@ -577,9 +578,12 @@ export function ExperienceOverlay({
             index === frame.productIndex &&
             panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
           const distance = index - frame.productFloat;
+          // The caption resolves out of blur as its work reaches the front.
+          const captionBlur = Math.min(1, Math.abs(distance) * 1.6);
           const panelStyle: PanelStyle = {
             "--panel-opacity": panelOpacity,
             "--panel-offset": Math.max(-1, Math.min(1, distance)),
+            "--panel-blur": captionBlur,
           };
           return (
             <article
@@ -589,6 +593,7 @@ export function ExperienceOverlay({
               inert={!active}
               data-product={product.slug}
               data-development-media={product.developmentPreviews?.length ? "true" : undefined}
+              data-caption-blur={captionBlur > 0.01 ? "true" : undefined}
               data-active={active ? "true" : "false"}
               style={panelStyle}
             >
@@ -634,6 +639,10 @@ export function ExperienceOverlay({
             </article>
           );
         })}
+
+        <Link href="/projects" className={styles.allWorks} tabIndex={portfolioActive ? 0 : -1}>
+          {copy.portfolio.allProjects} <span aria-hidden="true">↗</span>
+        </Link>
       </section>
 
       <section

@@ -560,7 +560,8 @@
       "liveAction": "Entdecken",
       "researchAction": "Forschungskurzbericht lesen",
       "noPublicBuild": "KEIN ÖFFENTLICHER BUILD",
-      "productCounter": "Produkt"
+      "productCounter": "Produkt",
+      "allProjects": "Alle Projekte"
     },
     "proof": {
       "kicker": "BELEGVERZEICHNIS",

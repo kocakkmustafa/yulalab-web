@@ -4,8 +4,10 @@ import { useThree } from "@react-three/fiber";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   CanvasTexture,
+  DoubleSide,
   LinearFilter,
   LinearMipmapLinearFilter,
+  PlaneGeometry,
   SRGBColorSpace,
   Texture,
   TextureLoader,
@@ -39,6 +41,33 @@ type LoadedTexture = {
 };
 
 const DEFAULT_ASPECT = 1.6;
+// Works hang on a shallow cylinder around the glyph: every face bends around a
+// vertical axis so its edges recede, like the reference's curved media panels.
+export const PANEL_BEND_RADIUS = 4.6;
+const PANEL_BACKING_DEPTH = 0.05;
+
+export function bentPanelGeometry(width: number, height: number): PlaneGeometry {
+  const geometry = new PlaneGeometry(width, height, 32, 1);
+  const position = geometry.attributes.position;
+  for (let index = 0; index < position.count; index += 1) {
+    const angle = position.getX(index) / PANEL_BEND_RADIUS;
+    position.setXYZ(
+      index,
+      Math.sin(angle) * PANEL_BEND_RADIUS,
+      position.getY(index),
+      -(1 - Math.cos(angle)) * PANEL_BEND_RADIUS,
+    );
+  }
+  position.needsUpdate = true;
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function useBentPanel(width: number, height: number): PlaneGeometry {
+  const geometry = useMemo(() => bentPanelGeometry(width, height), [width, height]);
+  useEffect(() => () => geometry.dispose(), [geometry]);
+  return geometry;
+}
 
 function imageAspect(texture: Texture): number {
   const image = texture.image as { width?: number; height?: number } | undefined;
@@ -202,22 +231,23 @@ function BrandedFallback({
   useEffect(() => () => texture.dispose(), [texture]);
   const width = compact ? 3.15 : 3.75;
   const height = width / DEFAULT_ASPECT;
+  const backing = useBentPanel(width + 0.14, height + 0.14);
+  const face = useBentPanel(width, height);
 
   return (
     <group>
-      <mesh position={[0, 0, -0.055]}>
-        <boxGeometry args={[width + 0.14, height + 0.14, 0.1]} />
+      <mesh geometry={backing} position={[0, 0, -PANEL_BACKING_DEPTH]}>
         <meshStandardMaterial
           color={product.colors.background}
           depthWrite={opacity > 0.9}
           metalness={0.25}
           opacity={opacity}
           roughness={0.42}
+          side={DoubleSide}
           transparent
         />
       </mesh>
-      <mesh>
-        <planeGeometry args={[width, height]} />
+      <mesh geometry={face}>
         <meshBasicMaterial
           depthWrite={false}
           map={texture}
@@ -248,6 +278,8 @@ function ScreenshotLayer({
   const loaded = useCardTexture(screenshot.path, tier, onAssetSettled);
   const viewportSize = useThree((state) => state.size);
   const [width, height] = dimensionsForAspect(loaded.aspect);
+  const backing = useBentPanel(width + 0.14, height + 0.14);
+  const face = useBentPanel(width, height);
   const detail = layerIndex > 0;
   const wideCapture = loaded.aspect > 2.5;
   const mobileMix = viewportMobileMix(viewportSize.width);
@@ -284,19 +316,18 @@ function ScreenshotLayer({
       rotation={rotation}
       scale={scale}
     >
-      <mesh position={[0, 0, -0.06]}>
-        <boxGeometry args={[width + 0.14, height + 0.14, 0.1]} />
+      <mesh geometry={backing} position={[0, 0, -PANEL_BACKING_DEPTH]}>
         <meshStandardMaterial
           color={product.colors.background}
           depthWrite={layerOpacity > 0.9}
           metalness={0.18}
           opacity={layerOpacity}
           roughness={0.35}
+          side={DoubleSide}
           transparent
         />
       </mesh>
-      <mesh>
-        <planeGeometry args={[width, height]} />
+      <mesh geometry={face}>
         <meshBasicMaterial
           depthWrite={layerOpacity > 0.85}
           fog={false}
@@ -515,15 +546,15 @@ function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
   const icon = useCardTexture(product.icon, tier, onAssetSettled);
   const cover = useMemo(() => makeIdentityPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
   useEffect(() => () => cover.dispose(), [cover]);
+  const backing = useBentPanel(4.02, 2.31);
+  const face = useBentPanel(3.9, 2.19375);
 
   return (
     <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
-      <mesh position={[0, 0, -0.055]}>
-        <boxGeometry args={[4.02, 2.31, 0.1]} />
-        <meshStandardMaterial color="#131017" opacity={opacity} transparent depthWrite={opacity > 0.9} metalness={0.3} roughness={0.32} />
+      <mesh geometry={backing} position={[0, 0, -PANEL_BACKING_DEPTH]}>
+        <meshStandardMaterial color="#131017" opacity={opacity} transparent depthWrite={opacity > 0.9} metalness={0.3} roughness={0.32} side={DoubleSide} />
       </mesh>
-      <mesh>
-        <planeGeometry args={[3.9, 2.19375]} />
+      <mesh geometry={face}>
         <meshBasicMaterial map={cover} opacity={opacity} transparent={opacity < 0.999} depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
       </mesh>
     </group>

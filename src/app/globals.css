@@ -235,17 +235,52 @@ body:not(:has([data-yula-experience="true"])) main,
 
 /* page transition */
 .page-enter {
-  animation: pageIn 500ms var(--ease-soft) both;
+  animation: pageIn 700ms var(--ease-soft) both;
 }
 @keyframes pageIn {
   from {
     opacity: 0;
-    transform: translateY(6px);
+    filter: blur(8px);
+    transform: translateY(14px);
   }
   to {
     opacity: 1;
+    filter: none;
     transform: translateY(0);
   }
+}
+
+/* Route veil: a glass wash with one ruler line sweeping across, played by
+   PageTransition after client navigations only. */
+.route-veil {
+  position: fixed;
+  z-index: 60;
+  inset: 0;
+  pointer-events: none;
+  background: rgb(var(--yula-ink-900) / 0.55);
+  color: rgb(var(--yula-ink-50));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: routeVeil 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+.route-veil i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: currentColor;
+  opacity: 0.55;
+  animation: routeSweep 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
+}
+@keyframes routeVeil {
+  0% { opacity: 0; }
+  35% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+@keyframes routeSweep {
+  from { transform: translateX(0); }
+  to { transform: translateX(100vw); }
 }
 
 /* drift blobs */
@@ -404,6 +439,9 @@ button:hover .arrow-nudge {
   }
   .page-enter {
     animation-duration: 1ms;
+  }
+  .route-veil {
+    display: none;
   }
   .reveal,
   .reveal.is-ready:not(.is-in),

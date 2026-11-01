@@ -560,7 +560,8 @@
       "liveAction": "詳しく見る",
       "researchAction": "研究概要を読む",
       "noPublicBuild": "公開ビルドなし",
-      "productCounter": "製品"
+      "productCounter": "製品",
+      "allProjects": "すべてのプロジェクト"
     },
     "proof": {
       "kicker": "根拠の台帳",

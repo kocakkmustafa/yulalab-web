@@ -560,7 +560,8 @@
       "liveAction": "Poznaj",
       "researchAction": "Przeczytaj opis badań",
       "noPublicBuild": "BRAK PUBLICZNEJ WERSJI",
-      "productCounter": "Produkt"
+      "productCounter": "Produkt",
+      "allProjects": "Wszystkie projekty"
     },
     "proof": {
       "kicker": "REJESTR DOWODÓW",

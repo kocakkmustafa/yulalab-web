@@ -560,7 +560,8 @@
       "liveAction": "둘러보기",
       "researchAction": "연구 개요 읽기",
       "noPublicBuild": "공개 빌드 없음",
-      "productCounter": "제품"
+      "productCounter": "제품",
+      "allProjects": "모든 프로젝트"
     },
     "proof": {
       "kicker": "근거 원장",
