@@ -37,3 +37,30 @@ for (const [locale, path, comingSoon, statusWords] of [
     });
   });
 }
+
+// Founder direction 2026-11-02: each product page opens with a short pitch
+// right under the hero, ahead of the feature cards.
+test.describe("product pitch", () => {
+  for (const [path, title] of [
+    ["/projects/ostinato", "Çaldığın her notayı duyan bir pratik koçu."],
+    ["/en/projects/lifeos", "The scattered records of your life, in one calm place."],
+    ["/ja/projects/braavolabs", null],
+  ] as const) {
+    test(`opens ${path} with the pitch before the features`, async ({ page }) => {
+      await page.goto(path);
+      const pitch = page.getByTestId("product-pitch");
+      await expect(pitch).toBeVisible();
+      if (title) await expect(pitch.getByRole("heading", { level: 2 })).toHaveText(title);
+      await expect(pitch.getByRole("heading", { level: 3 })).toHaveCount(3);
+      const pitchTop = (await pitch.boundingBox())!.y;
+      const featuresTop = (await page.locator("#product-features-heading").boundingBox())!.y;
+      expect(pitchTop).toBeLessThan(featuresTop);
+    });
+  }
+
+  test("leaves Burun Farkı without a pitch", async ({ page }) => {
+    await page.goto("/projects/burunfarki");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByTestId("product-pitch")).toHaveCount(0);
+  });
+});
