@@ -560,7 +560,8 @@
       "liveAction": "देखें",
       "researchAction": "अनुसंधान संक्षेप पढ़ें",
       "noPublicBuild": "सार्वजनिक बिल्ड उपलब्ध नहीं",
-      "productCounter": "उत्पाद"
+      "productCounter": "उत्पाद",
+      "allProjects": "सभी प्रोजेक्ट"
     },
     "proof": {
       "kicker": "प्रमाण का अभिलेख",

@@ -411,6 +411,31 @@ test("products index links to every product detail page", async ({
   }
 });
 
+test("client navigation plays one route veil that never blocks the next page", async ({ page }) => {
+  await page.goto("/projects");
+  await expect(page.locator(".route-veil")).toHaveCount(0);
+  await page.locator('main a[href$="/projects/lifeos"]').first().click();
+  await expect(page).toHaveURL(/\/projects\/lifeos$/);
+  const veil = page.locator(".route-veil");
+  await expect(veil).toHaveCount(1);
+  await expect(veil).toHaveAttribute("aria-hidden", "true");
+  expect(await veil.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe("none");
+  await expect(page.locator("main h1").first()).toBeVisible();
+});
+
+test("route veil stays off under reduced motion", async ({ browser }) => {
+  const context = await browser.newContext({ reducedMotion: "reduce" });
+  try {
+    const page = await context.newPage();
+    await page.goto(`http://127.0.0.1:${e2ePort}/projects`);
+    await page.locator('main a[href$="/projects/lifeos"]').first().click();
+    await expect(page).toHaveURL(/\/projects\/lifeos$/);
+    await expect(page.locator(".route-veil")).toHaveCount(0);
+  } finally {
+    await context.close();
+  }
+});
+
 test("language switcher moves between TR and EN on the same page", async ({
   page,
 }) => {

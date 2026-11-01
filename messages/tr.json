@@ -560,7 +560,8 @@
       "liveAction": "Ürünü incele",
       "researchAction": "Araştırma notunu oku",
       "noPublicBuild": "PUBLIC BUILD YOK",
-      "productCounter": "Ürün"
+      "productCounter": "Ürün",
+      "allProjects": "Tüm projeler"
     },
     "proof": {
       "kicker": "KANIT DEFTERİ",

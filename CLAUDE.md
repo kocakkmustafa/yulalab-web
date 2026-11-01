@@ -1,6 +1,6 @@
 # CLAUDE.md — yulalab.com (Next.js 15)
 
-YULA Lab şemsiye/vitrin sitesi — Braavolabs, Burun Farkı ve LifeOS'u sergiler. İki dilli (TR/EN), statik üretim. Kanonik program: `BITIRME-PROGRAMI.md` + `DEFTER.md` (bu dizinde). Vizyon/durum: `../VENTURE.md`.
+YULA Lab şemsiye/vitrin sitesi — Braavolabs, Burun Farkı ve LifeOS'u sergiler. 14 dilli (next-intl), statik üretim. Kanonik program: `BITIRME-PROGRAMI.md` + `DEFTER.md` (bu dizinde). Vizyon/durum: `../VENTURE.md`.
 
 ## Komutlar
 ```bash
@@ -11,7 +11,8 @@ npm run build      # üretim build'i — push öncesi yeşil olmalı
 ```
 
 ## Deploy — DİKKAT
-- **Vercel prod dalı = `main`** → main'e push canlıya çıkar. Push öncesi kurucuya sor.
+- **Sağlayıcı Netlify, prod dalı = `main`** → main'e merge canlıya çıkar (Netlify kredisi harcar). Merge ve deploy kurucu onayıyla yapılır; eski Vercel anlatımı tarihseldir.
+- Yayından sonra canlı okuma: `python3 -I scripts/release/live-readback.py <out.json> [yerel-taban]` (aynı ağacın `next start` derlemesiyle sayfa sayfa karşılaştırır).
 - (Karşıt örnek ekosistemde: burunfark-web'in prod dalı `develop` — iki kuralı karıştırma.)
 
 ## Bilinmesi gerekenler

@@ -147,6 +147,7 @@ export type ExperienceCopy = {
     researchAction: string;
     noPublicBuild: string;
     productCounter: string;
+    allProjects: string;
   };
   proof: {
     kicker: string;

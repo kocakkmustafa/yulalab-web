@@ -196,6 +196,25 @@ for (const viewport of [
   }
 }
 
+test("works carousel offers all projects beside the active caption", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 720 });
+  await openCapture(page, 0.085 + (0.5 / PRODUCT_ORDER.length) * (0.505 - 0.085));
+  const stage = page.locator('[data-experience-stage="portfolio"]');
+  await expect(stage).toHaveAttribute("data-active", "true");
+  const link = stage.locator('a[href$="/projects"]');
+  await expect(link).toBeVisible();
+  await expect(link).toContainText(/Tüm projeler|All projects/);
+  const panel = await stage.locator('article[data-active="true"]').boundingBox();
+  const linkBox = await link.boundingBox();
+  expect(panel).not.toBeNull();
+  expect(linkBox).not.toBeNull();
+  expect(linkBox!.x).toBeGreaterThan(panel!.x + panel!.width);
+  expect(linkBox!.x + linkBox!.width).toBeLessThanOrEqual(1280);
+
+  await page.setViewportSize({ width: 390, height: 667 });
+  await expect(link).toBeHidden();
+});
+
 test("hero keeps one semantic product-lab H1", async ({ page }) => {
   await openCapture(page, 0);
   await expect(page.locator("h1")).toHaveCount(1);

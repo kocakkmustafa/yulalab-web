@@ -560,7 +560,8 @@
       "liveAction": "Jelajahi",
       "researchAction": "Baca ringkasan penelitian",
       "noPublicBuild": "BELUM ADA VERSI PUBLIK",
-      "productCounter": "Produk"
+      "productCounter": "Produk",
+      "allProjects": "Semua proyek"
     },
     "proof": {
       "kicker": "CATATAN BUKTI",

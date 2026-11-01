@@ -560,7 +560,8 @@
       "liveAction": "Esplora",
       "researchAction": "Leggi la sintesi della ricerca",
       "noPublicBuild": "NESSUNA VERSIONE PUBBLICA",
-      "productCounter": "Prodotto"
+      "productCounter": "Prodotto",
+      "allProjects": "Tutti i progetti"
     },
     "proof": {
       "kicker": "REGISTRO DELLE PROVE",

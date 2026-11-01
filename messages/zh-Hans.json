@@ -560,7 +560,8 @@
       "liveAction": "探索",
       "researchAction": "阅读研究摘要",
       "noPublicBuild": "暂无公开构建",
-      "productCounter": "产品"
+      "productCounter": "产品",
+      "allProjects": "全部项目"
     },
     "proof": {
       "kicker": "证据台账",

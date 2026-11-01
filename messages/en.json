@@ -560,7 +560,8 @@
       "liveAction": "Explore",
       "researchAction": "Read research brief",
       "noPublicBuild": "NO PUBLIC BUILD",
-      "productCounter": "Product"
+      "productCounter": "Product",
+      "allProjects": "All projects"
     },
     "proof": {
       "kicker": "PROOF LEDGER",
