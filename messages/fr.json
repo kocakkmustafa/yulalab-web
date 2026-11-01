@@ -482,7 +482,7 @@
       "r3v": "14 jours pour les nouveaux abonnés éligibles",
       "r4k": "Statut",
       "r4v": "Prochainement · App Store et Google Play",
-      "note": "Un abonnement Ostinato débloque les leçons payantes de cette application ; Motion+ débloque les leçons payantes des cinq applications Motion. Les nouveaux abonnés éligibles commencent par un essai gratuit de 14 jours ; résiliez depuis votre compte de la boutique. Le son du microphone est traité sur votre appareil et n’est ni enregistré ni envoyé.",
+      "note": "Un abonnement Ostinato débloque les leçons payantes de cette application ; Motion+ débloque les leçons payantes des cinq applications Motion. Les nouveaux abonnés éligibles commencent par un essai gratuit de 14 jours ; résiliez depuis votre compte de la boutique. Le son du microphone est traité sur votre appareil et n’est pas envoyé. Si vous activez l’écoute de votre propre enregistrement, il reste uniquement sur votre appareil et est supprimé à la fin de la séance.",
       "interfaceNote": "Le produit est encore en développement ; nous ne dessinons pas un écran qui n’existe pas. Des captures réelles seront ajoutées ici une fois l’interface stabilisée.",
       "ctaTitle": "Prochainement.",
       "ctaBody": "L’application arrive prochainement sur l’App Store et Google Play. Écrivez-nous pour toute question.",

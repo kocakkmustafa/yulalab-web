@@ -91,7 +91,6 @@ export const productShowcase: Record<string, ProductShowcase> = {
           tr: "Uyku, ruh hâli, harcama ve hareketin birlikte nasıl değiştiğini gösterir; bir ilişkiyi neden-sonuç gibi sunmaz.",
           en: "See how sleep, mood, spending and movement change together, without presenting a pattern as cause and effect.",
         },
-        roadmap: true,
       },
       {
         title: { tr: "Seni tanıyan bir mentör.", en: "A mentor that knows you." },
@@ -158,12 +157,11 @@ export const productShowcase: Record<string, ProductShowcase> = {
     price: { plan: "Individual", monthly: { USD: 19.99 }, store: false },
     features: [
       {
-        title: { tr: "Sohbet ve kodlama ajanı.", en: "Chat and a coding agent." },
+        title: { tr: "Çoklu model sohbet.", en: "Multi-model chat." },
         body: {
-          tr: "Proje klasöründe kod okuyan, yazan ve komut çalıştıran bir ajan; her adım onaylı ve izlenebilir.",
-          en: "An agent that reads and writes code and runs commands in your project folder, with every step approved and traceable.",
+          tr: "Aynı soruyu birden çok modele sor ve yanıtları karşılaştır. İstersen yerel modelle çevrimdışı ya da kendi anahtarınla doğrudan sağlayıcıya çalış.",
+          en: "Ask several models the same question and compare the answers. Work offline with a local model, or straight to a provider with your own key.",
         },
-        roadmap: true,
       },
       {
         title: { tr: "Zamanlanmış görevler.", en: "Scheduled tasks." },
@@ -171,13 +169,19 @@ export const productShowcase: Record<string, ProductShowcase> = {
           tr: "\"Her sabah rakip fiyatlarını kontrol et\" gibi işleri sıklığını seçerek ajana devret.",
           en: "Hand recurring work such as \"check competitor prices every morning\" to an agent and choose how often it runs.",
         },
-        roadmap: true,
       },
       {
         title: { tr: "Masaüstü ve terminal.", en: "Desktop and terminal." },
         body: {
           tr: "macOS ve Windows uygulaması ile komut satırı aracı; kendi API anahtarlarınla çalışır.",
           en: "Apps for macOS and Windows and a command-line tool, working with your own API keys.",
+        },
+      },
+      {
+        title: { tr: "Kodlama ajanı.", en: "A coding agent." },
+        body: {
+          tr: "Proje klasöründe kod okuyan, yazan ve komut çalıştıran bir ajan; her adım onaylı ve izlenebilir.",
+          en: "An agent that reads and writes code and runs commands in your project folder, with every step approved and traceable.",
         },
         roadmap: true,
       },
@@ -263,40 +267,66 @@ export const productShowcase: Record<string, ProductShowcase> = {
       {
         title: { tr: "Dürüst nota geri bildirimi.", en: "Honest note feedback." },
         body: {
-          tr: "Her nota için üç sonuç: doğru, farklı nota ya da duyamadım. Emin olamadığında tahmin etmez.",
-          en: "Three outcomes for every note: correct, a different note, or couldn't hear. When it isn't sure, it doesn't guess.",
+          tr: "Her nota için üç sonuç: doğru, farklı nota ya da duyamadım. Emin olamadığında tahmin etmez. Sonuç ekranı doğruluğu ve hata haritasını gösterir; geçtiğinde sıradaki ders açılır.",
+          en: "Three outcomes for every note: correct, a different note, or couldn't hear. When it isn't sure, it doesn't guess. The result screen shows your accuracy and where the mistakes were; pass, and the next lesson opens.",
         },
-        roadmap: true,
+      },
+      {
+        title: { tr: "Metronom, akan tab ve döngü.", en: "Metronome, moving tab and loops." },
+        body: {
+          tr: "Akan tab şeridiyle çal. Tempoyu %40 ile %120 arasında ayarla, zor yeri döngüye al ya da uygulama seni beklesin.",
+          en: "Play along a moving tab strip. Set the tempo from 40% to 120%, loop the hard part, or let the app wait for you.",
+        },
+      },
+      {
+        title: { tr: "Kurulum sihirbazı.", en: "A setup wizard." },
+        body: {
+          tr: "Dört kısa adım: yerleşim, oda sessizliği, gecikme ölçümü ve akort. Gecikme hoparlör, kablolu kulaklık ve Bluetooth için ayrı ölçülür ve cihazında saklanır.",
+          en: "Four short steps: placement, room quiet, latency and tuning. Latency is measured separately for the speaker, wired headphones and Bluetooth, and stored on your device.",
+        },
       },
       {
         title: { tr: "Dahili akort aleti.", en: "A built-in tuner." },
         body: {
-          tr: "Çalmaya akortlu başlaman için uygulamanın içinde bir akort aleti.",
-          en: "A tuner inside the app so you start every session in tune.",
+          tr: "İbre ve cent göstergesiyle otomatik, elle ve kromatik akort. Emin olamadığında sayı uydurmaz, tekrar çalmanı ister.",
+          en: "Automatic, manual and chromatic tuning with a needle and a cent readout. When it isn't sure, it asks you to play again instead of guessing a number.",
         },
-        roadmap: true,
       },
       {
-        title: { tr: "Metronom, tempo ve döngü.", en: "Metronome, tempo and loops." },
+        title: { tr: "Akort listesi.", en: "Alternate tunings." },
         body: {
-          tr: "Zor yeri yavaşlat, döngüye al ve hedef tempoya adım adım çık.",
-          en: "Slow down the hard part, loop it and step up to the target tempo.",
+          tr: "Gitarda standart, Drop D, yarım ses aşağı, DADGAD ve Open G; 4 ve 5 telli bas; yüksek ve alçak Sol ukulele.",
+          en: "Standard, Drop D, half step down, DADGAD and Open G for guitar; 4- and 5-string bass; high-G and low-G ukulele.",
         },
-        roadmap: true,
+      },
+      {
+        title: { tr: "Seri ve haftalık hedef.", en: "Streaks and a weekly goal." },
+        body: {
+          tr: "Haftalık pratik hedefini koy ve serini sürdür; zor bir hafta için dondurma hakların var. Uygulama dışında çaldığın günleri de işaretleyebilirsin.",
+          en: "Set a weekly practice goal and keep your streak going, with freezes for a hard week. You can also mark days you played outside the app.",
+        },
       },
       {
         title: { tr: "Yazılı dersler, ücretsiz başlangıç.", en: "Written lessons, a free start." },
         body: {
-          tr: "Her kurs ücretsiz derslerle açılır; ücretsiz dersler hesap, kamera ya da mikrofon gerektirmez.",
-          en: "Every course opens with free lessons, which need no account, camera or microphone.",
+          tr: "Her kurs ücretsiz derslerle açılır. Ücretsiz dersler hesap gerektirmez; mikrofonlu pratik isteğe bağlıdır.",
+          en: "Every course opens with free lessons. Free lessons need no account, and practising with the microphone is optional.",
         },
       },
       {
         title: { tr: "Ses cihazında kalır.", en: "Audio stays on your device." },
         body: {
-          tr: "Mikrofonu sen başlatırsın; ses kaydedilmez ve yüklenmez.",
-          en: "You start the microphone yourself; audio is not recorded or uploaded.",
+          tr: "Mikrofonu sen başlatırsın. Ses cihazında işlenir ve yüklenmez. Kendi kaydını dinlemeyi açarsan kayıt yalnız cihazında tutulur ve oturum sonunda silinir.",
+          en: "You start the microphone yourself. Audio is processed on your device and is not uploaded. If you turn on listening to your own recording, it is kept only on your device and deleted when the session ends.",
         },
+      },
+      {
+        title: { tr: "MIDI, referans ses ve daha fazlası.", en: "MIDI, reference audio and more." },
+        body: {
+          tr: "Klavye için MIDI girişi, dersin referans sesini dinleme, seni doğru seviyeden başlatan yerleştirme testi ve ilerlemenin cihazlar arasında senkronu.",
+          en: "MIDI input for keyboards, a reference recording for each lesson, a placement test that starts you at the right level, and progress sync across devices.",
+        },
+        roadmap: true,
       },
     ],
     faq: [
@@ -311,8 +341,8 @@ export const productShowcase: Record<string, ProductShowcase> = {
       {
         question: { tr: "Sesim bir yere gönderilir mi?", en: "Is my audio sent anywhere?" },
         answer: {
-          tr: "Hayır. Ses kaydedilmez ve yüklenmez. Ayrıntılar Motion gizlilik politikasında.",
-          en: "No. Audio is not recorded or uploaded. Details are in the Motion privacy policy.",
+          tr: "Hayır. Ses cihazında işlenir ve yüklenmez. Kendi kaydını dinlemeyi açarsan kayıt yalnız cihazında tutulur ve oturum sonunda silinir. Ayrıntılar Motion gizlilik politikasında.",
+          en: "No. Audio is processed on your device and is not uploaded. If you turn on listening to your own recording, it is kept only on your device and deleted when the session ends. Details are in the Motion privacy policy.",
         },
       },
       {

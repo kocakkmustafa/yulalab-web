@@ -450,7 +450,7 @@
       "r3v": "Uygun yeni abonelere 14 gün",
       "r4k": "Durum",
       "r4v": "Yakında · App Store ve Google Play",
-      "note": "Ostinato üyeliği bu uygulamadaki ücretli dersleri, Motion+ beş Motion uygulamasının ücretli derslerini açar. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; aboneliği mağaza hesabından iptal edebilirsin. Mikrofon sesi cihazında işlenir; kaydedilmez ve yüklenmez.",
+      "note": "Ostinato üyeliği bu uygulamadaki ücretli dersleri, Motion+ beş Motion uygulamasının ücretli derslerini açar. Uygun yeni aboneler 14 günlük ücretsiz denemeyle başlar; aboneliği mağaza hesabından iptal edebilirsin. Mikrofon sesi cihazında işlenir ve yüklenmez. Kendi kaydını dinlemeyi açarsan kayıt yalnız cihazında tutulur ve oturum sonunda silinir.",
       "interfaceNote": "Ürün geliştirme aşamasında; var olmayan bir ekranı çizmiyoruz. Arayüz kesinleşince gerçek görüntüler burada olacak.",
       "ctaTitle": "Yakında.",
       "ctaBody": "Uygulama yakında App Store'da ve Google Play'de. Sorularınız için bize yazın.",

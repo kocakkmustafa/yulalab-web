@@ -25,16 +25,50 @@ describe("finished-product showcase", () => {
   });
 
   // The privacy pages rule these out for the shipped apps today (camera
-  // coaching off, AI only for approved text, no cloud memory). A feature
-  // that describes them must stay labelled until the release carries it.
+  // coaching off, AI only for approved text, no cloud memory), or the
+  // product's main branch does not carry them yet. A feature that describes
+  // them must stay labelled until the release carries it.
   it("keeps capabilities the legal pages rule out today on the roadmap", () => {
-    const legalScope = /camera (coaching|follows)|suggests entries|mentor|coding agent|scheduled|tuner|note feedback|690/i;
+    const legalScope = /camera (coaching|follows)|suggests entries|mentor|coding agent|MIDI|placement test|progress sync/i;
     for (const [slug, showcase] of Object.entries(productShowcase)) {
       for (const feature of showcase.features) {
         const english = `${feature.title.en} ${feature.body.en}`;
         if (legalScope.test(english)) expect(feature.roadmap, `${slug}: ${feature.title.en}`).toBe(true);
       }
     }
+  });
+
+  // The opposite staleness: once a capability is merged into the product's
+  // main branch (Ostinato #12, #14, #15; LifeOS cross-area insights;
+  // Braavolabs desktop, CLI and scheduled pipelines), it must not keep its
+  // roadmap label.
+  it("does not label capabilities the main branches already carry as roadmap", () => {
+    const shipped: Record<string, string[]> = {
+      ostinato: ["Honest note feedback.", "Metronome, moving tab and loops.", "A setup wizard.", "A built-in tuner.", "Alternate tunings.", "Streaks and a weekly goal."],
+      lifeos: ["Connections across areas."],
+      braavolabs: ["Multi-model chat.", "Scheduled tasks.", "Desktop and terminal."],
+    };
+    for (const [slug, titles] of Object.entries(shipped)) {
+      for (const title of titles) {
+        const feature = productShowcase[slug]!.features.find((candidate) => candidate.title.en === title);
+        expect(feature, `${slug}: ${title}`).toBeDefined();
+        expect(feature!.roadmap, `${slug}: ${title}`).toBeUndefined();
+      }
+    }
+  });
+
+  // Founder-approved microphone text (Ostinato #13): audio is not uploaded;
+  // a recording the user chooses to hear back stays on the device and is
+  // deleted when the session ends. "Not recorded" would contradict it.
+  it("states the approved microphone scope for Ostinato", () => {
+    const ostinato = productShowcase.ostinato!;
+    const copy = [...ostinato.features.map((f) => f.body), ...ostinato.faq.map((q) => q.answer)];
+    for (const text of copy) {
+      expect(text.en).not.toMatch(/not recorded/i);
+      expect(text.tr).not.toMatch(/kaydedilmez/);
+    }
+    expect(copy.some((text) => /deleted when the session ends/.test(text.en))).toBe(true);
+    expect(copy.some((text) => /oturum sonunda silinir/.test(text.tr))).toBe(true);
   });
 
   it("labels roadmap features, and only those, in the visitor's language", () => {
