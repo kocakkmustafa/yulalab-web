@@ -33,6 +33,25 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lenis (useSmoothScroll) owns wheel easing on the journey; native smooth
+   scrolling would ease every frame it writes a second time. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
 ::selection {
   background: rgba(255, 255, 255, 0.18);
 }
@@ -493,7 +512,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-warning-strong: #fbbf24;
   --yula-success: #6ee7b7;
   --yula-success-strong: #34d399;
-  --yula-exp-bg: #09060e;
+  --yula-exp-bg: #050505;
   --yula-exp-rgb: 9 6 14;
   --yula-exp-fg: #ffffff;
   --yula-exp-muted: #ded8e8;

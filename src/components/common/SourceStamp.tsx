@@ -68,25 +68,11 @@ export function SourceStamp({
             {text(locale, "kaynak", "source")}
           </a>
         </>
-      ) : (
-        <>
-          <span aria-hidden>·</span>
-          {/* Most sources here are repo paths or dated internal notes, which
-              a public reader cannot open. Rendering one under the word
-              "source" invites them to go check something they have no access
-              to — provenance theatre. Naming it an internal record keeps the
-              provenance and drops the false invitation. */}
-          {/* A repo path is one long unbreakable token — measured at 401px
-              for LifeOS's encryption_key_manager.dart, which pushed the
-              product page 132px past a 320px viewport. Same defect class as
-              the footer's contact address, introduced in the same session
-              that fixed it. `anywhere` rather than `break-word` because only
-              `anywhere` shrinks min-content width. */}
-          <span className="normal-case tracking-normal text-ink-300 [overflow-wrap:anywhere]">
-            {text(locale, "iç kayıt", "internal record")}: {source}
-          </span>
-        </>
-      )}
+      ) : null}
+      {/* Founder decision K9 (2026-10-31): an internal source (a repo path or
+          a dated internal note) is not shown at all. A public reader cannot
+          open it, and the path itself is internal detail; the evidence kind
+          and the verification date above carry the provenance. */}
       {scope ? (
         <>
           <span aria-hidden>·</span>

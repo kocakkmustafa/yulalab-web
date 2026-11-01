@@ -6,7 +6,7 @@
   min-height: 2520vh;
   overflow-x: clip;
   color: #f7f4ff;
-  background: #09060e;
+  background: #050505;
   font-family: var(--font-sans), Inter, system-ui, sans-serif;
 }
 
@@ -29,7 +29,7 @@
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  background: #09060e;
+  background: #050505;
   opacity: 1;
 }
 
@@ -490,6 +490,132 @@
   left: calc(clamp(22px, 3vw, 52px) + var(--safe-left));
 }
 
+/* Instrument layer: stage ruler (leading edge) + glyph orientation readout. */
+.instruments {
+  position: absolute;
+  z-index: 9;
+  inset: 0;
+  color: var(--experience-muted);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  pointer-events: none;
+}
+
+.stageRuler {
+  --ruler-height: 52vh;
+  position: absolute;
+  top: 24vh;
+  inset-inline-start: var(--safe-left);
+  width: 64px;
+  height: var(--ruler-height);
+  border-inline-start: 1px solid transparent;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--experience-line) 38%, transparent) 0 1px,
+      transparent 1px calc(var(--ruler-height) / 40)
+    ) left / 6px 100% no-repeat;
+}
+
+[dir="rtl"] .stageRuler {
+  background-position: right;
+}
+
+
+.rulerMark,
+.rulerCursor {
+  position: absolute;
+  inset-inline-start: 0;
+  top: calc(var(--ruler-offset) * 100%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transform: translateY(-50%);
+}
+
+.rulerMark i {
+  display: block;
+  width: 14px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.7;
+  transition: width 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rulerMark b {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rulerMark[data-active="true"] {
+  color: var(--experience-fg);
+}
+
+.rulerMark[data-active="true"] i {
+  width: 22px;
+}
+
+.rulerMark[data-active="true"] b {
+  opacity: 1;
+}
+
+.rulerCursor {
+  width: 30px;
+  height: 1px;
+  background: var(--experience-fg);
+}
+
+.glyphReadout {
+  position: absolute;
+  top: calc(96px + var(--safe-top));
+  inset-inline-end: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  opacity: 0;
+  transition: opacity 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glyphReadout[data-visible="true"] {
+  opacity: 0.86;
+}
+
+.glyphReadout p {
+  margin: 0;
+}
+
+.glyphValues {
+  display: flex;
+  gap: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.glyphValues span {
+  min-width: 4ch;
+  text-align: end;
+}
+
+.glyphGizmo {
+  width: 80px;
+  height: 80px;
+  margin-top: 6px;
+  overflow: visible;
+}
+
+.glyphGizmo > circle {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.45;
+}
+
+.glyphGizmo line {
+  stroke-width: 1.5;
+}
+
 .stage {
   --stage-opacity: 0;
   position: absolute;
@@ -905,11 +1031,19 @@
 }
 
 .proofProduct h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 16px;
   font-family: var(--font-display), Manrope, sans-serif;
   font-size: 20px;
   font-weight: 500;
   letter-spacing: -0.03em;
+}
+
+.proofProduct h3 img {
+  flex: 0 0 auto;
+  border-radius: 7px;
 }
 
 .claimList {
@@ -2297,4 +2431,122 @@
   .mobileNavigation nav { background: rgb(var(--yula-exp-rgb) / .94); }
   .productPanel, .productPanel[data-development-media="true"] { background: rgb(var(--yula-exp-rgb) / .96); }
   .heroCopy::before { background: linear-gradient(0deg, rgb(var(--yula-exp-rgb) / .9), transparent); }
+}
+
+/* Phones keep the canvas and copy; the instrument layer is a desktop detail. */
+@media (max-width: 767px) {
+  .instruments {
+    display: none;
+  }
+}
+
+/* Opt-in sound question: compact, centred, clear of the scroll cue and HUD. */
+.soundPrompt {
+  position: fixed;
+  z-index: 30;
+  left: 50%;
+  bottom: calc(22px + var(--safe-bottom));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  max-width: min(640px, calc(100vw - 32px));
+  padding: 10px 10px 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(8, 8, 8, 0.72);
+  color: #fff;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  transform: translateX(-50%);
+  backdrop-filter: blur(14px) saturate(1.2);
+  -webkit-backdrop-filter: blur(14px) saturate(1.2);
+  animation: soundPromptIn 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+[dir="rtl"] .soundPrompt {
+  padding: 10px 18px 10px 10px;
+  transform: translateX(50%);
+  left: auto;
+  right: 50%;
+}
+
+.soundPrompt p {
+  margin: 0;
+}
+
+.soundPromptMark {
+  width: 0;
+  height: 0;
+  border-inline: 4px solid transparent;
+  border-bottom: 7px solid #c8ff4d;
+  flex: 0 0 auto;
+}
+
+.soundPrompt button {
+  min-height: 36px;
+  border-radius: 999px;
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.soundPromptOn {
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: transparent;
+  color: inherit;
+}
+
+.soundPromptOn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.soundPromptSkip {
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.soundPrompt button:focus-visible {
+  outline: 2px solid var(--yula-focus, #fff);
+  outline-offset: 3px;
+}
+
+@keyframes soundPromptIn {
+  from { opacity: 0; translate: 0 12px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+/* Phones: under the header, over the glyph, so the hero copy and its
+   actions at the bottom of the screen stay uncovered. */
+@media (max-width: 767px) {
+  .soundPrompt {
+    top: calc(76px + var(--safe-top));
+    bottom: auto;
+    width: calc(100vw - 32px);
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    border-radius: 16px;
+    padding: 10px 12px;
+    font-size: 11px;
+  }
+
+  .soundPrompt p {
+    flex: 1 1 calc(100% - 20px);
+  }
+
+  .soundPrompt button {
+    min-height: 32px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soundPrompt {
+    animation: none;
+  }
 }

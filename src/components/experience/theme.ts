@@ -1,7 +1,7 @@
 import type { TimelineFrame } from "./types";
 import type { ResolvedTheme } from "@/lib/theme";
 
-export const WORLD_DARK_COLOR = "#07030c";
+export const WORLD_DARK_COLOR = "#030303";
 export const WORLD_LIGHT_COLOR = "#e6eef0";
 
 /** Keep narrative geometry/timing intact while honoring the chosen surface. */

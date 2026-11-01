@@ -21,10 +21,16 @@ import { segmentProgress, smoothstep, STAGES } from "./timeline";
 import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
+export type WallTitles = { works: string; service: string };
+
+const ENGLISH_WALL_TITLES: WallTitles = { works: "WORKS", service: "SERVICE" };
+
 export type GridRoomProps = {
   frame: TimelineFrame;
   tier: QualityTier;
   mediaTextures?: readonly Texture[];
+  /** Wall titles in the visitor's language, already upper-cased. */
+  wallTitles?: WallTitles;
 };
 
 const ROOM_VERTEX_SHADER = /* glsl */ `
@@ -80,10 +86,10 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float panel = beam * envelope * bay * joint;
     float wash = exp(-dot(roomPoint - vec2(0.8, -0.2), roomPoint - vec2(0.8, -0.2)) * 1.4);
     float breath = 0.98 + 0.02 * sin(uTime * 0.12);
-    vec3 tint = mix(vec3(0.014, 0.006, 0.055), vec3(0.004, 0.025, 0.06), cellTone);
+    vec3 tint = vec3(mix(0.012, 0.03, cellTone));
     vec3 color = vec3(0.0007) + tint * envelope * 0.7;
-    color += vec3(0.19, 0.21, 0.28) * panel * breath * (1.0 - uProjectionMix * 0.55);
-    color += vec3(0.009, 0.024, 0.075) * wash * (1.0 - panel);
+    color += vec3(0.46) * panel * breath * (1.0 - uProjectionMix * 0.55);
+    color += vec3(0.03) * wash * (1.0 - panel);
     color *= wallLight;
 
     // Subpixel dots fade out rather than alias as the camera changes depth.
@@ -99,7 +105,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float works = titleMask(uWorksTitle, titleUv);
     float service = titleMask(uServiceTitle, titleUv);
     float wallTitle = mix(works * uGalleryMix, service, uProjectionMix);
-    color += vec3(0.18, 0.19, 0.23) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
+    color += vec3(0.21) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
 
     // Borrow only broad color from the owned media. The foreground keeps the
     // complete readable guest screen; the wall no longer repeats its UI/text.
@@ -177,7 +183,7 @@ const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
       (1.0 - smoothstep(0.84, 1.0, vUv.x)) *
       smoothstep(0.0, 0.2, vUv.y) *
       (1.0 - smoothstep(0.8, 1.0, vUv.y));
-    vec3 color = mix(vec3(0.22, 0.38, 0.7), vec3(0.25, 0.23, 0.28), uWhiteMix);
+    vec3 color = mix(vec3(0.62), vec3(0.25), uWhiteMix);
     float alpha = dotMask * edgeFade * uOpacity * mix(0.045, 0.018, uWhiteMix);
 
     if (alpha < 0.008) discard;
@@ -193,7 +199,7 @@ function makeWordmarkTexture(label: string): CanvasTexture {
 
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillStyle = "#f2eaff";
+    context.fillStyle = "#ffffff";
     context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
@@ -282,7 +288,7 @@ function ClosingGeometry({ draw }: { draw: number }) {
   );
 }
 
-export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
+export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL_TITLES }: GridRoomProps) {
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
@@ -292,8 +298,8 @@ export function GridRoom({ frame, tier, mediaTextures }: GridRoomProps) {
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
   const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
-  const worksWordmark = useMemo(() => makeWordmarkTexture("WORKS"), []);
-  const serviceWordmark = useMemo(() => makeWordmarkTexture("SERVICE"), []);
+  const worksWordmark = useMemo(() => makeWordmarkTexture(wallTitles.works), [wallTitles.works]);
+  const serviceWordmark = useMemo(() => makeWordmarkTexture(wallTitles.service), [wallTitles.service]);
   const gridMaterial = useMemo(
     () =>
       new ShaderMaterial({

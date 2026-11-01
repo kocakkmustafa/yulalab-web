@@ -5,7 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Color, Fog } from "three";
 import { CameraRig } from "./CameraRig";
-import { GridRoom } from "./GridRoom";
+import { GridRoom, type WallTitles } from "./GridRoom";
 import { PortfolioField } from "./PortfolioField";
 import { evaluateTimeline } from "./timeline";
 import type {
@@ -29,6 +29,7 @@ export type ExperienceWorldProps = {
   mode: ExperienceMode;
   tier: QualityTier;
   onAssetsSettled: () => void;
+  wallTitles?: WallTitles;
 };
 
 function WorldTheme({ frame }: { frame: TimelineFrame }) {
@@ -65,6 +66,7 @@ export function ExperienceWorld({
   mode,
   tier,
   onAssetsSettled,
+  wallTitles,
 }: ExperienceWorldProps) {
   const frame = useMemo(
     () => applyExperienceTheme(evaluateTimeline(progress, mode), displayTheme),
@@ -122,7 +124,7 @@ export function ExperienceWorld({
         />
       </Environment>
 
-      <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} />
+      <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} wallTitles={wallTitles} />
       <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
       <PortfolioField
         frame={frame}

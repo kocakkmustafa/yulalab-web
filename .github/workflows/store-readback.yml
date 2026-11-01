@@ -1,0 +1,55 @@
+name: Daily store readback
+# Founder decision K9 (2026-10-31): read the public store and web records the
+# registry lists once a day. Deliberately small: no checkout, no install, no
+# commit (a commit to main would start a paid Netlify deploy). It reads the
+# published registry, checks each live surface, writes a job summary and
+# fails when a listed surface stops resolving. Public repo: no paid minutes.
+'on':
+  schedule:
+  - cron: '17 4 * * *'
+  workflow_dispatch: {}
+permissions: {}
+jobs:
+  readback:
+    name: store and web readback
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+    - name: Read registry surfaces
+      shell: python3 {0}
+      run: |
+        import json, os, re, urllib.request
+        def get(url, timeout=20):
+            request = urllib.request.Request(url, headers={"User-Agent": "yulalab-store-readback"})
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                return response.status, response.read()
+        status, body = get("https://yulalab.com/portfolio-registry.json")
+        registry = json.loads(body)
+        rows, failures = [], []
+        for product in registry["products"]:
+            for surface in product.get("surfaces", []):
+                url, kind = surface.get("url") or "", surface.get("kind")
+                if surface.get("status") != "live" or not url:
+                    continue
+                try:
+                    match = re.search(r"/id(\d+)", url)
+                    if kind == "ios" and match:
+                        _, raw = get(f"https://itunes.apple.com/lookup?id={match.group(1)}&country=us")
+                        results = json.loads(raw).get("results", [])
+                        ok = len(results) == 1
+                        detail = f"{results[0].get('trackName')} {results[0].get('version')}" if ok else "no listing"
+                    else:
+                        code, _ = get(url)
+                        ok, detail = code == 200, f"HTTP {code}"
+                except Exception as error:  # network or HTTP error
+                    ok, detail = False, type(error).__name__
+                rows.append(f"| {product['slug']} | {kind} | {'ok' if ok else 'FAIL'} | {detail} |")
+                if not ok:
+                    failures.append(f"{product['slug']} {kind}")
+        summary = ["## Store readback", "", f"Registry generated {registry.get('generatedAt')}", "",
+                   "| Product | Surface | Result | Detail |", "|---|---|---|---|", *rows]
+        with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as handle:
+            handle.write("\n".join(summary) + "\n")
+        print("\n".join(rows))
+        if failures:
+            raise SystemExit("Surfaces no longer resolving: " + ", ".join(failures))
