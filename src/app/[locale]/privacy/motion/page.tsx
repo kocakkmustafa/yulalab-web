@@ -175,6 +175,7 @@ function MotionPrivacy() {
                 <li>· {text(locale, "Hesap ve ürün verileri: hesap silinene kadar; silmede hemen.", "Account and product data: until the account is deleted; immediately on deletion.")}</li>
                 <li>· {text(locale, "Silme kaydı (hesap kimliğinin tek yönlü özeti): diğer cihazların silmeyi tanıması için 3 yıl.", "Deletion receipt (one-way digest of the account ID): kept for 3 years so other devices can recognise the deletion.")}</li>
                 <li>· {text(locale, "Sağlayıcı günlükleri: en fazla 30 gün.", "Provider logs: at most 30 days.")}</li>
+                <li>· {text(locale, "Oturum kaydı (IP adresi ve kullanıcı aracısı dahil): oturum açık kaldıkça; çıkışta, oturum sona erdiğinde veya hesap silindiğinde silinir.", "Session record (including IP address and user agent): while the session stays active; deleted on sign-out, when the session ends or when the account is deleted.")}</li>
                 <li>· {text(locale, "Yedekler: en fazla 30 günlük döngü; geri dönüşte silmeler yeniden uygulanır.", "Backups: cycle of at most 30 days; deletions are reapplied after any restore.")}</li>
                 {MOTION_PARENTAL_CONSENT_LIVE && (
                   <>
