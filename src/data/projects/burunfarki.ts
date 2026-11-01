@@ -19,8 +19,8 @@ export const burunfarki: ProjectConfig = {
     en: "Burun Farkı is a data-driven analytics product for Turkish horse racing. It documents live-tracking performance at burunfark.com/dogruluk and never hides why the model made a prediction.",
   },
   short: {
-    tr: "Türkiye at yarışları için veri odaklı analiz ürünü. Geliştirme şu anda beklemede. Tarihli performans kayıtları ve ölçüm sınırları ürün sayfasındadır; güncel yayın durumu ayrıca doğrulanmalıdır.",
-    en: "A data-driven analytics product for Turkish horse racing. Development is currently on hold. Dated performance records and measurement limits are on the product page; current publication status requires separate verification.",
+    tr: "Türkiye at yarışları için veri odaklı analiz ürünü. Tahminler yarıştan önce kayda geçer; sonuçlar geriye dönük düzeltilmez.",
+    en: "A data-driven analytics product for Turkish horse racing. Predictions are recorded before each race, and results are never revised after the fact.",
   },
   brand: {
     primary: "#FAB81F",

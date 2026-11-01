@@ -79,7 +79,7 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
     expect(screen.getByText(`${locale}::verified in source code`)).toBeTruthy();
     expect(screen.getByText(`${locale}::Narrow scope`)).toBeTruthy();
     expect(screen.getByText(`${locale}::needs re-verification — window closed 2026-02-02`)).toBeTruthy();
-    expect(screen.getByText(`${locale}::internal record: ventures/source/record.ts`)).toBeTruthy();
+    expect(document.body.textContent).not.toContain("ventures/source/record.ts");
     expect(screen.queryByRole("link")).toBeNull();
   });
 });

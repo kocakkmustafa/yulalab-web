@@ -63,7 +63,8 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     expect(container.querySelector("#experience-product-braavolabs")?.textContent).toContain(products[0].category);
     expect(products[0].category).not.toBe("Autonomous AI Company OS");
     expect(products[0].short).not.toBe("An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.");
-    expect(container.querySelector("#experience-product-lifeos img")?.getAttribute("alt")).toBeTruthy();
+    // Home introduces products by app icon (founder decision 2026-10-31).
+    expect(container.querySelector("#experience-product-lifeos img")?.getAttribute("src")).toBe("/projects/lifeos/icon.png");
   });
 
   it("exposes all fourteen native language choices and keeps section navigation", async () => {
@@ -80,15 +81,22 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     expect(onSoundToggle).toHaveBeenCalledTimes(1);
   });
 
-  it("keeps translated proof caveats and isolates technical sources and ISO dates", async () => {
+  it("keeps translated proof caveats and isolates public sources and ISO dates, hiding internal paths", async () => {
     const { copy, products } = await load(locale);
     const product = products.find((item) => item.claims.length > 0)!;
     const { container } = render(<ProofLedger copy={copy} product={product} today="2099-01-01" />);
     expect(screen.getAllByText(copy.proof.stale).length).toBeGreaterThan(0);
     const first = product.claims[0];
     expect(screen.getAllByText(first.statement).length).toBeGreaterThan(0);
-    const source = screen.getByText(first.source);
-    expect(source.getAttribute("dir")).toBe("ltr");
+    // K9: an internal path is never printed; a public source is an LTR link.
+    for (const claim of product.claims) {
+      if (/^https?:\/\//.test(claim.source)) {
+        const link = screen.getAllByRole("link").find((item) => item.getAttribute("href") === claim.source)!;
+        expect(link.closest("dd")?.getAttribute("dir")).toBe("ltr");
+      } else {
+        expect(screen.queryByText(claim.source)).toBeNull();
+      }
+    }
     expect(container.querySelector(`time[datetime="${first.verifiedAt}"]`)?.getAttribute("dir")).toBe("ltr");
     expect(screen.getAllByText(text(locale, "kaynak kodda doğrulandı", "verified in source code")).length).toBeGreaterThan(0);
   });

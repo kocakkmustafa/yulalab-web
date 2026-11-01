@@ -7,20 +7,20 @@ export const braavolabs: ProjectConfig = {
   kind: ["platform", "web", "mobile"],
   status: "beta",
   category: {
-    tr: "Otonom AI Şirket İşletim Sistemi",
-    en: "Autonomous AI Company OS",
+    tr: "Kendi AI Şirketin",
+    en: "Your Own AI Company",
   },
   tagline: {
-    tr: "AI ekibini tek merkezden yönet.",
-    en: "Manage your AI team in one place.",
+    tr: "Sohbet, kod, zamanlanmış görevler ve bir AI şirketi.",
+    en: "Chat, code, scheduled tasks and an AI company.",
   },
   description: {
     tr: "Braavolabs, küçük ekiplerin AI ajanlarını ve otomasyonlarını tek panelden kurup yönetmesini sağlayan bir işletim sistemi.",
     en: "Braavolabs is an operating system for small teams to build and manage AI agents and automations from a single panel.",
   },
   short: {
-    tr: "Küçük ekipler için otonom AI şirket OS'i. Primitifler, ajan ağları ve şeffaf maliyet — tek panel.",
-    en: "An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.",
+    tr: "Sohbet ve kodlama ajanı, zamanlanmış görevler ve bilgisayarında çalışan hazır ajanlardan bir AI şirketi; her çalıştırmanın maliyeti görünür.",
+    en: "A chat and coding agent, scheduled tasks and an AI company of ready-made agents running on your computer, with the cost of every run in view.",
   },
   brand: {
     primary: "#00D1FF",

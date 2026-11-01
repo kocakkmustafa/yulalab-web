@@ -246,10 +246,13 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
             {claim.figure ? <strong className={styles.claimFigure}>{claim.figure}</strong> : null}
             <p className={styles.claimStatement}>{claim.statement}</p>
             <dl className={styles.provenance}>
-              <div>
-                <dt>{copy.proof.source}</dt>
-                <dd dir="ltr">{claim.source}</dd>
-              </div>
+              {/* K9: only a public source is shown; internal paths stay out of the page. */}
+              {/^https?:\/\//.test(claim.source) ? (
+                <div>
+                  <dt>{copy.proof.source}</dt>
+                  <dd dir="ltr"><a href={claim.source} target="_blank" rel="noopener noreferrer">{claim.source}</a></dd>
+                </div>
+              ) : null}
               <div>
                 <dt>{copy.proof.scope}</dt>
                 <dd>{claim.scope}</dd>
@@ -585,10 +588,11 @@ export function ExperienceOverlay({
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
                 <span>{product.category}</span>
               </div>
-              <div className={styles.lifecycleRow}>
-                <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-                {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
-              </div>
+              {product.lifecycleLabel ? (
+                <div className={styles.lifecycleRow}>
+                  <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
+                </div>
+              ) : null}
               <h2>{product.icon ? <Image src={product.icon} alt="" width={36} height={36} sizes="36px" /> : null}{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
@@ -661,7 +665,7 @@ export function ExperienceOverlay({
               data-active={active ? "true" : "false"}
               style={style}
             >
-              <h3>{product.name}</h3>
+              <h3>{product.icon ? <Image src={product.icon} alt="" width={28} height={28} sizes="28px" /> : null}{product.name}</h3>
               <ProofLedger compact copy={copy} product={product} today={today} />
             </article>
             );

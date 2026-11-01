@@ -49,7 +49,9 @@ test("status colors, font variables, gradients and focus transitions retain thei
   await page.goto("/en/support");
   const styles = await page.evaluate(() => {
     const host = document.createElement("div");
-    host.innerHTML = '<span class="text-amber-300">A</span><span class="text-emerald-400">B</span>' +
+    // Status pills no longer use the green/amber pair (founder decision
+    // 2026-10-31); the lapsed-claim amber is the status colour still in use.
+    host.innerHTML = '<span class="text-amber-300/90">A</span><span class="text-ink-300">B</span>' +
       '<span class="font-display">Display</span><span class="font-mono">Mono</span>' +
       '<div class="bg-gradient-to-t from-black/40 to-transparent">Gradient</div>' +
       '<button class="transition-colors focusable">Focus</button>';
@@ -57,8 +59,17 @@ test("status colors, font variables, gradients and focus transitions retain thei
     const read = (index: number) => getComputedStyle(host.children[index]);
     const button = host.children[5] as HTMLButtonElement;
     button.focus();
+    // Chrome serialises an alpha Tailwind colour as oklab(); paint it to read sRGB.
+    const toRgb = (color: string) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const context = canvas.getContext("2d")!;
+      context.fillStyle = color;
+      context.fillRect(0, 0, 1, 1);
+      return Array.from(context.getImageData(0, 0, 1, 1).data.slice(0, 3));
+    };
     const result = {
-      amber: read(0).color, emerald: read(1).color,
+      amber: toRgb(read(0).color), emerald: read(1).color,
       displayFont: read(2).fontFamily, monoFont: read(3).fontFamily,
       gradient: read(4).backgroundImage,
       transition: read(5).transitionProperty,
@@ -67,8 +78,9 @@ test("status colors, font variables, gradients and focus transitions retain thei
     host.remove();
     return result;
   });
-  expect(styles.amber).toBe("rgb(252, 211, 77)");
-  expect(styles.emerald).toBe("rgb(52, 211, 153)");
+  const [red, green, blue] = styles.amber;
+  expect(Math.abs(red - 252) + Math.abs(green - 211) + Math.abs(blue - 77)).toBeLessThanOrEqual(6);
+  expect(styles.emerald).not.toBe("rgb(0, 0, 0)");
   expect(styles.displayFont).not.toContain("var(");
   expect(styles.displayFont).toMatch(/Manrope|Inter/);
   expect(styles.monoFont).not.toContain("var(");

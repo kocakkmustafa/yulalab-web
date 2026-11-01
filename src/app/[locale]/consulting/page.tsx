@@ -30,7 +30,7 @@ export default async function ConsultingPage({ params }: Props) {
       </section>
       <section aria-labelledby="services-title" className="mt-20">
         <h2 id="services-title" className="font-display text-3xl font-semibold">{t("servicesTitle")}</h2>
-        <div className="mt-8 grid md:grid-cols-3 gap-5">
+        <div className="mt-8 grid md:grid-cols-2 xl:grid-cols-4 gap-5">
           {services.map((service, index) => <article key={service.title} className="rounded-2xl border border-hairline bg-surface p-6">
             <p aria-hidden="true" className="font-mono text-sm text-ink-300">0{index + 1}</p>
             <h3 className="mt-5 font-display text-2xl font-semibold">{service.title}</h3>
