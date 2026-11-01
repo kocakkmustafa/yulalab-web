@@ -627,8 +627,9 @@ test("no-JS response is the complete linear document and labels publication hist
   const lifeOS = page.locator("article").filter({
     has: page.getByRole("heading", { name: "LifeOS", level: 3 }),
   });
-  await expect(lifeOS).not.toContainText(/no public build/i);
-  await expect(lifeOS).toContainText(/publication on record/i);
+  // Founder decision 2026-10-31: home cards carry no publication status;
+  // the records live on /transparency.
+  await expect(lifeOS).not.toContainText(/no public build|publication on record|beta on record/i);
   const unknownFreshness = page.locator('[data-freshness="unknown"]');
   await expect(unknownFreshness.first()).toContainText(/freshness check pending/i);
   await expect(page.locator('[data-freshness="current"]')).toHaveCount(0);
