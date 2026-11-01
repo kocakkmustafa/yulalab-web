@@ -538,6 +538,8 @@
       "contact": "Contact",
       "soundOn": "Sound on",
       "soundOff": "Sound off",
+      "soundPrompt": "This site has sound. Turn it on?",
+      "soundSkip": "Continue without sound",
       "consulting": "AI consulting"
     },
     "loader": {
@@ -600,6 +602,26 @@
       "beta": "Beta on record",
       "research": "Research",
       "archived": "Archived"
+    },
+    "instruments": {
+      "top": "Top",
+      "works": "Projects",
+      "proof": "Records",
+      "crossing": "Crossing",
+      "mission": "Mission",
+      "vision": "Vision",
+      "values": "Values",
+      "contact": "Contact",
+      "glyph": "Y glyph · rotation",
+      "quality": "Quality",
+      "scroll": "Scroll",
+      "refraction": "Refraction",
+      "product": "Product",
+      "off": "Off",
+      "tierLow": "Low",
+      "tierMedium": "Medium",
+      "tierHigh": "High",
+      "wallService": "Service"
     }
   },
   "studio": {

@@ -538,6 +538,8 @@
       "contact": "İletişim",
       "soundOn": "Sesi aç",
       "soundOff": "Sesi kapat",
+      "soundPrompt": "Bu sitede ses var. Açalım mı?",
+      "soundSkip": "Sessiz devam et",
       "consulting": "AI danışmanlığı"
     },
     "loader": {
@@ -600,6 +602,26 @@
       "beta": "Beta kaydı var",
       "research": "Araştırma",
       "archived": "Arşiv"
+    },
+    "instruments": {
+      "top": "Başa",
+      "works": "Projeler",
+      "proof": "Kayıtlar",
+      "crossing": "Geçiş",
+      "mission": "Misyon",
+      "vision": "Vizyon",
+      "values": "Değerler",
+      "contact": "İletişim",
+      "glyph": "Y glifi · dönüş",
+      "quality": "Kalite",
+      "scroll": "Kaydırma",
+      "refraction": "Kırılma",
+      "product": "Ürün",
+      "off": "Kapalı",
+      "tierLow": "Düşük",
+      "tierMedium": "Orta",
+      "tierHigh": "Yüksek",
+      "wallService": "Hizmet"
     }
   },
   "studio": {

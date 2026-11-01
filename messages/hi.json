@@ -538,6 +538,8 @@
       "contact": "संपर्क",
       "soundOn": "ध्वनि चालू",
       "soundOff": "ध्वनि बंद",
+      "soundPrompt": "इस साइट में ध्वनि है। चालू करें?",
+      "soundSkip": "बिना ध्वनि के जारी रखें",
       "consulting": "AI परामर्श"
     },
     "loader": {
@@ -600,6 +602,26 @@
       "beta": "बीटा का रिकॉर्ड मौजूद है",
       "research": "अनुसंधान",
       "archived": "संग्रहीत"
+    },
+    "instruments": {
+      "top": "शुरुआत",
+      "works": "प्रोजेक्ट",
+      "proof": "रिकॉर्ड",
+      "crossing": "संक्रमण",
+      "mission": "मिशन",
+      "vision": "विज़न",
+      "values": "मूल्य",
+      "contact": "संपर्क",
+      "glyph": "Y ग्लिफ़ · घुमाव",
+      "quality": "गुणवत्ता",
+      "scroll": "स्क्रॉल",
+      "refraction": "अपवर्तन",
+      "product": "उत्पाद",
+      "off": "बंद",
+      "tierLow": "कम",
+      "tierMedium": "मध्यम",
+      "tierHigh": "उच्च",
+      "wallService": "सेवा"
     }
   },
   "studio": {

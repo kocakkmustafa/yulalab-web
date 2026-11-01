@@ -538,6 +538,8 @@
       "contact": "Contatti",
       "soundOn": "Audio attivo",
       "soundOff": "Audio disattivato",
+      "soundPrompt": "Questo sito ha l’audio. Lo attiviamo?",
+      "soundSkip": "Continua senza audio",
       "consulting": "Consulenza sull'AI"
     },
     "loader": {
@@ -600,6 +602,26 @@
       "beta": "Beta documentata",
       "research": "Ricerca",
       "archived": "Archiviato"
+    },
+    "instruments": {
+      "top": "Inizio",
+      "works": "Progetti",
+      "proof": "Prove",
+      "crossing": "Passaggio",
+      "mission": "Missione",
+      "vision": "Visione",
+      "values": "Valori",
+      "contact": "Contatti",
+      "glyph": "Glifo Y · rotazione",
+      "quality": "Qualità",
+      "scroll": "Scorrimento",
+      "refraction": "Rifrazione",
+      "product": "Prodotto",
+      "off": "Disattivata",
+      "tierLow": "Bassa",
+      "tierMedium": "Media",
+      "tierHigh": "Alta",
+      "wallService": "Servizio"
     }
   },
   "studio": {

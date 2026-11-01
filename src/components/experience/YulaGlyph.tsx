@@ -20,6 +20,7 @@ import {
   Vector3,
 } from "three";
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
+import { composeGlyphRotation } from "./instruments";
 import { glyphViewportPose } from "./layout";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
@@ -187,12 +188,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   }, []);
   useEffect(() => () => chromeBump.dispose(), [chromeBump]);
 
-  const interactionMix = 1 - smoothstep(segmentProgress(frame.progress, 0.025, 0.075));
-  const rotation: Vec3 = [
-    frame.glyph.rotation[0] + interactionRotation[0] * interactionMix,
-    frame.glyph.rotation[1] + interactionRotation[1] * interactionMix,
-    frame.glyph.rotation[2],
-  ];
+  const rotation = composeGlyphRotation(frame, interactionRotation);
   const whiteMix = frame.glyph.outlineMix;
   const outlineColor = useMemo(
     () => new Color("#ffffff").lerp(new Color("#16171a"), smoothstep(segmentProgress(frame.world.whiteMix, 0.12, 0.38))),
@@ -205,8 +201,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const closingVisibility = closingHandoff
     * (1 - frame.world.serviceIn) * readingVisibility;
   const bodyColor = useMemo(
-    () => new Color("#ffffff").lerp(new Color("#e0d3ff"), frame.overlay.hero * 0.42).lerp(new Color("#f8f7f2"), whiteMix),
-    [frame.overlay.hero, whiteMix],
+    () => new Color("#ffffff").lerp(new Color("#f8f7f2"), whiteMix),
+    [whiteMix],
   );
   const bodyOpacity = (1 - whiteMix * 0.94) * closingVisibility;
   // The constrained tier uses alpha, not an extra transmission render pass.
@@ -319,16 +315,16 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             bumpScale={0.012}
             attenuationDistance={8}
             backsideResolution={1}
-            chromaticAberration={0.025}
+            chromaticAberration={tier === "high" ? 0.22 : 0.14}
             clearcoat={1}
             clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
             color={bodyColor}
             depthWrite={bodyOpacity > 0.55}
-            distortion={0.12}
+            distortion={0.05}
             distortionScale={0.34}
             envMapIntensity={tier === "high" ? 1.8 : 1.5}
             ior={1.35}
-            iridescence={0.3}
+            iridescence={0.12}
             iridescenceIOR={1.35}
             metalness={0.04}
             opacity={bodyOpacity}

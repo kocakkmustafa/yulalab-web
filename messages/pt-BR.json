@@ -538,6 +538,8 @@
       "contact": "Contato",
       "soundOn": "Ativar som",
       "soundOff": "Desativar som",
+      "soundPrompt": "Este site tem som. Quer ativar?",
+      "soundSkip": "Continuar sem som",
       "consulting": "Consultoria em IA"
     },
     "loader": {
@@ -600,6 +602,26 @@
       "beta": "Beta registrado",
       "research": "Pesquisa",
       "archived": "Arquivado"
+    },
+    "instruments": {
+      "top": "Início",
+      "works": "Projetos",
+      "proof": "Registros",
+      "crossing": "Transição",
+      "mission": "Missão",
+      "vision": "Visão",
+      "values": "Valores",
+      "contact": "Contato",
+      "glyph": "Glifo Y · rotação",
+      "quality": "Qualidade",
+      "scroll": "Rolagem",
+      "refraction": "Refração",
+      "product": "Produto",
+      "off": "Desativada",
+      "tierLow": "Baixa",
+      "tierMedium": "Média",
+      "tierHigh": "Alta",
+      "wallService": "Serviço"
     }
   },
   "studio": {
