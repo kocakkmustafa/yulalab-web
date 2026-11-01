@@ -75,8 +75,8 @@
           "statementEn": "14 LLM providers (BYOK) — as of 2026-08-19.",
           "evidenceKind": "source-code-verified",
           "source": "ventures/braavolabs/platform/packages/api/src/services/ai-client.ts (AIProviderType, PROVIDER_MODELS)",
-          "scopeTr": "Desteklenen sağlayıcı sayısı; her sağlayıcının her modelinin aynı kalitede test edildiği iddiası değil. Önceki '12' rakamı bayattı (Braavolabs'ın kendi FORGE-FAZ1 notu 07-09'da zaten bunu işaretlemişti, yulalab.com 07-11'de düzenlendiği hâlde yakalanmamıştı).",
-          "scopeEn": "The number of supported providers; not a claim that every model from every provider is tested to the same standard. The earlier figure of 12 was stale (Braavolabs' own FORGE-FAZ1 note flagged it on 07-09; a 07-11 edit to yulalab.com did not catch it).",
+          "scopeTr": "Desteklenen sağlayıcı sayısı; her sağlayıcının her modelinin aynı kalitede test edildiği iddiası değil.",
+          "scopeEn": "The number of supported providers; not a claim that every model from every provider is tested to the same standard.",
           "owner": "braavolabs",
           "verifiedAt": "2026-08-19",
           "expiresAt": "2026-09-18"

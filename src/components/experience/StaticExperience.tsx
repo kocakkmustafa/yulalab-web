@@ -74,10 +74,11 @@ export function StaticExperience({
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
                 <span>{product.category}</span>
               </div>
-              <div className={styles.lifecycleRow}>
-                <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-                {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
-              </div>
+              {product.lifecycleLabel ? (
+                <div className={styles.lifecycleRow}>
+                  <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
+                </div>
+              ) : null}
               <h3>{product.name}</h3>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
@@ -107,20 +108,9 @@ export function StaticExperience({
                   })}
                 </div>
               ) : (
-                <div
-                  className={styles.staticResearchSurface}
-                  aria-label={
-                    product.lifecycle === "research"
-                      ? copy.portfolio.noPublicBuild
-                      : product.lifecycleLabel
-                  }
-                >
+                <div className={styles.staticResearchSurface}>
                   {product.icon ? <img src={product.icon} alt="" loading="lazy" decoding="async" style={{ width: 144, height: 144, objectFit: "contain" }} /> : <span aria-hidden="true">{product.monogram}</span>}
-                  <strong>
-                    {product.lifecycle === "research"
-                      ? copy.portfolio.noPublicBuild
-                      : product.lifecycleLabel}
-                  </strong>
+                  {product.lifecycleLabel ? <strong>{product.lifecycleLabel}</strong> : null}
                 </div>
               )}
 

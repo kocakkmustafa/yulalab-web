@@ -9,7 +9,6 @@ import type {
 } from "@/components/experience/types";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
-import { developmentPreviews } from "@/data/product-presentations";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProductLifecycle } from "@/lib/types";
 
@@ -44,6 +43,7 @@ export default async function LandingPage({
   const locale = rawLocale;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: "experience" });
+  const tStatus = await getTranslations({ locale, namespace: "status" });
 
   const projectSlugs = projects.map((project) => project.slug);
   if (projectSlugs.join("|") !== CANONICAL_PRODUCT_ORDER.join("|")) {
@@ -69,11 +69,14 @@ export default async function LandingPage({
     );
   }
 
+  // Founder decisions 2026-10-31: the home journey introduces finished
+  // products, so it states no publication status; an app not yet in a store
+  // reads "Coming soon" (K2). Publication evidence lives on /transparency.
   const lifecycleLabels: Record<ProductLifecycle, string> = {
-    live: t("lifecycle.live"),
-    beta: t("lifecycle.beta"),
-    research: t("lifecycle.research"),
-    archived: t("lifecycle.archived"),
+    live: "",
+    beta: "",
+    research: tStatus("comingSoon"),
+    archived: "",
   };
 
   const experienceProducts: ExperienceProduct[] = projects.map((project) => {
@@ -104,10 +107,7 @@ export default async function LandingPage({
       tagline: localized(project.tagline, locale),
       short: localized(project.short, locale),
       href: localizeInternalRoute(record.primaryCta.url, locale),
-      ctaLabel:
-        record.lifecycle === "research"
-          ? t("portfolio.researchAction")
-          : t("portfolio.liveAction"),
+      ctaLabel: t("portfolio.liveAction"),
       lifecycleLabel: lifecycleLabels[record.lifecycle],
       colors: {
         primary: project.brand.primary,
@@ -115,21 +115,11 @@ export default async function LandingPage({
         accent: project.brand.accent,
         background: project.brand.background,
       },
-      // Only registry-declared captures can enter the experience. Project
-      // atmosphere assets and product-page mockups are intentionally absent.
-      screenshots: record.screenshots.map((screenshot) => ({
-        path: screenshot.path,
-        alt: text(locale, screenshot.altTr, screenshot.altEn),
-        sourceBuild: screenshot.sourceBuild,
-        capturedAt: screenshot.capturedAt,
-      })),
-      developmentPreviews: (developmentPreviews[project.slug] ?? []).map((preview) => ({
-        captureKind: preview.captureKind,
-        path: preview.path,
-        alt: localized(preview.alt, locale),
-        sourceBuild: preview.sourceBuild,
-        capturedAt: preview.capturedAt,
-      })),
+      // Founder decision 2026-10-31 (K1): the home journey introduces every
+      // product by its approved app icon, not by screenshots or dated
+      // development captures. Those stay on each product page.
+      screenshots: [],
+      developmentPreviews: [],
       // Claim prose and every provenance field travel as one indivisible
       // record so the client cannot display a figure without its caveat.
       claims: record.claims.map((claim) => ({
@@ -156,6 +146,26 @@ export default async function LandingPage({
 
   const copy: ExperienceCopy = {
     locale,
+    instruments: {
+      top: t("instruments.top"),
+      works: t("instruments.works"),
+      proof: t("instruments.proof"),
+      crossing: t("instruments.crossing"),
+      mission: t("instruments.mission"),
+      vision: t("instruments.vision"),
+      values: t("instruments.values"),
+      contact: t("instruments.contact"),
+      glyph: t("instruments.glyph"),
+      quality: t("instruments.quality"),
+      scroll: t("instruments.scroll"),
+      refraction: t("instruments.refraction"),
+      product: t("instruments.product"),
+      off: t("instruments.off"),
+      tierLow: t("instruments.tierLow"),
+      tierMedium: t("instruments.tierMedium"),
+      tierHigh: t("instruments.tierHigh"),
+      wallService: t("instruments.wallService"),
+    },
     navigation: {
       home: t("navigation.home"),
       consulting: t("navigation.consulting"),
@@ -165,6 +175,8 @@ export default async function LandingPage({
       contact: t("navigation.contact"),
       soundOn: t("navigation.soundOn"),
       soundOff: t("navigation.soundOff"),
+      soundPrompt: t("navigation.soundPrompt"),
+      soundSkip: t("navigation.soundSkip"),
     },
     loader: [
       t("loader.geometry"),
@@ -187,7 +199,7 @@ export default async function LandingPage({
       kicker: t("portfolio.kicker"),
       liveAction: t("portfolio.liveAction"),
       researchAction: t("portfolio.researchAction"),
-      noPublicBuild: t("portfolio.noPublicBuild"),
+      noPublicBuild: tStatus("comingSoon"),
       productCounter: t("portfolio.productCounter"),
     },
     proof: {

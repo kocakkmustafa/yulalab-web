@@ -19,6 +19,7 @@ import { resolveVisibleFrameDelta } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
+import { SoundPrompt } from "./SoundPrompt";
 import { scrollProgressForTimeline } from "./storyboard";
 import { evaluateTimeline, STAGES } from "./timeline";
 import type {
@@ -29,6 +30,7 @@ import type {
   Vec3,
 } from "./types";
 import { useExperienceProgress } from "./useExperienceProgress";
+import { useSmoothScroll } from "./useSmoothScroll";
 import styles from "./Experience.module.css";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import type { ResolvedTheme } from "@/lib/theme";
@@ -44,6 +46,7 @@ type ExperienceCanvasProps = {
   onTierChange: (tier: QualityTier) => void;
   onReady: () => void;
   onContextLost: () => void;
+  wallTitles?: { works: string; service: string };
 };
 
 const ExperienceCanvas = dynamic<ExperienceCanvasProps>(
@@ -205,6 +208,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     webgl === "available" &&
     !canvasFailed;
   const { progress, capture, scrollRange } = useExperienceProgress(timelineEnabled, journeyReturn.current !== null);
+  // Desktop wheel only; the opening card locks scrolling until it leaves.
+  useSmoothScroll(timelineEnabled && !capture.enabled && !loaderVisible && !mobile);
   // Native anchors use document pixels; the timeline uses the scrollable range.
   // Land at the first card's center, after both entry fades have completed.
   const firstProductCenter = STAGES.portfolio[0] +
@@ -458,6 +463,13 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   // take effect immediately after mount, avoiding a mismatched active panel.
   const renderedProgress = mounted ? progress : 0;
   const mode: ExperienceMode = mobile ? "mobile" : "desktop";
+  const wallTitles = useMemo(
+    () => ({
+      works: copy.instruments.works.toLocaleUpperCase(copy.locale),
+      service: copy.instruments.wallService.toLocaleUpperCase(copy.locale),
+    }),
+    [copy.instruments.works, copy.instruments.wallService, copy.locale],
+  );
   const frame = useMemo(
     () => applyExperienceTheme(evaluateTimeline(renderedProgress, mode), theme.resolved),
     [mode, renderedProgress, theme.resolved],
@@ -552,6 +564,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
                     displayTheme={theme.resolved}
                     glyphRotation={glyphRotation}
                     products={products}
+                    wallTitles={wallTitles}
                     progress={renderedProgress}
                     mode={mode}
                     tier={tier}
@@ -568,12 +581,20 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
               products={products}
               frame={frame}
               tier={tier}
+              glyphRotation={glyphRotation}
               soundEnabled={soundEnabled}
               onSoundToggle={() => void toggleSound()}
               onLinearView={showLinearView}
             />
             {frame.stage === "hero" && frame.overlay.hero > 0.6 ? (
               <GlyphControl locale={copy.locale} rotation={glyphRotation} onChange={setGlyphRotation} />
+            ) : null}
+            {!capture.enabled && !loaderVisible ? (
+              <SoundPrompt
+                copy={{ prompt: copy.navigation.soundPrompt, on: copy.navigation.soundOn, skip: copy.navigation.soundSkip }}
+                soundEnabled={soundEnabled}
+                onSoundToggle={() => void toggleSound()}
+              />
             ) : null}
           </div>
 

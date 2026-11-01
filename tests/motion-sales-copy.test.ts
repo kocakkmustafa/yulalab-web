@@ -34,10 +34,9 @@ describe("Motion sales-open copy", () => {
     jablab: ["39", "129"],
     gravita: ["44", "117"],
     lissom: ["47", "120"],
-    ostinato: ["44", "155"],
     choreia: ["33", "88"],
   };
-  it.each(MOTION)("%s states its free lessons and store subscription in TR and EN", (slug) => {
+  it.each(MOTION.filter((slug) => slug in FREE_OF_TOTAL))("%s states its free lessons and store subscription in TR and EN", (slug) => {
     const project = projects.find((p) => p.slug === slug)!;
     const [free, total] = FREE_OF_TOTAL[slug];
     for (const text of [project.short.en, project.description.en]) {
@@ -48,6 +47,22 @@ describe("Motion sales-open copy", () => {
     for (const text of [project.short.tr, project.description.tr]) {
       expect(text).toMatch(new RegExp(`${total} dersin ${free}'\\p{L}+ ücretsiz`, "u"));
       expect(text).toMatch(/App Store ve Google Play üzerinden/);
+    }
+  });
+
+  // Ostinato moved to the v1 curriculum (690 lessons, Ostinato README and
+  // founder decisions K3-K9, 2026-11-01); its free part opens per course.
+  it("states Ostinato's v1 course size and store subscription in TR and EN", () => {
+    const project = projects.find((p) => p.slug === "ostinato")!;
+    for (const text of [project.short.en, project.description.en]) {
+      expect(text).toMatch(/four courses and 690 lessons/i);
+      expect(text).toMatch(/subscription through the App Store and Google Play/);
+      expect(text).not.toMatch(/155|not recorded/);
+    }
+    for (const text of [project.short.tr, project.description.tr]) {
+      expect(text).toMatch(/dört kurs.*690 ders/);
+      expect(text).toMatch(/App Store ve Google Play üzerinden/);
+      expect(text).not.toMatch(/155|kaydedilmez/);
     }
   });
 });

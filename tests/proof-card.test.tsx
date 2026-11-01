@@ -65,18 +65,15 @@ describe("a lapsed claim", () => {
 });
 
 describe("a source the reader cannot open", () => {
-  it("is labelled an internal record, never dressed up as a followable link", () => {
-    // Behaviour deliberately changed: it used to render the bare path,
-    // which put a private repo path under the word "source" and invited a
-    // reader to go check something they have no access to. Detail lives in
-    // tests/source-stamp.test.tsx.
-    render(
+  it("shows no path and no followable link (founder decision K9)", () => {
+    // Detail lives in tests/source-stamp.test.tsx.
+    const { container } = render(
       <ProofCard
         presented={{ kind: "verified", claim: { ...claim, source: "ventures/lifeos/lib/perma_service.dart" } }}
         locale="en"
       />,
     );
-    expect(screen.getByText(/internal record: ventures\/lifeos\/lib\/perma_service\.dart/)).toBeTruthy();
+    expect(container.textContent).not.toContain("perma_service");
     expect(screen.queryByRole("link")).toBeNull();
   });
 });

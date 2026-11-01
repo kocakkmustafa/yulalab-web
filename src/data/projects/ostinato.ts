@@ -15,12 +15,12 @@ export const ostinato: ProjectConfig = {
     en: "Build your instrument practice step by step.",
   },
   description: {
-    tr: "Ostinato beş yazılı başlangıç kursu sunar: gitar, piyano ve klavye, ukulele, bas ve şan. 155 dersin 44'ü ücretsizdir ve hesap gerektirmez; sonraki dersler Ostinato üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Gitar kursunda isteğe bağlı tek nota gözlemi için mikrofonu sen başlatırsın; ses kaydedilmez veya yüklenmez. Canlı kamera pratiği bu sürümde kapalıdır.",
-    en: "Ostinato offers five written beginner courses: guitar, piano and keyboard, ukulele, bass and voice. 44 of the 155 lessons are free and need no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. In the guitar course you can start the microphone for optional single-note observation; audio is not recorded or uploaded. Live camera practice is off in this release.",
+    tr: "Ostinato gitar, şan, piyano ve kulak eğitimini ilk sesten itibaren dört kursta, 690 derste öğretir. Her nota için doğru, farklı nota ya da duyamadım diye geri bildirim verir; akort aleti, metronom ve kurulum sihirbazı uygulamanın içindedir. Ücretsiz dersler hesap gerektirmez; sonraki dersler Ostinato üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Mikrofon sesi cihazında işlenir ve yüklenmez.",
+    en: "Ostinato teaches guitar, voice, piano and ear training from the first sound, in four courses and 690 lessons. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. Free lessons need no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.",
   },
   short: {
-    tr: "Gitar, piyano, ukulele, bas ve şan için yazılı başlangıç kursları. 155 dersin 44'ü ücretsiz; gerisi App Store ve Google Play üzerinden abonelikle açılır. Kamera kapalı, mikrofon isteğe bağlı.",
-    en: "Written beginner courses in guitar, piano, ukulele, bass and voice. 44 of 155 lessons are free; the rest open by subscription through the App Store and Google Play. Camera off, microphone optional.",
+    tr: "Gitar, şan, piyano ve kulak eğitimi için dört kurs, 690 ders. Ücretsiz dersler hesapsız açılır; gerisi App Store ve Google Play üzerinden abonelikle açılır.",
+    en: "Four courses and 690 lessons in guitar, voice, piano and ear training. Free lessons open without an account; the rest open by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#D8A657",

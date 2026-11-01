@@ -68,8 +68,8 @@ for (const [label, path] of ROUTES) {
 }
 
 for (const [locale, path, homeName, linearName, languageName] of [
-  ["tr", "/?capture=1&progress=0&tier=low", "YULALAB — Ana sayfa", "2D — Doğrusal deneyim", "Dil"],
-  ["en", "/en?capture=1&progress=0&tier=low", "YULALAB — Home", "2D — Linear experience", "Language"],
+  ["tr", "/?capture=1&progress=0&tier=low", "YULA Lab — Ana sayfa", "2D — Doğrusal deneyim", "Dil"],
+  ["en", "/en?capture=1&progress=0&tier=low", "YULA Lab — Home", "2D — Linear experience", "Language"],
 ] as const) {
   test(`visible control labels remain inside their accessible names (${locale})`, async ({ page }) => {
     await page.goto(path, { waitUntil: "domcontentloaded" });
@@ -137,7 +137,8 @@ test("reduced-motion homepage document has no serious or critical violations", a
 test("the claims section survives a keyboard-only path to its source link", async ({ page }) => {
   // The proof surface is the point of the site; it has to be reachable
   // without a mouse.
-  await page.goto("/en/projects/burunfarki");
+  // Founder decision 2026-10-31: the dated claims live on /transparency.
+  await page.goto("/en/transparency");
   const link = page.getByRole("link", { name: /^source$/i }).first();
   await link.focus();
   await expect(link).toBeFocused();
@@ -151,7 +152,7 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
   // opacity 0 forever.
   const context = await browser.newContext({ reducedMotion: "reduce" });
   const page = await context.newPage();
-  await page.goto("/en/projects/burunfarki");
+  await page.goto("/en/transparency");
   await expect(page.getByRole("heading", { name: "Claims and sources", level: 2 })).toBeVisible();
   const unresolved = await page.locator(".reveal,.word").evaluateAll((elements) =>
     elements.filter((element) => {

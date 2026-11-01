@@ -17,16 +17,19 @@ import type {
   ExperienceStage,
   QualityTier,
   TimelineFrame,
+  Vec3,
 } from "./types";
 import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
+import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
   copy: ExperienceCopy;
   products: ExperienceProduct[];
   frame: TimelineFrame;
   tier: QualityTier;
+  glyphRotation?: Vec3;
   soundEnabled: boolean;
   onSoundToggle: () => void;
   onLinearView: () => void;
@@ -72,6 +75,8 @@ function stageIs(frame: TimelineFrame, stage: ExperienceStage): boolean {
 }
 
 const SEMANTIC_VISIBILITY_THRESHOLD = 0.01;
+const NO_ROTATION: Vec3 = [0, 0, 0];
+const TIER_LABEL = { low: "tierLow", medium: "tierMedium", high: "tierHigh" } as const;
 
 function stageSemanticActive(
   frame: TimelineFrame,
@@ -139,9 +144,9 @@ export function ExperienceHeader({
       <NextLink
         className={styles.experienceBrand}
         href="#experience-hero"
-        aria-label={`YULALAB — ${copy.navigation.home}`}
+        aria-label={`YULA Lab — ${copy.navigation.home}`}
       >
-        <span>YULALAB</span>
+        <span>YULA Lab</span>
       </NextLink>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>
@@ -246,10 +251,13 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
             {claim.figure ? <strong className={styles.claimFigure}>{claim.figure}</strong> : null}
             <p className={styles.claimStatement}>{claim.statement}</p>
             <dl className={styles.provenance}>
-              <div>
-                <dt>{copy.proof.source}</dt>
-                <dd dir="ltr">{claim.source}</dd>
-              </div>
+              {/* K9: only a public source is shown; internal paths stay out of the page. */}
+              {/^https?:\/\//.test(claim.source) ? (
+                <div>
+                  <dt>{copy.proof.source}</dt>
+                  <dd dir="ltr"><a href={claim.source} target="_blank" rel="noopener noreferrer">{claim.source}</a></dd>
+                </div>
+              ) : null}
               <div>
                 <dt>{copy.proof.scope}</dt>
                 <dd>{claim.scope}</dd>
@@ -403,6 +411,7 @@ export function ExperienceOverlay({
   products,
   frame,
   tier,
+  glyphRotation = NO_ROTATION,
   soundEnabled,
   onSoundToggle,
   onLinearView,
@@ -491,11 +500,13 @@ export function ExperienceOverlay({
         onLinearView={onLinearView}
       />
 
+      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} />
+
       <div className={styles.realHud} aria-hidden="true">
-        <span>RENDER / {tier.toUpperCase()}</span>
-        <span>SCROLL / {Math.round(scrollProgressForTimeline(frame.progress) * 100).toString().padStart(3, "0")}%</span>
-        <span>IOR / {tier === "low" ? "OFF" : "1.35"}</span>
-        <span>PRODUCT / {String(frame.productIndex + 1).padStart(2, "0")} OF {String(products.length).padStart(2, "0")}</span>
+        <span>{copy.instruments.quality} / {copy.instruments[TIER_LABEL[tier]]}</span>
+        <span>{copy.instruments.scroll} / <bdi>{Math.round(scrollProgressForTimeline(frame.progress) * 100).toString().padStart(3, "0")}%</bdi></span>
+        <span>{copy.instruments.refraction} / {tier === "low" ? copy.instruments.off : <bdi>1.35</bdi>}</span>
+        <span>{copy.instruments.product} / <bdi>{String(frame.productIndex + 1).padStart(2, "0")}/{String(products.length).padStart(2, "0")}</bdi></span>
       </div>
 
       <section
@@ -585,10 +596,11 @@ export function ExperienceOverlay({
                 <span>{String(index + 1).padStart(2, "0")} / {String(products.length).padStart(2, "0")}</span>
                 <span>{product.category}</span>
               </div>
-              <div className={styles.lifecycleRow}>
-                <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
-                {product.lifecycle === "research" ? <strong>{copy.portfolio.noPublicBuild}</strong> : null}
-              </div>
+              {product.lifecycleLabel ? (
+                <div className={styles.lifecycleRow}>
+                  <span data-lifecycle={product.lifecycle}>{product.lifecycleLabel}</span>
+                </div>
+              ) : null}
               <h2>{product.icon ? <Image src={product.icon} alt="" width={36} height={36} sizes="36px" /> : null}{product.name}</h2>
               <p className={styles.productTagline}>{product.tagline}</p>
               <p className={styles.productShort}>{product.short}</p>
@@ -661,7 +673,7 @@ export function ExperienceOverlay({
               data-active={active ? "true" : "false"}
               style={style}
             >
-              <h3>{product.name}</h3>
+              <h3>{product.icon ? <Image src={product.icon} alt="" width={28} height={28} sizes="28px" /> : null}{product.name}</h3>
               <ProofLedger compact copy={copy} product={product} today={today} />
             </article>
             );

@@ -3,18 +3,14 @@ import { Link } from "@/i18n/navigation";
 import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
-import { ClaimsSection } from "@/components/projects/ClaimsSection";
-import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
+import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
-import { StatCards } from "@/components/projects/StatCards";
-import { developmentPreviews } from "@/data/product-presentations";
-import { publicRegistry } from "@/data/public-registry";
-import { presentClaims, presentSurfaces } from "@/lib/proof";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
 import { company } from "@/data/company";
+import { localized } from "@/lib/localized";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
 /**
@@ -32,6 +28,9 @@ const ACCENT: Record<string, string> = {
   braavolabs: "#D8B87F",
 };
 
+const STORE_NAME = { appstore: "App Store", playstore: "Google Play" } as const;
+const NOTIFY_ME = { tr: "Çıkınca haber ver", en: "Notify me at launch" };
+
 const KICKER = "font-mono text-[11px] tracking-[0.22em] uppercase text-ink-400";
 const ROW =
   "flex items-baseline justify-between gap-5 py-4 border-t border-white/10";
@@ -41,29 +40,23 @@ const ROW_VAL = "font-grotesk text-[15.5px] text-end";
 
 export function ProductPage({ project }: { project: ProjectConfig }) {
   const t = useTranslations("product");
+  const tStatus = useTranslations("status");
   const locale = useLocale() as Locale;
   const p = t.raw(project.slug) as Record<string, string>;
   const accent = ACCENT[project.slug] ?? "#7FD8DC";
 
   const others = projects.filter((o) => o.slug !== project.slug);
 
-  // Freshness is evaluated at render time, not at build time: a claim nobody
-  // re-checked for 24 hours is not a code regression, and failing the build
-  // on days nobody deploys would train everyone to ignore the gate. See
-  // ../workspace/TASARIM-RISKI-STORE-EXPIRY-BUILD.md.
-  const registryRecord = publicRegistry.find((r) => r.slug === project.slug);
-  const now = new Date();
-  const presented = registryRecord ? presentClaims(registryRecord, now) : [];
+  // Founder decision 2026-10-31: the product page introduces the finished
+  // product. Publication status, dated claims and their freshness live on
+  // /transparency, not here.
   const ctaKind = project.primaryCtaKind ?? "web";
   const web = project.links.find((l) => l.kind === ctaKind)?.href;
-  const publication = registryRecord
-    ? presentSurfaces(registryRecord, now).find(
-        ({ surface }) => surface.url.replace(/\/$/, "") === web?.replace(/\/$/, ""),
-      )
-    : undefined;
-  const publicationAvailable = publication?.statusConfirmed &&
-    (publication.surface.status === "live" || publication.surface.status === "beta");
-  const needsPublicationCheck = Boolean(web) && !publicationAvailable;
+  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
+  const storeLinks = project.links.filter(
+    (link): link is { kind: "appstore" | "playstore"; href: string } =>
+      (link.kind === "appstore" || link.kind === "playstore") && Boolean(link.href) && link.kind !== ctaKind,
+  );
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
@@ -112,7 +105,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               style={{ background: accent, boxShadow: `0 0 10px ${accent}b3` }}
             />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
-              {needsPublicationCheck ? t("availabilityUnverified") : p.eyebrow}
+              {p.eyebrow}
             </span>
           </Reveal>
           <Reveal delay={80}>
@@ -127,22 +120,11 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </header>
 
-        <DevelopmentPreviewSection slug={project.slug} locale={locale} />
+        <ProductFeatures slug={project.slug} locale={locale} />
 
-        {/* Extracted so it can be rendered in a test; see StatCards. */}
-        <Reveal>
-          <StatCards
-            slug={project.slug}
-            stats={project.stats}
-            record={registryRecord}
-            locale={locale}
-            now={now}
-            labels={{
-              verified: t("statVerified"),
-              needsReverification: t("statNeedsReverification"),
-            }}
-          />
-        </Reveal>
+        <ProductCompany slug={project.slug} locale={locale} />
+
+
 
         {/* 01 — what it does */}
         <section className="pb-24">
@@ -188,58 +170,26 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </Reveal>
         </section>
 
-        {/* Extracted so it can be rendered in a test; see ClaimsSection. */}
-        <ClaimsSection
-          presented={presented}
+
+
+        <ProductPrice
+          slug={project.slug}
           locale={locale}
-          labels={{
-            heading: t("claimsHeading"),
-            lapsedHeading: t("claimsLapsedHeading"),
-            lapsedNote: t("claimsLapsedNote"),
-          }}
+          comingSoon={comingSoon ? tStatus("comingSoon") : undefined}
         />
 
-        {/* Only show the empty interface state when no dated development UI exists. */}
-        {!developmentPreviews[project.slug]?.length ? (
-        <section className="pb-24">
-          <Reveal>
-            <p className={`${KICKER} mb-10`}>{t("interfaceKicker")}</p>
-          </Reveal>
-          <Reveal>
-            <div className="glass glass-accent relative min-h-[clamp(240px,36vh,400px)] grid place-items-center overflow-hidden">
-              <span
-                aria-hidden
-                className="font-display font-extralight leading-none tracking-tightest select-none"
-                style={{
-                  fontSize: "clamp(90px,14vw,200px)",
-                  color: "rgba(244,244,245,0.08)",
-                }}
-              >
-                {project.monogram}
-              </span>
-              <span className="absolute start-5 bottom-4 max-w-[48ch] font-mono text-[10.5px] leading-[1.7] tracking-[0.13em] uppercase text-ink-400">
-                {p.interfaceNote}
-              </span>
-            </div>
-          </Reveal>
-        </section>
-        ) : null}
+        <ProductFaq slug={project.slug} locale={locale} />
 
         {/* CTA */}
         <Reveal>
           <section className="pb-24">
             <div className="glass p-8 lg:p-16 text-center">
               <h2 className="font-display font-light text-[clamp(24px,3vw,40px)] tracking-tight mb-4">
-                {needsPublicationCheck ? t("availabilityUnverified") : p.ctaTitle}
+                {p.ctaTitle}
               </h2>
               <p className="mx-auto max-w-[46ch] text-[15px] leading-[1.72] text-ink-300 mb-8">
                 {p.ctaBody}
               </p>
-              {needsPublicationCheck && publication && (
-                <p className="mb-6 text-sm text-ink-300">
-                  {t("availabilityCheckedAt", { date: publication.surface.verifiedAt })}
-                </p>
-              )}
               <div className="flex flex-wrap gap-3 justify-center">
                 {/* the primary action only renders when there is a real
                     destination — a dead CTA is worse than none */}
@@ -259,6 +209,30 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                     {p.ctaPrimary}
                     <ArrowUpRight size={13} strokeWidth={2} className="arrow-nudge" />
                   </TrackedLink>
+                ) : null}
+                {/* Store buttons for every listed store not already used as the
+                    primary action. Brand names stay untranslated. */}
+                {storeLinks.map((link) => (
+                  <TrackedLink
+                    key={link.kind}
+                    href={link.href}
+                    event="store_outbound"
+                    product={project.slug}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2.5 px-6 py-4 text-sm rounded-[10px] border border-white/15 text-ink-100 hover:border-white/30 transition-colors focusable"
+                  >
+                    {STORE_NAME[link.kind]}
+                    <ArrowUpRight size={13} strokeWidth={2} className="arrow-nudge" />
+                  </TrackedLink>
+                ))}
+                {comingSoon ? (
+                  <a
+                    href={`mailto:${project.contactEmail ?? company.contact.email}?subject=${encodeURIComponent(`${project.name} — ${localized(NOTIFY_ME, locale)}`)}`}
+                    className="inline-flex items-center px-6 py-4 text-sm rounded-[10px] border border-white/15 text-ink-100 hover:border-white/30 transition-colors focusable"
+                  >
+                    {localized(NOTIFY_ME, locale)}
+                  </a>
                 ) : null}
                 <a
                   href={`mailto:${project.contactEmail ?? company.contact.email}`}

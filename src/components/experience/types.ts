@@ -110,8 +110,17 @@ export type ExperienceValue = {
   description: string;
 };
 
+export type ExperienceInstrumentCopy = Record<
+  | "top" | "works" | "proof" | "crossing" | "mission" | "vision" | "values" | "contact"
+  | "glyph" | "quality" | "scroll" | "refraction" | "product" | "off"
+  | "tierLow" | "tierMedium" | "tierHigh" | "wallService",
+  string
+>;
+
 export type ExperienceCopy = {
   locale: Locale;
+  /** Ruler, HUD and 3D wall titles; localized like every other visible label. */
+  instruments: ExperienceInstrumentCopy;
   navigation: {
     home: string;
     consulting: string;
@@ -121,6 +130,8 @@ export type ExperienceCopy = {
     contact: string;
     soundOn: string;
     soundOff: string;
+    soundPrompt: string;
+    soundSkip: string;
   };
   loader: readonly [string, string, string, string];
   hero: {
