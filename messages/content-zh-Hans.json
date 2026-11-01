@@ -760,5 +760,7 @@
   "No. Audio is processed on your device and is not uploaded. If you turn on listening to your own recording, it is kept only on your device and deleted when the session ends. Details are in the Motion privacy policy.": "不会。音频在您的设备上处理，不会上传。如果您开启收听自己的录音，录音只保存在您的设备上，并在本次练习结束时删除。详情见 Motion 隐私政策。",
   "Multi-model chat.": "多模型对话。",
   "Ask several models the same question and compare the answers. Work offline with a local model, or straight to a provider with your own key.": "向多个模型提出同一个问题并比较回答。可以用本地模型离线工作，也可以用您自己的密钥直接连接服务商。",
-  "A coding agent.": "编程智能体。"
+  "A coding agent.": "编程智能体。",
+  "Ostinato teaches guitar, voice, piano and ear training from the first sound, in four courses and 690 lessons. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. Free lessons need no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.": "Ostinato 从第一个音开始教授吉他、声乐、钢琴和听力训练，共四门课程、690 节课。每个音都会得到反馈：正确、其他音或未听到；调音器、节拍器和设置向导都在应用内。免费课时无需账户；后续课时可通过 App Store 和 Google Play 订阅 Ostinato 会员或 Motion+ 解锁。麦克风音频在您的设备上处理，不会上传。",
+  "Four courses and 690 lessons in guitar, voice, piano and ear training. Free lessons open without an account; the rest open by subscription through the App Store and Google Play.": "吉他、声乐、钢琴和听力训练四门课程，共 690 节课。免费课时无需账户即可打开；其余课时通过 App Store 和 Google Play 订阅解锁。"
 }

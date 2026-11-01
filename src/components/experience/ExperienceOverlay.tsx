@@ -246,10 +246,13 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
             {claim.figure ? <strong className={styles.claimFigure}>{claim.figure}</strong> : null}
             <p className={styles.claimStatement}>{claim.statement}</p>
             <dl className={styles.provenance}>
-              <div>
-                <dt>{copy.proof.source}</dt>
-                <dd dir="ltr">{claim.source}</dd>
-              </div>
+              {/* K9: only a public source is shown; internal paths stay out of the page. */}
+              {/^https?:\/\//.test(claim.source) ? (
+                <div>
+                  <dt>{copy.proof.source}</dt>
+                  <dd dir="ltr"><a href={claim.source} target="_blank" rel="noopener noreferrer">{claim.source}</a></dd>
+                </div>
+              ) : null}
               <div>
                 <dt>{copy.proof.scope}</dt>
                 <dd>{claim.scope}</dd>

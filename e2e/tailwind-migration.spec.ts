@@ -59,8 +59,17 @@ test("status colors, font variables, gradients and focus transitions retain thei
     const read = (index: number) => getComputedStyle(host.children[index]);
     const button = host.children[5] as HTMLButtonElement;
     button.focus();
+    // Chrome serialises an alpha Tailwind colour as oklab(); paint it to read sRGB.
+    const toRgb = (color: string) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = 1;
+      const context = canvas.getContext("2d")!;
+      context.fillStyle = color;
+      context.fillRect(0, 0, 1, 1);
+      return Array.from(context.getImageData(0, 0, 1, 1).data.slice(0, 3));
+    };
     const result = {
-      amber: read(0).color, emerald: read(1).color,
+      amber: toRgb(read(0).color), emerald: read(1).color,
       displayFont: read(2).fontFamily, monoFont: read(3).fontFamily,
       gradient: read(4).backgroundImage,
       transition: read(5).transitionProperty,
@@ -69,7 +78,8 @@ test("status colors, font variables, gradients and focus transitions retain thei
     host.remove();
     return result;
   });
-  expect(styles.amber).toMatch(/252,\s*211,\s*77/);
+  const [red, green, blue] = styles.amber;
+  expect(Math.abs(red - 252) + Math.abs(green - 211) + Math.abs(blue - 77)).toBeLessThanOrEqual(6);
   expect(styles.emerald).not.toBe("rgb(0, 0, 0)");
   expect(styles.displayFont).not.toContain("var(");
   expect(styles.displayFont).toMatch(/Manrope|Inter/);
