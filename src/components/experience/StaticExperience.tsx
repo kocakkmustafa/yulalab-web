@@ -1,6 +1,5 @@
 "use client";
 
-import { text } from "@/lib/localized";
 import { localePath } from "@/i18n/locales";
 /* eslint-disable @next/next/no-img-element -- registry captures do not publish
    dimensions; native images preserve each file's intrinsic aspect ratio. */
@@ -99,7 +98,7 @@ export function StaticExperience({
                         decoding="async"
                       />
                       <figcaption>
-                        {development ? <strong>{shot.captureKind === "onboarding" ? (text(copy.locale, "İlk başlangıç geliştirme görünümü", "First-start development view")) : (text(copy.locale, "Uygulama içi geliştirme görünümü", "In-app development view"))}</strong> : null}
+                        {development ? <strong>{shot.captureKind === "onboarding" ? copy.ui.firstStartDevelopmentView : copy.ui.inAppDevelopmentView}</strong> : null}
                         <span>{shot.sourceBuild}</span>
                         <time dateTime={shot.capturedAt}>{shot.capturedAt}</time>
                       </figcaption>

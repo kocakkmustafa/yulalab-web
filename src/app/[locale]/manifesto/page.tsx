@@ -112,8 +112,8 @@ function Manifesto() {
             <ValueCard
               key={v.title.tr}
               index={i}
-              title={v.title}
-              description={v.description}
+              title={localized(v.title, locale)}
+              description={localized(v.description, locale)}
             />
           ))}
         </div>

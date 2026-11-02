@@ -1,18 +1,15 @@
 "use client";
 
-import { localized } from "@/lib/localized";
-import { useLocale } from "next-intl";
 import { useReveal } from "@/components/common/useReveal";
-import type { Locale } from "@/lib/types";
 
+/** Title and description arrive localized from the server page. */
 type Props = {
   index: number;
-  title: { tr: string; en: string };
-  description: { tr: string; en: string };
+  title: string;
+  description: string;
 };
 
 export function ValueCard({ index, title, description }: Props) {
-  const locale = useLocale() as Locale;
   const reveal = useReveal();
 
   return (
@@ -29,11 +26,11 @@ export function ValueCard({ index, title, description }: Props) {
           0{index + 1}
         </span>
         <h3 className="font-display text-[22px] font-semibold tracking-tight text-ink-50">
-          {localized(title, locale)}
+          {title}
         </h3>
       </div>
       <p className="mt-3 text-[15px] text-ink-300 leading-[1.6] max-w-[40ch]">
-        {localized(description, locale)}
+        {description}
       </p>
     </div>
   );

@@ -2,6 +2,7 @@ import { localized, text } from "@/lib/localized";
 import { isLocale, localePath } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { evidenceKindLabel } from "@/components/common/SourceStamp";
 import { YulaExperience } from "@/components/experience/YulaExperience";
 import type {
   ExperienceCopy,
@@ -127,6 +128,7 @@ export default async function LandingPage({
         figure: claim.figures?.join(" · ") ?? null,
         statement: text(locale, claim.statementTr, claim.statementEn),
         evidenceKind: claim.evidenceKind,
+        evidenceLabel: evidenceKindLabel(claim.evidenceKind, locale),
         source: claim.source,
         scope: text(locale, claim.scopeTr, claim.scopeEn),
         verifiedAt: claim.verifiedAt,
@@ -244,6 +246,20 @@ export default async function LandingPage({
     fallback: {
       label: t("fallback.label"),
       reason: t("fallback.reason"),
+    },
+    ui: {
+      glyphLabel: text(locale, "Amblemi döndür", "Rotate the emblem"),
+      glyphHelp: text(locale, "Sürükleyin veya ok tuşlarını kullanın. Home veya Escape ile sıfırlayın.", "Drag or use the arrow keys. Press Home or Escape to reset."),
+      developmentView: text(locale, "Geliştirme görünümü", "Development view"),
+      closeImage: text(locale, "Görüntüyü kapat", "Close image"),
+      datedBuild: text(locale, "Tarihli geliştirme sürümü", "Dated development build"),
+      completeScreen: text(locale, "Tam geliştirme ekranı", "Complete development screen"),
+      firstStartPreview: text(locale, "İlk başlangıç önizlemesi", "First-start preview"),
+      developmentPreview: text(locale, "Geliştirme önizlemesi", "Development preview"),
+      enlargeScreen: text(locale, "Ekranı büyüt", "Enlarge screen"),
+      previewNote: text(locale, "Ürün kimlikleri ve tarihli geliştirme görünümleri", "Product identities and dated development views"),
+      firstStartDevelopmentView: text(locale, "İlk başlangıç geliştirme görünümü", "First-start development view"),
+      inAppDevelopmentView: text(locale, "Uygulama içi geliştirme görünümü", "In-app development view"),
     },
   };
 
