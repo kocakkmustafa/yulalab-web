@@ -75,6 +75,8 @@ export type ExperienceClaim = {
   figure: string | null;
   statement: string;
   evidenceKind: EvidenceKind;
+  /** evidenceKind in words, resolved on the server. */
+  evidenceLabel: string;
   source: string;
   scope: string;
   verifiedAt: string;
@@ -179,5 +181,23 @@ export type ExperienceCopy = {
   fallback: {
     label: string;
     reason: string;
+  };
+  /**
+   * Small interface labels, resolved on the server. Client components never
+   * import the content catalogue: it would ship every locale to the browser.
+   */
+  ui: {
+    glyphLabel: string;
+    glyphHelp: string;
+    developmentView: string;
+    closeImage: string;
+    datedBuild: string;
+    completeScreen: string;
+    firstStartPreview: string;
+    developmentPreview: string;
+    enlargeScreen: string;
+    previewNote: string;
+    firstStartDevelopmentView: string;
+    inAppDevelopmentView: string;
   };
 };

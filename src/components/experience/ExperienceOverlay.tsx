@@ -1,15 +1,12 @@
 /* eslint-disable @next/next/no-img-element -- the reader displays the complete original development capture. */
 "use client";
 
-import { text } from "@/lib/localized";
-import type { Locale } from "@/lib/types";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import NextLink from "next/link";
 import Image from "next/image";
 import { track } from "@/lib/analytics/client";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { evidenceKindLabel } from "@/components/common/SourceStamp";
 import { siteDate } from "@/lib/public-registry";
 import type {
   ExperienceCopy,
@@ -240,7 +237,7 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
         return (
           <li key={claim.id} className={styles.claim} data-freshness={freshness}>
             <div className={styles.claimHeading}>
-              <span>{evidenceKindLabel(claim.evidenceKind, copy.locale)}</span>
+              <span>{claim.evidenceLabel}</span>
               <span className={styles.freshnessState}>
                 {freshness === "unknown"
                   ? copy.proof.freshnessPending
@@ -333,7 +330,7 @@ function readPreviewHistory(state: unknown): PreviewHistory | null {
     ? saved : null;
 }
 
-function DevelopmentPreviewDialog({ product, locale, onClose }: { product: ExperienceProduct | null; locale: Locale; onClose: () => void }) {
+function DevelopmentPreviewDialog({ product, ui, onClose }: { product: ExperienceProduct | null; ui: ExperienceCopy["ui"]; onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null);
   const focusFrame = useRef(0);
   const releaseDeferred = useRef<(() => void) | null>(null);
@@ -402,8 +399,8 @@ function DevelopmentPreviewDialog({ product, locale, onClose }: { product: Exper
   }, []);
   const shot = product?.developmentPreviews?.[0];
   return <dialog ref={ref} className={styles.previewDialog} onCancel={(event) => { event.preventDefault(); onClose(); }} aria-labelledby="development-preview-title">
-    <header><h2 id="development-preview-title">{product?.name} · {text(locale, "Geliştirme görünümü", "Development view")}</h2><button type="button" onClick={onClose} aria-label={text(locale, "Görüntüyü kapat", "Close image")}>×</button></header>
-    {shot ? <><p>{shot.capturedAt} · {text(locale, "Tarihli geliştirme sürümü", "Dated development build")}</p><div className={styles.previewDialogScroll} tabIndex={0} role="region" aria-label={text(locale, "Tam geliştirme ekranı", "Complete development screen")}><img src={shot.path} alt={shot.alt} /></div></> : null}
+    <header><h2 id="development-preview-title">{product?.name} · {ui.developmentView}</h2><button type="button" onClick={onClose} aria-label={ui.closeImage}>×</button></header>
+    {shot ? <><p>{shot.capturedAt} · {ui.datedBuild}</p><div className={styles.previewDialogScroll} tabIndex={0} role="region" aria-label={ui.completeScreen}><img src={shot.path} alt={shot.alt} /></div></> : null}
   </dialog>;
 }
 
@@ -611,8 +608,8 @@ export function ExperienceOverlay({
               <p className={styles.productShort}>{product.short}</p>
               {product.developmentPreviews?.length ? (
                 <p className={styles.previewNote} data-development-preview="true">
-                  {product.developmentPreviews[0].captureKind === "onboarding" ? (text(copy.locale, "İlk başlangıç önizlemesi", "First-start preview")) : (text(copy.locale, "Geliştirme önizlemesi", "Development preview"))} · {product.developmentPreviews[0].capturedAt}
-                  <button type="button" id={`development-preview-open-${product.slug}`} className={styles.previewExpand} onClick={() => openPreview(product)} tabIndex={active ? 0 : -1}>{text(copy.locale, "Ekranı büyüt", "Enlarge screen")}</button>
+                  {product.developmentPreviews[0].captureKind === "onboarding" ? copy.ui.firstStartPreview : copy.ui.developmentPreview} · {product.developmentPreviews[0].capturedAt}
+                  <button type="button" id={`development-preview-open-${product.slug}`} className={styles.previewExpand} onClick={() => openPreview(product)} tabIndex={active ? 0 : -1}>{copy.ui.enlargeScreen}</button>
                 </p>
               ) : null}
               <NextLink
@@ -739,7 +736,7 @@ export function ExperienceOverlay({
         <div className={styles.valuesHeading}>
           <p className={styles.kicker}>{copy.values.kicker}</p>
           <h2 id="experience-values-title">{copy.values.title}</h2>
-          <p className={styles.previewNote}>{text(copy.locale, "Ürün kimlikleri ve tarihli geliştirme görünümleri", "Product identities and dated development views")}</p>
+          <p className={styles.previewNote}>{copy.ui.previewNote}</p>
         </div>
         <div className={styles.valuePanels}>
           {copy.values.items.map((value, index) => {
@@ -796,7 +793,7 @@ export function ExperienceOverlay({
         </div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
-      <DevelopmentPreviewDialog product={previewProduct} locale={copy.locale} onClose={closePreview} />
+      <DevelopmentPreviewDialog product={previewProduct} ui={copy.ui} onClose={closePreview} />
     </div>
   );
 }

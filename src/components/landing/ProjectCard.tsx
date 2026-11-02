@@ -1,16 +1,15 @@
 "use client";
 
-import { localized } from "@/lib/localized";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import { ALPHA, HAIRLINE } from "@/lib/color";
-import type { Locale, ProjectAsset, ProjectConfig } from "@/lib/types";
+import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
 type ProductAsset = Extract<ProjectAsset, { kind: "product" }>;
 function isProductShot(asset: ProjectAsset): asset is ProductAsset {
@@ -19,9 +18,15 @@ function isProductShot(asset: ProjectAsset): asset is ProductAsset {
 
 const MotionLink = motion.create(Link);
 
+/**
+ * Card copy resolved on the server: a client component that imported the
+ * content catalogue would ship every locale to the browser.
+ */
+export type ProjectCardCopy = { category: string; tagline: string; short: string };
+
 type Props =
-  | { project: ProjectConfig; variant?: "compact" }
-  | { project: ProjectConfig; variant: "big"; index: number; total: number };
+  | { project: ProjectConfig; copy: ProjectCardCopy; variant?: "compact" }
+  | { project: ProjectConfig; copy: ProjectCardCopy; variant: "big"; index: number; total: number };
 
 /**
  * Single card component behind both the landing page's compact grid and the
@@ -31,12 +36,11 @@ type Props =
  * hand-diverged components with duplicated hover logic.
  */
 export function ProjectCard(props: Props) {
-  return props.variant === "big" ? <BigCard {...props} /> : <CompactCard project={props.project} />;
+  return props.variant === "big" ? <BigCard {...props} /> : <CompactCard project={props.project} copy={props.copy} />;
 }
 
-function CompactCard({ project }: { project: ProjectConfig }) {
+function CompactCard({ project, copy }: { project: ProjectConfig; copy: ProjectCardCopy }) {
   const t = useTranslations("common");
-  const locale = useLocale() as Locale;
 
   return (
     <MotionLink
@@ -55,7 +59,7 @@ function CompactCard({ project }: { project: ProjectConfig }) {
       </div>
 
       <div className="mt-7 font-mono text-[11px] tracking-widest uppercase text-ink-300">
-        {localized(project.category, locale)}
+        {copy.category}
       </div>
       <h3
         className="mt-1.5 font-display text-3xl font-semibold tracking-tight text-ink-50"
@@ -64,7 +68,7 @@ function CompactCard({ project }: { project: ProjectConfig }) {
         {project.name}
       </h3>
       <p className="mt-2 text-[15px] text-ink-300 leading-relaxed">
-        {localized(project.tagline, locale)}
+        {copy.tagline}
       </p>
 
       <div className="mt-8 pt-5 border-t border-white/5 flex items-center justify-between">
@@ -82,14 +86,15 @@ function CompactCard({ project }: { project: ProjectConfig }) {
 
 function BigCard({
   project: p,
+  copy,
   index,
   total,
 }: {
   project: ProjectConfig;
+  copy: ProjectCardCopy;
   index: number;
   total: number;
 }) {
-  const locale = useLocale() as Locale;
   const tc = useTranslations("common");
   // Status-gate: only a screenshot explicitly labeled "product" can replace
   // the monogram placeholder — same rule as the showcase hero (ProductShot).
@@ -161,7 +166,7 @@ function BigCard({
 
       <div className="p-7 lg:p-9">
         <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300">
-          {localized(p.category, locale)}
+          {copy.category}
         </div>
         <h3
           className="mt-2 font-display text-3xl md:text-4xl font-semibold tracking-tightest text-ink-50"
@@ -169,9 +174,9 @@ function BigCard({
         >
           {p.name}
         </h3>
-        <p className="mt-2 text-[15.5px] text-ink-200">{localized(p.tagline, locale)}</p>
+        <p className="mt-2 text-[15.5px] text-ink-200">{copy.tagline}</p>
         <p className="mt-4 text-[14.5px] text-ink-300 leading-relaxed max-w-[60ch]">
-          {localized(p.short, locale)}
+          {copy.short}
         </p>
 
         <div className="mt-7 flex items-center justify-between">

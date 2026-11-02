@@ -1,7 +1,8 @@
 import { localeAlternates } from "@/i18n/locales";
+import { localized } from "@/lib/localized";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { ProjectCard } from "@/components/landing/ProjectCard";
@@ -39,6 +40,7 @@ export default async function ProjectsIndexPage({
 
 function ProjectsIndex() {
   const t = useTranslations("projectsIndex");
+  const locale = useLocale();
 
   // Lifecycle comes from the registry; the card still renders from
   // ProjectConfig. Two sources is the known Y-P0-003 debt — reading the
@@ -74,6 +76,11 @@ function ProjectsIndex() {
             <ProjectCard
               key={p.slug}
               project={p}
+              copy={{
+                category: localized(p.category, locale),
+                tagline: localized(p.tagline, locale),
+                short: localized(p.short, locale),
+              }}
               variant="big"
               index={i}
               total={ordered.length}
