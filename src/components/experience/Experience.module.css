@@ -708,9 +708,33 @@
   font-variant-numeric: tabular-nums;
 }
 
+.glyphValues {
+  align-items: center;
+}
+
 .glyphValues span {
   min-width: 4ch;
   text-align: end;
+}
+
+/* Hairline cells, as on an instrument panel. The readout is always LTR. */
+.glyphValues span + span {
+  padding-left: 10px;
+  border-left: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.glyphStatus {
+  width: 9px;
+  height: 9px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.32;
+  transition: opacity 300ms ease;
+}
+
+.glyphStatus[data-live="true"] {
+  opacity: 1;
 }
 
 .glyphGizmo {
