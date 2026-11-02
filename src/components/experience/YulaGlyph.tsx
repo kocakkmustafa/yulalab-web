@@ -50,6 +50,10 @@ const CAUSTIC_FRAGMENT_SHADER = `
   varying vec3 vLocalPosition;
   varying vec3 vViewNormal;
 
+  float spectralShift(vec3 point) {
+    return point.y * 0.18 - point.x * 0.11;
+  }
+
   void main() {
     float diagonal = 0.5 + 0.5 * sin(
       vLocalPosition.x * 5.6 + vLocalPosition.y * 7.8 - vLocalPosition.z * 10.0 + uTime * 0.62
@@ -66,10 +70,11 @@ const CAUSTIC_FRAGMENT_SHADER = `
       vLocalPosition.x * 4.2 - vLocalPosition.y * 2.6 + uTime * 0.18
     );
     vec3 cyan = vec3(0.38, 0.7, 1.0);
-    vec3 violet = vec3(0.4, 0.08, 0.95);
     vec3 magenta = vec3(0.86, 0.35, 1.0);
-    vec3 color = mix(cyan, violet, chroma);
-    color = mix(color, magenta, facet * 0.42);
+    // Neutral glass: colour appears only as a thin spectrum along the rims
+    // and facet glints, the way dispersion splits a white edge highlight.
+    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (chroma + spectralShift(vLocalPosition) + vec3(0.0, 0.33, 0.67)));
+    vec3 color = mix(vec3(0.92), spectrum, clamp(rim * 0.9 + facet * 0.35, 0.0, 1.0));
     float heroWhite = uHeroMix * clamp(sweep * 0.82 + rim * 0.42 + diagonal * 0.24, 0.0, 1.0);
     color = mix(color, vec3(1.0), heroWhite);
 
@@ -79,7 +84,7 @@ const CAUSTIC_FRAGMENT_SHADER = `
     color = mix(color, mix(cyan, magenta, chroma), portal * 0.72);
 
     float energy = 0.022 + diagonal * 0.16 + sweep * 0.09 + facet * 0.06 + rim * 0.035 + portal * 0.16;
-    energy += uHeroMix * (0.12 + sweep * 0.1 + rim * 0.055);
+    energy += uHeroMix * (0.05 + sweep * 0.1 + rim * 0.07);
     gl_FragColor = vec4(color * (1.1 + diagonal * 1.6), energy * uGlassMix);
   }
 `;
@@ -309,13 +314,13 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       {tier !== "low" ? (
         <mesh castShadow geometry={geometry} receiveShadow>
           <MeshTransmissionMaterial
-            anisotropicBlur={tier === "high" ? 0.02 : 0.04}
+            anisotropicBlur={tier === "high" ? 0.006 : 0.02}
             attenuationColor="#ffffff"
             bumpMap={chromeBump}
             bumpScale={0.012}
             attenuationDistance={8}
             backsideResolution={1}
-            chromaticAberration={tier === "high" ? 0.22 : 0.14}
+            chromaticAberration={tier === "high" ? 0.5 : 0.32}
             clearcoat={1}
             clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
             color={bodyColor}
@@ -324,11 +329,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
             distortionScale={0.34}
             envMapIntensity={tier === "high" ? 1.8 : 1.5}
             ior={1.35}
-            iridescence={0.12}
-            iridescenceIOR={1.35}
             metalness={0.04}
             opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.08 : 0.1}
+            roughness={tier === "high" ? 0.03 : 0.06}
             samples={tier === "high" ? 3 : 2}
             temporalDistortion={0}
             thickness={tier === "high" ? 0.55 : 0.45}
@@ -424,7 +427,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         visible={glassVisible}
       >
         <meshBasicMaterial
-          color="#ddd5e2"
+          color="#dcdde0"
           depthWrite={false}
           opacity={fringeOpacity * 0.82}
           toneMapped={false}

@@ -90,8 +90,8 @@ export function ExperienceWorld({
         shadow-mapSize-height={tier === "high" ? 1024 : 512}
         shadow-mapSize-width={tier === "high" ? 1024 : 512}
       />
-      <pointLight color="#9764ff" intensity={4} position={[-7, 2, 4]} />
-      <pointLight color="#555cff" intensity={2} position={[7, -2, -8]} />
+      <pointLight color="#ffffff" intensity={3} position={[-7, 2, 4]} />
+      <pointLight color="#e8eeff" intensity={1.5} position={[7, -2, -8]} />
 
       <LightformerEnvironment
         environmentIntensity={0.85 + frame.world.themeMix * 0.35}
@@ -105,18 +105,28 @@ export function ExperienceWorld({
           rotation={[0, 0, -0.28]}
           scale={[10, 0.8, 1]}
         />
+        {/* Neutral studio strips: thin sources give the glass crisp edge
+            highlights, and its dispersion supplies the only colour. */}
         <Lightformer
-          color="#b388ff"
+          color="#ffffff"
           form="rect"
-          intensity={5}
+          intensity={4}
           position={[4, 1, 3]}
           rotation={[0, -Math.PI / 3, 0]}
-          scale={[1.2, 6, 1]}
+          scale={[0.5, 7, 1]}
         />
         <Lightformer
-          color="#5c5cff"
+          color="#ffffff"
           form="rect"
-          intensity={1.4}
+          intensity={3}
+          position={[-4, 0, 3]}
+          rotation={[0, Math.PI / 3, 0]}
+          scale={[0.35, 7, 1]}
+        />
+        <Lightformer
+          color="#ffffff"
+          form="rect"
+          intensity={0.6}
           position={[2, -4, -8]}
           rotation={[Math.PI / 2, 0, 0]}
           scale={[8, 5, 1]}
