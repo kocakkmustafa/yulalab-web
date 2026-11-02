@@ -374,7 +374,12 @@ export function evaluateTimeline(
   const serviceIn = smoothstep(segmentProgress(p, 0.835, 0.858));
   const serviceOut = smoothstep(segmentProgress(p, 0.925, 0.965));
   const closingContent = smoothstep(segmentProgress(p, 0.968, 0.992));
-  const glyphRotation = sampleVec(GLYPH_ROTATION, p);
+  const baseGlyphRotation = sampleVec(GLYPH_ROTATION, p);
+  // The reference's emblem turns with the first scroll. One full turn over
+  // the hero ends on the starting orientation, so the portfolio hand-off is
+  // unchanged; depth clearance keeps using the unspun pose.
+  const heroSpin = p < STAGES.hero[1] ? Math.PI * 2 * smoothstep(segmentProgress(p, 0, STAGES.hero[1])) : 0;
+  const glyphRotation: Vec3 = [baseGlyphRotation[0], baseGlyphRotation[1] + heroSpin, baseGlyphRotation[2]];
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
   const overlay = Object.fromEntries(
@@ -400,7 +405,7 @@ export function evaluateTimeline(
         p,
         product.float,
         proofMorph,
-        glyphRotation,
+        baseGlyphRotation,
         glyphScale,
       ),
       rotation: glyphRotation,
