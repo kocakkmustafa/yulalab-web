@@ -37,6 +37,8 @@ const ROW =
 const ROW_KEY =
   "font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400";
 const ROW_VAL = "font-grotesk text-[15.5px] text-end";
+/** A pitch has two to four parts; the catalogue decides how many. */
+const PITCH_PARTS = [1, 2, 3, 4] as const;
 
 export function ProductPage({ project }: { project: ProjectConfig }) {
   const t = useTranslations("product");
@@ -119,6 +121,34 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             </p>
           </Reveal>
         </header>
+
+        {/* the pitch — founder direction 2026-11-02: a short promotional
+            read of the finished product, every sentence backed by what the
+            product's main branch ships today */}
+        {p.pitchTitle ? (
+          <section className="pb-24" aria-labelledby="product-pitch-heading" data-testid="product-pitch">
+            <Reveal>
+              <h2
+                id="product-pitch-heading"
+                className="font-display font-light text-[clamp(28px,3.6vw,52px)] leading-[1.08] tracking-tight max-w-[24ch] mb-12 text-pretty"
+              >
+                {p.pitchTitle}
+              </h2>
+            </Reveal>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+              {PITCH_PARTS.filter((n) => p[`pitch${n}Body`]).map((n, i) => (
+                <Reveal key={n} delay={i * 90} className="border-t border-white/10 pt-6">
+                  <h3 className="font-grotesk text-[17px] leading-[1.4] text-ink-50 mb-3 text-pretty">
+                    {p[`pitch${n}Title`]}
+                  </h3>
+                  <p className="text-[15.5px] leading-[1.75] text-ink-300 text-pretty">
+                    {p[`pitch${n}Body`]}
+                  </p>
+                </Reveal>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <ProductFeatures slug={project.slug} locale={locale} />
 
