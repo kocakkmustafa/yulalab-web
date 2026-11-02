@@ -1,5 +1,6 @@
 import type { TimelineFrame } from "./types";
 import type { ResolvedTheme } from "@/lib/theme";
+import { segmentProgress, smoothstep } from "./timeline";
 
 export const WORLD_DARK_COLOR = "#030303";
 export const WORLD_LIGHT_COLOR = "#e6eef0";
@@ -33,4 +34,25 @@ export function resolveExperiencePalette(themeMix: number): ExperiencePalette {
     line: polarity,
     surface: lightSurface ? "light" : "dark",
   };
+}
+
+// Section light for the LED wall, as linear RGB multipliers. The room leaves
+// the gallery in petrol and turns night blue just before the white blade, so
+// the light change announces the crossing. Text is drawn over darker panels
+// than with white light, so the contrast switch above still holds.
+export const WALL_TINTS = {
+  neutral: [1, 1, 1],
+  petrol: [0.2, 0.92, 1],
+  night: [0.24, 0.42, 1],
+} as const satisfies Record<string, readonly [number, number, number]>;
+
+export function resolveWallTint(progress: number): [number, number, number] {
+  const petrol = smoothstep(segmentProgress(progress, 0.46, 0.51))
+    * (1 - smoothstep(segmentProgress(progress, 0.53, 0.57)));
+  const night = smoothstep(segmentProgress(progress, 0.53, 0.57))
+    * (1 - smoothstep(segmentProgress(progress, 0.6, 0.66)));
+  return [0, 1, 2].map((channel) => {
+    const base = WALL_TINTS.neutral[channel] + (WALL_TINTS.petrol[channel] - WALL_TINTS.neutral[channel]) * petrol;
+    return base + (WALL_TINTS.night[channel] - base) * night;
+  }) as [number, number, number];
 }

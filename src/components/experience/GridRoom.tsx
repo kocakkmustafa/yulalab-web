@@ -18,7 +18,7 @@ import {
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
 import { segmentProgress, smoothstep, STAGES } from "./timeline";
-import { WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
+import { resolveWallTint, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
 export type WallTitles = { works: string; service: string };
@@ -51,7 +51,7 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
 
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
-  uniform vec3 uBackgroundColor; uniform float uReadingMix; uniform float uHeroMix; uniform float uCompactMix;
+  uniform vec3 uBackgroundColor; uniform float uReadingMix; uniform float uHeroMix; uniform float uCompactMix; uniform vec3 uWallTint;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
   uniform float uProjectionMix; uniform float uProjectionBlend;
@@ -98,7 +98,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     // The wall steps back behind the product screens, as it does on mobile.
     float wallLevel = (0.72 - uCompactMix * 0.34) * (1.0 - uGalleryMix * 0.5) * (1.0 - uProjectionMix * 0.55);
     color += vec3(wallLevel) * panel * breath * (0.86 + emitterTone * 0.14);
-    color *= wallLight;
+    color *= wallLight * uWallTint;
 
     // Each emitter is a round dot with a dark gap. Once a dot is smaller than
     // a screen pixel the pattern fades to its average instead of aliasing.
@@ -323,6 +323,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uReadingMix: { value: 0 },
           uHeroMix: { value: 0 },
           uCompactMix: { value: 0 },
+          uWallTint: { value: new Vector3(1, 1, 1) },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -377,6 +378,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uReadingMix.value = 1 - viewportMobileMix(viewportWidth);
     gridMaterial.uniforms.uHeroMix.value = frame.overlay.hero;
     gridMaterial.uniforms.uCompactMix.value = viewportMobileMix(viewportWidth);
+    gridMaterial.uniforms.uWallTint.value.fromArray(resolveWallTint(frame.progress));
     gridMaterial.uniforms.uProjectionA.value = mediaTextures?.[mediaIndex] ?? null;
     gridMaterial.uniforms.uProjectionB.value = mediaTextures?.[Math.min(mediaIndex + 1, (mediaTextures?.length ?? 1) - 1)] ?? null;
     gridMaterial.uniforms.uProjectionMix.value = mediaTextures?.length ? frame.world.serviceIn * (1 - frame.world.serviceOut) * 0.82 : 0;
