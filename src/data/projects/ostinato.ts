@@ -15,12 +15,12 @@ export const ostinato: ProjectConfig = {
     en: "Build your instrument practice step by step.",
   },
   description: {
-    tr: "Ostinato gitar, şan, piyano ve kulak eğitimini ilk sesten itibaren dört kursta, 690 derste öğretir. Her nota için doğru, farklı nota ya da duyamadım diye geri bildirim verir; akort aleti, metronom ve kurulum sihirbazı uygulamanın içindedir. Ücretsiz dersler hesap gerektirmez; sonraki dersler Ostinato üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Mikrofon sesi cihazında işlenir ve yüklenmez.",
-    en: "Ostinato teaches guitar, voice, piano and ear training from the first sound, in four courses and 690 lessons. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. Free lessons need no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.",
+    tr: "Ostinato gitarı ilk sesten itibaren ölçülü pratikle öğretir. Gitar kursu dört seviyede 240 dersle açık; şan, piyano ve kulak eğitimi yakında ve program 690 derse büyüyor. Her nota için doğru, farklı nota ya da duyamadım diye geri bildirim verir; akort aleti, metronom ve kurulum sihirbazı uygulamanın içindedir. Gitarın ilk seviyesi (40 ders) ücretsizdir ve hesap gerektirmez; sonraki dersler Ostinato üyeliği veya Motion+ aboneliğiyle App Store ve Google Play üzerinden açılır. Mikrofon sesi cihazında işlenir ve yüklenmez.",
+    en: "Ostinato teaches guitar from the first sound through measured practice. The guitar course is open with 240 lessons across four levels; voice, piano and ear training are coming soon, and the programme grows to 690 lessons. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. The first level of guitar (40 lessons) is free and needs no account; later lessons open with an Ostinato membership or Motion+ subscription through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.",
   },
   short: {
-    tr: "Gitar, şan, piyano ve kulak eğitimi için dört kurs, 690 ders. Ücretsiz dersler hesapsız açılır; gerisi App Store ve Google Play üzerinden abonelikle açılır.",
-    en: "Four courses and 690 lessons in guitar, voice, piano and ear training. Free lessons open without an account; the rest open by subscription through the App Store and Google Play.",
+    tr: "Gitar 240 dersle açık; şan, piyano ve kulak eğitimi yakında, program 690 derse büyüyor. Gitarın ilk seviyesi (40 ders) ücretsiz ve hesapsız; gerisi App Store ve Google Play üzerinden abonelikle açılır.",
+    en: "Guitar is open with 240 lessons; voice, piano and ear training are coming soon, and the programme grows to 690 lessons. The first level of guitar (40 lessons) is free, with no account. The rest opens by subscription through the App Store and Google Play.",
   },
   brand: {
     primary: "#D8A657",
