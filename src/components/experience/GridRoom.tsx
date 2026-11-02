@@ -51,7 +51,7 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
 
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
-  uniform vec3 uBackgroundColor; uniform float uReadingMix;
+  uniform vec3 uBackgroundColor; uniform float uReadingMix; uniform float uHeroMix; uniform float uCompactMix;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
   uniform float uProjectionMix; uniform float uProjectionBlend;
@@ -76,27 +76,40 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float joint = smoothstep(0.0, 0.035, min(min(local.x, 1.0 - local.x), min(local.y, 1.0 - local.y)));
     float wallLight = 0.45 + 0.55 * pow(vFacing, 0.7);
 
-    // Original architectural light panels, drawn in the opaque curved wall.
-    // They also become the real background sampled by the glass glyph.
-    vec2 roomPoint = (vUv - vec2(0.53, 0.5)) * vec2(5.0, 3.2);
-    float envelope = exp(-dot(roomPoint, roomPoint) * 0.48);
-    float diagonal = vUv.x * 5.4 + vUv.y * 2.7;
-    float beam = 1.0 - smoothstep(0.19, 0.30, abs(fract(diagonal) - 0.5));
-    float bay = smoothstep(0.14, 0.24, cellTone) * (0.52 + cellTone * 0.48);
+    // Original architectural light panels, drawn in the opaque curved wall as
+    // a low-resolution emitter display: the bands are sampled on the emitter
+    // grid, so their edges step like real LED panels instead of a soft
+    // gradient. They also become the real background sampled by the glass.
+    vec2 emitterGrid = vec2(768.0, 384.0);
+    vec2 emitterCell = floor(vUv * emitterGrid);
+    vec2 emitterUv = (emitterCell + 0.5) / emitterGrid;
+    float emitterTone = fract(sin(dot(emitterCell, vec2(12.9898, 78.233))) * 43758.5453);
+    vec2 roomPoint = (emitterUv - vec2(0.53, 0.5)) * vec2(5.0, 3.2);
+    float envelope = exp(-dot(roomPoint, roomPoint) * 0.42);
+    // Each panel shifts the band a little, so the stripes break at the panel
+    // joints like a mosaic; per-emitter jitter roughens the stepped edge.
+    float diagonal = emitterUv.x * 11.0 + emitterUv.y * 5.2 + (cellTone - 0.5) * 0.22;
+    float beam = step(abs(fract(diagonal) - 0.5), 0.17 + (emitterTone - 0.5) * 0.05);
+    float bay = smoothstep(0.1, 0.2, cellTone) * (0.55 + cellTone * 0.45);
     float panel = beam * envelope * bay * joint;
-    float wash = exp(-dot(roomPoint - vec2(0.8, -0.2), roomPoint - vec2(0.8, -0.2)) * 1.4);
     float breath = 0.98 + 0.02 * sin(uTime * 0.12);
-    vec3 tint = vec3(mix(0.012, 0.03, cellTone));
-    vec3 color = vec3(0.0007) + tint * envelope * 0.7;
-    color += vec3(0.46) * panel * breath * (1.0 - uProjectionMix * 0.55);
-    color += vec3(0.03) * wash * (1.0 - panel);
+    vec3 color = vec3(0.0006) + vec3(mix(0.002, 0.008, cellTone)) * envelope;
+    // Narrow screens see more of the wall at once; keep it a backdrop there.
+    // The wall steps back behind the product screens, as it does on mobile.
+    float wallLevel = (0.72 - uCompactMix * 0.34) * (1.0 - uGalleryMix * 0.5) * (1.0 - uProjectionMix * 0.55);
+    color += vec3(wallLevel) * panel * breath * (0.86 + emitterTone * 0.14);
     color *= wallLight;
 
-    // Subpixel dots fade out rather than alias as the camera changes depth.
-    vec2 dotCoordinate = vUv * vec2(1536.0, 768.0);
-    float dotDetail = 1.0 - smoothstep(0.6, 1.5, max(fwidth(dotCoordinate.x), fwidth(dotCoordinate.y)));
-    float dotMask = 1.0 - smoothstep(0.18, 0.38, length(fract(dotCoordinate) - 0.5));
-    color *= 1.0 - (1.0 - dotMask) * dotDetail * 0.36;
+    // Each emitter is a round dot with a dark gap. Once a dot is smaller than
+    // a screen pixel the pattern fades to its average instead of aliasing.
+    vec2 emitterLocal = fract(vUv * emitterGrid) - 0.5;
+    vec2 emitterFootprint = fwidth(vUv * emitterGrid);
+    // Far: dots below a pixel average out. Near (closing shot): dots wider
+    // than ~16px read as a print screen, so they settle into a flat panel.
+    float emitterSize = max(emitterFootprint.x, emitterFootprint.y);
+    float emitterDetail = (1.0 - smoothstep(0.35, 0.8, emitterSize)) * smoothstep(0.03, 0.07, emitterSize);
+    float emitterDot = 1.0 - smoothstep(0.28, 0.48, length(emitterLocal));
+    color *= mix(0.72, 0.42 + emitterDot * 0.7, emitterDetail);
 
     // The cylinder's interior reverses horizontal UVs. Correct projected text
     // and media in this pass; none of these textures come from the reference.
@@ -123,7 +136,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec2 screenUv = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
     float readingColumn = smoothstep(0.53, 0.66, screenUv.x) * (1.0 - smoothstep(0.94, 1.0, screenUv.x));
     float readingHeight = smoothstep(0.10, 0.22, screenUv.y) * (1.0 - smoothstep(0.86, 0.96, screenUv.y));
-    color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(uGalleryMix, uProjectionMix) * 0.8;
+    color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(max(uGalleryMix, uProjectionMix), uHeroMix * 0.75) * 0.8;
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
@@ -308,6 +321,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uOpacity: { value: 1 },
           uBackgroundColor: { value: new Color(WORLD_DARK_COLOR) },
           uReadingMix: { value: 0 },
+          uHeroMix: { value: 0 },
+          uCompactMix: { value: 0 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -360,6 +375,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     const mediaIndex = Math.floor(mediaFloat);
     gridMaterial.uniforms.uTime.value = state.clock.elapsedTime;
     gridMaterial.uniforms.uReadingMix.value = 1 - viewportMobileMix(viewportWidth);
+    gridMaterial.uniforms.uHeroMix.value = frame.overlay.hero;
+    gridMaterial.uniforms.uCompactMix.value = viewportMobileMix(viewportWidth);
     gridMaterial.uniforms.uProjectionA.value = mediaTextures?.[mediaIndex] ?? null;
     gridMaterial.uniforms.uProjectionB.value = mediaTextures?.[Math.min(mediaIndex + 1, (mediaTextures?.length ?? 1) - 1)] ?? null;
     gridMaterial.uniforms.uProjectionMix.value = mediaTextures?.length ? frame.world.serviceIn * (1 - frame.world.serviceOut) * 0.82 : 0;
