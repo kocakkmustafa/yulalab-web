@@ -129,7 +129,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/components/experience/ExperienceOverlay.tsx": "2e957673acf263a7aed76b8b36211057c3dbc38ba29e92d45e0ced9ea097c009",
     "src/components/experience/ExperienceWorld.tsx": "e81711b1683ad05799beff3fa3e16ff341fcfa1cd76321895e7dfc16a343e1c1",
     "src/components/experience/YulaExperience.tsx": "adb3498304e69dd6d9f42462aca4adba0c566bfa4c1665829faef634a47aa5af",
-    "src/components/experience/theme.ts": "fbc00643fbd21f6fdf8294a7730bbcf6cc758ee0bf98d49ca009029ce34768f5",
+    "src/components/experience/theme.ts": "cee0ad410f3e8bbad90d51603529029b595996a610c12cc115bf602a524e83e9",
     "src/components/layout/Header.tsx": "37a4f5010d25a3f99e731cc54e875e703b0a02b5e605a801d9b70c070c40bf97",
     "src/components/projects/StatCards.tsx": "2a0a16cf3e3b3eedbfc9116a7b3843db85e117eb6da7f33703a4b34628e4c653",
     "src/components/theme/ThemeControl.tsx": "f587b1393b2484d5b36d0a8482dd3ce4a4e02b36d9bdb5c412144f20d8bcfc73",
