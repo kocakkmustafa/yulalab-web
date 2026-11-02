@@ -1001,14 +1001,28 @@
     pointer-events: none;
   }
 
+  /* Caption rhythm after the reference's work captions: a readable mono
+     index line with the category set as a highlighted label, then the
+     lifecycle as a bordered tag under the title block. */
   .productPanel .productMeta {
     justify-content: flex-start;
-    gap: 18px;
+    gap: 14px;
     padding: 0;
     border: 0;
-    font-size: 8px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
   }
-  .productPanel .lifecycleRow { margin-top: 9px; font-size: 8px; }
+  .productPanel .productMeta span:last-child {
+    padding: 2px 7px 1px;
+    color: rgb(var(--yula-exp-rgb));
+    background: var(--yula-exp-fg);
+  }
+  .productPanel .lifecycleRow { margin-top: 12px; font-size: 10px; }
+  .productPanel .lifecycleRow > span {
+    padding: 4px 9px 3px;
+    border: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+    border-radius: 3px;
+  }
   .portfolioStage .productPanel h2 { margin-top: 10px; font-size: clamp(36px, 4.2vw, 64px); font-weight: 400; line-height: 1.02; }
   .productPanel .productTagline { margin-top: 10px; font-size: 14px; font-weight: 500; }
   .productPanel .productShort { margin-top: 6px; font-size: 12px; line-height: 1.45; }
