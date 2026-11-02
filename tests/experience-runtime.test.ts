@@ -122,6 +122,7 @@ function installRuntimeSignals({
   cores = 12,
   memory = 16,
   renderer = "ANGLE (Apple, Apple M3, Metal)",
+  saveData = false,
 }: {
   webgl?: boolean;
   reducedMotion?: boolean;
@@ -131,6 +132,7 @@ function installRuntimeSignals({
   cores?: number;
   memory?: number;
   renderer?: string;
+  saveData?: boolean;
 } = {}) {
   const rendererInfo = { UNMASKED_RENDERER_WEBGL: 0x9246 };
   const loseContext = vi.fn();
@@ -153,6 +155,7 @@ function installRuntimeSignals({
   defineValue(window, "innerHeight", height);
   defineValue(navigator, "hardwareConcurrency", cores);
   defineValue(navigator, "deviceMemory", memory);
+  defineValue(navigator, "connection", { saveData });
   defineValue(window, "matchMedia", vi.fn(() => ({ matches: reducedMotion })));
 
   return { context, getContext, loseContext };
@@ -287,6 +290,7 @@ describe("experience quality policy", () => {
     { signals: { reducedMotion: true }, reason: "reduced motion" },
     { signals: { cores: 2, memory: 2 }, reason: "constrained hardware" },
     { signals: { dpr: 3.5 }, reason: "an expensive pixel ratio" },
+    { signals: { saveData: true }, reason: "a Save-Data request" },
     { signals: { renderer: "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device))" }, reason: "software rendering" },
   ] as const)("selects low for $reason", ({ signals }) => {
     installRuntimeSignals(signals);

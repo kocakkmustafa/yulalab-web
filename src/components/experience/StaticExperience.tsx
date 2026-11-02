@@ -3,6 +3,7 @@
 import { localePath } from "@/i18n/locales";
 /* eslint-disable @next/next/no-img-element -- registry captures do not publish
    dimensions; native images preserve each file's intrinsic aspect ratio. */
+import Image from "next/image";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { IMAGE_DIMENSIONS } from "@/data/image-dimensions";
 import type { ExperienceCopy, ExperienceProduct } from "./types";
@@ -108,7 +109,8 @@ export function StaticExperience({
                 </div>
               ) : (
                 <div className={styles.staticResearchSurface}>
-                  {product.icon ? <img src={product.icon} alt="" loading="lazy" decoding="async" style={{ width: 144, height: 144, objectFit: "contain" }} /> : <span aria-hidden="true">{product.monogram}</span>}
+                  {/* The source icons are 1-1.6 MB store masters; serve a 144px rendition. */}
+                  {product.icon ? <Image src={product.icon} alt="" width={144} height={144} sizes="144px" style={{ objectFit: "contain" }} /> : <span aria-hidden="true">{product.monogram}</span>}
                   {product.lifecycleLabel ? <strong>{product.lifecycleLabel}</strong> : null}
                 </div>
               )}
