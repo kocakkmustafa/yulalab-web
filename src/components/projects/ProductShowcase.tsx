@@ -24,11 +24,11 @@ export function ProductFeatures({ slug, locale }: { slug: string; locale: Locale
       </Reveal>
       <ul role="list" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 list-none p-0 m-0">
         {showcase.features.map((feature, index) => (
-          <li key={feature.title.en} data-roadmap={feature.roadmap ? "true" : "false"}>
+          <li key={feature.title.en} data-roadmap={feature.roadmap ? "true" : "false"} data-soon={feature.soon ? "true" : undefined}>
             <Reveal delay={(index % 3) * 70} className="glass h-full p-7">
-              {feature.roadmap ? (
+              {feature.roadmap || feature.soon ? (
                 <p className="mb-4 inline-flex rounded-full border border-white/15 px-2.5 py-1 font-mono text-[10px] tracking-[0.16em] uppercase text-ink-300">
-                  {localized(SHOWCASE_LABELS.roadmap, locale)}
+                  {localized(feature.roadmap ? SHOWCASE_LABELS.roadmap : SHOWCASE_LABELS.soon, locale)}
                 </p>
               ) : null}
               <h3 className="font-display font-light text-[clamp(20px,1.8vw,26px)] leading-[1.2] tracking-tight mb-3 text-pretty">

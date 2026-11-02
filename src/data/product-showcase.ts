@@ -13,7 +13,8 @@
  */
 type Copy = { tr: string; en: string };
 
-export type ShowcaseFeature = { title: Copy; body: Copy; roadmap?: true };
+/** `roadmap`: not in the product yet. `soon`: built, not published yet. */
+export type ShowcaseFeature = { title: Copy; body: Copy; roadmap?: true; soon?: true };
 export type ShowcaseQuestion = { question: Copy; answer: Copy };
 export type CompanyRole = { name: Copy; reports?: CompanyRole[] };
 export type ShowcaseCompany = { title: Copy; body: Copy; roadmap?: true; head: CompanyRole };
@@ -47,6 +48,7 @@ export type ProductShowcase = {
 export const SHOWCASE_LABELS = {
   features: { tr: "Özellikler", en: "Features" },
   roadmap: { tr: "Yol haritasında", en: "On the roadmap" },
+  soon: { tr: "Yakında", en: "Coming soon" },
   faq: { tr: "Sık sorulanlar", en: "Questions" },
   pricing: { tr: "Fiyat", en: "Pricing" },
   perMonth: { tr: "aylık", en: "per month" },
@@ -176,6 +178,9 @@ export const productShowcase: Record<string, ProductShowcase> = {
           tr: "macOS ve Windows uygulaması ile komut satırı aracı; kendi API anahtarlarınla çalışır.",
           en: "Apps for macOS and Windows and a command-line tool, working with your own API keys.",
         },
+        // Built on main but not published yet; drop the label once desktop
+        // and CLI 1.1.0 ship (Yönetim, 2026-11-02).
+        soon: true,
       },
       {
         title: { tr: "Kodlama ajanı.", en: "A coding agent." },
@@ -309,8 +314,8 @@ export const productShowcase: Record<string, ProductShowcase> = {
       {
         title: { tr: "Yazılı dersler, ücretsiz başlangıç.", en: "Written lessons, a free start." },
         body: {
-          tr: "Her kurs ücretsiz derslerle açılır. Ücretsiz dersler hesap gerektirmez; mikrofonlu pratik isteğe bağlıdır.",
-          en: "Every course opens with free lessons. Free lessons need no account, and practising with the microphone is optional.",
+          tr: "Gitarın ilk seviyesi (40 ders) ücretsizdir ve hesap gerektirmez; mikrofonlu pratik isteğe bağlıdır.",
+          en: "The first level of guitar (40 lessons) is free and needs no account, and practising with the microphone is optional.",
         },
       },
       {
