@@ -35,6 +35,8 @@ export function ExperienceInstruments({
   const quaternion = eulerToQuaternion(rotation);
   const axes = projectAxes(rotation);
   const glyphVisible = frame.stage === "hero" || frame.stage === "portfolio";
+  // The status dot lights while the visitor's own drag still steers the glass.
+  const steering = rotation.some((value, index) => Math.abs(value - frame.glyph.rotation[index]) > 0.001);
 
   return (
     <div className={styles.instruments} aria-hidden="true">
@@ -60,6 +62,7 @@ export function ExperienceInstruments({
       <div className={styles.glyphReadout} data-visible={glyphVisible ? "true" : "false"}>
         <p>{copy.glyph}</p>
         <p className={styles.glyphValues} dir="ltr">
+          <i className={styles.glyphStatus} data-live={steering ? "true" : "false"} />
           {quaternion.map((value, index) => (
             <span key={index}>{formatQuaternionComponent(value)}</span>
           ))}
