@@ -1,11 +1,12 @@
 "use client";
 
-import { Environment, Lightformer } from "@react-three/drei";
+import { Lightformer } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Color, Fog } from "three";
 import { CameraRig } from "./CameraRig";
 import { GridRoom, type WallTitles } from "./GridRoom";
+import { LightformerEnvironment } from "./LightformerEnvironment";
 import { PortfolioField } from "./PortfolioField";
 import { evaluateTimeline } from "./timeline";
 import type {
@@ -92,10 +93,8 @@ export function ExperienceWorld({
       <pointLight color="#9764ff" intensity={4} position={[-7, 2, 4]} />
       <pointLight color="#555cff" intensity={2} position={[7, -2, -8]} />
 
-      <Environment
-        background={false}
+      <LightformerEnvironment
         environmentIntensity={0.85 + frame.world.themeMix * 0.35}
-        frames={1}
         resolution={environmentResolution}
       >
         <Lightformer
@@ -122,7 +121,7 @@ export function ExperienceWorld({
           rotation={[Math.PI / 2, 0, 0]}
           scale={[8, 5, 1]}
         />
-      </Environment>
+      </LightformerEnvironment>
 
       <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} wallTitles={wallTitles} />
       <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />

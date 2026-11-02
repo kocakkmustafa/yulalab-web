@@ -13,7 +13,7 @@ import {
 import { createAmbientAudio, type AmbientAudioController } from "./audio";
 import { ExperienceErrorBoundary } from "./ExperienceErrorBoundary";
 import { ExperienceLoader } from "./ExperienceLoader";
-import { resolveVisibleFrameDelta } from "./loader";
+import { resolveVisibleFrameDelta, scheduleAfterLoad } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
@@ -189,6 +189,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   // hydrated experience begin on the same visual frame.
   const [loaderVisible, setLoaderVisible] = useState(true);
   const [loaderProgress, setLoaderProgress] = useState(0);
+  // three.js is fetched and compiled behind the opening card, after the
+  // card's first frame and the page's own load, not alongside hydration.
+  const [sceneRequested, setSceneRequested] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(false);
   const [glyphRotation, setGlyphRotation] = useState<Vec3>([0, 0, 0]);
   const [forceStatic, setForceStatic] = useState(false);
@@ -242,6 +245,16 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     );
     setTier(capture.tier ?? capabilities.tier);
   }, [capture.enabled, capture.tier]);
+
+  useEffect(() => {
+    if (!mounted || webgl !== "available" || sceneRequested) return;
+    // Capture frames and history returns have no card to load behind.
+    if (capture.enabled || !loaderVisible) {
+      setSceneRequested(true);
+      return;
+    }
+    return scheduleAfterLoad(() => setSceneRequested(true));
+  }, [capture.enabled, loaderVisible, mounted, sceneRequested, webgl]);
 
   useEffect(() => {
     return () => {
@@ -551,7 +564,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             aria-hidden={loaderVisible || undefined}
             inert={loaderVisible}
           >
-            {webgl === "available" && theme.ready ? (
+            {webgl === "available" && theme.ready && sceneRequested ? (
               <div className={styles.canvasLayer} aria-hidden="true">
                 <ExperienceErrorBoundary
                   fallback={null}

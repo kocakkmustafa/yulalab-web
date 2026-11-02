@@ -42,7 +42,10 @@ export type ExperienceCapabilities = {
   tier: QualityTier;
 };
 
-type NavigatorWithDeviceMemory = Navigator & { deviceMemory?: number };
+type NavigatorWithDeviceMemory = Navigator & {
+  deviceMemory?: number;
+  connection?: { saveData?: boolean };
+};
 
 function finitePositive(value: unknown): number | null {
   return typeof value === "number" && Number.isFinite(value) && value > 0
@@ -116,9 +119,12 @@ export function detectExperienceCapabilities(): ExperienceCapabilities {
 
   const constrainedHardware =
     (cores !== null && cores <= 4) || (memory !== null && memory <= 4);
+  // A visitor who asked the browser to save data gets the light renderer:
+  // DPR 1, the smallest environment map and no shadow pass.
+  const saveData = (navigator as NavigatorWithDeviceMemory).connection?.saveData === true;
   const constrainedDisplay = dpr > 3 || renderedPixelArea > 8_000_000;
 
-  if (constrainedHardware || constrainedDisplay) {
+  if (constrainedHardware || constrainedDisplay || saveData) {
     return { available: true, software: false, tier: "low" };
   }
 

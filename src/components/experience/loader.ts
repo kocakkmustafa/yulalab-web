@@ -73,3 +73,29 @@ export function resolveVisibleFrameDelta(
     Math.max(0, now - previous),
   );
 }
+
+const SCENE_IDLE_TIMEOUT_MS = 400;
+
+/**
+ * Runs `start` once the document has loaded and the main thread has a gap,
+ * so the 3D bundle downloads and compiles behind the opening card instead of
+ * competing with hydration. Returns a cancel function.
+ */
+export function scheduleAfterLoad(start: () => void, target: Window = window): () => void {
+  let idle: number | null = null;
+  let timer: number | null = null;
+  const request = () => {
+    if (typeof target.requestIdleCallback === "function") {
+      idle = target.requestIdleCallback(start, { timeout: SCENE_IDLE_TIMEOUT_MS });
+    } else {
+      timer = target.setTimeout(start, 0);
+    }
+  };
+  if (target.document.readyState === "complete") request();
+  else target.addEventListener("load", request, { once: true });
+  return () => {
+    target.removeEventListener("load", request);
+    if (idle !== null) target.cancelIdleCallback(idle);
+    if (timer !== null) target.clearTimeout(timer);
+  };
+}
