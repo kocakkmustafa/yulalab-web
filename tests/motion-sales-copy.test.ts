@@ -50,17 +50,24 @@ describe("Motion sales-open copy", () => {
     }
   });
 
-  // Ostinato moved to the v1 curriculum (690 lessons, Ostinato README and
-  // founder decisions K3-K9, 2026-11-01); its free part opens per course.
-  it("states Ostinato's v1 course size and store subscription in TR and EN", () => {
+  // Ostinato moved to the v1 curriculum (690 lessons, founder decisions
+  // K3-K9, 2026-11-01). Its main branch bundles the 240-lesson guitar course
+  // only; voice, piano and ear training follow, and guitar level 1 (40
+  // lessons) is free (stale-claim fix, 2026-11-02).
+  it("states Ostinato's open guitar course, v1 size and store subscription in TR and EN", () => {
     const project = projects.find((p) => p.slug === "ostinato")!;
     for (const text of [project.short.en, project.description.en]) {
-      expect(text).toMatch(/four courses and 690 lessons/i);
+      expect(text).toMatch(/guitar .*240 lessons/i);
+      expect(text).toMatch(/grows to 690 lessons/);
+      expect(text).toMatch(/first level of guitar \(40 lessons\) is free/);
+      expect(text).not.toMatch(/four courses/i);
       expect(text).toMatch(/subscription through the App Store and Google Play/);
       expect(text).not.toMatch(/155|not recorded/);
     }
     for (const text of [project.short.tr, project.description.tr]) {
-      expect(text).toMatch(/dört kurs.*690 ders/);
+      expect(text).toMatch(/Gitar.*240 ders/);
+      expect(text).toMatch(/690 derse büyüyor/);
+      expect(text).not.toMatch(/dört kurs/i);
       expect(text).toMatch(/App Store ve Google Play üzerinden/);
       expect(text).not.toMatch(/155|kaydedilmez/);
     }
