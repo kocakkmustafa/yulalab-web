@@ -137,6 +137,10 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float readingColumn = smoothstep(0.53, 0.66, screenUv.x) * (1.0 - smoothstep(0.94, 1.0, screenUv.x));
     float readingHeight = smoothstep(0.10, 0.22, screenUv.y) * (1.0 - smoothstep(0.86, 0.96, screenUv.y));
     color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(max(uGalleryMix, uProjectionMix), uHeroMix * 0.75) * 0.8;
+    // The gallery caption sits low on the leading side; keep the stepped
+    // bands from running bright behind its body copy.
+    float captionArea = (1.0 - smoothstep(0.42, 0.6, screenUv.x)) * (1.0 - smoothstep(0.4, 0.58, screenUv.y));
+    color *= 1.0 - captionArea * uReadingMix * uGalleryMix * 0.78;
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
