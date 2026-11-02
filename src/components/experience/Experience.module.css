@@ -397,15 +397,129 @@
   text-underline-offset: 4px;
 }
 
-.experienceNavigation a:hover,
-.experienceNavigation a:focus-visible,
-.linearButton:hover,
-.linearButton:focus-visible,
 .localeLink:hover,
-.localeLink:focus-visible,
-.trustLinks a:hover,
-.trustLinks a:focus-visible {
+.localeLink:focus-visible {
   text-decoration: underline;
+}
+
+/* Pointer feedback in the reference's grammar: text links dim and draw their
+   rule from the leading edge, round controls fill faintly and grow a little,
+   and underlined actions sweep a brighter line along their resting rule.
+   Keyboard focus shows the finished state at once; touch never sticks. */
+.experienceNavigation a,
+.trustLinks a {
+  padding-bottom: 3px;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
+  transition: opacity 300ms ease, background-size 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] .experienceNavigation a,
+[dir="rtl"] .trustLinks a {
+  background-position: 100% 100%;
+}
+
+.experienceNavigation a:focus-visible,
+.trustLinks a:focus-visible {
+  background-size: 100% 1px;
+}
+
+.linearButton,
+.soundButton,
+.experienceControls > label,
+.experienceControls :global(.theme-control[data-compact]) {
+  transition: background-color 300ms ease, transform 300ms ease;
+}
+
+.linearButton:focus-visible {
+  background-color: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.productLink,
+.emailLink,
+.allWorks {
+  position: relative;
+}
+
+.productLink::after,
+.emailLink::after,
+.allWorks::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+[dir="rtl"] .productLink::after,
+[dir="rtl"] .emailLink::after,
+[dir="rtl"] .allWorks::after {
+  transform-origin: right center;
+}
+
+.productLink span {
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.productLink:focus-visible::after,
+.emailLink:focus-visible::after,
+.allWorks:focus-visible::after {
+  transform: scaleX(1);
+}
+
+@media (hover: hover) {
+  .experienceNavigation a:hover,
+  .trustLinks a:hover {
+    opacity: 0.7;
+    background-size: 100% 1px;
+  }
+
+  .linearButton:hover,
+  .soundButton:hover,
+  .experienceControls > label:hover,
+  .experienceControls :global(.theme-control[data-compact]):hover {
+    background-color: color-mix(in srgb, currentColor 12%, transparent);
+    transform: scale(1.05);
+  }
+
+  .productLink:hover::after,
+  .emailLink:hover::after,
+  .allWorks:hover::after {
+    transform: scaleX(1);
+  }
+
+  .productLink:hover span {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  [dir="rtl"] .productLink:hover span {
+    transform: translate3d(-3px, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experienceNavigation a,
+  .trustLinks a,
+  .linearButton,
+  .soundButton,
+  .experienceControls > label,
+  .experienceControls :global(.theme-control[data-compact]),
+  .productLink::after,
+  .emailLink::after,
+  .allWorks::after,
+  .productLink span {
+    transition: none;
+  }
+
+  .linearButton:hover,
+  .soundButton:hover,
+  .experienceControls > label:hover,
+  .experienceControls :global(.theme-control[data-compact]):hover {
+    transform: none;
+  }
 }
 
 .experienceControls {
@@ -881,6 +995,13 @@
   pointer-events: auto;
 }
 
+/* Stages ignore the pointer so the glass stays draggable; the active hero
+   still has to take clicks on its own two links. */
+.heroStage[data-active="true"] .heroCopy a,
+.heroStage[data-active="true"] .scrollCue {
+  pointer-events: auto;
+}
+
 /* Scroll-linked caption change: the outgoing title blurs and drifts down,
    the incoming one resolves as its curved panel reaches the front. The filter
    only exists while a caption is in transit, so a settled one stays cheap. */
@@ -900,7 +1021,7 @@
   align-items: center;
   gap: 14px;
   padding: 11px 0 8px;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
   color: inherit;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
@@ -1029,7 +1150,7 @@
   gap: 24px;
   margin-top: 24px;
   padding: 11px 0 8px;
-  border-bottom: 1px solid currentColor;
+  border-bottom: 1px solid color-mix(in srgb, currentColor 45%, transparent);
   color: inherit;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 10px;
