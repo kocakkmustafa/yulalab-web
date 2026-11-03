@@ -22,23 +22,33 @@ const catalogue = (locale: string) =>
   };
 
 // Stale-claim fixes of 2026-11-02, checked against each product's main
-// branch: Ostinato ships the 240-lesson guitar course only (voice, piano and
-// ear training are not bundled yet) and its first guitar level (40 lessons)
-// is free; Braavolabs desktop and CLI are built but not published.
+// branch: Braavolabs desktop and CLI are built but not published.
+// Ostinato (founder-approved ear-training copy, 2026-11-03): guitar (240
+// lessons) and ear training (50 lessons) are open, voice and piano are not
+// bundled yet; guitar level 1 (40 lessons) and ear training level 1 (25
+// lessons) are free; paid lessons open with an Ostinato membership, without
+// Motion+.
 describe("product claims follow the main branches", () => {
   it("never offers Ostinato courses the app does not carry yet", () => {
     const en = catalogue("en").product.ostinato;
     const copy = [en.lede, en.a1Title, en.a1Body, en.a2Title, en.a2Body, en.r1v, ostinato.short.en, ostinato.description.en].join(" ");
-    expect(copy).not.toMatch(/ear training level 1|four courses|every course opens with free lessons/i);
+    expect(copy).not.toMatch(/four courses|every course opens with free lessons|voice level 1|piano level 1/i);
     expect(copy).toMatch(/240 lessons/);
-    expect(copy).toMatch(/40 lessons/);
-    expect(copy).toMatch(/coming soon/i);
+    expect(copy).toMatch(/50 lessons/);
+    expect(copy).toMatch(/ear training level 1 \(25 lessons\)/);
+    expect(copy).toMatch(/[Vv]oice and piano are coming soon/);
     const tr = catalogue("tr").product.ostinato;
-    expect([tr.a1Title, tr.a2Title, tr.r1v].join(" ")).not.toMatch(/Kulak eğitimi|Dört kurs/);
+    expect([tr.a1Title, tr.a2Title, tr.r1v].join(" ")).not.toMatch(/Dört kurs|[Şş]an|[Pp]iyano/);
   });
 
-  it.each(SUPPORTED_LOCALES)("states the 40 free guitar lessons in %s", (locale) => {
-    expect(catalogue(locale).product.ostinato.r1v).toMatch(/40/);
+  it.each(SUPPORTED_LOCALES)("states the 40 free guitar and 25 free ear training lessons in %s", (locale) => {
+    const { r1v } = catalogue(locale).product.ostinato;
+    expect(r1v).toMatch(/40/);
+    expect(r1v).toMatch(/25/);
+  });
+
+  it.each(SUPPORTED_LOCALES)("keeps Motion+ out of Ostinato's own copy in %s", (locale) => {
+    expect(JSON.stringify(catalogue(locale).product.ostinato)).not.toMatch(/Motion\+/);
   });
 
   it("labels Braavolabs desktop and terminal as coming soon, not as shipped or roadmap", () => {
