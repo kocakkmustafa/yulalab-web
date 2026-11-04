@@ -19,9 +19,11 @@ import { SoundPrompt } from "./SoundPrompt";
 import { useSceneHostAvailable, useSceneJourney, type SceneJourney } from "./SceneHost";
 import { scrollProgressForTimeline } from "./storyboard";
 import { evaluateTimeline, STAGES } from "./timeline";
+
 import type {
   ExperienceCopy,
   ExperienceMode,
+  ExperienceStage,
   ExperienceProduct,
   QualityTier,
   Vec3,
@@ -31,6 +33,8 @@ import { useSmoothScroll } from "./useSmoothScroll";
 import styles from "./Experience.module.css";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { applyExperienceTheme } from "./theme";
+
+const STAGE_ORDER = Object.keys(STAGES) as ExperienceStage[];
 
 type YulaExperienceProps = {
   products: ExperienceProduct[];
@@ -465,6 +469,16 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     () => applyExperienceTheme(evaluateTimeline(renderedProgress, mode), theme.resolved),
     [mode, renderedProgress, theme.resolved],
   );
+
+  // Stage-entry cue, like the reference's section sounds: only while the
+  // visitor has sound on, never in capture mode, never on the first frame.
+  const cueStage = useRef<ExperienceStage | null>(null);
+  useEffect(() => {
+    const previous = cueStage.current;
+    cueStage.current = frame.stage;
+    if (!previous || previous === frame.stage || !soundEnabled || capture.enabled) return;
+    audio.current?.cue(STAGE_ORDER.indexOf(frame.stage));
+  }, [frame.stage, soundEnabled, capture.enabled]);
   const activeProduct = products[frame.productIndex] ?? products[0];
   useLayoutEffect(() => {
     if (!forceStatic || !linearTarget.current) return;

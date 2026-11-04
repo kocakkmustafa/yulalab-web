@@ -2,13 +2,14 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import type { CSSProperties } from "react";
+import { useRef, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
+import { zoomThrough } from "@/lib/zoom-through";
 import { ALPHA, HAIRLINE } from "@/lib/color";
 import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
@@ -101,11 +102,15 @@ function BigCard({
   // the monogram placeholder — same rule as the showcase hero (ProductShot).
   // A project with no real screen yet (LifeOS) keeps the honest monogram.
   const productShot = p.visuals.screenshots.find(isProductShot);
+  const media = useRef<HTMLDivElement>(null);
 
   return (
     <MotionLink
       href={`/projects/${p.slug}`}
       data-project-index-card={p.slug}
+      onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+        zoomThrough(event, media.current);
+      }}
       className="group block rounded-3xl overflow-hidden border border-hairline hover:border-hairline-strong bg-surface focusable"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{
@@ -118,6 +123,7 @@ function BigCard({
       whileTap={{ scale: 0.99, transition: { duration: 0.1 } }}
     >
       <div
+        ref={media}
         className="media-in relative aspect-[16/10] overflow-hidden"
         style={{ background: p.brand.background }}
       >
