@@ -47,8 +47,15 @@ describe("motion parity CSS", () => {
   });
 
   it("mirrors the title wipe and the menu entrance for right-to-left pages", () => {
-    expect(parity).toContain('[dir="rtl"] .page-enter h1');
+    expect(parity).toContain('html[data-client-nav="true"][dir="rtl"] .page-enter h1');
     expect(parity).toContain('[dir="rtl"] .mm-item');
+  });
+
+  it("never holds back a first paint: title wipe after client navigation, header moves only", () => {
+    expect(parity).toMatch(/html\[data-client-nav="true"\] \.page-enter h1 {\s*-webkit-mask-image/);
+    expect(parity).not.toMatch(/(^|\n)\.page-enter h1 {\s*-webkit-mask-image/);
+    const header = parity.slice(parity.indexOf("@keyframes siteHeaderIn"), parity.indexOf("@keyframes siteHeaderIn") + 120);
+    expect(header).not.toContain("opacity");
   });
 
   it("gates scroll-driven effects on support", () => {
