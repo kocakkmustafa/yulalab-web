@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import styles from "./Experience.module.css";
+import { SlotLabel } from "@/components/common/SlotLabel";
 
 export const SOUND_PROMPT_KEY = "yula.sound.prompted.v1";
 
@@ -55,7 +56,7 @@ export function SoundPrompt({
       <span className={styles.soundPromptMark} aria-hidden="true" />
       <p>{copy.prompt}</p>
       <button type="button" className={styles.soundPromptOn} onClick={() => answer(true)}>
-        {copy.on}
+        <SlotLabel>{copy.on}</SlotLabel>
       </button>
       <button type="button" className={styles.soundPromptSkip} onClick={() => answer(false)}>
         {copy.skip}

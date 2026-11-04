@@ -118,7 +118,7 @@ function BigCard({
       whileTap={{ scale: 0.99, transition: { duration: 0.1 } }}
     >
       <div
-        className="relative aspect-[16/10] overflow-hidden"
+        className="media-in relative aspect-[16/10] overflow-hidden"
         style={{ background: p.brand.background }}
       >
         {productShot ? (
