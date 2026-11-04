@@ -19,6 +19,7 @@ import type {
 import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
+import { StageWord } from "./StageWord";
 import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
@@ -498,6 +499,7 @@ export function ExperienceOverlay({
         onLinearView={onLinearView}
       />
 
+      <StageWord frame={frame} copy={copy.instruments} />
       <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} />
 
       <div className={styles.realHud} aria-hidden="true">

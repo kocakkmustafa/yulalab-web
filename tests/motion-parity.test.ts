@@ -1,6 +1,9 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { scrambleFrame, scramblePool } from "../src/lib/scramble";
+import { stageWordFrame } from "../src/components/experience/instruments";
+import { holoRibbonState } from "../src/components/experience/HoloRibbon";
+import { evaluateTimeline } from "../src/components/experience/timeline";
 
 const css = readFileSync("src/app/globals.css", "utf8");
 const parity = css.slice(css.indexOf("Motion parity with the reference"));
@@ -59,5 +62,29 @@ describe("motion parity CSS", () => {
     }
     expect(reduced).toContain("stroke-dashoffset: 0 !important");
     expect(reduced).toContain("mask-image: none");
+  });
+});
+
+
+describe("journey stage word and vision ribbon", () => {
+  it("shows the stage word only where the stage leaves room for it", () => {
+    expect(stageWordFrame(evaluateTimeline(0.02, "desktop"))).toBeNull();
+    expect(stageWordFrame(evaluateTimeline(0.125, "desktop"))?.label).toBe("works");
+    expect(stageWordFrame(evaluateTimeline(0.3, "desktop"))).toBeNull();
+    expect(stageWordFrame(evaluateTimeline(0.8, "mobile"))?.label).toBe("vision");
+    expect(stageWordFrame(evaluateTimeline(0.62, "desktop"))).toBeNull();
+  });
+
+  it("drifts monotonically with the stage", () => {
+    const a = stageWordFrame(evaluateTimeline(0.775, "desktop"))!;
+    const b = stageWordFrame(evaluateTimeline(0.82, "desktop"))!;
+    expect(b.shift).toBeLessThan(a.shift);
+    expect(Math.abs(a.shift)).toBeLessThanOrEqual(0.5);
+  });
+
+  it("keeps the ribbon inside the vision stage", () => {
+    expect(holoRibbonState(evaluateTimeline(0.7, "desktop")).opacity).toBe(0);
+    expect(holoRibbonState(evaluateTimeline(0.8, "desktop")).opacity).toBe(1);
+    expect(holoRibbonState(evaluateTimeline(0.9, "desktop")).opacity).toBe(0);
   });
 });

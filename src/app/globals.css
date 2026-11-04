@@ -911,6 +911,16 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
   }
 }
 
+/* Site header settles in once per document load (it persists across client
+   navigations, so this never replays on a route change). */
+[data-site-header="true"] {
+  animation: siteHeaderIn 1100ms cubic-bezier(0.16, 1, 0.3, 1) 120ms both;
+}
+@keyframes siteHeaderIn {
+  from { opacity: 0; transform: translateY(-14px); }
+  to { opacity: 1; transform: none; }
+}
+
 /* Footer wordmark draws each glyph outline when first seen. */
 .footer-wordmark text {
   stroke-dasharray: 2000;
@@ -940,6 +950,7 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
     opacity: 1;
     transform: none;
   }
+  [data-site-header="true"],
   .page-enter h1,
   .scroll-marquee-track,
   .scroll-marquee-scroll,

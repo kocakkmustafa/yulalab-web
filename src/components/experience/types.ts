@@ -115,7 +115,7 @@ export type ExperienceValue = {
 export type ExperienceInstrumentCopy = Record<
   | "top" | "works" | "proof" | "crossing" | "mission" | "vision" | "values" | "contact"
   | "glyph" | "quality" | "scroll" | "refraction" | "product" | "off"
-  | "tierLow" | "tierMedium" | "tierHigh" | "wallService",
+  | "tierLow" | "tierMedium" | "tierHigh" | "wallService" | "reset",
   string
 >;
 

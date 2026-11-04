@@ -773,6 +773,44 @@
   pointer-events: none;
 }
 
+/* Oversized outlined stage word: drifts against the reading direction with
+   the stage's progress, under every stage's copy. */
+.stageWord {
+  --stage-word-opacity: 0;
+  --stage-word-shift: 0;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  opacity: var(--stage-word-opacity);
+  transform: translate3d(calc(-50% + var(--stage-word-shift) * 46vw), -50%, 0);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+[dir="rtl"] .stageWord {
+  transform: translate3d(calc(-50% - var(--stage-word-shift) * 46vw), -50%, 0);
+}
+
+.stageWord span {
+  display: block;
+  color: transparent;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(110px, 21vw, 360px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--experience-fg) 26%, transparent);
+}
+
+@media (max-width: 767px) {
+  .stageWord span {
+    font-size: 30vw;
+  }
+}
+
 .kicker {
   margin: 0 0 18px;
   color: var(--experience-muted, #b7aecb);
@@ -866,6 +904,43 @@
 }
 
 .glyphControl[data-dragging="true"] { cursor: grabbing; }
+.glyphReset {
+  position: absolute;
+  z-index: 11;
+  top: calc(214px + var(--safe-top));
+  inset-inline-end: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 999px;
+  color: var(--experience-fg);
+  background: color-mix(in srgb, var(--experience-fg) 6%, transparent);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: glyphResetIn 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: background-color 300ms ease;
+}
+.glyphReset span { display: inline-block; transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+.glyphReset:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 4px; }
+@media (hover: hover) {
+  .glyphReset:hover { background: color-mix(in srgb, var(--experience-fg) 14%, transparent); }
+  .glyphReset:hover span { transform: rotate(-180deg); }
+}
+@keyframes glyphResetIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 767px) {
+  .glyphReset { top: calc(34vh + max(15vh, 90px) + 14px); inset-inline-end: auto; left: 50%; transform: translateX(-50%); animation: none; }
+  [dir="rtl"] .glyphReset { left: 50%; }
+}
 .glyphControl:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 8px; }
 .glyphHint {
   position: absolute;

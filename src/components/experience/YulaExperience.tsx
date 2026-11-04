@@ -582,6 +582,18 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             {frame.stage === "hero" && frame.overlay.hero > 0.6 ? (
               <GlyphControl label={copy.ui.glyphLabel} help={copy.ui.glyphHelp} rotation={glyphRotation} onChange={setGlyphRotation} />
             ) : null}
+            {frame.stage === "hero" && frame.overlay.hero > 0.6 && glyphRotation.some((value) => Math.abs(value) > 0.001) ? (
+              // Like the reference's "reset quaternion": once the visitor has
+              // turned the glass, one press returns it to its resting pose.
+              <button
+                type="button"
+                className={styles.glyphReset}
+                data-yula-glyph-reset="true"
+                onClick={() => setGlyphRotation([0, 0, 0])}
+              >
+                <span aria-hidden="true">↺</span> {copy.instruments.reset}
+              </button>
+            ) : null}
             {!capture.enabled && !loaderVisible ? (
               <SoundPrompt
                 copy={{ prompt: copy.navigation.soundPrompt, on: copy.navigation.soundOn, skip: copy.navigation.soundSkip }}

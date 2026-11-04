@@ -17,6 +17,7 @@ import type {
   TimelineFrame,
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
+import { HoloRibbon } from "./HoloRibbon";
 import { VisionServicePortal } from "./VisionServicePortal";
 import { useShowcaseTextures } from "./useShowcaseTextures";
 import { applyExperienceTheme, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
@@ -143,6 +144,7 @@ export function ExperienceWorld({
         tier={tier}
       />
       <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
+      <HoloRibbon frame={frame} tier={tier} />
     </>
   );
 }

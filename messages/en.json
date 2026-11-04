@@ -671,7 +671,8 @@
       "tierLow": "Low",
       "tierMedium": "Medium",
       "tierHigh": "High",
-      "wallService": "Service"
+      "wallService": "Service",
+      "reset": "Reset"
     }
   },
   "studio": {
