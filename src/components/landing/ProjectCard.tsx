@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
@@ -181,8 +182,9 @@ function BigCard({
 
         <div className="mt-7 flex items-center justify-between">
           <span
+            data-card-action="true"
             className="inline-flex items-center gap-2 text-[13.5px]"
-            style={{ color: p.brand.primary }}
+            style={{ "--card-brand": p.brand.primary } as CSSProperties}
           >
             <span className="arrow-nudge inline-flex">{tc("openPage")}</span>
             <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />

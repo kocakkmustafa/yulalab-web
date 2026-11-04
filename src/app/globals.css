@@ -245,7 +245,13 @@ body:not(:has([data-yula-experience="true"])) main,
 .scene-host[data-scene-tone="quiet"] .scene-host-veil {
   opacity: 0.95;
 }
-/* The scene replaces the page's painted ground only while it is live. */
+/* The scene replaces the page's painted ground only while it is live. The
+   root keeps the page colour (painted under the scene), so contrast tools
+   and the frame before the scene's first paint resolve to the same ground
+   the veil approximates. */
+html[data-scene="live"] {
+  background: var(--yula-page-bg);
+}
 html[data-scene="live"] body {
   background: transparent;
 }
@@ -569,6 +575,9 @@ body:not(:has([data-yula-experience="true"])) {
 [data-project-index-card] > div:last-child { padding: 20px 0 28px; }
 [data-project-index-card] h3 { font-size: 26px; font-weight: 500; letter-spacing: -.025em; }
 [data-project-index-card] > div:first-child { border: 1px solid rgba(255,255,255,.12); }
+/* Brand-coloured "open page" action: light brand colours (lime, sand) fail
+   AA on the light ground, so the light theme mixes them toward the ink. */
+[data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--card-brand) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
 @media (max-width: 767px) {
   [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
   [data-site-header="true"] > div > a > span { font-size: 24px; }
@@ -609,6 +618,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-hairline-strong: rgba(255,255,255,.20);
   --yula-page-bg: #030407;
   --yula-page-rgb: 3 4 7;
+  --yula-brand-text-mix: 100%;
   --yula-focus: #c4b5fd;
   --yula-warning: #fcd34d;
   --yula-warning-strong: #fbbf24;
@@ -640,6 +650,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-hairline-strong: rgba(22,19,16,.32);
   --yula-page-bg: #f5f3ee;
   --yula-page-rgb: 245 243 238;
+  --yula-brand-text-mix: 38%;
   --yula-focus: #6d36ac;
   --yula-warning: #795200;
   --yula-warning-strong: #6b4700;
@@ -672,6 +683,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
     --yula-hairline-strong: rgba(22,19,16,.32);
     --yula-page-bg: #f5f3ee;
     --yula-page-rgb: 245 243 238;
+    --yula-brand-text-mix: 38%;
     --yula-focus: #6d36ac;
     --yula-warning: #795200;
     --yula-warning-strong: #6b4700;
