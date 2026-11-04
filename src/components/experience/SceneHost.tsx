@@ -20,6 +20,7 @@ import type { WallTitles } from "./GridRoom";
 import { scheduleAfterLoad } from "./loader";
 import { detectExperienceCapabilities } from "./quality";
 import {
+  backdropLoadPolicy,
   interpolateSceneProgress,
   SCENE_BACKDROP_PROGRESS,
   SCENE_TRANSITION_MS,
@@ -66,6 +67,8 @@ type SceneHostApi = { setJourney: (journey: SceneJourney | null) => void };
 const SceneHostContext = createContext<SceneHostApi | null>(null);
 
 const TIER_RANK: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
+const MOBILE_QUERY = "(max-width: 767px)";
+const FIRST_GESTURE_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
 const NO_PRODUCTS: ExperienceProduct[] = [];
 const NO_ROTATION: Vec3 = [0, 0, 0];
 
@@ -110,7 +113,7 @@ export function SceneHost({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const theme = useTheme();
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
-  const mobile = useMediaQuery("(max-width: 767px)");
+  const mobile = useMediaQuery(MOBILE_QUERY);
   const [capabilities, setCapabilities] = useState<Capabilities | null>(null);
   const [journey, setJourneyState] = useState<SceneJourney | null>(null);
   const [retained, setRetained] = useState<{ products: ExperienceProduct[]; wallTitles?: WallTitles }>({
@@ -151,6 +154,8 @@ export function SceneHost({ children }: { children: ReactNode }) {
 
   // A content page asks for the renderer once the page itself has loaded and
   // the main thread is idle. The home route never does: its journey decides.
+  // Phones and constrained hardware wait for the visitor's first gesture
+  // (see backdropLoadPolicy).
   useEffect(() => {
     if (
       backdropRequested ||
@@ -163,7 +168,28 @@ export function SceneHost({ children }: { children: ReactNode }) {
     ) {
       return;
     }
-    return scheduleAfterLoad(() => setBackdropRequested(true));
+    const request = () => setBackdropRequested(true);
+    const policy = backdropLoadPolicy({
+      tier: capabilities.tier,
+      mobile: window.matchMedia(MOBILE_QUERY).matches,
+    });
+    if (policy === "after-load") return scheduleAfterLoad(request);
+
+    let cancelScheduled: (() => void) | null = null;
+    const stopListening = () => {
+      for (const type of FIRST_GESTURE_EVENTS) window.removeEventListener(type, onGesture);
+    };
+    function onGesture() {
+      stopListening();
+      cancelScheduled ??= scheduleAfterLoad(request);
+    }
+    for (const type of FIRST_GESTURE_EVENTS) {
+      window.addEventListener(type, onGesture, { passive: true });
+    }
+    return () => {
+      stopListening();
+      cancelScheduled?.();
+    };
   }, [backdropRequested, capabilities, failed, journey, pathname, reducedMotion, tone]);
 
   // Once created, the renderer is kept for the rest of the visit.

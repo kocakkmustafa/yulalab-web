@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  backdropLoadPolicy,
   easeSceneTransition,
   interpolateSceneProgress,
   SCENE_BACKDROP_PROGRESS,
@@ -41,6 +42,15 @@ describe("persistent scene route contract", () => {
     expect(interpolateSceneProgress(0.42, SCENE_BACKDROP_PROGRESS, 0)).toBeCloseTo(0.42);
     expect(interpolateSceneProgress(0.42, SCENE_BACKDROP_PROGRESS, SCENE_TRANSITION_MS)).toBe(SCENE_BACKDROP_PROGRESS);
     expect(interpolateSceneProgress(0.42, SCENE_BACKDROP_PROGRESS, SCENE_TRANSITION_MS * 4)).toBe(SCENE_BACKDROP_PROGRESS);
+  });
+});
+
+describe("first-visit backdrop loading", () => {
+  it("defers the renderer to the first gesture on phones and constrained hardware", () => {
+    expect(backdropLoadPolicy({ tier: "high", mobile: true })).toBe("first-gesture");
+    expect(backdropLoadPolicy({ tier: "low", mobile: false })).toBe("first-gesture");
+    expect(backdropLoadPolicy({ tier: "medium", mobile: false })).toBe("after-load");
+    expect(backdropLoadPolicy({ tier: "high", mobile: false })).toBe("after-load");
   });
 });
 

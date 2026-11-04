@@ -43,3 +43,15 @@ export function easeSceneTransition(value: number): number {
 export function interpolateSceneProgress(from: number, to: number, elapsedMs: number): number {
   return from + (to - from) * easeSceneTransition(elapsedMs / SCENE_TRANSITION_MS);
 }
+
+/**
+ * When a visit that starts on a content page loads the renderer. Phones and
+ * constrained hardware wait for the first gesture; the cost of compiling the
+ * scene right after load (measured ~600 ms of blocking time on a mobile
+ * product page) is only paid by a visitor who engages with the page.
+ */
+export type BackdropLoadPolicy = "after-load" | "first-gesture";
+
+export function backdropLoadPolicy(input: { tier: "high" | "medium" | "low"; mobile: boolean }): BackdropLoadPolicy {
+  return input.mobile || input.tier === "low" ? "first-gesture" : "after-load";
+}
