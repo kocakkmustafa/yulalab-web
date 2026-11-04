@@ -196,6 +196,67 @@ body:not(:has([data-yula-experience="true"])) main,
     calc(1.5rem + var(--safe-bottom)) calc(1.5rem + var(--safe-left));
 }
 
+/* ---------------------------------------------------------------------
+   Persistent scene (SceneHost). One fixed WebGL layer for the whole visit,
+   painted under every route. It fades in only after its first committed
+   frame, so a page never flashes the clear colour. Content pages veil it
+   with their own ground; quiet (legal/account) routes veil it almost fully.
+   --------------------------------------------------------------------- */
+.scene-host {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-soft);
+}
+.scene-host[data-scene-ready="true"] {
+  opacity: 1;
+}
+/* On the journey the opaque opening card already covers the first frame;
+   fading the scene under the card's own exit would open a dark gap. */
+.scene-host[data-scene-tone="journey"] {
+  transition: none;
+}
+.scene-host-canvas {
+  position: absolute;
+  inset: 0;
+}
+.scene-host-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.scene-host-veil {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--yula-page-rgb));
+  opacity: 0;
+  transition: opacity 900ms var(--ease-soft);
+}
+.scene-host[data-scene-tone="page"] .scene-host-veil {
+  opacity: 0.82;
+}
+.scene-host[data-scene-tone="quiet"] .scene-host-veil {
+  opacity: 0.95;
+}
+/* The scene replaces the page's painted ground only while it is live. */
+html[data-scene="live"] body {
+  background: transparent;
+}
+/* With the world persisting, the route veil keeps only its ruler sweep:
+   blurring the whole scene between pages would hide the continuity. */
+html[data-scene="live"] .route-veil {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* IntersectionObserver-driven reveal — deliberately larger than a
    micro-nudge: this is the "something just arrived" signal for section
    headers and stat blocks, not a hover-level detail. */
@@ -441,6 +502,9 @@ button:hover .arrow-nudge {
     animation-duration: 1ms;
   }
   .route-veil {
+    display: none;
+  }
+  .scene-host {
     display: none;
   }
   .reveal,

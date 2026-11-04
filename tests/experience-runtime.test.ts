@@ -801,4 +801,19 @@ describe("ambient scene scheduling", () => {
     expect(experienceCanvasHarness.frameCallbacks.filter(frame => frame.priority > 0)).toHaveLength(0);
     view.unmount();
   });
+
+  it("holds a content-page backdrop still: no ambient frames after warmup, even in the hero pose", () => {
+    resetExperienceCanvasHarness();
+    defineValue(document, "visibilityState", "visible");
+    const props = { ambient: false, products: [], progress: 0, mode: "desktop" as const, tier: "high" as const, onTierChange: vi.fn(), onReady: vi.fn(), onContextLost: vi.fn() };
+    const view = render(createElement(ExperienceCanvas, props));
+    act(() => finishCanvasWarmup());
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 6));
+    expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
+    // Camera travel is still drawn: every progress change asks for a frame.
+    view.rerender(createElement(ExperienceCanvas, { ...props, progress: 0.04 }));
+    expect(experienceCanvasHarness.invalidate).toHaveBeenCalled();
+    view.unmount();
+  });
 });
