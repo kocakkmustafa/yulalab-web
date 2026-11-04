@@ -123,7 +123,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/app/[locale]/operating-system/page.tsx": "35d8b05586d8c2854f041dccc85ce6720858ddd85f82d33149b713ee3051e6df",
     "src/app/[locale]/privacy/page.tsx": "94fc4c2c47aa1a9d2961ad10318c2d30d19bf701804876d233637eb1f423e479",
     "src/app/global-not-found.tsx": "868aaa4a27276f3df13101f0f2d9e57a2b3815a28692a29d46ac6178c26791d7",
-    "src/app/globals.css": "05854b07e9df9a800210b4bce39a16510049386785fabd2bf12806f957546161",
+    "src/app/globals.css": "9fc7b10ab031c653dade6d400a7bae81f325b5dfaa59e98717b8b6a679e40899",
     "src/components/experience/Experience.module.css": "bc44a0a8a7b81bb5d837c80d956dff0008f6935f999da9ef55e085b0fc22e596",
     "src/components/experience/ExperienceCanvas.tsx": "04eca23c83748f72d21e93deb7f7dfa81a7bca9e3b91a7f7c31fc8c640ccb0c6",
     "src/components/experience/ExperienceOverlay.tsx": "2e957673acf263a7aed76b8b36211057c3dbc38ba29e92d45e0ced9ea097c009",
