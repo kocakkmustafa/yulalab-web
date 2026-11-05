@@ -589,6 +589,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
               frame={frame}
               tier={tier}
               glyphRotation={glyphRotation}
+              onGlyphRotate={setGlyphRotation}
               soundEnabled={soundEnabled}
               onSoundToggle={() => void toggleSound()}
               onLinearView={showLinearView}

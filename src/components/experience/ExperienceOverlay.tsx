@@ -28,6 +28,7 @@ type ExperienceOverlayProps = {
   frame: TimelineFrame;
   tier: QualityTier;
   glyphRotation?: Vec3;
+  onGlyphRotate?: (rotation: Vec3) => void;
   soundEnabled: boolean;
   onSoundToggle: () => void;
   onLinearView: () => void;
@@ -411,6 +412,7 @@ export function ExperienceOverlay({
   frame,
   tier,
   glyphRotation = NO_ROTATION,
+  onGlyphRotate,
   soundEnabled,
   onSoundToggle,
   onLinearView,
@@ -500,7 +502,7 @@ export function ExperienceOverlay({
       />
 
       <StageWord frame={frame} copy={copy.instruments} />
-      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} />
+      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} onRotate={onGlyphRotate} />
 
       <div className={styles.realHud} aria-hidden="true">
         <span>{copy.instruments.quality} / {copy.instruments[TIER_LABEL[tier]]}</span>

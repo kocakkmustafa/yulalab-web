@@ -111,7 +111,7 @@ function BigCard({
       onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
         zoomThrough(event, media.current);
       }}
-      className="group block rounded-3xl overflow-hidden border border-hairline hover:border-hairline-strong bg-surface focusable"
+      className="group block rounded-3xl overflow-clip border border-hairline hover:border-hairline-strong bg-surface focusable"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{
         opacity: 1,
@@ -124,7 +124,7 @@ function BigCard({
     >
       <div
         ref={media}
-        className="media-in relative aspect-[16/10] overflow-hidden"
+        className="media-in relative aspect-[16/10] overflow-clip"
         style={{ background: p.brand.background }}
       >
         {productShot ? (
@@ -134,7 +134,7 @@ function BigCard({
             fill
             priority={index === 0}
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+            className="media-parallax object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
             style={{ transitionTimingFunction: "var(--ease-soft)" }}
           />
         ) : (

@@ -891,6 +891,28 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   top: clamp(330px, 46vh, 540px);
 }
 
+/* Parallax inside the frame: the picture drifts slower than the page while
+   its frame crosses the viewport. Individual translate/scale properties, so it
+   composes with the hover scale (transform). The frame must clip with
+   `overflow: clip`: a hidden-overflow frame would become the view timeline's
+   scroller and freeze the drift. */
+@supports (animation-timeline: view()) {
+  .media-parallax {
+    scale: 1.12;
+    animation: mediaParallax linear both;
+    animation-timeline: view();
+  }
+  @keyframes mediaParallax {
+    from { translate: 0 -5%; }
+    to { translate: 0 5%; }
+  }
+  /* The card's hover zoom also uses `scale` (and, like every hover here, is
+     not limited to fine pointers); keep it on top of the parallax scale. */
+  .group:hover .media-parallax {
+    scale: 1.155;
+  }
+}
+
 /* Media arrives out of the dark: an upward wipe with blur, scrubbed by the
    scroll as the frame enters the viewport. */
 @supports (animation-timeline: view()) {
@@ -957,8 +979,12 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   .page-enter h1,
   .scroll-marquee-track,
   .scroll-marquee-scroll,
-  .media-in {
+  .media-in,
+  .media-parallax {
     animation: none !important;
+  }
+  .media-parallax {
+    scale: none;
   }
   .page-enter h1 {
     -webkit-mask-image: none;
