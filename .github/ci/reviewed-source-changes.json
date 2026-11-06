@@ -1335,9 +1335,9 @@
     {
       "path": "src/components/layout/PageTransition.tsx",
       "publishedSha256": "5338e74f82da122aedeccffe6d2bff4eaa128a8c4c4b8e226d503a5adcc8c8f1",
-      "candidateSha256": "937565e6581a93216ea56745c5f39ce3bfb571a50c9197d453ce87a02c9f7144",
+      "candidateSha256": "fd81d674f30469e52381e0fdb612a38b141f7a573dc4ea2208d85152862b4234",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-11-01 works carousel and route transitions (founder approved 'Testler gecince yayinla'): curved works panels, scroll-linked caption blur, All projects link in 14 languages, route veil and blur page enter/exit, CLAUDE.md provider corrected to Netlify, live readback script moved into scripts/release."
+      "reason": "2026-11-01 works carousel and route transitions (founder approved 'Testler gecince yayinla'): curved works panels, scroll-linked caption blur, All projects link in 14 languages, route veil and blur page enter/exit, CLAUDE.md provider corrected to Netlify, live readback script moved into scripts/release. 2026-11-07: the exit animation now animates opacity only; framer-motion left inline filter/transform on the wrapper after Back/Forward, which made it the containing block of the fixed journey stage."
     },
     {
       "path": "src/components/experience/loader.ts",
