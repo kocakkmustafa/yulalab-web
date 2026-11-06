@@ -1,23 +1,22 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import {
   useCallback,
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
   useState,
-  type ComponentType,
 } from "react";
 import { createAmbientAudio, type AmbientAudioController } from "./audio";
-import { ExperienceErrorBoundary } from "./ExperienceErrorBoundary";
 import { ExperienceLoader } from "./ExperienceLoader";
 import { resolveVisibleFrameDelta, scheduleAfterLoad } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { StaticExperience } from "./StaticExperience";
 import { SoundPrompt } from "./SoundPrompt";
+import { useSceneHostAvailable, useSceneJourney, type SceneJourney } from "./SceneHost";
 import { scrollProgressForTimeline } from "./storyboard";
 import { evaluateTimeline, STAGES } from "./timeline";
 import type {
@@ -31,29 +30,7 @@ import { useExperienceProgress } from "./useExperienceProgress";
 import { useSmoothScroll } from "./useSmoothScroll";
 import styles from "./Experience.module.css";
 import { useTheme } from "@/components/theme/ThemeProvider";
-import type { ResolvedTheme } from "@/lib/theme";
 import { applyExperienceTheme } from "./theme";
-
-type ExperienceCanvasProps = {
-  displayTheme?: ResolvedTheme;
-  products: ExperienceProduct[];
-  glyphRotation?: Vec3;
-  progress: number;
-  mode: ExperienceMode;
-  tier: QualityTier;
-  onTierChange: (tier: QualityTier) => void;
-  onReady: () => void;
-  onContextLost: () => void;
-  wallTitles?: { works: string; service: string };
-};
-
-const ExperienceCanvas = dynamic<ExperienceCanvasProps>(
-  () =>
-    import("./ExperienceCanvas").then(
-      (module) => module.ExperienceCanvas as ComponentType<ExperienceCanvasProps>,
-    ),
-  { ssr: false, loading: () => null },
-);
 
 type YulaExperienceProps = {
   products: ExperienceProduct[];
@@ -181,6 +158,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const mobile = useMediaQuery("(max-width: 767px)");
   const compactViewport = useMediaQuery("(max-width: 767px) and (max-height: 600px)");
+  const sceneHostAvailable = useSceneHostAvailable();
   const [webgl, setWebgl] = useState<WebGLState>("checking");
   const [canvasFailed, setCanvasFailed] = useState(false);
   const [canvasReady, setCanvasReady] = useState(false);
@@ -239,12 +217,12 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     const capabilities = detectExperienceCapabilities();
     const allowSoftwareCapture = capture.enabled && capabilities.available;
     setWebgl(
-      capabilities.available && (!capabilities.software || allowSoftwareCapture)
+      sceneHostAvailable && capabilities.available && (!capabilities.software || allowSoftwareCapture)
         ? "available"
         : "unavailable",
     );
     setTier(capture.tier ?? capabilities.tier);
-  }, [capture.enabled, capture.tier]);
+  }, [capture.enabled, capture.tier, sceneHostAvailable]);
 
   useEffect(() => {
     if (!mounted || webgl !== "available" || sceneRequested) return;
@@ -469,6 +447,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     [capture.enabled, capture.tier],
   );
 
+  const handleCanvasReady = useCallback(() => setCanvasReady(true), []);
+  const handleCanvasFailure = useCallback(() => setCanvasFailed(true), []);
+
   // Keep the server and first hydration frame identical. Capture parameters
   // take effect immediately after mount, avoiding a mismatched active panel.
   const renderedProgress = mounted ? progress : 0;
@@ -514,6 +495,30 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     webgl === "unavailable" ||
     canvasFailed;
   const fallbackActive = !reducedMotion && (webgl === "unavailable" || canvasFailed);
+  // The renderer itself lives in the locale layout (SceneHost) so it survives
+  // route changes; the journey only tells it what to show.
+  const sceneSession = useId();
+  const sceneJourney = useMemo<SceneJourney>(() => ({
+    session: sceneSession,
+    requested: webgl === "available" && theme.ready && sceneRequested,
+    // Before mount the server's linear document is shown, but nothing has
+    // chosen it yet: keep a scene that is already live instead of dropping it.
+    visible: !mounted || !useStatic,
+    progress: renderedProgress,
+    glyphRotation,
+    products,
+    wallTitles,
+    mode,
+    tier,
+    onReady: handleCanvasReady,
+    onContextLost: handleCanvasFailure,
+    onTierChange: handleTierChange,
+  }), [
+    glyphRotation, handleCanvasFailure, handleCanvasReady, handleTierChange, mode,
+    mounted, products, renderedProgress, sceneRequested, sceneSession, theme.ready, tier,
+    useStatic, wallTitles, webgl,
+  ]);
+  useSceneJourney(sceneJourney);
   const experienceReady =
     mounted && (useStatic || canvasReady || (capture.enabled && capture.loader));
 
@@ -564,28 +569,6 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             aria-hidden={loaderVisible || undefined}
             inert={loaderVisible}
           >
-            {webgl === "available" && theme.ready && sceneRequested ? (
-              <div className={styles.canvasLayer} aria-hidden="true">
-                <ExperienceErrorBoundary
-                  fallback={null}
-                  onError={() => setCanvasFailed(true)}
-                >
-                  <ExperienceCanvas
-                    displayTheme={theme.resolved}
-                    glyphRotation={glyphRotation}
-                    products={products}
-                    wallTitles={wallTitles}
-                    progress={renderedProgress}
-                    mode={mode}
-                    tier={tier}
-                    onTierChange={handleTierChange}
-                    onReady={() => setCanvasReady(true)}
-                    onContextLost={() => setCanvasFailed(true)}
-                  />
-                </ExperienceErrorBoundary>
-              </div>
-            ) : null}
-
             <ExperienceOverlay
               copy={copy}
               products={products}

@@ -30,6 +30,11 @@ export type ExperienceCanvasProps = {
   onReady: () => void;
   onContextLost: () => void;
   wallTitles?: WallTitles;
+  /**
+   * Content pages hold the scene as a still backdrop: after the warmup and
+   * any camera travel (driven by `progress`), no ambient frames are drawn.
+   */
+  ambient?: boolean;
 };
 
 // Antialiasing is a WebGL context-creation option, so it is intentionally
@@ -58,9 +63,10 @@ const TRANSMISSION_RESOLUTION_SCALE: Record<QualityTier, number> = {
 type CanvasLifecycleProps = Pick<
   ExperienceCanvasProps,
   "mode" | "onReady" | "onContextLost" | "progress" | "tier" | "displayTheme"
-> & { assetsSettled: boolean };
+> & { assetsSettled: boolean; ambient: boolean };
 
 function CanvasLifecycle({
+  ambient,
   displayTheme,
   assetsSettled,
   mode,
@@ -123,7 +129,8 @@ function CanvasLifecycle({
   useFrame((_state, delta) => {
     if (
       document.visibilityState === "visible"
-      && (visibleWarmupElapsed.current < PERFORMANCE_WARMUP_SECONDS || progress < 0.065 || (progress > 0.785 && progress < 0.965))
+      && (visibleWarmupElapsed.current < PERFORMANCE_WARMUP_SECONDS
+        || (ambient && (progress < 0.065 || (progress > 0.785 && progress < 0.965))))
     ) {
       visibleWarmupElapsed.current += Math.min(1 / 15, Math.max(0, delta));
       invalidate();
@@ -143,6 +150,7 @@ function CanvasLifecycle({
 }
 
 export function ExperienceCanvas({
+  ambient = true,
   displayTheme = "dark",
   glyphRotation,
   products,
@@ -215,6 +223,7 @@ export function ExperienceCanvas({
         threshold={0.7}
       >
         <CanvasLifecycle
+          ambient={ambient}
           displayTheme={displayTheme}
           assetsSettled={assetsSettled}
           mode={mode}

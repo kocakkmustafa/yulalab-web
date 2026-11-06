@@ -196,6 +196,73 @@ body:not(:has([data-yula-experience="true"])) main,
     calc(1.5rem + var(--safe-bottom)) calc(1.5rem + var(--safe-left));
 }
 
+/* ---------------------------------------------------------------------
+   Persistent scene (SceneHost). One fixed WebGL layer for the whole visit,
+   painted under every route. It fades in only after its first committed
+   frame, so a page never flashes the clear colour. Content pages veil it
+   with their own ground; quiet (legal/account) routes veil it almost fully.
+   --------------------------------------------------------------------- */
+.scene-host {
+  position: fixed;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-soft);
+}
+.scene-host[data-scene-ready="true"] {
+  opacity: 1;
+}
+/* On the journey the opaque opening card already covers the first frame;
+   fading the scene under the card's own exit would open a dark gap. */
+.scene-host[data-scene-tone="journey"] {
+  transition: none;
+}
+.scene-host-canvas {
+  position: absolute;
+  inset: 0;
+}
+.scene-host-canvas canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+.scene-host-veil {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--yula-page-rgb));
+  opacity: 0;
+  transition: opacity 900ms var(--ease-soft);
+}
+.scene-host[data-scene-tone="page"] .scene-host-veil {
+  opacity: 0.82;
+}
+.scene-host[data-scene-tone="quiet"] .scene-host-veil {
+  opacity: 0.95;
+}
+/* The scene replaces the page's painted ground only while it is live. The
+   root keeps the page colour (painted under the scene), so contrast tools
+   and the frame before the scene's first paint resolve to the same ground
+   the veil approximates. */
+html[data-scene="live"] {
+  background: var(--yula-page-bg);
+}
+html[data-scene="live"] body {
+  background: transparent;
+}
+/* With the world persisting, the route veil keeps only its ruler sweep:
+   blurring the whole scene between pages would hide the continuity. */
+html[data-scene="live"] .route-veil {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
 /* IntersectionObserver-driven reveal — deliberately larger than a
    micro-nudge: this is the "something just arrived" signal for section
    headers and stat blocks, not a hover-level detail. */
@@ -443,6 +510,9 @@ button:hover .arrow-nudge {
   .route-veil {
     display: none;
   }
+  .scene-host {
+    display: none;
+  }
   .reveal,
   .reveal.is-ready:not(.is-in),
   .word,
@@ -505,6 +575,9 @@ body:not(:has([data-yula-experience="true"])) {
 [data-project-index-card] > div:last-child { padding: 20px 0 28px; }
 [data-project-index-card] h3 { font-size: 26px; font-weight: 500; letter-spacing: -.025em; }
 [data-project-index-card] > div:first-child { border: 1px solid rgba(255,255,255,.12); }
+/* Brand-coloured "open page" action: light brand colours (lime, sand) fail
+   AA on the light ground, so the light theme mixes them toward the ink. */
+[data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--card-brand) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
 @media (max-width: 767px) {
   [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
   [data-site-header="true"] > div > a > span { font-size: 24px; }
@@ -545,6 +618,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-hairline-strong: rgba(255,255,255,.20);
   --yula-page-bg: #030407;
   --yula-page-rgb: 3 4 7;
+  --yula-brand-text-mix: 100%;
   --yula-focus: #c4b5fd;
   --yula-warning: #fcd34d;
   --yula-warning-strong: #fbbf24;
@@ -576,6 +650,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-hairline-strong: rgba(22,19,16,.32);
   --yula-page-bg: #f5f3ee;
   --yula-page-rgb: 245 243 238;
+  --yula-brand-text-mix: 38%;
   --yula-focus: #6d36ac;
   --yula-warning: #795200;
   --yula-warning-strong: #6b4700;
@@ -608,6 +683,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
     --yula-hairline-strong: rgba(22,19,16,.32);
     --yula-page-bg: #f5f3ee;
     --yula-page-rgb: 245 243 238;
+    --yula-brand-text-mix: 38%;
     --yula-focus: #6d36ac;
     --yula-warning: #795200;
     --yula-warning-strong: #6b4700;

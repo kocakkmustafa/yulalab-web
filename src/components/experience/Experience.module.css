@@ -33,21 +33,6 @@
   opacity: 1;
 }
 
-/* The ready scene stays painted behind the opaque loader. Its own exit
-   reveals that scene; fading both layers sequentially creates a black gap. */
-.canvasLayer {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-}
-
-.canvasLayer :global(canvas) {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .scrollAnchor {
   position: absolute;
   left: 0;
@@ -2421,8 +2406,7 @@
     min-height: 100vh;
   }
 
-  .loader,
-  .canvasLayer {
+  .loader {
     display: none !important;
   }
 
@@ -2767,4 +2751,12 @@
   .soundPrompt {
     animation: none;
   }
+}
+
+/* The renderer lives in the layout (SceneHost) under the journey. Once it
+   is live the journey's own opaque ground steps aside; the linear document
+   keeps its background. */
+:global(html[data-scene="live"]) .journey:not(.staticJourney),
+:global(html[data-scene="live"]) .viewport {
+  background: transparent;
 }

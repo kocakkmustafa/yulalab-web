@@ -9,6 +9,7 @@ import { MotionConfig } from "framer-motion";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { SceneHost } from "@/components/experience/SceneHost";
 import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
 import { localeAlternates, OG_LOCALES } from "@/i18n/locales";
@@ -133,11 +134,15 @@ export default async function LocaleLayout({
               @media (prefers-reduced-motion) rule in globals.css; this is
               the Framer Motion half of the same promise. */}
           <MotionConfig reducedMotion="user">
-            <Header studioEnabled={studioOpen} />
-            <main>
-              <PageTransition>{children}</PageTransition>
-            </main>
-            <Footer studioEnabled={studioOpen} />
+            {/* The 3D world is created once here, outside the route
+                transition, and persists while pages change around it. */}
+            <SceneHost>
+              <Header studioEnabled={studioOpen} />
+              <main>
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <Footer studioEnabled={studioOpen} />
+            </SceneHost>
           </MotionConfig>
           </ThemeProvider>
         </NextIntlClientProvider>
