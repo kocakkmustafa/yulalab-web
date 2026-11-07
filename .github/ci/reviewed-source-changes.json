@@ -1335,9 +1335,9 @@
     {
       "path": "src/components/layout/PageTransition.tsx",
       "publishedSha256": "5338e74f82da122aedeccffe6d2bff4eaa128a8c4c4b8e226d503a5adcc8c8f1",
-      "candidateSha256": "f570ed666b3a04a3c65e5ac10d5951181b42e36c54503377bf7adee0527d9143",
+      "candidateSha256": "d357303f584048f5a8182acb315b40ceee1cc92c99ba5b22aef25129a34e73fb",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-11-01 works carousel and route transitions (founder approved 'Testler gecince yayinla'): curved works panels, scroll-linked caption blur, All projects link in 14 languages, route veil and blur page enter/exit, CLAUDE.md provider corrected to Netlify, live readback script moved into scripts/release. 2026-11-05 motion parity with the reference (founder instruction relayed by Yonetim): decode labels, slot buttons, title wipe, frosted staggered mobile menu, product marquee, media reveal, footer wordmark draw, journey stage words, vision spectral ribbon, glyph reset (14 languages), stage cues, card zoom-through; reduced motion resolves to end states. Local lint/typecheck/vitest/translations/claims/build and E2E evidence only; candidate-only, no publication assertion."
+      "reason": "2026-11-01 works carousel and route transitions (founder approved 'Testler gecince yayinla'): curved works panels, scroll-linked caption blur, All projects link in 14 languages, route veil and blur page enter/exit, CLAUDE.md provider corrected to Netlify, live readback script moved into scripts/release. 2026-11-05 motion parity with the reference (founder instruction relayed by Yonetim): decode labels, slot buttons, title wipe, frosted staggered mobile menu, product marquee, media reveal, footer wordmark draw, journey stage words, vision spectral ribbon, glyph reset (14 languages), stage cues, card zoom-through; reduced motion resolves to end states. Local lint/typecheck/vitest/translations/claims/build and E2E evidence only; candidate-only, no publication assertion. 2026-11-07: the exit animation animates opacity only; framer-motion left inline filter/transform on the wrapper after Back/Forward, which made it the containing block of the fixed journey stage."
     },
     {
       "path": "src/components/experience/loader.ts",

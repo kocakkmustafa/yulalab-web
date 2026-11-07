@@ -942,6 +942,11 @@ test("native history returns to each product without replaying the opening", { t
       await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 1_000 });
       await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before)).toBeLessThan(3);
       await expect(root).toHaveAttribute("data-active-product", slug);
+      // The stage must stay pinned to the viewport after Back. A leftover
+      // filter/transform on an ancestor (PageTransition) turns it into a
+      // scrolling box: the screen goes blank at the restored position.
+      await expect.poll(() => page.locator('[data-yula-experience] [class*="viewport"]').first()
+        .evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBe(0);
       if (traversal === 0) {
         await page.goForward();
         await page.waitForURL(`**/projects/${slug}`);
