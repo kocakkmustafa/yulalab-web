@@ -607,6 +607,9 @@ class MockAudioParam {
   linearRampToValueAtTime = vi.fn((value: number) => {
     this.value = value;
   });
+  exponentialRampToValueAtTime = vi.fn((value: number) => {
+    this.value = value;
+  });
 }
 
 class MockAudioNode {
@@ -691,6 +694,27 @@ describe("opt-in ambient audio", () => {
 
     await audio.enable();
     expect(MockAudioContext.instances).toHaveLength(1);
+  });
+
+  it("plays a stage cue only while sound is on", async () => {
+    MockAudioContext.instances.length = 0;
+    defineValue(window, "AudioContext", MockAudioContext);
+    const audio = createAmbientAudio();
+    audio.cue(1);
+    expect(MockAudioContext.instances).toHaveLength(0);
+
+    await audio.enable();
+    const context = MockAudioContext.instances[0];
+    const before = context.createOscillator.mock.calls.length;
+    audio.cue(3);
+    expect(context.createOscillator).toHaveBeenCalledTimes(before + 1);
+    expect(context.oscillator.frequency.setValueAtTime).toHaveBeenLastCalledWith(329.63, 1);
+    expect(context.oscillator.stop).toHaveBeenCalledWith(1.95);
+
+    await audio.setEnabled(false);
+    audio.cue(4);
+    expect(context.createOscillator).toHaveBeenCalledTimes(before + 1);
+    await audio.dispose();
   });
 
   it("stays inert when WebAudio is unavailable", async () => {
@@ -799,6 +823,21 @@ describe("ambient scene scheduling", () => {
     act(() => runCanvasFrame(-100, 9));
     expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
     expect(experienceCanvasHarness.frameCallbacks.filter(frame => frame.priority > 0)).toHaveLength(0);
+    view.unmount();
+  });
+
+  it("holds a content-page backdrop still: no ambient frames after warmup, even in the hero pose", () => {
+    resetExperienceCanvasHarness();
+    defineValue(document, "visibilityState", "visible");
+    const props = { ambient: false, products: [], progress: 0, mode: "desktop" as const, tier: "high" as const, onTierChange: vi.fn(), onReady: vi.fn(), onContextLost: vi.fn() };
+    const view = render(createElement(ExperienceCanvas, props));
+    act(() => finishCanvasWarmup());
+    experienceCanvasHarness.invalidate.mockClear();
+    act(() => runCanvasFrame(-100, 6));
+    expect(experienceCanvasHarness.invalidate).not.toHaveBeenCalled();
+    // Camera travel is still drawn: every progress change asks for a frame.
+    view.rerender(createElement(ExperienceCanvas, { ...props, progress: 0.04 }));
+    expect(experienceCanvasHarness.invalidate).toHaveBeenCalled();
     view.unmount();
   });
 });

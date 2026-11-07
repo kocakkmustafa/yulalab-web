@@ -671,7 +671,8 @@
       "tierLow": "कम",
       "tierMedium": "मध्यम",
       "tierHigh": "उच्च",
-      "wallService": "सेवा"
+      "wallService": "सेवा",
+      "reset": "रीसेट करें"
     }
   },
   "studio": {

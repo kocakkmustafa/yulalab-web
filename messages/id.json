@@ -671,7 +671,8 @@
       "tierLow": "Rendah",
       "tierMedium": "Sedang",
       "tierHigh": "Tinggi",
-      "wallService": "Layanan"
+      "wallService": "Layanan",
+      "reset": "Atur ulang"
     }
   },
   "studio": {

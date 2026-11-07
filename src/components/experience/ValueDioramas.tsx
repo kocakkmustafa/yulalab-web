@@ -16,6 +16,8 @@ import {
   type Texture,
 } from "three";
 import { serviceViewportComposition } from "./layout";
+import { pointScanState } from "./point-scan";
+import { PointScan } from "./PointScan";
 import { clamp01, interpolateViewportCamera, smoothstep } from "./timeline";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
@@ -464,8 +466,8 @@ export type ServiceCorridorVisualProps = ValueDioramasProps & {
   withDioramas?: boolean;
 };
 
-function ServiceSourcePlane({ texture, index, count, frame, opacity, portal }: {
-  texture: Texture; index: number; count: number; frame: TimelineFrame; opacity: number; portal: boolean;
+function ServiceSourcePlane({ texture, index, count, frame, opacity, portal, tier }: {
+  texture: Texture; index: number; count: number; frame: TimelineFrame; opacity: number; portal: boolean; tier: QualityTier;
 }) {
   const group = useRef<Group>(null);
   const material = useRef<MeshBasicMaterial>(null);
@@ -480,6 +482,9 @@ function ServiceSourcePlane({ texture, index, count, frame, opacity, portal }: {
   const baseScale = Math.min(viewHeight * composition.height / size.height / height, viewWidth * composition.width / size.width / width);
   const mediaFloat = frame.valueFloat / 3 * Math.max(0, count - 1);
   const difference = index - mediaFloat;
+  // The last panel (science) arrives as a point-cloud scan of its own media.
+  const scanned = !portal && index === count - 1;
+  const imageMix = scanned ? pointScanState(frame.progress).imageMix : 1;
   useFrame((state) => {
     if (!group.current || !material.current) return;
     const time = state.clock.elapsedTime;
@@ -493,10 +498,11 @@ function ServiceSourcePlane({ texture, index, count, frame, opacity, portal }: {
     );
     group.current.rotation.set(Math.sin(time * 0.25 + index) * 0.025, -Math.sin(phase) * 0.66 + Math.sin(time * 0.2) * 0.045, Math.sin(time * 0.18 + index) * 0.018);
     group.current.scale.setScalar(baseScale * (0.7 + focus * 0.3));
-    material.current.opacity = opacity * (0.08 + focus * 0.92);
+    material.current.opacity = opacity * (0.08 + focus * 0.92) * imageMix;
   }, -45);
   return <group ref={group} userData={{ sourceMedia: texture.userData.sourcePath }}>
     <mesh renderOrder={1}><planeGeometry args={[width, height]} /><meshBasicMaterial ref={material} map={texture} transparent depthWrite={false} toneMapped={false} fog={false} /></mesh>
+    {scanned ? <PointScan texture={texture} width={width} height={height} progress={frame.progress} opacity={opacity} tier={tier} light={Math.max(frame.world.whiteMix, frame.world.themeMix) > 0.5} /> : null}
   </group>;
 }
 
@@ -525,7 +531,7 @@ export function ServiceCorridorVisual({
 
   return (
     <group visible={journeyOpacity > 0.001} position={camera.position} quaternion={[orientation.x, orientation.y, orientation.z, orientation.w]}>
-      {mediaTextures?.length ? mediaTextures.map((texture, index) => <ServiceSourcePlane key={texture.uuid} texture={texture} index={index} count={mediaTextures.length} frame={frame} opacity={journeyOpacity} portal={!withDioramas} />) : null}
+      {mediaTextures?.length ? mediaTextures.map((texture, index) => <ServiceSourcePlane key={texture.uuid} texture={texture} index={index} count={mediaTextures.length} frame={frame} opacity={journeyOpacity} portal={!withDioramas} tier={tier} />) : null}
       {!mediaTextures?.length ? components.map((Diorama, index) => {
         const difference = index - frame.valueFloat;
         const distance = Math.abs(difference);

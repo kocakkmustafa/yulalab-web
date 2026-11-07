@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { company } from "@/data/company";
+import { ScrambleText } from "@/components/common/ScrambleText";
+import { SlotLabel } from "@/components/common/SlotLabel";
 
 type Props = { params: Promise<{ locale: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -23,10 +25,10 @@ export default async function ConsultingPage({ params }: Props) {
   return (
     <div className="page-enter max-w-6xl mx-auto px-6 lg:px-10 pt-32 pb-12">
       <section aria-labelledby="consulting-title" className="max-w-3xl">
-        <p className="font-mono text-xs tracking-widest text-ink-200">{t("eyebrow")}</p>
+        <p className="font-mono text-xs tracking-widest text-ink-200"><ScrambleText text={t("eyebrow")} /></p>
         <h1 id="consulting-title" className="mt-6 font-display text-4xl sm:text-6xl font-semibold tracking-tight leading-tight">{t("title")}</h1>
         <p className="mt-6 text-lg leading-relaxed text-ink-200">{t("intro")}</p>
-        <a href="#consulting-contact" className="focusable inline-flex mt-8 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium">{t("cta")} <span aria-hidden="true" className="ml-3">↘</span></a>
+        <a href="#consulting-contact" className="focusable inline-flex mt-8 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium"><SlotLabel>{t("cta")}</SlotLabel> <span aria-hidden="true" className="ml-3">↘</span></a>
       </section>
       <section aria-labelledby="services-title" className="mt-20">
         <h2 id="services-title" className="font-display text-3xl font-semibold">{t("servicesTitle")}</h2>
@@ -51,7 +53,7 @@ export default async function ConsultingPage({ params }: Props) {
       <section id="consulting-contact" aria-labelledby="contact-title" className="scroll-mt-24 mt-20 rounded-2xl border border-hairline-strong bg-surface p-6 sm:p-10">
         <h2 id="contact-title" className="font-display text-3xl font-semibold">{t("contactTitle")}</h2>
         <p className="mt-5 max-w-3xl text-ink-200 leading-relaxed">{t("contactBody")}</p>
-        <a data-consulting-email href={email} className="focusable inline-flex mt-7 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium">{t("cta")} <span aria-hidden="true" className="ml-3">↗</span></a>
+        <a data-consulting-email href={email} className="focusable inline-flex mt-7 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium"><SlotLabel>{t("cta")}</SlotLabel> <span aria-hidden="true" className="ml-3">↗</span></a>
         <p className="mt-5 text-ink-200 [overflow-wrap:anywhere]">{company.contact.consultingEmail}</p>
         <p className="mt-3 text-sm text-ink-300">{t("terms")}</p>
       </section>

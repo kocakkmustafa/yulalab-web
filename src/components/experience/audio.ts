@@ -3,6 +3,9 @@ export type AmbientAudioController = {
   setEnabled(enabled: boolean): Promise<void>;
   dispose(): Promise<void>;
   isEnabled(): boolean;
+  /** One short synthesized cue (a tone and a breath of air) for a stage entry;
+   *  silent unless the visitor has turned sound on. */
+  cue(step: number): void;
 };
 
 type AudioContextConstructor = new () => AudioContext;
@@ -11,6 +14,8 @@ type WindowWithWebkitAudio = Window & {
 };
 
 const ENABLED_GAIN = 0.012;
+// A pentatonic ladder: any two neighbouring stage cues sound consonant.
+const CUE_NOTES = [220, 261.63, 293.66, 329.63, 392, 440, 523.25, 587.33] as const;
 const GAIN_RAMP_SECONDS = 0.24;
 
 function getAudioContextConstructor(): AudioContextConstructor | null {
@@ -168,10 +173,59 @@ export function createAmbientAudio(): AmbientAudioController {
     }
   };
 
+  const cue = (step: number) => {
+    if (!enabled || disposed || !context || context.state !== "running") return;
+    const now = context.currentTime;
+    const note = CUE_NOTES[((Math.round(step) % CUE_NOTES.length) + CUE_NOTES.length) % CUE_NOTES.length];
+    try {
+      const tone = context.createOscillator();
+      const toneGain = context.createGain();
+      tone.type = "triangle";
+      tone.frequency.setValueAtTime(note, now);
+      toneGain.gain.setValueAtTime(0, now);
+      toneGain.gain.linearRampToValueAtTime(0.018, now + 0.02);
+      toneGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.9);
+      tone.connect(toneGain);
+      toneGain.connect(context.destination);
+      tone.onended = () => {
+        tone.disconnect();
+        toneGain.disconnect();
+      };
+      tone.start(now);
+      tone.stop(now + 0.95);
+
+      if (noise?.buffer) {
+        const air = context.createBufferSource();
+        const band = context.createBiquadFilter();
+        const airGain = context.createGain();
+        air.buffer = noise.buffer;
+        band.type = "bandpass";
+        band.frequency.setValueAtTime(1800, now);
+        band.frequency.exponentialRampToValueAtTime(600, now + 0.5);
+        airGain.gain.setValueAtTime(0, now);
+        airGain.gain.linearRampToValueAtTime(0.25, now + 0.04);
+        airGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        air.connect(band);
+        band.connect(airGain);
+        airGain.connect(context.destination);
+        air.onended = () => {
+          air.disconnect();
+          band.disconnect();
+          airGain.disconnect();
+        };
+        air.start(now);
+        air.stop(now + 0.55);
+      }
+    } catch {
+      // A cue is decoration; a closing context must never surface an error.
+    }
+  };
+
   return {
     enable,
     setEnabled,
     dispose,
     isEnabled: () => enabled,
+    cue,
   };
 }

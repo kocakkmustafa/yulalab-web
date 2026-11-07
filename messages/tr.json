@@ -671,7 +671,8 @@
       "tierLow": "Düşük",
       "tierMedium": "Orta",
       "tierHigh": "Yüksek",
-      "wallService": "Hizmet"
+      "wallService": "Hizmet",
+      "reset": "Sıfırla"
     }
   },
   "studio": {

@@ -33,21 +33,6 @@
   opacity: 1;
 }
 
-/* The ready scene stays painted behind the opaque loader. Its own exit
-   reveals that scene; fading both layers sequentially creates a black gap. */
-.canvasLayer {
-  position: absolute;
-  z-index: 0;
-  inset: 0;
-  pointer-events: none;
-}
-
-.canvasLayer :global(canvas) {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
 .scrollAnchor {
   position: absolute;
   left: 0;
@@ -582,6 +567,30 @@
   height: 6px;
 }
 
+/* While sound plays the three bars move like a level meter. */
+.soundButton[data-sound-enabled="true"] .soundBars i {
+  transform-origin: center;
+  animation: soundLevel 900ms ease-in-out infinite;
+}
+
+.soundButton[data-sound-enabled="true"] .soundBars i:nth-child(2) {
+  animation-delay: -300ms;
+}
+
+.soundButton[data-sound-enabled="true"] .soundBars i:nth-child(3) {
+  animation-delay: -600ms;
+}
+
+@keyframes soundLevel {
+  0%,
+  100% {
+    transform: scaleY(0.45);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
 .realHud {
   position: absolute;
   z-index: 10;
@@ -683,7 +692,8 @@
 
 .glyphReadout {
   position: absolute;
-  top: calc(96px + var(--safe-top));
+  /* Just below the 120px header band, which takes pointer input. */
+  top: calc(122px + var(--safe-top));
   inset-inline-end: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
   display: grid;
   justify-items: end;
@@ -762,6 +772,44 @@
   opacity: var(--stage-opacity);
   color: inherit;
   pointer-events: none;
+}
+
+/* Oversized outlined stage word: drifts against the reading direction with
+   the stage's progress, under every stage's copy. */
+.stageWord {
+  --stage-word-opacity: 0;
+  --stage-word-shift: 0;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  opacity: var(--stage-word-opacity);
+  transform: translate3d(calc(-50% + var(--stage-word-shift) * 46vw), -50%, 0);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+[dir="rtl"] .stageWord {
+  transform: translate3d(calc(-50% - var(--stage-word-shift) * 46vw), -50%, 0);
+}
+
+.stageWord span {
+  display: block;
+  color: transparent;
+  font-family: var(--font-display), sans-serif;
+  font-size: clamp(110px, 21vw, 360px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--experience-fg) 26%, transparent);
+}
+
+@media (max-width: 767px) {
+  .stageWord span {
+    font-size: 30vw;
+  }
 }
 
 .kicker {
@@ -857,6 +905,43 @@
 }
 
 .glyphControl[data-dragging="true"] { cursor: grabbing; }
+.glyphReset {
+  position: absolute;
+  z-index: 11;
+  top: calc(262px + var(--safe-top));
+  inset-inline-end: calc(clamp(22px, 3vw, 52px) + var(--safe-right));
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border: 1px solid color-mix(in srgb, currentColor 28%, transparent);
+  border-radius: 999px;
+  color: var(--experience-fg);
+  background: color-mix(in srgb, var(--experience-fg) 6%, transparent);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: glyphResetIn 420ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  transition: background-color 300ms ease;
+}
+.glyphReset span { display: inline-block; transition: transform 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+.glyphReset:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 4px; }
+@media (hover: hover) {
+  .glyphReset:hover { background: color-mix(in srgb, var(--experience-fg) 14%, transparent); }
+  .glyphReset:hover span { transform: rotate(-180deg); }
+}
+@keyframes glyphResetIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+@media (max-width: 767px) {
+  .glyphReset { top: calc(34vh + max(15vh, 90px) + 14px); inset-inline-end: auto; left: 50%; transform: translateX(-50%); animation: none; }
+  [dir="rtl"] .glyphReset { left: 50%; }
+}
 .glyphControl:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 8px; }
 .glyphHint {
   position: absolute;
@@ -2421,8 +2506,7 @@
     min-height: 100vh;
   }
 
-  .loader,
-  .canvasLayer {
+  .loader {
     display: none !important;
   }
 
@@ -2766,5 +2850,100 @@
 @media (prefers-reduced-motion: reduce) {
   .soundPrompt {
     animation: none;
+  }
+}
+
+/* The renderer lives in the layout (SceneHost) under the journey. Once it
+   is live the journey's own opaque ground steps aside; the linear document
+   keeps its background. */
+:global(html[data-scene="live"]) .journey:not(.staticJourney),
+:global(html[data-scene="live"]) .viewport {
+  background: transparent;
+}
+
+/* HUD tool panel: fold from the title, drag the gizmo, lettered axis balls. */
+.glyphTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.glyphFold {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  margin: -4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.glyphFold i {
+  width: 1px;
+  height: 8px;
+  background: currentColor;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glyphReadout[data-visible="false"] .glyphFold,
+.glyphReadout[data-visible="false"] .glyphGizmo {
+  pointer-events: none;
+}
+
+.glyphReadout[data-folded="true"] .glyphFold i:first-child { transform: translateX(1.5px) rotate(45deg); }
+.glyphReadout[data-folded="true"] .glyphFold i:last-child { transform: translateX(-1.5px) rotate(-45deg); }
+
+.glyphValues,
+.glyphGizmo {
+  transition: opacity 360ms cubic-bezier(0.16, 1, 0.3, 1), transform 360ms cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top right;
+}
+
+.glyphReadout[data-folded="true"] .glyphValues,
+.glyphReadout[data-folded="true"] .glyphGizmo {
+  opacity: 0;
+  transform: translateY(-6px) scale(0.96);
+  pointer-events: none;
+}
+
+.glyphGizmo[data-interactive="true"] {
+  pointer-events: auto;
+  cursor: grab;
+  touch-action: none;
+}
+
+.glyphGizmo[data-interactive="true"]:active {
+  cursor: grabbing;
+}
+
+.gizmoBall circle {
+  stroke: none;
+}
+
+.gizmoBall[data-positive="false"] circle {
+  fill: color-mix(in srgb, currentColor 34%, transparent);
+}
+
+.gizmoBall text {
+  font-size: 6px;
+  font-weight: 600;
+  letter-spacing: 0;
+  fill: rgb(10 10 12);
+  pointer-events: none;
+}
+
+.gizmoBall[data-positive="false"] text {
+  fill: currentColor;
+  font-size: 4.5px;
+  opacity: 0.8;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyphFold i,
+  .glyphValues,
+  .glyphGizmo {
+    transition: none;
   }
 }

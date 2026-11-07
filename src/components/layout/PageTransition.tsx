@@ -23,6 +23,9 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (pathname === lastPath.current) return;
     lastPath.current = pathname;
+    // Marks the document as client-navigated: CSS plays the title wipe only
+    // then, never on a first paint (it would hold back the LCP).
+    document.documentElement.dataset.clientNav = "true";
     setSweep((count) => count + 1);
   }, [pathname]);
 

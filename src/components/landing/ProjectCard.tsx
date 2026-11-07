@@ -2,12 +2,14 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useRef, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
+import { zoomThrough } from "@/lib/zoom-through";
 import { ALPHA, HAIRLINE } from "@/lib/color";
 import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
@@ -100,12 +102,16 @@ function BigCard({
   // the monogram placeholder — same rule as the showcase hero (ProductShot).
   // A project with no real screen yet (LifeOS) keeps the honest monogram.
   const productShot = p.visuals.screenshots.find(isProductShot);
+  const media = useRef<HTMLDivElement>(null);
 
   return (
     <MotionLink
       href={`/projects/${p.slug}`}
       data-project-index-card={p.slug}
-      className="group block rounded-3xl overflow-hidden border border-hairline hover:border-hairline-strong bg-surface focusable"
+      onClick={(event: React.MouseEvent<HTMLAnchorElement>) => {
+        zoomThrough(event, media.current);
+      }}
+      className="group block rounded-3xl overflow-clip border border-hairline hover:border-hairline-strong bg-surface focusable"
       initial={{ opacity: 0, y: 12 }}
       whileInView={{
         opacity: 1,
@@ -117,7 +123,8 @@ function BigCard({
       whileTap={{ scale: 0.99, transition: { duration: 0.1 } }}
     >
       <div
-        className="relative aspect-[16/10] overflow-hidden"
+        ref={media}
+        className="media-in relative aspect-[16/10] overflow-clip"
         style={{ background: p.brand.background }}
       >
         {productShot ? (
@@ -127,7 +134,7 @@ function BigCard({
             fill
             priority={index === 0}
             sizes="(min-width: 768px) 50vw, 100vw"
-            className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+            className="media-parallax object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
             style={{ transitionTimingFunction: "var(--ease-soft)" }}
           />
         ) : (
@@ -181,8 +188,9 @@ function BigCard({
 
         <div className="mt-7 flex items-center justify-between">
           <span
+            data-card-action="true"
             className="inline-flex items-center gap-2 text-[13.5px]"
-            style={{ color: p.brand.primary }}
+            style={{ "--card-brand": p.brand.primary } as CSSProperties}
           >
             <span className="arrow-nudge inline-flex">{tc("openPage")}</span>
             <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
