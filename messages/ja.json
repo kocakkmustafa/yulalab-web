@@ -671,7 +671,8 @@
       "tierLow": "低",
       "tierMedium": "中",
       "tierHigh": "高",
-      "wallService": "サービス"
+      "wallService": "サービス",
+      "reset": "リセット"
     }
   },
   "studio": {

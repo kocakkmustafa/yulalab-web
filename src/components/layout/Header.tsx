@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
@@ -8,6 +8,7 @@ import { ArrowUpRight, Menu, X } from "@/components/common/icons";
 import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { ThemeControl } from "@/components/theme/ThemeControl";
+import { SlotLabel } from "@/components/common/SlotLabel";
 
 type NavKey = "consulting" | "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
 type NavItem = {
@@ -119,7 +120,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               href="/projects"
               className="ml-1 group inline-flex items-center gap-1.5 rounded-full bg-ink-50 text-ink-900 pl-4 pr-3.5 py-2 text-[13px] font-medium hover:bg-ink-100 transition-colors focusable"
             >
-              {t("ctaProjects")}
+              <SlotLabel>{t("ctaProjects")}</SlotLabel>
               <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
             </Link>
           </nav>
@@ -181,8 +182,9 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
         />
         <div
           data-site-mobile-panel="true"
+          data-open={mobile ? "true" : "false"}
           className={
-            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm bg-ink-850 border-l border-hairline p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +
+            "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm border-l border-hairline p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +
             (mobile ? "translate-x-0" : "translate-x-full")
           }
           style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
@@ -196,23 +198,32 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               ref={mobileCloseButton}
               type="button"
               onClick={() => setMobile(false)}
-              className="w-9 h-9 inline-flex items-center justify-center rounded-md border border-hairline"
+              className="mm-close w-9 h-9 inline-flex items-center justify-center rounded-md border border-hairline"
               aria-label={t("menuClose")}
             >
               <X size={16} />
             </button>
           </div>
           <nav className="mt-10 flex flex-col gap-2">
-            {navigation.map((n) => (
-              <Link
-                key={n.href}
-                href={n.href}
-                onClick={() => setMobile(false)}
-                className="font-display text-3xl font-semibold tracking-tight py-2 text-ink-50"
-              >
-                {t(n.key)}
-              </Link>
-            ))}
+            {navigation.map((n, index) => {
+              const isActive =
+                (n.href === "/" && stripped === "/") ||
+                (n.href !== "/" && stripped.startsWith(n.href));
+              return (
+                <Link
+                  key={n.href}
+                  href={n.href}
+                  onClick={() => setMobile(false)}
+                  aria-current={isActive ? "page" : undefined}
+                  data-active={isActive ? "true" : "false"}
+                  style={{ "--mm-index": index } as CSSProperties}
+                  className="mm-item font-display text-3xl font-semibold tracking-tight py-2 text-ink-50"
+                >
+                  <span className="mm-dash" aria-hidden="true" />
+                  {t(n.key)}
+                </Link>
+              );
+            })}
           </nav>
           <div className="mt-6 flex flex-wrap items-center gap-2">
             <LocaleSwitcher onNavigate={() => setMobile(false)} />
@@ -225,7 +236,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               onClick={() => setMobile(false)}
               className="flex items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
             >
-              {t("ctaProjects")} <ArrowUpRight size={14} strokeWidth={2} />
+              <SlotLabel>{t("ctaProjects")}</SlotLabel> <ArrowUpRight size={14} strokeWidth={2} />
             </Link>
           </div>
         </div>

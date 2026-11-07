@@ -91,3 +91,36 @@ export const RULER_STAGES: readonly { stage: ExperienceStage; label: keyof Exper
 export function rulerOffset(stage: ExperienceStage): number {
   return STAGES[stage][0];
 }
+
+/** Stages that carry an oversized outlined title word, with how far into the
+ *  stage the word stays (the gallery hands the screen to its panels early). */
+const STAGE_WORD_SPAN: Partial<Record<ExperienceStage, { label: keyof ExperienceInstrumentCopy; until: number }>> = {
+  portfolio: { label: "works", until: 0.16 },
+  proof: { label: "proof", until: 0.3 },
+  vision: { label: "vision", until: 1 },
+  values: { label: "values", until: 0.55 },
+};
+
+export type StageWordFrame = {
+  label: keyof ExperienceInstrumentCopy;
+  /** 0–1, already folded with the stage's own overlay fade. */
+  opacity: number;
+  /** -0.5 … 0.5 of the drift; the word travels against the reading direction. */
+  shift: number;
+};
+
+/**
+ * The outlined stage word for a timeline frame: it fades in with the stage,
+ * drifts across the screen with the stage's progress and is gone before the
+ * stage's own content needs the room. A pure function of the frame, so capture
+ * mode renders the exact same word at the exact same place.
+ */
+export function stageWordFrame(frame: TimelineFrame): StageWordFrame | null {
+  const span = STAGE_WORD_SPAN[frame.stage];
+  if (!span) return null;
+  const local = Math.min(1, Math.max(0, frame.stageProgress / span.until));
+  const envelope = span.until >= 1 ? 1 : 1 - smoothstep((local - 0.55) / 0.45);
+  const opacity = Math.min(1, Math.max(0, frame.overlay[frame.stage])) * envelope;
+  if (opacity <= 0.001) return null;
+  return { label: span.label, opacity, shift: 0.5 - local };
+}

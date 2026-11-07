@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ScrambleText } from "./ScrambleText";
 
 export function EyebrowChip({ children }: { children: ReactNode }) {
   return (
@@ -7,7 +8,7 @@ export function EyebrowChip({ children }: { children: ReactNode }) {
         className="w-1.5 h-1.5 rounded-full bg-emerald-400/80"
         style={{ boxShadow: "0 0 10px rgba(110,231,183,0.7)" }}
       />
-      {children}
+      {typeof children === "string" ? <ScrambleText text={children} /> : children}
     </div>
   );
 }
