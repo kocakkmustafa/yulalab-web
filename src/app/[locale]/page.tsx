@@ -167,6 +167,7 @@ export default async function LandingPage({
       tierMedium: t("instruments.tierMedium"),
       tierHigh: t("instruments.tierHigh"),
       wallService: t("instruments.wallService"),
+      reset: t("instruments.reset"),
     },
     navigation: {
       home: t("navigation.home"),

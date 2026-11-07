@@ -671,7 +671,8 @@
       "tierLow": "Niska",
       "tierMedium": "Średnia",
       "tierHigh": "Wysoka",
-      "wallService": "Usługa"
+      "wallService": "Usługa",
+      "reset": "Resetuj"
     }
   },
   "studio": {

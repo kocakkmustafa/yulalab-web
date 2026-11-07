@@ -19,6 +19,7 @@ import type {
 import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
+import { StageWord } from "./StageWord";
 import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
@@ -27,6 +28,7 @@ type ExperienceOverlayProps = {
   frame: TimelineFrame;
   tier: QualityTier;
   glyphRotation?: Vec3;
+  onGlyphRotate?: (rotation: Vec3) => void;
   soundEnabled: boolean;
   onSoundToggle: () => void;
   onLinearView: () => void;
@@ -410,6 +412,7 @@ export function ExperienceOverlay({
   frame,
   tier,
   glyphRotation = NO_ROTATION,
+  onGlyphRotate,
   soundEnabled,
   onSoundToggle,
   onLinearView,
@@ -498,7 +501,8 @@ export function ExperienceOverlay({
         onLinearView={onLinearView}
       />
 
-      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} />
+      <StageWord frame={frame} copy={copy.instruments} />
+      <ExperienceInstruments frame={frame} glyphRotation={glyphRotation} copy={copy.instruments} onRotate={onGlyphRotate} />
 
       <div className={styles.realHud} aria-hidden="true">
         <span>{copy.instruments.quality} / {copy.instruments[TIER_LABEL[tier]]}</span>

@@ -671,7 +671,8 @@
       "tierLow": "منخفضة",
       "tierMedium": "متوسطة",
       "tierHigh": "عالية",
-      "wallService": "الخدمة"
+      "wallService": "الخدمة",
+      "reset": "إعادة الضبط"
     }
   },
   "studio": {

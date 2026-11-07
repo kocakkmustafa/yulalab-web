@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import type { ExperienceCopy } from "./types";
 import { resolveLoaderFrame } from "./loader";
+import { scrambleFrame } from "@/lib/scramble";
 import styles from "./Experience.module.css";
 
 type ExperienceLoaderProps = {
@@ -27,6 +28,10 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
   const frame = resolveLoaderFrame(progress);
   const clamped = frame.progress;
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
+  // The active readout line decodes from its own glyphs as the card runs; the
+  // stand-ins are a pure function of progress, so capture frames are exact.
+  const lineProgress = clamped * lines.length - activeLine;
+  const decodeTick = Math.floor(clamped * 240);
   const style: LoaderStyle = {
     "--loader-progress": clamped,
     "--loader-reveal": frame.reveal,
@@ -90,7 +95,7 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
           {lines.map((line, index) => (
             <li key={line} data-active={index === activeLine ? "true" : "false"}>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              {line}
+              {index === activeLine ? scrambleFrame(line, lineProgress * 1.8, decodeTick) : line}
             </li>
           ))}
         </ol>
