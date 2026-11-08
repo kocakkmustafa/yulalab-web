@@ -445,6 +445,13 @@ button:hover .arrow-nudge {
   border-radius: 8px;
 }
 
+/* WEB-P0-03h: scene 7 CTA focus. Pill radius plus the focus token, which
+   contrasts with the page ground in both themes. */
+.scene7-cta:focus-visible {
+  outline: 2px solid var(--yula-focus);
+  outline-offset: 3px;
+}
+
 /* dotted grid backdrop */
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);

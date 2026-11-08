@@ -876,7 +876,43 @@
     "scene7": {
       "label": "Başlangıç",
       "title": "Birlikte bir sonraki adımı atalım.",
-      "message": "Ürünleri keşfedin ya da işiniz için birlikte çalışmanın yolunu konuşalım."
+      "message": "Ürünleri keşfedin ya da işiniz için birlikte çalışmanın yolunu konuşalım.",
+      "groupsLabel": "Başlamanın üç yolu: bireyler, işletmeler, mühendisler için",
+      "paths": {
+        "individual": {
+          "title": "Bireyler için",
+          "products": {
+            "label": "Ürünlere göz at",
+            "hint": "Her ürünün kendi sayfası var."
+          }
+        },
+        "business": {
+          "title": "İşletmeler için",
+          "braavolabs": {
+            "label": "Braavolabs ile işi otomatikleştir",
+            "hint": "Braavolabs ürün sayfasını açar; gösterilen aşama ürün kaydından gelir."
+          },
+          "consulting": {
+            "label": "Birlikte nasıl çalışabileceğimizi gör",
+            "hint": "Yapay zeka danışmanlığı hizmetleri ve bir iletişim adresi."
+          }
+        },
+        "engineer": {
+          "title": "Mühendisler için",
+          "notes": {
+            "label": "Laboratuvar defterini oku",
+            "hint": "Ürünlerde neyin değiştiğine dair kısa notlar."
+          },
+          "approach": {
+            "label": "Teknik yaklaşımı oku",
+            "hint": "Kanıt seviyeleri, ürün durumları ve iddia politikası."
+          },
+          "contact": {
+            "label": "Ekiple iletişime geç",
+            "hint": "Destek, ortaklık ve basın için genel adres."
+          }
+        }
+      }
     }
   }
 }

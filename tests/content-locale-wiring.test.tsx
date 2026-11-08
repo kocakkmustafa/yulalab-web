@@ -23,6 +23,7 @@ vi.mock("next-intl/server", () => ({
   setRequestLocale: vi.fn(),
   getTranslations: async ({ locale }: { locale: string }) => (key: string) => `${locale}:${key}`,
 }));
+vi.mock("@/i18n/navigation", () => ({ Link: "a" }));
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found"); } }));
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/components/projects/ProductPage", () => ({ ProductPage: () => null }));

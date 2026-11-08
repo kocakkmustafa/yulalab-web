@@ -26,6 +26,16 @@ for (const scene of HOME_SCENES) {
   for (const leaf of ["label", "title", "message"]) used.add(`home.${scene.key}.${leaf}`);
 }
 used.add("home.navLabel");
+// Scene 7 (WEB-P0-03h) reads its labels by literal key.
+used.add("home.scene7.groupsLabel");
+for (const [path, ctas] of Object.entries({
+  individual: ["products"],
+  business: ["braavolabs", "consulting"],
+  engineer: ["notes", "approach", "contact"],
+})) {
+  used.add(`home.scene7.paths.${path}.title`);
+  for (const cta of ctas) for (const leaf of ["label", "hint"]) used.add(`home.scene7.paths.${path}.${cta}.${leaf}`);
+}
 
 describe("home route message keys", () => {
   it("reads at least the keys the route is known to use", () => {

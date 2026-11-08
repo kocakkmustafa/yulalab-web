@@ -876,7 +876,43 @@
     "scene7": {
       "label": "Start",
       "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business."
+      "message": "Explore the products, or let's talk about how we could work together on your business.",
+      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "paths": {
+        "individual": {
+          "title": "For individuals",
+          "products": {
+            "label": "Browse the products",
+            "hint": "Each product has its own page."
+          }
+        },
+        "business": {
+          "title": "For businesses",
+          "braavolabs": {
+            "label": "Automate work with Braavolabs",
+            "hint": "Opens the Braavolabs product page; the stage shown comes from the product record."
+          },
+          "consulting": {
+            "label": "See how we can work together",
+            "hint": "AI consulting services and a contact address."
+          }
+        },
+        "engineer": {
+          "title": "For engineers",
+          "notes": {
+            "label": "Read the lab notebook",
+            "hint": "Short notes on what changed in the products."
+          },
+          "approach": {
+            "label": "Read the technical approach",
+            "hint": "Evidence levels, product states and claim policy."
+          },
+          "contact": {
+            "label": "Get in touch with the team",
+            "hint": "General address for support, partnerships and press."
+          }
+        }
+      }
     }
   }
 }
