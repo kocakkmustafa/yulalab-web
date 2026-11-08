@@ -1,6 +1,6 @@
 # yulalab.com — yürütme durumu (WEB-P0)
 
-Güncelleme: 2026-11-08 · Ana dal `069477c` (canlı, Netlify `6aee6f8fc6b7d8c21f0eac44`) · Talimat: Dört Ürün Ana Talimatı §8, §12.
+Güncelleme: 2026-11-09 · Ana dal `069477c` (canlı, Netlify `6aee6f8fc6b7d8c21f0eac44`) · Talimat: Dört Ürün Ana Talimatı §8, §12.
 Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `UNKNOWN`/`NOT_TESTED` yazar.
 
 ## Bilet durumu
@@ -9,7 +9,22 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | WEB-P0-01 envanter | `IN_REVIEW` | AUDIT-01 güncel ana dala (`069477c`) göre tamamlandı: ana CI kırmızısının kök nedeni bulundu (aşağıda). |
 | WEB-P0-04 claim/kanıt kaydı | `IN_REVIEW` | PR #44 (`feat/WEB-P0-04-claim-state`, baş `4f636d7`); test 1963/1963 yerelde, CI sonucu PR'da. |
 | Ana CI kırmızısı (WEB-P0-04 kapsamı) | `IN_REVIEW` | PR #45: tek E2E testi sağlamlaştırıldı. |
-| WEB-P0-02 / 03 / 05 | `BACKLOG` | Sırada; 3D varsayılan ADR'si DECISIONS.md ADR-003. |
+| WEB-P0-02a tokenlar | `IN_REVIEW` | PR #47 (`63ef5f3`), CI SUCCESS. `verify:contrast` 780 çift, en düşük 4.51 (marj dar). |
+| WEB-P0-02b header/footer/mobil menü | `IN_REVIEW` | PR #48 (`3549ffc`), CI SUCCESS. |
+| WEB-P0-02c a11y + wireframe + h2 | `IN_REVIEW` | PR #49 (`4b48336`), CI SUCCESS; üst üste #48. |
+| WEB-P0-02d skip link + main | `IN_REVIEW` | PR #51 (`700c511`), CI SUCCESS; main'den bağımsız. |
+| WEB-P0-03a yedi sahne iskeleti + ADR-003 | `IN_REVIEW` | PR #50 (`b6b90e8`), CI SUCCESS. ADR-003 öneri (c) KABUL (Project orchestration, 2026-11-08); ADR dosyası "Kabul edildi" PR #54'te. |
+| WEB-P0-03a2 mobil statik varsayılan | `IN_REVIEW` | PR #54 (`769000b`), CI SUCCESS. Yerel mobil Lighthouse 74→84 [79–86] gürültülü (yük ≈56); masaüstü 95→88 UNKNOWN. |
+| WEB-P0-03a3 mobil LCP kaynağı | `IN_REVIEW` | PR #55 (`39fcea1`), CI SUCCESS; üst üste #54. LCP öğesi h1, render gecikmesi %89; LCP düşmedi (4235→4233 ms); öneri 03a5. |
+| WEB-P0-03b S1 Kimlik | `IN_REVIEW` | PR #52 (`05ea007`), CI SUCCESS; üst üste #50. |
+| WEB-P0-03c S2 Fark | `IN_REVIEW` | PR #53 (`b123ca8`), CI SUCCESS. |
+| WEB-P0-03e S4 Ortak mühendislik | `IN_REVIEW` | PR #57 (`6ebf838`), CI SUCCESS. |
+| WEB-P0-03f S5 Yaşayan laboratuvar | `IN_REVIEW` | PR #59 (`bdcef6e`), taban #54; CI bekleniyor. |
+| WEB-P0-03g S6 Güven | `IN_REVIEW` | PR #56 (`44332f9`), CI SUCCESS. |
+| WEB-P0-03h S7 Dönüşüm | `IN_REVIEW` | PR #58 (`044a3a7`); CI bekleniyor. |
+| WEB-P0-03d S3 Amiral ürünler | `READY` (bağımlılık) | #44 (WEB-P0-04) merge'ü bekler; claim durumu `presentClaims`'e bağlanacak. |
+| WEB-P0-03a4 / 03a5 | `READY` | 03a4 mobilde WebGL sondasını ilk jeste ertele; 03a5 ana sayfa kritik yol bayt bütçesi. |
+| WEB-P0-05 | `BACKLOG` | 03'ten sonra. |
 | WEB-P0-10 Ostinato metin tutarsızlığı | `READY` | `ostinato.ts` l.22 ↔ l.55; metin koda uydurulacak. |
 
 ## Doğrulanan gerçekler (2026-11-08)
@@ -26,10 +41,14 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | #43 | `@hardware-webgl` düzeltmesi | CI yeşil; merge kurucu onayında |
 | #44 | WEB-P0-04 claim durumu | CI sonucu PR'da |
 | #45 | 404 E2E sağlamlaştırma | CI sonucu PR'da |
+| #46 | Bu belge + DECISIONS.md | CI sonucu PR'da |
+| #47–#59 | WEB-P0-02a–d, 03a–h (yukarıdaki tablo) | #47–#57 CI SUCCESS (2026-11-09); #58, #59 CI bekleniyor; hepsi merge kurucu onayında (merge = Netlify yayını) |
 
 **Birleştirme notu:** CI ağaç pini tüm depo ağacını sabitler; her PR kendi ağacını pinler. İlk merge'den sonra diğerleri `git merge origin/main` + pin/makbuz yenilemesi ister (force push yok). Merge = Netlify yayını.
 
 ## Riskler
 1. Süresi dolmuş claim/yüzeyler: yenileme düzenli iş değil; `store-readback.yml` yalnız mağaza okur. Önerilen: claim sahibi ürün oturumlarının yenilemesi (kurucu kararı gerekmez, ADR-001).
-2. 3D sahne varsayılan açık ↔ §8.1: korumalı ama açık (ADR-003, karar WEB-P0-02/03'te).
-3. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); WEB-P0-10.
+2. 3D sahne varsayılan açık ↔ §8.1: ADR-003 kabul edildi (masaüstü 3D varsayılan, mobil statik varsayılan); uygulama PR #54'te, merge'e kadar canlıda eski davranış. Lighthouse ölçümleri yüklü makinede, sakin makinede yeniden ölçülmeli.
+3. Birleştirme çakışması: #52, #53, #56, #57, #58 aynı `HomeScenes.tsx`'e satır ekliyor; her merge sonrası kalan PR'larda `git merge origin/main` + makbuz + pin yenileme. #55 ve #59 #54 dalına yığılı: #54 merge olunca `gh pr close` + `reopen`.
+4. Yedek diller: 12 dilde ana sayfa sahne metinleri İngilizce (`lang="en"`); çeviri insan denetimi gerektirir (`UNKNOWN`).
+5. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); WEB-P0-10.
