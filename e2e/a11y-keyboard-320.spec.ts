@@ -16,6 +16,8 @@ for (const route of ROUTES_320) {
     await page.setViewportSize({ width: 320, height: 700 });
     await page.goto(route);
     await page.waitForLoadState("load");
+    await page.waitForLoadState("networkidle");
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
     const { inner, scroll } = await page.evaluate(() => ({
       inner: window.innerWidth,
       scroll: document.documentElement.scrollWidth,
@@ -30,7 +32,8 @@ type FocusSample = {
   outlineWidth: number;
   outlineStyle: string;
   boxShadow: string;
-  outlineContrast: number;
+  outlineContrast: number | null;
+  shadowContrast: number | null;
 };
 
 async function sampleFocus(page: Page): Promise<FocusSample> {
@@ -58,10 +61,14 @@ async function sampleFocus(page: Page): Promise<FocusSample> {
         break;
       }
     }
+    const ratio = (c: { r: number; g: number; b: number }) => {
+      const l1 = lum(c);
+      const l2 = lum(bg);
+      return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    };
+    const outlineVisible = style.outlineStyle !== "none" && (parseFloat(style.outlineWidth) || 0) > 0;
     const oc = parse(style.outlineColor) ?? parse(style.color) ?? { r: 255, g: 255, b: 255, a: 1 };
-    const l1 = lum(oc);
-    const l2 = lum(bg);
-    const contrast = (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+    const sc = style.boxShadow !== "none" ? parse(style.boxShadow) : null;
     const region = el.closest("header")
       ? "header"
       : el.closest("footer")
@@ -75,9 +82,21 @@ async function sampleFocus(page: Page): Promise<FocusSample> {
       outlineWidth: parseFloat(style.outlineWidth) || 0,
       outlineStyle: style.outlineStyle,
       boxShadow: style.boxShadow,
-      outlineContrast: contrast,
+      outlineContrast: outlineVisible ? ratio(oc) : null,
+      shadowContrast: sc ? ratio(sc) : null,
     } as FocusSample;
   });
+}
+
+function expectFocusIndicator(s: FocusSample) {
+  const hasOutline = s.outlineStyle !== "none" && s.outlineWidth > 0;
+  const hasShadow = s.boxShadow !== "none";
+  expect(hasOutline || hasShadow, `no focus indicator on ${s.label} (${s.region})`).toBe(true);
+  // Every indicator that is present must clear WCAG 1.4.11 (3:1) against the background.
+  if (hasOutline) expect(s.outlineContrast ?? 0, `outline contrast on ${s.label}`).toBeGreaterThanOrEqual(3);
+  if (hasShadow && s.shadowContrast !== null) {
+    expect(s.shadowContrast, `box-shadow contrast on ${s.label}`).toBeGreaterThanOrEqual(3);
+  }
 }
 
 test.describe("keyboard order and focus visibility (desktop)", () => {
@@ -104,20 +123,20 @@ test.describe("keyboard order and focus visibility (desktop)", () => {
     expect(footerAt).toBeGreaterThan(mainAt);
     expect(regions.lastIndexOf("header")).toBe(headerAt);
     for (const s of samples) {
-      const hasRing = (s.outlineStyle !== "none" && s.outlineWidth > 0) || s.boxShadow !== "none";
-      expect(hasRing, `no focus indicator on ${s.label} (${s.region})`).toBe(true);
-      if (s.outlineStyle !== "none" && s.outlineWidth > 0) {
-        expect(s.outlineContrast, `focus ring contrast on ${s.label}`).toBeGreaterThanOrEqual(3);
-      }
+      expectFocusIndicator(s);
     }
   });
 
   test("skip link, when present, moves focus into main", async ({ page }) => {
+    test.fixme(
+      true,
+      "Known gap: the site has no skip link (WCAG 2.4.1 Bypass Blocks). Separate ticket WEB-P0-02d; convert this fixme into a real test there.",
+    );
+    test.info().annotations.push({ type: "known-gap", description: "WCAG 2.4.1: no skip link; ticket WEB-P0-02d" });
     await page.goto("/tr/projects");
     await page.keyboard.press("Tab");
-    const first = page.locator(":focus");
-    const href = await first.getAttribute("href");
-    test.skip(!href?.startsWith("#"), "no skip link in the current header (known gap, see wireframes.md)");
+    const href = await page.locator(":focus").getAttribute("href");
+    expect(href?.startsWith("#")).toBe(true);
     await page.keyboard.press("Enter");
     expect(await page.evaluate(() => document.activeElement?.closest("main") !== null)).toBe(true);
   });
@@ -127,10 +146,14 @@ test.describe("keyboard order and focus visibility (desktop)", () => {
     const select = page.locator("header select").filter({ has: page.locator("option[value='dark']") }).first();
     await select.focus();
     await expect(select).toBeFocused();
-    await page.keyboard.press("ArrowDown");
-    await page.keyboard.press("ArrowDown");
-    const value = await select.inputValue();
-    expect(["system", "light", "dark"]).toContain(value);
+    // Real keyboard behaviour: focus stays on the select and typeahead changes the value.
+    const before = await select.inputValue();
+    // Native select typeahead: typing the first letter of the "dark" option selects it.
+    const darkLabel = (await select.locator("option[value='dark']").textContent()) ?? "";
+    await page.keyboard.type(darkLabel.trim().charAt(0));
+    await expect(select).toBeFocused();
+    await expect.poll(() => select.inputValue()).toBe("dark");
+    expect(before).not.toBe("dark");
     await select.selectOption("light");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await select.selectOption("dark");
@@ -156,7 +179,7 @@ test.describe("mobile menu (320)", () => {
     const menu = page.locator("header button[aria-controls='site-mobile-navigation']");
     await menu.focus();
     const ring = await sampleFocus(page);
-    expect((ring.outlineStyle !== "none" && ring.outlineWidth > 0) || ring.boxShadow !== "none").toBe(true);
+    expectFocusIndicator(ring);
     await page.keyboard.press("Enter");
     await expect(menu).toHaveAttribute("aria-expanded", "true");
     const dialog = page.getByRole("dialog");
@@ -170,35 +193,69 @@ test.describe("mobile menu (320)", () => {
   });
 });
 
+async function loopingAnimations(page: Page) {
+  return page.evaluate(() =>
+    document
+      .getAnimations()
+      .filter((a) => {
+        const t = a.effect?.getComputedTiming();
+        return a.playState === "running" && (t?.iterations === Infinity || (t?.iterations ?? 1) > 1);
+      })
+      .map((a) => (a as CSSAnimation).animationName ?? a.id ?? "unnamed"),
+  );
+}
+
 test.describe("reduced motion", () => {
   test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: "reduce" } });
 
-  for (const route of ["/tr", "/tr/projects", "/ar"]) {
+  for (const route of ["/tr", "/tr/projects", "/tr/projects/lifeos", "/ar"]) {
     test(`no looping animation, marquee or auto-scroll on ${route}`, async ({ page }) => {
       test.setTimeout(60_000);
       await page.goto(route);
       await page.waitForLoadState("load");
-      await page.waitForTimeout(1200);
-      const running = await page.evaluate(() =>
-        document
-          .getAnimations()
-          .filter((a) => {
-            const t = a.effect?.getComputedTiming();
-            return a.playState === "running" && (t?.iterations === Infinity || (t?.iterations ?? 1) > 1);
-          })
-          .map((a) => (a as CSSAnimation).animationName ?? a.id ?? "unnamed"),
-      );
+      await page.waitForLoadState("networkidle");
+      // Late-mounting content gets two settled frames before the sample.
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      const running = await loopingAnimations(page);
       expect(running, `looping animations: ${running.join(",")}`).toEqual([]);
-      const y1 = await page.evaluate(() => window.scrollY);
-      await page.waitForTimeout(1500);
-      expect(await page.evaluate(() => window.scrollY), "page must not auto-scroll").toBe(y1);
       expect(await page.locator("marquee").count()).toBe(0);
+      // Real scroll, then the position must hold: nothing may keep scrolling by itself.
+      await page.evaluate(() => window.scrollTo(0, 300));
+      await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
+      const settled = await page.evaluate(() => window.scrollY);
+      await page.evaluate(() => new Promise((r) => setTimeout(r, 1000)));
+      expect(await page.evaluate(() => window.scrollY), "page must not auto-scroll").toBe(settled);
+      expect(await loopingAnimations(page)).toEqual([]);
     });
   }
+
+  test("positive control: the detector catches an injected infinite animation", async ({ page }) => {
+    await page.goto("/tr/projects");
+    await page.waitForLoadState("load");
+    await page.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent = "@keyframes yula-probe{to{transform:translateX(1px)}}#yula-probe{animation:yula-probe 1s linear infinite}";
+      document.head.append(style);
+      const el = document.createElement("div");
+      el.id = "yula-probe";
+      document.body.append(el);
+    });
+    expect(await loopingAnimations(page)).toContain("yula-probe");
+  });
 
   test("the 3D scene is replaced by the static experience on the home page", async ({ page }) => {
     await page.goto("/tr");
     await expect(page.locator('[data-experience-static="true"]')).toBeAttached();
     expect(await page.locator("canvas").count()).toBe(0);
+  });
+});
+
+test.describe("reduced motion off (control)", () => {
+  test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: "no-preference" } });
+
+  test("a product page does carry looping animation, so the detector is meaningful", async ({ page }) => {
+    await page.goto("/tr/projects/lifeos");
+    await page.waitForLoadState("networkidle");
+    expect((await loopingAnimations(page)).length).toBeGreaterThan(0);
   });
 });

@@ -12,10 +12,11 @@ Referans ekran görüntüleri (repo dışı, Playwright, `reducedMotion: reduce`
 - Yatay taşma yok: `scrollWidth <= innerWidth` (e2e: `responsive.spec.ts`, `header-footer.spec.ts`, `a11y-keyboard-320.spec.ts`; 320'de `/tr`, `/tr/projects`, `/ar`, `/tr/consulting`).
 - Wordmark `shrink-0 whitespace-nowrap`; sıkışan her şey wordmark'ın yanında değil altında kırılır. E-posta adresi `@` işaretinden sonra kırılır (footer, `emailBreakAt`).
 - 320 px'te metin satır kırar, taşmaz: eyebrow/kicker 2 satıra düşer, başlık `text-[44px]` ile 2-3 satır, kart başlığı `text-3xl` ile en çok 2 satır. Sabit `min-w` kullanma; grid sütunu `min-w-0` ile daralabilmeli.
-- Ürün başlığı sırası: sayfada `h1`, kart başlıkları `h2` (`ProjectCard` big varyantı). Compact kart (ana sayfa listesi) `h3` kalır, çünkü bölüm başlığının altındadır.
+- Başlık sırası: `/projects` sayfasında `h1`, kart başlıkları `h2` (`ProjectCard` big varyantı). Ana sayfada ürünler `StaticExperience.tsx` içinde `h2` bölümünün altında `h3` olarak gelir (satır 65 `h2`, satır 82 `h3`). `ProjectCard` compact varyantı (`CompactCard`) hiçbir yerde kullanılmaz (ölü kod); bu belge onu tarif etmez.
 - RTL (`/ar`): `dir="rtl"`; mantıksal özellikler (`ms-`/`me-`, `inset-x`) kullan, sabit `left/right` yalnız menü paneli için (`right-0`, panel sağdan kayar) ve `/ar` için ayna kontrolü e2e ile korunur (taşma + axe).
 - Reduced-motion: sonsuz/yinelenen animasyon, marquee ve otomatik kaydırma yok; ana sayfada 3D sahne yerine `StaticExperience` (`data-experience-static="true"`, canvas 0). Test: `a11y-keyboard-320.spec.ts`.
-- Odak: `.focusable:focus-visible` 2 px outline, 2 px offset (`currentColor`). Atlama bağlantısı (skip link) yok; Tab sırası header, main, footer. Bilinen eksik, bu bilette eklenmedi.
+- Odak: `.focusable:focus-visible` 2 px outline, 2 px offset, `currentColor` (kodla doğrulandı: `globals.css` satır 442). Tab sırası header, main, footer (e2e ile doğrulandı).
+- Bilinen eksik: atlama bağlantısı (skip link) yok, WCAG 2.4.1 (Bypass Blocks). E2E testi `test.fixme` ve `known-gap` anotasyonu ile işaretli. Öneri: ayrı bilet WEB-P0-02d, skip link + `<main id>` + `test.fixme`'yi gerçek teste çevirme (14 dil anahtarı).
 
 ## Header (kapalı hâl)
 
@@ -30,7 +31,7 @@ Referans ekran görüntüleri (repo dışı, Playwright, `reducedMotion: reduce`
 
 - İçerik: wordmark (`Link`, `aria-label="YULA Lab"`) + menü düğmesi (`aria-expanded`, `aria-controls="site-mobile-navigation"`). Dil, tema ve CTA mobilde başlıkta DEĞİL, menü panelinde.
 - Ana sayfa (`/`) kendi kompakt çubuğunu taşır (TR, tema, ses, menü; bkz. `tr-390.png`); site başlığı diğer sayfalarda.
-- Masaüstü (xl+): 4 bağlantı (Ürünler, Laboratuvar, Yaklaşım, İş Birliği), dil, tema, CTA hapı.
+- Masaüstü (xl+): 4 bağlantı (`HEADER_NAV`, `nav-config.ts` ile doğrulandı) (Ürünler, Laboratuvar, Yaklaşım, İş Birliği), dil, tema, CTA hapı.
 
 ## Mobil menü (açık hâl)
 
@@ -53,30 +54,41 @@ Referans ekran görüntüleri (repo dışı, Playwright, `reducedMotion: reduce`
  panel: w-[82%] max-w-sm, sağdan, tam yükseklik (100dvh), kendi içinde kayar
 ```
 
-- `<dialog id="site-mobile-navigation">` modal; odak kapat düğmesine gider, Tab panel içinde döner (ilk/son sınır tuzağı), Escape ve kaplama tıklaması kapatır ve odağı menü düğmesine geri verir (`mobile-navigation.spec.ts`).
+- `<dialog id="site-mobile-navigation">` modal; odak kapat düğmesine gider, Tab panel içinde döner (ilk/son sınır tuzağı; `Header.tsx` `onKeyDown` ile doğrulandı, e2e: `mobile-navigation.spec.ts`), Escape ve kaplama tıklaması kapatır ve odağı menü düğmesine geri verir (`mobile-navigation.spec.ts`).
 - Üç birincil giriş büyük (`text-3xl`), iki-üç ikincil giriş küçük; dil ve tema yerel `<select>` (etiketli); CTA panelin altında.
 - Sınıflar: `mm-overlay`, `mm-item`, `mm-dash`, `mm-close`; panel `data-site-mobile-panel`.
 
-## Ürün kartı (`ProjectCard`, `/projects`, big varyant)
+## Ürün kartı
+
+`/projects` (big `ProjectCard`, `h2`), 390 / 320 px, `grid-cols-1` (md: 2 sütun):
 
 ```
-390 / 320 px  (grid-cols-1; md: 2 sütun)
 +------------------------------+
 | [görsel / monogram alanı]    |
 |  [durum hapı]       01 / 08  |
 +------------------------------+
 | KATEGORİ (mono, uppercase)   |
 | Ürün Adı          <h2>       |
-| tagline (15.5px)             |
-| kısa açıklama (14.5px)       |
-| ----------------------       |
+| tagline                      |
+| kısa açıklama                |
 | Detay                    ->  |
 +------------------------------+
 ```
 
-- Kart tek bağlantıdır (`MotionLink`, `.focusable`); klavye ile Enter açar. Kartlar tek sütunda sırayla yığılır (kayıt sırası: yayında olanlar önce). 320'de `gap-6`, iç dolgu `p-7`.
-- Compact varyant (ana sayfa): `p-6`, monogram 56 px + durum hapı, `h3`.
-- Sayfa iskeleti `/projects`: eyebrow, `h1` (44 px mobil), giriş paragrafı, tek ürün ızgarası, ardından footer.
+- Kart tek bağlantıdır (`MotionLink`, `.focusable`); Enter ile açılır. Kayıt sırası: yayında olanlar önce.
+
+Ana sayfa (gerçek DOM, `StaticExperience.tsx`): her ürün `article.staticProduct` (`id=experience-product-<slug>`, `tabIndex=-1`), tek sütun yığılır:
+
+```
++------------------------------+
+| 01 / 08            KATEGORİ  |   .productMeta
+| [yaşam döngüsü etiketi]      |   .lifecycleRow (varsa)
+| Ürün Adı               <h3>  |
+| tagline                      |
+| kısa açıklama                |
+| [ekran görüntüleri (figure)] |   lazy img, width/height ayrılmış
++------------------------------+
+```
 
 ## Footer
 
@@ -111,7 +123,7 @@ Kaynak: `src/components/experience/storyboard.ts` (hero, portfolio, proof, cross
 | 3 | proof `#experience-proof` | `h2` + kanıt kartları, dikey | Kanıt: iddialar ve kaynak (`proof.title`) |
 | 4 | crossing | geçiş sahnesi; statikte ayrı bölüm yok | Kanıttan misyona geçiş |
 | 5 | mission `#experience-manifesto` | `h2` | Misyon (`mission.title`) |
-| 6 | vision `#experience-manifesto` | `h2` | Vizyon (`vision.title`) |
+| 6 | vision `#experience-vision` (mission ile aynı `#experience-manifesto` section'ında, ayrı `article`) | `h2` | Vizyon (`vision.title`) |
 | 7 | values `#experience-values` | `h2` + değer maddeleri, dikey | Değerler (`values.title`) |
 | – | closing / end | kapanış çağrısı ve footer | Çağrı: İş birliği / iletişim |
 
@@ -124,6 +136,6 @@ Kaynak: `src/components/experience/storyboard.ts` (hero, portfolio, proof, cross
 | Header | `layout/Header.tsx` | `fixed inset-x-0 z-40 h-16`, `xl:hidden`, `focusable`, `min-h-[44px]` |
 | Menü paneli | `layout/Header.tsx` | `mm-overlay`, `w-[82%] max-w-sm`, `100dvh` |
 | Footer | `layout/Footer.tsx` | `grid-cols-2 md:grid-cols-5`, `LINK_ROWS`, `min-h-[44px]` |
-| Ürün kartı | `landing/ProjectCard.tsx` | `focusable`, `p-7 lg:p-9`, `h2` (big) / `h3` (compact) |
+| Ürün kartı (`/projects`) | `landing/ProjectCard.tsx` | `focusable`, `p-7 lg:p-9`, `h2` (big varyant; compact kullanılmıyor) |
 | Tema denetimi | `theme/ThemeControl.tsx` | `theme-control`, etiketli `<select>` |
-| Ana sayfa statik | `experience/StaticExperience.tsx` | `staticHero`, `staticSection` (`Experience.module.css`) |
+| Ana sayfa statik | `experience/StaticExperience.tsx` | `staticHero`, `staticSection`, `staticProduct` (`Experience.module.css`) |
