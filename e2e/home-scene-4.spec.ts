@@ -41,8 +41,8 @@ for (const view of [
       await expect(items.locator('[data-scene4-badge="planned"]')).toHaveCount(4);
       await expect(items.locator('[data-scene4-badge="planned"]').first()).toHaveText("Planlanan");
       await expect(items.nth(0)).toContainText("Yerel öncelikli veri");
-      await expect(items.nth(1)).toContainText("İş başına izin ve kanıt");
-      await expect(items.nth(2)).toContainText("Cihaz içi sinyal analizi");
+      await expect(items.nth(1)).toContainText("Harcama adımlarında izin ve kanıt");
+      await expect(items.nth(2)).toContainText("Cihaz içi işleme");
       await expect(items.nth(3)).toContainText("Anlaşılır arayüz");
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
@@ -56,10 +56,10 @@ for (const view of [
       const sources = scene.locator("[data-scene4-source]");
       await expect(sources).toHaveCount(3);
       await expect(sources.nth(0)).toHaveAttribute("data-scene4-source", "projects/lifeos");
-      await expect(sources.nth(0)).toHaveText("Kaynak: LifeOS ürün kaydı, “Yerel-öncelikli” (Yayında)");
+      await expect(sources.nth(0)).toHaveText("Kaynak: LifeOS ürün kaydı, “Yerel-öncelikli”; ürün durumu: Yayında");
       await expect(sources.nth(1)).toHaveAttribute("data-scene4-source", "projects/braavolabs");
-      await expect(sources.nth(1)).toHaveText("Kaynak: Braavolabs ürün kaydı, “Harcama onayı” (Beta)");
-      await expect(sources.nth(2)).toHaveText("Kaynak: LifeOS ürün kaydı, “Sağlık verisi, yalnız okuma” (Yayında)");
+      await expect(sources.nth(1)).toHaveText("Kaynak: Braavolabs ürün kaydı, “Harcama onayı”; ürün durumu: Beta");
+      await expect(sources.nth(2)).toHaveText("Kaynak: LifeOS ürün kaydı, “Sağlık verisi, yalnız okuma”; ürün durumu: Yayında");
       // Record sentences, verbatim.
       const current = scene.locator('[data-scene4-cell="current"]');
       await expect(current.nth(0)).toContainText("Temel kayıtlar yerel çalışır; hesap gerekmez ve bu sürümde bulut senkronu sunulmaz.");
@@ -77,6 +77,7 @@ for (const view of [
       expect(text).not.toMatch(FORBIDDEN);
       expect(text).toContain("ortak bir model ve ortak bir veritabanı yoktur");
       expect(text).toContain("bağımsız bir doğrulama ya da ölçüm değildir");
+    expect(text).toContain("Ürün durumu iOS içindir; Android kapalı testtedir.");
     });
   });
 }
@@ -99,27 +100,20 @@ test.describe("scene 4 links are live", () => {
     await expectHeading(page, "Nasılçalışıyoruz");
   });
 
-  test("/studio is linked only while its flag is on; otherwise a live route replaces it", async ({ page }) => {
+  test("with the Studio flag off (default), /studio is not linked and /transparency replaces it", async ({ page }) => {
     await page.goto("/");
     const scene = page.locator(SCENE);
-    const studio = scene.locator('[data-scene4-link="studio"]');
-    if ((await studio.count()) === 1) {
-      const res = await page.request.get("/studio");
-      expect(res.status()).toBe(200);
-      await expect(scene.locator('[data-scene4-link="transparency"]')).toHaveCount(0);
-    } else {
-      await expect(studio).toHaveCount(0);
-      const link = scene.locator('[data-scene4-link="transparency"]');
-      await expect(link).toHaveCount(1);
-      expect(await link.getAttribute("href")).toBe("/transparency");
-      const res = await page.request.get("/transparency");
-      expect(res.status()).toBe(200);
-      expect(await res.text()).toContain("Kara kutu değil");
-      await link.scrollIntoViewIfNeeded();
-      await link.click();
-      await expect(page).toHaveURL(/\/transparency$/);
-      await expectHeading(page, "Karakutudeğil");
-    }
+    await expect(scene.locator('[data-scene4-link="studio"]')).toHaveCount(0);
+    const link = scene.locator('[data-scene4-link="transparency"]');
+    await expect(link).toHaveCount(1);
+    expect(await link.getAttribute("href")).toBe("/transparency");
+    const res = await page.request.get("/transparency");
+    expect(res.status()).toBe(200);
+    expect(await res.text()).toContain("Kara kutu değil");
+    await link.scrollIntoViewIfNeeded();
+    await link.click();
+    await expect(page).toHaveURL(/\/transparency$/);
+    await expectHeading(page, "Karakutudeğil");
   });
 });
 
@@ -143,15 +137,16 @@ test.describe("scene 4 in English", () => {
     await expect(scene.locator("[data-scene4-principle]")).toHaveCount(4);
     await expect(scene.locator('[data-scene4-badge="capability"]').first()).toHaveText("Current capability");
     await expect(scene.locator("[data-scene4-source]").nth(0)).toHaveText(
-      "Source: LifeOS product record, “Offline-first” (Live)",
+      "Source: LifeOS product record, “Offline-first”; product status: Live",
     );
     await expect(scene.locator("[data-scene4-source]").nth(1)).toHaveText(
-      "Source: Braavolabs product record, “Spend approval” (Beta)",
+      "Source: Braavolabs product record, “Spend approval”; product status: Beta",
     );
     const text = await scene.locator("[data-scene4-body]").innerText();
     expect(text).not.toMatch(/\d/);
     expect(text).not.toMatch(FORBIDDEN);
     expect(text).toContain("there is no shared model and no shared database");
+    expect(text).toContain("Product status refers to iOS; Android is in closed testing.");
     await expect(scene.getByRole("list", { name: /four shared engineering principles/i })).toBeVisible();
   });
 });
@@ -169,7 +164,7 @@ test.describe("scene 4 in /ar (RTL page, English fallback block)", () => {
     await expect(scene.locator("[data-scene4-principle]")).toHaveCount(4);
     await expect(scene.locator('[data-scene4-badge="capability"]').first()).toHaveText("Current capability");
     await expect(scene.locator("[data-scene4-source]").nth(0)).toHaveText(
-      "Source: LifeOS product record, “Offline-first” (Live)",
+      "Source: LifeOS product record, “Offline-first”; product status: Live",
     );
     const text = await scene.locator("[data-scene4-body]").innerText();
     expect(text).not.toMatch(/[؀-ۿ]/);

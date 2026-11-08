@@ -863,17 +863,17 @@
       "title": "Bağımsız ürünler. Ortak mühendislik ilkeleri.",
       "message": "Yerel öncelikli veri, iş başına izin ve kanıt, anlaşılır arayüz: ürünler ayrı, ilkeler ortak.",
       "listLabel": "Dört ortak mühendislik ilkesi; her biri için ürün kaydında bugün yazanlar ve planlananlar",
-      "currentLabel": "Mevcut (ürün kaydı)",
+      "currentLabel": "Ürün kaydında yazan",
       "plannedLabel": "Planlanan",
       "tagCapability": "Mevcut yetenek",
       "tagPlanned": "Planlanan",
       "tagNone": "Kayıt yok",
       "noRecord": "Bu ilkeyi destekleyen bir ürün kaydı satırı henüz yok.",
-      "sourceLabel": "Kaynak: {product} ürün kaydı, “{feature}” ({status})",
-      "note": "“Mevcut yetenek”, ilgili ürün için ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. “Planlanan”, ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir. Ürünler ayrı kalır: ortak bir model ve ortak bir veritabanı yoktur.",
+      "sourceLabel": "Kaynak: {product} ürün kaydı, “{feature}”; ürün durumu: {status}",
+      "note": "“Mevcut yetenek”, ilgili ürün için ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. Ürün durumu iOS içindir; Android kapalı testtedir. “Planlanan”, ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir. Ürünler ayrı kalır: ortak bir model ve ortak bir veritabanı yoktur.",
       "linksLabel": "İlgili sayfalar",
       "linkOperatingSystem": "Bu laboratuvar nasıl çalışır",
-      "linkStudio": "Studio",
+      "linkStudio": "Studio: YULA Lab ile birlikte inşa et",
       "linkTransparency": "Şeffaflık",
       "principles": {
         "p1": {
@@ -881,11 +881,11 @@
           "planned": "Aynı ilkeyi diğer ürünlerde de uygulamak, ürünler çıktıkça. Bunu şimdilik onların yeteneği olarak iddia etmiyoruz."
         },
         "p2": {
-          "name": "İş başına izin ve kanıt",
+          "name": "Harcama adımlarında izin ve kanıt",
           "planned": "Ürünlerde benzer bir izin ve kanıt dili hedefliyoruz. Bunun için bugün ortak bir bileşen ya da sistem yok."
         },
         "p3": {
-          "name": "Cihaz içi sinyal analizi",
+          "name": "Cihaz içi işleme",
           "planned": "Yeni sinyalleri ancak gerçek cihazlarda sınandıktan sonra açmak."
         },
         "p4": {

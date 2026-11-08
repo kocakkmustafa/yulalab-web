@@ -61,7 +61,7 @@ export function Scene4Engineering({
 }) {
   return (
     <div data-scene4-body="true" className="mt-12">
-      <ul aria-label={t("scene4.listLabel")} className="grid gap-4 md:grid-cols-2">
+      <ul role="list" aria-label={t("scene4.listLabel")} className="grid gap-4 md:grid-cols-2">
         {PRINCIPLES.map((principle) => {
           const source = principle.source;
           return (
@@ -136,7 +136,7 @@ export function Scene4Engineering({
       <p className="mt-4 max-w-[62ch] text-xs text-ink-300">{t("scene4.note")}</p>
       {/* A list, not a <nav>: the scene rail owns the page's only <nav> in this block. */}
       <div className="mt-6">
-        <ul aria-label={t("scene4.linksLabel")} className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+        <ul role="list" aria-label={t("scene4.linksLabel")} className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
           <li>
             <a
               href={localePath(locale, "/operating-system")}
