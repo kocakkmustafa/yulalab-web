@@ -649,6 +649,8 @@
       "rights": "جميع الحقوق محفوظة."
     },
     "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "التجربة الخطية",
       "reason": "عندما لا تتوفر الحركة أو طبقة 3D، تبقى المنتجات والأدلة والروابط نفسها كاملة في هذا العرض."

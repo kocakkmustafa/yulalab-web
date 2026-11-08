@@ -22,6 +22,8 @@ type StaticExperienceProps = {
   onSoundToggle: () => void;
   /** Small-screen opt-in to the 3D journey; hidden by CSS above 767 px. */
   onOpen3d?: () => void;
+  /** The visitor asked for 3D and it could not start: say so, keep the linear view. */
+  open3dFailed?: boolean;
 };
 
 /** Complete linear rendering for reduced motion and WebGL/context failure. */
@@ -31,6 +33,7 @@ export function StaticExperience({
   soundEnabled,
   onSoundToggle,
   onOpen3d,
+  open3dFailed = false,
 }: StaticExperienceProps) {
   const today = useExperienceSiteDate();
 
@@ -56,7 +59,18 @@ export function StaticExperience({
           {copy.hero.scroll}
           <span aria-hidden="true">↘</span>
         </TrackedLink>
-        {onOpen3d ? (
+        {open3dFailed ? (
+          <p
+            id="open3d-failed"
+            tabIndex={-1}
+            className={styles.open3dFailed}
+            data-open-3d-failed="true"
+            lang={copy.ui.open3dLang}
+            dir={copy.ui.open3dLang ? "ltr" : undefined}
+          >
+            {copy.ui.open3dFailed}
+          </p>
+        ) : onOpen3d ? (
           <button
             type="button"
             className={styles.open3d}

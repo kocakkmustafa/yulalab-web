@@ -649,6 +649,8 @@
       "rights": "保留所有权利。"
     },
     "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "线性视图",
       "reason": "当动效或 3D 层无法使用时，此视图仍完整保留相同的产品、证据与链接。"
