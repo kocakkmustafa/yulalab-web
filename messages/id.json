@@ -15,7 +15,8 @@
     "menuClose": "Tutup",
     "studio": "Studio",
     "consulting": "Konsultasi AI",
-    "language": "Bahasa"
+    "language": "Bahasa",
+    "skipToContent": "Langsung ke konten"
   },
   "footer": {
     "tagline": "Laboratorium produk independen yang menggunakan AI pada tempat dan waktu yang tepat, tanpa membesar-besarkannya.",

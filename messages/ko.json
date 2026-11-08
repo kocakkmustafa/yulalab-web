@@ -15,7 +15,8 @@
     "menuClose": "닫기",
     "studio": "스튜디오",
     "consulting": "AI 컨설팅",
-    "language": "언어"
+    "language": "언어",
+    "skipToContent": "본문으로 건너뛰기"
   },
   "footer": {
     "tagline": "과장 없이, 필요한 곳에 필요한 때 AI를 활용하는 독립 제품 연구소입니다.",

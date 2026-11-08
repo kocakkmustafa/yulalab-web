@@ -15,7 +15,8 @@
     "menuClose": "閉じる",
     "studio": "スタジオ",
     "consulting": "AIコンサルティング",
-    "language": "言語"
+    "language": "言語",
+    "skipToContent": "本文へ移動"
   },
   "footer": {
     "tagline": "AIを誇張せず、適切な場面で適切に使う、独立系のプロダクトラボ。",
