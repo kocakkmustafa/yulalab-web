@@ -3,6 +3,7 @@ import { isLocale, localePath } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { evidenceKindLabel } from "@/components/common/SourceStamp";
+import { HomeScenes } from "@/components/landing/HomeScenes";
 import { YulaExperience } from "@/components/experience/YulaExperience";
 import type {
   ExperienceCopy,
@@ -264,5 +265,10 @@ export default async function LandingPage({
     },
   };
 
-  return <YulaExperience products={experienceProducts} copy={copy} />;
+  return (
+    <>
+      <YulaExperience products={experienceProducts} copy={copy} />
+      <HomeScenes locale={locale} />
+    </>
+  );
 }

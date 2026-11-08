@@ -37,7 +37,7 @@ vi.mock("@/i18n/navigation", () => ({
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found"); } }));
 vi.mock("next-intl/server", () => ({
   setRequestLocale: vi.fn(),
-  getTranslations: async ({ locale }: { locale: Locale }) => createTranslator({ locale, messages: catalogues[locale], namespace: "experience" }),
+  getTranslations: async ({ locale, namespace }: { locale: Locale; namespace: string }) => createTranslator({ locale, messages: catalogues[locale], namespace }),
 }));
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
@@ -47,7 +47,9 @@ afterEach(() => { cleanup(); navigation.replace.mockReset(); });
 async function load(locale: Locale) {
   navigation.locale = locale;
   const page = await LandingPage({ params: Promise.resolve({ locale }) });
-  return (page as ReactElement<{ copy: ExperienceCopy; products: ExperienceProduct[] }>).props;
+  // The page is a fragment: the journey first, then the seven-scene block.
+  const parts = (page as ReactElement<{ children: ReactElement<{ copy?: ExperienceCopy }>[] }>).props.children;
+  return parts.find((part) => part.props.copy)!.props as unknown as { copy: ExperienceCopy; products: ExperienceProduct[] };
 }
 function provider(locale: Locale, children: ReactElement) {
   return <NextIntlClientProvider locale={locale} messages={catalogues[locale]} timeZone="UTC"><ThemeProvider>{children}</ThemeProvider></NextIntlClientProvider>;

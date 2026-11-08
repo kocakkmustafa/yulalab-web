@@ -840,5 +840,43 @@
     "subject": "Demande de conseil en IA",
     "terms": "La disponibilité, les tarifs et le périmètre sont confirmés au fil des échanges.",
     "nav": "Conseil en IA"
+  },
+  "home": {
+    "navLabel": "Home page sections",
+    "scene1": {
+      "label": "Identity",
+      "title": "We build technology to make life more possible, not more complicated.",
+      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music."
+    },
+    "scene2": {
+      "label": "Difference",
+      "title": "Less friction, more results.",
+      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome."
+    },
+    "scene3": {
+      "label": "Products",
+      "title": "Three systems we prioritise.",
+      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome."
+    },
+    "scene4": {
+      "label": "Engineering",
+      "title": "Independent products. Shared engineering principles.",
+      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared."
+    },
+    "scene5": {
+      "label": "Lab",
+      "title": "A living lab.",
+      "message": "We record our design decisions and what we learn, with the question, the hypothesis and the result."
+    },
+    "scene6": {
+      "label": "Trust",
+      "title": "Trust is shown product by product.",
+      "message": "We address data protection, control and consent, measurable results and transparent product stage per product and feature, with the state of the evidence."
+    },
+    "scene7": {
+      "label": "Start",
+      "title": "Let's take the next step together.",
+      "message": "Explore the products, or let's talk about how we could work together on your business."
+    }
   }
 }

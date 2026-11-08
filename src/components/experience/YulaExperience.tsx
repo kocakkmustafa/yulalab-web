@@ -263,6 +263,14 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
 
     return () => {
       window.removeEventListener("pageshow", resetOpeningScroll);
+      // The opening pins the page to the top; a deep link such as
+      // `/#scene-3-products` is honoured once the opening card leaves.
+      const target = window.location.hash.length > 1
+        ? document.getElementById(decodeURIComponent(window.location.hash.slice(1)))
+        : null;
+      if (target?.closest("[data-home-scenes]")) {
+        requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
+      }
       root.style.overflow = previousOverflow;
       root.style.overscrollBehavior = previousOverscroll;
       window.history.scrollRestoration = previousRestoration;
