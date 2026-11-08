@@ -24,8 +24,10 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | WEB-P0-03h S7 Dönüşüm | `IN_REVIEW` | PR #58 (`044a3a7`), CI SUCCESS. |
 | WEB-P0-03d S3 Amiral ürünler | `READY` (bağımlılık) | #44 (WEB-P0-04) merge'ü bekler; claim durumu `presentClaims`'e bağlanacak. |
 | WEB-P0-03a4 / 03a5 | `READY` | 03a4 mobilde WebGL sondasını ilk jeste ertele; 03a5 ana sayfa kritik yol bayt bütçesi. |
-| WEB-P0-05 Braavolabs plan kartı | `IN_REVIEW` | PR #60 (`b6d3892`, main'e dayalı); `/projects/braavolabs` bağımsız bileşen, ağ=0 e2e, ibare her kartta; Sahne 3 bağlama 03d'de. CI bekleniyor. |
-| WEB-P0-10 Ostinato ücretsiz ders metni | `IN_REVIEW` | PR #61 (`3ab6c40`, main'e dayalı); 40+25; kaynak doğrulama kısmi. `WEB-P0-10b` (Kurslar maddesi) `READY`. CI bekleniyor. |
+| WEB-P0-05 Braavolabs plan kartı | `IN_REVIEW` | PR #60 (`b6d3892`, main'e dayalı); `/projects/braavolabs` bağımsız bileşen, ağ=0 e2e, ibare her kartta; Sahne 3 bağlama 03d'de. CI SUCCESS (2026-11-09). |
+| WEB-P0-10 Ostinato ücretsiz ders metni | `IN_REVIEW` | PR #61 (`3ab6c40`, main'e dayalı); 40+25; kaynak doğrulama kısmi. CI SUCCESS (2026-11-09, baş `3ab6c40`). |
+| WEB-P0-10b Ostinato Kurslar maddesi | `IN_REVIEW` | PR #62 (`09d040d`, main'e dayalı); gitar 4 seviye 240, kulak 2 seviye 50, şan/piyano yakında; ukulele/bas/gizli eski kurslar çıktı; bağımsız reviewer geçti. CI bekleniyor. `WEB-P0-10c` (240/50/690 = dosya sayısı; ders 235/48/676) Ostinato oturumu doğrulaması bekliyor. |
+| WEB-P0-03a4 mobil WebGL sonda erteleme | `IN_REVIEW` | PR #63 (`345e9d9`, main'e dayalı); telefonda sonda ilk jeste ertelendi, masaüstü değişmedi; TBT ölçümü UNKNOWN (makine yükü). CI bekleniyor. |
 | WEB-P0-10 Ostinato metin tutarsızlığı | `READY` | `ostinato.ts` l.22 ↔ l.55; metin koda uydurulacak. |
 
 ## Doğrulanan gerçekler (2026-11-08)
@@ -44,7 +46,8 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | #45 | 404 E2E sağlamlaştırma | CI sonucu PR'da |
 | #46 | Bu belge + DECISIONS.md | CI sonucu PR'da |
 | #47–#59 | WEB-P0-02a–d, 03a–h (yukarıdaki tablo) | CI SUCCESS (2026-11-09); hepsi merge kurucu onayında (merge = Netlify yayını) |
-| #60, #61 | WEB-P0-05, WEB-P0-10 (main'e dayalı, bağımsız) | CI bekleniyor; merge kurucu onayında |
+| #60, #61 | WEB-P0-05, WEB-P0-10 (main'e dayalı, bağımsız) | CI SUCCESS; merge kurucu onayında |
+| #62, #63 | WEB-P0-10b, WEB-P0-03a4 (main'e dayalı, bağımsız) | CI bekleniyor; merge kurucu onayında |
 
 **Birleştirme notu:** CI ağaç pini tüm depo ağacını sabitler; her PR kendi ağacını pinler. İlk merge'den sonra diğerleri `git merge origin/main` + pin/makbuz yenilemesi ister (force push yok). Merge = Netlify yayını.
 
@@ -53,4 +56,4 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 2. 3D sahne varsayılan açık ↔ §8.1: ADR-003 kabul edildi (masaüstü 3D varsayılan, mobil statik varsayılan); uygulama PR #54'te, merge'e kadar canlıda eski davranış. Lighthouse ölçümleri yüklü makinede, sakin makinede yeniden ölçülmeli.
 3. Birleştirme çakışması: #52, #53, #56, #57, #58 aynı `HomeScenes.tsx`'e satır ekliyor; her merge sonrası kalan PR'larda `git merge origin/main` + makbuz + pin yenileme. #55 ve #59 #54 dalına yığılı: #54 merge olunca `gh pr close` + `reopen`.
 4. Yedek diller: 12 dilde ana sayfa sahne metinleri İngilizce (`lang="en"`); çeviri insan denetimi gerektirir (`UNKNOWN`).
-5. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); ücretsiz kısım PR #61'de düzeltildi, "Kurslar" maddesi (60/240 ders) WEB-P0-10b.
+5. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); ücretsiz kısım PR #61'de düzeltildi, "Kurslar" maddesi PR #62'de düzeltildi (WEB-P0-10b); "240/50/690 ders" dosya sayısı, ders sayısı değil: WEB-P0-10c.
