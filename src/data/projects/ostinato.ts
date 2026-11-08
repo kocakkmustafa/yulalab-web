@@ -52,8 +52,8 @@ export const ostinato: ProjectConfig = {
     {
       title: { tr: "Ücretsiz kısım", en: "Free part" },
       description: {
-        tr: "Gitarda 1–12. dersler, piyano, ukulele, bas ve şanda ilk 8 ders ücretsizdir. Ücretsiz dersler hesap, kamera veya mikrofon olmadan çalışır; ilerleme kayıtların her zaman görünür kalır.",
-        en: "Lessons 1–12 of guitar and the first 8 lessons of piano, ukulele, bass and voice are free. Free lessons work without an account, camera or microphone; your progress records always stay visible.",
+        tr: "Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsizdir. Ücretsiz dersler hesap, kamera veya mikrofon olmadan çalışır; ilerleme kayıtların her zaman görünür kalır.",
+        en: "Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free. Free lessons work without an account, camera or microphone; your progress records always stay visible.",
       },
       icon: "Eye",
     },
