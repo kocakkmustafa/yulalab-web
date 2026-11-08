@@ -75,7 +75,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             <p className="mt-6 max-w-[62ch] text-base md:text-lg leading-relaxed text-ink-200">
               {t(`${scene.key}.message`)}
             </p>
-            {scene.n === 5 ? <Scene5Lab t={t} locale={fallbackEnglish ? "en" : locale} /> : null}
+            {scene.n === 5 ? <Scene5Lab t={t} locale={locale} /> : null}
           </section>
         );
       })}
