@@ -1,5 +1,5 @@
 import type { ClaimState, ProductPublicRecord } from "./types";
-import { isExpired, isPresentTenseEligible } from "./public-registry";
+import { VERIFIED_CLAIM_STATES, isExpired, isPresentTenseEligible } from "./public-registry";
 
 /**
  * What a claim or surface should look like on screen once its verification
@@ -43,6 +43,12 @@ export type PresentedClaim =
 
 export function presentClaims(record: ProductPublicRecord, now: Date): PresentedClaim[] {
   return record.claims.map((claim) => {
+    // A planned/prototype/unknown claim is withheld whatever its window says:
+    // "needs re-verification" would be the wrong thing to tell a reader about
+    // something that was never claimed as true today.
+    if (claim.claimState && !VERIFIED_CLAIM_STATES.includes(claim.claimState)) {
+      return { kind: "withheld", claim };
+    }
     if (claim.expiresAt && isExpired(claim.expiresAt, now)) {
       return { kind: "lapsed", claim, expiredOn: claim.expiresAt };
     }

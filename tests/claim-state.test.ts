@@ -200,12 +200,31 @@ describe("validateRecord — claim state consistency (WEB-P0-04)", () => {
     });
   });
 
-  it("is TR/EN-parity safe: one record carries one state for both languages", () => {
-    // statementTr/En live on the same claim object, so a locale cannot hold a
-    // different state or flag than its sibling — pinned so a future split into
-    // per-locale rows has to revisit this rule on purpose.
-    const c = claim(sourceVerified);
-    expect(Object.keys(c).filter((k) => /^(claimState|publishableAsPresentTense)(Tr|En)$/.test(k))).toEqual([]);
+  // Rule 5 (TR/EN carry the same state) has no test on purpose: statementTr/En
+  // sit on ONE claim object with ONE claimState, so a locale cannot differ from
+  // its sibling by construction. A test could only assert that keys nobody
+  // wrote are absent, which can never fail. The structure is the guard.
+
+  describe("marker words (rule 6)", () => {
+    const planned = (statementEn: string, statementTr = "Planlanan özellik.") =>
+      errorsFor(claim({ claimState: "planned", publishableAsPresentTense: false, statementTr, statementEn }));
+
+    it("does not accept a word that merely contains a marker", () => {
+      expect(planned("An unplanned feature works today.").some((e) => /reads as present tense/.test(e))).toBe(true);
+      expect(planned("It supports targeted routing and goals today.").some((e) => /reads as present tense/.test(e))).toBe(true);
+    });
+
+    it("accepts the Turkish word in either case and either spelling", () => {
+      expect(planned("Coming soon.", "YAKINDA gelecek.")).toEqual([]);
+      expect(planned("Coming soon.", "yakında gelecek.")).toEqual([]);
+    });
+  });
+
+  it("applies the state rules to a claim with empty statements too", () => {
+    const errors = errorsFor(
+      claim({ statementTr: "", statementEn: "", publishableAsPresentTense: true }),
+    );
+    expect(errors.some((e) => /publishableAsPresentTense without a verified claimState/.test(e))).toBe(true);
   });
 });
 
@@ -283,7 +302,54 @@ describe("presentClaims — withheld claims never reach the verified block", () 
   });
 });
 
+describe("presentClaims — expectation restated independently of the implementation", () => {
+  // The expected kind is recomputed here from the raw rule, not by calling
+  // isPresentTenseEligible, so a wiring mistake in presentClaims cannot pass
+  // by agreeing with itself.
+  const states = [undefined, "production_verified", "beta_verified", "source_verified", "prototype", "planned", "unknown"] as const;
+  const flags = [undefined, true, false] as const;
+  const windows = [
+    { label: "open", expiresAt: "2026-12-08" },
+    { label: "lapsed", expiresAt: "2026-11-01" },
+  ] as const;
+  const verifiedStates = ["production_verified", "beta_verified", "source_verified"];
+
+  for (const state of states) {
+    for (const flag of flags) {
+      for (const w of windows) {
+        const expected = (() => {
+          if (state && !verifiedStates.includes(state)) return "withheld";
+          if (w.label === "lapsed") return "lapsed";
+          const declared = state !== undefined || flag !== undefined;
+          if (!declared) return "verified"; // legacy: untouched behaviour
+          return state && flag === true ? "verified" : "withheld";
+        })();
+        it(`${state ?? "undeclared"} / flag ${String(flag)} / ${w.label} window → ${expected}`, () => {
+          const c = claim({ claimState: state, publishableAsPresentTense: flag, expiresAt: w.expiresAt });
+          expect(presentClaims(record([c]), NOW)[0].kind).toBe(expected);
+        });
+      }
+    }
+  }
+
+  it("a planned claim whose window has closed is withheld, not 'needs re-verification'", () => {
+    const c = claim({ claimState: "planned", publishableAsPresentTense: false, expiresAt: "2026-09-18" });
+    expect(presentClaims(record([c]), NOW)[0].kind).toBe("withheld");
+  });
+});
+
 describe("validateClaimStateDeclared — the build gate", () => {
+  it("keeps planned/prototype/unknown out of claims[] while consumers read it unfiltered", () => {
+    const planned = claim({
+      claimState: "planned",
+      publishableAsPresentTense: false,
+      statementTr: "Planlanan özellik.",
+      statementEn: "A planned feature.",
+    });
+    const errors = validateClaimStateDeclared([record([planned])], NOW);
+    expect(errors.some((e) => /keep planned\/prototype\/unknown facts out of claims\[\]/.test(e))).toBe(true);
+  });
+
   it("fails an open-window claim that declares nothing", () => {
     const errors = validateClaimStateDeclared([record([claim()])], NOW);
     expect(errors).toHaveLength(2);
@@ -309,19 +375,9 @@ describe("the real registry", () => {
     expect(validateRegistry(publicRegistry)).toEqual([]);
   });
 
-  it("every claim shown as verified is present-tense eligible, on every day of its window", () => {
-    // planned → live leak guard on real data: walk each claim from verifiedAt
-    // to expiresAt and require that "verified" implies "eligible".
-    for (const r of publicRegistry) {
-      for (const c of r.claims) {
-        if (c.claimState === undefined && c.publishableAsPresentTense === undefined) continue; // lapsed legacy, gated separately
-        for (const day of [c.verifiedAt, c.expiresAt]) {
-          const at = new Date(`${day}T12:00:00Z`);
-          const [p] = presentClaims({ ...r, claims: [c] }, at);
-          if (p.kind === "verified") expect(isPresentTenseEligible(c, at)).toBe(true);
-        }
-      }
-    }
+  it("keeps no planned/prototype/unknown fact in claims[] (consumers read claims[] unfiltered)", () => {
+    const states = publicRegistry.flatMap((r) => r.claims).map((c) => c.claimState);
+    for (const s of states) expect(["planned", "prototype", "unknown"]).not.toContain(s);
   });
 
   it("the three re-verified Braavolabs claims and the LifeOS claim carry a commit", () => {

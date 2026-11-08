@@ -46,8 +46,11 @@ const NOT_PRESENT_TENSE_STATES: readonly ClaimState[] = ["prototype", "planned",
  * links.yulalab.com JSON, JSON-LD). Words checked, not sniffed from grammar:
  * the marker has to be literally in the text.
  */
+// The marker must START a word ("unplanned", "targeted" and "goals" are not
+// markers) and match either spelling of "yakında"/"YAKINDA" — the `i` flag
+// does not fold the Turkish dotless ı.
 const NOT_YET_MARKER =
-  /planlan|planned|prototip|prototype|yakında|coming soon|henüz|not yet|hedef|target|goal|will |olacak|doğrulanmad|unverified|unknown|bilinmiyor/i;
+  /(?<![\p{L}])(planlan|planned|prototip|prototype|yak[ıi]nda|coming soon|henüz|not yet|hedef|target\b|goal\b|will\s|olacak|doğrulanmad|unverified|unknown|bilinmiyor)/iu;
 
 const PRESENT_TENSE_EVIDENCE_METHODS: readonly VerificationMethod[] = ["store_build", "live_e2e"];
 const SOURCE_EVIDENCE_METHODS: readonly VerificationMethod[] = ["source_review", "ci"];
@@ -166,8 +169,11 @@ export function validateRecord(record: ProductPublicRecord): string[] {
       for (const e of dateErrors(`claim ${claim.id} expiresAt`, claim.expiresAt)) {
         errors.push(where(e));
       }
-      errors.push(...claimStateErrors(record, claim));
     }
+    // Outside the statement block on purpose: a claim with both statements
+    // empty must not skip the state rules (publishableAsPresentTense: true on
+    // an empty claim is still a declaration that has to be consistent).
+    errors.push(...claimStateErrors(record, claim));
   }
 
   if (record.lifecycle === "research") {
@@ -291,8 +297,20 @@ export function validateClaimStateDeclared(records: ProductPublicRecord[], now: 
   const errors: string[] = [];
   for (const record of records) {
     for (const claim of record.claims) {
-      if (claim.expiresAt && isExpired(claim.expiresAt, now)) continue;
       const out = (msg: string) => `${record.slug}: claim ${claim.id} ${msg}`;
+      // Not time-dependent: the home overlay, StatCards and case studies read
+      // claims[] directly (not through presentClaims) and judge only freshness,
+      // so a planned/prototype/unknown claim there would be shown as current.
+      // Until those surfaces filter by isPresentTenseEligible (WEB-P0-03),
+      // such facts live in status labels, not in claims[].
+      if (claim.claimState && !VERIFIED_CLAIM_STATES.includes(claim.claimState)) {
+        errors.push(
+          out(
+            `is ${claim.claimState}; keep planned/prototype/unknown facts out of claims[] (status labels) until every claim consumer filters by isPresentTenseEligible`,
+          ),
+        );
+      }
+      if (claim.expiresAt && isExpired(claim.expiresAt, now)) continue;
       if (!claim.claimState) errors.push(out("has an open verification window but no claimState"));
       if (typeof claim.publishableAsPresentTense !== "boolean") {
         errors.push(out("has an open verification window but no publishableAsPresentTense"));
