@@ -1373,6 +1373,27 @@
       "candidateSha256": "4ab5b923c18ff8a644a28d477aa3cf385d20cbb44ca2f5b5fa52f635758587dd",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "2026-11-05 motion parity with the reference (founder instruction relayed by Yonetim): decode labels, slot buttons, title wipe, frosted staggered mobile menu, product marquee, media reveal, footer wordmark draw, journey stage words, vision spectral ribbon, glyph reset (14 languages), stage cues, card zoom-through; reduced motion resolves to end states. Local lint/typecheck/vitest/translations/claims/build and E2E evidence only; candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/api/events/route.ts",
+      "publishedSha256": "816b5bc62a6b8469ba816bbe2862ba93a597f11677f85596a046bd056c0d5eec",
+      "candidateSha256": "e5d26deb9ec81694d6d6b3f311086fd96a63213b3fbdcd8938a8f5b366c9ee3d",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP"
+    },
+    {
+      "path": "src/app/api/leads/route.ts",
+      "publishedSha256": "6c6c64e4d5c0109fa35fcfa6e6def93504fa19e08e926abb107465b92df06ad0",
+      "candidateSha256": "88c97595f6aa3a276823c7b50f13be6849e864a6b9da6538876b780d0ca1e1b5",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP"
+    },
+    {
+      "path": "src/server/rate-limit.ts",
+      "publishedSha256": "36535a89b3d1a67c1706b3f4c2d7df3c8a6d276e534a8db5ff6a1bdc09cc00ad",
+      "candidateSha256": "0292a36384580c525794be901d579c82a8bbddf8e2b1e8a36a35f3388840e8c5",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP"
     }
   ]
 }
