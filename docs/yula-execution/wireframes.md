@@ -16,7 +16,7 @@ Referans ekran görüntüleri (repo dışı, Playwright, `reducedMotion: reduce`
 - RTL (`/ar`): `dir="rtl"`; mantıksal özellikler (`ms-`/`me-`, `inset-x`) kullan, sabit `left/right` yalnız menü paneli için (`right-0`, panel sağdan kayar) ve `/ar` için ayna kontrolü e2e ile korunur (taşma + axe).
 - Reduced-motion: sonsuz/yinelenen animasyon, marquee ve otomatik kaydırma yok; ana sayfada 3D sahne yerine `StaticExperience` (`data-experience-static="true"`, canvas 0). Test: `a11y-keyboard-320.spec.ts`.
 - Odak: `.focusable:focus-visible` 2 px outline, 2 px offset, `currentColor` (kodla doğrulandı: `globals.css` satır 442). Tab sırası header, main, footer (e2e ile doğrulandı).
-- Bilinen eksik: atlama bağlantısı (skip link) yok, WCAG 2.4.1 (Bypass Blocks). E2E testi `test.fixme` ve `known-gap` anotasyonu ile işaretli. Öneri: ayrı bilet WEB-P0-02d, skip link + `<main id>` + `test.fixme`'yi gerçek teste çevirme (14 dil anahtarı).
+- Bilinen eksik: atlama bağlantısı (skip link) yok, WCAG 2.4.1 (Bypass Blocks). CI kapısı atlanan (`skipped`) her testi hata saydığı için bu eksik için `test.fixme` KONMADI; test yok, eksik yalnız burada ve Backlog'da izlenir. Ayrı bilet WEB-P0-02d: skip link + `<main id>` + gerçek E2E testi (14 dil anahtarı).
 
 ## Header (kapalı hâl)
 
