@@ -37,7 +37,7 @@ vi.mock("@/i18n/navigation", () => ({
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found"); } }));
 vi.mock("next-intl/server", () => ({
   setRequestLocale: vi.fn(),
-  getTranslations: async ({ locale, namespace }: { locale: Locale; namespace: string }) => createTranslator({ locale, messages: catalogues[locale], namespace }),
+  getTranslations: async ({ locale, namespace }: { locale: Locale; namespace: "experience" | "status" }) => createTranslator({ locale, messages: catalogues[locale], namespace }),
 }));
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
