@@ -19,12 +19,13 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | WEB-P0-03b S1 Kimlik | `IN_REVIEW` | PR #52 (`05ea007`), CI SUCCESS; üst üste #50. |
 | WEB-P0-03c S2 Fark | `IN_REVIEW` | PR #53 (`b123ca8`), CI SUCCESS. |
 | WEB-P0-03e S4 Ortak mühendislik | `IN_REVIEW` | PR #57 (`6ebf838`), CI SUCCESS. |
-| WEB-P0-03f S5 Yaşayan laboratuvar | `IN_REVIEW` | PR #59 (`bdcef6e`), taban #54; CI bekleniyor. |
+| WEB-P0-03f S5 Yaşayan laboratuvar | `IN_REVIEW` | PR #59 (`bdcef6e`), taban #54, CI SUCCESS. |
 | WEB-P0-03g S6 Güven | `IN_REVIEW` | PR #56 (`44332f9`), CI SUCCESS. |
-| WEB-P0-03h S7 Dönüşüm | `IN_REVIEW` | PR #58 (`044a3a7`); CI bekleniyor. |
+| WEB-P0-03h S7 Dönüşüm | `IN_REVIEW` | PR #58 (`044a3a7`), CI SUCCESS. |
 | WEB-P0-03d S3 Amiral ürünler | `READY` (bağımlılık) | #44 (WEB-P0-04) merge'ü bekler; claim durumu `presentClaims`'e bağlanacak. |
 | WEB-P0-03a4 / 03a5 | `READY` | 03a4 mobilde WebGL sondasını ilk jeste ertele; 03a5 ana sayfa kritik yol bayt bütçesi. |
-| WEB-P0-05 | `BACKLOG` | 03'ten sonra. |
+| WEB-P0-05 Braavolabs plan kartı | `IN_REVIEW` | PR #60 (`b6d3892`, main'e dayalı); `/projects/braavolabs` bağımsız bileşen, ağ=0 e2e, ibare her kartta; Sahne 3 bağlama 03d'de. CI bekleniyor. |
+| WEB-P0-10 Ostinato ücretsiz ders metni | `IN_REVIEW` | PR #61 (`3ab6c40`, main'e dayalı); 40+25; kaynak doğrulama kısmi. `WEB-P0-10b` (Kurslar maddesi) `READY`. CI bekleniyor. |
 | WEB-P0-10 Ostinato metin tutarsızlığı | `READY` | `ostinato.ts` l.22 ↔ l.55; metin koda uydurulacak. |
 
 ## Doğrulanan gerçekler (2026-11-08)
@@ -42,7 +43,8 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 | #44 | WEB-P0-04 claim durumu | CI sonucu PR'da |
 | #45 | 404 E2E sağlamlaştırma | CI sonucu PR'da |
 | #46 | Bu belge + DECISIONS.md | CI sonucu PR'da |
-| #47–#59 | WEB-P0-02a–d, 03a–h (yukarıdaki tablo) | #47–#57 CI SUCCESS (2026-11-09); #58, #59 CI bekleniyor; hepsi merge kurucu onayında (merge = Netlify yayını) |
+| #47–#59 | WEB-P0-02a–d, 03a–h (yukarıdaki tablo) | CI SUCCESS (2026-11-09); hepsi merge kurucu onayında (merge = Netlify yayını) |
+| #60, #61 | WEB-P0-05, WEB-P0-10 (main'e dayalı, bağımsız) | CI bekleniyor; merge kurucu onayında |
 
 **Birleştirme notu:** CI ağaç pini tüm depo ağacını sabitler; her PR kendi ağacını pinler. İlk merge'den sonra diğerleri `git merge origin/main` + pin/makbuz yenilemesi ister (force push yok). Merge = Netlify yayını.
 
@@ -51,4 +53,4 @@ Durum kodları §12.4'tür. Bu dosya kanıtı taşır; kanıtı olmayan satır `
 2. 3D sahne varsayılan açık ↔ §8.1: ADR-003 kabul edildi (masaüstü 3D varsayılan, mobil statik varsayılan); uygulama PR #54'te, merge'e kadar canlıda eski davranış. Lighthouse ölçümleri yüklü makinede, sakin makinede yeniden ölçülmeli.
 3. Birleştirme çakışması: #52, #53, #56, #57, #58 aynı `HomeScenes.tsx`'e satır ekliyor; her merge sonrası kalan PR'larda `git merge origin/main` + makbuz + pin yenileme. #55 ve #59 #54 dalına yığılı: #54 merge olunca `gh pr close` + `reopen`.
 4. Yedek diller: 12 dilde ana sayfa sahne metinleri İngilizce (`lang="en"`); çeviri insan denetimi gerektirir (`UNKNOWN`).
-5. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); WEB-P0-10.
+5. Ostinato site metni ↔ uygulama: `coming-soon` ama "açık" diyor (AUDIT-01 U1/U3); ücretsiz kısım PR #61'de düzeltildi, "Kurslar" maddesi (60/240 ders) WEB-P0-10b.
