@@ -29,17 +29,34 @@
  * 2. It cannot help against a slow client. The body is read before this
  *    runs, so a caller trickling bytes under the cap and never closing
  *    holds an instance until the platform timeout, unthrottled.
- * 3. Its key is only trustworthy on Vercel. Vercel overwrites
- *    x-forwarded-for and does not forward external values
- *    (https://vercel.com/docs/headers/request-headers), so the first hop is
- *    the real client. Behind any other proxy, self-hosted, or with
- *    Enterprise trusted-proxy on, a caller can set that header freely and
- *    this stops limiting anything — silently, with no error.
+ * 3. Its key is only as trustworthy as the platform's header handling, and
+ *    clientIp() below picks the header per environment:
+ *    - Vercel (process.env.VERCEL set): Vercel overwrites x-forwarded-for
+ *      and does not forward external values
+ *      (https://vercel.com/docs/headers/request-headers), so the first hop
+ *      is the real client. x-nf-client-connection-ip is IGNORED there: any
+ *      caller can send it and Vercel would pass it through.
+ *    - Netlify (production host, netlify.toml): x-nf-client-connection-ip is
+ *      preferred. UNVERIFIED against official docs: docs.netlify.com only
+ *      documents `context.ip` ("A string containing the client IP address",
+ *      /build/functions/api/) and says nothing about this header or about
+ *      x-forwarded-for. The header is what Netlify staff/forum threads
+ *      recommend, but it is not a documented guarantee. When the header is
+ *      present it alone decides (a forged x-forwarded-for is ignored). When
+ *      it is absent we fall back to the first x-forwarded-for hop, which
+ *      is only safe if the platform overwrites it: UNVERIFIED on Netlify,
+ *      so a caller could rotate it if the Netlify header were ever missing.
+ *    - Anywhere else, or when nothing valid is present: clientIp() returns
+ *      null and the routes use their no-IP fallback (leads: one shared
+ *      "lead:unknown" bucket, which header rotation cannot bypass). Verify on a deployed preview with a forged header
+ *      before treating this as more than best effort.
  *
  * The durable, shared limiter belongs with the lead endpoint in Y-P1-002
  * (roadmap §7.2 `src/server/rate-limit.ts` — this file, extended). Until
  * then this is a floor, not the plan.
  */
+
+import { isIP } from "node:net";
 
 const WINDOW_MS = 60_000;
 /** A real visitor emits a handful of funnel events a minute, not sixty. */
@@ -80,4 +97,32 @@ function sweep(now: number): void {
 /** Test-only. */
 export function resetRateLimit(): void {
   buckets.clear();
+}
+
+const MAX_IP_LENGTH = 64;
+
+function validIp(value: string | null | undefined): string | null {
+  const v = value?.trim();
+  if (!v || v.length > MAX_IP_LENGTH || isIP(v) === 0) return null;
+  return v.toLowerCase();
+}
+
+/**
+ * The client IP to key rate limits on, or null when no trustworthy valid one
+ * exists. See limit 3 in the header comment for which header is trusted where.
+ * Values that are empty, over 64 chars or not an IPv4/IPv6 literal are
+ * rejected, which also stops junk keys from bloating the bucket map.
+ */
+export function clientIp(
+  headers: Headers,
+  env: Record<string, string | undefined> = process.env,
+): string | null {
+  if (!env.VERCEL) {
+    // Present-but-invalid is rejected outright, not papered over with XFF.
+    const netlify = headers.get("x-nf-client-connection-ip");
+    if (netlify !== null) return validIp(netlify);
+  }
+
+  const first = headers.get("x-forwarded-for")?.split(",")[0];
+  return validIp(first) ?? validIp(headers.get("x-real-ip"));
 }

@@ -11,7 +11,7 @@ import {
 } from "@/lib/studio";
 import { leadsEnabled } from "@/server/lead-surface";
 import { getPool, isDatabaseConfigured } from "@/server/db";
-import { allowRequest } from "@/server/rate-limit";
+import { allowRequest, clientIp } from "@/server/rate-limit";
 import {
   createLead,
   redactWriteFailure,
@@ -90,10 +90,8 @@ function allowedOrigin(request: Request): boolean {
 }
 
 function clientKey(request: Request): string {
-  const first = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  if (first) return `lead:${first}`;
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  return realIp ? `lead:${realIp}` : "lead:unknown";
+  const ip = clientIp(request.headers);
+  return ip ? `lead:${ip}` : "lead:unknown";
 }
 
 type Parsed =
