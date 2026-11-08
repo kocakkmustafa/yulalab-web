@@ -14,3 +14,8 @@ export const HOME_SCENES = [
 ] as const;
 
 export type HomeSceneKey = (typeof HOME_SCENES)[number]["key"];
+
+/** Scene id for a `location.hash`, or null. Pure and non-throwing: no decoding. */
+export function homeSceneIdFromHash(hash: string): string | null {
+  return HOME_SCENES.find((scene) => `#${scene.id}` === hash)?.id ?? null;
+}

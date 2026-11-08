@@ -18,9 +18,15 @@ import { HOME_SCENES } from "./home-scenes";
 export async function HomeScenes({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "home" });
 
+  // tr and en are written in full. The other twelve catalogues carry the
+  // English copy until translated, so the block says so (WCAG 3.1.2).
+  const fallbackEnglish = locale !== "tr" && locale !== "en";
+
   return (
     <div
       data-home-scenes="true"
+      lang={fallbackEnglish ? "en" : undefined}
+      dir={fallbackEnglish ? "ltr" : undefined}
       className="relative z-[1] bg-[rgb(var(--yula-page-rgb))] text-ink-50 border-t border-white/10"
     >
       <nav

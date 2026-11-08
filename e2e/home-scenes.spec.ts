@@ -60,8 +60,16 @@ for (const view of VIEWS) {
         .toBeLessThan(view.viewport.height / 2);
     });
 
-    test("direct link /#scene-n lands on its scene", async ({ page }) => {
+    test("direct link /#scene-n lands on its scene", async ({ page }, testInfo) => {
       await page.goto(`${view.path === "/" ? "" : view.path}/#scene-5-lab`);
+      // Which path ran depends on the browser: with usable WebGL this is the
+      // 3D journey (opening card pins the top, then the hash is honoured);
+      // software rendering falls back to the static journey (native anchor).
+      // The annotation records it; the 3D branch is otherwise covered by the
+      // homeSceneIdFromHash unit test.
+      await page.waitForSelector('[data-yula-experience][data-experience-mounted="true"]');
+      const path3d = await page.evaluate(() => !document.querySelector('[data-experience-static="true"]'));
+      testInfo.annotations.push({ type: "journey-path", description: path3d ? "3D" : "static" });
       await expect
         .poll(() => page.locator("#scene-5-lab").evaluate((el) => Math.round(el.getBoundingClientRect().top)), {
           timeout: 15_000,
@@ -81,12 +89,54 @@ for (const view of VIEWS) {
   });
 }
 
-test.describe("first load never starts audio or the microphone", () => {
+test.describe("honest language fallback", () => {
+  test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
+
+  test("/ar scene text is English with its own lang and ltr direction", async ({ page }) => {
+    await page.goto("/ar");
+    const block = page.locator("[data-home-scenes]");
+    await expect(block).toHaveAttribute("lang", "en");
+    await expect(block).toHaveAttribute("dir", "ltr");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.locator("#scene-1-identity h2")).toHaveText(/YULA Lab|technology/i);
+  });
+
+});
+
+test.describe("tr scene block", () => {
+  test.use({ viewport: { width: 390, height: 844 }, locale: "tr-TR" });
+
+  test("carries no lang override", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("[data-home-scenes]")).not.toHaveAttribute("lang", /.+/);
+  });
+});
+
+test.describe("malformed hash", () => {
   test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
 
-  test("no getUserMedia and no AudioContext resume without a gesture", async ({ page }) => {
+  test("a broken percent-escape neither throws nor leaves the page unscrollable", async ({ page }) => {
+    const errors: string[] = [];
+    page.on("pageerror", (error) => errors.push(error.message));
+    await page.goto("/#%E0%A4%A");
+    await expect(page.locator('[data-yula-experience][data-experience-ready="true"]')).toHaveCount(1, {
+      timeout: 45_000,
+    });
+    await expect(page.locator("html")).not.toHaveCSS("overflow", "hidden");
+    await page.evaluate(() => window.scrollTo(0, 600));
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBeGreaterThan(100);
+    expect(errors).toEqual([]);
+  });
+});
+
+test.describe("first load never starts audio", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+
+  test("no AudioContext is created or resumed, and no microphone is requested, without a gesture", async ({ page }) => {
+    // `getUserMedia` has no caller in src today; the counter guards against a
+    // future one. The automatic-audio guard is the AudioContext pair.
     await page.addInitScript(() => {
-      const calls = { getUserMedia: 0, resume: 0 };
+      const calls = { getUserMedia: 0, resume: 0, created: 0 };
       (window as unknown as { __audioCalls: typeof calls }).__audioCalls = calls;
       const md = navigator.mediaDevices;
       if (md?.getUserMedia) {
@@ -97,20 +147,29 @@ test.describe("first load never starts audio or the microphone", () => {
         };
       }
       for (const name of ["AudioContext", "webkitAudioContext"] as const) {
-        const Base = (window as unknown as Record<string, typeof AudioContext | undefined>)[name];
+        const w = window as unknown as Record<string, typeof AudioContext | undefined>;
+        const Base = w[name];
         if (!Base) continue;
         const original = Base.prototype.resume;
         Base.prototype.resume = function (...args: []) {
           calls.resume++;
           return original.apply(this, args);
         };
+        w[name] = class extends Base {
+          constructor(...args: ConstructorParameters<typeof AudioContext>) {
+            calls.created++;
+            super(...args);
+          }
+        };
       }
     });
     await page.goto("/");
-    await page.waitForTimeout(2500);
+    await expect(page.locator('[data-yula-experience][data-experience-ready="true"]')).toHaveCount(1, {
+      timeout: 45_000,
+    });
     const calls = await page.evaluate(
-      () => (window as unknown as { __audioCalls: { getUserMedia: number; resume: number } }).__audioCalls,
+      () => (window as unknown as { __audioCalls: Record<string, number> }).__audioCalls,
     );
-    expect(calls).toEqual({ getUserMedia: 0, resume: 0 });
+    expect(calls).toEqual({ getUserMedia: 0, resume: 0, created: 0 });
   });
 });
