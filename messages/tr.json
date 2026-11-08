@@ -869,7 +869,7 @@
     "scene5": {
       "label": "Laboratuvar",
       "title": "Yaşayan laboratuvar.",
-      "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz.",
+      "message": "Notlarımızı ve tasarım kararlarımızı kayda geçiriyoruz; her kayıt şablonun doldurulabilen alanlarını gösterir, boş alanlar açıkça yazılır.",
       "listLabel": "Laboratuvar kayıtları: notlar ve bir tasarım kararı",
       "kindNote": "Lab notu",
       "kindDecision": "Tasarım kararı",
@@ -883,20 +883,22 @@
       "empty": "henüz yazılmadı",
       "sourceLabel": "Kaynak",
       "noteId": "not: {slug}",
-      "onlyTr": "Çeviri yok: bu not yalnızca Türkçe yazıldı.",
-      "onlyEn": "Çeviri yok: bu not yalnızca İngilizce yazıldı.",
+      "onlyTr": "Çeviri yok ({part}): yalnızca Türkçe yazıldı.",
+      "onlyEn": "Çeviri yok ({part}): yalnızca İngilizce yazıldı.",
       "allNotes": "Tüm laboratuvar notları",
       "note": "Bu bölüm yalnızca depoda yazılı notları ve belgeleri gösterir. Boş bırakılan alan henüz yazılmadı demektir; doldurmak için bir şey uydurmuyoruz. Bir belge öneriyse öneri olarak etiketlenir.",
       "decision": {
         "title": "3D sahne ana sayfada varsayılan olarak açık mı kalsın?",
         "question": "Ana sayfadaki 3D yolculuk herkeste varsayılan olarak açık mı kalmalı, yoksa mobilde statik mi başlamalı?",
         "did": "Üç seçenek yazıldı: korumalı hâli olduğu gibi bırakmak, mobilde statik varsayılan, yalnız masaüstünde varsayılan 3D. Ayrıca yerel bir üretim derlemesinde Lighthouse koşuldu; tablo kaynak belgededir.",
-        "learned": "Belgeye göre eski varsayılan, belgede yazılı mobil performans hedefinin altında kaldı; fark 3D'nin ek JavaScript'inden ve toplam engelleme süresinden geliyor. Uygulama sonrası yerel deneme daha iyi çıktı ama makine yoğundu ve sonuç oynaktı. Bunlar yerel denemeler; canlıda denenmedi, gerçek cihaz kanıtı yok.",
-        "next": "Kabul edilen seçenek: masaüstünde 3D kalır, mobilde statik başlar, dokununca 3D açılır. Bu seçenek mobil açılış süresini düzeltmediği için onun kaynağı için ayrı bir inceleme öneriliyor.",
-        "status": "Durum: kabul edildi (2026-11-08, Project orchestration); mobil statik varsayılan uygulaması ayrı bir değişiklikte inceleniyor.",
+        "learned": "Belgeye göre, yerel mobil sonuç 03a2 öncesinde canlı değerin altındaydı ve yazılı kabul karşılanmıyordu. 03a2 sonrası yerel mobil sonuç oynaktı (makine yoğundu); masaüstüne etkisi bilinmiyor. Canlıda ve gerçek cihazda denenmedi.",
+        "next": "Belgenin önerdiği sonraki adım: sakin bir makinede yeniden ölçüm. Mobil açılış süresinin kaynağı için ayrı bir iş de belgede önerilmiş.",
+        "status": "Durum: kabul edildi, 2026-11-08, Project orchestration; uygulama WEB-P0-03a2.",
         "sourceNote": "depo içi belge, sitede ayrı sayfası yok",
         "sourceLang": "Kaynak belge Türkçe yazılmıştır."
-      }
+      },
+      "partTitle": "başlık",
+      "partBody": "metin"
     },
     "scene6": {
       "label": "Güven",

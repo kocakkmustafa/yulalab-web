@@ -104,7 +104,10 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
         {notes.map((note) => {
           const title = pickNoteText(note.title, want);
           const body = pickNoteText(note.body, want);
-          const untranslated = !title.translated || !body.translated;
+          const missing = [
+            { part: "scene5.partTitle", p: title },
+            { part: "scene5.partBody", p: body },
+          ].filter(({ p }) => p.written && !p.translated);
           return (
             <li
               key={note.slug}
@@ -121,23 +124,29 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 </time>
               </div>
               <h3 className="mt-3 font-display text-xl font-semibold text-ink-50">
-                <a
-                  href={`${localePath(locale, "/notes")}#${note.slug}`}
-                  lang={title.lang === want ? undefined : title.lang}
-                  data-scene5-note-link={note.slug}
-                  className="focusable underline underline-offset-4 hover:text-ink-200"
-                >
-                  {title.text}
-                </a>
+                {title.written ? (
+                  <a
+                    href={`${localePath(locale, "/notes")}#${note.slug}`}
+                    lang={title.lang === want ? undefined : title.lang}
+                    data-scene5-note-link={note.slug}
+                    className="focusable underline underline-offset-4 hover:text-ink-200"
+                  >
+                    {title.text}
+                  </a>
+                ) : (
+                  <span data-scene5-empty="true" className="italic text-ink-300">
+                    {t("scene5.empty")}
+                  </span>
+                )}
               </h3>
-              {untranslated ? (
-                <p data-scene5-no-translation="true" className="mt-2 text-sm text-ink-200">
-                  {t(title.lang === "tr" || body.lang === "tr" ? "scene5.onlyTr" : "scene5.onlyEn")}
+              {missing.map(({ part, p }) => (
+                <p key={part} data-scene5-no-translation="true" className="mt-2 text-sm text-ink-200">
+                  {t(p.lang === "tr" ? "scene5.onlyTr" : "scene5.onlyEn", { part: t(part) })}
                 </p>
-              ) : null}
+              ))}
               <Fields
                 t={t}
-                written={{ did: { text: body.text, lang: body.lang === want ? undefined : body.lang } }}
+                written={body.written ? { did: { text: body.text, lang: body.lang === want ? undefined : body.lang } } : {}}
               />
               <p
                 data-scene5-source={`${NOTES_FILE}#${note.slug}`}

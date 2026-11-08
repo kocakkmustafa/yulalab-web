@@ -24,13 +24,12 @@ async function labTextWithoutDatesAndPaths(page: Page) {
   return page.locator("#scene-5-lab [data-scene5-lab]").evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
     clone.querySelectorAll("time, [data-scene5-source] code").forEach((n) => n.remove());
-    return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "");
+    return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "").replace(/\b03a2\b/g, "");
   });
 }
 
 const FORBIDDEN =
-  /doğrulandı|doğrulan|verified|validated|confirmed|measured|onaylandı|onaylan|ölçüldü|asla|never|always/i;
-const MEASUREMENT = /\d+\s*(%|ms|kb|sn|saniye|seconds?|users?|kullanıcı)|\d+[.,]\d+/i;
+  /doğrula|verified|validated|confirmed|measured|onaylandı|onaylan|ölçüldü|asla|never|always/i;
 
 for (const view of VIEWS) {
   test.describe(`scene 5 lab (${view.name})`, () => {
@@ -61,7 +60,7 @@ for (const view of VIEWS) {
       await expect(decision.locator('[data-scene5-empty="true"]')).toHaveCount(1);
       await expect(decision.locator('[data-scene5-field="hypothesis"] dd')).toHaveText("henüz yazılmadı");
       await expect(decision).toContainText("Tasarım kararı");
-      await expect(decision.locator('[data-scene5-status="accepted"]')).toContainText("kabul edildi (2026-11-08, Project orchestration)");
+      await expect(decision.locator('[data-scene5-status="accepted"]')).toContainText("kabul edildi, 2026-11-08, Project orchestration; uygulama WEB-P0-03a2");
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
 
@@ -90,7 +89,6 @@ for (const view of VIEWS) {
       await page.goto("/");
       const text = await labTextWithoutDatesAndPaths(page);
       expect(text).not.toMatch(/\d/);
-      expect(text).not.toMatch(MEASUREMENT);
       expect(text).not.toMatch(FORBIDDEN);
       expect(text).toContain("henüz yazılmadı");
     });
@@ -122,6 +120,7 @@ for (const view of VIEWS) {
       await page.locator('#scene-5-lab [data-scene5-note-link="lifeos-live"]').click();
       await expect(page).toHaveURL(/\/notes#lifeos-live$/);
       await expect(page.locator("article#lifeos-live")).toContainText("LifeOS artık App Store'da");
+      await expect(page.locator("article#lifeos-live")).toBeInViewport();
     });
   });
 }
@@ -153,7 +152,6 @@ test.describe("scene 5 in English", () => {
     await expect(scene.locator('[data-scene5-entry="adr-003"]')).toContainText("Design decision");
     const text = await labTextWithoutDatesAndPaths(page);
     expect(text).not.toMatch(/\d/);
-    expect(text).not.toMatch(MEASUREMENT);
     expect(text).not.toMatch(FORBIDDEN);
     const href = (await scene.locator('[data-scene5-note-link="site-motion"]').getAttribute("href")) ?? "";
     expect(href).toBe("/en/notes#site-motion");
