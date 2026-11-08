@@ -866,7 +866,34 @@
     "scene5": {
       "label": "Lab",
       "title": "A living lab.",
-      "message": "We record our design decisions and what we learn, with the question, the hypothesis and the result."
+      "message": "We record our design decisions and what we learn, with the question, the hypothesis and the result.",
+      "listLabel": "Lab records: notes and a design decision",
+      "kindNote": "Lab note",
+      "kindDecision": "Design decision (proposal)",
+      "fields": {
+        "question": "Question",
+        "hypothesis": "Hypothesis",
+        "did": "What we did",
+        "learned": "What we learned",
+        "next": "Next test"
+      },
+      "empty": "not written yet",
+      "sourceLabel": "Source",
+      "noteId": "note: {slug}",
+      "onlyTr": "No translation: this note exists in Turkish only.",
+      "onlyEn": "No translation: this note exists in English only.",
+      "allNotes": "All lab notes",
+      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "decision": {
+        "title": "Should the 3D scene stay on by default on the home page?",
+        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
+        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
+        "learned": "According to the document, the current default fell below the mobile performance target written there; the gap comes from the extra JavaScript of 3D and from total blocking time. This is a local trial; the document has no live result and no real-device evidence.",
+        "next": "Proposal: keep 3D on desktop and start static on mobile. The proposal is awaiting approval and has not been applied. Because that option does not fix mobile load time, a separate look at its source is suggested.",
+        "status": "Status: a proposal, awaiting approval; not applied.",
+        "sourceNote": "a document in the repository, no separate page on the site",
+        "sourceLang": "The source document is written in Turkish."
+      }
     },
     "scene6": {
       "label": "Trust",

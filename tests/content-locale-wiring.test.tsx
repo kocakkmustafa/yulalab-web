@@ -24,6 +24,9 @@ vi.mock("next-intl/server", () => ({
   getTranslations: async ({ locale }: { locale: string }) => (key: string) => `${locale}:${key}`,
 }));
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found"); } }));
+vi.mock("@/i18n/navigation", () => ({
+  Link: ({ href, children, ...rest }: { href: string; children?: React.ReactNode }) => <a href={href} {...rest}>{children}</a>,
+}));
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/components/projects/ProductPage", () => ({ ProductPage: () => null }));
 

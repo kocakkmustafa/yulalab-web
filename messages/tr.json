@@ -866,7 +866,34 @@
     "scene5": {
       "label": "Laboratuvar",
       "title": "Yaşayan laboratuvar.",
-      "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz."
+      "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz.",
+      "listLabel": "Laboratuvar kayıtları: notlar ve bir tasarım kararı",
+      "kindNote": "Lab notu",
+      "kindDecision": "Tasarım kararı (öneri)",
+      "fields": {
+        "question": "Soru",
+        "hypothesis": "Hipotez",
+        "did": "Ne yaptık",
+        "learned": "Ne öğrendik",
+        "next": "Sonraki test"
+      },
+      "empty": "henüz yazılmadı",
+      "sourceLabel": "Kaynak",
+      "noteId": "not: {slug}",
+      "onlyTr": "Çeviri yok: bu not yalnızca Türkçe yazıldı.",
+      "onlyEn": "Çeviri yok: bu not yalnızca İngilizce yazıldı.",
+      "allNotes": "Tüm laboratuvar notları",
+      "note": "Bu bölüm yalnızca depoda yazılı notları ve belgeleri gösterir. Boş bırakılan alan henüz yazılmadı demektir; doldurmak için bir şey uydurmuyoruz. Bir belge öneriyse öneri olarak etiketlenir.",
+      "decision": {
+        "title": "3D sahne ana sayfada varsayılan olarak açık mı kalsın?",
+        "question": "Ana sayfadaki 3D yolculuk herkeste varsayılan olarak açık mı kalmalı, yoksa mobilde statik mi başlamalı?",
+        "did": "Üç seçenek yazıldı: korumalı hâli olduğu gibi bırakmak, mobilde statik varsayılan, yalnız masaüstünde varsayılan 3D. Ayrıca yerel bir üretim derlemesinde Lighthouse koşuldu; tablo kaynak belgededir.",
+        "learned": "Belgeye göre mevcut varsayılan, belgede yazılı mobil performans hedefinin altında kaldı; fark 3D'nin ek JavaScript'inden ve toplam engelleme süresinden geliyor. Bu yerel bir deneme; canlı sonuç ve gerçek cihaz kanıtı belgede yok.",
+        "next": "Öneri: masaüstünde 3D kalsın, mobilde statik başlasın. Öneri onay bekliyor ve uygulanmadı. Bu seçenek mobil açılış süresini düzeltmediği için onun kaynağı için ayrı bir inceleme öneriliyor.",
+        "status": "Durum: öneri, onay bekliyor; uygulanmadı.",
+        "sourceNote": "depo içi belge, sitede ayrı sayfası yok",
+        "sourceLang": "Kaynak belge Türkçe yazılmıştır."
+      }
     },
     "scene6": {
       "label": "Güven",
