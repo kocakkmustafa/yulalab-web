@@ -19,12 +19,12 @@ const FORBIDDEN =
 
 // CTA key -> [href, heading text (tr), heading text (en), expected locale-free path]
 const CTAS = [
-  { key: "products", href: "/projects", h1: { tr: /Ürünler|Projeler/i, en: /Products|Projects/i } },
+  { key: "products", href: "/projects", h1: { tr: /^Aile\.$/, en: /^The\sfamily\.$/ } },
   { key: "braavolabs", href: "/projects/braavolabs", h1: { tr: /Braavolabs/i, en: /Braavolabs/i } },
   { key: "consulting", href: "/consulting", h1: { tr: /Yapay zekayı işinizde faydaya dönüştürün/, en: /Make AI useful in your business/ } },
-  { key: "notes", href: "/notes", h1: { tr: /.+/, en: /What we did, as it happened/ } },
+  { key: "notes", href: "/notes", h1: { tr: /.+/, en: /What\swe\sdid,\sas\sit\shappened/ } },
   { key: "approach", href: "/operating-system", h1: { tr: /.+/, en: /.+/ } },
-  { key: "contact", href: "/contact", h1: { tr: /.+/, en: /Let's talk/ } },
+  { key: "contact", href: "/contact", h1: { tr: /.+/, en: /Let.s\stalk/ } },
 ] as const;
 
 async function horizontalOverflow(page: Page) {
