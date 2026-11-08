@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/types";
 import { HOME_SCENES } from "./home-scenes";
+import { Scene1Identity } from "./Scene1Identity";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -74,6 +75,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             <p className="mt-6 max-w-[62ch] text-base md:text-lg leading-relaxed text-ink-200">
               {t(`${scene.key}.message`)}
             </p>
+            {scene.n === 1 ? <Scene1Identity t={t} /> : null}
           </section>
         );
       })}

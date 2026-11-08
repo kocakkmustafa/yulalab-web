@@ -957,6 +957,16 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   transition: none;
 }
 
+/* WEB-P0-03b: scene 1 signal arrow. One slow pulse; static under reduced motion. */
+@keyframes scene1-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.scene1-pulse { animation: scene1-pulse 2.4s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .scene1-pulse { animation: none; opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .slot > span,
   .slot::after,
