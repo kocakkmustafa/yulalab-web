@@ -175,12 +175,12 @@ function BigCard({
         <div className="font-mono text-[11px] tracking-widest uppercase text-ink-300">
           {copy.category}
         </div>
-        <h3
+        <h2
           className="mt-2 font-display text-3xl md:text-4xl font-semibold tracking-tightest text-ink-50"
           style={{ fontFamily: p.brand.fontDisplay }}
         >
           {p.name}
-        </h3>
+        </h2>
         <p className="mt-2 text-[15.5px] text-ink-200">{copy.tagline}</p>
         <p className="mt-4 text-[14.5px] text-ink-300 leading-relaxed max-w-[60ch]">
           {copy.short}
