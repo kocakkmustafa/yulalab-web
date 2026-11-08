@@ -8,12 +8,19 @@ import { fileURLToPath } from "node:url";
 import { publicRegistry } from "../src/data/public-registry";
 import { caseStudies } from "../src/data/case-studies";
 import { validateCaseStudies } from "../src/lib/case-studies";
-import { validateRegistry } from "../src/lib/public-registry";
+import {
+  listUndeclaredLapsedClaims,
+  validateClaimStateDeclared,
+  validateRegistry,
+} from "../src/lib/public-registry";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 
 const errors = [
   ...validateRegistry(publicRegistry),
+  // Every claim with an open verification window must declare claimState and
+  // publishableAsPresentTense (WEB-P0-04). Time-dependent, but it only ever relaxes.
+  ...validateClaimStateDeclared(publicRegistry, new Date()),
   // Case studies ride the same gate: the strongest claim on the site must
   // fail the BUILD, not merely a test, when it cannot prove itself
   // (roadmap Y-P1-003).
@@ -37,6 +44,17 @@ try {
   });
 } catch {
   process.exit(1);
+}
+
+const lapsedUndeclared = listUndeclaredLapsedClaims(publicRegistry, new Date());
+if (lapsedUndeclared.length > 0) {
+  const list = lapsedUndeclared.map((c) => c.slug + "/" + c.claimId + " (expired " + c.expiresAt + ")");
+  console.warn(
+    "verify-public-registry: " +
+      lapsedUndeclared.length +
+      " lapsed claim(s) without a declared claimState (rendered as unverified, not a build failure): " +
+      list.join(", "),
+  );
 }
 
 console.log(

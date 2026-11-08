@@ -274,9 +274,44 @@ export type ProductScreenshot = {
   altEn: string;
 };
 
+/**
+ * Storable claim states (ana talimat §8.5, CORE-P0-02 §2). `stale` is
+ * deliberately NOT a member: it is derived from `expiresAt` at render time
+ * (see `deriveClaimState` in proof.ts). Storing it would give the registry two
+ * sources of truth for one fact — the date and the label — and they would
+ * drift the first day nobody re-touched the record.
+ */
+export type ClaimState =
+  | "production_verified"
+  | "beta_verified"
+  | "source_verified"
+  | "prototype"
+  | "planned"
+  | "unknown";
+
+/** How the claim was verified — finer than EvidenceKind (ana talimat §8.5). */
+export type VerificationMethod = "store_build" | "live_e2e" | "ci" | "source_review" | "none";
+
 export type ProductClaim = {
   /** Stable id — used as a React key and to diff claims across registry exports. */
   id: string;
+  /**
+   * Where the claim sits on the proof ladder. Optional so existing records and
+   * the links.yulalab.com consumer keep working; the build gate
+   * (`validateClaimStateDeclared`) requires it for every claim whose
+   * verification window is still open.
+   */
+  claimState?: ClaimState;
+  verificationMethod?: VerificationMethod;
+  /** Commit SHA or build tag the verification read. Required for verified states. */
+  buildOrCommit?: string;
+  /**
+   * May the claim be written in the present tense ("is", "supports")?
+   * Missing means NO — fail closed. planned / prototype / unknown can never be true.
+   */
+  publishableAsPresentTense?: boolean;
+  /** Who independently re-checked it (owner is who maintains it — not the same thing). */
+  reviewer?: string;
   statementTr: string;
   statementEn: string;
   evidenceKind: EvidenceKind;
