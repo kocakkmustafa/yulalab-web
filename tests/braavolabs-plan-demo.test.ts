@@ -42,6 +42,10 @@ describe("Braavolabs plan card (WEB-P0-05)", () => {
     expect(reader(catalogues.en)("disclaimer")).toMatch(/interactive product concept \/ plan example; no real job is executed/);
   });
 
+  it("has no unfilled placeholders (next-intl would return the key name)", () => {
+    for (const cat of Object.values(catalogues)) for (const s of leaves(cat)) expect(s).not.toMatch(/[{}]/);
+  });
+
   it("has no execution wording and no digits in tr/en", () => {
     for (const [loc, cat] of Object.entries(catalogues)) {
       for (const s of leaves(cat)) {
@@ -56,7 +60,7 @@ describe("Braavolabs plan card (WEB-P0-05)", () => {
     const html = renderToStaticMarkup(
       createElement(PlanCardView, {
         card,
-        labels: { intent: "i", steps: "Steps", approvals: "Approvals", risk: "Risk", output: "Output" },
+        labels: { intent: "i", example: "Example card", note: "Example note", steps: "Steps", approvals: "Approvals", risk: "Risk", output: "Output" },
         headingId: "x",
       }),
     );

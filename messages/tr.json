@@ -546,12 +546,14 @@
     "intro": "Üç örnek niyetten birini seç. Kart, bir planın nasıl görünebileceğini gösterir. Buradaki her şey bu sayfadaki sabit metindir; hiçbir şey tarayıcından çıkmaz.",
     "disclaimer": "Bu bir interaktif ürün konsepti/plan örneğidir, gerçek iş yürütülmüyor.",
     "pickerLabel": "Örnek bir niyet seç",
-    "announce": "Plan kartı gösteriliyor: {intent}",
+    "announce": "Plan kartı gösteriliyor",
     "labels": {
       "intent": "Örnek niyet",
-      "steps": "Planlanan adımlar",
+      "example": "Örnek kart",
+      "note": "Örnek / konsept: gerçek iş yürütülmüyor.",
+      "steps": "Örnek adımlar",
       "approvals": "Onay noktaları",
-      "risk": "Risk düzeyi",
+      "risk": "Örnek risk düzeyi",
       "output": "Beklenen çıktı"
     },
     "risk": {
@@ -566,8 +568,8 @@
         "s1": "Özeti oku ve paylaşım fikirlerini listele.",
         "s2": "Her paylaşımı senin üslubunla taslak olarak yaz.",
         "s3": "Taslakları incelemen için bir araya getir.",
-        "a1": "Hiçbir adım başlamadan önce planı onayla.",
-        "a2": "Para harcayan her adımı onayla.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: taslakları sen okur ve karar verirsin.",
         "riskNote": "Çıktı, senin inceleyeceğin bir taslaktır.",
         "output": "İncelemene hazır bir taslak paylaşım seti."
       },
@@ -576,9 +578,9 @@
         "prompt": "“Geçen ayın destek taleplerini özetle.”",
         "s1": "Gösterdiğin malzemeyi topla.",
         "s2": "Bulguları konuya göre grupla.",
-        "s3": "Özeti, kaynaklarıyla birlikte yaz.",
-        "a1": "Hiçbir adım başlamadan önce planı onayla.",
-        "a2": "Hangi malzemenin okunabileceğini onayla.",
+        "s3": "Kısa bir özet yaz.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: hangi malzemenin kullanılacağını sen seçersin.",
         "riskNote": "Kendi malzemeni okur; neyi okuyabileceğine sen karar verirsin.",
         "output": "Karar bekleyen noktaları içeren kısa bir rapor taslağı."
       },
@@ -587,9 +589,9 @@
         "prompt": "“Uygulamamızdaki giriş hatasını düzelt.”",
         "s1": "Kodu oku ve olası nedeni bul.",
         "s2": "Bir değişiklik ve onun için bir test öner.",
-        "s3": "Önerilen değişikliği incelemen için teslim et.",
-        "a1": "Hiçbir adım başlamadan önce planı onayla.",
-        "a2": "Kodunu değiştiren her adımı onayla.",
+        "s3": "Önerilen değişikliği sun.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: önerilen her değişikliği sen incelersin.",
         "riskNote": "Ürününün arkasındaki koda dokunur; bu yüzden her değişiklik senin onayını bekler.",
         "output": "İncelemen için, testiyle birlikte önerilmiş bir kod değişikliği."
       }

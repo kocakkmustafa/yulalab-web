@@ -6,8 +6,11 @@
  * of the intent key and the message catalogue, so the same intent always
  * yields the same card.
  *
- * Telemetry: none. `PLAN_DEMO_EVENT` is a local, in-page CustomEvent (no
- * identity, no network). The analytics sink for it is WEB-P1-03; until that
+ * Telemetry: none. `PLAN_DEMO_SELECT_EVENT` is a local, non-bubbling, in-page
+ * CustomEvent dispatched on the picker root when a visitor picks an intent
+ * (no identity, no network). It is a selection signal, NOT a completion: the
+ * demo has no completion. The default card shown on load does not fire it, so
+ * counts cover deliberate picks only. Analytics sink: WEB-P1-03; until that
  * ticket lands nothing listens to it.
  */
 export const PLAN_INTENTS = ["content", "report", "software"] as const;
@@ -25,7 +28,7 @@ export const PLAN_RISK: Record<PlanIntent, PlanRisk> = {
 export const STEP_KEYS = ["s1", "s2", "s3"] as const;
 export const APPROVAL_KEYS = ["a1", "a2"] as const;
 
-export const PLAN_DEMO_EVENT = "yula:braavolabs-plan-demo-complete";
+export const PLAN_DEMO_SELECT_EVENT = "yula:braavolabs-plan-demo-select";
 
 export type PlanCard = {
   intent: PlanIntent;
@@ -41,6 +44,8 @@ export type PlanCard = {
 
 export type PlanLabels = {
   intent: string;
+  example: string;
+  note: string;
   steps: string;
   approvals: string;
   risk: string;

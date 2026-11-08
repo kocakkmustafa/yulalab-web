@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { PlanCardView } from "@/components/projects/PlanCardView";
 import {
-  PLAN_DEMO_EVENT,
+  PLAN_DEMO_SELECT_EVENT,
   type PlanCard,
   type PlanIntent,
   type PlanLabels,
@@ -14,23 +14,24 @@ import {
  * cards) until hydration; then this swaps in a radiogroup plus the chosen card.
  * No network, no timers, no animation.
  *
- * `onComplete` and the bubbling `PLAN_DEMO_EVENT` CustomEvent fire when the
- * visitor picks an intent. Local only, no identity; the analytics sink is WEB-P1-03.
+ * `onSelect` and the non-bubbling `PLAN_DEMO_SELECT_EVENT` CustomEvent fire when
+ * the visitor picks an intent (not for the default card). A selection is not a
+ * completion. Local only, no identity; analytics sink: WEB-P1-03.
  */
 export function PlanPicker({
   cards,
   labels,
   pickerLabel,
-  announceTemplate,
+  announcePrefix,
   fallback,
-  onComplete,
+  onSelect,
 }: {
   cards: PlanCard[];
   labels: PlanLabels;
   pickerLabel: string;
-  announceTemplate: string;
+  announcePrefix: string;
   fallback: ReactNode;
-  onComplete?: (intent: PlanIntent) => void;
+  onSelect?: (intent: PlanIntent) => void;
 }) {
   const [ready, setReady] = useState(false);
   const [index, setIndex] = useState(0);
@@ -47,11 +48,11 @@ export function PlanPicker({
       if (focus) radios.current[next]?.focus();
       if (next === index) return;
       setIndex(next);
-      setAnnounce(announceTemplate.replace("{intent}", card.label));
-      onComplete?.(card.intent);
-      root.current?.dispatchEvent(new CustomEvent(PLAN_DEMO_EVENT, { bubbles: true, detail: { intent: card.intent } }));
+      setAnnounce(announcePrefix + ": " + card.label);
+      onSelect?.(card.intent);
+      root.current?.dispatchEvent(new CustomEvent(PLAN_DEMO_SELECT_EVENT, { bubbles: false, detail: { intent: card.intent } }));
     },
-    [cards, index, announceTemplate, onComplete],
+    [cards, index, announcePrefix, onSelect],
   );
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
@@ -93,7 +94,7 @@ export function PlanPicker({
                 "min-h-12 px-5 py-3 rounded-xl border-2 text-start font-grotesk text-[15.5px] leading-[1.4] text-ink-50 " +
                 "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--yula-focus)] " +
                 (on
-                  ? "border-[color:var(--yula-focus)] bg-surface-raised"
+                  ? "border-[color:var(--yula-focus)] bg-surface-raised font-semibold underline decoration-2 underline-offset-4"
                   : "border-[color:var(--yula-hairline-strong)] bg-transparent")
               }
             >

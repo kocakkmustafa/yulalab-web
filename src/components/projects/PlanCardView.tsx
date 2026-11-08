@@ -12,6 +12,7 @@ export function PlanCardView({ card, labels, headingId }: { card: PlanCard; labe
       data-intent={card.intent}
       className="rounded-2xl border border-[color:var(--yula-hairline-strong)] bg-surface-inset p-5 sm:p-7"
     >
+      <p className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-300 mb-3">{labels.example}</p>
       <h3 id={headingId} className="font-grotesk text-[19px] leading-[1.35] text-ink-50 mb-1">
         {card.label}
       </h3>
@@ -49,6 +50,9 @@ export function PlanCardView({ card, labels, headingId }: { card: PlanCard; labe
           <p className="text-[15.5px] leading-[1.6] text-ink-100">{card.output}</p>
         </div>
       </div>
+      <p data-testid="plan-card-note" className="mt-6 border-t border-[color:var(--yula-hairline)] pt-4 text-[15px] leading-[1.6] text-ink-300">
+        {labels.note}
+      </p>
     </article>
   );
 }

@@ -19,6 +19,8 @@ export function BraavolabsPlanDemo() {
   const cards = PLAN_INTENTS.map((i) => buildPlanCard(i, text));
   const labels: PlanLabels = {
     intent: text("labels.intent"),
+    example: text("labels.example"),
+    note: text("labels.note"),
     steps: text("labels.steps"),
     approvals: text("labels.approvals"),
     risk: text("labels.risk"),
@@ -51,7 +53,7 @@ export function BraavolabsPlanDemo() {
         cards={cards}
         labels={labels}
         pickerLabel={text("pickerLabel")}
-        announceTemplate={text("announce")}
+        announcePrefix={text("announce")}
         fallback={
           <div data-testid="plan-static" className="grid grid-cols-1 gap-6">
             {cards.map((c) => (
