@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/types";
+import { studioEnabled } from "@/server/studio-surface";
 import { HOME_SCENES } from "./home-scenes";
+import { Scene4Engineering } from "./Scene4Engineering";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -21,6 +23,11 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
   // tr and en are written in full. The other twelve catalogues carry the
   // English copy until translated, so the block says so (WCAG 3.1.2).
   const fallbackEnglish = locale !== "tr" && locale !== "en";
+  // Words injected into that block (status labels) must be English too, or a
+  // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
+  const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
+  // `/studio` exists only while the server flag is on (it answers 404 otherwise).
+  const studioOpen = studioEnabled();
 
   return (
     <div
@@ -74,6 +81,15 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             <p className="mt-6 max-w-[62ch] text-base md:text-lg leading-relaxed text-ink-200">
               {t(`${scene.key}.message`)}
             </p>
+            {scene.n === 4 ? (
+              <Scene4Engineering
+                t={t}
+                ts={ts}
+                lang={locale === "tr" ? "tr" : "en"}
+                locale={locale}
+                studioOpen={studioOpen}
+              />
+            ) : null}
           </section>
         );
       })}
