@@ -461,14 +461,17 @@ button:hover .arrow-nudge {
   text-decoration: none;
   transform: translateY(-200%);
 }
+.skip-link:focus,
 .skip-link:focus-visible {
   transform: none;
   outline: 3px solid rgb(var(--yula-ink-900));
   outline-offset: -6px;
   box-shadow: 0 0 0 2px rgb(var(--yula-ink-50));
 }
-/* main is a programmatic focus target: no ring for pointer/Enter-jump focus */
-.main-focus-target:focus:not(:focus-visible) {
+/* main is a programmatic focus target (tabindex=-1, never a Tab stop): after the skip link
+   jumps here Chrome would match :focus-visible and ring the whole page, so no ring at all. */
+.main-focus-target:focus,
+.main-focus-target:focus-visible {
   outline: none;
 }
 
