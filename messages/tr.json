@@ -851,7 +851,30 @@
     "scene2": {
       "label": "Fark",
       "title": "Daha az sürtünme, daha çok sonuç.",
-      "message": "Daha fazla ekran, giriş ve model seçimi yerine, niyetten sonuca giden en kısa yolu hedefliyoruz."
+      "message": "Daha fazla ekran, giriş ve model seçimi yerine, niyetten sonuca giden en kısa yolu hedefliyoruz.",
+      "patternLabel": "Sık görülen",
+      "approachLabel": "Yaklaşımımız",
+      "tagCapability": "Mevcut yetenek",
+      "tagVision": "Vizyonumuz",
+      "sourceLabel": "Kaynak: {product} ürün kaydı ({status})",
+      "note": "\"Mevcut yetenek\", ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. \"Vizyonumuz\", ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir.",
+      "pairs": {
+        "p1": {
+          "pattern": "Daha fazla ekran, giriş ve model seçimi",
+          "approach": "Daha az adım, daha çok sonuç",
+          "detail": "LifeOS: beş yaşam alanı tek uygulamada ve hesap gerekmez."
+        },
+        "p2": {
+          "pattern": "Hatalı kesinlik",
+          "approach": "Cevabın kaynağını ve belirsizliğini açıkça söylemek",
+          "detail": "Hedef, her sonuçta kaynağı ve belirsizliği göstermek. Bunu henüz ürün yeteneği olarak iddia etmiyoruz."
+        },
+        "p3": {
+          "pattern": "Sonsuz bildirim",
+          "approach": "Anlamlı zamanda müdahale etmek",
+          "detail": "Hedef, daha az ve doğru zamanda gelen bildirim. Bunu henüz ürün yeteneği olarak iddia etmiyoruz."
+        }
+      }
     },
     "scene3": {
       "label": "Ürünler",
