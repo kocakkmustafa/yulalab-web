@@ -768,9 +768,9 @@
     {
       "path": "src/components/projects/ClaimsSection.tsx",
       "publishedSha256": "a43d3da0a9dd0603ea80e92b6398453edbdb0726d094d6b50d0c96270b1794e7",
-      "candidateSha256": "a1ae84e2037a7720aaf5010a5b84d21930883bf89d6023ab1346cdafcdb36bcd",
+      "candidateSha256": "59e0845bce9c0b43b20b0ea2a6d4102b8e6058f992aa5afe38d39d6e452e5fbf",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. WEB-P0-04 (2026-11-08): claim state/verification method fields, consistency rules, derived stale, withheld kind and build gate; Braavolabs x3 and LifeOS source claims re-verified (braavolabs/platform@f3f753272e1b, lifeos/app@a010a550c052); statement date refreshed in 12 locale files. Local lint/typecheck/vitest/translations/claims evidence; candidate-only, no publication assertion."
     },
     {
       "path": "src/components/projects/StatCards.tsx",
@@ -1377,14 +1377,14 @@
     {
       "path": "src/lib/proof.ts",
       "publishedSha256": "00e53ba39e24b1f1c5d4480d8ed76ad920b6baaff095de9de0a606f1fb85a0a2",
-      "candidateSha256": "23dc5b4274a2384a466ff9e5f50dba906f1df4840d517e707c3e7642447f4378",
+      "candidateSha256": "72bb1ce3f48862ee31cd0bb20452f0e95933bf781d3c3c59dab2ae4bc41ab0d8",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-04 (2026-11-08): claim state/verification method fields, consistency rules, derived stale, withheld kind and build gate; Braavolabs x3 and LifeOS source claims re-verified (braavolabs/platform@f3f753272e1b, lifeos/app@a010a550c052); statement date refreshed in 12 locale files. Local lint/typecheck/vitest/translations/claims evidence; candidate-only, no publication assertion."
     },
     {
       "path": "src/lib/public-registry.ts",
       "publishedSha256": "ef2c740a6a50b76cbd130f95c69c2a4c33f2a43e2d8570896423e89a4a0c0b83",
-      "candidateSha256": "f56240e29e6daf3924b252ea1ff0c0ac1e2f4c401d4f1772a27e59e6557f0350",
+      "candidateSha256": "60d4aec31f2ae9ccc0f29386e6b80b3d7245d651b240577aa78ed138b98dbd84",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-04 (2026-11-08): claim state/verification method fields, consistency rules, derived stale, withheld kind and build gate; Braavolabs x3 and LifeOS source claims re-verified (braavolabs/platform@f3f753272e1b, lifeos/app@a010a550c052); statement date refreshed in 12 locale files. Local lint/typecheck/vitest/translations/claims evidence; candidate-only, no publication assertion."
     }
