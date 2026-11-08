@@ -1,5 +1,5 @@
 import type { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { localePath } from "@/i18n/locales";
 import { notes } from "@/data/notes";
 import { LAB_FIELDS, pickNoteText, type LabField, type NoteLang } from "./scene5-lab";
 
@@ -7,8 +7,8 @@ type Translate = Awaited<ReturnType<typeof getTranslations>>;
 
 /**
  * The one design decision told here: a real record in the repository, with a
- * real date and a real source file. It is a PROPOSAL awaiting approval, and
- * the section says so. Its text lives in the `home.scene5.decision.*`
+ * real date and a real source file. The ADR is ACCEPTED (2026-11-08); its
+ * implementation is reviewed separately, and the section says so. Its text lives in the `home.scene5.decision.*`
  * catalogue keys; hypothesis is left unwritten because the source does not
  * state one. See docs/yula-execution/scene-5-evidence.md.
  */
@@ -57,7 +57,7 @@ function Fields({
  * hypothesis → what we did → what we learned → next test template. A note
  * carries only a body, so it fills "what we did"; the other four fields say
  * "not written yet" instead of being invented. One real design record
- * (ADR-003, a proposal) stands beside them. Server rendered, no script, no
+ * (ADR-003, accepted) stands beside them. Server rendered, no script, no
  * animation, no new dependency. Each note links to its card on /notes.
  */
 export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
@@ -86,7 +86,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
             {t("scene5.decision.title")}
           </h3>
           <Fields t={t} written={decisionWritten} />
-          <p data-scene5-status="proposal" className="mt-4 text-sm text-ink-200">
+          <p data-scene5-status="accepted" className="mt-4 text-sm text-ink-200">
             {t("scene5.decision.status")}
           </p>
           <p
@@ -121,14 +121,14 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 </time>
               </div>
               <h3 className="mt-3 font-display text-xl font-semibold text-ink-50">
-                <Link
-                  href={`/notes#${note.slug}`}
+                <a
+                  href={`${localePath(locale, "/notes")}#${note.slug}`}
                   lang={title.lang === want ? undefined : title.lang}
                   data-scene5-note-link={note.slug}
                   className="focusable underline underline-offset-4 hover:text-ink-200"
                 >
                   {title.text}
-                </Link>
+                </a>
               </h3>
               {untranslated ? (
                 <p data-scene5-no-translation="true" className="mt-2 text-sm text-ink-200">
@@ -152,13 +152,13 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
         })}
       </ul>
       <p className="mt-6">
-        <Link
-          href="/notes"
+        <a
+          href={localePath(locale, "/notes")}
           data-scene5-all-notes="true"
           className="focusable inline-flex min-h-[44px] items-center text-base text-ink-50 underline underline-offset-4 hover:text-ink-200"
         >
           {t("scene5.allNotes")}
-        </Link>
+        </a>
       </p>
       <p className="mt-2 max-w-[62ch] text-xs text-ink-300">{t("scene5.note")}</p>
     </div>

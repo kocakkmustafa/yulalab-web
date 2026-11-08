@@ -872,7 +872,7 @@
       "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz.",
       "listLabel": "Laboratuvar kayıtları: notlar ve bir tasarım kararı",
       "kindNote": "Lab notu",
-      "kindDecision": "Tasarım kararı (öneri)",
+      "kindDecision": "Tasarım kararı",
       "fields": {
         "question": "Soru",
         "hypothesis": "Hipotez",
@@ -891,9 +891,9 @@
         "title": "3D sahne ana sayfada varsayılan olarak açık mı kalsın?",
         "question": "Ana sayfadaki 3D yolculuk herkeste varsayılan olarak açık mı kalmalı, yoksa mobilde statik mi başlamalı?",
         "did": "Üç seçenek yazıldı: korumalı hâli olduğu gibi bırakmak, mobilde statik varsayılan, yalnız masaüstünde varsayılan 3D. Ayrıca yerel bir üretim derlemesinde Lighthouse koşuldu; tablo kaynak belgededir.",
-        "learned": "Belgeye göre mevcut varsayılan, belgede yazılı mobil performans hedefinin altında kaldı; fark 3D'nin ek JavaScript'inden ve toplam engelleme süresinden geliyor. Bu yerel bir deneme; canlı sonuç ve gerçek cihaz kanıtı belgede yok.",
-        "next": "Öneri: masaüstünde 3D kalsın, mobilde statik başlasın. Öneri onay bekliyor ve uygulanmadı. Bu seçenek mobil açılış süresini düzeltmediği için onun kaynağı için ayrı bir inceleme öneriliyor.",
-        "status": "Durum: öneri, onay bekliyor; uygulanmadı.",
+        "learned": "Belgeye göre eski varsayılan, belgede yazılı mobil performans hedefinin altında kaldı; fark 3D'nin ek JavaScript'inden ve toplam engelleme süresinden geliyor. Uygulama sonrası yerel deneme daha iyi çıktı ama makine yoğundu ve sonuç oynaktı. Bunlar yerel denemeler; canlıda denenmedi, gerçek cihaz kanıtı yok.",
+        "next": "Kabul edilen seçenek: masaüstünde 3D kalır, mobilde statik başlar, dokununca 3D açılır. Bu seçenek mobil açılış süresini düzeltmediği için onun kaynağı için ayrı bir inceleme öneriliyor.",
+        "status": "Durum: kabul edildi (2026-11-08, Project orchestration); mobil statik varsayılan uygulaması ayrı bir değişiklikte inceleniyor.",
         "sourceNote": "depo içi belge, sitede ayrı sayfası yok",
         "sourceLang": "Kaynak belge Türkçe yazılmıştır."
       }

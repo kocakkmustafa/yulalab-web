@@ -24,7 +24,7 @@ async function labTextWithoutDatesAndPaths(page: Page) {
   return page.locator("#scene-5-lab [data-scene5-lab]").evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
     clone.querySelectorAll("time, [data-scene5-source] code").forEach((n) => n.remove());
-    return clone.innerText.replace(/\b3D\b/g, "");
+    return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "");
   });
 }
 
@@ -60,8 +60,8 @@ for (const view of VIEWS) {
       const decision = scene.locator('[data-scene5-entry="adr-003"]');
       await expect(decision.locator('[data-scene5-empty="true"]')).toHaveCount(1);
       await expect(decision.locator('[data-scene5-field="hypothesis"] dd')).toHaveText("henüz yazılmadı");
-      await expect(decision).toContainText("Tasarım kararı (öneri)");
-      await expect(decision.locator('[data-scene5-status="proposal"]')).toContainText("öneri, onay bekliyor; uygulanmadı");
+      await expect(decision).toContainText("Tasarım kararı");
+      await expect(decision.locator('[data-scene5-status="accepted"]')).toContainText("kabul edildi (2026-11-08, Project orchestration)");
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
 
@@ -150,7 +150,7 @@ test.describe("scene 5 in English", () => {
     await expect(scene.locator('[data-scene5-entry="site-motion"]')).toContainText("Gave the showcase some life");
     await expect(scene.locator('[data-scene5-entry="site-motion"] [data-scene5-empty="true"]').first()).toHaveText("not written yet");
     await expect(scene.locator('[data-scene5-entry="adr-003"] [data-scene5-source]')).toContainText("written in Turkish");
-    await expect(scene.locator('[data-scene5-entry="adr-003"]')).toContainText("Design decision (proposal)");
+    await expect(scene.locator('[data-scene5-entry="adr-003"]')).toContainText("Design decision");
     const text = await labTextWithoutDatesAndPaths(page);
     expect(text).not.toMatch(/\d/);
     expect(text).not.toMatch(MEASUREMENT);
