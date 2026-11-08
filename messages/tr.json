@@ -540,6 +540,61 @@
     "availabilityUnverified": "Yayın durumu yeniden doğrulanmalı",
     "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz."
   },
+  "braavolabsDemo": {
+    "kicker": "Örnek plan kartı",
+    "title": "Bir işi tarif et. Planını, onaylarını ve sonucunu aynı yerde gör.",
+    "intro": "Üç örnek niyetten birini seç. Kart, bir planın nasıl görünebileceğini gösterir. Buradaki her şey bu sayfadaki sabit metindir; hiçbir şey tarayıcından çıkmaz.",
+    "disclaimer": "Bu bir interaktif ürün konsepti/plan örneğidir, gerçek iş yürütülmüyor.",
+    "pickerLabel": "Örnek bir niyet seç",
+    "announce": "Plan kartı gösteriliyor: {intent}",
+    "labels": {
+      "intent": "Örnek niyet",
+      "steps": "Planlanan adımlar",
+      "approvals": "Onay noktaları",
+      "risk": "Risk düzeyi",
+      "output": "Beklenen çıktı"
+    },
+    "risk": {
+      "low": "Düşük",
+      "medium": "Orta",
+      "high": "Yüksek"
+    },
+    "intents": {
+      "content": {
+        "label": "İçerik",
+        "prompt": "“Lansmanımız için bir haftalık paylaşım hazırla.”",
+        "s1": "Özeti oku ve paylaşım fikirlerini listele.",
+        "s2": "Her paylaşımı senin üslubunla taslak olarak yaz.",
+        "s3": "Taslakları incelemen için bir araya getir.",
+        "a1": "Hiçbir adım başlamadan önce planı onayla.",
+        "a2": "Para harcayan her adımı onayla.",
+        "riskNote": "Çıktı, senin inceleyeceğin bir taslaktır.",
+        "output": "İncelemene hazır bir taslak paylaşım seti."
+      },
+      "report": {
+        "label": "Rapor",
+        "prompt": "“Geçen ayın destek taleplerini özetle.”",
+        "s1": "Gösterdiğin malzemeyi topla.",
+        "s2": "Bulguları konuya göre grupla.",
+        "s3": "Özeti, kaynaklarıyla birlikte yaz.",
+        "a1": "Hiçbir adım başlamadan önce planı onayla.",
+        "a2": "Hangi malzemenin okunabileceğini onayla.",
+        "riskNote": "Kendi malzemeni okur; neyi okuyabileceğine sen karar verirsin.",
+        "output": "Karar bekleyen noktaları içeren kısa bir rapor taslağı."
+      },
+      "software": {
+        "label": "Yazılım",
+        "prompt": "“Uygulamamızdaki giriş hatasını düzelt.”",
+        "s1": "Kodu oku ve olası nedeni bul.",
+        "s2": "Bir değişiklik ve onun için bir test öner.",
+        "s3": "Önerilen değişikliği incelemen için teslim et.",
+        "a1": "Hiçbir adım başlamadan önce planı onayla.",
+        "a2": "Kodunu değiştiren her adımı onayla.",
+        "riskNote": "Ürününün arkasındaki koda dokunur; bu yüzden her değişiklik senin onayını bekler.",
+        "output": "İncelemen için, testiyle birlikte önerilmiş bir kod değişikliği."
+      }
+    }
+  },
   "leadForm": {
     "name": "Ad",
     "email": "E-posta",
