@@ -35,7 +35,7 @@ const PAIRS = [
 export function Scene2Difference({ t, ts }: { t: Translate; ts: Translate }) {
   return (
     <div data-scene2-compare="true" className="mt-12">
-      <ul className="grid gap-4">
+      <ul aria-label={t("scene2.listLabel")} className="grid gap-4">
         {PAIRS.map((pair) => {
           const record = pair.kind === "capability" ? pair.record : null;
           return (

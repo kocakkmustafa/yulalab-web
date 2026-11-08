@@ -852,6 +852,7 @@
       "label": "Difference",
       "title": "Less friction, more results.",
       "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
+      "listLabel": "Common pattern versus our approach, three comparisons",
       "patternLabel": "Common pattern",
       "approachLabel": "Our approach",
       "tagCapability": "Current capability",
@@ -861,8 +862,8 @@
       "pairs": {
         "p1": {
           "pattern": "More screens, sign-ins and model choices",
-          "approach": "Fewer steps, more results",
-          "detail": "LifeOS: five life areas in one app, and no account is needed."
+          "approach": "One app, no account needed",
+          "detail": "LifeOS: five life areas in one place, offline-first."
         },
         "p2": {
           "pattern": "False certainty",

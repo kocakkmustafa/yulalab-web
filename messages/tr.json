@@ -852,6 +852,7 @@
       "label": "Fark",
       "title": "Daha az sürtünme, daha çok sonuç.",
       "message": "Daha fazla ekran, giriş ve model seçimi yerine, niyetten sonuca giden en kısa yolu hedefliyoruz.",
+      "listLabel": "Sık görülen yaklaşım ve bizim yaklaşımımız, üç karşılaştırma",
       "patternLabel": "Sık görülen",
       "approachLabel": "Yaklaşımımız",
       "tagCapability": "Mevcut yetenek",
@@ -861,8 +862,8 @@
       "pairs": {
         "p1": {
           "pattern": "Daha fazla ekran, giriş ve model seçimi",
-          "approach": "Daha az adım, daha çok sonuç",
-          "detail": "LifeOS: beş yaşam alanı tek uygulamada ve hesap gerekmez."
+          "approach": "Tek uygulama, hesap gerekmez",
+          "detail": "LifeOS: beş yaşam alanı bir arada, çevrimdışı öncelikli."
         },
         "p2": {
           "pattern": "Hatalı kesinlik",

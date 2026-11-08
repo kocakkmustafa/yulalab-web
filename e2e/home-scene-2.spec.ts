@@ -54,7 +54,7 @@ for (const view of VIEWS) {
       await page.goto("/");
       const text = await page.locator("#scene-2-difference [data-scene2-compare]").innerText();
       expect(text).not.toMatch(/\d/);
-      expect(text.toLocaleLowerCase("tr-TR")).not.toMatch(/doğrulan|doğrulandı|verified/);
+      expect(text.toLocaleLowerCase("tr-TR")).not.toMatch(/doğrulan|onaylan|ölçüldü|verified|validated|confirmed|measured/);
       expect(text).toContain("bağımsız bir doğrulama ya da ölçüm değildir");
     });
   });
@@ -81,6 +81,10 @@ test.describe("scene 2 in English", () => {
     await expect(scene.locator("[data-scene2-badge]").first()).toHaveText("Current capability");
     await expect(scene.locator("[data-scene2-badge]").nth(1)).toHaveText("Our vision");
     await expect(scene.locator("[data-scene2-source]")).toContainText("LifeOS product record (Live)");
+    const text = await scene.locator("[data-scene2-compare]").innerText();
+    expect(text).not.toMatch(/\d/);
+    expect(text.toLowerCase()).not.toMatch(/verified|validated|confirmed|measured/);
+    await expect(scene.getByRole("list", { name: /three comparisons/i })).toBeVisible();
   });
 });
 
@@ -94,6 +98,8 @@ test.describe("scene 2 in /ar (RTL page, English fallback block)", () => {
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene2-pair]")).toHaveCount(3);
     await expect(scene.locator("[data-scene2-badge]").first()).toHaveText("Current capability");
+    // The status word inside the English sentence is English too (no mixed-script text).
+    await expect(scene.locator("[data-scene2-source]")).toHaveText(/^Source: LifeOS product record \(Live\)$/i);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });
 });

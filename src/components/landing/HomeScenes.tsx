@@ -18,11 +18,13 @@ import { Scene2Difference } from "./Scene2Difference";
  */
 export async function HomeScenes({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "home" });
-  const ts = await getTranslations({ locale, namespace: "status" });
 
   // tr and en are written in full. The other twelve catalogues carry the
   // English copy until translated, so the block says so (WCAG 3.1.2).
   const fallbackEnglish = locale !== "tr" && locale !== "en";
+  // Words injected into that block (status labels) must be English too, or a
+  // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
+  const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
 
   return (
     <div
