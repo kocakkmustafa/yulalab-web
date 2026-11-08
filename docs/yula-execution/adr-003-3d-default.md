@@ -1,6 +1,6 @@
 # ADR-003 — 3D sahne varsayılan açık mı? (WEB-P0-03a)
 
-Durum: ÖNERİ — Project orchestration / kurucu onayı bekliyor. Uygulanmadı. Tarih: 2026-11-08.
+Durum: KABUL EDİLDİ — Project orchestration (teknik tercih), 2026-11-08; uygulama WEB-P0-03a2.
 DECISIONS.md PR #46'dadır; bu belge o girdiye bağlanacak ayrıntıdır.
 
 ## Bilgi
@@ -31,11 +31,28 @@ INP lab'da ölçülmez; TBT vekildir. Cihaz/ağ: Mac üzerinde Lighthouse varsay
 - Bilet kabulü "mobil Lighthouse ≥ mevcut canlı 76": yerel mobil A 73–74 canlı 76'nın altındadır; **literal kabul karşılanmıyor**. Yerel değişiklik öncesi taban 73'e göre gerileme yoktur (74). Canlı doğrulama merge sonrası yapılacak. Canlı (mobil 76 / masaüstü 91, 2026-11-07) ile yerel ölçüm farklı ortamlardır.
 - Eşik "≥ 80" bilet hedefidir (WEB-P0-03a: "hedef ≥80"), karar ölçütü olarak kullanıldı. Mobil B 82 bu hedefi karşılar, A karşılamaz.
 
-## Öneri
-(a) kabul edilemez (A < 80). Öneri (c): masaüstü korumalı 3D kalır (A 95), mobil (≤767 px) statik varsayılan, 3D dokununca. Fark 3D'nin ~294 KB ek JS'inden ve ~160 ms TBT'sinden gelir. Onay gelmeden uygulanmaz.
+## Karar (kabul)
+(a) kabul edilemez (A < 80). Kabul edilen (c): masaüstü korumalı 3D kalır (A 95), mobil (≤767 px) statik varsayılan, 3D dokununca. Fark 3D'nin ~294 KB ek JS'inden ve ~160 ms TBT'sinden gelir.
 
-## Neden bu bilette uygulanmadı
-Değişiklik küçük değil: mobil statik varsayılan yalnız `useStatic` değil ilk boyama CSS'ini de ister (`.journey` 2520vh yüksekliği ve açılış kartı şimdi yalnız reduced-motion ve kısa-yatay medya için gizli), dokununca 3D için yeni arayüz metni (14 dil) ve statik→yolculuk geçişi gerekir; mevcut mobil `experience*` testlerini etkiler. Ayrı bilet: `WEB-P0-03a2 — mobil statik varsayılan (bayraklı)`.
+## Uygulama (WEB-P0-03a2)
+- Tek sabit bayrak: `src/components/experience/mobile-default.ts` → `MOBILE_STATIC_DEFAULT = true` (false: eski davranış; `git revert` de geri alır). Sorgu: `(max-width: 767px)`.
+- Sunucu HTML'i `.journey` üzerinde `data-mobile-static-default="true"` taşır; CSS yalnız ≤767 px'te ve `data-mobile-3d` yokken `.journey` yüksekliğini `auto` yapar, açılış kartını gizler, statik bloğu gösterir. İlk boyama ile istemci ilk render'ı aynı; e2e: CLS 0, hydration uyarısı yok. Masaüstü CSS'i ve davranışı değişmedi.
+- İstemci: `YulaExperience` içinde `mobileStatic = bayrak && ≤767px && !mobile3d`. Bu iken `useStatic` doğru, zaman çizelgesi kapalı, açılış kartı yok ve three.js sahnesi İSTENMEZ (dinamik import yalnız opt-in sonrası). Viewport bilgisi `mounted`'dan önce bir layout effect'te okunur (ilk bağlanan render'da 3D yoluna sıçrama yok).
+- Düğme "3D deneyimi aç" (`StaticExperience` hero, `data-open-3d`): ≥48 px hedef, erişilebilir ad metni, klavye (Enter/Space), özel odak halkası `--yula-focus`. Reduced-motion ve kısa-yatay görünümde CSS ile gizli. Dokununca `mobile3d` açılır; mevcut korumalar (WebGL2, yazılım-render, düşük katman, 8.6 sn canvas zaman aşımı) geçerli: WebGL yoksa dürüst "Doğrusal deneyim" bildirimi kalır.
+- Statike dönüş: 3D açıkken mevcut "doğrusal görünüm" denetimi (`showLinearView`) korunur; sonra düğme yeniden görünür ve 3D tekrar açılabilir.
+- Capture harness (`?capture=1&progress=…`) 3D'yi açıkça istemiş sayılır: mevcut mobil capture e2e testleri değişmeden geçerli kalır.
+- Metin: `experience.open3d`. tr/en yazıldı; diğer 12 dilde İngilizce metin ve düğmede `lang="en"` (`dir="ltr"`); çeviri uydurulmadı.
+- Testler: `e2e/mobile-static-default.spec.ts` (390x844 statik varsayılan/canvas yok/CLS 0, düğme erişilebilirliği, dokununca 3D yolu, en/fr etiketi, masaüstünde düğme yok; `@hardware-webgl`: düğme→canvas→doğrusal görünüm, masaüstü 3D) ve `tests/mobile-static-default.test.ts`.
+- **03a2 sonrası (yerel üretim derlemesi, `/tr`, Lighthouse 12.8.2 varsayılan mobil emülasyon, medyan [3 koşu]).** Makine yükü (`uptime` load avg 1 dk): başta 55.9, sonda 56.4 (<60; ancak yüksek, gürültülü). Ham JSON: scratch `2026-11-08-web-p0-03a2/lh/`.
+
+| Durum | Biçim | Perf | LCP ms | TBT ms | CLS | JS KB |
+|---|---|---|---|---|---|---|
+| 03a sonrası, A (önce) | mobil | 74 [74,72,74] | 4874 | 186 | 0 | 532 |
+| 03a2 sonrası | mobil | 84 [79,86,84] | 4093 [4456,4067,4093] | 152 [252,119,152] | 0 | 238 |
+| 03a sonrası, A (önce) | masaüstü | 95 | 1040 | 10 | 0 | 539 |
+| 03a2 sonrası | masaüstü | 88 [86,88,92] | 1135 | 178 [205,178,101] | 0 | 539 |
+
+Okuma: mobil JS 532 → 238 KB (üç.js yüklenmiyor), mobil perf 74 → 84 (hedef ≥80 karşılandı, ancak koşular arası 79–86 dalgalı). Mobil TBT medyanı 152 ms, B varyantındaki 26 ms'den yüksek: yük gürültüsü olası, doğrulanmadı. Masaüstü kodu ve JS boyutu (539 KB) aynı; masaüstü 95 → 88 ve TBT 10 → 178 yüksek makine yükünden (≈56) kaynaklı olarak değerlendirildi ve değişiklikle ilişkilendirilmedi (aynı baytlar); kıyaslanabilir değil, UNKNOWN: boş makinede tekrar ölçüm. LCP ~4.1 sn hâlâ ayrı bilet 03a3'te.
 
 ## Açık risk: mobil LCP
 Mobil LCP iki varyantta da ~4.9 sn'dir (A 4874, B 4892). Öneri (c) bunu çözmez; LCP 3D'den değil ilk boyama içeriğinden ve ağdan gelir. Ayrı bilet önerisi: `WEB-P0-03a3 — mobil LCP kaynağı` (LCP öğesi, yazı tipi/görsel yükü, ilk HTML boyutu). Hedef ≥80 yalnız B ile sağlanıyor ve kalan puan LCP'de kaybediliyor.
