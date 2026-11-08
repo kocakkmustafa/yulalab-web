@@ -119,7 +119,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "next.config.mjs": "73365bc728c08151b8b36e76ad99515d30d511ea3533fe1838d44449ef455814",
     "scripts/verify-translations.ts": "fdc76cf42731ab7838deb465823a979e1c7f654b5269ecb45a5b30ed3bbbda12",
     "src/app/[locale]/data-request/verify/route.ts": "7bac2c97d53e909d73cc1edd7ac6971ed61cd82b2ed08a0b491941f69fe5b324",
-    "src/app/[locale]/layout.tsx": "df327cf29e92c732d9a6916a9cfd028f29fbfab005d578833be300ad55a685b5",
+    "src/app/[locale]/layout.tsx": "75230bf588acf2a423a11ea5933b631f8247c53c642e708b88d73196ecd668c1",
     "src/app/[locale]/operating-system/page.tsx": "35d8b05586d8c2854f041dccc85ce6720858ddd85f82d33149b713ee3051e6df",
     "src/app/[locale]/privacy/page.tsx": "94fc4c2c47aa1a9d2961ad10318c2d30d19bf701804876d233637eb1f423e479",
     "src/app/global-not-found.tsx": "868aaa4a27276f3df13101f0f2d9e57a2b3815a28692a29d46ac6178c26791d7",
