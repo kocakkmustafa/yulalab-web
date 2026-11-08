@@ -648,6 +648,9 @@
       "support": "Assistance",
       "rights": "Tous droits réservés."
     },
+    "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "Expérience linéaire",
       "reason": "Lorsque les animations ou la couche 3D ne sont pas disponibles, cette vue conserve les mêmes produits, preuves et liens dans leur intégralité."
