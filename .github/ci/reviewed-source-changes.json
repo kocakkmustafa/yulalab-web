@@ -677,9 +677,9 @@
     {
       "path": "src/app/[locale]/case-studies/page.tsx",
       "publishedSha256": "f7fbdd46af9ee12b61470c1419e76dc20d6749170d7c28753a98c0a8d2b8d680",
-      "candidateSha256": "9f0e3a52a3e1383b595857dca8ebfda58792e060ccbd618c672b12ce72215526",
+      "candidateSha256": "f9df8544239a90e951f9c6eeab099ba9dec295aba63086730e19b32aeb08f7a9",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. 2026-11-08 WEB-P0-02a review fixes: alfa yuzey kontrast denetimi, case-studies dekoratif tire aria-hidden. Aday-yalniz, yayin kaniti degil."
     },
     {
       "path": "src/app/[locale]/data-request/verify/route.ts",
