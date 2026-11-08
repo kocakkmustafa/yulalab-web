@@ -19,12 +19,22 @@ describe("Ostinato Kurslar maddesi", () => {
   it("description ile aynı sayıları söyler (240 ders/4 seviye, 50 ders/2 seviye)", () => {
     expect(description.tr).toContain("dört seviyede 240 ders");
     expect(description.tr).toContain("iki seviyede 50 ders");
-    expect(courses.tr).toContain("dört seviyede 240 ders");
-    expect(courses.tr).toContain("iki seviyede 50 ders");
+    expect(courses.tr).toContain("dört seviyede 240 dersle");
+    expect(courses.tr).toContain("iki seviyede 50 dersle");
     expect(description.en).toContain("240 lessons across four levels");
     expect(description.en).toContain("50 lessons across two levels");
     expect(courses.en).toContain("240 lessons across four levels");
     expect(courses.en).toContain("50 lessons across two levels");
+  });
+
+  it("description ve short ukulele/bas/piyano kursu açık demez, ücretsiz sayı 40+25", () => {
+    for (const t of [ostinato.short.tr, ostinato.short.en, description.tr, description.en]) {
+      expect(t).not.toMatch(/ukulele|\bbas\b|bass|\(24\)|\(22\)/i);
+    }
+    expect(ostinato.short.tr).toContain("40 ders");
+    expect(ostinato.short.tr).toContain("25 ders");
+    expect(ostinato.short.en).toContain("40 lessons");
+    expect(ostinato.short.en).toContain("25 lessons");
   });
 
   it("şan ve piyanoyu yakında olarak belirtir", () => {
@@ -37,6 +47,7 @@ describe("Ostinato Kurslar maddesi", () => {
     const json = JSON.parse(raw) as Record<string, string>;
     expect(OLD_KEY in json).toBe(false);
     expect(raw).not.toContain("beginner foundations in piano");
-    expect(json[courses.en]).toBeTypeOf("string");
+    expect(json[courses.en]).toBe(courses.en);
+    expect(raw.split(JSON.stringify(courses.en) + ":").length - 1).toBe(1);
   });
 });
