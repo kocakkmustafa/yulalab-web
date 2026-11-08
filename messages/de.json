@@ -649,6 +649,8 @@
       "rights": "Alle Rechte vorbehalten."
     },
     "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "Lineare Ansicht",
       "reason": "Wenn Bewegung oder die 3D-Ebene nicht verfügbar sind, bleiben dieselben Produkte, Belege und Links in dieser Ansicht vollständig erhalten."

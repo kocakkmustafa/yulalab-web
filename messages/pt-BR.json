@@ -649,6 +649,8 @@
       "rights": "Todos os direitos reservados."
     },
     "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "Experiência linear",
       "reason": "Quando o movimento ou a camada 3D não estão disponíveis, os mesmos produtos, evidências e links continuam completos nesta visualização."

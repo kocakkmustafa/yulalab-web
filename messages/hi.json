@@ -649,6 +649,8 @@
       "rights": "सर्वाधिकार सुरक्षित।"
     },
     "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "सरल क्रमबद्ध अनुभव",
       "reason": "जब गति या 3D परत उपलब्ध न हो, तब भी इस दृश्य में वही उत्पाद, प्रमाण और लिंक पूरे उपलब्ध रहते हैं।"

@@ -163,22 +163,25 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const [mounted, setMounted] = useState(false);
   const reducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
   const mobile = useMediaQuery("(max-width: 767px)");
-  // Read in a layout effect declared before `mounted`, so the first mounted
-  // render already knows the viewport and never flashes the 3D path on phones.
-  const [smallScreen, setSmallScreen] = useState(false);
+  // Latched once, at mount: a phone-sized viewport starts static and stays
+  // static for the session until the visitor asks for 3D, even if the window
+  // later widens (rotate, resize). A desktop mount keeps the 3D default and is
+  // never switched to static by narrowing. The value only affects output after
+  // `mounted`, so the lazy client read cannot mismatch the server markup.
+  const [latchedMobile] = useState(
+    () => MOBILE_STATIC_DEFAULT && typeof window !== "undefined" && window.matchMedia(MOBILE_STATIC_QUERY).matches,
+  );
   const [mobile3d, setMobile3d] = useState(false);
+  const [open3dTried, setOpen3dTried] = useState(false);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const focusAfterOpen = useRef(false);
   useLayoutEffect(() => {
-    const media = window.matchMedia(MOBILE_STATIC_QUERY);
-    const update = () => setSmallScreen(media.matches);
-    update();
     // The capture harness (?capture=1&progress=…) renders an exact journey
     // frame; it is an explicit request for the 3D path, like the button.
     const params = new URLSearchParams(window.location.search);
     if (params.get("capture") === "1" && params.get("progress") !== null) setMobile3d(true);
-    media.addEventListener("change", update);
-    return () => media.removeEventListener("change", update);
   }, []);
-  const mobileStatic = MOBILE_STATIC_DEFAULT && smallScreen && !mobile3d;
+  const mobileStatic = latchedMobile && !mobile3d;
   const compactViewport = useMediaQuery("(max-width: 767px) and (max-height: 600px)");
   const sceneHostAvailable = useSceneHostAvailable();
   const [webgl, setWebgl] = useState<WebGLState>("checking");
@@ -236,16 +239,25 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     canvasReadyRef.current = canvasReady;
   }, [canvasReady]);
 
-  useEffect(() => {
+  // The WebGL probe is skipped while the mobile static default is active; the
+  // opt-in handler runs it in the same batch as the state change instead.
+  const probeCapabilities = useCallback(() => {
     const capabilities = detectExperienceCapabilities();
     const allowSoftwareCapture = capture.enabled && capabilities.available;
-    setWebgl(
-      sceneHostAvailable && capabilities.available && (!capabilities.software || allowSoftwareCapture)
+    return {
+      webgl: (sceneHostAvailable && capabilities.available && (!capabilities.software || allowSoftwareCapture)
         ? "available"
-        : "unavailable",
-    );
-    setTier(capture.tier ?? capabilities.tier);
+        : "unavailable") as WebGLState,
+      tier: capture.tier ?? capabilities.tier,
+    };
   }, [capture.enabled, capture.tier, sceneHostAvailable]);
+
+  useEffect(() => {
+    if (mobileStatic) return;
+    const probed = probeCapabilities();
+    setWebgl(probed.webgl);
+    setTier(probed.tier);
+  }, [mobileStatic, probeCapabilities]);
 
   useEffect(() => {
     // Mobile static default: three.js is not fetched until the visitor opts in.
@@ -267,7 +279,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   }, []);
 
   useEffect(() => {
-    if (!mounted || capture.enabled || !loaderVisible || journeyReturn.current) return;
+    // The static phone path has no opening card: no scroll lock, no reset to
+    // the top, so native hash deep links and Back restoration keep working.
+    if (!mounted || mobileStatic || capture.enabled || !loaderVisible || journeyReturn.current) return;
 
     const root = document.documentElement;
     const previousOverflow = root.style.overflow;
@@ -296,7 +310,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
       }
     };
-  }, [capture.enabled, loaderVisible, mounted]);
+  }, [capture.enabled, loaderVisible, mobileStatic, mounted]);
 
   useEffect(() => {
     if (!mounted) return;
@@ -525,9 +539,34 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   // for the journey. Capability guards (WebGL2, software renderer, reduced
   // motion, quality tier) still decide whether it can run.
   const open3d = () => {
+    // One batch: probe, opening card and mode switch land in the same commit,
+    // so there is no frame with the journey tree but no card (or a blank page).
+    const probed = probeCapabilities();
+    setWebgl(probed.webgl);
+    setTier(probed.tier);
+    if (probed.webgl === "available" && !reducedMotion && !compactViewport) {
+      setLoaderVisible(true);
+      setLoaderProgress(0);
+    }
+    focusAfterOpen.current = true;
+    setOpen3dTried(true);
     setForceStatic(false);
     setMobile3d(true);
   };
+  const open3dFailed = open3dTried && (webgl === "unavailable" || canvasFailed);
+  // Focus must not fall to <body> when the button's tree is replaced: land on
+  // the failure message, or on the journey root (tabIndex -1).
+  useEffect(() => {
+    if (!focusAfterOpen.current) return;
+    focusAfterOpen.current = false;
+    const target = open3dFailed ? document.getElementById("open3d-failed") : rootRef.current;
+    target?.focus({ preventScroll: true });
+  }, [open3dTried, open3dFailed]);
+  const open3dAnnouncement = !open3dTried
+    ? ""
+    : open3dFailed
+      ? copy.ui.open3dFailed
+      : canvasReady ? copy.ui.open3dOpened : "";
   const showLinearView = () => {
     linearTarget.current = frame.stage === "portfolio" && activeProduct
       ? `experience-product-${activeProduct.slug}`
@@ -578,6 +617,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   return (
     <div
       className={`${styles.journey} ${useStatic ? styles.staticJourney : ""}`}
+      ref={rootRef}
+      tabIndex={-1}
       data-yula-experience="true"
       data-experience-mounted={mounted ? "true" : "false"}
       data-experience-ready={experienceReady ? "true" : "false"}
@@ -589,8 +630,19 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       data-experience-fallback={fallbackActive ? "true" : undefined}
       data-mobile-static-default={MOBILE_STATIC_DEFAULT ? "true" : undefined}
       data-mobile-3d={mobile3d ? "true" : undefined}
+      data-mobile-latched={mounted && latchedMobile ? "true" : undefined}
       suppressHydrationWarning
     >
+      <div
+        className={styles.srOnly}
+        aria-live="polite"
+        aria-atomic="true"
+        lang={copy.ui.open3dLang}
+        dir={copy.ui.open3dLang ? "ltr" : undefined}
+        data-open3d-status="true"
+      >
+        {open3dAnnouncement}
+      </div>
       <noscript>
         <style>{
           `[data-yula-loader="true"]{display:none!important}` +
@@ -601,8 +653,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       {useStatic ? (
         <div
           data-yula-static="true"
-          aria-hidden={mounted && loaderVisible ? "true" : undefined}
-          inert={mounted && loaderVisible}
+          aria-hidden={mounted && loaderVisible && !mobileStatic ? "true" : undefined}
+          inert={mounted && loaderVisible && !mobileStatic}
           style={loaderVisible ? { display: "none" } : undefined}
         >
           <StaticExperience
@@ -610,7 +662,13 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             products={products}
             soundEnabled={soundEnabled}
             onSoundToggle={() => void toggleSound()}
-            onOpen3d={MOBILE_STATIC_DEFAULT && (!mounted || mobileStatic || forceStatic) ? open3d : undefined}
+            onOpen3d={
+              MOBILE_STATIC_DEFAULT && !reducedMotion && !compactViewport &&
+              (!mounted || mobileStatic || (forceStatic && latchedMobile) || open3dFailed)
+                ? open3d
+                : undefined
+            }
+            open3dFailed={open3dFailed}
           />
         </div>
       ) : (
@@ -662,7 +720,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
 
         </>
       )}
-      {loaderVisible ? (
+      {loaderVisible && !(mounted && mobileStatic) ? (
         <ExperienceLoader lines={copy.loader} progress={loaderProgress} />
       ) : null}
     </div>

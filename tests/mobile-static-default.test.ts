@@ -19,6 +19,11 @@ describe("mobile static default (WEB-P0-03a2, ADR-003 c)", () => {
     expect(label("en")).toBe("Open the 3D experience");
     for (const locale of SUPPORTED_LOCALES) expect(typeof label(locale)).toBe("string");
     for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr")) expect(label(locale)).toBe(label("en"));
+    const key = (locale: string, name: string) => JSON.parse(read("messages/" + locale + ".json")).experience[name] as string;
+    for (const name of ["open3dOpened", "open3dFailed"]) {
+      expect(key("tr", name)).not.toBe(key("en", name));
+      for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr")) expect(key(locale, name)).toBe(key("en", name));
+    }
   });
 
   it("page labels the English fallback honestly outside tr/en", () => {
