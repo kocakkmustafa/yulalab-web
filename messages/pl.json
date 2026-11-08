@@ -15,7 +15,11 @@
     "menuClose": "Zamknij",
     "studio": "Studio",
     "consulting": "Doradztwo AI",
-    "language": "Język"
+    "language": "Język",
+    "products": "Produkty",
+    "lab": "Laboratorium",
+    "approach": "Nasze podejście",
+    "collaboration": "Współpraca"
   },
   "footer": {
     "tagline": "Niezależne laboratorium produktów, które korzysta z AI we właściwym miejscu i czasie, bez wyolbrzymiania jej możliwości.",

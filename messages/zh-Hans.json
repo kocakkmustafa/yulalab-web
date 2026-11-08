@@ -15,7 +15,11 @@
     "menuClose": "关闭",
     "studio": "工作室",
     "consulting": "AI 咨询",
-    "language": "语言"
+    "language": "语言",
+    "products": "产品",
+    "lab": "实验室",
+    "approach": "我们的方法",
+    "collaboration": "合作"
   },
   "footer": {
     "tagline": "一家独立的产品实验室，在合适的时间和场景使用 AI，不夸大它的作用。",

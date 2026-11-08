@@ -15,7 +15,11 @@
     "menuClose": "Kapat",
     "studio": "Stüdyo",
     "consulting": "AI danışmanlığı",
-    "language": "Dil"
+    "language": "Dil",
+    "products": "Ürünler",
+    "lab": "Laboratuvar",
+    "approach": "Yaklaşımımız",
+    "collaboration": "İş Birliği"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",

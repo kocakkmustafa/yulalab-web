@@ -15,7 +15,11 @@
     "menuClose": "Close",
     "studio": "Studio",
     "consulting": "AI consulting",
-    "language": "Language"
+    "language": "Language",
+    "products": "Products",
+    "lab": "Lab",
+    "approach": "Our approach",
+    "collaboration": "Collaboration"
   },
   "footer": {
     "tagline": "An independent product lab that uses AI in the right place at the right time, without overstating it.",

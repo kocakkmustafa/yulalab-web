@@ -47,8 +47,8 @@ for (const [locale, prefix, title, action] of [
 }
 
 for (const [prefix, menuName, consultingName, title] of [
-  ["", "Menü", "AI danışmanlığı", "Yapay zekayı işinizde faydaya dönüştürün."],
-  ["/en", "Menu", "AI consulting", "Make AI useful in your business."],
+  ["", "Menü", "İş Birliği", "Yapay zekayı işinizde faydaya dönüştürün."],
+  ["/en", "Menu", "Collaboration", "Make AI useful in your business."],
 ] as const) {
   test(`preserved modal navigates to consulting (${prefix || 'tr'})`, async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });

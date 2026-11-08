@@ -137,7 +137,7 @@ export default async function LocaleLayout({
             {/* The 3D world is created once here, outside the route
                 transition, and persists while pages change around it. */}
             <SceneHost>
-              <Header studioEnabled={studioOpen} />
+              <Header />
               <main>
                 <PageTransition>{children}</PageTransition>
               </main>

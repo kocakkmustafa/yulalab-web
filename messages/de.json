@@ -15,7 +15,11 @@
     "menuClose": "Schließen",
     "studio": "Studio",
     "consulting": "KI-Beratung",
-    "language": "Sprache"
+    "language": "Sprache",
+    "products": "Produkte",
+    "lab": "Labor",
+    "approach": "Unser Ansatz",
+    "collaboration": "Zusammenarbeit"
   },
   "footer": {
     "tagline": "Ein unabhängiges Produktlabor, das KI zur richtigen Zeit am richtigen Ort einsetzt, ohne sie zu überhöhen.",
