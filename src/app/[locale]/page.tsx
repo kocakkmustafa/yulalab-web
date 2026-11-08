@@ -250,6 +250,8 @@ export default async function LandingPage({
       reason: t("fallback.reason"),
     },
     ui: {
+      open3d: t("open3d"),
+      open3dLang: locale !== "tr" && locale !== "en" ? "en" : undefined,
       glyphLabel: text(locale, "Amblemi döndür", "Rotate the emblem"),
       glyphHelp: text(locale, "Sürükleyin veya ok tuşlarını kullanın. Home veya Escape ile sıfırlayın.", "Drag or use the arrow keys. Press Home or Escape to reset."),
       developmentView: text(locale, "Geliştirme görünümü", "Development view"),

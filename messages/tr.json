@@ -648,6 +648,7 @@
       "support": "Destek",
       "rights": "Tüm hakları saklıdır."
     },
+    "open3d": "3D deneyimi aç",
     "fallback": {
       "label": "Doğrusal deneyim",
       "reason": "Hareket ya da 3D katman kullanılmadığında aynı ürünler, kanıtlar ve bağlantılar eksiksiz olarak bu görünümde yer alır."

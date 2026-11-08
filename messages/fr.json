@@ -648,6 +648,7 @@
       "support": "Assistance",
       "rights": "Tous droits réservés."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "Expérience linéaire",
       "reason": "Lorsque les animations ou la couche 3D ne sont pas disponibles, cette vue conserve les mêmes produits, preuves et liens dans leur intégralité."

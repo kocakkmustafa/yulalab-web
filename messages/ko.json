@@ -648,6 +648,7 @@
       "support": "지원",
       "rights": "모든 권리 보유."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "선형 보기",
       "reason": "모션이나 3D 레이어를 이용할 수 없어도 이 보기에서 동일한 제품, 근거, 링크를 빠짐없이 확인할 수 있습니다."

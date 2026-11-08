@@ -648,6 +648,7 @@
       "support": "Bantuan",
       "rights": "Seluruh hak dilindungi."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "Tampilan linear",
       "reason": "Saat animasi atau lapisan 3D tidak tersedia, seluruh produk, bukti, dan tautan tetap tersedia dalam tampilan ini."

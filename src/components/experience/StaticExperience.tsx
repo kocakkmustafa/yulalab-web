@@ -20,6 +20,8 @@ type StaticExperienceProps = {
   products: ExperienceProduct[];
   soundEnabled: boolean;
   onSoundToggle: () => void;
+  /** Small-screen opt-in to the 3D journey; hidden by CSS above 767 px. */
+  onOpen3d?: () => void;
 };
 
 /** Complete linear rendering for reduced motion and WebGL/context failure. */
@@ -28,6 +30,7 @@ export function StaticExperience({
   products,
   soundEnabled,
   onSoundToggle,
+  onOpen3d,
 }: StaticExperienceProps) {
   const today = useExperienceSiteDate();
 
@@ -53,6 +56,18 @@ export function StaticExperience({
           {copy.hero.scroll}
           <span aria-hidden="true">↘</span>
         </TrackedLink>
+        {onOpen3d ? (
+          <button
+            type="button"
+            className={styles.open3d}
+            data-open-3d="true"
+            lang={copy.ui.open3dLang}
+            dir={copy.ui.open3dLang ? "ltr" : undefined}
+            onClick={onOpen3d}
+          >
+            {copy.ui.open3d}
+          </button>
+        ) : null}
         <p className={styles.fallbackNotice}>
           <span>{copy.fallback.label}</span>
           {copy.fallback.reason}

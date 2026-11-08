@@ -648,6 +648,7 @@
       "support": "Soporte",
       "rights": "Todos los derechos reservados."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "Experiencia lineal",
       "reason": "Cuando el movimiento o la capa 3D no están disponibles, esta vista conserva completos los mismos productos, evidencias y enlaces."

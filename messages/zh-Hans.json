@@ -648,6 +648,7 @@
       "support": "支持",
       "rights": "保留所有权利。"
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "线性视图",
       "reason": "当动效或 3D 层无法使用时，此视图仍完整保留相同的产品、证据与链接。"

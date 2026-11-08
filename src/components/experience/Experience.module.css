@@ -2947,3 +2947,51 @@
     transition: none;
   }
 }
+
+/* WEB-P0-03a2 (ADR-003 c): mobile static default. The server markup already
+   carries data-mobile-static-default, so the first paint at <= 767 px is the
+   linear document: no 2520vh journey and no opening card to hide later. The
+   attribute pair is dropped by data-mobile-3d once the visitor opts in. */
+.open3d { display: none; }
+
+@media (max-width: 767px) {
+  .journey[data-mobile-static-default="true"]:not([data-mobile-3d="true"]) {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .journey[data-mobile-static-default="true"]:not([data-mobile-3d="true"]) .loader {
+    display: none !important;
+  }
+
+  .journey[data-mobile-static-default="true"]:not([data-mobile-3d="true"]) [data-yula-static="true"] {
+    display: block !important;
+  }
+
+  .open3d {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    margin: 14px 0 0;
+    padding: 0 22px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: 600 14px/1.2 var(--font-sans), Inter, system-ui, sans-serif;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .open3d:focus-visible {
+    outline: 2px solid var(--yula-focus);
+    outline-offset: 3px;
+  }
+}
+
+/* Reduced motion never offers the journey: the static path is the contract. */
+@media (prefers-reduced-motion: reduce), (max-width: 767px) and (max-height: 600px) {
+  .open3d { display: none; }
+}

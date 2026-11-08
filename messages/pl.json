@@ -648,6 +648,7 @@
       "support": "Pomoc",
       "rights": "Wszelkie prawa zastrzeżone."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "Widok liniowy",
       "reason": "Gdy animacja lub warstwa 3D są niedostępne, ten widok nadal zawiera te same produkty, dowody i odnośniki."

@@ -648,6 +648,7 @@
       "support": "Support",
       "rights": "All rights reserved."
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "Linear experience",
       "reason": "When motion or the 3D layer is unavailable, the same products, evidence, and links remain complete in this view."

@@ -648,6 +648,7 @@
       "support": "サポート",
       "rights": "無断転載を禁じます。"
     },
+    "open3d": "Open the 3D experience",
     "fallback": {
       "label": "リニア表示",
       "reason": "モーションや3D表示を利用できない場合も、この表示ですべての製品、根拠、リンクを確認できます。"
