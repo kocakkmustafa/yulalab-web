@@ -29,14 +29,14 @@ const linked = new Set<string>([
 ]);
 
 /** Routes not in header/footer on purpose; every entry needs a reason and a reachable parent. */
-const ALLOWLIST: Record<string, { reason: string; via: string }> = {
+const ALLOWLIST: Record<string, { reason: string; via: string | null; orphanReason?: string }> = {
   "/[...rest]": { reason: "catch-all that renders the localized 404; not a destination", via: "/" },
   "/privacy/braavolabs": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/burunfarki": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/lifeos": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/motion": { reason: "per-product privacy notice, listed on the privacy hub and support page", via: "/privacy" },
   "/delete-account/lifeos": { reason: "store data-deletion URL for the store listing; also linked from the support page", via: "/support" },
-  "/delete-account/motion": { reason: "store data-deletion URL for the store listings; only the sitemap links it (no in-site link today)", via: "/privacy" },
+  "/delete-account/motion": { reason: "store data-deletion URL for the store listings", via: null, orphanReason: "known orphan: only the sitemap links it; no in-site link today" },
 };
 /** Dynamic routes are covered by their list page (and, for products, by per-product footer links). */
 const DYNAMIC_PARENT: Record<string, string> = {
@@ -63,7 +63,11 @@ describe("header and footer route table", () => {
     for (const [route, entry] of Object.entries(ALLOWLIST)) {
       expect(routes, `stale allow-list entry ${route}`).toContain(route);
       expect(entry.reason.length).toBeGreaterThan(10);
-      expect(linked.has(entry.via), `${route} via ${entry.via}`).toBe(true);
+      if (entry.via === null) {
+        expect(entry.orphanReason?.length ?? 0, `${route}: orphans need an orphanReason`).toBeGreaterThan(10);
+      } else {
+        expect(linked.has(entry.via), `${route} via ${entry.via}`).toBe(true);
+      }
       expect(linked.has(route), `${route} is linked; drop it from the allow-list`).toBe(false);
     }
   });
@@ -79,7 +83,9 @@ describe("header and footer route table", () => {
     expect(HEADER_NAV.filter((n) => n.primary).map((n) => n.key)).toEqual(["products", "lab", "collaboration"]);
   });
 
-  it("keeps every product page reachable from the footer product list", () => {
+  it("renders a footer product link for every project slug", () => {
+    const footer = fs.readFileSync(path.join(process.cwd(), "src/components/layout/Footer.tsx"), "utf8");
+    expect(footer).toMatch(/projects\.map\(\(p\) =>[\s\S]*href=\{`\/projects\/\$\{p\.slug\}`\}/);
     expect(projects.length).toBeGreaterThan(0);
     expect(routes).toContain("/projects/[slug]");
   });

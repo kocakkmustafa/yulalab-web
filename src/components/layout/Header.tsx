@@ -196,7 +196,7 @@ export function Header() {
               <X size={16} />
             </button>
           </div>
-          <nav className="mt-8 flex flex-col" aria-label={t("menuOpen")}>
+          <nav className="mt-8 flex flex-col" aria-label={t("mainNavigation")}>
             {mobilePrimary.map((n, index) => {
               const isActive = isActiveHref(n.href, stripped);
               return (

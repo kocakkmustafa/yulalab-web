@@ -10,7 +10,7 @@ Kaynak: `src/components/layout/nav-config.ts`. Rota silinmedi, yeniden adlandır
 | Ürünler / Products | `/projects` | evet | öne çıkan | evet (ürün listesi + Projeler) | Üç temel girişten biri |
 | Laboratuvar / Lab | `/notes` | evet | öne çıkan | evet (Notlar) | Üç temel girişten biri |
 | Yaklaşımımız / Our approach | `/manifesto` | evet | ikincil | evet (Manifesto) | Ana ekranda yer tutmaz |
-| İş Birliği / Collaboration | `/consulting` | evet | öne çıkan | evet (AI danışmanlığı) | Üç temel girişten biri; `/contact` CTA'da ve ikincilde |
+| İş Birliği / Collaboration | `/consulting` | evet | öne çıkan | evet (AI danışmanlığı) | Üç temel girişten biri; `/contact` mobil ikincil listede ve footer'da (CTA `/projects`'e gider) |
 | Ana Sayfa | `/` | marka bağlantısı | ikincil | — | |
 | İletişim | `/contact` | — | ikincil | evet | |
 | Projeleri Keşfet (CTA) | `/projects` | evet | alt eylem | — | Mevcut e2e sözleşmesi (son eylem) korundu |
@@ -26,7 +26,7 @@ Header'dan çıkarılanlar (Ana Sayfa metni, Manifesto adı, Şeffaflık, Stüdy
 - `/[...rest]`: 404 yakalayıcı, hedef değil.
 - `/privacy/{braavolabs,burunfarki,lifeos,motion}`: `/privacy` merkezinden listelenir.
 - `/delete-account/lifeos`: mağaza veri silme URL'si; `/support` bağlar.
-- `/delete-account/motion`: mağaza veri silme URL'si; **site içinde bağlayan yok** (yalnız sitemap). UNKNOWN: `/support` veya `/privacy/motion`'a bağlanması ayrı bilet.
+- `/delete-account/motion`: **bilinen yetim** (mağaza veri silme URL'si, yalnız sitemap bağlar; testte `via: null` + `orphanReason`). Önceden de yetimdi, gerileme değil.
 - `/projects/[slug]`, `/case-studies/[slug]`: liste sayfası yeterli; ürünler footer'da ayrıca listelenir.
 
 ## Mağaza bağlantısı kararı
@@ -36,3 +36,10 @@ Footer'da mağaza (App Store/Google Play) bağlantısı YOK. Footer'ın hiçbir 
 ## Geri alma
 
 `git revert` bu PR: `nav-config.ts` silinir, Header/Footer önceki 8 öğeli listeye döner; 14 dilde `header.{products,lab,approach,collaboration}` anahtarları artık kullanılmaz ama zararsızdır. Rotalar etkilenmez.
+
+## Bilinen / UNKNOWN
+
+- Mobil menü açıkken arka plan kaydırma kilidi yok (önceden de yoktu).
+- Header CTA "Projeleri Keşfet" ile "Ürünler" aynı hedefe gider (e2e sözleşmesi için korundu; ürün kararı Project orchestration'da).
+- 12 dilin header etiketleri (products, lab, approach, collaboration, mainNavigation) insan incelemesi görmedi.
+- Footer e-posta bidi izolasyonu: `globals.css` kuralı `html[dir=rtl] a[href^=mailto:] { unicode-bidi: isolate }` zaten var; ek işaretleme yapılmadı.

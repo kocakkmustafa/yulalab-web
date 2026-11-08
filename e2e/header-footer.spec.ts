@@ -40,7 +40,7 @@ for (const l of LOCALES) {
         await page.keyboard.press("Tab");
         const state = await page.evaluate(() => {
           const el = document.activeElement as HTMLElement | null;
-          return { inside: !!el && !!document.querySelector("dialog")?.contains(el), id: el?.getAttribute("href") ?? el?.getAttribute("aria-label") ?? el?.tagName ?? "" };
+          return { inside: !!el && !!document.getElementById("site-mobile-navigation")?.contains(el), id: el?.getAttribute("href") ?? el?.getAttribute("aria-label") ?? el?.tagName ?? "" };
         });
         expect(state.inside).toBe(true);
         seen.push(state.id);
