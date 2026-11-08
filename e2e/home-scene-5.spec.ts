@@ -24,7 +24,7 @@ async function labTextWithoutDatesAndPaths(page: Page) {
   return page.locator("#scene-5-lab [data-scene5-lab]").evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
     clone.querySelectorAll("time, [data-scene5-source] code").forEach((n) => n.remove());
-    return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "").replace(/\b03a2\b/g, "");
+    return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "").replace(/WEB-P0-03a2/g, "").replace(/\b03a2\b/g, "");
   });
 }
 
