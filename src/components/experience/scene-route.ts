@@ -55,3 +55,12 @@ export type BackdropLoadPolicy = "after-load" | "first-gesture";
 export function backdropLoadPolicy(input: { tier: "high" | "medium" | "low"; mobile: boolean }): BackdropLoadPolicy {
   return input.mobile || input.tier === "low" ? "first-gesture" : "after-load";
 }
+
+/**
+ * The WebGL capability probe (a throwaway context plus a renderer query) costs
+ * main-thread time that a phone cannot spare during load. Phones run it on the
+ * first gesture; desktops keep probing on mount.
+ */
+export function shouldDeferProbe(input: { mobile: boolean }): boolean {
+  return input.mobile;
+}

@@ -21,6 +21,7 @@ import { scheduleAfterLoad } from "./loader";
 import { detectExperienceCapabilities } from "./quality";
 import {
   backdropLoadPolicy,
+  shouldDeferProbe,
   interpolateSceneProgress,
   SCENE_BACKDROP_PROGRESS,
   SCENE_TRANSITION_MS,
@@ -128,6 +129,7 @@ export function SceneHost({ children }: { children: ReactNode }) {
   const [now, setNow] = useState(0);
   const journeyRef = useRef<SceneJourney | null>(null);
   const readyRef = useRef(false);
+  const probeGestureSeen = useRef(false);
   const notifiedSession = useRef<string | null>(null);
   const shownProgress = useRef(SCENE_BACKDROP_PROGRESS);
 
@@ -144,10 +146,33 @@ export function SceneHost({ children }: { children: ReactNode }) {
   }, []);
   const [api] = useState<SceneHostApi>(() => ({ setJourney }));
 
+  // Phones probe WebGL on the first gesture, not on mount, so the probe stays
+  // out of load-time blocking. Until then `capabilities` is null, which every
+  // consumer reads as "not usable yet" (the backdrop effect bails out and the
+  // journey brings its own tier). Read the viewport here, not from `mobile`,
+  // whose first render is always false.
   useEffect(() => {
-    const detected = detectExperienceCapabilities();
-    setCapabilities({ usable: detected.available && !detected.software, tier: detected.tier });
-    setOwnTier(detected.tier);
+    const probe = () => {
+      const detected = detectExperienceCapabilities();
+      setCapabilities({ usable: detected.available && !detected.software, tier: detected.tier });
+      setOwnTier(detected.tier);
+    };
+    if (!shouldDeferProbe({ mobile: window.matchMedia(MOBILE_QUERY).matches })) {
+      probe();
+      return;
+    }
+    const stopListening = () => {
+      for (const type of FIRST_GESTURE_EVENTS) window.removeEventListener(type, onGesture);
+    };
+    function onGesture() {
+      stopListening();
+      probeGestureSeen.current = true;
+      probe();
+    }
+    for (const type of FIRST_GESTURE_EVENTS) {
+      window.addEventListener(type, onGesture, { passive: true });
+    }
+    return stopListening;
   }, []);
 
   const tone: SceneTone = journey ? "journey" : sceneToneForPath(pathname);
@@ -174,6 +199,9 @@ export function SceneHost({ children }: { children: ReactNode }) {
       mobile: window.matchMedia(MOBILE_QUERY).matches,
     });
     if (policy === "after-load") return scheduleAfterLoad(request);
+
+    // The gesture that triggered the probe already happened: do not ask for another.
+    if (probeGestureSeen.current) return scheduleAfterLoad(request);
 
     let cancelScheduled: (() => void) | null = null;
     const stopListening = () => {
