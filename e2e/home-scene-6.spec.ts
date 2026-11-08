@@ -176,6 +176,10 @@ test.describe("scene 6 in English", () => {
     );
     await expect(scene.locator("a[data-scene6-privacy]").first()).toHaveText("LifeOS privacy policy");
     await expect(scene.locator("[data-scene6-stage-note]")).toContainText("Android is in closed testing");
+    await expect(scene.locator('[data-scene6-line="protection.lifeos"] a')).toHaveAttribute("href", "/en/privacy/lifeos");
+    for (const href of ["/en/privacy/lifeos", "/en/privacy/braavolabs", "/en/privacy/motion"]) {
+      expect((await page.request.get(href)).status(), href).toBe(200);
+    }
   });
 });
 
@@ -191,6 +195,10 @@ test.describe("scene 6 in /ar (RTL page, English fallback block)", () => {
     // Status words inside the English block are English (no mixed-script text).
     await expect(scene.locator('[data-scene6-stage="lifeos"]')).toHaveText("LifeOS · Live");
     await expect(scene.locator('[data-scene6-stage="lissom"]')).toHaveText("Lissom · Coming soon");
+    await expect(scene.locator('[data-scene6-line="protection.braavolabs"] a')).toHaveAttribute("href", "/ar/privacy/braavolabs");
+    for (const href of ["/ar/privacy/lifeos", "/ar/privacy/braavolabs", "/ar/privacy/motion"]) {
+      expect((await page.request.get(href)).status(), href).toBe(200);
+    }
     expect(await bodyText(page)).not.toMatch(/[؀-ۿ]/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });

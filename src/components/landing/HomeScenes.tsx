@@ -78,7 +78,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             <p className="mt-6 max-w-[62ch] text-base md:text-lg leading-relaxed text-ink-200">
               {t(`${scene.key}.message`)}
             </p>
-            {scene.n === 6 ? <Scene6Trust t={t} ts={ts} /> : null}
+            {scene.n === 6 ? <Scene6Trust t={t} ts={ts} locale={locale} /> : null}
           </section>
         );
       })}

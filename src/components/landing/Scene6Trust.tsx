@@ -1,5 +1,5 @@
 import type { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
+import { localePath } from "@/i18n/locales";
 import { projects } from "@/data/projects";
 import { braavolabs } from "@/data/projects/braavolabs";
 import { lifeos } from "@/data/projects/lifeos";
@@ -68,7 +68,7 @@ const OTHERS = ["lissom", "gravita", "choreia", "jablab"]
   .filter((n): n is string => Boolean(n))
   .join(", ");
 
-function LineItem({ t, row, line }: { t: Translate; row: string; line: Line }) {
+function LineItem({ t, row, line, locale }: { t: Translate; row: string; line: Line; locale: string }) {
   const label = line.record
     ? t("scene6.srcRecord")
     : line.records
@@ -93,13 +93,13 @@ function LineItem({ t, row, line }: { t: Translate; row: string; line: Line }) {
         ) : null}
         {label && line.privacy ? <span aria-hidden="true">{" · "}</span> : null}
         {line.privacy ? (
-          <Link
-            href={line.privacy.href}
+          <a
+            href={localePath(locale, line.privacy.href)}
             data-scene6-privacy={line.privacy.href}
             className="focusable underline underline-offset-4 hover:text-ink-50"
           >
             {t("scene6.srcPrivacy", { product: line.privacy.product })}
-          </Link>
+          </a>
         ) : null}
       </p>
     </li>
@@ -113,7 +113,7 @@ function LineItem({ t, row, line }: { t: Translate; row: string; line: Line }) {
  * and per feature; the section never claims a property for all products, and
  * it quotes no number because no outcome measurement is published.
  */
-export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
+export function Scene6Trust({ t, ts, locale }: { t: Translate; ts: Translate; locale: string }) {
   return (
     <div data-scene6-trust="true" className="mt-12">
       <ul role="list" aria-label={t("scene6.listLabel")} className="grid gap-4">
@@ -127,7 +127,7 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
           <p className="mt-2 text-sm text-ink-300">{t("scene6.rows.protection.lead")}</p>
           <ul role="list" aria-label={t("scene6.rows.protection.title")} className="mt-4 grid gap-3">
             {PROTECTION.map((line) => (
-              <LineItem key={line.key} t={t} row="protection" line={line} />
+              <LineItem key={line.key} t={t} row="protection" line={line} locale={locale} />
             ))}
           </ul>
         </li>
@@ -142,7 +142,7 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
           <p className="mt-2 text-sm text-ink-300">{t("scene6.rows.control.lead")}</p>
           <ul role="list" aria-label={t("scene6.rows.control.title")} className="mt-4 grid gap-3">
             {CONTROL.map((line) => (
-              <LineItem key={line.key} t={t} row="control" line={line} />
+              <LineItem key={line.key} t={t} row="control" line={line} locale={locale} />
             ))}
           </ul>
         </li>
