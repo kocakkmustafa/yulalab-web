@@ -20,8 +20,14 @@ async function horizontalOverflow(page: Page) {
 async function infiniteAnimations(page: Page) {
   return page.locator("#scene-1-identity [data-scene1-signals]").evaluate(
     (root) =>
-      root.getAnimations({ subtree: true }).filter((a) => a.effect?.getComputedTiming().iterations === Infinity)
-        .length,
+      root
+        .getAnimations({ subtree: true })
+        .filter(
+          (a) =>
+            a instanceof CSSAnimation &&
+            a.animationName === "scene1-pulse" &&
+            a.effect?.getComputedTiming().iterations === Infinity,
+        ).length,
   );
 }
 
@@ -50,9 +56,13 @@ for (const view of VIEWS) {
         expect(box!.height).toBeGreaterThanOrEqual(44);
         await page.keyboard.press("Enter");
         await expect(page).toHaveURL(new RegExp(`${target}$`));
+        // The section lands at its scroll-margin-top (6rem = 96px), give or take.
         await expect
           .poll(() => page.locator(target).evaluate((el) => Math.round(el.getBoundingClientRect().top)))
-          .toBeLessThan(view.viewport.height / 2);
+          .toBeGreaterThanOrEqual(96 - 12);
+        await expect
+          .poll(() => page.locator(target).evaluate((el) => Math.round(el.getBoundingClientRect().top)))
+          .toBeLessThanOrEqual(96 + 12);
         await page.evaluate(() => history.replaceState(null, "", location.pathname));
       }
     });
@@ -99,7 +109,9 @@ test.describe("scene 1 motion", () => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("/");
     await page.locator("#scene-1-identity [data-scene1-signals]").scrollIntoViewIfNeeded();
-    expect(await infiniteAnimations(page)).toBe(3);
+    const count = await page.locator("#scene-1-identity [data-scene1-signal]").count();
+    expect(count).toBe(3);
+    expect(await infiniteAnimations(page)).toBe(count);
   });
 });
 
@@ -134,4 +146,50 @@ test.describe("scene 1 accessibility", () => {
       expect(blocking.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
     });
   }
+});
+
+test.describe("scene 1 CTA focus ring", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+
+  for (const scheme of ["dark", "light"] as const) {
+    test(`ring is visible, contrasts and keeps the pill radius (${scheme})`, async ({ page }) => {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto("/");
+      for (const name of ["products", "how"]) {
+        const cta = page.locator(`#scene-1-identity [data-scene1-cta="${name}"]`);
+        await cta.scrollIntoViewIfNeeded();
+        const before = await cta.evaluate((el) => getComputedStyle(el).borderRadius);
+        await page.keyboard.press("Tab"); // ensure keyboard modality
+        await cta.focus();
+        await expect(cta).toBeFocused();
+        const state = await cta.evaluate((el) => {
+          const cs = getComputedStyle(el);
+          return {
+            width: parseFloat(cs.outlineWidth),
+            style: cs.outlineStyle,
+            color: cs.outlineColor,
+            bg: cs.backgroundColor,
+            radius: cs.borderRadius,
+            page: getComputedStyle(document.querySelector("[data-home-scenes]")!).backgroundColor,
+          };
+        });
+        expect(state.style).not.toBe("none");
+        expect(state.width).toBeGreaterThan(0);
+        expect(state.color).not.toBe(state.bg);
+        expect(state.color).not.toBe(state.page);
+        expect(state.radius).toBe(before);
+        expect(parseFloat(state.radius)).toBeGreaterThan(8);
+      }
+    });
+  }
+});
+
+test.describe("scene 1 status badges", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+
+  test("each card carries its product's real status", async ({ page }) => {
+    await page.goto("/");
+    const badges = page.locator("#scene-1-identity [data-scene1-status]");
+    await expect(badges).toHaveText(["Beta", "Yayında", "Yakında"]);
+  });
 });

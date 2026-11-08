@@ -859,17 +859,17 @@
         "s1": {
           "product": "Braavolabs",
           "intent": "Bir işi tarif et.",
-          "result": "Planı, onayları ve sonucu aynı yerde görürsün."
+          "result": "Sohbet ve kodlama ajanı işi üstlenir; her çalıştırmanın maliyetini görürsün."
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Yaklaşan ödemeleri ve hatırlatmaları göster.",
-          "result": "Tarihler ve tutarlar tek görünümde toplanır."
+          "intent": "Sağlığını, paranı ve varlıklarını tek yerde tut.",
+          "result": "Beş yaşam alanı tek uygulamada; kayıtlar cihazında kalır, hesap gerekmez."
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Ritmi tut.",
-          "result": "Müziği yaparak öğrenirsin."
+          "intent": "Gitara ilk sesten başla.",
+          "result": "Ölçülü pratikle adım adım ilerler, kulağını alıştırmalarla eğitirsin."
         }
       }
     },

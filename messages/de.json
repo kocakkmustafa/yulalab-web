@@ -859,17 +859,17 @@
         "s1": {
           "product": "Braavolabs",
           "intent": "Describe a task.",
-          "result": "See the plan, the approvals and the result in one place."
+          "result": "A chat and coding agent takes it on; you see the cost of every run."
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Show upcoming payments and reminders.",
-          "result": "Dates and amounts gathered in a single view."
+          "intent": "Keep your health, money and assets in one place.",
+          "result": "Five life areas in one app; records stay on your device, no account needed."
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Keep the beat.",
-          "result": "You learn music by making it."
+          "intent": "Start guitar from the first sound.",
+          "result": "Progress step by step with measured practice, and train your ear with drills."
         }
       }
     },

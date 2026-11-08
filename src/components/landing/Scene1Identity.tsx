@@ -1,8 +1,26 @@
 import type { getTranslations } from "next-intl/server";
+import { braavolabs } from "@/data/projects/braavolabs";
+import { lifeos } from "@/data/projects/lifeos";
+import { ostinato } from "@/data/projects/ostinato";
+import { HOME_SCENES } from "./home-scenes";
 
 type Translate = Awaited<ReturnType<typeof getTranslations>>;
 
-const SIGNALS = ["s1", "s2", "s3"] as const;
+const SIGNALS = [
+  { key: "s1", status: braavolabs.status },
+  { key: "s2", status: lifeos.status },
+  { key: "s3", status: ostinato.status },
+] as const;
+
+// Status labels reuse the existing `status.*` catalogue keys.
+const STATUS_KEY = {
+  live: "live",
+  beta: "beta",
+  "coming-soon": "comingSoon",
+  "in-development": "inDevelopment",
+} as const;
+
+const sceneId = (n: number) => HOME_SCENES.find((scene) => scene.n === n)!.id;
 
 /**
  * Body of scene 1 (WEB-P0-03b): two calls to action and three example
@@ -11,7 +29,7 @@ const SIGNALS = ["s1", "s2", "s3"] as const;
  * do and say they are examples; they carry no measurement. The only motion is
  * one CSS pulse on the arrow, switched off under reduced motion.
  */
-export function Scene1Identity({ t }: { t: Translate }) {
+export function Scene1Identity({ t, ts }: { t: Translate; ts: Translate }) {
   return (
     <>
       <div
@@ -20,16 +38,16 @@ export function Scene1Identity({ t }: { t: Translate }) {
         className="mt-8 flex flex-col gap-3 sm:flex-row"
       >
         <a
-          href="#scene-3-products"
+          href={"#" + sceneId(3)}
           data-scene1-cta="products"
-          className="focusable inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink-50 px-6 text-sm font-semibold text-[rgb(var(--yula-page-rgb))] transition-opacity hover:opacity-90"
+          className="scene1-cta inline-flex min-h-[48px] items-center justify-center rounded-full bg-ink-50 px-6 text-sm font-semibold text-[rgb(var(--yula-page-rgb))] transition-opacity hover:opacity-90"
         >
           {t("scene1.ctaProducts")}
         </a>
         <a
-          href="#scene-4-engineering"
+          href={"#" + sceneId(4)}
           data-scene1-cta="how"
-          className="focusable inline-flex min-h-[48px] items-center justify-center rounded-full border border-ink-50/30 px-6 text-sm font-semibold text-ink-50 transition-colors hover:border-ink-50/60"
+          className="scene1-cta inline-flex min-h-[48px] items-center justify-center rounded-full border border-ink-50/30 px-6 text-sm font-semibold text-ink-50 transition-colors hover:border-ink-50/60"
         >
           {t("scene1.ctaHow")}
         </a>
@@ -40,7 +58,7 @@ export function Scene1Identity({ t }: { t: Translate }) {
           {t("scene1.signalsLabel")}
         </h3>
         <ul className="mt-4 grid gap-4 md:grid-cols-3">
-          {SIGNALS.map((key) => (
+          {SIGNALS.map(({ key, status }) => (
             <li
               key={key}
               data-scene1-signal={key}
@@ -50,8 +68,16 @@ export function Scene1Identity({ t }: { t: Translate }) {
                 <span className="font-display text-base font-semibold">
                   {t(`scene1.signals.${key}.product`)}
                 </span>
-                <span className="rounded-full border border-ink-50/20 px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase text-ink-300">
-                  {t("scene1.example")}
+                <span className="flex gap-1.5">
+                  <span
+                    data-scene1-status={status}
+                    className="rounded-full border border-ink-50/20 px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase text-ink-300"
+                  >
+                    {ts(STATUS_KEY[status as keyof typeof STATUS_KEY])}
+                  </span>
+                  <span className="rounded-full border border-ink-50/20 px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase text-ink-300">
+                    {t("scene1.example")}
+                  </span>
                 </span>
               </div>
               <p className="mt-4 text-sm text-ink-300">
