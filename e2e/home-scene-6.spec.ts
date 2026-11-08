@@ -45,7 +45,7 @@ for (const view of VIEWS) {
       );
       // Braavolabs server-side processing is stated explicitly.
       await expect(protection.locator('[data-scene6-line="protection.braavolabs"]')).toContainText(
-        "Braavolabs veriyi sunucularda işler",
+        "Braavolabs mobil uygulamasında veri sunucularda işlenir",
       );
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
@@ -57,10 +57,15 @@ for (const view of VIEWS) {
         "data-scene6-source",
         "projects/lifeos",
       );
-      await expect(scene.locator('[data-scene6-line="protection.braavolabs"] [data-scene6-source]')).toHaveAttribute(
+      // Braavolabs protection rests on the privacy policy only; control rests on the record only.
+      await expect(scene.locator('[data-scene6-line="protection.braavolabs"] [data-scene6-source]')).toHaveCount(0);
+      await expect(scene.locator('[data-scene6-line="control.braavolabs"] a')).toHaveCount(0);
+      await expect(scene.locator('[data-scene6-line="control.braavolabs"] [data-scene6-source]')).toHaveAttribute(
         "data-scene6-source",
         "projects/braavolabs",
       );
+      await expect(scene.locator('[data-scene6-line="control.lifeos"] [data-scene6-source]')).toHaveCount(0);
+      await expect(scene.locator('[data-scene6-line="control.lifeos"] a')).toHaveAttribute("href", "/privacy/lifeos");
       await expect(scene.locator('[data-scene6-line="protection.lifeos"] a')).toHaveAttribute("href", "/privacy/lifeos");
       await expect(scene.locator('[data-scene6-line="protection.braavolabs"] a')).toHaveAttribute(
         "href",
@@ -69,6 +74,44 @@ for (const view of VIEWS) {
       await expect(scene.locator('[data-scene6-line="control.braavolabs"]')).toContainText(
         "Para harcayan adımlar açık bir insan onayını bekler",
       );
+    });
+
+    test("scoped wording: Braavolabs mobile, Ostinato coming soon, LifeOS online AI precondition, others", async ({ page }) => {
+      await page.goto("/");
+      const scene = page.locator("#scene-6-trust");
+      const line = (id: string) => scene.locator(`[data-scene6-line="${id}"]`);
+      await expect(line("protection.lifeos")).toContainText("sunucuya gönderilmez");
+      await expect(line("protection.braavolabs")).toContainText("Braavolabs mobil uygulamasında veri sunucularda işlenir");
+      await expect(line("protection.braavolabs")).toContainText("yalnız mobil uygulamayı kapsar");
+      await expect(line("protection.ostinato")).toContainText("Yakında. İlk sürümde");
+      await expect(line("protection.ostinato")).toContainText("ham ses dosyası kaydedilmez veya sunucuya yüklenmez");
+      await expect(line("protection.others")).toContainText("Lissom, Gravita, Choreia, JabLab");
+      await expect(line("protection.others")).toContainText("kayıtları bir veri akışı anlatmıyor");
+      await expect(line("control.lifeos")).toContainText("uygulamada sunulduğunda ve kullanmayı seçersen");
+      await expect(scene.locator("[data-scene6-stage-note]")).toContainText("Android kapalı testtedir");
+    });
+
+    test("every privacy link has a product-specific name, resolves with 200 and the right page", async ({ page }) => {
+      await page.goto("/");
+      const scene = page.locator("#scene-6-trust");
+      const links = scene.locator("a[data-scene6-privacy]");
+      const n = await links.count();
+      expect(n).toBe(5);
+      const names = await links.evaluateAll((els) => els.map((e) => e.textContent ?? ""));
+      for (const name of names) expect(name.trim()).toMatch(/^(LifeOS|Braavolabs|Motion) gizlilik politikası$/);
+      const heading: Record<string, string> = {
+        "/privacy/lifeos": "LifeOS gizlilik politikası",
+        "/privacy/braavolabs": "Braavolabs gizlilik politikası",
+        "/privacy/motion": "Motion gizlilik bilgileri",
+      };
+      const hrefs = new Set<string>();
+      for (let i = 0; i < n; i++) hrefs.add((await links.nth(i).getAttribute("href")) ?? "");
+      expect([...hrefs].sort()).toEqual(Object.keys(heading).sort());
+      for (const href of hrefs) {
+        const res = await page.request.get(href);
+        expect(res.status(), href).toBe(200);
+        expect(await res.text(), href).toContain(heading[href]);
+      }
     });
 
     test("result row publishes no figure; stage row reads record statuses", async ({ page }) => {
@@ -116,7 +159,7 @@ test.describe("scene 6 in English", () => {
       "Records stay on your device and no account is needed; some features need an App Store subscription.",
     );
     await expect(scene.locator('[data-scene6-line="protection.braavolabs"]')).toContainText(
-      "Braavolabs handles data on servers",
+      "In the Braavolabs mobile app, data is handled on servers",
     );
     await expect(scene.locator('[data-scene6-result="none"]')).toHaveText("No outcome measurements are published yet.");
     await expect(scene.locator('[data-scene6-stage="braavolabs"]')).toHaveText("Braavolabs · Beta");
@@ -126,6 +169,13 @@ test.describe("scene 6 in English", () => {
     expect(text).not.toMatch(/\d/);
     expect(text).not.toMatch(FORBIDDEN);
     await expect(scene.getByRole("list", { name: /four rows/i })).toBeVisible();
+    await expect(scene.locator('[data-scene6-line="protection.ostinato"]')).toContainText("Coming soon. In the first release");
+    await expect(scene.locator('[data-scene6-line="protection.braavolabs"]')).toContainText("In the Braavolabs mobile app");
+    await expect(scene.locator('[data-scene6-line="control.lifeos"]')).toContainText(
+      "when it is offered in the app and you choose to use it",
+    );
+    await expect(scene.locator("a[data-scene6-privacy]").first()).toHaveText("LifeOS privacy policy");
+    await expect(scene.locator("[data-scene6-stage-note]")).toContainText("Android is in closed testing");
   });
 });
 

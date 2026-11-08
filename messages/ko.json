@@ -871,12 +871,12 @@
     "scene6": {
       "label": "Trust",
       "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and consent, measurable results and transparent product stage per product and feature, with the state of the evidence.",
+      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
       "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
       "sourceLabel": "Source",
       "srcRecord": "product record",
       "srcRecords": "product records",
-      "srcPrivacy": "privacy policy",
+      "srcPrivacy": "{product} privacy policy",
       "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
       "rows": {
         "protection": {
@@ -884,8 +884,8 @@
           "lead": "Where data goes depends on the product and the feature, so each line names one product.",
           "lines": {
             "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "Braavolabs handles data on servers: account details, workflows and run results are kept in your workspace, and AI requests are sent to a model provider. The product record does not describe this data flow; the privacy policy does and names the providers.",
-            "ostinato": "In the guitar course the microphone is optional; audio is processed only in temporary device memory and is not recorded or uploaded.",
+            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
+            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
             "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
           }
         },
@@ -894,7 +894,7 @@
           "lead": "What the records say about who decides.",
           "lines": {
             "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: the text you approve is sent for processing, as the privacy policy describes."
+            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
           }
         },
         "result": {
@@ -904,7 +904,8 @@
         },
         "stage": {
           "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record."
+          "lead": "The stage of each product is read from its product record.",
+          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
         }
       }
     },

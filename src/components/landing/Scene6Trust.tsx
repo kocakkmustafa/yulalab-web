@@ -15,32 +15,49 @@ const STATUS_KEY = {
   "in-development": "inDevelopment",
 } as const;
 
+type Privacy = { href: "/privacy/lifeos" | "/privacy/braavolabs" | "/privacy/motion"; product: string };
+
 type Line = {
   key: string;
-  /** Product record that backs the sentence; absent only for the "others" line. */
+  /** Product record that backs the sentence; absent for the "others" line. */
   record?: { slug: string; name: string };
-  /** Privacy page that states the same thing (route under /privacy). */
-  privacy: "/privacy/lifeos" | "/privacy/braavolabs" | "/privacy/motion";
+  /** Privacy page that backs the sentence. At least one of record/privacy is set. */
+  privacy?: Privacy;
+  /** True when the label must say "product records" (several products). */
+  records?: boolean;
 };
 
+const LIFEOS_PRIVACY: Privacy = { href: "/privacy/lifeos", product: "LifeOS" };
+const BRAAVO_PRIVACY: Privacy = { href: "/privacy/braavolabs", product: "Braavolabs" };
+const MOTION_PRIVACY: Privacy = { href: "/privacy/motion", product: "Motion" };
+
 /**
- * Rows 1 and 2 of scene 6. Every line names the product and the sources it
- * rests on: the product record (`src/data/projects/*`) and/or a site privacy
- * page. No line speaks for "all products". A product whose record or privacy
- * page says nothing about a flow gets no sentence about it.
- * See docs/yula-execution/scene-6-evidence.md.
+ * Rows 1 and 2 of scene 6. Every line names the product and carries only the
+ * sources it truly rests on: the product record (`src/data/projects/*`), a
+ * site privacy page, or both. No line speaks for "all products". A product
+ * whose record or privacy page says nothing about a flow gets no sentence
+ * about it. See docs/yula-execution/scene-6-evidence.md.
  */
 const PROTECTION: readonly Line[] = [
-  { key: "lifeos", record: lifeos, privacy: "/privacy/lifeos" },
-  { key: "braavolabs", record: braavolabs, privacy: "/privacy/braavolabs" },
-  { key: "ostinato", record: ostinato, privacy: "/privacy/motion" },
-  { key: "others", privacy: "/privacy/motion" },
+  { key: "lifeos", record: lifeos, privacy: LIFEOS_PRIVACY },
+  // Privacy policy only: it covers the mobile app; the record does not state a data flow.
+  { key: "braavolabs", privacy: BRAAVO_PRIVACY },
+  { key: "ostinato", record: ostinato, privacy: MOTION_PRIVACY },
+  { key: "others", records: true, privacy: MOTION_PRIVACY },
 ];
 
 const CONTROL: readonly Line[] = [
-  { key: "braavolabs", record: braavolabs, privacy: "/privacy/braavolabs" },
-  { key: "lifeos", record: lifeos, privacy: "/privacy/lifeos" },
+  // Record only: the privacy policy does not state the approval flow.
+  { key: "braavolabs", record: braavolabs },
+  // Privacy policy only: the record does not mention online AI.
+  { key: "lifeos", privacy: LIFEOS_PRIVACY },
 ];
+
+const PRODUCT_NAME: Record<string, string> = {
+  lifeos: "LifeOS",
+  braavolabs: "Braavolabs",
+  ostinato: "Ostinato",
+};
 
 // Burun Farkı is not part of this scene; the rest of the portfolio is listed
 // in registry order, status read from each record.
@@ -51,42 +68,39 @@ const OTHERS = ["lissom", "gravita", "choreia", "jablab"]
   .filter((n): n is string => Boolean(n))
   .join(", ");
 
-function LineItem({
-  t,
-  row,
-  line,
-}: {
-  t: Translate;
-  row: string;
-  line: Line;
-}) {
+function LineItem({ t, row, line }: { t: Translate; row: string; line: Line }) {
+  const label = line.record
+    ? t("scene6.srcRecord")
+    : line.records
+      ? t("scene6.srcRecords")
+      : null;
   return (
     <li
       data-scene6-line={`${row}.${line.key}`}
       className="border-t border-ink-50/10 pt-3 first:border-t-0 first:pt-0"
     >
       <p className="text-base text-ink-50">
-        {line.record ? (
-          <strong className="font-semibold">{line.record.name}</strong>
-        ) : (
-          <strong className="font-semibold">{OTHERS}</strong>
-        )}
+        <strong className="font-semibold">{PRODUCT_NAME[line.key] ?? OTHERS}</strong>
         {": "}
         {t(`scene6.rows.${row}.lines.${line.key}`)}
       </p>
       <p className="mt-1 font-mono text-[10px] tracking-widest uppercase text-ink-300">
-        <span data-scene6-source={line.record ? `projects/${line.record.slug}` : "projects"}>
-          {t("scene6.sourceLabel")}:{" "}
-          {line.record ? t("scene6.srcRecord") : t("scene6.srcRecords")}
-        </span>
-        {" · "}
-        <Link
-          href={line.privacy}
-          data-scene6-privacy={line.privacy}
-          className="focusable underline underline-offset-4 hover:text-ink-50"
-        >
-          {t("scene6.srcPrivacy")}
-        </Link>
+        {t("scene6.sourceLabel")}:{" "}
+        {label ? (
+          <span data-scene6-source={line.record ? `projects/${line.record.slug}` : "projects"}>
+            {label}
+          </span>
+        ) : null}
+        {label && line.privacy ? <span aria-hidden="true">{" · "}</span> : null}
+        {line.privacy ? (
+          <Link
+            href={line.privacy.href}
+            data-scene6-privacy={line.privacy.href}
+            className="focusable underline underline-offset-4 hover:text-ink-50"
+          >
+            {t("scene6.srcPrivacy", { product: line.privacy.product })}
+          </Link>
+        ) : null}
       </p>
     </li>
   );
@@ -102,7 +116,7 @@ function LineItem({
 export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
   return (
     <div data-scene6-trust="true" className="mt-12">
-      <ul aria-label={t("scene6.listLabel")} className="grid gap-4">
+      <ul role="list" aria-label={t("scene6.listLabel")} className="grid gap-4">
         <li
           data-scene6-row="protection"
           className="rounded-2xl border border-ink-50/15 bg-ink-50/[0.04] p-5 md:p-6"
@@ -111,7 +125,7 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
             {t("scene6.rows.protection.title")}
           </h3>
           <p className="mt-2 text-sm text-ink-300">{t("scene6.rows.protection.lead")}</p>
-          <ul aria-label={t("scene6.rows.protection.title")} className="mt-4 grid gap-3">
+          <ul role="list" aria-label={t("scene6.rows.protection.title")} className="mt-4 grid gap-3">
             {PROTECTION.map((line) => (
               <LineItem key={line.key} t={t} row="protection" line={line} />
             ))}
@@ -126,7 +140,7 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
             {t("scene6.rows.control.title")}
           </h3>
           <p className="mt-2 text-sm text-ink-300">{t("scene6.rows.control.lead")}</p>
-          <ul aria-label={t("scene6.rows.control.title")} className="mt-4 grid gap-3">
+          <ul role="list" aria-label={t("scene6.rows.control.title")} className="mt-4 grid gap-3">
             {CONTROL.map((line) => (
               <LineItem key={line.key} t={t} row="control" line={line} />
             ))}
@@ -155,6 +169,7 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
           </h3>
           <p className="mt-2 text-sm text-ink-300">{t("scene6.rows.stage.lead")}</p>
           <ul
+            role="list"
             aria-label={t("scene6.rows.stage.title")}
             className="mt-4 flex flex-wrap gap-2"
           >
@@ -166,11 +181,14 @@ export function Scene6Trust({ t, ts }: { t: Translate; ts: Translate }) {
                 className="rounded-full border border-ink-50/30 px-3 py-1 text-sm text-ink-50"
               >
                 <span className="font-semibold">{p.name}</span>
-                {" · "}
+                <span aria-hidden="true">{" · "}</span>
                 <span>{ts(STATUS_KEY[p.status as keyof typeof STATUS_KEY])}</span>
               </li>
             ))}
           </ul>
+          <p data-scene6-stage-note="true" className="mt-3 text-sm text-ink-300">
+            {t("scene6.rows.stage.note")}
+          </p>
         </li>
       </ul>
       <p className="mt-4 max-w-[62ch] text-xs text-ink-300">{t("scene6.note")}</p>
