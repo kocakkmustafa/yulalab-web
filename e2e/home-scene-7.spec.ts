@@ -17,14 +17,21 @@ const VIEWS = [
 const FORBIDDEN =
   /doğrulandı|verified|validated|confirmed|measured|onaylandı|ölçüldü|asla|never|always|ücretsiz|free trial|hemen başla|get started now|start now/i;
 
-// CTA key -> [href, heading text (tr), heading text (en), expected locale-free path]
+// Each CTA, its target and the real h1 of the target page (tr, en).
 const CTAS = [
   { key: "products", href: "/projects", h1: { tr: /^Aile\.$/, en: /^The\sfamily\.$/ } },
-  { key: "braavolabs", href: "/projects/braavolabs", h1: { tr: /Braavolabs/i, en: /Braavolabs/i } },
-  { key: "consulting", href: "/consulting", h1: { tr: /Yapay zekayı işinizde faydaya dönüştürün/, en: /Make AI useful in your business/ } },
-  { key: "notes", href: "/notes", h1: { tr: /.+/, en: /What\swe\sdid,\sas\sit\shappened/ } },
-  { key: "approach", href: "/operating-system", h1: { tr: /.+/, en: /.+/ } },
-  { key: "contact", href: "/contact", h1: { tr: /.+/, en: /Let.s\stalk/ } },
+  {
+    key: "consulting",
+    href: "/consulting",
+    h1: { tr: /^Yapay zekayı işinizde faydaya dönüştürün\.$/, en: /^Make AI useful in your business\.$/ },
+  },
+  {
+    key: "notes",
+    href: "/notes",
+    h1: { tr: /^Yaptıklarımız,\solduğu\sgibi\.$/, en: /^What\swe\sdid,\sas\sit\shappened\.$/ },
+  },
+  { key: "approach", href: "/operating-system", h1: { tr: /^Nasıl\sçalışıyoruz\.$/, en: /^How\swe\swork\.$/ } },
+  { key: "contact", href: "/contact", h1: { tr: /^Konuşalım\.$/, en: /^Let.s\stalk\.$/ } },
 ] as const;
 
 async function horizontalOverflow(page: Page) {
@@ -39,7 +46,7 @@ for (const view of VIEWS) {
   test.describe(`scene 7 start (${view.name})`, () => {
     test.use({ viewport: view.viewport, locale: "tr-TR" });
 
-    test("three paths with equal weight, six links, no filled primary", async ({ page }) => {
+    test("three paths with equal weight, five links, no filled primary", async ({ page }) => {
       await page.goto("/");
       const scene = page.locator("#scene-7-start");
       await scene.scrollIntoViewIfNeeded();
@@ -53,7 +60,7 @@ for (const view of VIEWS) {
       await expect(paths.nth(1).getByRole("heading", { level: 3 })).toHaveText("İşletmeler için");
       await expect(paths.nth(2).getByRole("heading", { level: 3 })).toHaveText("Mühendisler için");
       const links = scene.locator("a[data-scene7-cta]");
-      await expect(links).toHaveCount(6);
+      await expect(links).toHaveCount(5);
       // Every CTA has the same visual weight: transparent ground, same border, same type.
       const styles = await links.evaluateAll((els) =>
         els.map((e) => {
@@ -63,6 +70,10 @@ for (const view of VIEWS) {
       );
       expect(new Set(styles).size).toBe(1);
       expect(styles[0].startsWith("rgba(0, 0, 0, 0)")).toBe(true);
+      // Same size too: every target is at least 48 px tall; on desktop all have one height.
+      const heights = await links.evaluateAll((els) => els.map((e) => Math.round(e.getBoundingClientRect().height)));
+      for (const h of heights) expect(h).toBeGreaterThanOrEqual(48);
+      if (view.viewport.width >= 1024) expect(Math.max(...heights) - Math.min(...heights)).toBeLessThanOrEqual(1);
       expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     });
 
@@ -71,10 +82,9 @@ for (const view of VIEWS) {
       const scene = page.locator("#scene-7-start");
       const label = (key: string) => scene.locator(`a[data-scene7-cta="${key}"]`);
       await expect(label("products")).toHaveText("Ürünlere göz at");
-      await expect(label("braavolabs")).toContainText("Braavolabs ile işi otomatikleştir");
       await expect(label("consulting")).toHaveText("Birlikte nasıl çalışabileceğimizi gör");
-      await expect(label("notes")).toHaveText("Laboratuvar defterini oku");
-      await expect(label("approach")).toHaveText("Teknik yaklaşımı oku");
+      await expect(label("notes")).toHaveText("Değişiklik notlarını oku");
+      await expect(label("approach")).toHaveText("Çalışma biçimini oku");
       await expect(label("contact")).toHaveText("Ekiple iletişime geç");
       const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
       expect(hrefs).toEqual(CTAS.map((c) => c.href));
@@ -82,14 +92,6 @@ for (const view of VIEWS) {
       // No two links share a name.
       const names = (await scene.locator("a").allTextContents()).map((n) => n.trim());
       expect(new Set(names).size).toBe(names.length);
-    });
-
-    test("Braavolabs link shows the stage from the product record", async ({ page }) => {
-      await page.goto("/");
-      const link = page.locator('#scene-7-start a[data-scene7-cta="braavolabs"]');
-      await expect(link.locator("[data-scene7-status]")).toHaveAttribute("data-scene7-status", "beta");
-      await expect(link.locator("[data-scene7-status]")).toHaveText("Beta");
-      await expect(link).toHaveAccessibleName(/Braavolabs ile işi otomatikleştir\s+Beta/);
     });
 
     test("every CTA target answers 200 with real content, and a click opens it", async ({ page }) => {
@@ -116,11 +118,17 @@ for (const view of VIEWS) {
       expect(text.toLocaleLowerCase("tr-TR")).not.toMatch(FORBIDDEN);
     });
 
-    test("footer still holds its links and scene 7 adds no footer or nav element", async ({ page }) => {
+    test("footer is untouched: legal, company and contact links are still there; scene 7 adds none", async ({ page }) => {
       await page.goto("/");
       await expect(page.locator("#scene-7-start footer")).toHaveCount(0);
       await expect(page.locator("#scene-7-start nav")).toHaveCount(0);
-      await expect(page.locator("footer")).toHaveCount(1);
+      const footer = page.locator('[data-site-footer="true"]');
+      await expect(footer).toHaveCount(1);
+      for (const href of ["/privacy", "/terms", "/support", "/consulting", "/contact", "/notes", "/operating-system", "/projects"]) {
+        await expect(footer.locator(`a[href='${href}']`).first()).toBeAttached();
+      }
+      await expect(footer.locator("a[href^='mailto:support@yulalab.com']")).toHaveCount(1);
+      expect(await footer.locator("a").count()).toBeGreaterThanOrEqual(12);
     });
   });
 }
@@ -128,12 +136,12 @@ for (const view of VIEWS) {
 test.describe("scene 7 keyboard", () => {
   test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
 
-  test("Tab walks the six CTAs in reading order with a visible focus ring", async ({ page }) => {
+  test("Tab walks the five CTAs in reading order with a visible focus ring", async ({ page }) => {
     await page.goto("/");
     const links = page.locator("#scene-7-start a[data-scene7-cta]");
     await links.first().scrollIntoViewIfNeeded();
     await links.first().focus();
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 5; i++) {
       await expect(links.nth(i)).toBeFocused();
       if (i === 0) {
         const outline = await links.nth(0).evaluate((e) => {
@@ -141,12 +149,22 @@ test.describe("scene 7 keyboard", () => {
           return `${c.outlineStyle}|${c.outlineWidth}`;
         });
         expect(outline).toBe("solid|2px");
+        // The ring uses the --yula-focus token.
+        const { ring, token } = await links.nth(0).evaluate((e) => {
+          const probe = document.createElement("span");
+          probe.style.color = "var(--yula-focus)";
+          document.body.appendChild(probe);
+          const token = getComputedStyle(probe).color;
+          probe.remove();
+          return { ring: getComputedStyle(e).outlineColor, token };
+        });
+        expect(ring).toBe(token);
         const box = await links.nth(0).boundingBox();
         expect(box!.height).toBeGreaterThanOrEqual(44);
       }
-      if (i < 5) await page.keyboard.press("Tab");
+      if (i < 4) await page.keyboard.press("Tab");
     }
-    await links.nth(5).press("Enter");
+    await links.nth(4).press("Enter");
     await expect(page).toHaveURL(/\/contact$/);
   });
 });
@@ -168,7 +186,7 @@ test.describe("scene 7 at 320 px", () => {
 test.describe("scene 7 in English", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "en-US" });
 
-  test("English copy, six links to real routes, honest wording", async ({ page }) => {
+  test("English copy, five links to real routes, honest wording", async ({ page }) => {
     await page.goto("/en");
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
@@ -176,11 +194,9 @@ test.describe("scene 7 in English", () => {
     await expect(scene.locator("[data-scene7-path]")).toHaveCount(3);
     const link = (key: string) => scene.locator(`a[data-scene7-cta="${key}"]`);
     await expect(link("products")).toHaveText("Browse the products");
-    await expect(link("braavolabs")).toContainText("Automate work with Braavolabs");
-    await expect(link("braavolabs").locator("[data-scene7-status]")).toHaveText("Beta");
     await expect(link("consulting")).toHaveText("See how we can work together");
-    await expect(link("notes")).toHaveText("Read the lab notebook");
-    await expect(link("approach")).toHaveText("Read the technical approach");
+    await expect(link("notes")).toHaveText("Read the change notes");
+    await expect(link("approach")).toHaveText("Read how we work");
     await expect(link("contact")).toHaveText("Get in touch with the team");
     const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
     expect(hrefs).toEqual(CTAS.map((c) => `/en${c.href}`));
@@ -206,13 +222,14 @@ test.describe("scene 7 in English", () => {
 test.describe("scene 7 in /ar (RTL page, English fallback block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy, English stage word, no Arabic letters, no overflow", async ({ page }) => {
+  test("keeps ltr English copy with lang en, no Arabic letters, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("lang", "en");
+    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("dir", "ltr");
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene7-path]")).toHaveCount(3);
-    await expect(scene.locator('a[data-scene7-cta="braavolabs"] [data-scene7-status]')).toHaveText("Beta");
     expect(await bodyText(page)).not.toMatch(/[؀-ۿ]/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));

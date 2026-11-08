@@ -1,22 +1,12 @@
 import type { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/navigation";
-import { braavolabs } from "@/data/projects/braavolabs";
+import { localePath } from "@/i18n/locales";
+import type { Locale } from "@/lib/types";
 
 type Translate = Awaited<ReturnType<typeof getTranslations>>;
-
-// Status labels reuse the existing `status.*` catalogue keys.
-const STATUS_KEY = {
-  live: "live",
-  beta: "beta",
-  "coming-soon": "comingSoon",
-  "in-development": "inDevelopment",
-} as const;
 
 type Cta = {
   key: string;
   href: string;
-  /** True when the product stage (from the product record) is shown in the link. */
-  stage?: boolean;
 };
 
 type Path = { key: "individual" | "business" | "engineer"; ctas: readonly Cta[] };
@@ -28,13 +18,7 @@ type Path = { key: "individual" | "business" | "engineer"; ctas: readonly Cta[] 
  */
 const PATHS: readonly Path[] = [
   { key: "individual", ctas: [{ key: "products", href: "/projects" }] },
-  {
-    key: "business",
-    ctas: [
-      { key: "braavolabs", href: "/projects/braavolabs", stage: true },
-      { key: "consulting", href: "/consulting" },
-    ],
-  },
+  { key: "business", ctas: [{ key: "consulting", href: "/consulting" }] },
   {
     key: "engineer",
     ctas: [
@@ -48,11 +32,12 @@ const PATHS: readonly Path[] = [
 /**
  * Body of scene 7 (WEB-P0-03h): three paths (individual, business, engineer)
  * with equal weight. Every call to action is the same outlined pill: there
- * is no single filled primary. Link text says what the target page is; the
- * Braavolabs link shows the stage read from its product record. Server
- * rendered, no script, no animation, no form, no e-mail collection.
+ * is no single filled primary. Link text says what the target page is. The
+ * business path has one entry (collaboration); product discovery lives in the
+ * individual path, so no product stage is shown here. Server rendered, no
+ * script, no animation, no form, no e-mail collection.
  */
-export function Scene7Start({ t, ts }: { t: Translate; ts: Translate }) {
+export function Scene7Start({ t, locale }: { t: Translate; locale: Locale }) {
   return (
     <div
       role="group"
@@ -77,21 +62,13 @@ export function Scene7Start({ t, ts }: { t: Translate; ts: Translate }) {
           <ul role="list" className="mt-5 grid gap-5">
             {path.ctas.map((cta) => (
               <li key={cta.key}>
-                <Link
-                  href={cta.href}
+                <a
+                  href={localePath(locale, cta.href)}
                   data-scene7-cta={cta.key}
                   className="scene7-cta inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full border border-ink-50/30 px-6 py-2 text-center text-sm font-semibold text-ink-50 transition-colors hover:border-ink-50/60"
                 >
-                  <span>{t(`scene7.paths.${path.key}.${cta.key}.label`)}</span>
-                  {cta.stage ? (
-                    <span
-                      data-scene7-status={braavolabs.status}
-                      className="rounded-full border border-ink-50/30 px-2 py-0.5 font-mono text-[10px] tracking-widest uppercase text-ink-300"
-                    >
-                      {ts(STATUS_KEY[braavolabs.status as keyof typeof STATUS_KEY])}
-                    </span>
-                  ) : null}
-                </Link>
+                  {t(`scene7.paths.${path.key}.${cta.key}.label`)}
+                </a>
                 <p className="mt-2 text-sm text-ink-300">
                   {t(`scene7.paths.${path.key}.${cta.key}.hint`)}
                 </p>

@@ -22,9 +22,6 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
   // tr and en are written in full. The other twelve catalogues carry the
   // English copy until translated, so the block says so (WCAG 3.1.2).
   const fallbackEnglish = locale !== "tr" && locale !== "en";
-  // Words injected into that block (status labels) must be English too, or a
-  // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
-  const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
 
   return (
     <div
@@ -78,7 +75,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             <p className="mt-6 max-w-[62ch] text-base md:text-lg leading-relaxed text-ink-200">
               {t(`${scene.key}.message`)}
             </p>
-            {scene.n === 7 ? <Scene7Start t={t} ts={ts} /> : null}
+            {scene.n === 7 ? <Scene7Start t={t} locale={locale} /> : null}
           </section>
         );
       })}

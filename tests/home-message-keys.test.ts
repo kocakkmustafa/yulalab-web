@@ -30,7 +30,7 @@ used.add("home.navLabel");
 used.add("home.scene7.groupsLabel");
 for (const [path, ctas] of Object.entries({
   individual: ["products"],
-  business: ["braavolabs", "consulting"],
+  business: ["consulting"],
   engineer: ["notes", "approach", "contact"],
 })) {
   used.add(`home.scene7.paths.${path}.title`);

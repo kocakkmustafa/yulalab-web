@@ -888,10 +888,6 @@
         },
         "business": {
           "title": "İşletmeler için",
-          "braavolabs": {
-            "label": "Braavolabs ile işi otomatikleştir",
-            "hint": "Braavolabs ürün sayfasını açar; gösterilen aşama ürün kaydından gelir."
-          },
           "consulting": {
             "label": "Birlikte nasıl çalışabileceğimizi gör",
             "hint": "Yapay zeka danışmanlığı hizmetleri ve bir iletişim adresi."
@@ -900,16 +896,16 @@
         "engineer": {
           "title": "Mühendisler için",
           "notes": {
-            "label": "Laboratuvar defterini oku",
-            "hint": "Ürünlerde neyin değiştiğine dair kısa notlar."
+            "label": "Değişiklik notlarını oku",
+            "hint": "Neyin değiştiğine dair kısa kayıtlar."
           },
           "approach": {
-            "label": "Teknik yaklaşımı oku",
+            "label": "Çalışma biçimini oku",
             "hint": "Kanıt seviyeleri, ürün durumları ve iddia politikası."
           },
           "contact": {
             "label": "Ekiple iletişime geç",
-            "hint": "Destek, ortaklık ve basın için genel adres."
+            "hint": "Destek, teknik sorular ve basın için genel adres."
           }
         }
       }

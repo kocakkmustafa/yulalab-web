@@ -888,10 +888,6 @@
         },
         "business": {
           "title": "For businesses",
-          "braavolabs": {
-            "label": "Automate work with Braavolabs",
-            "hint": "Opens the Braavolabs product page; the stage shown comes from the product record."
-          },
           "consulting": {
             "label": "See how we can work together",
             "hint": "AI consulting services and a contact address."
@@ -900,16 +896,16 @@
         "engineer": {
           "title": "For engineers",
           "notes": {
-            "label": "Read the lab notebook",
-            "hint": "Short notes on what changed in the products."
+            "label": "Read the change notes",
+            "hint": "Short records of what changed."
           },
           "approach": {
-            "label": "Read the technical approach",
+            "label": "Read how we work",
             "hint": "Evidence levels, product states and claim policy."
           },
           "contact": {
             "label": "Get in touch with the team",
-            "hint": "General address for support, partnerships and press."
+            "hint": "General address for support, technical questions and press."
           }
         }
       }
