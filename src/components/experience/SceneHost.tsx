@@ -21,6 +21,8 @@ import { scheduleAfterLoad } from "./loader";
 import { detectExperienceCapabilities } from "./quality";
 import {
   backdropLoadPolicy,
+  mergeProbeTier,
+  worseTier,
   shouldDeferProbe,
   interpolateSceneProgress,
   SCENE_BACKDROP_PROGRESS,
@@ -67,7 +69,6 @@ type SceneHostApi = { setJourney: (journey: SceneJourney | null) => void };
 
 const SceneHostContext = createContext<SceneHostApi | null>(null);
 
-const TIER_RANK: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
 const MOBILE_QUERY = "(max-width: 767px)";
 const FIRST_GESTURE_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
 const NO_PRODUCTS: ExperienceProduct[] = [];
@@ -130,6 +131,8 @@ export function SceneHost({ children }: { children: ReactNode }) {
   const journeyRef = useRef<SceneJourney | null>(null);
   const readyRef = useRef(false);
   const probeGestureSeen = useRef(false);
+  // Worst tier the canvas itself has reported; a late probe must not raise it.
+  const canvasTier = useRef<QualityTier | null>(null);
   const notifiedSession = useRef<string | null>(null);
   const shownProgress = useRef(SCENE_BACKDROP_PROGRESS);
 
@@ -155,7 +158,7 @@ export function SceneHost({ children }: { children: ReactNode }) {
     const probe = () => {
       const detected = detectExperienceCapabilities();
       setCapabilities({ usable: detected.available && !detected.software, tier: detected.tier });
-      setOwnTier(detected.tier);
+      setOwnTier(mergeProbeTier(canvasTier.current, detected.tier));
     };
     if (!shouldDeferProbe({ mobile: window.matchMedia(MOBILE_QUERY).matches })) {
       probe();
@@ -174,6 +177,11 @@ export function SceneHost({ children }: { children: ReactNode }) {
     }
     return stopListening;
   }, []);
+
+  // A gesture only pre-approves the page it happened on.
+  useEffect(() => {
+    probeGestureSeen.current = false;
+  }, [pathname]);
 
   const tone: SceneTone = journey ? "journey" : sceneToneForPath(pathname);
 
@@ -257,7 +265,8 @@ export function SceneHost({ children }: { children: ReactNode }) {
   }, []);
 
   const handleTierChange = useCallback((nextTier: QualityTier) => {
-    setOwnTier((current) => (TIER_RANK[nextTier] >= TIER_RANK[current] ? nextTier : current));
+    canvasTier.current = canvasTier.current === null ? nextTier : worseTier(canvasTier.current, nextTier);
+    setOwnTier((current) => worseTier(current, nextTier));
     journeyRef.current?.onTierChange(nextTier);
   }, []);
 

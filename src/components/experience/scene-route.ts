@@ -56,6 +56,22 @@ export function backdropLoadPolicy(input: { tier: "high" | "medium" | "low"; mob
   return input.mobile || input.tier === "low" ? "first-gesture" : "after-load";
 }
 
+const TIER_RANK = { high: 0, medium: 1, low: 2 } as const;
+
+/**
+ * The renderer's own tier only ever gets worse: a probe that arrives late
+ * (first gesture on a phone) must not raise a tier the canvas already lowered.
+ * Higher rank = worse tier.
+ */
+export function worseTier<T extends keyof typeof TIER_RANK>(current: T, next: T): T {
+  return TIER_RANK[next] >= TIER_RANK[current] ? next : current;
+}
+
+/** Probe result merged with a tier the canvas already reported (null = none yet). */
+export function mergeProbeTier<T extends keyof typeof TIER_RANK>(canvasTier: T | null, detected: T): T {
+  return canvasTier === null ? detected : worseTier(canvasTier, detected);
+}
+
 /**
  * The WebGL capability probe (a throwaway context plus a renderer query) costs
  * main-thread time that a phone cannot spare during load. Phones run it on the

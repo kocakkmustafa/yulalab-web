@@ -13,3 +13,10 @@ UNKNOWN: makine yükü. Ölçüm anında `uptime` yük ortalaması 129.94 (1 dk)
 ## Doğrulama
 
 `tests/scene-probe-defer.test.tsx`: masaüstünde mount'ta 1 çağrı; mobilde mount'ta 0, ilk jestte 1, sonraki jestlerde artış yok; unmount sonrası dinleyici kalmaz.
+
+## İnceleme düzeltmeleri
+
+- **Tier koruması:** `ownTier` varsayılanı `low` olduğundan "yalnız kötüleşir" kuralı tek başına geç gelen sondanın tier'ını hiç yükseltemezdi. Bu yüzden canvas'ın bildirdiği en kötü tier ayrı bir ref'te tutulur (`canvasTier`); sonda sonucu `mergeProbeTier(canvasTier, detected)` ile birleşir. Canvas tier düşürmediyse sonda doğrudan yazar (eski davranış), düşürdüyse düşük tier korunur.
+- **Jest ref'i:** `probeGestureSeen` rota (`pathname`) değişince sıfırlanır; eski "her sayfada ilk jest" semantiği korunur.
+- **Bilinen sınır:** sonda jest işleyicisinde eşzamanlı koşar. `scheduleAfterLoad` ile sarmak `capabilities` akışını (ve backdrop isteğini) geciktireceği için yapılmadı.
+- **Ana sayfa:** telefonda ana sayfada `YulaExperience.tsx` kendi sondasını mount'ta yapar; TBT kazancı yoktur. Kazanç içerik sayfalarında ve jest öncesi yüklemededir.
