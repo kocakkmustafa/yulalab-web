@@ -33,6 +33,16 @@ describe("prototype gate (closed by default)", () => {
       expect(readFileSync(path.join(appDir, r, "page.tsx"), "utf8"), r).toContain("assertPrototypeEnabled()");
     }
   });
+  it("the layout gates too", async () => {
+    const { readFileSync } = await import("node:fs");
+    expect(readFileSync(path.join(appDir, "prototype/layout.tsx"), "utf8")).toContain("assertPrototypeEnabled()");
+    const Layout = (await import("@/app/[locale]/prototype/layout")).default;
+    delete process.env.UX_PROTOTYPE;
+    expect(() => Layout({ children: null })).toThrow("NEXT_NOT_FOUND");
+    process.env.UX_PROTOTYPE = "1";
+    expect(() => Layout({ children: null })).not.toThrow();
+    delete process.env.UX_PROTOTYPE;
+  });
   it("closed gate makes the real page 404", async () => {
     delete process.env.UX_PROTOTYPE;
     const start = (await import("@/app/[locale]/prototype/start/page")).default;
@@ -54,5 +64,22 @@ describe("four doors point at real routes", () => {
       if (x.href.startsWith("mailto:")) expect(x.href).toMatch(/^mailto:[^@\s]+@[^@\s]+$/);
       else expect(pageExists(x.href), x.href).toBe(true);
     }
+  });
+});
+
+describe("localized product text language", () => {
+  it("LocalizedText labels text with the page locale and rtl for ar", async () => {
+    const { LocalizedText } = await import("@/components/prototype/LocalizedText");
+    const ar = LocalizedText({ locale: "ar", children: "x" }) as unknown as { props: Record<string, unknown> };
+    expect(ar.props.lang).toBe("ar");
+    expect(ar.props.dir).toBe("rtl");
+    const ja = LocalizedText({ locale: "ja", children: "x" }) as unknown as { props: Record<string, unknown> };
+    expect(ja.props.lang).toBe("ja");
+    expect(ja.props.dir).toBeUndefined();
+  });
+  it("product text in the detail page goes through LocalizedText", async () => {
+    const { readFileSync } = await import("node:fs");
+    const src = readFileSync(path.join(appDir, "prototype/projects/[slug]/page.tsx"), "utf8");
+    expect(src.match(/<LocalizedText/g)?.length).toBeGreaterThanOrEqual(6);
   });
 });

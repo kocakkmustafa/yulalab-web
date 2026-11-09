@@ -3,6 +3,7 @@ import { setRequestLocale } from "next-intl/server";
 import { PageShell, PageHeader } from "@/components/common/PageShell";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
+import { FallbackScope } from "@/components/prototype/FallbackScope";
 import { copyFor } from "@/components/prototype/copy";
 import { assertPrototypeEnabled, PROTOTYPE_ROBOTS } from "@/components/prototype/gate";
 import { UniverseExplorer } from "@/components/prototype/UniverseExplorer";
@@ -27,6 +28,7 @@ export default async function PrototypeProjectsPage({
 
   return (
     <PageShell>
+      <FallbackScope locale={locale}>
       <PageHeader kicker={`${c.universe.kicker} · ${c.protoNote}`} title={c.universe.title} lede={c.universe.lede} />
       <UniverseExplorer
         entries={entries}
@@ -34,6 +36,7 @@ export default async function PrototypeProjectsPage({
         initialFilter={parseFilter(sp.durum)}
         initialSlug={entries.some((e) => e.slug === sp.katman) ? sp.katman : undefined}
       />
+    </FallbackScope>
     </PageShell>
   );
 }

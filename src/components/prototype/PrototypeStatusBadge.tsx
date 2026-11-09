@@ -13,7 +13,7 @@ export function PrototypeStatusBadge({ kind, copy }: { kind: BadgeKind; copy: Pr
   return (
     <span
       title={copy.badgeHint[kind]}
-      className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/[0.04] px-2.5 py-1 text-[11px] font-mono tracking-wider uppercase text-ink-100"
+      className="inline-flex items-center gap-1.5 rounded-full border border-hairline-strong bg-ink-850 px-2.5 py-1 text-[11px] font-mono tracking-wider uppercase text-ink-100"
     >
       <span aria-hidden="true">{GLYPH[kind]}</span>
       {copy.badge[kind]}

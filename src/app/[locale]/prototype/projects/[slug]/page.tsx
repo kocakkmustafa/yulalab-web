@@ -8,6 +8,8 @@ import { IMAGE_DIMENSIONS } from "@/data/image-dimensions";
 import { getProjectBySlug } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import { localized } from "@/lib/localized";
+import { FallbackScope } from "@/components/prototype/FallbackScope";
+import { LocalizedText } from "@/components/prototype/LocalizedText";
 import { copyFor } from "@/components/prototype/copy";
 import { assertPrototypeEnabled, PROTOTYPE_ROBOTS } from "@/components/prototype/gate";
 import { PrototypeStatusBadge } from "@/components/prototype/PrototypeStatusBadge";
@@ -19,7 +21,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Product (prototype)", robots: PROTOTYPE_ROBOTS };
 
 const H2 = "font-display text-xl font-light tracking-tight";
-const BOX = "rounded-2xl border border-hairline bg-surface p-6";
+const BOX = "rounded-2xl border border-hairline bg-ink-850 p-6";
 
 export default async function PrototypeProductPage({
   params,
@@ -49,6 +51,7 @@ export default async function PrototypeProductPage({
 
   return (
     <PageShell>
+      <FallbackScope locale={locale}>
       <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-ink-400">
         <Link href="/prototype/projects" className="focusable underline underline-offset-4">← {d.back}</Link> · {c.protoNote}
       </p>
@@ -67,8 +70,8 @@ export default async function PrototypeProductPage({
         <div className="grid gap-6">
           <section aria-labelledby="s1" className={BOX}>
             <h2 id="s1" className={H2}>{d.s1}</h2>
-            <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-400">{localized(project.category, locale)}</p>
-            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-200">{localized(project.tagline, locale)}</p>
+            <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-400"><LocalizedText locale={locale}>{localized(project.category, locale)}</LocalizedText></p>
+            <p className="mt-3 text-[15.5px] leading-relaxed text-ink-200"><LocalizedText locale={locale}>{localized(project.tagline, locale)}</LocalizedText></p>
             {!shipped ? <p className="mt-3 text-sm text-ink-300">{c.researchNote}</p> : null}
           </section>
 
@@ -76,7 +79,7 @@ export default async function PrototypeProductPage({
             <h2 id="s2" className={H2}>{d.s2}</h2>
             {shipped ? (
               <>
-                <p className="mt-3 text-[15px] leading-relaxed text-ink-200">{localized(project.short, locale)}</p>
+                <p className="mt-3 text-[15px] leading-relaxed text-ink-200"><LocalizedText locale={locale}>{localized(project.short, locale)}</LocalizedText></p>
                 <p className="mt-3 text-sm text-ink-400">{d.s2empty}</p>
               </>
             ) : (
@@ -90,8 +93,8 @@ export default async function PrototypeProductPage({
               <ul className="mt-4 grid gap-4 sm:grid-cols-2">
                 {project.features.map((f) => (
                   <li key={f.title.en}>
-                    <h3 className="text-[15px] font-medium text-ink-50">{localized(f.title, locale)}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-300">{localized(f.description, locale)}</p>
+                    <h3 className="text-[15px] font-medium text-ink-50"><LocalizedText locale={locale}>{localized(f.title, locale)}</LocalizedText></h3>
+                    <p className="mt-1 text-sm leading-relaxed text-ink-300"><LocalizedText locale={locale}>{localized(f.description, locale)}</LocalizedText></p>
                   </li>
                 ))}
               </ul>
@@ -140,14 +143,14 @@ export default async function PrototypeProductPage({
 
           {vision ? (
             <ResponsiveDetails id="s7" title={d.s7}>
-              <p className="text-[15px] leading-relaxed text-ink-200">{vision}</p>
+              <p className="text-[15px] leading-relaxed text-ink-200"><LocalizedText locale={locale}>{vision}</LocalizedText></p>
             </ResponsiveDetails>
           ) : null}
 
           <SimulationPanel locale={locale} name={project.name} badge={badge} access={access} />
         </div>
         {/* (8) access card: DOM order = visual order (last on mobile, right column on desktop; mobile has a jump link at the top) */}
-        <aside id="s8" aria-labelledby="s8-title" className="scroll-mt-24 rounded-2xl border border-hairline-strong bg-surface p-6 lg:sticky lg:top-28">
+        <aside id="s8" aria-labelledby="s8-title" className="scroll-mt-24 rounded-2xl border border-hairline-strong bg-ink-850 p-6 lg:sticky lg:top-28">
           <h2 id="s8-title" className={H2}>{d.s8}</h2>
           <div className="mt-4 flex flex-col gap-1 text-sm">
             {access.kind === "links" ? (
@@ -173,6 +176,7 @@ export default async function PrototypeProductPage({
         </aside>
 
       </div>
+    </FallbackScope>
     </PageShell>
   );
 }

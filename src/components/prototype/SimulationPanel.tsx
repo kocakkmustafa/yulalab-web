@@ -49,10 +49,10 @@ export function SimulationPanel({
   };
 
   return (
-    <section id={c.sim.id} aria-labelledby="sim-title" className="scroll-mt-24 rounded-2xl border border-dashed border-white/25 bg-surface p-6">
+    <section id={c.sim.id} aria-labelledby="sim-title" className="scroll-mt-24 rounded-2xl border border-dashed border-hairline-strong bg-ink-850 p-6">
       <div className="flex flex-wrap items-center gap-3">
         <h2 id="sim-title" className="font-display text-2xl font-light tracking-tight">{c.sim.title}</h2>
-        <span className="rounded-full border border-white/30 px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-100">
+        <span className="rounded-full border border-hairline-strong px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider text-ink-100">
           {c.sim.label}
         </span>
       </div>
@@ -72,7 +72,7 @@ export function SimulationPanel({
             tabIndex={tab === t ? 0 : -1}
             onClick={() => setTab(t)}
             onKeyDown={(e) => onKey(e, i)}
-            className={"focusable min-h-[44px] rounded-full border px-4 text-sm " + (tab === t ? "border-white/40 bg-white/10" : "border-white/15 text-ink-300")}
+            className={"focusable min-h-[44px] rounded-full border px-4 text-sm " + (tab === t ? "border-ink-50 bg-ink-700 font-medium text-ink-50" : "border-hairline-strong bg-ink-850 text-ink-300")}
           >
             {c.sim.tabs[t]}
           </button>

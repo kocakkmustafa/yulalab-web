@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { PageShell, PageHeader } from "@/components/common/PageShell";
+import { FallbackScope } from "@/components/prototype/FallbackScope";
 import { copyFor } from "@/components/prototype/copy";
 import { GATES } from "@/components/prototype/gates";
 import { assertPrototypeEnabled, PROTOTYPE_ROBOTS } from "@/components/prototype/gate";
@@ -17,12 +18,13 @@ export default async function PrototypeStartPage({ params }: { params: Promise<{
 
   return (
     <PageShell>
+      <FallbackScope locale={locale}>
       <PageHeader kicker={`${c.start.kicker} · ${c.protoNote}`} title={c.start.title} lede={c.start.lede} />
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {GATES.map((g) => {
           const copy = c.start.gates[g.id];
           return (
-            <li key={g.id} className="rounded-2xl border border-hairline bg-surface p-6">
+            <li key={g.id} className="rounded-2xl border border-hairline bg-ink-850 p-6">
               <h2 className="font-display text-2xl font-light tracking-tight">{copy.title}</h2>
               <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-400">
                 {c.start.forWho}: {copy.who}
@@ -46,6 +48,7 @@ export default async function PrototypeStartPage({ params }: { params: Promise<{
           );
         })}
       </ul>
+    </FallbackScope>
     </PageShell>
   );
 }

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { copyFor } from "./copy";
+import { LocalizedText } from "./LocalizedText";
 import { PrototypeStatusBadge } from "./PrototypeStatusBadge";
 import {
   filterUniverse,
@@ -81,7 +82,7 @@ export function UniverseExplorer({
         </h2>
         <ul className="grid gap-3">
           {list.map((e) => (
-            <li key={e.slug} className="rounded-2xl border border-hairline bg-surface p-5">
+            <li key={e.slug} className="rounded-2xl border border-hairline bg-ink-850 p-5">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <Link
                   href={`/prototype/projects/${e.slug}`}
@@ -91,7 +92,7 @@ export function UniverseExplorer({
                 </Link>
                 <PrototypeStatusBadge kind={e.badge} copy={c} />
               </div>
-              <p className="mt-2 text-sm leading-relaxed text-ink-300">{e.tagline}</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-300"><LocalizedText locale={locale}>{e.tagline}</LocalizedText></p>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px]">
                 {e.access.kind === "links" ? (
                   e.access.links.map((l) => (
@@ -110,7 +111,7 @@ export function UniverseExplorer({
                     aria-pressed={selected === e.slug}
                     aria-controls="universe-panel"
                     onClick={() => select(e.slug)}
-                    className="focusable min-h-[44px] rounded-full border border-white/15 px-4 text-ink-100"
+                    className="focusable min-h-[44px] rounded-full border border-hairline-strong bg-ink-850 px-4 text-ink-100"
                   >
                     {c.universe.preview}
                   </button>
@@ -133,7 +134,7 @@ export function UniverseExplorer({
             onClick={() => choose(f)}
             className={
               "focusable min-h-[44px] rounded-full border px-4 text-sm " +
-              (filter === f ? "border-white/40 bg-white/10 text-ink-50" : "border-white/15 text-ink-300")
+              (filter === f ? "border-ink-50 bg-ink-700 font-medium text-ink-50" : "border-hairline-strong bg-ink-850 text-ink-300")
             }
           >
             {f === "all" ? c.universe.all : c.badge[f]}
@@ -166,8 +167,8 @@ export function UniverseExplorer({
                     <h2 className="font-display text-2xl font-light tracking-tight">{current.name}</h2>
                     <PrototypeStatusBadge kind={current.badge} copy={c} />
                   </div>
-                  <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-400">{current.category}</p>
-                  <p className="mt-4 text-sm leading-relaxed text-ink-200">{current.tagline}</p>
+                  <p className="mt-2 font-mono text-[11px] uppercase tracking-widest text-ink-400"><LocalizedText locale={locale}>{current.category}</LocalizedText></p>
+                  <p className="mt-4 text-sm leading-relaxed text-ink-200"><LocalizedText locale={locale}>{current.tagline}</LocalizedText></p>
                   {current.badge === "soon" ? <p className="mt-3 text-sm text-ink-300">{c.researchNote}</p> : null}
                   <dl className="mt-5 grid gap-2 text-sm">
                     <dt className="font-mono text-[10.5px] uppercase tracking-[0.16em] text-ink-400">{c.universe.access}</dt>

@@ -51,9 +51,9 @@ const TR = {
   detail: {
     back: "Ürünler",
     s1: "Değer önerisi",
-    s2: "Gerçek kullanım",
-    s2empty: "Adım adım kullanım anlatımı henüz yazılmadı.",
-    s2research: "Yayında olmadığı için gerçek kullanım anlatımı yok.",
+    s2: "Kısaca (ürün metni)",
+    s2empty: "Gerçek kullanım kaydı yok; adım adım kullanım anlatımı henüz yazılmadı.",
+    s2research: "Yayında olmadığı için gerçek kullanım kaydı yok.",
     s3: "Öne çıkan yetenekler",
     s3none: "Kayıt: araştırma. Ürün metnindeki yetenek ve ders iddiaları kayıtla desteklenmediği için burada gösterilmez.",
     jump: "İndir / dene / erken erişim ↓",
@@ -150,9 +150,9 @@ const EN: PrototypeCopy = {
   detail: {
     back: "Products",
     s1: "Value proposition",
-    s2: "Real use",
-    s2empty: "A step-by-step usage description has not been written yet.",
-    s2research: "Not live, so there is no real-use description.",
+    s2: "In brief (product copy)",
+    s2empty: "There is no real-use record; a step-by-step usage description has not been written yet.",
+    s2research: "Not live, so there is no real-use record.",
     s3: "Key capabilities",
     s3none: "Registry: research. Capability and lesson claims in the product copy are not supported by the registry, so they are not shown here.",
     jump: "Download / try / early access ↓",
@@ -195,8 +195,8 @@ const EN: PrototypeCopy = {
     business: { title: "Business", body: "Scope and limits are on the business page; write to the business address.", cta: "Business page" },
     partners: { title: "Partners", body: "No new channel: the existing contact address and the business page.", cta: "Write to the general address", legal: "Legal form", status: "Product status summary", consulting: "Business page (e-mail if the form is closed)" },
     investors: { title: "Investors", body: "No new channel: the existing contact address and the business page.", cta: "Write to the general address" },
-    // Founder-approved sentence, published verbatim in Turkish; no translation invented (EN fallback keeps the TR sentence).
-    partnerSentence: "İş ortaklığı ve yatırım görüşmeleri için bize yazın. (TR)",
+    // Founder-approved sentence, published verbatim in Turkish; no translation invented. Rendered with lang="tr" on every locale.
+    partnerSentence: "İş ortaklığı ve yatırım görüşmeleri için bize yazın.",
     builders: { title: "Developer / researcher", body: "Records are on the Transparency page. No code link is drawn.", cta: "Transparency" },
     support: "Support address",
     general: "General address",

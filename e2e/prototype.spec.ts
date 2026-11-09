@@ -115,6 +115,17 @@ if (open) {
     });
   });
 
+  test.describe("prototype: localized product text keeps its own language (ar)", () => {
+    test("ar: product text carries lang=ar dir=rtl inside the lang=en fallback scope", async ({ page }) => {
+      await page.goto("/ar/prototype/projects/lifeos");
+      await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+      await expect(page.locator('div[lang="en"][dir="ltr"] section[aria-labelledby="s1"]')).toBeVisible();
+      await expect(page.locator("section[aria-labelledby='s1'] span[lang='ar'][dir='rtl']").first()).toBeVisible();
+      await page.goto("/ar/prototype/projects");
+      await expect(page.locator("li span[lang='ar'][dir='rtl']").first()).toBeVisible();
+    });
+  });
+
   test.describe("prototype: contact paths (E8)", () => {
     test("five audience paths, mailto and the approved sentence", async ({ page }) => {
       await page.goto("/prototype/contact");
@@ -123,7 +134,12 @@ if (open) {
       const sentence = "İş ortaklığı ve yatırım görüşmeleri için bize yazın.";
       await expect(page.locator("[data-partner-sentence]")).toHaveCount(2);
       await expect(page.locator("[data-partner-sentence]").first()).toHaveText(sentence);
+      await expect(page.locator("[data-partner-sentence]").first()).toHaveAttribute("lang", "tr");
       await expect(page.locator('a[href="mailto:support@yulalab.com"]').first()).toBeVisible();
+      // the support address is shown once per path (no text + link duplicate)
+      await expect(page.getByText("support@yulalab.com", { exact: false })).toHaveCount(
+        await page.locator('a[href="mailto:support@yulalab.com"]').count(),
+      );
       await expect(page.locator('a[href="mailto:yula@yulalab.com"]').first()).toBeVisible();
       await expect(page.locator('a[href="/consulting"]').first()).toBeVisible();
       await expect(page.locator('a[href="/transparency"]').first()).toBeVisible();
