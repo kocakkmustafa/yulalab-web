@@ -79,12 +79,28 @@ for (const [locale, url, disclaimer, announceAfterContent, note] of PAGES) {
 
     test("no horizontal overflow at 320px and targets are at least 48px", async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 800 });
-      await page.goto(url);
+      // Below 1024px the demo sits in a folded disclosure (WEB-UX-05c); the
+      // #dene deep link opens it.
+      await page.goto(url + "#dene");
       await ready(page);
       expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false);
       for (const box of await demo(page).getByRole("radio").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height))) {
         expect(box).toBeGreaterThanOrEqual(48);
       }
+    });
+
+    test("mobile: the demo is folded under 1024px and #dene opens it; desktop shows it open", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.goto(url);
+      await expect(page.getByTestId("pd-ekran")).toBeVisible();
+      await expect.poll(() => page.getByTestId("pd-ekran").evaluate((d) => (d as HTMLDetailsElement).open)).toBe(false);
+      await expect(demo(page)).toBeHidden();
+      await page.goto(url + "#dene");
+      await ready(page);
+      await page.setViewportSize({ width: 1280, height: 800 });
+      await page.goto(url);
+      await ready(page);
+      expect(await page.getByTestId("pd-ekran").evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
     });
 
     // The demo declares no animation or transition at all, so the result is the
