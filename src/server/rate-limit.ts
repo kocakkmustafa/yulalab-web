@@ -1,26 +1,27 @@
 /**
- * Best-effort write limiter for /api/events.
+ * Best-effort write limiter shared by /api/events, /api/leads and
+ * /api/data-request.
  *
  * Honest about what this is: an in-memory token bucket, per serverless
- * instance. Vercel runs many instances and recycles them, so the effective
+ * instance. The host runs many instances and recycles them, so the effective
  * ceiling is (limit × live instances) and a cold start resets it. It is not
  * a security boundary and must not be described as one.
  *
- * It exists because the endpoint is unauthenticated and writes one row per
- * request into a table holding KVKK-scope data. With no limiter at all, a
- * single script can fill that table — and a table anyone can fill makes the
- * attribution-completeness number it feeds meaningless. Raising the cost
- * from "free" to "needs distribution" is worth the twenty lines even though
- * a determined flood still gets through.
+ * It exists because the endpoints are unauthenticated and write rows into
+ * tables holding KVKK-scope data. With no limiter at all, a single script
+ * can fill them — and a table anyone can fill makes the attribution-
+ * completeness number it feeds meaningless. Raising the cost from "free" to
+ * "needs distribution" is worth the twenty lines even though a determined
+ * flood still gets through.
  *
  * The KEY matters more than the limit. The first version keyed on the
  * session token, which is a field the caller chooses — a script minting a
  * fresh 32-hex value per request was blocked exactly zero times out of two
- * hundred, so the limiter delivered none of the above. It is now keyed on
- * the client IP (see clientKey in the events route), which a single machine
- * cannot vary.
+ * hundred, so the limiter delivered none of the above. Routes now key on the
+ * client IP from clientIp() below, which a single machine cannot vary —
+ * PROVIDED the platform really controls the header that function reads.
  *
- * Three limits it does NOT have, named so nobody reads more into it:
+ * Limits it does NOT have, named so nobody reads more into it:
  *
  * 1. Eviction resets it. When the map is full, sweep() drops the 5 000
  *    oldest buckets — including real clients sitting at their cap, who are
@@ -29,27 +30,40 @@
  * 2. It cannot help against a slow client. The body is read before this
  *    runs, so a caller trickling bytes under the cap and never closing
  *    holds an instance until the platform timeout, unthrottled.
- * 3. Its key is only as trustworthy as the platform's header handling, and
- *    clientIp() below picks the header per environment:
- *    - Vercel (process.env.VERCEL set): Vercel overwrites x-forwarded-for
- *      and does not forward external values
- *      (https://vercel.com/docs/headers/request-headers), so the first hop
- *      is the real client. x-nf-client-connection-ip is IGNORED there: any
- *      caller can send it and Vercel would pass it through.
- *    - Netlify (production host, netlify.toml): x-nf-client-connection-ip is
- *      preferred. UNVERIFIED against official docs: docs.netlify.com only
- *      documents `context.ip` ("A string containing the client IP address",
- *      /build/functions/api/) and says nothing about this header or about
- *      x-forwarded-for. The header is what Netlify staff/forum threads
- *      recommend, but it is not a documented guarantee. When the header is
- *      present it alone decides (a forged x-forwarded-for is ignored). When
- *      it is absent we fall back to the first x-forwarded-for hop, which
- *      is only safe if the platform overwrites it: UNVERIFIED on Netlify,
- *      so a caller could rotate it if the Netlify header were ever missing.
- *    - Anywhere else, or when nothing valid is present: clientIp() returns
- *      null and the routes use their no-IP fallback (leads: one shared
- *      "lead:unknown" bucket, which header rotation cannot bypass). Verify on a deployed preview with a forged header
- *      before treating this as more than best effort.
+ * 3. The client IP is only as trustworthy as the platform's header handling.
+ *    clientIp() behaviour, one table (first match wins):
+ *
+ *      VERCEL env set  -> first x-forwarded-for hop, then x-real-ip.
+ *                         x-nf-client-connection-ip is ignored. Vercel
+ *                         documents that it overwrites x-forwarded-for
+ *                         (https://vercel.com/docs/headers/request-headers).
+ *      otherwise       -> x-nf-client-connection-ip if the header is present
+ *                         (valid -> that IP; invalid -> null, no fallback);
+ *                         else first x-forwarded-for hop, then x-real-ip.
+ *      nothing valid   -> null.
+ *
+ *    UNKNOWN / UNVERIFIED on Netlify (the production host, netlify.toml):
+ *    docs.netlify.com documents only `context.ip` ("A string containing the
+ *    client IP address", /build/functions/api/). It says nothing about
+ *    x-nf-client-connection-ip or x-forwarded-for. That the Netlify edge
+ *    overwrites x-nf-client-connection-ip, or any x-forwarded-for, is
+ *    NOT verified; "NETLIFY" is not detected at runtime either (not
+ *    verified, deliberately not added). If the edge does not overwrite the
+ *    header, an attacker can choose the IP and rotate it to bypass the
+ *    limit silently. The robust fix is `context.ip` from `@netlify/functions`;
+ *    it is tracked as a separate ticket, WEB-P0-07c2. Until then treat the
+ *    key as best effort on Netlify.
+ * 4. null has two different fallbacks, both with a cost:
+ *    - /api/events falls back to `session:<token>`, a value the caller
+ *      chooses (see the session-key history above). So an invalid or absent
+ *      header means the key is caller-chosen again, as before this change.
+ *    - /api/leads and /api/data-request fall back to one shared
+ *      `lead:unknown` / `dsr:unknown` bucket. Junk headers cannot dodge it,
+ *      but a flood with an unparseable header can exhaust it and 429
+ *      legitimate keyless callers.
+ * 5. IPs are validated (IPv4/IPv6 literal, at most 64 chars, no zone id) and
+ *    IPv6 is canonicalised, so equivalent spellings share a bucket and junk
+ *    cannot inflate the bucket map.
  *
  * The durable, shared limiter belongs with the lead endpoint in Y-P1-002
  * (roadmap §7.2 `src/server/rate-limit.ts` — this file, extended). Until
@@ -103,8 +117,16 @@ const MAX_IP_LENGTH = 64;
 
 function validIp(value: string | null | undefined): string | null {
   const v = value?.trim();
-  if (!v || v.length > MAX_IP_LENGTH || isIP(v) === 0) return null;
-  return v.toLowerCase();
+  if (!v || v.length > MAX_IP_LENGTH || v.includes("%")) return null;
+  const kind = isIP(v);
+  if (kind === 0) return null;
+  if (kind === 4) return v;
+  try {
+    // WHATWG URL canonicalises IPv6 (compression, case, mapped IPv4).
+    return new URL(`http://[${v}]`).hostname.slice(1, -1);
+  } catch {
+    return null;
+  }
 }
 
 /**

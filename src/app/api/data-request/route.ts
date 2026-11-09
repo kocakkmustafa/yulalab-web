@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getPool, isDatabaseConfigured } from "@/server/db";
-import { allowRequest } from "@/server/rate-limit";
+import { allowRequest, clientIp } from "@/server/rate-limit";
 import { readBounded } from "@/server/http";
 import {
   createDataRequest,
@@ -54,10 +54,8 @@ function allowedOrigin(request: Request): boolean {
 }
 
 function clientKey(request: Request): string {
-  const first = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
-  if (first) return `dsr:${first}`;
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  return realIp ? `dsr:${realIp}` : "dsr:unknown";
+  const ip = clientIp(request.headers);
+  return ip ? `dsr:${ip}` : "dsr:unknown";
 }
 
 /**

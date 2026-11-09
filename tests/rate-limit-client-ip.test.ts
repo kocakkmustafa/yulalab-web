@@ -1,6 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { clientIp } from "@/server/rate-limit";
 
 const h = (init: Record<string, string>) => new Headers(init);
@@ -64,56 +62,125 @@ describe("clientIp", () => {
   });
 });
 
-describe("routes share the helper", () => {
-  afterEach(() => {
+describe("IPv6 canonicalisation", () => {
+  it("maps equivalent spellings to one key", () => {
+    const a = clientIp(h({ "x-real-ip": "2001:db8::1" }), NETLIFY);
+    const b = clientIp(h({ "x-real-ip": "2001:0DB8:0:0:0:0:0:1" }), NETLIFY);
+    expect(a).not.toBeNull();
+    expect(a).toBe(b);
+    expect(a).not.toContain("[");
+  });
+
+  it("rejects zone ids", () => {
+    expect(clientIp(h({ "x-real-ip": "fe80::1%eth0" }), NETLIFY)).toBeNull();
+    expect(clientIp(h({ "x-real-ip": "fe80::1%25eth0" }), NETLIFY)).toBeNull();
+  });
+
+  it("canonicalises IPv4-mapped IPv6 deterministically", () => {
+    const a = clientIp(h({ "x-real-ip": "::ffff:1.2.3.4" }), NETLIFY);
+    const b = clientIp(h({ "x-real-ip": "::FFFF:0102:0304" }), NETLIFY);
+    expect(a).toBe("::ffff:102:304");
+    expect(a).toBe(b);
+  });
+});
+
+describe("routes key the limiter on clientIp", () => {
+  const keys: string[] = [];
+  const ORIGIN = "https://yulalab.com";
+
+  beforeEach(() => {
+    keys.length = 0;
     vi.resetModules();
-    vi.doUnmock("@/server/rate-limit");
-  });
-
-  it.each(["leads", "events"])("%s route imports clientIp and has no private header parsing", (name) => {
-    const src = readFileSync(
-      path.resolve(import.meta.dirname, `../src/app/api/${name}/route.ts`),
-      "utf8",
-    );
-    expect(src).toMatch(/import \{[^}]*clientIp[^}]*\} from "@\/server\/rate-limit"/);
-    expect(src).toContain("clientIp(request.headers)");
-    expect(src).not.toMatch(/headers\.get\("x-forwarded-for"\)/);
-    expect(src).not.toMatch(/headers\.get\("x-real-ip"\)/);
-  });
-
-  it("events route keys the limiter on the helper's IP", async () => {
-    const keys: string[] = [];
-    vi.doMock("@/server/rate-limit", async (orig) => ({
-      ...(await orig<typeof import("@/server/rate-limit")>()),
+    vi.stubEnv("VERCEL", "");
+    vi.stubEnv("LEADS_ENABLED", "1");
+    vi.doMock("@/server/rate-limit", async (importOriginal) => ({
+      ...(await importOriginal<typeof import("@/server/rate-limit")>()),
       allowRequest: (key: string) => {
         keys.push(key);
         return false;
       },
     }));
-    process.env.NEXT_PUBLIC_SITE_URL = "https://yulalab.com";
+  });
+
+  afterEach(() => {
+    vi.doUnmock("@/server/rate-limit");
+    vi.unstubAllEnvs();
+    vi.resetModules();
+  });
+
+  const headers = (extra: Record<string, string> = {}) => ({
+    origin: ORIGIN,
+    "content-type": "application/json",
+    "x-nf-client-connection-ip": "203.0.113.7",
+    "x-forwarded-for": "6.6.6.6",
+    ...extra,
+  });
+
+  const eventBody = JSON.stringify({
+    v: 1,
+    event: "store_outbound",
+    locale: "tr",
+    page: "/projects/lifeos",
+    product: "lifeos",
+    target: "https://apps.apple.com/tr/app/id123",
+    targetCategory: "store",
+    session: "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
+  });
+
+  it("events: Netlify header wins over forged x-forwarded-for", async () => {
     const { POST } = await import("@/app/api/events/route");
     const res = await POST(
-      new Request("https://yulalab.com/api/events", {
-        method: "POST",
-        headers: {
-          origin: "https://yulalab.com",
-          "content-type": "application/json",
-          "x-nf-client-connection-ip": "203.0.113.7",
-          "x-forwarded-for": "6.6.6.6",
-        },
-        body: JSON.stringify({
-          v: 1,
-          event: "store_outbound",
-          locale: "tr",
-          page: "/projects/lifeos",
-          product: "lifeos",
-          target: "https://apps.apple.com/tr/app/id123",
-          targetCategory: "store",
-          session: "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6",
-        }),
-      }),
+      new Request(`${ORIGIN}/api/events`, { method: "POST", headers: headers(), body: eventBody }),
     );
     expect(res.status).toBe(429);
     expect(keys).toEqual(["ip:203.0.113.7"]);
+  });
+
+  it("events: no valid IP falls back to the session key", async () => {
+    const { POST } = await import("@/app/api/events/route");
+    await POST(
+      new Request(`${ORIGIN}/api/events`, {
+        method: "POST",
+        headers: headers({ "x-nf-client-connection-ip": "junk" }),
+        body: eventBody,
+      }),
+    );
+    expect(keys).toEqual(["session:a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6"]);
+  });
+
+  it("leads: lead:<ip> from the Netlify header, lead:unknown without one", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+    const payload = JSON.stringify({
+      name: "Kaan",
+      email: "someone@example.com",
+      intent: "studio",
+      message: "We would like to talk about a build.",
+      locale: "tr",
+      consent: true,
+      website: "",
+      budgetBand: "150-400k",
+      timing: "now",
+      decisionRole: "founder",
+    });
+    const send = (hdrs: Record<string, string>) =>
+      POST(new Request(`${ORIGIN}/api/leads`, { method: "POST", headers: hdrs, body: payload }));
+    expect((await send(headers())).status).toBe(429);
+    await send({ origin: ORIGIN, "content-type": "application/json" });
+    expect(keys).toEqual(["lead:203.0.113.7", "lead:unknown"]);
+  });
+
+  it("data-request: dsr:<ip> from the Netlify header, dsr:unknown without one", async () => {
+    const { POST } = await import("@/app/api/data-request/route");
+    const send = (hdrs: Record<string, string>) =>
+      POST(
+        new Request(`${ORIGIN}/api/data-request`, {
+          method: "POST",
+          headers: hdrs,
+          body: JSON.stringify({ token: "x" }),
+        }),
+      );
+    expect((await send(headers())).status).toBe(429);
+    await send({ origin: ORIGIN, "content-type": "application/json" });
+    expect(keys).toEqual(["dsr:203.0.113.7", "dsr:unknown"]);
   });
 });
