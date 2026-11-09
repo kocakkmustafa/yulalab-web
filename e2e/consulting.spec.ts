@@ -45,7 +45,8 @@ for (const [locale, prefix, title, action] of [
         await page.getByRole("link", { name: locale === "tr" ? "Ürünlerimizi inceleyin" : "Explore our products", exact: true }).click();
         await expect(page).toHaveURL(new RegExp(`${prefix}/projects$`));
         await page.goto(`${prefix}/contact`);
-        await expect(page.getByRole("link", { name: action, exact: true })).toHaveAttribute("href", `${prefix}/consulting`);
+        // 05f: the contact path links straight to the mail section (chain /contact → /consulting → mailto shortened).
+        await expect(page.getByRole("link", { name: action, exact: true })).toHaveAttribute("href", `${prefix}/consulting#consulting-contact`);
         await page.goto(`${prefix}/projects/burunfarki`);
         await expect(page.getByText(locale === "tr" ? /tahminler yarıştan önce kayda geçer/ : /predictions are recorded before each race/)).toBeVisible();
         await page.goto(prefix || "/");

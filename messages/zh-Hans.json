@@ -252,7 +252,20 @@
     "studioEyebrow": "项目咨询",
     "studioLink": "申请工作室合作",
     "studioTitle": "想咨询一项具体工作？",
-    "intakeLanguageNotice": "此语言暂不提供在线表单。您可以写信至下方邮箱；界面语言不代表对回复语言或送达时间的承诺。"
+    "intakeLanguageNotice": "此语言暂不提供在线表单。您可以写信至下方邮箱；界面语言不代表对回复语言或送达时间的承诺。",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "未找到页面。",

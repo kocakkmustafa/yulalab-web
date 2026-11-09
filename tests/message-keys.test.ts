@@ -38,6 +38,20 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["projectsIndex", "researchHeading"],
   ["projectsIndex", "researchNote"],
   ["projectsIndex", "researchToggle"],
+  // /contact#yollar audience paths (WEB-UX-05f). Server component: a missing key renders its raw path.
+  ["contact", "pathsTitle"],
+  ["contact", "pathsUserLabel"],
+  ["contact", "pathsUserBody"],
+  ["contact", "pathsUserLink"],
+  ["contact", "pathsCorpLabel"],
+  ["contact", "pathsCorpBody"],
+  ["contact", "pathsCorpLink"],
+  ["contact", "pathsPartnerLabel"],
+  ["contact", "pathsPartnerBody"],
+  ["contact", "pathsDevLabel"],
+  ["contact", "pathsDevBody"],
+  ["contact", "pathsDevLab"],
+  ["contact", "pathsDevTransparency"],
 ];
 
 describe.each([

@@ -67,7 +67,6 @@ function Contact({
 }) {
   const t = useTranslations("contact");
   const studioT = useTranslations("studio");
-  const consultingT = useTranslations("consulting");
   return (
     <div className="page-enter relative">
       <GlassSheen />
@@ -83,17 +82,50 @@ function Contact({
       </div>
 
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-32 lg:pt-40 pb-12">
-        <EyebrowChip>{t("eyebrow")}</EyebrowChip>
+        <EyebrowChip>{t("title")}</EyebrowChip>
         <h1 className="mt-7 font-display font-extrabold text-ink-50 leading-[0.96] tracking-tightest text-[44px] sm:text-[60px] md:text-[80px]">
-          <StaggerWords text={t("title")} />
+          <StaggerWords text={t("eyebrow")} />
         </h1>
         <p className="mt-7 max-w-[55ch] text-[16.5px] leading-[1.65] text-ink-300">
           {t("intro")}
         </p>
       </section>
 
-      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-4">
-        <Link href="/consulting" className="focusable text-ink-100 underline underline-offset-4">{consultingT("cta")}</Link>
+      <section id="yollar" aria-labelledby="yollar-title" data-contact-paths className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-6 scroll-mt-24">
+        <h2 id="yollar-title" className="font-display text-2xl font-semibold tracking-tight text-ink-50">{t("pathsTitle")}</h2>
+        <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
+          <li data-contact-path="user" className="py-5">
+            <h3 className="font-mono text-[11px] tracking-widest uppercase text-ink-300">{t("pathsUserLabel")}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-200">{t("pathsUserBody")}</p>
+            <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px]">
+              <a href={`mailto:${company.contact.email}`} className="focusable text-ink-50 [overflow-wrap:anywhere] [unicode-bidi:isolate]">{company.contact.email}</a>
+              <Link href="/support" prefetch={false} className="focusable text-ink-100 underline underline-offset-4">{t("pathsUserLink")}</Link>
+            </p>
+          </li>
+          <li data-contact-path="business" className="py-5">
+            <h3 className="font-mono text-[11px] tracking-widest uppercase text-ink-300">{t("pathsCorpLabel")}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-200">{t("pathsCorpBody")}</p>
+            <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px]">
+              <a href={`mailto:${company.contact.consultingEmail}`} className="focusable text-ink-50 [overflow-wrap:anywhere] [unicode-bidi:isolate]">{company.contact.consultingEmail}</a>
+              <Link href="/consulting#consulting-contact" prefetch={false} data-contact-consulting className="focusable text-ink-100 underline underline-offset-4">{t("pathsCorpLink")}</Link>
+            </p>
+          </li>
+          <li data-contact-path="partner" className="py-5">
+            <h3 className="font-mono text-[11px] tracking-widest uppercase text-ink-300">{t("pathsPartnerLabel")}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-200">{t("pathsPartnerBody")}</p>
+            <p className="mt-2 text-[15px]">
+              <a href={`mailto:${company.contact.email}`} className="focusable text-ink-50 [overflow-wrap:anywhere] [unicode-bidi:isolate]">{company.contact.email}</a>
+            </p>
+          </li>
+          <li data-contact-path="developer" className="py-5">
+            <h3 className="font-mono text-[11px] tracking-widest uppercase text-ink-300">{t("pathsDevLabel")}</h3>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-200">{t("pathsDevBody")}</p>
+            <p className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-[15px]">
+              <Link href="/lab" prefetch={false} className="focusable text-ink-100 underline underline-offset-4">{t("pathsDevLab")}</Link>
+              <Link href="/transparency" prefetch={false} className="focusable text-ink-100 underline underline-offset-4">{t("pathsDevTransparency")}</Link>
+            </p>
+          </li>
+        </ul>
       </section>
 
       {intakeLanguageUnavailable ? (

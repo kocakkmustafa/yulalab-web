@@ -252,7 +252,20 @@
     "studioEyebrow": "Project enquiry",
     "studioLink": "Studio application",
     "studioTitle": "Writing about a piece of work?",
-    "intakeLanguageNotice": "The online form is not available in this language yet. You can email the address below; the interface language does not promise a reply language or delivery time."
+    "intakeLanguageNotice": "The online form is not available in this language yet. You can email the address below; the interface language does not promise a reply language or delivery time.",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "Page not found.",
