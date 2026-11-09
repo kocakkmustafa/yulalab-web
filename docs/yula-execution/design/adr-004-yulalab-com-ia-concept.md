@@ -52,10 +52,10 @@ Matris puanları (24/23/22) bu kararın girdisidir, hakemi değil.
 ## 8. 03-concepts "AÇIK sorular" (03§6, 11 madde) — karar tablosu
 | # | Soru | Karar |
 |---|---|---|
-| 1 | Yatırımcı/iş ortağı için gerçek kanal ve yayın cümlesi | **KURUCU KARARI GEREKİR.** Varsayılan tasarım: ayrı kanal yok, genel adres + durum özeti, CTA yok |
-| 2 | "Sermaye sağlamıyoruz / dış müşteri işi tamamlamadık" cümlelerinin `/studio` dışında yayını (`messages/tr.json:759`) | **KURUCU KARARI GEREKİR.** Varsayılan: yayınlanmaz; `/case-studies` boş durumu (`src/app/[locale]/case-studies/page.tsx:52-69`) ve "referans listesi değildir" metni yeterli sayılır |
-| 3 | ADR kayıtlarının kamuya açılması | **KURUCU KARARI GEREKİR.** Varsayılan: kapalı; Lab'da ADR listesi yok |
-| 4 | Kod/doküman/basın kiti hedefi | **KURUCU KARARI GEREKİR.** Varsayılan: hedef yok → CTA çizilmez (02§5 #9) |
+| 1 | Yatırımcı/iş ortağı için gerçek kanal ve yayın cümlesi | **KAPANDI (kurucu, 2026-11-09):** Kurucunun sözü (2026-11-09, Project orchestration oturumunda): "Evet, öneriler kalsın". Yeni kanal yok; sitedeki mevcut iletişim adresi + `/consulting` partnership formu (WEB-P0-07e, `LEADS_ENABLED` kapalıyken mailto). Yayın cümlesi: "İş ortaklığı ve yatırım görüşmeleri için bize yazın." |
+| 2 | "Sermaye sağlamıyoruz / dış müşteri işi tamamlamadık" cümlelerinin `/studio` dışında yayını (`messages/tr.json:759`) | **KAPANDI (kurucu, 2026-11-09):** Kurucunun sözü (2026-11-09, Project orchestration oturumunda): "Evet, öneriler kalsın". Cümle yalnız `/studio` ve `/transparency`'de; başka hiçbir yerde yok (`/case-studies` boş durumu ve "referans listesi değildir" metni mevcut haliyle kalır, `src/app/[locale]/case-studies/page.tsx:52-69`) |
+| 3 | ADR kayıtlarının kamuya açılması | **KAPANDI (kurucu, 2026-11-09):** Kurucunun sözü (2026-11-09, Project orchestration oturumunda): "Evet, öneriler kalsın". ADR'lerin `/transparency`'de kısa özetleri yayınlanır; tam metin repoda kalır |
+| 4 | Kod/doküman/basın kiti hedefi | **KAPANDI (kurucu, 2026-11-09):** Kurucunun sözü (2026-11-09, Project orchestration oturumunda): "Evet, öneriler kalsın". Basın kiti şimdilik yok; ürün sayfaları yalnız mevcut GitHub/doküman bağlantılarını gösterir (olmayan hedef için CTA çizilmez, 02§5 #9) |
 | 5 | Ürün sırası kaynağı; Ostinato'nun "çekirdek" gösterimi | **KAPANDI (bu ADR).** Tek kaynak, "Ana ürünler" = LifeOS, Braavolabs, Ostinato (talimat §1, §6.1), Ostinato rozeti "Yakında"; uygulama UX-05a |
 | 6 | Yükleyici atlama denetimi (02§3 #3) | **KAPANDI (teknik karar, Project orchestration, 2026-11-09):** `src/components/experience/ExperienceLoader.tsx` için dokunma İZİNLİ, şartla: 3D sahne, animasyon ve görsel çıktı birebir aynı kalır; önce/sonra ekran görüntüsü (masaüstü + mobil) alınır ve mevcut sahne testleri yeşil kalır. Uygulama UX-05 kapsamında (ilgili alt bilet kabulüne bu şartlar yazılır). |
 | 7 | Yolculuğun önüne/arkasına blok eklemenin storyboard etkisi | **UX-05d'ye ertelendi.** Tasarım: bloklar `YulaExperience` DIŞINDA, `HomeScenes` anchor sözleşmesine uyar (`PR #50:src/components/landing/home-scenes.ts`); etki ölçümü UX-05d kabul ölçütü |
@@ -64,7 +64,7 @@ Matris puanları (24/23/22) bu kararın girdisidir, hakemi değil.
 | 10 | 14 dil yeni anahtarların insan incelemesi | **UX-05'e ertelendi.** Kural: çevrilmemiş anahtar etiketli İngilizce yedekle gider (01§5); insan inceleme kapasitesi UNKNOWN, kapsam raporlanır |
 | 11 | Live/beta rozeti | **KAPANDI** (§7 a) |
 
-KURUCU KARARI GEREKİR özeti: #1, #2, #3, #4 (kurucuya soruldu, yanıt bekleniyor; bunlara dayanan metin "karar bekliyor" notuyla dışarıda bırakılır). #6 teknik karar olarak kapandı (yukarıda). (Gerçek yatırımcı/iş ortağı kanalı = #1.)
+Açık KURUCU KARARI GEREKİR maddesi KALMADI: #1–#4 kurucu sözüyle ("Evet, öneriler kalsın", 2026-11-09), #6 teknik karar olarak (Project orchestration) kapandı. Merge/yayın onayı ayrıdır ve sürer; UX-05g'deki içerik onayı bu kararla kalktı.
 
 ## 9. Sonuçlar ve riskler
 - Olumlu: UX-01 bulgularının çoğu (üç sıra, rozet, ekran boş durumu, gizlilik bağlantısı, yatırımcı/iş ortağı dürüst yolu) yeni sahne/animasyon/renk olmadan çözülür; ADR-003 ile uyumlu.
