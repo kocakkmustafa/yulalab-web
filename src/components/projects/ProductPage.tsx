@@ -4,6 +4,7 @@ import { ArrowUpRight } from "@/components/common/icons";
 import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
 import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
+import { BraavolabsPlanDemo } from "@/components/projects/BraavolabsPlanDemo";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { TrackView } from "@/components/common/TrackView";
 import { ScrollMarquee } from "@/components/common/ScrollMarquee";
@@ -151,6 +152,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             </div>
           </section>
         ) : null}
+
+        {project.slug === "braavolabs" ? <BraavolabsPlanDemo /> : null}
 
         <ProductFeatures slug={project.slug} locale={locale} />
 

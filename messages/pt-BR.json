@@ -540,6 +540,63 @@
     "availabilityUnverified": "O status de publicação precisa de nova verificação",
     "availabilityCheckedAt": "Última verificação de publicação: {date}. Abra o link para conferir a situação atual."
   },
+  "braavolabsDemo": {
+    "kicker": "Sample plan card",
+    "title": "Describe a job. See its plan, approvals and result in one place.",
+    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
+    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
+    "pickerLabel": "Pick a sample intent",
+    "announce": "Plan card shown",
+    "labels": {
+      "intent": "Sample intent",
+      "example": "Example card",
+      "note": "Example / concept: no real job is executed.",
+      "steps": "Example steps",
+      "approvals": "Approval points",
+      "risk": "Example risk level",
+      "output": "Expected output"
+    },
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "intents": {
+      "content": {
+        "label": "Content",
+        "prompt": "“Prepare a week of posts for our launch.”",
+        "s1": "Read the brief and list the post ideas.",
+        "s2": "Draft each post in your tone.",
+        "s3": "Collect the drafts for your review.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you read the drafts and decide.",
+        "riskNote": "The output is a draft you review.",
+        "output": "A set of draft posts, ready for your review."
+      },
+      "report": {
+        "label": "Report",
+        "prompt": "“Summarise last month's support requests.”",
+        "s1": "Gather the material you point to.",
+        "s2": "Group the findings by theme.",
+        "s3": "Write a short summary.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you choose which material is used.",
+        "riskNote": "It reads your own material, so you decide what it may read.",
+        "output": "A short report draft with the points that need a decision."
+      },
+      "software": {
+        "label": "Software",
+        "prompt": "“Fix the sign-in bug in our app.”",
+        "s1": "Read the code and find the likely cause.",
+        "s2": "Propose a change and a test for it.",
+        "s3": "Present the proposed change.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you review each proposed change.",
+        "riskNote": "It touches the code behind your product, so each change waits for you.",
+        "output": "A proposed code change with its test, for you to review."
+      }
+    }
+  },
   "leadForm": {
     "name": "Nome",
     "email": "E-mail",
