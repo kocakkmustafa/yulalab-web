@@ -37,7 +37,14 @@ type State =
 export function LeadForm({
   products,
   studioEnabled,
+  intent: fixedIntent,
 }: {
+  /**
+   * Pins the submission to one intent (e.g. /consulting posts `partnership`).
+   * The topic selector and product picker are then not rendered. Omitted on
+   * /contact, which keeps its selector.
+   */
+  intent?: Intent;
   products: { slug: string; name: string }[];
   /** @deprecated Configuration never confirms delivery; retained for callers. */
   mailConfigured?: boolean;
@@ -62,7 +69,7 @@ export function LeadForm({
   // A server prop is stable for this rendered page, but keeping the selected
   // value fail-closed also protects hydration/re-render boundaries: a stale
   // client value cannot post Studio after the server disabled it.
-  const effectiveIntent = !studioEnabled && intent === "studio" ? "product" : intent;
+  const effectiveIntent: Intent = fixedIntent ?? (!studioEnabled && intent === "studio" ? "product" : intent);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -160,7 +167,7 @@ export function LeadForm({
         <input id={`${id}-company`} name="company" maxLength={160} className={field} autoComplete="organization" disabled={state.kind === "sending"} />
       </div>
 
-      <div>
+      {fixedIntent ? null : <div>
         <label className={label} htmlFor={`${id}-intent`}>
           {t("intent")}
         </label>
@@ -181,7 +188,7 @@ export function LeadForm({
             </option>
           ))}
         </select>
-      </div>
+      </div>}
 
       {effectiveIntent === "product" ? (
         <div>
