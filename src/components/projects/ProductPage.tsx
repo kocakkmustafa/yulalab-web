@@ -370,11 +370,11 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </ResponsiveDetails>
 
           {/* (6) release status: the registry-backed pill and the deep link
-              to /transparency (the per-product anchor arrives with 05e) */}
+              to that product's record on /transparency (#<slug>) */}
           <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
             <div data-item="6" className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-12 lg:pb-0">
               <StatusPill status={project.status} slug={project.slug} />
-              <Link href="/transparency" prefetch={false} className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">
+              <Link href={`/transparency#${project.slug}`} prefetch={false} className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">
                 {t("statusLink")}
               </Link>
             </div>

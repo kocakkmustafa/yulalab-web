@@ -23,6 +23,28 @@ import { publicRegistry } from "@/data/public-registry";
 import { presentClaims } from "@/lib/proof";
 import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
 import { developmentPreviews } from "@/data/product-presentations";
+import { text } from "@/lib/localized";
+import { lifecycleRows } from "@/lib/operating-system";
+
+/**
+ * Short public summaries of the architecture decisions that shape this site
+ * (ADR-004 §8 #3, founder decision 2026-11-09). Full texts stay in the
+ * source repository; nothing here goes beyond what those records state.
+ */
+const ADR_SUMMARIES = [
+  {
+    id: "adr-003",
+    title: "ADR-003",
+    tr: "Masaüstünde 3D sahne, mobilde statik görünüm varsayılandır.",
+    en: "Desktop gets the 3D scene; mobile defaults to a static view.",
+  },
+  {
+    id: "adr-004",
+    title: "ADR-004",
+    tr: "Site bilgi mimarisi: dört niyet kapısı, işlevsel bir ürün katmanı ve yalnız bu sayfada ürün bazlı kanıt kayıtları. Ayrı bir kanıt defteri rotası kurulmaz.",
+    en: "Site information architecture: four intent gates, a functional product layer, and per-product evidence records on this page only. No separate ledger route is built.",
+  },
+] as const;
 
 export async function generateMetadata({
   params,
@@ -72,15 +94,21 @@ function Transparency() {
 
   const pillars: PillarSlug[] = ["braavolabs", "burunfarki", "lifeos"];
   const tp = useTranslations("product");
+  const ts = useTranslations("studio");
   const now = new Date();
-  const records = publicRegistry
-    .map((record) => ({ record, presented: presentClaims(record, now) }))
-    .map(({ record, presented }) => ({
-      record,
-      // Withheld (planned/prototype/unknown) claims belong on status labels, not here.
-      presented: presented.filter((p) => p.kind !== "withheld"),
-    }))
-    .filter(({ presented }) => presented.length > 0);
+  // Every registry record gets a block (and a #<slug> anchor) so the product
+  // pages can always deep-link; a record without claims says so in words.
+  const records = publicRegistry.map((record) => ({
+    record,
+    // Withheld (planned/prototype/unknown) claims belong on status labels, not here.
+    // Lapsed claims stay: they are shown and marked, never hidden.
+    presented: presentClaims(record, now).filter((p) => p.kind !== "withheld"),
+  }));
+  const lifecycle = lifecycleRows();
+  const lapsedClaims = records.reduce(
+    (n, { presented }) => n + presented.filter((p) => p.kind === "lapsed").length,
+    0,
+  );
 
   return (
     <div className="page-enter relative">
@@ -106,6 +134,47 @@ function Transparency() {
           {t("intro")}
         </p>
       </section>
+
+      {/* STATUS SUMMARY — every figure derives from the registry; hidden when it is empty */}
+      {records.length > 0 ? (
+        <section
+          className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-4 pb-4"
+          aria-labelledby="status-summary-heading"
+          data-testid="status-summary"
+        >
+          <h2
+            id="status-summary-heading"
+            className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-5"
+          >
+            {text(locale, "Durum özeti", "Status summary")}
+          </h2>
+          <dl className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {lifecycle
+              .filter((row) => row.count > 0)
+              .map((row) => (
+                <div key={row.key} className="glass p-4" data-testid={`summary-${row.key}`}>
+                  <dt className="font-mono text-[10.5px] tracking-widest uppercase text-ink-400">
+                    {text(locale, row.labelTr, row.labelEn)}
+                  </dt>
+                  <dd className="mt-1 font-display text-3xl font-semibold text-ink-50">{row.count}</dd>
+                </div>
+              ))}
+            <div className="glass p-4" data-testid="summary-lapsed">
+              <dt className="font-mono text-[10.5px] tracking-widest uppercase text-ink-400">
+                {text(locale, "Güncellik kontrolü bekleyen iddia", "Claims awaiting re-check")}
+              </dt>
+              <dd className="mt-1 font-display text-3xl font-semibold text-ink-50">{lapsedClaims}</dd>
+            </div>
+          </dl>
+          <p className="mt-4 text-[13px] leading-relaxed text-ink-400">
+            {text(
+              locale,
+              "Sayılar ürün kayıtlarından hesaplanır; elle yazılmaz.",
+              "Counts are computed from the product records, not typed by hand.",
+            )}
+          </p>
+        </section>
+      ) : null}
 
       {/* PROMISE */}
       <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-8 pb-4">
@@ -195,18 +264,34 @@ function Transparency() {
           {tp("claimsHeading")}
         </h2>
         <div className="space-y-14">
-          {records.map(({ record, presented }) => (
-            <div key={record.slug}>
-              <h3 className="font-display text-2xl font-semibold tracking-tight text-ink-50 mb-6">
-                {record.name}
-              </h3>
-              <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
-                {presented.map((item) => (
-                  <ProofCard key={item.claim.id} presented={item} locale={locale} />
-                ))}
-              </ul>
-            </div>
-          ))}
+          {records.map(({ record, presented }) => {
+            const row = lifecycle.find((r) => r.key === record.lifecycle);
+            return (
+              <div key={record.slug} id={record.slug} className="scroll-mt-28">
+                <div className="mb-6 flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                  <h3 className="font-display text-2xl font-semibold tracking-tight text-ink-50">
+                    {record.name}
+                  </h3>
+                  {row ? (
+                    <span className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
+                      {text(locale, row.labelTr, row.labelEn)}
+                    </span>
+                  ) : null}
+                </div>
+                {presented.length > 0 ? (
+                  <ul role="list" className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
+                    {presented.map((item) => (
+                      <ProofCard key={item.claim.id} presented={item} locale={locale} />
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-[14.5px] leading-relaxed text-ink-300" data-testid="no-claims">
+                    {text(locale, "Henüz kaynaklı iddia yok.", "No sourced claim yet.")}
+                  </p>
+                )}
+              </div>
+            );
+          })}
         </div>
         <p className="mt-10 max-w-[62ch] text-[14px] leading-[1.7] text-ink-400">{tp("claimsLapsedNote")}</p>
       </section>
@@ -223,6 +308,38 @@ function Transparency() {
             <DevelopmentPreviewSection slug={slug} locale={locale} />
           </div>
         ))}
+      </section>
+
+      {/* ADR SUMMARIES */}
+      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-16 pb-8" aria-labelledby="adr-heading" data-testid="adr-summaries">
+        <h2 id="adr-heading" className="font-mono text-[11px] tracking-widest uppercase text-ink-400 mb-3">
+          {text(locale, "Mimari kararlar", "Architecture decisions")}
+        </h2>
+        <p className="mb-6 text-[14px] leading-relaxed text-ink-400">
+          {text(
+            locale,
+            "Kısa özetler; tam metinler kaynak kod deposunda durur.",
+            "Short summaries; the full texts live in the source repository.",
+          )}
+        </p>
+        <div className="space-y-4">
+          {ADR_SUMMARIES.map((adr) => (
+            <article key={adr.id} id={adr.id} className="glass p-5 scroll-mt-28">
+              <h3 className="font-display text-[17px] font-semibold text-ink-50">{adr.title}</h3>
+              <p className="mt-2 text-[14.5px] leading-relaxed text-ink-300">{text(locale, adr.tr, adr.en)}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* WHAT WE DO NOT PROMISE — this wording appears only on /studio and here (ADR-004 §8 #2) */}
+      <section className="relative max-w-3xl mx-auto px-6 lg:px-10 pt-8 pb-8" aria-labelledby="nopromise-heading">
+        <h2 id="nopromise-heading" className="font-display text-2xl font-semibold tracking-tight text-ink-50">
+          {ts("noPromiseTitle")}
+        </h2>
+        <p data-testid="transparency-nopromise" className="mt-3 text-[14.5px] leading-relaxed text-ink-300">
+          {ts("noPromiseBody")}
+        </p>
       </section>
 
       {/* CTA */}
