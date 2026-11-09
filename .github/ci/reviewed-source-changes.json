@@ -1373,6 +1373,41 @@
       "candidateSha256": "4ab5b923c18ff8a644a28d477aa3cf385d20cbb44ca2f5b5fa52f635758587dd",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "2026-11-05 motion parity with the reference (founder instruction relayed by Yonetim): decode labels, slot buttons, title wipe, frosted staggered mobile menu, product marquee, media reveal, footer wordmark draw, journey stage words, vision spectral ribbon, glyph reset (14 languages), stage cues, card zoom-through; reduced motion resolves to end states. Local lint/typecheck/vitest/translations/claims/build and E2E evidence only; candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/contact/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "41f133f7fef22ea34e90f751c01309456eaab7a11a15d9a99a6af60952f3df29",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/layout.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "ff757a974b06d4ac6c2700b73f54499f4166e2d1ca191860eb94a9bdf4210705",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/projects/[slug]/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "de7e4d46a339a16b80d6210b54c30dabbea3a28a5149aa0ea2e363697062f272",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/projects/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "45d6931e8da312489952f619cc6c60e0a5a7ad311bfb6a67c537586559b437eb",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/start/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "ae0ff8ae008e0609991081d45327221dc816a546005aed7b52de77c39b5c88e1",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
     }
   ]
 }
