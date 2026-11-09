@@ -20,7 +20,9 @@
     "lab": "Laboratorium",
     "approach": "Pendekatan kami",
     "collaboration": "Kolaborasi",
-    "mainNavigation": "Navigasi utama"
+    "mainNavigation": "Navigasi utama",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "Laboratorium produk independen yang menggunakan AI pada tempat dan waktu yang tepat, tanpa membesar-besarkannya.",
@@ -678,7 +680,8 @@
       "tierHigh": "Tinggi",
       "wallService": "Layanan",
       "reset": "Atur ulang"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "Kami tidak meminta angka anggaran yang tepat atau nama pengambil keputusan—rentang anggaran dan peran sudah cukup.",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

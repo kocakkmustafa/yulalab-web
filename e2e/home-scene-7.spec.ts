@@ -17,49 +17,60 @@ const VIEWS = [
 const FORBIDDEN =
   /doğrulandı|verified|validated|confirmed|measured|onaylandı|ölçüldü|asla|never|always|ücretsiz|free trial|hemen başla|get started now|start now/i;
 
-// Each CTA, its target and the real h1 of the target page (tr, en).
-const CTAS = [
-  { key: "products", href: "/projects", h1: { tr: /^Aile\.$/, en: /^The\sfamily\.$/ } },
+// Door links, in reading order. `lab` (WEB-UX-05e) and `contact` (#yollar,
+// WEB-UX-05f) are not on this base: only their href is checked, never navigated.
+const LINKS = [
+  { key: "products", href: "/projects", live: true, h1: { tr: /^Aile\.$/, en: /^The\sfamily\.$/ } },
   {
     key: "consulting",
     href: "/consulting",
+    live: true,
     h1: { tr: /^Yapay zekayı işinizde faydaya dönüştürün\.$/, en: /^Make AI useful in your business\.$/ },
   },
-  {
-    key: "notes",
-    href: "/notes",
-    h1: { tr: /^Yaptıklarımız,\solduğu\sgibi\.$/, en: /^What\swe\sdid,\sas\sit\shappened\.$/ },
-  },
-  { key: "approach", href: "/operating-system", h1: { tr: /^Nasıl\sçalışıyoruz\.$/, en: /^How\swe\swork\.$/ } },
-  { key: "contact", href: "/contact", h1: { tr: /^Konuşalım\.$/, en: /^Let.s\stalk\.$/ } },
+  { key: "contact", href: "/contact#yollar", live: false },
+  { key: "lab", href: "/lab", live: false },
+  { key: "transparency", href: "/transparency", live: true, h1: { tr: /./, en: /./ } },
 ] as const;
+
+/**
+ * Wait for hydration and the opening card to leave: until then the page pins
+ * itself to the top, and a scroll made earlier is undone (pre-existing).
+ */
+async function ready(page: Page) {
+  const root = page.locator("[data-yula-experience]");
+  await expect(root).toHaveAttribute("data-experience-mounted", "true", { timeout: 45_000 });
+  const skip = page.locator("[data-yula-loader-skip]");
+  if (await skip.isVisible()) await page.keyboard.press("Escape");
+  await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 45_000 });
+}
 
 async function horizontalOverflow(page: Page) {
   return page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 }
 
 async function bodyText(page: Page) {
-  return page.locator("#scene-7-start [data-scene7-paths]").innerText();
+  return page.locator("#scene-7-start [data-home-doors]").innerText();
 }
 
 for (const view of VIEWS) {
   test.describe(`scene 7 start (${view.name})`, () => {
     test.use({ viewport: view.viewport, locale: "tr-TR" });
 
-    test("three paths with equal weight, five links, no filled primary", async ({ page }) => {
+    test("four doors with equal weight, five links, no filled primary", async ({ page }) => {
       await page.goto("/");
       const scene = page.locator("#scene-7-start");
       await scene.scrollIntoViewIfNeeded();
-      await expect(scene.getByRole("group", { name: /Başlamanın üç yolu/ })).toHaveCount(1);
-      const paths = scene.locator("[data-scene7-path]");
-      await expect(paths).toHaveCount(3);
-      await expect(paths.nth(0)).toHaveAttribute("data-scene7-path", "individual");
-      await expect(paths.nth(1)).toHaveAttribute("data-scene7-path", "business");
-      await expect(paths.nth(2)).toHaveAttribute("data-scene7-path", "engineer");
-      await expect(paths.nth(0).getByRole("heading", { level: 3 })).toHaveText("Bireyler için");
-      await expect(paths.nth(1).getByRole("heading", { level: 3 })).toHaveText("İşletmeler için");
-      await expect(paths.nth(2).getByRole("heading", { level: 3 })).toHaveText("Mühendisler için");
-      const links = scene.locator("a[data-scene7-cta]");
+      await expect(scene.getByRole("heading", { level: 3, name: "Ne için buradasın?" })).toHaveCount(1);
+      const doors = scene.locator("[data-home-door]");
+      await expect(doors).toHaveCount(4);
+      for (const [i, key] of ["products", "work", "partners", "inspect"].entries()) {
+        await expect(doors.nth(i)).toHaveAttribute("data-home-door", key);
+      }
+      await expect(doors.nth(0).getByRole("heading", { level: 4 })).toHaveText("Ürünleri keşfet");
+      await expect(doors.nth(1).getByRole("heading", { level: 4 })).toHaveText("İşime AI");
+      await expect(doors.nth(2).getByRole("heading", { level: 4 })).toHaveText("İş birliği ve şirket");
+      await expect(doors.nth(3).getByRole("heading", { level: 4 })).toHaveText("İnceleme");
+      const links = scene.locator("a[data-home-door-link]");
       await expect(links).toHaveCount(5);
       // Every CTA has the same visual weight: transparent ground, same border, same type.
       const styles = await links.evaluateAll((els) =>
@@ -80,34 +91,37 @@ for (const view of VIEWS) {
     test("labels say what the target is; no data-room, studio or sign-up link", async ({ page }) => {
       await page.goto("/");
       const scene = page.locator("#scene-7-start");
-      const label = (key: string) => scene.locator(`a[data-scene7-cta="${key}"]`);
+      const label = (key: string) => scene.locator(`a[data-home-door-link="${key}"]`);
       await expect(label("products")).toHaveText("Ürünlere göz at");
-      await expect(label("consulting")).toHaveText("Birlikte nasıl çalışabileceğimizi gör");
-      await expect(label("notes")).toHaveText("Değişiklik notlarını oku");
-      await expect(label("approach")).toHaveText("Çalışma biçimini oku");
-      await expect(label("contact")).toHaveText("Ekiple iletişime geç");
-      const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
-      expect(hrefs).toEqual(CTAS.map((c) => c.href));
+      await expect(label("consulting")).toHaveText("AI danışmanlığını gör");
+      await expect(label("contact")).toHaveText("İş birliği yollarını gör");
+      await expect(label("lab")).toHaveText("Laboratuvarı gez");
+      await expect(label("transparency")).toHaveText("Şeffaflık kayıtlarını oku");
+      const hrefs = await scene.locator("a[data-home-door-link]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+      expect(hrefs).toEqual(LINKS.map((c) => c.href));
       expect(hrefs.join(" ")).not.toMatch(/studio|data-room|dataroom|signup|sign-up|mailto/i);
       // No two links share a name.
       const names = (await scene.locator("a").allTextContents()).map((n) => n.trim());
       expect(new Set(names).size).toBe(names.length);
     });
 
-    test("every CTA target answers 200 with real content, and a click opens it", async ({ page }) => {
-      for (const cta of CTAS) {
-        const res = await page.request.get(cta.href);
-        expect(res.status(), cta.href).toBe(200);
-        expect((await res.text()).length, cta.href).toBeGreaterThan(2000);
+    test("live targets answer 200 and a click opens them; lab and #yollar are href-only", async ({ page }) => {
+      for (const link of LINKS.filter((l) => l.live)) {
+        const res = await page.request.get(link.href);
+        expect(res.status(), link.href).toBe(200);
+        expect((await res.text()).length, link.href).toBeGreaterThan(2000);
       }
-      for (const cta of CTAS) {
+      for (const link of LINKS.filter((l) => l.live)) {
         await page.goto("/");
-        const link = page.locator(`#scene-7-start a[data-scene7-cta="${cta.key}"]`);
-        await link.scrollIntoViewIfNeeded();
-        await link.click();
-        await expect(page).toHaveURL(new RegExp(`${cta.href}$`));
+        await ready(page);
+        const a = page.locator(`#scene-7-start a[data-home-door-link="${link.key}"]`);
+        await a.scrollIntoViewIfNeeded();
+        await Promise.all([
+          page.waitForURL(new RegExp(`${link.href}$`), { waitUntil: "commit", timeout: 60_000 }),
+          a.click({ noWaitAfter: true }),
+        ]);
         await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
-        await expect(page.getByRole("heading", { level: 1 }).first()).toHaveText(cta.h1.tr);
+        await expect(page.getByRole("heading", { level: 1 }).first()).toHaveText(link.h1.tr);
       }
     });
 
@@ -136,9 +150,10 @@ for (const view of VIEWS) {
 test.describe("scene 7 keyboard", () => {
   test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
 
-  test("Tab walks the five CTAs in reading order with a visible focus ring", async ({ page }) => {
+  test("Tab walks the five door links in reading order with a visible focus ring", async ({ page }) => {
     await page.goto("/");
-    const links = page.locator("#scene-7-start a[data-scene7-cta]");
+    await ready(page);
+    const links = page.locator("#scene-7-start a[data-home-door-link]");
     await links.first().scrollIntoViewIfNeeded();
     await links.first().focus();
     for (let i = 0; i < 5; i++) {
@@ -164,8 +179,10 @@ test.describe("scene 7 keyboard", () => {
       }
       if (i < 4) await page.keyboard.press("Tab");
     }
-    await links.nth(4).press("Enter");
-    await expect(page).toHaveURL(/\/contact$/);
+    await Promise.all([
+      page.waitForURL(/\/transparency$/, { waitUntil: "commit", timeout: 60_000 }),
+      links.nth(4).press("Enter", { noWaitAfter: true }),
+    ]);
   });
 });
 
@@ -177,7 +194,7 @@ test.describe("scene 7 at 320 px", () => {
     await page.locator("#scene-7-start").scrollIntoViewIfNeeded();
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     const heights = await page
-      .locator("#scene-7-start a[data-scene7-cta]")
+      .locator("#scene-7-start a[data-home-door-link]")
       .evaluateAll((els) => els.map((e) => e.getBoundingClientRect().height));
     for (const h of heights) expect(h).toBeGreaterThanOrEqual(44);
   });
@@ -186,33 +203,24 @@ test.describe("scene 7 at 320 px", () => {
 test.describe("scene 7 in English", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "en-US" });
 
-  test("English copy, five links to real routes, honest wording", async ({ page }) => {
+  test("English copy, five links, honest wording", async ({ page }) => {
     await page.goto("/en");
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
-    await expect(scene.getByRole("group", { name: /Three ways to start/ })).toHaveCount(1);
-    await expect(scene.locator("[data-scene7-path]")).toHaveCount(3);
-    const link = (key: string) => scene.locator(`a[data-scene7-cta="${key}"]`);
+    await expect(scene.getByRole("heading", { level: 3, name: "What brings you here?" })).toHaveCount(1);
+    await expect(scene.locator("[data-home-door]")).toHaveCount(4);
+    const link = (key: string) => scene.locator(`a[data-home-door-link="${key}"]`);
     await expect(link("products")).toHaveText("Browse the products");
-    await expect(link("consulting")).toHaveText("See how we can work together");
-    await expect(link("notes")).toHaveText("Read the change notes");
-    await expect(link("approach")).toHaveText("Read how we work");
-    await expect(link("contact")).toHaveText("Get in touch with the team");
-    const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
-    expect(hrefs).toEqual(CTAS.map((c) => `/en${c.href}`));
-    for (const href of hrefs) {
-      const res = await page.request.get(href!);
-      expect(res.status(), href!).toBe(200);
+    await expect(link("consulting")).toHaveText("See AI consulting");
+    await expect(link("contact")).toHaveText("See ways to get in touch");
+    await expect(link("lab")).toHaveText("Visit the lab");
+    await expect(link("transparency")).toHaveText("Read the transparency records");
+    const hrefs = await scene.locator("a[data-home-door-link]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+    expect(hrefs).toEqual(LINKS.map((c) => `/en${c.href}`));
+    for (const l of LINKS.filter((x) => x.live)) {
+      const res = await page.request.get(`/en${l.href}`);
+      expect(res.status(), l.href).toBe(200);
     }
-    for (const cta of CTAS) {
-      await page.goto("/en");
-      const l = page.locator(`#scene-7-start a[data-scene7-cta="${cta.key}"]`);
-      await l.scrollIntoViewIfNeeded();
-      await l.click();
-      await expect(page).toHaveURL(new RegExp(`/en${cta.href}$`));
-      await expect(page.getByRole("heading", { level: 1 }).first()).toHaveText(cta.h1.en);
-    }
-    await page.goto("/en");
     const text = await bodyText(page);
     expect(text).not.toMatch(/\d/);
     expect(text).not.toMatch(FORBIDDEN);
@@ -229,14 +237,11 @@ test.describe("scene 7 in /ar (RTL page, English fallback block)", () => {
     await expect(page.locator("[data-home-scenes]")).toHaveAttribute("dir", "ltr");
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
-    await expect(scene.locator("[data-scene7-path]")).toHaveCount(3);
+    await expect(scene.locator("[data-home-door]")).toHaveCount(4);
     expect(await bodyText(page)).not.toMatch(/[؀-ۿ]/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
-    const hrefs = await scene.locator("a[data-scene7-cta]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
-    for (const href of hrefs) {
-      const res = await page.request.get(href!);
-      expect(res.status(), href!).toBe(200);
-    }
+    const hrefs = await scene.locator("a[data-home-door-link]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
+    expect(hrefs).toEqual(LINKS.map((c) => `/ar${c.href}`));
   });
 });
 

@@ -20,7 +20,9 @@
     "lab": "연구소",
     "approach": "우리의 접근 방식",
     "collaboration": "협업",
-    "mainNavigation": "주 내비게이션"
+    "mainNavigation": "주 내비게이션",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "과장 없이, 필요한 곳에 필요한 때 AI를 활용하는 독립 제품 연구소입니다.",
@@ -678,7 +680,8 @@
       "tierHigh": "높음",
       "wallService": "서비스",
       "reset": "재설정"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "정확한 예산액이나 의사결정자의 이름은 묻지 않습니다. 예산 범위와 역할이면 충분합니다.",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

@@ -20,7 +20,9 @@
     "lab": "Laboratório",
     "approach": "Nossa abordagem",
     "collaboration": "Parcerias",
-    "mainNavigation": "Navegação principal"
+    "mainNavigation": "Navegação principal",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "Um laboratório independente de produtos que usa IA no lugar e no momento certos, sem exagerar suas capacidades.",
@@ -678,7 +680,8 @@
       "tierHigh": "Alta",
       "wallService": "Serviço",
       "reset": "Redefinir"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "Não pedimos um valor exato de orçamento nem o nome de quem decide — uma faixa e uma função são suficientes.",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

@@ -10,6 +10,7 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { ThemeControl } from "@/components/theme/ThemeControl";
 import { SlotLabel } from "@/components/common/SlotLabel";
 import { HEADER_CTA, HEADER_NAV, MOBILE_EXTRA_NAV } from "./nav-config";
+import { HOME_DOORS } from "@/components/landing/home-doors";
 
 const isActiveHref = (href: string, stripped: string) =>
   href === "/" ? stripped === "/" : stripped.startsWith(href);
@@ -17,6 +18,7 @@ const isActiveHref = (href: string, stripped: string) =>
 // Studio is reachable from the footer only (see nav-config.ts), so the header takes no switch.
 export function Header() {
   const t = useTranslations("header");
+  const tHome = useTranslations("home");
   const locale = useLocale();
   const pathname = usePathname();
   const stripped = stripLocale(pathname, locale);
@@ -29,6 +31,9 @@ export function Header() {
 
   const [scrolled, setScrolled] = useState(false);
   const [mobile, setMobile] = useState(false);
+  const [doorsOpen, setDoorsOpen] = useState(false);
+  const doorsWrap = useRef<HTMLDivElement>(null);
+  const doorsButton = useRef<HTMLButtonElement>(null);
   const menuButton = useRef<HTMLButtonElement>(null);
   const mobileDialog = useRef<HTMLDialogElement>(null);
   const mobileCloseButton = useRef<HTMLButtonElement>(null);
@@ -36,7 +41,39 @@ export function Header() {
 
   useEffect(() => {
     setMobile(false);
+    setDoorsOpen(false);
   }, [pathname]);
+
+  // Disclosure, not a modal: Escape or an outside press closes it, and Escape
+  // returns focus to the trigger (design 04 §E12, QA A11Y-16).
+  useEffect(() => {
+    if (!doorsOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      setDoorsOpen(false);
+      doorsButton.current?.focus();
+    };
+    const onPointer = (event: PointerEvent) => {
+      if (!doorsWrap.current?.contains(event.target as Node)) setDoorsOpen(false);
+    };
+    document.addEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPointer);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPointer);
+    };
+  }, [doorsOpen]);
+
+  // The open drawer must not let the page scroll behind it (design 04 §E12).
+  useEffect(() => {
+    if (!mobile) return;
+    const root = document.documentElement;
+    const previous = root.style.overflow;
+    root.style.overflow = "hidden";
+    return () => {
+      root.style.overflow = previous;
+    };
+  }, [mobile]);
 
   useEffect(() => {
     const dialog = mobileDialog.current;
@@ -106,6 +143,42 @@ export function Header() {
                 </Link>
               );
             })}
+            <div ref={doorsWrap} className="relative">
+              <button
+                ref={doorsButton}
+                type="button"
+                onClick={() => setDoorsOpen((open) => !open)}
+                aria-expanded={doorsOpen}
+                aria-controls="site-doors-panel"
+                data-site-doors-trigger="true"
+                className="focusable inline-flex min-h-[44px] items-center text-ink-300 hover:text-ink-50 transition-colors"
+              >
+                {t("doors")}
+              </button>
+              {doorsOpen ? (
+                <ul
+                  id="site-doors-panel"
+                  role="list"
+                  aria-label={t("doorsPanel")}
+                  data-site-doors-panel="true"
+                  className="absolute right-0 top-full z-50 mt-2 flex w-64 flex-col rounded-xl border border-hairline bg-ink-900 p-2"
+                >
+                  {HOME_DOORS.map((door) => (
+                    <li key={door.key}>
+                      <Link
+                        href={door.links[0].href}
+                        prefetch={false}
+                        onClick={() => setDoorsOpen(false)}
+                        data-site-door={door.key}
+                        className="focusable flex min-h-[44px] items-center rounded-lg px-3 text-ink-100 hover:bg-white/[0.06]"
+                      >
+                        {tHome(`doors.${door.key}.title`)}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+            </div>
             <LocaleSwitcher compact />
             <ThemeControl compact />
             <Link
@@ -232,6 +305,25 @@ export function Header() {
                   </li>
                 );
               })}
+            </ul>
+            <p className="mt-4 border-t border-hairline pt-3 text-xs uppercase tracking-widest text-ink-300">
+              {t("doors")}
+            </p>
+            <ul role="list" className="flex flex-col">
+              {HOME_DOORS.map((door, index) => (
+                <li key={door.key}>
+                  <Link
+                    href={door.links[0].href}
+                    prefetch={false}
+                    onClick={() => setMobile(false)}
+                    data-site-door={door.key}
+                    style={{ "--mm-index": mobilePrimary.length + mobileSecondary.length + index } as CSSProperties}
+                    className="mm-item focusable flex min-h-[44px] items-center text-base text-ink-200"
+                  >
+                    {tHome(`doors.${door.key}.title`)}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
           <div className="mt-6 flex flex-wrap items-center gap-2">

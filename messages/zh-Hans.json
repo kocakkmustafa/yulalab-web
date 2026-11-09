@@ -20,7 +20,9 @@
     "lab": "实验室",
     "approach": "我们的方法",
     "collaboration": "合作",
-    "mainNavigation": "主导航"
+    "mainNavigation": "主导航",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "一家独立的产品实验室，在合适的时间和场景使用 AI，不夸大它的作用。",
@@ -678,7 +680,8 @@
       "tierHigh": "高",
       "wallService": "服务",
       "reset": "重置"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "我们不要求精确预算或决策者姓名；预算范围和角色就足够。",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

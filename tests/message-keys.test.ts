@@ -38,6 +38,10 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["projectsIndex", "researchHeading"],
   ["projectsIndex", "researchNote"],
   ["projectsIndex", "researchToggle"],
+  // WEB-UX-05d: home doors, header Doors panel, loader skip button.
+  ["header", "doors"],
+  ["header", "doorsPanel"],
+  ["experience", "loaderSkip"],
 ];
 
 describe.each([

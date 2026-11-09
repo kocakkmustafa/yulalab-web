@@ -20,7 +20,9 @@
     "lab": "प्रयोगशाला",
     "approach": "हमारा दृष्टिकोण",
     "collaboration": "सहयोग",
-    "mainNavigation": "मुख्य नेविगेशन"
+    "mainNavigation": "मुख्य नेविगेशन",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "एक स्वतंत्र उत्पाद प्रयोगशाला, जो AI का इस्तेमाल सही समय और सही जगह पर करती है, बिना उसकी क्षमताओं को बढ़ा-चढ़ाकर बताए।",
@@ -678,7 +680,8 @@
       "tierHigh": "उच्च",
       "wallService": "सेवा",
       "reset": "रीसेट करें"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "हम बजट की सटीक रकम या निर्णय लेने वाले व्यक्ति का नाम नहीं पूछते — एक सीमा और भूमिका काफ़ी हैं।",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

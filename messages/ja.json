@@ -20,7 +20,9 @@
     "lab": "ラボ",
     "approach": "私たちのアプローチ",
     "collaboration": "協業",
-    "mainNavigation": "メインナビゲーション"
+    "mainNavigation": "メインナビゲーション",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "AIを誇張せず、適切な場面で適切に使う、独立系のプロダクトラボ。",
@@ -678,7 +680,8 @@
       "tierHigh": "高",
       "wallService": "サービス",
       "reset": "リセット"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "正確な予算額や意思決定者のお名前は求めません。予算帯と役割だけで十分です。",
@@ -908,6 +911,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }
