@@ -57,14 +57,14 @@ Matris puanları (24/23/22) bu kararın girdisidir, hakemi değil.
 | 3 | ADR kayıtlarının kamuya açılması | **KURUCU KARARI GEREKİR.** Varsayılan: kapalı; Lab'da ADR listesi yok |
 | 4 | Kod/doküman/basın kiti hedefi | **KURUCU KARARI GEREKİR.** Varsayılan: hedef yok → CTA çizilmez (02§5 #9) |
 | 5 | Ürün sırası kaynağı; Ostinato'nun "çekirdek" gösterimi | **KAPANDI (bu ADR).** Tek kaynak, "Ana ürünler" = LifeOS, Braavolabs, Ostinato (talimat §1, §6.1), Ostinato rozeti "Yakında"; uygulama UX-05a |
-| 6 | Yükleyici atlama denetimi (02§3 #3) | **KURUCU KARARI GEREKİR** (davranış `src/components/experience/ExperienceLoader.tsx` içinde; klasör korunur, dokunma izni kurucudan) |
+| 6 | Yükleyici atlama denetimi (02§3 #3) | **KAPANDI (teknik karar, Project orchestration, 2026-11-09):** `src/components/experience/ExperienceLoader.tsx` için dokunma İZİNLİ, şartla: 3D sahne, animasyon ve görsel çıktı birebir aynı kalır; önce/sonra ekran görüntüsü (masaüstü + mobil) alınır ve mevcut sahne testleri yeşil kalır. Uygulama UX-05 kapsamında (ilgili alt bilet kabulüne bu şartlar yazılır). |
 | 7 | Yolculuğun önüne/arkasına blok eklemenin storyboard etkisi | **UX-05d'ye ertelendi.** Tasarım: bloklar `YulaExperience` DIŞINDA, `HomeScenes` anchor sözleşmesine uyar (`PR #50:src/components/landing/home-scenes.ts`); etki ölçümü UX-05d kabul ölçütü |
 | 8 | Demo "Gerçek yetenek" etiketi için kanıt kaydı | **UX-05c'ye ertelendi.** Kural: kanıt kaydı yoksa her demo "Örnek simülasyon"; "Gerçek" etiketi yalnız claim kaydı + kurucu doğrulamasıyla |
 | 9 | Claim sürelerinin yenilenmesi (`public-registry.ts:30-201`) | **Kurucu/veri işi, UX kapsamı dışı.** Tasarım bayat claim'i gizlemez ("Güncellik kontrolü bekleniyor"); yenileme ayrı bilet |
 | 10 | 14 dil yeni anahtarların insan incelemesi | **UX-05'e ertelendi.** Kural: çevrilmemiş anahtar etiketli İngilizce yedekle gider (01§5); insan inceleme kapasitesi UNKNOWN, kapsam raporlanır |
 | 11 | Live/beta rozeti | **KAPANDI** (§7 a) |
 
-KURUCU KARARI GEREKİR özeti: #1, #2, #3, #4, #6. (Gerçek yatırımcı/iş ortağı kanalı = #1.)
+KURUCU KARARI GEREKİR özeti: #1, #2, #3, #4 (kurucuya soruldu, yanıt bekleniyor; bunlara dayanan metin "karar bekliyor" notuyla dışarıda bırakılır). #6 teknik karar olarak kapandı (yukarıda). (Gerçek yatırımcı/iş ortağı kanalı = #1.)
 
 ## 9. Sonuçlar ve riskler
 - Olumlu: UX-01 bulgularının çoğu (üç sıra, rozet, ekran boş durumu, gizlilik bağlantısı, yatırımcı/iş ortağı dürüst yolu) yeni sahne/animasyon/renk olmadan çözülür; ADR-003 ile uyumlu.

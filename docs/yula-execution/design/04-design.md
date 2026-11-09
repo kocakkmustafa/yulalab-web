@@ -98,7 +98,7 @@ Hiçbir mevcut rota kaldırılmaz; HTTP yönlendirmesi (301) GEREKMEZ. Davranı�
 | Lab / Şeffaflık | Tek sütun, süzgeç açılır liste | 2 sütun | Süzgeç üstte, 2 sütun |
 | Gezinme | `<dialog>` menü + "Kapılar" ayrı bölüm olarak menü sonunda (E12) | Aynı `<dialog>` menü | 1024-1279px: `<dialog>` menü (düzen masaüstü, gezinme mobil); >=1280px (`xl`): header 4 öğe + Kapılar paneli (`Header.tsx:99,132,174`) |
 - **Dokunma hedefi** >=44x44 tercih, >=24x24 asgari (QA:A11Y-14; `globals.css:707-708` 44px örneği). **320px**: yatay taşma yok (QA:A11Y-05; mevcut `e2e/products-index.spec.ts:31`, `consulting.spec.ts:8`).
-- **Mobilde yükleyici yok** (`YulaExperience.tsx:276-282`); masaüstü yükleyici atlanamıyor (02§3 #3) — atlama davranışı `experience/` içinde olduğundan ADR§8 #6'da KURUCU KARARI GEREKİR; bu belge dokunmaz.
+- **Mobilde yükleyici yok** (`YulaExperience.tsx:276-282`); masaüstü yükleyici atlanamıyor (02§3 #3) — atlama davranışı `experience/` içinde; ADR§8 #6 teknik karar olarak KAPANDI (Project orchestration, 2026-11-09): dokunma izinli, şartla — 3D sahne/animasyon/görsel çıktı birebir aynı, önce/sonra ekran görüntüsü (masaüstü + mobil) ve mevcut sahne testleri yeşil; uygulama UX-05 alt biletinde.
 - **Mobilde ağır görsel deney yok** (talimat §6.3; QA:PERF-07): yeni bloklar CSS/HTML, canvas eklenmez.
 - **Kaydırma:** Lenis yalnız yolculukta (`useSmoothScroll.ts:3-18`); yeni sayfalar yerel kaydırma kullanır.
 
