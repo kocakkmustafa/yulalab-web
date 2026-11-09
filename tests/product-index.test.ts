@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { partitionForIndex, lifecycleRank, latestVerifiedAt } from "@/lib/product-index";
+import {
+  partitionForIndex,
+  lifecycleRank,
+  latestVerifiedAt,
+  PRODUCT_ORDER,
+  groupProducts,
+  sortByProductOrder,
+} from "@/lib/product-index";
+import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import type { ProductPublicRecord } from "@/lib/types";
 
@@ -105,5 +113,25 @@ describe("against the real registry", () => {
     expect(archived).toHaveLength(0);
     // Beta must not outrank a live product.
     expect(primary[primary.length - 1].slug).toBe("braavolabs");
+  });
+});
+
+describe("single product order source (WEB-UX-05a)", () => {
+  it("is LifeOS, Braavolabs, Ostinato first, then the portfolio", () => {
+    expect(PRODUCT_ORDER.slice(0, 3)).toEqual(["lifeos", "braavolabs", "ostinato"]);
+    expect([...PRODUCT_ORDER].sort()).toEqual(publicRegistry.map((r) => r.slug).sort());
+  });
+
+  it("drives the projects array, the registry sort and the home guard identically", () => {
+    expect(projects.map((p) => p.slug)).toEqual([...PRODUCT_ORDER]);
+    expect(sortByProductOrder(publicRegistry).map((r) => r.slug)).toEqual([...PRODUCT_ORDER]);
+    const g = groupProducts(projects);
+    expect([...g.featured, ...g.portfolio].map((p) => p.slug)).toEqual([...PRODUCT_ORDER]);
+  });
+
+  it("splits featured from portfolio regardless of input order", () => {
+    const g = groupProducts([...projects].reverse());
+    expect(g.featured.map((p) => p.slug)).toEqual(["lifeos", "braavolabs", "ostinato"]);
+    expect(g.portfolio.map((p) => p.slug)).toEqual(["burunfarki", "gravita", "lissom", "jablab", "choreia"]);
   });
 });

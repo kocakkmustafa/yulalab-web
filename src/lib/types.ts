@@ -159,7 +159,10 @@ export type ProjectConfig = {
   vision: LocalizedString;
   mission: LocalizedString;
 
-  /** Order on the projects index. Lower numbers come first. */
+  /**
+   * @deprecated Superseded by PRODUCT_ORDER (src/lib/product-index.ts, WEB-UX-05a).
+   * Kept only so the data files stay untouched; nothing reads it for ordering.
+   */
   order: number;
 
   /**

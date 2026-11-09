@@ -11,18 +11,8 @@ import type {
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
+import { PRODUCT_ORDER, SCENE_PRODUCT_ORDER } from "@/lib/product-index";
 import type { Locale, ProductLifecycle } from "@/lib/types";
-
-const CANONICAL_PRODUCT_ORDER = [
-  "braavolabs",
-  "burunfarki",
-  "lifeos",
-  "gravita",
-  "lissom",
-  "jablab",
-  "ostinato",
-  "choreia",
-] as const;
 
 function localizeInternalRoute(route: string, locale: Locale): string {
   if (!route.startsWith("/") || route.startsWith("//")) {
@@ -47,9 +37,23 @@ export default async function LandingPage({
   const tStatus = await getTranslations({ locale, namespace: "status" });
 
   const projectSlugs = projects.map((project) => project.slug);
-  if (projectSlugs.join("|") !== CANONICAL_PRODUCT_ORDER.join("|")) {
+  const sceneProjects = SCENE_PRODUCT_ORDER.map((slug) => {
+    const found = projects.find((project) => project.slug === slug);
+    if (!found) throw new Error(`Homepage scene product missing from projects: ${slug}`);
+    return found;
+  });
+  const sceneSlugs = sceneProjects.map((project) => project.slug);
+  if (
+    sceneSlugs.length !== projects.length ||
+    sceneSlugs.join("|") !== SCENE_PRODUCT_ORDER.join("|")
+  ) {
     throw new Error(
-      `Homepage project order drifted: expected ${CANONICAL_PRODUCT_ORDER.join(", ")}; received ${projectSlugs.join(", ")}`,
+      `Homepage scene order drifted: expected ${SCENE_PRODUCT_ORDER.join(", ")}; received ${sceneSlugs.join(", ")}`,
+    );
+  }
+  if (projectSlugs.join("|") !== PRODUCT_ORDER.join("|")) {
+    throw new Error(
+      `Homepage project order drifted: expected ${PRODUCT_ORDER.join(", ")}; received ${projectSlugs.join(", ")}`,
     );
   }
 
@@ -70,17 +74,17 @@ export default async function LandingPage({
     );
   }
 
-  // Founder decisions 2026-10-31: the home journey introduces finished
-  // products, so it states no publication status; an app not yet in a store
-  // reads "Coming soon" (K2). Publication evidence lives on /transparency.
+  // Founder decision 2026-11-09 ("Evet, rozet ekle"): every product carries a
+  // status label taken from its registry lifecycle; no label is invented here.
+  // Publication evidence itself lives on /transparency.
   const lifecycleLabels: Record<ProductLifecycle, string> = {
-    live: "",
-    beta: "",
+    live: tStatus("live"),
+    beta: tStatus("beta"),
     research: tStatus("comingSoon"),
     archived: "",
   };
 
-  const experienceProducts: ExperienceProduct[] = projects.map((project) => {
+  const experienceProducts: ExperienceProduct[] = sceneProjects.map((project) => {
     const record = registryBySlug.get(project.slug);
     if (!record) {
       throw new Error(`Missing public registry record for homepage product: ${project.slug}`);

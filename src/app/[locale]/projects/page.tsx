@@ -7,8 +7,7 @@ import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { ProjectCard } from "@/components/landing/ProjectCard";
 import { projects } from "@/data/projects";
-import { publicRegistry } from "@/data/public-registry";
-import { partitionForIndex } from "@/lib/product-index";
+import { groupProducts } from "@/lib/product-index";
 import { GlassSheen } from "@/components/common/GlassSheen";
 
 export async function generateMetadata({
@@ -42,15 +41,11 @@ function ProjectsIndex() {
   const t = useTranslations("projectsIndex");
   const locale = useLocale();
 
-  // Lifecycle comes from the registry; the card still renders from
-  // ProjectConfig. Two sources is the known Y-P0-003 debt — reading the
-  // grouping from the registry at least keeps "what is shipped" answered in
-  // one place while the merge waits for its own slice.
-  const bySlug = new Map(projects.map((p) => [p.slug, p]));
-  const partition = partitionForIndex(publicRegistry);
-  const toConfigs = (records: typeof partition.primary) =>
-    records.map((r) => bySlug.get(r.slug)).filter((p): p is NonNullable<typeof p> => Boolean(p));
-  const ordered = [...toConfigs(partition.primary), ...toConfigs(partition.research)];
+  // One order for every surface: PRODUCT_ORDER (src/lib/product-index.ts).
+  // The `projects` array is already in that order; grouping only splits
+  // "Ana ürünler" from "Portföy" and keeps both in the one grid.
+  const groups = groupProducts(projects);
+  const ordered = [...groups.featured, ...groups.portfolio];
 
   return (
     <div className="page-enter relative project-index">
@@ -67,9 +62,8 @@ function ProjectsIndex() {
       </section>
 
       {/* Founder decision 2026-10-31: one grid of finished products, no
-          publication grouping. Order still follows the registry partition
-          (released first); an app not in a store yet carries only its
-          "Coming soon" pill. Publication evidence lives on /transparency. */}
+          publication grouping. Order follows PRODUCT_ORDER; an app not in a
+          store yet carries only its "Coming soon" pill. Publication evidence lives on /transparency. */}
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-6 pb-20">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {ordered.map((p, i) => (

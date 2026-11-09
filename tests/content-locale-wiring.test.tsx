@@ -42,8 +42,8 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
     const { products, copy } = (result as ReactElement<{ products: ExperienceProduct[]; copy: ExperienceCopy }>).props;
     expect(copy.locale).toBe(locale);
     expect(products).toHaveLength(projects.length);
-    for (const [index, product] of products.entries()) {
-      const source = projects[index];
+    for (const product of products) {
+      const source = projects.find((p) => p.slug === product.slug)!;
       const record = publicRegistry.find((item) => item.slug === source.slug)!;
       expect(product.category).toBe(`${locale}::${source.category.en}`);
       expect(product.tagline).toBe(`${locale}::${source.tagline.en}`);

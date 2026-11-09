@@ -1,4 +1,5 @@
 import type { ProjectConfig } from "@/lib/types";
+import { sortByProductOrder } from "@/lib/product-index";
 import { braavolabs } from "./braavolabs";
 import { burunfarki } from "./burunfarki";
 import { lifeos } from "./lifeos";
@@ -8,11 +9,9 @@ import { jablab } from "./jablab";
 import { ostinato } from "./ostinato";
 import { choreia } from "./choreia";
 
-// Order field keeps the three live/beta products first; the five
-// "coming-soon" products (gravita/lissom/jablab/ostinato/choreia, order 4-8)
-// sort after them everywhere this array is consumed (homepage, /projects
-// grid, footer, sitemap) — see ProjectConfig.order doc comment.
-export const projects: ProjectConfig[] = [
+// Order comes from PRODUCT_ORDER in src/lib/product-index.ts (single source,
+// WEB-UX-05a); ProjectConfig.order is superseded and not read here.
+export const projects: ProjectConfig[] = sortByProductOrder([
   braavolabs,
   burunfarki,
   lifeos,
@@ -21,7 +20,7 @@ export const projects: ProjectConfig[] = [
   jablab,
   ostinato,
   choreia,
-].sort((a, b) => a.order - b.order);
+]);
 
 export function getProjectBySlug(slug: string): ProjectConfig | undefined {
   return projects.find((p) => p.slug === slug);
