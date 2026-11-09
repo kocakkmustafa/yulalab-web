@@ -247,12 +247,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                 {record?.supportUrl || record?.privacyUrl ? (
                   <p className="mt-6 flex flex-wrap gap-x-5 gap-y-2 font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400">
                     {record.supportUrl ? (
-                      <Link href={record.supportUrl} className="hover:text-ink-50 transition-colors focusable" data-testid="access-support">
+                      <Link href={record.supportUrl} prefetch={false} className="hover:text-ink-50 transition-colors focusable" data-testid="access-support">
                         {tFooter("navSupport")}
                       </Link>
                     ) : null}
                     {record.privacyUrl ? (
-                      <Link href={record.privacyUrl} className="hover:text-ink-50 transition-colors focusable" data-testid="access-privacy">
+                      <Link href={record.privacyUrl} prefetch={false} className="hover:text-ink-50 transition-colors focusable" data-testid="access-privacy">
                         {tFooter("navPrivacy")}
                       </Link>
                     ) : null}
@@ -360,7 +360,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <div data-item="5">
               {record?.privacyUrl ? (
                 <p className="mb-10 text-[15px]">
-                  <Link href={record.privacyUrl} className="underline underline-offset-4 hover:text-ink-50 focusable" data-testid="trust-privacy">
+                  <Link href={record.privacyUrl} prefetch={false} className="underline underline-offset-4 hover:text-ink-50 focusable" data-testid="trust-privacy">
                     {t("trustPrivacy")}
                   </Link>
                 </p>
@@ -374,7 +374,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
             <div data-item="6" className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-12 lg:pb-0">
               <StatusPill status={project.status} slug={project.slug} />
-              <Link href="/transparency" className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">
+              <Link href="/transparency" prefetch={false} className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">
                 {t("statusLink")}
               </Link>
             </div>
