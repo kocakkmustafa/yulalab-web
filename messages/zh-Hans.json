@@ -538,7 +538,15 @@
     "statVerified": "已验证",
     "statNeedsReverification": "需要重新验证",
     "availabilityUnverified": "发布状态需要重新验证",
-    "availabilityCheckedAt": "上次发布核查：{date}。您可以打开链接，查看当前状态。"
+    "availabilityCheckedAt": "上次发布核查：{date}。您可以打开链接，查看当前状态。",
+    "accessHeading": "Access",
+    "screenHeading": "Screens and demo",
+    "screenEmpty": "There is no screenshot for this product yet.",
+    "trustHeading": "Privacy and trust",
+    "trustPrivacy": "Privacy policy for this product",
+    "statusHeading": "Release status",
+    "statusLink": "Status and sources",
+    "demoLabel": "Example simulation"
   },
   "braavolabsDemo": {
     "kicker": "Sample plan card",
