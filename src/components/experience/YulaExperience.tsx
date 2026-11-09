@@ -181,8 +181,12 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   const linearTarget = useRef<string | null>(null);
   const audio = useRef<AmbientAudioController | null>(null);
   const canvasReadyRef = useRef(false);
+  const loaderSkipRef = useRef(false);
   const journeyReturn = useRef<JourneyHistory | null>(null);
   const returnRestored = useRef(false);
+  const skipLoader = useCallback(() => {
+    loaderSkipRef.current = true;
+  }, []);
   const timelineEnabled =
     mounted &&
     !forceStatic &&
@@ -319,6 +323,11 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         previousTimestamp,
         document.visibilityState,
       );
+      if (loaderSkipRef.current) {
+        // "Skip intro" only completes the drawing phase; the hold, the exit
+        // and the scene hand-off below run exactly as without it.
+        visibleElapsed = Math.max(visibleElapsed, LOADER_DRAW_DURATION_MS);
+      }
       previousTimestamp = now;
       const elapsed = visibleElapsed;
       const drawProgress = Math.min(
@@ -631,7 +640,11 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         </>
       )}
       {loaderVisible ? (
-        <ExperienceLoader lines={copy.loader} progress={loaderProgress} />
+        <ExperienceLoader
+          lines={copy.loader}
+          progress={loaderProgress}
+          onSkip={mounted && !capture.enabled ? skipLoader : undefined}
+        />
       ) : null}
     </div>
   );

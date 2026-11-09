@@ -1,6 +1,7 @@
 "use client";
 
-import type { CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import type { ExperienceCopy } from "./types";
 import { resolveLoaderFrame } from "./loader";
 import { scrambleFrame } from "@/lib/scramble";
@@ -9,6 +10,8 @@ import styles from "./Experience.module.css";
 type ExperienceLoaderProps = {
   lines: ExperienceCopy["loader"];
   progress: number;
+  /** Fast-forwards the drawing phase; the exit and the scene hand-off are unchanged. */
+  onSkip?: () => void;
 };
 
 type LoaderStyle = CSSProperties & {
@@ -24,7 +27,19 @@ type LoaderStyle = CSSProperties & {
  * A self-running architectural title card, not an interaction gate.
  * Timing lives in YulaExperience so capture mode can provide an exact frame.
  */
-export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
+export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderProps) {
+  const t = useTranslations("experience");
+  const locale = useLocale();
+  // tr and en are written; the other catalogues carry English (WCAG 3.1.2).
+  const fallbackEnglish = locale !== "tr" && locale !== "en";
+  useEffect(() => {
+    if (!onSkip) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !event.defaultPrevented) onSkip();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [onSkip]);
   const frame = resolveLoaderFrame(progress);
   const clamped = frame.progress;
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
@@ -103,6 +118,17 @@ export function ExperienceLoader({ lines, progress }: ExperienceLoaderProps) {
           <span />
         </div>
       </div>
+      {onSkip ? (
+        <button
+          type="button"
+          onClick={onSkip}
+          data-yula-loader-skip="true"
+          lang={fallbackEnglish ? "en" : undefined}
+          className="focusable absolute bottom-[calc(40px+var(--safe-bottom))] right-[calc(40px+var(--safe-right))] z-10 min-h-[44px] rounded-full border border-white/40 px-5 text-sm font-medium text-white/90 hover:border-white hover:text-white"
+        >
+          {t("loaderSkip")}
+        </button>
+      ) : null}
     </div>
   );
 }
