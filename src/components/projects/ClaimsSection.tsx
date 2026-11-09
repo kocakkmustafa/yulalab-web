@@ -29,7 +29,8 @@ export function ClaimsSection({
 }) {
   const verified = presented.filter((p) => p.kind === "verified");
   const lapsed = presented.filter((p) => p.kind === "lapsed");
-  if (presented.length === 0) return null;
+  // Withheld claims render nowhere here; a section with only those would be an empty heading.
+  if (verified.length + lapsed.length === 0) return null;
 
   return (
     <section className="pb-24" aria-labelledby="claims-heading">

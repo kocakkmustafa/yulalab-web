@@ -187,10 +187,17 @@ describe("a linked stat must be a figure its claim declares", () => {
     // dropped: figures ["14","19"] passed via "2026-08-19".
     const searchable = (text: string) =>
       text.replace(/\d{4}-\d{2}-\d{2}/g, " ").replace(/[.,\u00a0]/g, "");
+    // A fixed statement, not registry data: the registry's "as of" date moves
+    // every time the claim is re-verified (it was 2026-08-19 when this guard
+    // was written; WEB-P0-04 re-verified it on 2026-11-08), and a guard that
+    // depends on today's date silently stops guarding the day it is refreshed.
+    const statement = "14 LLM providers (BYOK) — as of 2026-08-19.";
+    expect(/(?<![0-9])19(?![0-9])/.test(statement)).toBe(true); // the raw text WOULD match "19"
+    expect(/(?<![0-9])19(?![0-9])/.test(searchable(statement))).toBe(false); // the normalisation prevents it
+    // And the live claim still asserts 14 through the statement, not through its date.
     const br = publicRegistry.find((r) => r.slug === "braavolabs")!;
     const claim = br.claims.find((c) => c.id === "braavolabs-provider-count")!;
-    expect(claim.statementEn).toMatch(/2026-08-19/);
-    expect(/(?<![0-9])19(?![0-9])/.test(searchable(claim.statementEn))).toBe(false);
+    expect(/(?<![0-9])14(?![0-9])/.test(searchable(claim.statementEn))).toBe(true);
   });
 
   it("the matcher itself behaves", () => {

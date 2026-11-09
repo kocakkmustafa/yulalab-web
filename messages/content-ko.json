@@ -384,7 +384,7 @@
   "Nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.": "아홉 가지 기본 요소: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
   "The number of primitive types by name; not the size of the combination space.": "이름으로 구분한 기본 요소 유형 수이며 조합 공간의 크기가 아닙니다.",
   "Nine": "아홉",
-  "14 LLM providers (BYOK) — as of 2026-08-19.": "LLM 제공업체 14개 (BYOK) — 2026-08-19 기준.",
+  "14 LLM providers (BYOK) — as of 2026-11-08.": "LLM 제공업체 14개 (BYOK) — 2026-11-08 기준.",
   "The number of supported providers; not a claim that every model from every provider is tested to the same standard.": "지원 제공업체 수이며 모든 제공업체의 모든 모델을 같은 수준으로 테스트했다는 주장은 아닙니다.",
   "An open-ended (template-free) combination space — the system has a fixed step/depth cap (MAX_STEPS_PER_RUN=50), not mathematically unlimited.": "정해진 템플릿에 묶이지 않는 개방형 조합 공간입니다. 시스템에는 고정 단계·깊이 한도 (MAX_STEPS_PER_RUN=50)가 있어 수학적으로 무한하지 않습니다.",
   "A technical capacity ceiling; not a claim about the practical variety a user experiences.": "기술적 상한이며 사용자가 실제로 경험하는 다양성에 대한 주장이 아닙니다.",

@@ -75,6 +75,11 @@ function Transparency() {
   const now = new Date();
   const records = publicRegistry
     .map((record) => ({ record, presented: presentClaims(record, now) }))
+    .map(({ record, presented }) => ({
+      record,
+      // Withheld (planned/prototype/unknown) claims belong on status labels, not here.
+      presented: presented.filter((p) => p.kind !== "withheld"),
+    }))
     .filter(({ presented }) => presented.length > 0);
 
   return (

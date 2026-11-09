@@ -384,7 +384,7 @@
   "Nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.": "Neuf primitives : ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.",
   "The number of primitive types by name; not the size of the combination space.": "Le nombre de types de primitives nommés ; pas la taille de l'espace des combinaisons.",
   "Nine": "Neuf",
-  "14 LLM providers (BYOK) — as of 2026-08-19.": "14 fournisseurs de LLM (BYOK) — au 2026-08-19.",
+  "14 LLM providers (BYOK) — as of 2026-11-08.": "14 fournisseurs de LLM (BYOK) — au 2026-11-08.",
   "The number of supported providers; not a claim that every model from every provider is tested to the same standard.": "Le nombre de fournisseurs pris en charge ; cela ne signifie pas que tous leurs modèles sont testés selon la même norme.",
   "An open-ended (template-free) combination space — the system has a fixed step/depth cap (MAX_STEPS_PER_RUN=50), not mathematically unlimited.": "Un espace de combinaisons ouvert (sans modèles prédéfinis) — le système impose une limite fixe d'étapes et de profondeur (MAX_STEPS_PER_RUN=50) ; il n'est pas mathématiquement illimité.",
   "A technical capacity ceiling; not a claim about the practical variety a user experiences.": "Un plafond de capacité technique ; pas une affirmation sur la variété réellement accessible à l'utilisateur.",
