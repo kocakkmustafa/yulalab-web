@@ -41,6 +41,7 @@ for (const l of [{ name: "tr", prefix: "" }, { name: "en", prefix: "/en" }]) {
 
     test("no serious or critical axe violations on the page body", async ({ page }) => {
       await page.goto(`${l.prefix}/start`);
+      await page.waitForTimeout(1000); // let .page-enter settle before contrast sampling
       const serious = (await new AxeBuilder({ page }).include("[data-gates-page]").analyze()).violations
         .filter((v) => ["serious", "critical"].includes(v.impact ?? ""));
       expect(serious).toEqual([]);
