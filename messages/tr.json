@@ -937,5 +937,11 @@
         "transparency": "Şeffaflık kayıtlarını oku"
       }
     }
+  },
+  "start": {
+    "metaTitle": "Kapılar",
+    "lede": "Dört yoldan birini seç; her biri sitenin gerçek bir sayfasına açılır.",
+    "forLabel": "Kim için",
+    "note": "Seçimin saklanmaz; bu sayfa hiçbir şey kaydetmez."
   }
 }

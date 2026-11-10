@@ -937,5 +937,11 @@
         "transparency": "Read the transparency records"
       }
     }
+  },
+  "start": {
+    "metaTitle": "Doors",
+    "lede": "Pick one of four paths; each opens a real page on this site.",
+    "forLabel": "Who it is for",
+    "note": "Your choice is not stored; this page records nothing."
   }
 }

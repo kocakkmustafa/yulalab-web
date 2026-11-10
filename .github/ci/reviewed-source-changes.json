@@ -1387,6 +1387,13 @@
       "candidateSha256": "8e9373418e4ab3c94225c1d056c668918877d302ee4e769813a28e64c040444e",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-UX-05d home doors"
+    },
+    {
+      "path": "src/app/[locale]/start/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "d09aabe969654574cdfec92ccb26f4384c12a4f960833abd7386a60355a23be2",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-05g /start doors page (new route, 14 languages, sitemap entry)"
     }
   ]
 }
