@@ -1001,3 +1001,39 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
     stroke-dashoffset: 0 !important;
   }
 }
+
+/* ---------------------------------------------------------------------
+   Glass fallback (WEB-UX-05g, design G5). Appended only: the glass rules
+   above are unchanged, so browsers that support backdrop-filter with the
+   default settings render exactly as before.
+
+   Two glass definitions exist on purpose (see docs/yula-execution/
+   glass-surfaces.md): the first `.glass` (16px radius, blur 22px) is the
+   base; the later `.glass` (3px radius, blur 12px, page-rgb wash) is the
+   site skin and wins the cascade for background/blur/radius.
+
+   When the browser cannot blur, or the visitor asks for reduced
+   transparency, glass becomes a flat opaque surface from an existing token
+   (--yula-ink-850, theme-aware). No new colour. `.glass-accent` keeps its
+   own --accent trace by mixing it into that same token.
+   --------------------------------------------------------------------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgb(var(--yula-ink-850));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-accent {
+    background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: rgb(var(--yula-ink-850));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-accent {
+    background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
+  }
+}
