@@ -50,6 +50,8 @@ export function Header() {
     if (!doorsOpen) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key !== "Escape") return;
+      // Claim the key so the opening card's Escape listener does not also skip.
+      event.preventDefault();
       setDoorsOpen(false);
       doorsButton.current?.focus();
     };
@@ -67,11 +69,13 @@ export function Header() {
   // The open drawer must not let the page scroll behind it (design 04 §E12).
   useEffect(() => {
     if (!mobile) return;
-    const root = document.documentElement;
-    const previous = root.style.overflow;
-    root.style.overflow = "hidden";
+    // Locked on <body>, not <html>: the opening card keeps its own capture and
+    // restore of the <html> overflow, so the two locks never overwrite each other.
+    const body = document.body;
+    const previous = body.style.overflow;
+    body.style.overflow = "hidden";
     return () => {
-      root.style.overflow = previous;
+      body.style.overflow = previous;
     };
   }, [mobile]);
 
@@ -218,6 +222,11 @@ export function Header() {
         }}
         onClose={() => setMobile(false)}
         onKeyDown={(event) => {
+          if (event.key === "Escape" && event.currentTarget.open) {
+            event.preventDefault();
+            setMobile(false);
+            return;
+          }
           if (
             !event.currentTarget.open || event.defaultPrevented || event.key !== "Tab" ||
             event.ctrlKey || event.altKey || event.metaKey

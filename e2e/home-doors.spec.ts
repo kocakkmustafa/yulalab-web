@@ -77,6 +77,20 @@ test.describe("loader skip", () => {
     await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 }).toBeGreaterThan(0);
   });
 
+  test("Escape already handled elsewhere (Doors panel, menu) does not also skip the intro", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("[data-yula-loader-skip]")).toBeVisible({ timeout: 30_000 });
+    await page.evaluate(() => {
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") e.preventDefault();
+      });
+    });
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(400);
+    const progress = await page.locator("[data-yula-loader]").getAttribute("data-loader-progress");
+    expect(Number(progress)).toBeLessThan(0.5);
+  });
+
   test("the skip button is absent where there is no opening card (reduced motion)", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto("/");
@@ -108,14 +122,36 @@ test.describe("mobile menu scroll lock", () => {
 
   test("open menu locks page scroll, close restores it; doors listed", async ({ page }) => {
     await page.goto("/projects");
-    const before = await page.evaluate(() => document.documentElement.style.overflow);
+    const before = await page.evaluate(() => document.body.style.overflow);
     await page.locator("header button[aria-controls='site-mobile-navigation']").click();
     await expect(page.locator("[data-site-mobile-panel][data-open='true']")).toBeVisible();
-    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe("hidden");
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("hidden");
     const hrefs = await page.locator("[data-site-mobile-panel] a[data-site-door]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
     expect(hrefs).toEqual(["/projects", "/consulting", "/contact#yollar", "/lab"]);
     await page.keyboard.press("Escape");
     await expect(page.locator("[data-site-mobile-panel][data-open='false']")).toBeAttached();
-    expect(await page.evaluate(() => document.documentElement.style.overflow)).toBe(before);
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe(before);
+  });
+});
+
+test.describe("menu opened during the opening card", () => {
+  test.use({ viewport: { width: 1000, height: 800 }, locale: "tr-TR" });
+
+  test("closing the menu leaves no scroll lock behind, before or after the card leaves", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("[data-yula-loader-skip]")).toBeVisible({ timeout: 30_000 });
+    await page.evaluate(() =>
+      document.querySelector<HTMLButtonElement>("header button[aria-controls='site-mobile-navigation']")?.click(),
+    );
+    await expect(page.locator("[data-site-mobile-panel][data-open='true']")).toBeAttached();
+    await page.evaluate(() =>
+      document.querySelector<HTMLButtonElement>("[data-site-mobile-panel] button.mm-close")?.click(),
+    );
+    await expect(page.locator("[data-site-mobile-panel][data-open='false']")).toBeAttached();
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
+    await page.keyboard.press("Escape");
+    await expect(page.locator("[data-yula-experience]")).toHaveAttribute("data-loader-visible", "false", { timeout: 45_000 });
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).not.toBe("hidden");
+    expect(await page.evaluate(() => document.body.style.overflow)).toBe("");
   });
 });

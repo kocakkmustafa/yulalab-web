@@ -37,8 +37,10 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !event.defaultPrevented) onSkip();
     };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    // window, not document: a Doors panel or menu that handles Escape on the
+    // document runs first and calls preventDefault, so one key does one thing.
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
   }, [onSkip]);
   const frame = resolveLoaderFrame(progress);
   const clamped = frame.progress;
@@ -60,9 +62,6 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
     <div
       className={styles.loader}
       style={style}
-      role="status"
-      aria-live="polite"
-      aria-atomic="true"
       data-yula-loader="true"
       data-loader-progress={clamped.toFixed(3)}
     >
@@ -104,7 +103,12 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
         <span className={styles.loaderPercent}>{Math.round(clamped * 100).toString().padStart(3, "0")}</span>
       </div>
 
-      <div className={styles.loaderReadout}>
+      <div
+        className={styles.loaderReadout}
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         <span className={styles.srOnly}>{lines[activeLine]}</span>
         <ol aria-hidden="true">
           {lines.map((line, index) => (
