@@ -82,7 +82,14 @@ export function Header() {
   useEffect(() => {
     const dialog = mobileDialog.current;
     if (!dialog) return;
-    if (mobile && !dialog.open) dialog.showModal();
+    if (mobile && !dialog.open) {
+      dialog.showModal();
+      // showModal() focuses the first focusable in tree order. Once the panel
+      // is tall enough to scroll (Kapılar section), Chrome makes the scroller
+      // itself focusable and it comes before the close button, so name the
+      // initial focus explicitly instead of relying on tree order.
+      mobileCloseButton.current?.focus();
+    }
     if (!mobile && dialog.open) dialog.close();
   }, [mobile]);
 

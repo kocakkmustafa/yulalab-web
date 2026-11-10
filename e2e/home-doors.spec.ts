@@ -44,10 +44,46 @@ test.describe("home doors strip", () => {
   });
 });
 
+// Runs in CI. Runners only expose software WebGL, where the product serves its
+// static fallback and draws no opening card; the four @hardware-webgl tests
+// below need the card. This is the user-side proof of that path: without a
+// usable WebGL context the opening never holds the visitor, and the doors are
+// visible and clickable within a bounded time. The context is withheld in the
+// page so the result is the same on a GPU machine and on a runner.
+test.describe("no WebGL: the opening never holds the visitor", () => {
+  test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
+
+  test("home opens without a card, the four doors are visible and a door link navigates", async ({ page }) => {
+    await page.addInitScript(() => {
+      const original = HTMLCanvasElement.prototype.getContext;
+      HTMLCanvasElement.prototype.getContext = function (this: HTMLCanvasElement, id: string, ...rest: unknown[]) {
+        if (/^(experimental-)?webgl2?$/.test(id)) return null;
+        return (original as (...a: unknown[]) => unknown).call(this, id, ...rest);
+      } as typeof HTMLCanvasElement.prototype.getContext;
+    });
+    await page.goto("/");
+    const root = page.locator("[data-yula-experience]");
+    // Bounded, far below the 30 s the card tests wait for it: nothing is waiting on a loader.
+    await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 8_000 });
+    await expect(page.locator("[data-yula-loader]")).toHaveCount(0);
+    await expect(page.locator("[data-yula-loader-skip]")).toHaveCount(0);
+    expect(await page.evaluate(() => document.documentElement.style.overflow)).not.toBe("hidden");
+
+    const doors = page.locator("#scene-7-start [data-home-door]");
+    await expect(doors).toHaveCount(4);
+    await doors.first().scrollIntoViewIfNeeded();
+    for (let index = 0; index < 4; index++) await expect(doors.nth(index)).toBeVisible({ timeout: 8_000 });
+    const link = page.locator("#scene-7-start [data-home-doors] a[href='/projects']").first();
+    await expect(link).toBeVisible();
+    await link.click();
+    await expect(page).toHaveURL(/\/projects$/, { timeout: 15_000 });
+  });
+});
+
 test.describe("loader skip", () => {
   test.use({ viewport: { width: 1440, height: 900 }, locale: "tr-TR" });
 
-  test("Tab reaches 'Girişi atla', focus is visible and Enter hands the page over", async ({ page }) => {
+  test("Tab reaches 'Girişi atla', focus is visible and Enter hands the page over", { tag: "@hardware-webgl" }, async ({ page }) => {
     await page.goto("/");
     const skip = page.locator("[data-yula-loader-skip]");
     await expect(skip).toBeVisible({ timeout: 30_000 });
@@ -65,7 +101,7 @@ test.describe("loader skip", () => {
     await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 45_000 });
   });
 
-  test("Escape skips the intro and the page is interactive afterwards", async ({ page }) => {
+  test("Escape skips the intro and the page is interactive afterwards", { tag: "@hardware-webgl" }, async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("[data-yula-loader-skip]")).toBeVisible({ timeout: 30_000 });
     await page.keyboard.press("Escape");
@@ -77,7 +113,7 @@ test.describe("loader skip", () => {
     await expect.poll(() => page.evaluate(() => window.scrollY), { timeout: 10_000 }).toBeGreaterThan(0);
   });
 
-  test("Escape already handled elsewhere (Doors panel, menu) does not also skip the intro", async ({ page }) => {
+  test("Escape already handled elsewhere (Doors panel, menu) does not also skip the intro", { tag: "@hardware-webgl" }, async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("[data-yula-loader-skip]")).toBeVisible({ timeout: 30_000 });
     await page.evaluate(() => {
@@ -137,7 +173,7 @@ test.describe("mobile menu scroll lock", () => {
 test.describe("menu opened during the opening card", () => {
   test.use({ viewport: { width: 1000, height: 800 }, locale: "tr-TR" });
 
-  test("closing the menu leaves no scroll lock behind, before or after the card leaves", async ({ page }) => {
+  test("closing the menu leaves no scroll lock behind, before or after the card leaves", { tag: "@hardware-webgl" }, async ({ page }) => {
     await page.goto("/");
     await expect(page.locator("[data-yula-loader-skip]")).toBeVisible({ timeout: 30_000 });
     await page.evaluate(() =>
