@@ -6,6 +6,7 @@ import { NextRequest } from "next/server";
 import middleware from "@/middleware";
 import sitemap from "@/app/sitemap";
 import { HOME_DOORS } from "@/components/landing/home-doors";
+import { FOOTER_COMPANY_NAV } from "@/components/layout/nav-config";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
@@ -60,5 +61,22 @@ describe("/start doors page (WEB-UX-05g)", () => {
     for (const p of ["/start", "/en/start", "/pt-BR/start"]) {
       expect(middleware(new NextRequest(`https://yulalab.com${p}`)).status).toBe(209);
     }
+  });
+
+  it("links /start without prefetching it: the footer Link opts out and the doors page uses plain anchors", () => {
+    const source = (file: string) => fs.readFileSync(path.join(__dirname, "..", file), "utf8");
+    expect(FOOTER_COMPANY_NAV.some((item) => item.href === "/start")).toBe(true);
+
+    // The footer renders every company link, /start included, through one Link: it must opt out of prefetch.
+    const footer = source("src/components/layout/Footer.tsx");
+    const from = footer.indexOf("FOOTER_COMPANY_NAV.filter");
+    expect(from).toBeGreaterThan(-1);
+    const companyLink = footer.slice(from, footer.indexOf("</Link>", from));
+    expect(companyLink).toMatch(/<Link[^>]*\bhref=\{item\.href as "\/"\}[^>]*\bprefetch=\{false\}/);
+
+    // The /start page itself renders its door targets as plain anchors, never a prefetching Link.
+    const gates = source("src/components/landing/GatesPage.tsx");
+    expect(gates).not.toMatch(/from "next\/link"|from "@\/i18n\/navigation"/);
+    expect(gates).not.toMatch(/<Link\b/);
   });
 });
