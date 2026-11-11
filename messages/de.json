@@ -37,7 +37,8 @@
     "navCaseStudies": "Fallstudien",
     "navOperatingSystem": "Unsere Arbeitsweise",
     "navStudio": "Studio",
-    "navConsulting": "KI-Beratung"
+    "navConsulting": "KI-Beratung",
+    "navWhyYula": "Why YULA"
   },
   "common": {
     "explore": "Entdecken",
@@ -261,7 +262,13 @@
   "notes": {
     "eyebrow": "Notizen",
     "title": "Was wir getan haben — zeitnah festgehalten.",
-    "intro": "Auch hier gilt Transparenz: kurze, ehrliche Notizen dazu, was sich an unseren Produkten geändert hat, was behoben wurde und was in Betrieb ging."
+    "intro": "Auch hier gilt Transparenz: kurze, ehrliche Notizen dazu, was sich an unseren Produkten geändert hat, was behoben wurde und was in Betrieb ging.",
+    "articleEyebrow": "Article",
+    "readArticle": "Read the article",
+    "sourcesHeading": "Sources",
+    "verifiedOn": "verified {date}",
+    "seeTransparency": "Transparency page",
+    "backToNotes": "All notes"
   },
   "links": {
     "web": "Website",
@@ -900,5 +907,21 @@
     "subject": "Anfrage zur KI-Beratung",
     "terms": "Verfügbarkeit, Preise und Umfang werden im Gespräch bestätigt.",
     "nav": "KI-Beratung"
+  },
+  "whyYula": {
+    "eyebrow": "Why YULA",
+    "title": "Why YULA",
+    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
+    "sourcesHeading": "Sources",
+    "s1Title": "Evidence comes before the claim.",
+    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
+    "s2Title": "Portfolio status is read from the registry.",
+    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
+    "s3Title": "The level of evidence is written out.",
+    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
+    "s4Title": "Work you can read.",
+    "s4Body": "The lab's records and notes are reachable directly from here.",
+    "linkLab": "Lab",
+    "linkTransparency": "Transparency"
   }
 }

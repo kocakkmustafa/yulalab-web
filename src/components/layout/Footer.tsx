@@ -89,6 +89,11 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
               </Link>
             </li>
             <li>
+              <Link href="/why-yula" className="link-wipe">
+                {t("navWhyYula")}
+              </Link>
+            </li>
+            <li>
               <Link href="/projects" className="link-wipe">
                 {t("navProjects")}
               </Link>

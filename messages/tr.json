@@ -37,7 +37,8 @@
     "navCaseStudies": "Vaka çalışmaları",
     "navOperatingSystem": "Nasıl çalışıyoruz",
     "navStudio": "Stüdyo",
-    "navConsulting": "AI danışmanlığı"
+    "navConsulting": "AI danışmanlığı",
+    "navWhyYula": "Neden YULA"
   },
   "common": {
     "explore": "Keşfet",
@@ -261,7 +262,13 @@
   "notes": {
     "eyebrow": "Notlar",
     "title": "Yaptıklarımız, olduğu gibi.",
-    "intro": "Şeffaflık burada da geçerli — ürünlerimizde ne değişti, ne düzeldi, ne canlandı; kısa ve dürüst notlar."
+    "intro": "Şeffaflık burada da geçerli — ürünlerimizde ne değişti, ne düzeldi, ne canlandı; kısa ve dürüst notlar.",
+    "articleEyebrow": "Makale",
+    "readArticle": "Makaleyi oku",
+    "sourcesHeading": "Kaynaklar",
+    "verifiedOn": "doğrulama {date}",
+    "seeTransparency": "Şeffaflık sayfası",
+    "backToNotes": "Tüm notlar"
   },
   "links": {
     "web": "Web sitesi",
@@ -900,5 +907,21 @@
     "subject": "AI danışmanlığı görüşmesi",
     "terms": "Uygunluk, ücretlendirme ve kapsam görüşmede netleşir.",
     "nav": "AI danışmanlığı"
+  },
+  "whyYula": {
+    "eyebrow": "Neden YULA",
+    "title": "Neden YULA",
+    "intro": "Laboratuvarın nasıl çalıştığı, kayıtlardan okunabilecek kadar kısa. Sayılar kayıttan türetilir, bu yüzden kayıttan bağımsız bayatlayamaz.",
+    "sourcesHeading": "Kaynaklar",
+    "s1Title": "Kanıt, iddiadan önce gelir.",
+    "s1Body": "Sitedeki bir ürün iddiası kaynağı, kapsamı ve doğrulama tarihiyle birlikte kayıtta yer alır. Süresi dolan iddia gizlenmez; süresi dolduğu işaretlenerek gösterilir.",
+    "s2Title": "Portföy durumu kayıttan okunur.",
+    "s2Body": "Kayıtta {records} ürün var; yaşam döngüsü durumlarına göre dağılımı aşağıda. Sayılar elle yazılmaz, kayıttan türetilir.",
+    "s3Title": "Kanıtın seviyesi açık yazılır.",
+    "s3Body": "Kayıtta {claims} iddia var. Kendi beyanımız ile kaynak kodda doğrulanan ya da ölçülen aynı şey sayılmaz; her iddia kanıt türünü taşır.",
+    "s4Title": "Okuyabileceğiniz çalışma.",
+    "s4Body": "Laboratuvarın kayıtlarına ve notlarına doğrudan buradan ulaşabilirsiniz.",
+    "linkLab": "Laboratuvar",
+    "linkTransparency": "Şeffaflık"
   }
 }
