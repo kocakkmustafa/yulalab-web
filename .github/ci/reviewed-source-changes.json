@@ -1422,6 +1422,20 @@
       "candidateSha256": "a9671224533cd4cb697901c4feec58818d6c6a9c7b80f2e338a77cb0f365a33b",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-09 lab notes"
+    },
+    {
+      "path": "src/app/[locale]/notes/[slug]/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "4925a9b10eddc7eee06eb369112bc123bc89c704671320ecf42c09958f3e3db4",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-09: new /notes/[slug] article route; candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/why-yula/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "fa3ed2fbbe0e62ec71bf3ce34d571b5f7f32dd244766adf577cfeecd2b3bb77f",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-09: new /why-yula route; candidate-only, no publication assertion."
     }
   ]
 }
