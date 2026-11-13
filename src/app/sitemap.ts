@@ -8,6 +8,7 @@ const STATIC_PATHS = [
   "/",
   "/manifesto",
   "/transparency",
+  "/start",
   "/projects",
   "/lab",
   "/notes",

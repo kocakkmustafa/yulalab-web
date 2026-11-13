@@ -16,6 +16,7 @@ const SOCIAL_ICON = { x: XLogo, linkedin: Linkedin, instagram: Instagram } as co
 
 export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const t = useTranslations("footer");
+  const tHeader = useTranslations("header");
   const locale = useLocale() as Locale;
   const year = new Date().getFullYear();
   const emailBreakAt = company.contact.email.indexOf("@") + 1;
@@ -81,7 +82,13 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
             {FOOTER_COMPANY_NAV.filter((item) => !item.studioOnly || studioEnabled).map((item) => (
               <li key={item.href}>
-                <Link href={item.href as "/"} className="link-wipe focusable">{t(item.key)}</Link>
+                <Link
+                  href={item.href as "/"}
+                  prefetch={false}
+                  className="link-wipe focusable"
+                >
+                  {item.ns === "header" ? tHeader(item.key) : t(item.key)}
+                </Link>
               </li>
             ))}
             <li>

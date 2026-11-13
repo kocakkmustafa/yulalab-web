@@ -75,7 +75,7 @@ function Support() {
 
             <Link
               href="/contact"
-              className="glass group block p-6 transition-colors focusable"
+              className="group block rounded-[3px] border border-[color:var(--yula-hairline)] bg-[color:var(--yula-surface-raised)] p-6 transition-colors focusable"
             >
               <div className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
                 {text(locale, "Genel iletişim", "General contact")}

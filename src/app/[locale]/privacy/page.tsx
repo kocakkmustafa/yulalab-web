@@ -77,7 +77,7 @@ function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
               <Link
                 key={p.slug}
                 href={`/privacy/${p.slug}`}
-                className="glass group block p-6 transition-colors focusable"
+                className="group block rounded-[3px] border border-[color:var(--yula-hairline)] bg-[color:var(--yula-surface-raised)] p-6 transition-colors focusable"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-mono text-[11px] tracking-widest uppercase text-ink-400">
@@ -101,7 +101,7 @@ function PrivacyIndex({ formOpen }: { formOpen: boolean }) {
             {/* Motion family scope; app-specific data flows require their own policy details. */}
             <Link
               href="/privacy/motion"
-              className="glass group block p-6 transition-colors focusable"
+              className="group block rounded-[3px] border border-[color:var(--yula-hairline)] bg-[color:var(--yula-surface-raised)] p-6 transition-colors focusable"
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-[11px] tracking-widest uppercase text-ink-400">

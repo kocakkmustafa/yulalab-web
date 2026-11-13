@@ -15,6 +15,7 @@ Kaynak: `src/components/layout/nav-config.ts`. Rota silinmedi, yeniden adlandır
 | İletişim | `/contact` | — | ikincil | evet | |
 | Projeleri Keşfet (CTA) | `/projects` | evet | alt eylem | — | Mevcut e2e sözleşmesi (son eylem) korundu |
 | Şeffaflık, Vaka çalışmaları, Nasıl çalışıyoruz | `/transparency`, `/case-studies`, `/operating-system` | — | — | evet | Header sadeleşti; footer'dan erişilir |
+| Kapılar / Gateways | `/start` | — (panel bağlantıları sabit) | — | evet (Şirket listesinin başı; `header.doors` etiketi) | WEB-UX-05g: yetim sayfa kalmasın |
 | Stüdyo | `/studio` | — (kaldırıldı) | — | yalnız `STUDIO_ENABLED=true` | Anahtar yalnız footer'ı yönetir |
 | Gizlilik, Kullanım Şartları, Destek | `/privacy`, `/terms`, `/support` | — | — | evet | |
 | E-posta + X/Instagram | `mailto:support@yulalab.com`, `company.socials` | — | — | evet | Yalnız `company.ts`'teki gerçek kayıtlar; LinkedIn 404 olduğu için yok (DEFTER Y-004) |

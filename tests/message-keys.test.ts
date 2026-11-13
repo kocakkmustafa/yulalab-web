@@ -75,6 +75,11 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["header", "doors"],
   ["header", "doorsPanel"],
   ["experience", "loaderSkip"],
+  // WEB-UX-05g: the /start doors page.
+  ["start", "metaTitle"],
+  ["start", "lede"],
+  ["start", "forLabel"],
+  ["start", "note"],
 ];
 
 describe.each([

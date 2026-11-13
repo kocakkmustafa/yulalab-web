@@ -33,12 +33,13 @@ describe("home doors (WEB-UX-05d)", () => {
     }
   });
 
-  it("never targets /start (not on this base) and never leaves the site", () => {
+  it("never targets /start from the doors themselves and never leaves the site", () => {
     for (const link of HOME_DOORS.flatMap((d) => d.links)) {
       expect(link.href).toMatch(/^\//);
       expect(link.href).not.toMatch(/^\/start/);
     }
-    expect(routeExists("/start")).toBe(false);
+    // WEB-UX-05g adds the /start page; the doors still point at the real destinations.
+    expect(routeExists("/start")).toBe(true);
   });
 
   it("leaves the HomeScenes anchor ids untouched", () => {

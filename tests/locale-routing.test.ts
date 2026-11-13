@@ -63,7 +63,7 @@ describe("fourteen-language routing and public discovery", () => {
   });
   it("lists each translated page once without a fabricated modification date", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(31 * SUPPORTED_LOCALES.length);
+    expect(entries).toHaveLength(32 * SUPPORTED_LOCALES.length);
     expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
     for (const entry of entries) {
       expect(entry.lastModified).toBeUndefined();

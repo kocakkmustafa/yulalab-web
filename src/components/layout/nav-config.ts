@@ -29,7 +29,12 @@ export type FooterCompanyKey =
   | "navConsulting" | "navManifesto" | "navTransparency" | "navWhyYula" | "navProjects" | "navNotes"
   | "navStudio" | "navCaseStudies" | "navOperatingSystem" | "navContact";
 
-export const FOOTER_COMPANY_NAV: ReadonlyArray<{ key: FooterCompanyKey; href: string; studioOnly?: boolean }> = [
+/** `header` entries reuse a `header.*` label (e.g. `header.doors`) instead of a `footer.*` one. */
+export const FOOTER_COMPANY_NAV: ReadonlyArray<
+  | { key: FooterCompanyKey; href: string; studioOnly?: boolean; ns?: undefined }
+  | { key: "doors"; href: string; studioOnly?: boolean; ns: "header" }
+> = [
+  { key: "doors", href: "/start", ns: "header" },
   { key: "navConsulting", href: "/consulting" },
   { key: "navManifesto", href: "/manifesto" },
   { key: "navTransparency", href: "/transparency" },

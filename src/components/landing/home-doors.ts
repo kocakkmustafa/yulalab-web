@@ -7,8 +7,8 @@
  *
  * Every href is a route that exists or is delivered by a sibling ticket:
  * `/lab` (WEB-UX-05e) and `/contact#yollar` (WEB-UX-05f) are not on this
- * base yet and are only written as hrefs. There is no `/start` page here
- * (WEB-UX-05g), so no door points at it.
+ * base yet and are only written as hrefs. The `/start` page (WEB-UX-05g) lists
+ * these same doors on a page of its own, so no door points at `/start` itself.
  */
 export type DoorKey = "products" | "work" | "partners" | "inspect";
 export type DoorLinkKey = "products" | "consulting" | "contact" | "lab" | "transparency";
