@@ -101,14 +101,17 @@ describe("Studio CTA wiring follows the rollback switch", () => {
   const root = process.cwd();
   const header = readFileSync(path.join(root, "src/components/layout/Header.tsx"), "utf8");
   const footer = readFileSync(path.join(root, "src/components/layout/Footer.tsx"), "utf8");
+  const navConfig = readFileSync(path.join(root, "src/components/layout/nav-config.ts"), "utf8");
   const contact = readFileSync(path.join(root, "src/app/[locale]/contact/page.tsx"), "utf8");
   const layout = readFileSync(path.join(root, "src/app/[locale]/layout.tsx"), "utf8");
 
-  it("passes one server-owned value to both global navigation surfaces", () => {
-    expect(layout.match(/studioEnabled=\{studioOpen\}/g)).toHaveLength(2);
-    expect(header.match(/navigation\.map/g)).toHaveLength(2);
-    expect(header).toMatch(/studioEnabled \? NAV : NAV\.filter/);
-    expect(footer).toMatch(/studioEnabled[\s\S]*navStudio/);
+  it("passes one server-owned value to the footer, the only global Studio entry", () => {
+    expect(layout.match(/studioEnabled=\{studioOpen\}/g)).toHaveLength(1);
+    expect(layout).toMatch(/<Header \/>/);
+    // WEB-P0-02b: the header never advertises Studio; the footer shows it only behind the switch.
+    expect(header).not.toMatch(/\/studio|navStudio/);
+    expect(footer).toMatch(/studioOnly \|\| studioEnabled/);
+    expect(navConfig).toMatch(/navStudio[^}]*studioOnly: true/);
   });
 
   it("does not advertise the Studio CTA on Contact while Studio is disabled", async () => {

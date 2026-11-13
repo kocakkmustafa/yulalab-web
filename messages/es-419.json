@@ -15,7 +15,12 @@
     "menuClose": "Cerrar",
     "studio": "Studio",
     "consulting": "Consultoría en IA",
-    "language": "Idioma"
+    "language": "Idioma",
+    "products": "Productos",
+    "lab": "Laboratorio",
+    "approach": "Nuestro enfoque",
+    "collaboration": "Colaboración",
+    "mainNavigation": "Navegación principal"
   },
   "footer": {
     "tagline": "Un laboratorio independiente de productos que usa la IA en el lugar y el momento adecuados, sin exagerar sus capacidades.",

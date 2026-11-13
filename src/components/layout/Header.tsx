@@ -9,30 +9,23 @@ import { YulaMark } from "@/components/common/YulaMark";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { ThemeControl } from "@/components/theme/ThemeControl";
 import { SlotLabel } from "@/components/common/SlotLabel";
+import { HEADER_CTA, HEADER_NAV, MOBILE_EXTRA_NAV } from "./nav-config";
 
-type NavKey = "consulting" | "home" | "manifesto" | "transparency" | "projects" | "studio" | "notes" | "contact";
-type NavItem = {
-  key: NavKey;
-  href: "/consulting" | "/" | "/manifesto" | "/transparency" | "/projects" | "/studio" | "/notes" | "/contact";
-};
+const isActiveHref = (href: string, stripped: string) =>
+  href === "/" ? stripped === "/" : stripped.startsWith(href);
 
-const NAV: NavItem[] = [
-  { key: "home", href: "/" },
-  { key: "consulting", href: "/consulting" },
-  { key: "manifesto", href: "/manifesto" },
-  { key: "transparency", href: "/transparency" },
-  { key: "projects", href: "/projects" },
-  { key: "studio", href: "/studio" },
-  { key: "notes", href: "/notes" },
-  { key: "contact", href: "/contact" },
-];
-
-export function Header({ studioEnabled }: { studioEnabled: boolean }) {
+// Studio is reachable from the footer only (see nav-config.ts), so the header takes no switch.
+export function Header() {
   const t = useTranslations("header");
   const locale = useLocale();
   const pathname = usePathname();
   const stripped = stripLocale(pathname, locale);
-  const navigation = studioEnabled ? NAV : NAV.filter((item) => item.key !== "studio");
+  const mobilePrimary = HEADER_NAV.filter((n) => n.primary);
+  const mobileSecondary = [
+    ...MOBILE_EXTRA_NAV.slice(0, 1),
+    ...HEADER_NAV.filter((n) => !n.primary),
+    ...MOBILE_EXTRA_NAV.slice(1),
+  ];
 
   const [scrolled, setScrolled] = useState(false);
   const [mobile, setMobile] = useState(false);
@@ -97,14 +90,13 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
           </Link>
 
           <nav className="hidden xl:flex items-center gap-4 text-[13.5px] text-ink-200">
-            {navigation.map((n) => {
-              const isActive =
-                (n.href === "/" && stripped === "/") ||
-                (n.href !== "/" && stripped.startsWith(n.href));
+            {HEADER_NAV.map((n) => {
+              const isActive = isActiveHref(n.href, stripped);
               return (
                 <Link
                   key={n.href}
                   href={n.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={
                     "link-wipe focusable transition-colors " +
                     (isActive ? "text-ink-50" : "text-ink-300 hover:text-ink-50")
@@ -117,10 +109,10 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             <LocaleSwitcher compact />
             <ThemeControl compact />
             <Link
-              href="/projects"
+              href={HEADER_CTA.href}
               className="ml-1 group inline-flex items-center gap-1.5 rounded-full bg-ink-50 text-ink-900 pl-4 pr-3.5 py-2 text-[13px] font-medium hover:bg-ink-100 transition-colors focusable"
             >
-              <SlotLabel>{t("ctaProjects")}</SlotLabel>
+              <SlotLabel>{t(HEADER_CTA.key)}</SlotLabel>
               <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
             </Link>
           </nav>
@@ -129,7 +121,7 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
             ref={menuButton}
             type="button"
             onClick={() => setMobile(true)}
-            className="xl:hidden inline-flex items-center justify-center w-10 h-10 rounded-md border border-hairline text-ink-100 focusable"
+            className="xl:hidden inline-flex items-center justify-center min-h-[44px] min-w-[44px] rounded-md border border-hairline text-ink-100 focusable"
             aria-label={t("menuOpen")}
             aria-expanded={mobile}
             aria-controls="site-mobile-navigation"
@@ -198,17 +190,15 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
               ref={mobileCloseButton}
               type="button"
               onClick={() => setMobile(false)}
-              className="mm-close w-9 h-9 inline-flex items-center justify-center rounded-md border border-hairline"
+              className="mm-close focusable min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-md border border-hairline"
               aria-label={t("menuClose")}
             >
               <X size={16} />
             </button>
           </div>
-          <nav className="mt-10 flex flex-col gap-2">
-            {navigation.map((n, index) => {
-              const isActive =
-                (n.href === "/" && stripped === "/") ||
-                (n.href !== "/" && stripped.startsWith(n.href));
+          <nav className="mt-8 flex flex-col" aria-label={t("mainNavigation")}>
+            {mobilePrimary.map((n, index) => {
+              const isActive = isActiveHref(n.href, stripped);
               return (
                 <Link
                   key={n.href}
@@ -217,13 +207,32 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
                   aria-current={isActive ? "page" : undefined}
                   data-active={isActive ? "true" : "false"}
                   style={{ "--mm-index": index } as CSSProperties}
-                  className="mm-item font-display text-3xl font-semibold tracking-tight py-2 text-ink-50"
+                  className="mm-item focusable font-display text-3xl font-semibold tracking-tight min-h-[44px] py-2 text-ink-50"
                 >
                   <span className="mm-dash" aria-hidden="true" />
                   {t(n.key)}
                 </Link>
               );
             })}
+            <ul className="mt-4 flex flex-col border-t border-hairline pt-3">
+              {mobileSecondary.map((n, index) => {
+                const isActive = isActiveHref(n.href, stripped);
+                return (
+                  <li key={n.href}>
+                    <Link
+                      href={n.href}
+                      onClick={() => setMobile(false)}
+                      aria-current={isActive ? "page" : undefined}
+                      data-active={isActive ? "true" : "false"}
+                      style={{ "--mm-index": mobilePrimary.length + index } as CSSProperties}
+                      className="mm-item focusable flex min-h-[44px] items-center text-base text-ink-200"
+                    >
+                      {t(n.key)}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
           </nav>
           <div className="mt-6 flex flex-wrap items-center gap-2">
             <LocaleSwitcher onNavigate={() => setMobile(false)} />
@@ -232,11 +241,11 @@ export function Header({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="mt-auto pt-6">
             <Link
               ref={mobileProjectsLink}
-              href="/projects"
+              href={HEADER_CTA.href}
               onClick={() => setMobile(false)}
-              className="flex items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
+              className="focusable flex min-h-[44px] items-center justify-center gap-2 rounded-full bg-ink-50 text-ink-900 px-5 py-3 text-sm font-medium"
             >
-              <SlotLabel>{t("ctaProjects")}</SlotLabel> <ArrowUpRight size={14} strokeWidth={2} />
+              <SlotLabel>{t(HEADER_CTA.key)}</SlotLabel> <ArrowUpRight size={14} strokeWidth={2} />
             </Link>
           </div>
         </div>

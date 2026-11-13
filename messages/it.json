@@ -15,7 +15,12 @@
     "menuClose": "Chiudi",
     "studio": "Studio",
     "consulting": "Consulenza sull'AI",
-    "language": "Lingua"
+    "language": "Lingua",
+    "products": "Prodotti",
+    "lab": "Laboratorio",
+    "approach": "Il nostro approccio",
+    "collaboration": "Collaborazione",
+    "mainNavigation": "Navigazione principale"
   },
   "footer": {
     "tagline": "Un laboratorio di prodotti indipendente che usa l'AI al posto giusto e al momento giusto, senza esagerarne il ruolo.",
