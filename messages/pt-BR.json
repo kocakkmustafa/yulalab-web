@@ -913,7 +913,38 @@
     "scene4": {
       "label": "Engineering",
       "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared."
+      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
+      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
+      "currentLabel": "Stated in the product record",
+      "plannedLabel": "Planned",
+      "tagCapability": "Current capability",
+      "tagPlanned": "Planned",
+      "tagNone": "No record",
+      "noRecord": "No product record line backs this principle yet.",
+      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
+      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
+      "linksLabel": "Related pages",
+      "linkOperatingSystem": "How this lab works",
+      "linkStudio": "Studio: build with YULA Lab",
+      "linkTransparency": "Transparency",
+      "principles": {
+        "p1": {
+          "name": "Local-first data",
+          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+        },
+        "p2": {
+          "name": "Permission and proof for spending steps",
+          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+        },
+        "p3": {
+          "name": "On-device processing",
+          "planned": "Open new signals only after they are tested on real devices."
+        },
+        "p4": {
+          "name": "An understandable interface",
+          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+        }
+      }
     },
     "scene5": {
       "label": "Lab",

@@ -1,9 +1,11 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/types";
+import { studioEnabled } from "@/server/studio-surface";
 import { HOME_SCENES } from "./home-scenes";
 import { Scene1Identity } from "./Scene1Identity";
 import { Scene2Difference } from "./Scene2Difference";
 import { Scene6Trust } from "./Scene6Trust";
+import { Scene4Engineering } from "./Scene4Engineering";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -28,6 +30,8 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
   // Words injected into that block (status labels) must be English too, or a
   // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
   const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
+  // `/studio` exists only while the server flag is on (it answers 404 otherwise).
+  const studioOpen = studioEnabled();
 
   return (
     <div
@@ -84,6 +88,15 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             {scene.n === 1 ? <Scene1Identity t={t} ts={ts} /> : null}
             {scene.n === 2 ? <Scene2Difference t={t} ts={ts} /> : null}
             {scene.n === 6 ? <Scene6Trust t={t} ts={ts} locale={locale} /> : null}
+            {scene.n === 4 ? (
+              <Scene4Engineering
+                t={t}
+                ts={ts}
+                lang={locale === "tr" ? "tr" : "en"}
+                locale={locale}
+                studioOpen={studioOpen}
+              />
+            ) : null}
           </section>
         );
       })}
