@@ -150,10 +150,6 @@ export function track(input: TrackInput): void {
   try {
     const segment = window.location.pathname.split("/")[1];
     const pageLocale = isLocale(segment) ? segment : "tr";
-    // The existing event database is TR/EN only. A translated interface
-    // must not silently record a new language as Turkish or mint an ID for
-    // an event the current backend cannot store.
-    if (pageLocale !== "tr" && pageLocale !== "en") return;
     const locale: EventLocale = input.locale ?? pageLocale;
     const body = buildEventBody({
       ...input,

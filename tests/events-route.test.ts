@@ -14,7 +14,7 @@ const localLoginUrl = (schema: string) => {
 };
 
 beforeAll(async () => {
-  pool = await createIsolatedSchema(SCHEMA);
+  pool = await createIsolatedSchema(SCHEMA, { funnel: true });
 });
 
 afterAll(async () => {
@@ -86,6 +86,24 @@ describe("POST /api/events", () => {
     const { rows } = await pool.query("SELECT event_name, target_url FROM attributions");
     expect(rows).toHaveLength(1);
     expect(rows[0].event_name).toBe("store_outbound");
+  });
+
+  it.each(["home_view", "lead_form_started", "lead_form_submitted"])(
+    "accepts the funnel event %s in a non-TR/EN locale with 202",
+    async (event) => {
+      const res = await post(
+        body({ event, locale: "pt-BR", page: "/pt-BR", target: undefined, targetCategory: undefined, product: undefined }),
+      );
+      expect(res.status).toBe(202);
+      const { rows } = await pool.query("SELECT event_name, locale FROM attributions");
+      expect(rows).toEqual([{ event_name: event, locale: "pt-BR" }]);
+    },
+  );
+
+  it("rejects a funnel event that carries a target, and a locale outside the 14, with 400", async () => {
+    expect((await post(body({ event: "home_view" }))).status).toBe(400);
+    expect((await post(body({ locale: "ru" }))).status).toBe(400);
+    expect(await pool.query("SELECT * FROM attributions").then((r) => r.rowCount)).toBe(0);
   });
 
   it("rejects an unknown event name with 400", async () => {
