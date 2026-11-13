@@ -81,8 +81,8 @@ for (const view of VIEWS) {
       }
       const decision = scene.locator('[data-scene5-entry="adr-003"]');
       await expect(decision.locator("time")).toHaveAttribute("datetime", "2026-11-08");
-      await expect(decision.locator("[data-scene5-source]")).toContainText("docs/yula-execution/adr-003-3d-default.md");
-      await expect(decision.locator("a")).toHaveCount(0);
+      await expect(decision.locator("[data-scene5-source]")).toContainText("ADR-003");
+      await expect(decision.locator("a")).toHaveAttribute("href", /\/transparency#adr-003$/);
     });
 
     test("no invented number or measurement, no 'verified' wording", async ({ page }) => {
