@@ -38,6 +38,25 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["projectsIndex", "researchHeading"],
   ["projectsIndex", "researchNote"],
   ["projectsIndex", "researchToggle"],
+  // WEB-UX-05b: read by the server page and the universe component; a missing
+  // key would print its literal path inside the panel (caught once by a
+  // browser console error, not by any unit test).
+  ["projectsIndex", "featuredHeading"],
+  ["projectsIndex", "portfolioHeading"],
+  ["projectsIndex", "filterLabel"],
+  ["projectsIndex", "filterAll"],
+  ["projectsIndex", "showing"],
+  ["projectsIndex", "summary"],
+  ["projectsIndex", "noMatch"],
+  ["projectsIndex", "panelHeading"],
+  ["projectsIndex", "panelHint"],
+  ["projectsIndex", "accessHeading"],
+  ["projectsIndex", "openFull"],
+  ["projectsIndex", "closePanel"],
+  ["projectsIndex", "preview"],
+  ["projectsIndex", "previewLabel"],
+  ["projectsIndex", "panelStatusLink"],
+  ["projectsIndex", "panelScreenEmpty"],
 ];
 
 describe.each([
