@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { homeSceneIdFromHash } from "@/components/landing/home-scenes";
 import { createAmbientAudio, type AmbientAudioController } from "./audio";
 import { ExperienceLoader } from "./ExperienceLoader";
 import { resolveVisibleFrameDelta, scheduleAfterLoad } from "./loader";
@@ -266,6 +267,15 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       root.style.overflow = previousOverflow;
       root.style.overscrollBehavior = previousOverscroll;
       window.history.scrollRestoration = previousRestoration;
+      // The opening pins the page to the top; a deep link such as
+      // `/#scene-3-products` is honoured once the opening card leaves. Only
+      // the seven known ASCII ids qualify (no decoding, so a malformed hash
+      // cannot throw), and this runs after the page is scrollable again.
+      const sceneId = homeSceneIdFromHash(window.location.hash);
+      const target = sceneId ? document.getElementById(sceneId) : null;
+      if (target) {
+        requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
+      }
     };
   }, [capture.enabled, loaderVisible, mounted]);
 

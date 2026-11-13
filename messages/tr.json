@@ -840,5 +840,43 @@
     "subject": "AI danışmanlığı görüşmesi",
     "terms": "Uygunluk, ücretlendirme ve kapsam görüşmede netleşir.",
     "nav": "AI danışmanlığı"
+  },
+  "home": {
+    "navLabel": "Ana sayfa bölümleri",
+    "scene1": {
+      "label": "Kimlik",
+      "title": "Teknolojiyi daha karmaşık değil, hayatı daha mümkün kılmak için inşa ediyoruz.",
+      "message": "YULA Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır."
+    },
+    "scene2": {
+      "label": "Fark",
+      "title": "Daha az sürtünme, daha çok sonuç.",
+      "message": "Daha fazla ekran, giriş ve model seçimi yerine, niyetten sonuca giden en kısa yolu hedefliyoruz."
+    },
+    "scene3": {
+      "label": "Ürünler",
+      "title": "Öncelik verdiğimiz üç sistem.",
+      "message": "Braavolabs, LifeOS ve Ostinato: iş, yaşam ve müzik için; her biri tek bir insan sonucuna odaklanır."
+    },
+    "scene4": {
+      "label": "Mühendislik",
+      "title": "Bağımsız ürünler. Ortak mühendislik ilkeleri.",
+      "message": "Yerel öncelikli veri, iş başına izin ve kanıt, anlaşılır arayüz: ürünler ayrı, ilkeler ortak."
+    },
+    "scene5": {
+      "label": "Laboratuvar",
+      "title": "Yaşayan laboratuvar.",
+      "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz."
+    },
+    "scene6": {
+      "label": "Güven",
+      "title": "Güven, ürün ürün gösterilir.",
+      "message": "Veri koruma, kontrol ve onay, ölçülebilir sonuç ve şeffaf ürün aşamasını ürün ve özellik bazında, kanıt durumuyla birlikte ele alıyoruz."
+    },
+    "scene7": {
+      "label": "Başlangıç",
+      "title": "Birlikte bir sonraki adımı atalım.",
+      "message": "Ürünleri keşfedin ya da işiniz için birlikte çalışmanın yolunu konuşalım."
+    }
   }
 }
