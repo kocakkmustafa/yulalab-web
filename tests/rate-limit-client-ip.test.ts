@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { clientIp } from "@/server/rate-limit";
+import { clientIp, netlifyContextIp } from "@/server/rate-limit";
 
 const h = (init: Record<string, string>) => new Headers(init);
 const NETLIFY = {};
@@ -182,5 +182,56 @@ describe("routes key the limiter on clientIp", () => {
     expect((await send(headers())).status).toBe(429);
     await send({ origin: ORIGIN, "content-type": "application/json" });
     expect(keys).toEqual(["dsr:203.0.113.7", "dsr:unknown"]);
+  });
+});
+
+describe("clientIp with the Netlify runtime context (WEB-P0-07c2)", () => {
+  type G = { Netlify?: unknown };
+  afterEach(() => {
+    delete (globalThis as G).Netlify;
+  });
+  const withContext = (ip: unknown) => {
+    (globalThis as G).Netlify = { context: { ip } };
+  };
+
+  it("context.ip beats a forged x-nf-client-connection-ip and x-forwarded-for", () => {
+    withContext("203.0.113.7");
+    for (const forged of ["1.1.1.1", "2.2.2.2", "9.9.9.9"]) {
+      const headers = h({ "x-nf-client-connection-ip": forged, "x-forwarded-for": forged });
+      expect(clientIp(headers, NETLIFY)).toBe("203.0.113.7");
+    }
+  });
+
+  it("canonicalises an IPv6 context.ip", () => {
+    withContext("2001:DB8::1");
+    expect(clientIp(h({}), NETLIFY)).toBe("2001:db8::1");
+  });
+
+  it("an invalid context.ip is ignored and the header order applies", () => {
+    withContext("garbage");
+    expect(clientIp(h({ "x-nf-client-connection-ip": "203.0.113.8" }), NETLIFY)).toBe("203.0.113.8");
+    withContext(42);
+    expect(clientIp(h({ "x-forwarded-for": "198.51.100.9" }), NETLIFY)).toBe("198.51.100.9");
+  });
+
+  it("no Netlify global (local dev, tests): header order is unchanged", () => {
+    expect(netlifyContextIp()).toBeNull();
+    expect(clientIp(h({ "x-nf-client-connection-ip": "203.0.113.9" }), NETLIFY)).toBe("203.0.113.9");
+  });
+
+  it("a throwing context accessor does not break the limiter", () => {
+    Object.defineProperty(globalThis, "Netlify", {
+      configurable: true,
+      get() {
+        throw new Error("outside a request");
+      },
+    });
+    expect(netlifyContextIp()).toBeNull();
+    Object.defineProperty(globalThis, "Netlify", { configurable: true, value: undefined });
+  });
+
+  it("on Vercel the Netlify context is never consulted", () => {
+    withContext("203.0.113.7");
+    expect(clientIp(h({ "x-forwarded-for": "198.51.100.9" }), VERCEL)).toBe("198.51.100.9");
   });
 });

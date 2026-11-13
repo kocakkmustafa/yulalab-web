@@ -37,22 +37,27 @@
  *                         x-nf-client-connection-ip is ignored. Vercel
  *                         documents that it overwrites x-forwarded-for
  *                         (https://vercel.com/docs/headers/request-headers).
- *      otherwise       -> x-nf-client-connection-ip if the header is present
- *                         (valid -> that IP; invalid -> null, no fallback);
- *                         else first x-forwarded-for hop, then x-real-ip.
+ *      otherwise       -> 1. the Netlify runtime context IP (`context.ip`,
+ *                            see netlifyContextIp()): not a request header, so
+ *                            a caller cannot forge it. Valid -> that IP.
+ *                         2. else x-nf-client-connection-ip if present (valid
+ *                            -> that IP; invalid -> null, no fallback);
+ *                         3. else first x-forwarded-for hop, then x-real-ip.
  *      nothing valid   -> null.
  *
- *    UNKNOWN / UNVERIFIED on Netlify (the production host, netlify.toml):
- *    docs.netlify.com documents only `context.ip` ("A string containing the
- *    client IP address", /build/functions/api/). It says nothing about
- *    x-nf-client-connection-ip or x-forwarded-for. That the Netlify edge
- *    overwrites x-nf-client-connection-ip, or any x-forwarded-for, is
- *    NOT verified; "NETLIFY" is not detected at runtime either (not
- *    verified, deliberately not added). If the edge does not overwrite the
- *    header, an attacker can choose the IP and rotate it to bypass the
- *    limit silently. The robust fix is `context.ip` from `@netlify/functions`;
- *    it is tracked as a separate ticket, WEB-P0-07c2. Until then treat the
- *    key as best effort on Netlify.
+ *    Netlify (the production host, netlify.toml) — WEB-P0-07c2, resolved
+ *    locally (no preview deploy, founder decision 2026-11-13): docs.netlify.com
+ *    documents `context.ip` ("A string containing the client IP address",
+ *    /build/functions/api/) and says nothing about x-nf-client-connection-ip
+ *    or x-forwarded-for; Netlify staff name x-nf-client-connection-ip as the
+ *    one header they keep stable (answers.netlify.com). So the key is taken
+ *    from the context when the runtime exposes it (tests/rate-limit-client-ip
+ *    fakes that global; forged headers lose to it), and the header stays a
+ *    fallback. UNVERIFIED LIVE: that `Netlify.context` reaches a Next route
+ *    handler through @netlify/plugin-nextjs 5.16.2, and that the edge
+ *    overwrites a client-sent x-nf-client-connection-ip. If neither holds,
+ *    a caller can choose the key and rotate it; treat the limiter as best
+ *    effort there. Confirm at the next normal publish (etag + readback).
  * 4. null has two different fallbacks, both with a cost:
  *    - /api/events falls back to `session:<token>`, a value the caller
  *      chooses (see the session-key history above). So an invalid or absent
@@ -130,6 +135,20 @@ function validIp(value: string | null | undefined): string | null {
 }
 
 /**
+ * `context.ip` of the current Netlify request, read the way `getContext()` from
+ * `@netlify/functions` does (the runtime's `globalThis.Netlify.context`), without
+ * adding a dependency. null when not on Netlify, outside a request, or invalid.
+ */
+export function netlifyContextIp(): string | null {
+  try {
+    const ctx = (globalThis as { Netlify?: { context?: { ip?: unknown } | null } }).Netlify?.context;
+    return typeof ctx?.ip === "string" ? validIp(ctx.ip) : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * The client IP to key rate limits on, or null when no trustworthy valid one
  * exists. See limit 3 in the header comment for which header is trusted where.
  * Values that are empty, over 64 chars or not an IPv4/IPv6 literal are
@@ -138,8 +157,11 @@ function validIp(value: string | null | undefined): string | null {
 export function clientIp(
   headers: Headers,
   env: Record<string, string | undefined> = process.env,
+  platformIp: string | null = env.VERCEL ? null : netlifyContextIp(),
 ): string | null {
   if (!env.VERCEL) {
+    // The runtime's own answer first: it is not a header the caller sends.
+    if (platformIp) return platformIp;
     // Present-but-invalid is rejected outright, not papered over with XFF.
     const netlify = headers.get("x-nf-client-connection-ip");
     if (netlify !== null) return validIp(netlify);
