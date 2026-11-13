@@ -2,7 +2,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import TransparencyPage from "@/app/[locale]/transparency/page";
@@ -25,7 +25,14 @@ vi.mock("@/components/common/GlassSheen", () => ({ GlassSheen: () => null }));
 vi.mock("@/components/common/StaggerWords", () => ({ StaggerWords: ({ text }: { text: string }) => <>{text}</> }));
 vi.mock("@/components/common/Reveal", () => ({ Reveal: ({ children }: { children: ReactNode }) => <div>{children}</div> }));
 
-afterEach(cleanup);
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-14T12:00:00+03:00"));
+});
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 async function renderTransparency(locale: "tr" | "en") {
   const ui = await TransparencyPage({ params: Promise.resolve({ locale }) });
@@ -63,7 +70,10 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
     const lapsed = publicRegistry.flatMap((r) => presentClaims(r, now)).filter((p) => p.kind === "lapsed");
     expect(Number(screen.getByTestId("summary-lapsed").querySelector("dd")!.textContent)).toBe(lapsed.length);
     const body = document.body.textContent ?? "";
-    for (const p of lapsed) expect(body).toContain(p.claim.statementTr);
+    // SEC-WEB-01: lapsed claims stay as dated markers; their prose is not shown.
+    expect(lapsed.length).toBeGreaterThan(0);
+    for (const p of lapsed) expect(body).not.toContain(p.claim.statementTr);
+    expect(body).toContain("yeniden doğrulanmalı — süre 2026-09-24 tarihinde doldu");
   });
 
   it("derives the status summary from the registry", async () => {

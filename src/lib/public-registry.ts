@@ -273,6 +273,43 @@ export function getClaimFreshness(record: ProductPublicRecord, now: Date): Claim
 }
 
 /**
+ * SEC-WEB-01 — the single gate every render surface asks before it speaks a
+ * claim's statement or figure. A claim whose verification window has closed
+ * (`expiresAt` passed, in the site's zone — see isExpired) may not be
+ * presented in the present tense; surfaces show at most a dated, past-tense
+ * "window closed" marker and never narrate the figure. Time-dependent on
+ * purpose: the same registry closes the gate by itself as dates pass.
+ * Independent of claimState; present-tense eligibility (isPresentTenseEligible)
+ * is a further, stricter test layered on top of this one.
+ */
+export function isClaimPresentable(claim: Pick<ProductClaim, "expiresAt">, now: Date): boolean {
+  return !(claim.expiresAt && isExpired(claim.expiresAt, now));
+}
+
+/** Claims of a record that the gate currently lets through. */
+export function listPresentableClaims(record: ProductPublicRecord, now: Date): ProductClaim[] {
+  return record.claims.filter((c) => isClaimPresentable(c, now));
+}
+
+/** Claims whose window closes within `days` days (inclusive), not yet lapsed. For the build report. */
+export function listClaimsExpiringWithin(
+  records: ProductPublicRecord[],
+  now: Date,
+  days: number,
+): { slug: string; claimId: string; expiresAt: string }[] {
+  const horizon = siteDate(new Date(now.getTime() + days * 86_400_000));
+  const out: { slug: string; claimId: string; expiresAt: string }[] = [];
+  for (const record of records) {
+    for (const claim of record.claims) {
+      if (claim.expiresAt && isClaimPresentable(claim, now) && claim.expiresAt <= horizon) {
+        out.push({ slug: record.slug, claimId: claim.id, expiresAt: claim.expiresAt });
+      }
+    }
+  }
+  return out;
+}
+
+/**
  * May this claim be shown in the present tense right now? Fail closed: an
  * undeclared state, a missing flag, an unverified state or a lapsed window
  * each answer no. Only an explicit verified state + an explicit `true` + an

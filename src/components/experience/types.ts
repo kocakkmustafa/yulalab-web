@@ -81,6 +81,8 @@ export type ExperienceClaim = {
   scope: string;
   verifiedAt: string;
   expiresAt: string;
+  /** SEC-WEB-01: the window had closed when the page was built; prose is blanked. */
+  withheld?: boolean;
 };
 
 export type ExperienceProduct = {
