@@ -1412,9 +1412,9 @@
     {
       "path": "src/server/rate-limit.ts",
       "publishedSha256": "36535a89b3d1a67c1706b3f4c2d7df3c8a6d276e534a8db5ff6a1bdc09cc00ad",
-      "candidateSha256": "44c4450122e3eecaddd55d58dea7881e4374109a8c84a3f86424fa7191071e75",
+      "candidateSha256": "ef1fbb8c6a5cab5f09343d623dd325e692f2a33ec59564003ad9f596d09c2387",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "WEB-P0-07c rate limit istemci IP WEB-P0-07c inceleme düzeltmesi"
+      "reason": "WEB-P0-07c rate limit istemci IP WEB-P0-07c inceleme düzeltmesi WEB-P0-07c2 context.ip"
     },
     {
       "path": "src/app/api/data-request/route.ts",
