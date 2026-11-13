@@ -1422,6 +1422,41 @@
       "candidateSha256": "e296a43db90ed6beeae415ab1e39d44dba4f53832879e5ed6bd8374a3660c49c",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-07c inceleme düzeltmesi"
+    },
+    {
+      "path": "src/app/[locale]/prototype/contact/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "41f133f7fef22ea34e90f751c01309456eaab7a11a15d9a99a6af60952f3df29",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/layout.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "ff757a974b06d4ac6c2700b73f54499f4166e2d1ca191860eb94a9bdf4210705",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/projects/[slug]/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "de7e4d46a339a16b80d6210b54c30dabbea3a28a5149aa0ea2e363697062f272",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/projects/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "45d6931e8da312489952f619cc6c60e0a5a7ad311bfb6a67c537586559b437eb",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
+    },
+    {
+      "path": "src/app/[locale]/prototype/start/page.tsx",
+      "publishedSha256": null,
+      "candidateSha256": "ae0ff8ae008e0609991081d45327221dc816a546005aed7b52de77c39b5c88e1",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-UX-04 prototype route (closed by default: UX_PROTOTYPE!==1 => notFound); candidate-only, no publication assertion."
     }
   ]
 }
