@@ -15,12 +15,12 @@ export const ostinato: ProjectConfig = {
     en: "Build your instrument practice step by step.",
   },
   description: {
-    tr: "Ostinato gitarı ilk sesten itibaren ölçülü pratikle öğretir; kulağını alıştırmalar ve alkışla eğitir. Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle gelir. Kulak eğitiminde ekran alıştırmaları, klikle alkış ve bölüm bölüm testler var; şarkı söyleme ölçülmez, onu kendin kontrol edersin. Şan ve piyano yakında ve program 690 derse büyüyor. Her nota için doğru, farklı nota ya da duyamadım diye geri bildirim verir; akort aleti, metronom ve kurulum sihirbazı uygulamanın içindedir. Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsizdir ve hesap gerektirmez; sonraki dersler Ostinato üyeliğiyle App Store ve Google Play üzerinden açılır. Mikrofon sesi cihazında işlenir ve yüklenmez.",
-    en: "Ostinato teaches guitar from the first sound through measured practice, and trains your ear with drills and clapping. The guitar course comes with 240 lessons across four levels, and ear training with 50 lessons across two levels. Ear training uses on-screen drills, clapping with the click and part-by-part tests; singing is not measured, so you check it yourself. Voice and piano are coming soon, and the programme grows to 690 lessons. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free and need no account; later lessons open with an Ostinato membership through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.",
+    tr: "Ostinato gitarı ilk sesten itibaren ölçülü pratikle öğretir; kulağını alıştırmalar ve alkışla eğitir. Gitar kursu dört seviyede 235 dersle (+5 test dersi), kulak eğitimi iki seviyede 48 dersle (+2 test dersi) gelir; toplam 283 ders açık (+7 test dersi). Kulak eğitiminde ekran alıştırmaları, klikle alkış ve bölüm bölüm testler var; şarkı söyleme ölçülmez, onu kendin kontrol edersin. Şan ve piyano yakında. Her nota için doğru, farklı nota ya da duyamadım diye geri bildirim verir; akort aleti, metronom ve kurulum sihirbazı uygulamanın içindedir. Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsizdir ve hesap gerektirmez; sonraki dersler Ostinato üyeliğiyle App Store ve Google Play üzerinden açılır. Mikrofon sesi cihazında işlenir ve yüklenmez.",
+    en: "Ostinato teaches guitar from the first sound through measured practice, and trains your ear with drills and clapping. The guitar course comes with 235 lessons (+5 test lessons) across four levels, and ear training with 48 lessons (+2 test lessons) across two levels, 283 lessons open in total (+7 test lessons). Ear training uses on-screen drills, clapping with the click and part-by-part tests; singing is not measured, so you check it yourself. Voice and piano are coming soon. It gives feedback on every note as correct, a different note or couldn't hear, with a tuner, metronome and setup wizard inside the app. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free and need no account; later lessons open with an Ostinato membership through the App Store and Google Play. Microphone audio is processed on your device and is not uploaded.",
   },
   short: {
-    tr: "Gitar 240 dersle, kulak eğitimi 50 dersle gelir; şan ve piyano yakında, program 690 derse büyüyor. Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsiz ve hesapsız; gerisi Ostinato üyeliğiyle App Store ve Google Play üzerinden açılır.",
-    en: "Guitar comes with 240 lessons and ear training with 50; voice and piano are coming soon, and the programme grows to 690 lessons. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free, with no account. The rest opens with an Ostinato membership through the App Store and Google Play.",
+    tr: "Gitar 235 dersle (+5 test dersi), kulak eğitimi 48 dersle (+2 test dersi) gelir; toplam 283 ders açık (+7 test dersi), şan ve piyano yakında. Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsiz ve hesapsız; gerisi Ostinato üyeliğiyle App Store ve Google Play üzerinden açılır.",
+    en: "Guitar comes with 235 lessons (+5 test lessons) and ear training with 48 (+2 test lessons), 283 lessons open in total (+7 test lessons); voice and piano are coming soon. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free, with no account. The rest opens with an Ostinato membership through the App Store and Google Play.",
   },
   brand: {
     primary: "#D8A657",
@@ -44,8 +44,8 @@ export const ostinato: ProjectConfig = {
     {
       title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle gelir; şan ve piyano yakında.",
-        en: "The guitar course comes with 240 lessons across four levels, and ear training with 50 lessons across two levels; voice and piano are coming soon.",
+        tr: "Gitar kursu dört seviyede 235 dersle (+5 test dersi), kulak eğitimi iki seviyede 48 dersle (+2 test dersi) gelir; şan ve piyano yakında.",
+        en: "The guitar course comes with 235 lessons (+5 test lessons) across four levels, and ear training with 48 lessons (+2 test lessons) across two levels; voice and piano are coming soon.",
       },
       icon: "Sparkles",
     },

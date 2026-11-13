@@ -50,18 +50,20 @@ describe("Motion sales-open copy", () => {
     }
   });
 
-  // Ostinato moved to the v1 curriculum (690 lessons, founder decisions
-  // K3-K9, 2026-11-01). Guitar (240 lessons) and ear training (50 lessons)
-  // are open; voice and piano follow. Guitar level 1 (40 lessons) and ear
+  // Ostinato counts follow ADR-002 (WEB-P0-10c, 2026-11-13): guitar 235 lessons
+  // (+5 test), ear training 48 (+2 test), 283 open in total (+7 test). 690 is a
+  // file count and 676 is not on main: neither is written on the site. Voice
+  // and piano follow. Guitar level 1 (40 lessons) and ear
   // training level 1 (25 lessons) are free, and paid lessons open with an
   // Ostinato membership only: Motion+ is not in its store submission
   // (founder-approved ear-training copy, 2026-11-03).
   it("states Ostinato's open guitar and ear training courses, v1 size and store membership in TR and EN", () => {
     const project = projects.find((p) => p.slug === "ostinato")!;
     for (const text of [project.short.en, project.description.en]) {
-      expect(text).toMatch(/guitar .*240 lessons/i);
-      expect(text).toMatch(/ear training with 50/);
-      expect(text).toMatch(/grows to 690 lessons/);
+      expect(text).toMatch(/[Gg]uitar .*235 lessons \(\+5 test lessons\)/);
+      expect(text).toMatch(/ear training with 48(?: lessons)? \(\+2 test lessons\)/);
+      expect(text).toMatch(/283 lessons open in total \(\+7 test lessons\)/);
+      expect(text).not.toMatch(/\b(690|676|240)\b|grows to/);
       expect(text).toMatch(/Guitar level 1 \(40 lessons\) and ear training level 1 \(25 lessons\) are free/);
       expect(text).toMatch(/[Vv]oice and piano are coming soon/);
       expect(text).not.toMatch(/four courses/i);
@@ -69,9 +71,10 @@ describe("Motion sales-open copy", () => {
       expect(text).not.toMatch(/Motion\+|155|not recorded/);
     }
     for (const text of [project.short.tr, project.description.tr]) {
-      expect(text).toMatch(/Gitar.*240 ders/);
-      expect(text).toMatch(/kulak eğitimi.*50 dersle gelir/);
-      expect(text).toMatch(/690 derse büyüyor/);
+      expect(text).toMatch(/Gitar.*235 dersle \(\+5 test dersi\)/);
+      expect(text).toMatch(/kulak eğitimi.*48 dersle \(\+2 test dersi\) gelir/);
+      expect(text).toMatch(/toplam 283 ders açık \(\+7 test dersi\)/);
+      expect(text).not.toMatch(/\b(690|676|240)\b|büyüyor/);
       expect(text).toMatch(/kulak eğitiminin ilk seviyesi \(25 ders\)/);
       expect(text).not.toMatch(/dört kurs/i);
       expect(text).toMatch(/Ostinato üyeliğiyle App Store ve Google Play üzerinden/);

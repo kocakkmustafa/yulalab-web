@@ -16,15 +16,18 @@ describe("Ostinato Kurslar maddesi", () => {
     }
   });
 
-  it("description ile aynı sayıları söyler (240 ders/4 seviye, 50 ders/2 seviye)", () => {
-    expect(description.tr).toContain("dört seviyede 240 ders");
-    expect(description.tr).toContain("iki seviyede 50 ders");
-    expect(courses.tr).toContain("dört seviyede 240 dersle");
-    expect(courses.tr).toContain("iki seviyede 50 dersle");
-    expect(description.en).toContain("240 lessons across four levels");
-    expect(description.en).toContain("50 lessons across two levels");
-    expect(courses.en).toContain("240 lessons across four levels");
-    expect(courses.en).toContain("50 lessons across two levels");
+  it("description ile aynı sayıları söyler (235+5 ders/4 seviye, 48+2 ders/2 seviye; ADR-002)", () => {
+    expect(description.tr).toContain("dört seviyede 235 dersle (+5 test dersi)");
+    expect(description.tr).toContain("iki seviyede 48 dersle (+2 test dersi)");
+    expect(courses.tr).toContain("dört seviyede 235 dersle (+5 test dersi)");
+    expect(courses.tr).toContain("iki seviyede 48 dersle (+2 test dersi)");
+    expect(description.en).toContain("235 lessons (+5 test lessons) across four levels");
+    expect(description.en).toContain("48 lessons (+2 test lessons) across two levels");
+    expect(courses.en).toContain("235 lessons (+5 test lessons) across four levels");
+    expect(courses.en).toContain("48 lessons (+2 test lessons) across two levels");
+    for (const t of [description.tr, description.en, courses.tr, courses.en]) {
+      expect(t).not.toMatch(/\b(690|676|240)\b/);
+    }
   });
 
   it("description ve short ukulele/bas/piyano kursu açık demez, ücretsiz sayı 40+25", () => {
