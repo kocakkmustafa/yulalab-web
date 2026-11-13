@@ -600,24 +600,24 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
 
 /* User appearance: CSS system fallback also works before JS or without it. */
 :root {
-  --yula-ink-900: 10 10 11;
-  --yula-ink-850: 14 14 16;
-  --yula-ink-800: 19 19 22;
+  --yula-ink-900: 13 14 17;
+  --yula-ink-850: 17 18 22;
+  --yula-ink-800: 22 23 27;
   --yula-ink-700: 26 26 30;
   --yula-ink-600: 38 38 44;
   --yula-ink-500: 58 58 66;
   --yula-ink-400: 144 144 154;
   --yula-ink-300: 154 154 163;
-  --yula-ink-200: 197 197 204;
-  --yula-ink-100: 229 229 234;
-  --yula-ink-50: 244 244 245;
+  --yula-ink-200: 182 182 186;
+  --yula-ink-100: 208 208 206;
+  --yula-ink-50: 228 228 224;
   --yula-surface: rgba(255,255,255,.02);
   --yula-surface-raised: rgba(255,255,255,.04);
   --yula-surface-inset: rgba(255,255,255,.015);
   --yula-hairline: rgba(255,255,255,.10);
   --yula-hairline-strong: rgba(255,255,255,.20);
-  --yula-page-bg: #030407;
-  --yula-page-rgb: 3 4 7;
+  --yula-page-bg: #0d0e11;
+  --yula-page-rgb: 13 14 17;
   --yula-brand-text-mix: 100%;
   --yula-focus: #c4b5fd;
   --yula-warning: #fcd34d;
@@ -632,7 +632,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --yula-ink-900: 245 243 238;
+  --yula-ink-900: 246 245 240;
   --yula-ink-850: 255 253 248;
   --yula-ink-800: 238 234 226;
   --yula-ink-700: 228 223 213;
@@ -641,15 +641,15 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-ink-400: 101 93 85;
   --yula-ink-300: 92 85 79;
   --yula-ink-200: 57 53 47;
-  --yula-ink-100: 33 30 26;
-  --yula-ink-50: 22 19 16;
+  --yula-ink-100: 33 32 30;
+  --yula-ink-50: 17 17 16;
   --yula-surface: rgba(0,0,0,.025);
   --yula-surface-raised: rgba(0,0,0,.055);
   --yula-surface-inset: rgba(0,0,0,.018);
   --yula-hairline: rgba(22,19,16,.18);
   --yula-hairline-strong: rgba(22,19,16,.32);
-  --yula-page-bg: #f5f3ee;
-  --yula-page-rgb: 245 243 238;
+  --yula-page-bg: #f6f5f0;
+  --yula-page-rgb: 246 245 240;
   --yula-brand-text-mix: 38%;
   --yula-focus: #6d36ac;
   --yula-warning: #795200;
@@ -665,7 +665,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
-    --yula-ink-900: 245 243 238;
+    --yula-ink-900: 246 245 240;
     --yula-ink-850: 255 253 248;
     --yula-ink-800: 238 234 226;
     --yula-ink-700: 228 223 213;
@@ -674,15 +674,15 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
     --yula-ink-400: 101 93 85;
     --yula-ink-300: 92 85 79;
     --yula-ink-200: 57 53 47;
-    --yula-ink-100: 33 30 26;
-    --yula-ink-50: 22 19 16;
+    --yula-ink-100: 33 32 30;
+    --yula-ink-50: 17 17 16;
     --yula-surface: rgba(0,0,0,.025);
     --yula-surface-raised: rgba(0,0,0,.055);
     --yula-surface-inset: rgba(0,0,0,.018);
     --yula-hairline: rgba(22,19,16,.18);
     --yula-hairline-strong: rgba(22,19,16,.32);
-    --yula-page-bg: #f5f3ee;
-    --yula-page-rgb: 245 243 238;
+    --yula-page-bg: #f6f5f0;
+    --yula-page-rgb: 246 245 240;
     --yula-brand-text-mix: 38%;
     --yula-focus: #6d36ac;
     --yula-warning: #795200;

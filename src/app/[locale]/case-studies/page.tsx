@@ -82,7 +82,7 @@ function Index() {
                 {([text(locale, "Yazılı izin ve kapsamı", "Written permission and its scope"), text(locale, "Başlangıç durumu", "Baseline"), text(locale, "Kısıt", "Constraint"), text(locale, "Karar kaydı", "Decision log"), text(locale, "Gerçek artefakt (kod/commit/ölçüm)", "A real artifact (code/commit/measurement)"), text(locale, "Kayıtlı bir iddiaya bağlı sonuç", "An outcome tied to a recorded claim"), text(locale, "Ne başarısız oldu", "What failed"), text(locale, "Geçerlilik tarihi", "Validity date")]
                 ).map((item) => (
                   <li key={item} className="flex gap-2">
-                    <span className="text-ink-500">—</span>
+                    <span aria-hidden="true" className="text-ink-500">—</span>
                     {item}
                   </li>
                 ))}

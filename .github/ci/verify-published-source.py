@@ -123,7 +123,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/app/[locale]/operating-system/page.tsx": "35d8b05586d8c2854f041dccc85ce6720858ddd85f82d33149b713ee3051e6df",
     "src/app/[locale]/privacy/page.tsx": "94fc4c2c47aa1a9d2961ad10318c2d30d19bf701804876d233637eb1f423e479",
     "src/app/global-not-found.tsx": "868aaa4a27276f3df13101f0f2d9e57a2b3815a28692a29d46ac6178c26791d7",
-    "src/app/globals.css": "fd8c9ef4b3111dcd105aed49eef581859d0c706102801b7a06f495a11601339a",
+    "src/app/globals.css": "e5a288c27c16714fa79aa5cbe733baf4213e61b47582762fb0cdbae37114eb2a",
     "src/components/experience/Experience.module.css": "8abda61850aecdab3fabcc17e0944805f5cf01baf54cdfdf3c137b1e0bb8f472",
     "src/components/experience/ExperienceCanvas.tsx": "04eca23c83748f72d21e93deb7f7dfa81a7bca9e3b91a7f7c31fc8c640ccb0c6",
     "src/components/experience/ExperienceOverlay.tsx": "d8d6a093376cbb78067d0ce230810fce7a5a0f80ba571b7b0e6c25176b468f93",
@@ -141,10 +141,10 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/i18n/locales.ts": "397228713653ad4a844884d992387267a5a602e9fb6d30aabe36d0f7c7516ff5",
     "src/i18n/request.ts": "98f4c0fd5758e1b6dd3f0d1516ddebaeaf41f72cfb25b0d868033dcf1c3c8db8",
     "src/lib/localized.ts": "69a179dd2ffa5945f14842fd86924157f49efea2a147c734c3270cae14fb214d",
-    "src/lib/theme.ts": "9a9849555fdf19db28fabbcd26287718864abc4b4c47008c44bccfc5385bdbc6",
-    "src/lib/types.ts": "843566bed8c7fd48ad4f612c11227b8d08a5272dda35202fd0ee99b6db173cef",
+    "src/lib/theme.ts": "15435ec4a63fe78ff0cd3c71fd247dd7daaea05c4e14bafce0dc24e2f68e3115",
+    "src/lib/types.ts": "0c1e46e68edbd1ae135e6b30b35a5f6410b159d26fc2de5726d6663fc39a44f0",
     "src/middleware.ts": "d7cf2e17e6c2f70e58aac46c0491b6cffa609979230b543fae3994a604e60041",
-    "tailwind.config.ts": "17b4f0065f952e32091828579003756effde1810ea864011e260b437380d53aa",
+    "tailwind.config.ts": "82b7a360c9619f27de63b82d62fb7ab754824c5aadd13ebdb118c0ecc31575b3",
     "tests/content-locale-wiring.test.tsx": "a069ba5a97f79cc79d908c742d1b121519f82a23c792292303aa520381676dbb",
     "tests/data-request-verification-page.test.tsx": "9b9b55b79fee198e1f56c0d6cf6ed8d25f81b8122a3bbb460b800f42f0c14844",
     "tests/experience-locale-content.test.tsx": "3db3eff3bb0ac6dab1e9984bd333e91dbd180f53deaaa9b47dc02d3366f53ec5",
@@ -156,8 +156,8 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
     "tests/stat-cards.test.tsx": "3d66d952481f35b07fe2f076eacd7d0f05bf7cc3bc48713d05cf27223963d3b1",
     "tests/stat-number-locales.test.tsx": "19d81b2e70dce6325f945a18c821104a49a144e763bad8cdcdef2d5f7bbbd716",
-    "tests/theme-boot.test.ts": "df3d8960b41ec2fa2dd790ecd49eff56d4db6bd4fa8c68514c3a2ffc0753e58e",
-    "tests/theme.test.tsx": "d66c2c066a5560805bb32fea6224eb8dc95750cab583ca4d891b12f407a51164"
+    "tests/theme-boot.test.ts": "170758f19a13b86ea9337d0eb2020febbf7a1b1c2af9fa2fa4c932848e5e16cc",
+    "tests/theme.test.tsx": "4086ad19c6e6c46e774b45e1743475d477fe38794cc5fff43aba737a258048fe"
 }
 # END REVIEWED THEME14 SOURCE HASHES
 EXPECTED_REVIEWED_HASHES = {
