@@ -27,16 +27,16 @@ if (!leadsOpen) {
   test.describe("contact (lead intake closed, default)", () => {
     test("tr: no form, mail path remains", async ({ page }) => {
       await page.goto("/contact");
-      await expect(page.getByRole("heading", { level: 1, name: "Konuşalım." })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "İletişim" })).toBeVisible();
       await expect(page.locator("form")).toHaveCount(0);
       await expect(page.locator("[data-intake-language-notice]")).toHaveCount(0);
       await expect(page.locator(`a[href="mailto:${MAIL}"]`).first()).toBeVisible();
-      await expect(page.getByRole("link", { name: "Projenizi konuşalım", exact: true })).toHaveAttribute("href", "/consulting");
+      await expect(page.getByRole("link", { name: "Projenizi konuşalım", exact: true })).toHaveAttribute("href", "/consulting#consulting-contact");
     });
 
     test("en: no form, mail path remains", async ({ page }) => {
       await page.goto("/en/contact");
-      await expect(page.getByRole("heading", { level: 1, name: "Let's talk." })).toBeVisible();
+      await expect(page.getByRole("heading", { level: 1, name: "Contact" })).toBeVisible();
       await expect(page.locator("form")).toHaveCount(0);
       await expect(page.locator(`a[href="mailto:${MAIL}"]`).first()).toBeVisible();
     });

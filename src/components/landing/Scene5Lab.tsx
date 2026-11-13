@@ -101,7 +101,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
           </p>
         </li>
 
-        {notes.map((note) => {
+        {notes.filter((note) => note.kind === "changelog").map((note) => {
           const title = pickNoteText(note.title, want);
           const body = pickNoteText(note.body, want);
           const missing = [

@@ -20,7 +20,7 @@ for (const [locale, path, comingSoon, live, beta, statusWords] of [
 
     test("shows all eight products in one grid without publication grouping", async ({ page }) => {
       await expect(page.locator("details")).toHaveCount(0);
-      const headings = page.getByRole("heading", { level: 2 });
+      const headings = page.getByRole("heading", { level: 3 });
       await expect(headings).toHaveCount(8);
       await expect(page.locator("main")).not.toContainText(statusWords);
     });

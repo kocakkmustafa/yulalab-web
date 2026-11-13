@@ -360,7 +360,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <div data-item="5">
               {record?.privacyUrl ? (
                 <p className="mb-10 text-[15px]">
-                  <Link href={record.privacyUrl} prefetch={false} className="underline underline-offset-4 hover:text-ink-50 focusable" data-testid="trust-privacy">
+                  <Link href={record.privacyUrl} prefetch={false} className="inline-flex min-h-[44px] items-center underline underline-offset-4 hover:text-ink-50 focusable" data-testid="trust-privacy">
                     {t("trustPrivacy")}
                   </Link>
                 </p>
