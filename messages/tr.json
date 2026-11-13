@@ -543,7 +543,15 @@
     "statVerified": "doğrulama",
     "statNeedsReverification": "yeniden doğrulanmalı",
     "availabilityUnverified": "Yayın durumu yeniden doğrulanmalı",
-    "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz."
+    "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz.",
+    "accessHeading": "Erişim",
+    "screenHeading": "Ekran ve demo",
+    "screenEmpty": "Bu ürün için henüz ekran görüntüsü yok.",
+    "trustHeading": "Gizlilik ve güven",
+    "trustPrivacy": "Bu ürünün gizlilik politikası",
+    "statusHeading": "Yayın durumu",
+    "statusLink": "Durum ve kaynaklar",
+    "demoLabel": "Örnek simülasyon"
   },
   "braavolabsDemo": {
     "kicker": "Örnek plan kartı",

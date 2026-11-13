@@ -543,7 +543,15 @@
     "statVerified": "सत्यापित",
     "statNeedsReverification": "दोबारा सत्यापन चाहिए",
     "availabilityUnverified": "प्रकाशन की स्थिति का दोबारा सत्यापन चाहिए",
-    "availabilityCheckedAt": "प्रकाशन की पिछली जाँच: {date}। वर्तमान स्थिति जाँचने के लिए लिंक खोल सकते हैं।"
+    "availabilityCheckedAt": "प्रकाशन की पिछली जाँच: {date}। वर्तमान स्थिति जाँचने के लिए लिंक खोल सकते हैं।",
+    "accessHeading": "Access",
+    "screenHeading": "Screens and demo",
+    "screenEmpty": "There is no screenshot for this product yet.",
+    "trustHeading": "Privacy and trust",
+    "trustPrivacy": "Privacy policy for this product",
+    "statusHeading": "Release status",
+    "statusLink": "Status and sources",
+    "demoLabel": "Example simulation"
   },
   "braavolabsDemo": {
     "kicker": "Sample plan card",

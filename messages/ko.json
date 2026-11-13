@@ -543,7 +543,15 @@
     "statVerified": "검증됨",
     "statNeedsReverification": "재검증 필요",
     "availabilityUnverified": "출시 상태 재검증 필요",
-    "availabilityCheckedAt": "마지막 출시 확인: {date}. 링크를 열어 현재 상태를 확인할 수 있습니다."
+    "availabilityCheckedAt": "마지막 출시 확인: {date}. 링크를 열어 현재 상태를 확인할 수 있습니다.",
+    "accessHeading": "Access",
+    "screenHeading": "Screens and demo",
+    "screenEmpty": "There is no screenshot for this product yet.",
+    "trustHeading": "Privacy and trust",
+    "trustPrivacy": "Privacy policy for this product",
+    "statusHeading": "Release status",
+    "statusLink": "Status and sources",
+    "demoLabel": "Example simulation"
   },
   "braavolabsDemo": {
     "kicker": "Sample plan card",

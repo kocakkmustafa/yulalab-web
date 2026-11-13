@@ -543,7 +543,15 @@
     "statVerified": "検証済み",
     "statNeedsReverification": "再確認が必要",
     "availabilityUnverified": "公開状況の再確認が必要",
-    "availabilityCheckedAt": "最終公開状況確認：{date}。リンクから現在の状況をご確認ください。"
+    "availabilityCheckedAt": "最終公開状況確認：{date}。リンクから現在の状況をご確認ください。",
+    "accessHeading": "Access",
+    "screenHeading": "Screens and demo",
+    "screenEmpty": "There is no screenshot for this product yet.",
+    "trustHeading": "Privacy and trust",
+    "trustPrivacy": "Privacy policy for this product",
+    "statusHeading": "Release status",
+    "statusLink": "Status and sources",
+    "demoLabel": "Example simulation"
   },
   "braavolabsDemo": {
     "kicker": "Sample plan card",
