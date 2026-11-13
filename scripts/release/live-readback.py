@@ -3,6 +3,7 @@
 Fetches every route in all 14 locales from the live site and from a local `next start` of the
 same merged tree, and requires identical visible text. It also checks 404s, the no-store routes
 (cache, referrer, robots, CSP nonce), the contact page, registry CORS and links.yulalab.com.
+Routes: the fixed list below plus every path in the live sitemap (see EXTRA_ROUTES / sitemap_routes).
 Usage: python3 -I scripts/release/live-readback.py <out.json> [local-base]
 """
 import concurrent.futures as cf
@@ -17,6 +18,14 @@ ROUTES = ["", "/projects"] + [f"/projects/{s}" for s in SLUGS] + [
     "/privacy", "/privacy/lifeos", "/privacy/motion", "/privacy/braavolabs", "/privacy/burunfarki",
     "/terms", "/contact", "/support", "/transparency",
 ]
+# Routes added after the first readback (start, lab, why-yula, notes, ...). The live sitemap is the
+# route inventory: every English sitemap path joins ROUTES, so a new page is read back without a script edit.
+EXTRA_ROUTES = [
+    "/start", "/lab", "/why-yula", "/manifesto", "/consulting", "/operating-system", "/case-studies",
+    "/notes", "/notes/how-we-verify-claims", "/notes/lifeos-on-device-encryption",
+    "/notes/braavolabs-primitives-and-providers", "/delete-account/lifeos", "/delete-account/motion",
+]
+ROUTES += [r for r in EXTRA_ROUTES if r not in ROUTES]
 NO_STORE = ["/motion/consent", "/data-request/verify"]
 UA = {"User-Agent": "yulalab-live-readback/1.0"}
 
@@ -48,6 +57,16 @@ def add(name, ok, **extra):
 
 
 # 1. Every route in 14 locales: live 200, html lang, and visible text equal to the local build.
+def sitemap_routes():
+    status, _, body, _ = get(LIVE + "/sitemap.xml")
+    if status != 200:
+        return None
+    return sorted({m[len(LIVE + "/en"):] for m in re.findall(r"<loc>([^<]+)</loc>", body)
+                   if m.startswith(LIVE + "/en/") and not m.endswith("/")})
+
+
+SITEMAP = sitemap_routes()
+ROUTES += [r for r in (SITEMAP or []) if r not in ROUTES]
 pairs = [(loc, route) for loc in LOCALES for route in ROUTES]
 
 
@@ -77,12 +96,14 @@ for p in pages:
         p["status"] == 200 and p["local_status"] == 200 and p["lang"] == p["loc"] and p["equal"],
         status=p["status"], lang=p["lang"], text_sha256=p["text_sha256"], diff=p["diff"])
 
+add("sitemap.xml readable and every sitemap route is read back", SITEMAP is not None and all(r in ROUTES for r in SITEMAP),
+    sitemap_routes=len(SITEMAP or []))
+
 # 2. Shipped content: no internal paths (K9) and the current Ostinato and Braavolabs copy.
 INTERNAL = re.compile(r"\b(scratch|ventures|knowledge|holding)/[\w.-]+|\b[\w-]+\.md\b")
 for p in pages:
-    if p["path"] in (prefix(p["loc"]) or "/", f"{prefix(p['loc'])}/projects"):
-        hit = INTERNAL.search(p["text"])
-        add(f"K9 no internal path {p['path']}", hit is None, hit=hit and hit.group(0))
+    hit = INTERNAL.search(p["text"])
+    add(f"K9 no internal path {p['path']}", hit is None, hit=hit and hit.group(0))
     if "/projects/ostinato" in p["path"] or p["path"] in (prefix(p["loc"]) or "/",):
         stale = re.search(r"\b155\b", p["text"])
         add(f"Ostinato no stale 155 {p['path']}", stale is None, hit=stale and p["text"][max(0, stale.start() - 60): stale.end() + 40])
