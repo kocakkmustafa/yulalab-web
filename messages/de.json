@@ -846,7 +846,32 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music."
+      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "ctaProducts": "Explore the products",
+      "ctaHow": "See how we work",
+      "ctaLabel": "Main paths",
+      "signalsLabel": "From intent to result: three examples",
+      "signalsNote": "These are example scenarios, not real product output or measurements.",
+      "example": "Example",
+      "intentLabel": "Intent",
+      "resultLabel": "Result",
+      "signals": {
+        "s1": {
+          "product": "Braavolabs",
+          "intent": "Describe a task.",
+          "result": "A chat and coding agent takes it on; you see the cost of every run."
+        },
+        "s2": {
+          "product": "LifeOS",
+          "intent": "Keep your health, money and assets in one place.",
+          "result": "Five life areas in one app; records stay on your device, no account needed."
+        },
+        "s3": {
+          "product": "Ostinato",
+          "intent": "Start guitar from the first sound.",
+          "result": "Progress step by step with measured practice, and train your ear with drills."
+        }
+      }
     },
     "scene2": {
       "label": "Difference",

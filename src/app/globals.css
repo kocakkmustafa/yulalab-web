@@ -445,6 +445,13 @@ button:hover .arrow-nudge {
   border-radius: 8px;
 }
 
+/* WEB-P0-03b: scene 1 CTA focus. Keeps the pill radius and uses the focus
+   token, which contrasts with the page ground in both themes. */
+.scene1-cta:focus-visible {
+  outline: 2px solid var(--yula-focus);
+  outline-offset: 3px;
+}
+
 /* dotted grid backdrop */
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
@@ -957,7 +964,16 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   transition: none;
 }
 
+/* WEB-P0-03b: scene 1 signal arrow. One slow pulse; static under reduced motion
+   (rule lives in the last reduced-motion block below, which motion-parity reads). */
+@keyframes scene1-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.scene1-pulse { animation: scene1-pulse 2.4s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
+  .scene1-pulse { animation: none; opacity: 1; }
   .slot > span,
   .slot::after,
   .mm-item,

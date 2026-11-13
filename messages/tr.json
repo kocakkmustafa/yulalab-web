@@ -846,7 +846,32 @@
     "scene1": {
       "label": "Kimlik",
       "title": "Teknolojiyi daha karmaşık değil, hayatı daha mümkün kılmak için inşa ediyoruz.",
-      "message": "YULA Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır."
+      "message": "YULA Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır.",
+      "ctaProducts": "Ürünleri keşfet",
+      "ctaHow": "Nasıl çalıştığımızı gör",
+      "ctaLabel": "Ana yollar",
+      "signalsLabel": "Niyetten sonuca: üç örnek",
+      "signalsNote": "Bunlar örnek senaryolardır; gerçek ürün çıktısı ya da ölçüm değildir.",
+      "example": "Örnek",
+      "intentLabel": "Niyet",
+      "resultLabel": "Sonuç",
+      "signals": {
+        "s1": {
+          "product": "Braavolabs",
+          "intent": "Bir işi tarif et.",
+          "result": "Sohbet ve kodlama ajanı işi üstlenir; her çalıştırmanın maliyetini görürsün."
+        },
+        "s2": {
+          "product": "LifeOS",
+          "intent": "Sağlığını, paranı ve varlıklarını tek yerde tut.",
+          "result": "Beş yaşam alanı tek uygulamada; kayıtlar cihazında kalır, hesap gerekmez."
+        },
+        "s3": {
+          "product": "Ostinato",
+          "intent": "Gitara ilk sesten başla.",
+          "result": "Ölçülü pratikle adım adım ilerler, kulağını alıştırmalarla eğitirsin."
+        }
+      }
     },
     "scene2": {
       "label": "Fark",
