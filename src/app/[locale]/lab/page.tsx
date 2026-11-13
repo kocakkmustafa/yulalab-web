@@ -139,7 +139,10 @@ function Lab() {
             </p>
           ) : (
             <p className="mt-3 text-[15px] leading-relaxed text-ink-300" data-testid="lab-cases-empty">
-              {text(locale, "Henüz dış müşteri vakası yok.", "No outside-client case yet.")}
+              {text(locale, "Vaka çalışmalarının kapsamı ve sınırları için", "For the scope and limits of case studies, see")}{" "}
+              <Link href="/transparency" className="text-ink-100 link-wipe focusable">
+                {text(locale, "Şeffaflık sayfasına bakın.", "the Transparency page.")}
+              </Link>
             </p>
           )}
           <Link href="/case-studies" className={linkClass}>

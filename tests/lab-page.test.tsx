@@ -47,16 +47,21 @@ describe("/lab (WEB-UX-05e)", () => {
   it("writes the empty case-study state while none is published", async () => {
     expect(caseStudies).toHaveLength(0);
     await renderLab("tr");
-    expect(screen.getByTestId("lab-cases-empty").textContent).toBe("Henüz dış müşteri vakası yok.");
+    expect(screen.getByTestId("lab-cases-empty").textContent).toBe(
+      "Vaka çalışmalarının kapsamı ve sınırları için Şeffaflık sayfasına bakın.",
+    );
+    expect(screen.getByTestId("lab-cases-empty").querySelector("a")?.getAttribute("href")).toBe("/transparency");
     cleanup();
     await renderLab("en");
-    expect(screen.getByTestId("lab-cases-empty").textContent).toBe("No outside-client case yet.");
+    expect(screen.getByTestId("lab-cases-empty").textContent).toBe(
+      "For the scope and limits of case studies, see the Transparency page.",
+    );
   });
 
   it("links only to existing routes and has one h1", async () => {
     const { container } = await renderLab("tr");
     const hrefs = Array.from(container.querySelectorAll("a")).map((a) => a.getAttribute("href"));
-    expect(hrefs).toEqual(["/notes", "/operating-system", "/case-studies"]);
+    expect(hrefs).toEqual(["/notes", "/operating-system", "/transparency", "/case-studies"]);
     expect(container.querySelectorAll("h1")).toHaveLength(1);
   });
 
@@ -67,6 +72,6 @@ describe("/lab (WEB-UX-05e)", () => {
 
   it("does not carry the capital / outside-client sentence", async () => {
     const { container } = await renderLab("tr");
-    expect(container.textContent).not.toMatch(/Sermaye ya da yatırım|hiçbir dış müşteri işini/);
+    expect(container.textContent).not.toMatch(/Sermaye ya da yatırım|hiçbir dış müşteri işini|Henüz dış müşteri/);
   });
 });
