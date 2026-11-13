@@ -949,7 +949,36 @@
     "scene5": {
       "label": "Laboratuvar",
       "title": "Yaşayan laboratuvar.",
-      "message": "Tasarım kararlarını ve öğrendiklerimizi soru, hipotez ve sonuçlarıyla birlikte kayda geçiriyoruz."
+      "message": "Notlarımızı ve tasarım kararlarımızı kayda geçiriyoruz; her kayıt şablonun doldurulabilen alanlarını gösterir, boş alanlar açıkça yazılır.",
+      "listLabel": "Laboratuvar kayıtları: notlar ve bir tasarım kararı",
+      "kindNote": "Lab notu",
+      "kindDecision": "Tasarım kararı",
+      "fields": {
+        "question": "Soru",
+        "hypothesis": "Hipotez",
+        "did": "Ne yaptık",
+        "learned": "Ne öğrendik",
+        "next": "Sonraki test"
+      },
+      "empty": "henüz yazılmadı",
+      "sourceLabel": "Kaynak",
+      "noteId": "not: {slug}",
+      "onlyTr": "Çeviri yok ({part}): yalnızca Türkçe yazıldı.",
+      "onlyEn": "Çeviri yok ({part}): yalnızca İngilizce yazıldı.",
+      "allNotes": "Tüm laboratuvar notları",
+      "note": "Bu bölüm yalnızca depoda yazılı notları ve belgeleri gösterir. Boş bırakılan alan henüz yazılmadı demektir; doldurmak için bir şey uydurmuyoruz. Bir belge öneriyse öneri olarak etiketlenir.",
+      "decision": {
+        "title": "3D sahne ana sayfada varsayılan olarak açık mı kalsın?",
+        "question": "Ana sayfadaki 3D yolculuk herkeste varsayılan olarak açık mı kalmalı, yoksa mobilde statik mi başlamalı?",
+        "did": "Üç seçenek yazıldı: korumalı hâli olduğu gibi bırakmak, mobilde statik varsayılan, yalnız masaüstünde varsayılan 3D. Ayrıca yerel bir üretim derlemesinde Lighthouse koşuldu; tablo kaynak belgededir.",
+        "learned": "Belgeye göre, yerel mobil sonuç 03a2 öncesinde canlı değerin altındaydı ve yazılı kabul karşılanmıyordu. 03a2 sonrası yerel mobil sonuç oynaktı (makine yoğundu); masaüstüne etkisi bilinmiyor. Canlıda ve gerçek cihazda denenmedi.",
+        "next": "Belgenin önerdiği sonraki adım: sakin bir makinede yeniden ölçüm. Mobil açılış süresinin kaynağı için ayrı bir iş de belgede önerilmiş.",
+        "status": "Durum: kabul edildi, 2026-11-08, Project orchestration; uygulama WEB-P0-03a2.",
+        "sourceNote": "depo içi belge, sitede ayrı sayfası yok",
+        "sourceLang": "Kaynak belge Türkçe yazılmıştır."
+      },
+      "partTitle": "başlık",
+      "partBody": "metin"
     },
     "scene6": {
       "label": "Güven",

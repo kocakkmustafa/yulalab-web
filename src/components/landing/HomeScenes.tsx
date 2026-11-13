@@ -7,6 +7,7 @@ import { Scene2Difference } from "./Scene2Difference";
 import { Scene6Trust } from "./Scene6Trust";
 import { Scene4Engineering } from "./Scene4Engineering";
 import { Scene7Start } from "./Scene7Start";
+import { Scene5Lab } from "./Scene5Lab";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -99,6 +100,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
               />
             ) : null}
             {scene.n === 7 ? <Scene7Start t={t} locale={locale} /> : null}
+            {scene.n === 5 ? <Scene5Lab t={t} locale={locale} /> : null}
           </section>
         );
       })}

@@ -58,7 +58,8 @@ function Notes() {
         {notes.map((note) => (
           <article
             key={note.slug}
-            className="rounded-2xl border border-hairline bg-surface p-7"
+            id={note.slug}
+            className="scroll-mt-28 rounded-2xl border border-hairline bg-surface p-7"
           >
             <time
               dateTime={note.date}

@@ -949,7 +949,36 @@
     "scene5": {
       "label": "Lab",
       "title": "A living lab.",
-      "message": "We record our design decisions and what we learn, with the question, the hypothesis and the result."
+      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
+      "listLabel": "Lab records: notes and a design decision",
+      "kindNote": "Lab note",
+      "kindDecision": "Design decision",
+      "fields": {
+        "question": "Question",
+        "hypothesis": "Hypothesis",
+        "did": "What we did",
+        "learned": "What we learned",
+        "next": "Next test"
+      },
+      "empty": "not written yet",
+      "sourceLabel": "Source",
+      "noteId": "note: {slug}",
+      "onlyTr": "No translation ({part}): written in Turkish only.",
+      "onlyEn": "No translation ({part}): written in English only.",
+      "allNotes": "All lab notes",
+      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "decision": {
+        "title": "Should the 3D scene stay on by default on the home page?",
+        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
+        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
+        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
+        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
+        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
+        "sourceNote": "a document in the repository, no separate page on the site",
+        "sourceLang": "The source document is written in Turkish."
+      },
+      "partTitle": "title",
+      "partBody": "text"
     },
     "scene6": {
       "label": "Trust",
