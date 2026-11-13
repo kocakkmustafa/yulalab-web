@@ -98,7 +98,8 @@ for (const view of VIEWS) {
       await page.goto("/");
       const scene = page.locator("#scene-5-lab");
       const links = scene.locator("a");
-      await expect(links).toHaveCount(4);
+      // 3 note titles + 3 note sources + ADR-003 source + "all notes".
+      await expect(links).toHaveCount(8);
       const names = (await links.allInnerTexts()).map((s) => s.trim());
       expect(new Set(names).size).toBe(names.length);
       for (const slug of SLUGS) {

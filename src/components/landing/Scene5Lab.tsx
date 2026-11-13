@@ -159,6 +159,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                   className="focusable normal-case tracking-normal underline underline-offset-4 hover:text-ink-200"
                 >
                   {t("scene5.kindNote")}
+                  <span className="sr-only">{` (${note.slug})`}</span>
                 </a>
                 <span aria-hidden="true">{" · "}</span>
                 {t("scene5.noteId", { slug: note.slug })}
