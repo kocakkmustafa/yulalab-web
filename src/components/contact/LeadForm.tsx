@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { CURRENT_NOTICE_VERSION } from "@/lib/consent";
+import { track } from "@/lib/analytics/client";
 import { submitLead } from "@/lib/forms/lead-submission";
 import type { Locale } from "@/i18n/routing";
 
@@ -62,6 +63,16 @@ export function LeadForm({
   const [intent, setIntent] = useState<Intent>(studioEnabled ? "studio" : "product");
   const [state, setState] = useState<State>({ kind: "idle" });
   const inFlight = useRef<AbortController | null>(null);
+  const started = useRef(false);
+  /** Fired once, on first real interaction — not on render. Carries no field value. */
+  function markStarted(event: React.FocusEvent<HTMLFormElement>) {
+    // The honeypot is a trap, not a field: a focus there is not a visitor
+    // starting the form.
+    if ((event.target as HTMLElement).getAttribute("name") === "website") return;
+    if (started.current) return;
+    started.current = true;
+    track({ event: "lead_form_started" });
+  }
   useEffect(() => () => {
     inFlight.current?.abort();
     inFlight.current = null;
@@ -119,6 +130,8 @@ export function LeadForm({
     inFlight.current = null;
     if (result.kind === "accepted") {
       setState({ kind: "sent", receiptId: result.receiptId });
+      // Closed-vocabulary event: no name, email, message or intent travels.
+      track({ event: "lead_form_submitted" });
     } else {
       setState({ kind: "error", code: result.kind === "uncertain" ? "uncertain" : result.error ?? "unknown" });
     }
@@ -145,7 +158,7 @@ export function LeadForm({
   const label = "font-mono text-[11px] tracking-widest uppercase text-ink-300";
 
   return (
-    <form onSubmit={onSubmit} noValidate aria-busy={state.kind === "sending"} className="glass p-7 flex flex-col gap-5">
+    <form onSubmit={onSubmit} onFocusCapture={markStarted} noValidate aria-busy={state.kind === "sending"} className="glass p-7 flex flex-col gap-5">
       <div>
         <label className={label} htmlFor={`${id}-name`}>
           {t("name")}

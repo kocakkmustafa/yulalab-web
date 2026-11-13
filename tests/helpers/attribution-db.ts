@@ -33,8 +33,18 @@ export function migrationSql(): string {
   );
 }
 
+export function funnelMigrationSql(): string {
+  return readFileSync(
+    path.resolve(import.meta.dirname, "../../db/migrations/0006_funnel_events_locales.sql"),
+    "utf8",
+  );
+}
+
 /** Fresh schema + migration. Throws if PostgreSQL is unreachable — never skips. */
-export async function createIsolatedSchema(schema: string): Promise<Pool> {
+export async function createIsolatedSchema(
+  schema: string,
+  options: { funnel?: boolean } = {},
+): Promise<Pool> {
   // max 6 so a test can hold connections busy — proving a transaction is
   // real under concurrency needs spare capacity, and max:2 made those tests
   // measure pool exhaustion instead.
@@ -42,6 +52,10 @@ export async function createIsolatedSchema(schema: string): Promise<Pool> {
   await pool.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
   await pool.query(`CREATE SCHEMA ${schema}`);
   await pool.query(migrationSql());
+  // Opt-in: older suites replay 0004/0005 over this schema, which would
+  // otherwise overwrite the 0006 CHECKs. 0006 only rewrites attributions' event_name and locale CHECKs, so it
+  // applies cleanly directly on 0001 and gives these suites the shipped shape.
+  if (options.funnel) await pool.query(funnelMigrationSql());
   return pool;
 }
 

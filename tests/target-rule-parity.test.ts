@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { PAGE_PATTERN, TARGET_URL_PATTERN, parseEventPayload } from "@/lib/analytics/events";
+import { EVENT_NAMES, LOCALES, PAGE_PATTERN, TARGET_URL_PATTERN, parseEventPayload } from "@/lib/analytics/events";
 
 /**
  * The application rule and the database rule for a stored outbound URL must
@@ -33,6 +33,43 @@ describe("validator and CHECK constraint share one rule per column", () => {
     // needs them separately too.
     expect(migration).toContain("page_path NOT LIKE '%//%'");
     expect(migration).toContain("page_path NOT LIKE '%..%'");
+  });
+});
+
+/**
+ * WEB-P1-03: event-name and locale vocabularies are also one rule shared with
+ * the database. 0006 owns both CHECKs; the app lists must equal its lists in
+ * both directions, so a name added on one side fails here, not as a 503.
+ */
+describe("0006 CHECK constraints equal the application vocabularies", () => {
+  const funnel = readFileSync(
+    path.resolve(import.meta.dirname, "../db/migrations/0006_funnel_events_locales.sql"),
+    "utf8",
+  );
+  function listFor(constraint: string, column: string): string[] {
+    const start = funnel.indexOf(`ADD CONSTRAINT ${constraint} CHECK (${column} IN`);
+    expect(start, `no ${constraint} in 0006`).toBeGreaterThan(-1);
+    const end = funnel.indexOf("));", start);
+    return [...funnel.slice(start, end).matchAll(/'([^']+)'/g)].map((m) => m[1]);
+  }
+
+  it("event_name list equals EVENT_NAMES", () => {
+    const sql = listFor("attributions_event_name_check", "event_name");
+    expect([...sql].sort()).toEqual([...EVENT_NAMES].sort());
+    expect(sql).toHaveLength(16);
+  });
+
+  it("locale list equals LOCALES (the 14 routing locales)", () => {
+    const sql = listFor("attributions_locale_check", "locale");
+    expect([...sql].sort()).toEqual([...LOCALES].sort());
+    expect(sql).toHaveLength(14);
+  });
+
+  it("marks both constraints with the 0006 migration comment", () => {
+    for (const name of ["attributions_event_name_check", "attributions_locale_check"]) {
+      expect(funnel).toContain(`COMMENT ON CONSTRAINT ${name} ON attributions`);
+    }
+    expect(funnel.match(/yulalab:migration=0006:funnel-events-locales/g)).toHaveLength(2);
   });
 });
 
