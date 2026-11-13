@@ -1527,6 +1527,20 @@
       "candidateSha256": "58a7fa431f65bc5cb2f4baab64ba45d48b44453536f1f58860b19d14b254f558",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P2 paketi: lab, data-request, readback"
+    },
+    {
+      "path": "tests/data-request-route.test.ts",
+      "publishedSha256": "e1755148115ea58aefa17589ab15c4c0da97135b1b63ac1862adfb2c5c70de25",
+      "candidateSha256": "2c1cb25e2571353d40230d1400cd7ab4abe2f7409b247b7a3ef3b9d6a3d4bd3b",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "SEC-WEB-03: lead/data-request limit ve geçersiz girdi testleri"
+    },
+    {
+      "path": "tests/leads-route.test.ts",
+      "publishedSha256": "3f79ff7f3f425566c332254de59efc915dc1a74f3c740f21ed86ad64ab778eb4",
+      "candidateSha256": "024321f1a7a906dd9e0d001c62ae210bc1ed9c715acd532acb203e8621c45a86",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "SEC-WEB-03: lead/data-request limit ve geçersiz girdi testleri"
     }
   ]
 }
