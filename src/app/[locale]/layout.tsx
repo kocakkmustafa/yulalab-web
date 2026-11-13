@@ -35,6 +35,8 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin", "latin-ext"],
   variable: "--font-grotesk",
   display: "swap",
+  // Yalniz urun sayfalarinda kullanilir; ana sayfa ilk boyamasinda onyukleme yer tutmasin (WEB-P0-03a3).
+  preload: false,
 });
 
 const jetbrains = JetBrains_Mono({
