@@ -20,7 +20,9 @@
     "verify:contrast": "node --import tsx scripts/contrast-audit.ts",
     "verify:translations": "node --import tsx scripts/verify-translations.ts",
     "verify:render-mode": "node scripts/verify-render-mode.mjs",
-    "budget:js": "node scripts/quality/js-budget.mjs"
+    "budget:js": "node scripts/quality/js-budget.mjs",
+    "locale:report": "node --import tsx scripts/locale-report.ts",
+    "notes:draft": "node --import tsx scripts/release-notes-draft.ts"
   },
   "dependencies": {
     "@react-three/drei": "10.7.8",
