@@ -24,7 +24,6 @@ import { Scene5Lab } from "./Scene5Lab";
  */
 export async function HomeScenes({ locale }: { locale: Locale }) {
   const t = await getTranslations({ locale, namespace: "home" });
-  const ts = await getTranslations({ locale, namespace: "status" });
 
   // tr and en are written in full. The other twelve catalogues carry the
   // English copy until translated, so the block says so (WCAG 3.1.2).

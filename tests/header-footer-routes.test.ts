@@ -36,11 +36,17 @@ const ALLOWLIST: Record<string, { reason: string; via: string | null; orphanReas
   "/privacy/lifeos": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/motion": { reason: "per-product privacy notice, listed on the privacy hub and support page", via: "/privacy" },
   "/delete-account/lifeos": { reason: "store data-deletion URL for the store listing; also linked from the support page", via: "/support" },
+  "/lab": { reason: "home door and /transparency link target (WEB-UX-05d/05e), not a header entry", via: "/" },
+  "/prototype/contact": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
+  "/prototype/projects": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
+  "/prototype/projects/[slug]": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
+  "/prototype/start": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
   "/delete-account/motion": { reason: "store data-deletion URL for the store listings", via: null, orphanReason: "known orphan: only the sitemap links it; no in-site link today" },
 };
 /** Dynamic routes are covered by their list page (and, for products, by per-product footer links). */
 const DYNAMIC_PARENT: Record<string, string> = {
   "/case-studies/[slug]": "/case-studies",
+  "/notes/[slug]": "/notes",
   "/projects/[slug]": "/projects",
 };
 

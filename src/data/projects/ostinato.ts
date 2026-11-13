@@ -44,8 +44,8 @@ export const ostinato: ProjectConfig = {
     {
       title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle açık; şan ve piyano yakında.",
-        en: "The guitar course is open with 240 lessons across four levels, and ear training with 50 lessons across two levels; voice and piano are coming soon.",
+        tr: "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle gelir; şan ve piyano yakında.",
+        en: "The guitar course comes with 240 lessons across four levels, and ear training with 50 lessons across two levels; voice and piano are coming soon.",
       },
       icon: "Sparkles",
     },
