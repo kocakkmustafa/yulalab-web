@@ -65,7 +65,10 @@ export function LeadForm({
   const inFlight = useRef<AbortController | null>(null);
   const started = useRef(false);
   /** Fired once, on first real interaction — not on render. Carries no field value. */
-  function markStarted() {
+  function markStarted(event: React.FocusEvent<HTMLFormElement>) {
+    // The honeypot is a trap, not a field: a focus there is not a visitor
+    // starting the form.
+    if ((event.target as HTMLElement).getAttribute("name") === "website") return;
     if (started.current) return;
     started.current = true;
     track({ event: "lead_form_started" });

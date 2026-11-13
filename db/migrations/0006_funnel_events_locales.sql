@@ -61,7 +61,8 @@ ALTER TABLE attributions ADD CONSTRAINT attributions_locale_check CHECK (locale 
 COMMENT ON CONSTRAINT attributions_locale_check ON attributions
     IS 'yulalab:migration=0006:funnel-events-locales';
 
--- Fail before commit if either constraint is missing or lacks a new value.
+-- Fail before commit if either constraint is missing or lacks any of the three
+-- new event names / the last locale.
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -71,6 +72,8 @@ BEGIN
          WHERE table_class.relnamespace = current_schema()::regnamespace
            AND table_class.relname = 'attributions'
            AND constraint_row.conname = 'attributions_event_name_check'
+           AND pg_get_constraintdef(constraint_row.oid) LIKE '%home_view%'
+           AND pg_get_constraintdef(constraint_row.oid) LIKE '%lead_form_started%'
            AND pg_get_constraintdef(constraint_row.oid) LIKE '%lead_form_submitted%'
     ) OR NOT EXISTS (
         SELECT 1
