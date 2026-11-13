@@ -16,7 +16,7 @@ async function expectNoBlockingViolations(page: Page, label: string) {
   }
 
   const results = await new AxeBuilder({ page })
-    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
 
   const blocking = results.violations.filter(
