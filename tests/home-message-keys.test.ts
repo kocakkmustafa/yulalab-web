@@ -26,16 +26,21 @@ for (const scene of HOME_SCENES) {
   for (const leaf of ["label", "title", "message"]) used.add(`home.${scene.key}.${leaf}`);
 }
 used.add("home.navLabel");
-// Scene 7 (WEB-P0-03h) reads its labels by literal key.
-used.add("home.scene7.groupsLabel");
-for (const [path, ctas] of Object.entries({
-  individual: ["products"],
-  business: ["consulting"],
-  engineer: ["notes", "approach", "contact"],
+// Scene 7 doors (WEB-UX-05d), the header Doors panel and the loader skip button.
+used.add("home.doors.label");
+for (const [door, links] of Object.entries({
+  products: ["products"],
+  work: ["consulting"],
+  partners: ["contact"],
+  inspect: ["lab", "transparency"],
 })) {
-  used.add(`home.scene7.paths.${path}.title`);
-  for (const cta of ctas) for (const leaf of ["label", "hint"]) used.add(`home.scene7.paths.${path}.${cta}.${leaf}`);
+  used.add(`home.doors.${door}.title`);
+  used.add(`home.doors.${door}.audience`);
+  for (const link of links) used.add(`home.doors.${door}.${link}`);
 }
+used.add("header.doors");
+used.add("header.doorsPanel");
+used.add("experience.loaderSkip");
 
 describe("home route message keys", () => {
   it("reads at least the keys the route is known to use", () => {

@@ -20,7 +20,9 @@
     "lab": "المختبر",
     "approach": "نهجنا",
     "collaboration": "التعاون",
-    "mainNavigation": "التنقل الرئيسي"
+    "mainNavigation": "التنقل الرئيسي",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "مختبر مستقل للمنتجات، يستخدم الذكاء الاصطناعي في المكان والوقت المناسبين، دون مبالغة في وصفه.",
@@ -782,7 +784,8 @@
       "tierHigh": "عالية",
       "wallService": "الخدمة",
       "reset": "إعادة الضبط"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "لا نطلب مبلغ ميزانية دقيقًا أو اسم صاحب القرار؛ يكفي نطاق للميزانية والدور المسؤول.",
@@ -1173,6 +1176,30 @@
             "hint": "General address for support, technical questions and press."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
       }
     }
   }

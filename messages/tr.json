@@ -20,7 +20,9 @@
     "lab": "Laboratuvar",
     "approach": "Yaklaşımımız",
     "collaboration": "İş Birliği",
-    "mainNavigation": "Ana gezinme"
+    "mainNavigation": "Ana gezinme",
+    "doors": "Kapılar",
+    "doorsPanel": "Başlangıç kapıları"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
@@ -782,7 +784,8 @@
       "tierHigh": "Yüksek",
       "wallService": "Hizmet",
       "reset": "Sıfırla"
-    }
+    },
+    "loaderSkip": "Girişi atla"
   },
   "studio": {
     "applyIntro": "Kesin bütçe rakamı ya da karar vericinin adı sorulmaz — aralık ve rol yeter.",
@@ -1173,6 +1176,30 @@
             "hint": "Destek, teknik sorular ve basın için genel adres."
           }
         }
+      }
+    },
+    "doors": {
+      "label": "Ne için buradasın?",
+      "products": {
+        "title": "Ürünleri keşfet",
+        "audience": "Uygulamaları denemek ve kullanmak isteyenler için.",
+        "products": "Ürünlere göz at"
+      },
+      "work": {
+        "title": "İşime AI",
+        "audience": "İşinde yapay zekâdan yararlanmak isteyen ekipler için.",
+        "consulting": "AI danışmanlığını gör"
+      },
+      "partners": {
+        "title": "İş birliği ve şirket",
+        "audience": "İş ortakları, yatırımcılar ve şirketi tanımak isteyenler için.",
+        "contact": "İş birliği yollarını gör"
+      },
+      "inspect": {
+        "title": "İnceleme",
+        "audience": "Nasıl çalıştığımızı ve ne söylediğimizi kendisi kontrol etmek isteyenler için.",
+        "lab": "Laboratuvarı gez",
+        "transparency": "Şeffaflık kayıtlarını oku"
       }
     }
   }
