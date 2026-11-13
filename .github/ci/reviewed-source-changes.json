@@ -1520,6 +1520,13 @@
       "candidateSha256": "d09aabe969654574cdfec92ccb26f4384c12a4f960833abd7386a60355a23be2",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-UX-05g /start doors page (new route, 14 languages, sitemap entry)"
+    },
+    {
+      "path": "tests/data-request.test.ts",
+      "publishedSha256": "6e726670f5ecc3073f5f63b43da4f31df238aa598f07241de51f3bcf36865950",
+      "candidateSha256": "58a7fa431f65bc5cb2f4baab64ba45d48b44453536f1f58860b19d14b254f558",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P2 paketi: lab, data-request, readback"
     }
   ]
 }
