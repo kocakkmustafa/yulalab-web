@@ -32,6 +32,12 @@ export type UniverseItem = {
     notify?: { href: string; label: string };
     contact: { href: string; label: string };
   };
+  /**
+   * Store slots drawn on the row (WEB-P0-07d): one per store, a real link when
+   * the product has a public listing and "coming soon" text when it has none.
+   * Absent for products that are not shipped through the stores.
+   */
+  storeSlots?: { kind: "appstore" | "playstore"; name: string; href?: string }[];
   privacyUrl?: string;
   screenshot?: { src: string; alt: string };
 };
@@ -171,6 +177,36 @@ export function ProductUniverse({
                   </span>
                   {item.tagline}
                 </p>
+                {item.storeSlots?.length ? (
+                  <div className="mt-3 flex flex-wrap items-center gap-2" data-testid="universe-row-stores">
+                    {item.storeSlots.map((slot) =>
+                      slot.href ? (
+                        <TrackedLink
+                          key={slot.kind}
+                          href={slot.href}
+                          event="store_outbound"
+                          product={item.slug}
+                          target="_blank"
+                          rel="noreferrer"
+                          data-store={slot.kind}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-white/20 px-3 py-1.5 font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-100 hover:border-white/40 focusable"
+                        >
+                          {slot.name}
+                          <ArrowUpRight size={11} strokeWidth={2} />
+                        </TrackedLink>
+                      ) : (
+                        <span
+                          key={slot.kind}
+                          data-store={slot.kind}
+                          data-store-soon="true"
+                          className="inline-flex items-center rounded-full border border-white/10 px-3 py-1.5 font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400"
+                        >
+                          {slot.name} · {tStatus("comingSoon")}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                ) : null}
               </li>
             );
           })}

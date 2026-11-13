@@ -33,8 +33,9 @@ describe("product claims follow the main branches", () => {
     const en = catalogue("en").product.ostinato;
     const copy = [en.lede, en.a1Title, en.a1Body, en.a2Title, en.a2Body, en.r1v, ostinato.short.en, ostinato.description.en].join(" ");
     expect(copy).not.toMatch(/four courses|every course opens with free lessons|voice level 1|piano level 1/i);
-    expect(copy).toMatch(/240 lessons/);
-    expect(copy).toMatch(/50 lessons/);
+    expect(copy).toMatch(/235 lessons \(\+5 test lessons\)/);
+    expect(copy).toMatch(/48 lessons \(\+2 test lessons\)/);
+    expect(copy).not.toMatch(/\b(690|676|240)\b/);
     expect(copy).toMatch(/ear training level 1 \(25 lessons\)/);
     expect(copy).toMatch(/[Vv]oice and piano are coming soon/);
     const tr = catalogue("tr").product.ostinato;
