@@ -72,7 +72,9 @@ describe("lapsed claims are separated, not mixed in", () => {
     expect(
       screen.getByRole("heading", { name: /Needs re-verification \(1\)/, level: 3 }),
     ).toBeTruthy();
-    expect(screen.getByText("EN old")).toBeTruthy();
+    // SEC-WEB-01: present as a dated marker only; the statement is not narrated.
+    expect(screen.queryByText("EN old")).toBeNull();
+    expect(screen.getAllByText(/needs re-verification — window closed/i).length).toBeGreaterThan(0);
   });
 
   it("counts only lapsed CLAIMS in that heading", () => {

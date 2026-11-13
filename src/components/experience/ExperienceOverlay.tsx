@@ -7,7 +7,7 @@ import Image from "next/image";
 import { track } from "@/lib/analytics/client";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { siteDate } from "@/lib/public-registry";
+import { isGateExempt, siteDate } from "@/lib/public-registry";
 import type {
   ExperienceCopy,
   ExperienceProduct,
@@ -231,11 +231,14 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
   return (
     <ol className={styles.claimList}>
       {(compact ? product.claims.slice(0, 1) : product.claims).map((claim) => {
-        const freshness = today === null
-          ? "unknown"
-          : today > claim.expiresAt
-            ? "stale"
+        const freshness = claim.withheld || (today !== null && today > claim.expiresAt)
+          ? "stale"
+          : today === null
+            ? "unknown"
             : "current";
+        // SEC-WEB-01: a lapsed claim is never narrated — dates and the
+        // "reverification due" label only, same layout slots.
+        const lapsed = freshness === "stale" && !isGateExempt(claim);
         return (
           <li key={claim.id} className={styles.claim} data-freshness={freshness}>
             <div className={styles.claimHeading}>
@@ -248,20 +251,22 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
                     : copy.proof.verified}
               </span>
             </div>
-            {claim.figure ? <strong className={styles.claimFigure}>{claim.figure}</strong> : null}
-            <p className={styles.claimStatement}>{claim.statement}</p>
+            {claim.figure && !lapsed ? <strong className={styles.claimFigure}>{claim.figure}</strong> : null}
+            {lapsed ? null : <p className={styles.claimStatement}>{claim.statement}</p>}
             <dl className={styles.provenance}>
               {/* K9: only a public source is shown; internal paths stay out of the page. */}
-              {/^https?:\/\//.test(claim.source) ? (
+              {!lapsed && /^https?:\/\//.test(claim.source) ? (
                 <div>
                   <dt>{copy.proof.source}</dt>
                   <dd dir="ltr"><a href={claim.source} target="_blank" rel="noopener noreferrer">{claim.source}</a></dd>
                 </div>
               ) : null}
-              <div>
-                <dt>{copy.proof.scope}</dt>
-                <dd>{claim.scope}</dd>
-              </div>
+              {lapsed ? null : (
+                <div>
+                  <dt>{copy.proof.scope}</dt>
+                  <dd>{claim.scope}</dd>
+                </div>
+              )}
               <div>
                 <dt>{copy.proof.verified}</dt>
                 <dd><time dir="ltr" dateTime={claim.verifiedAt}>{claim.verifiedAt}</time></dd>

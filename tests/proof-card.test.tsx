@@ -42,7 +42,14 @@ describe("a lapsed claim", () => {
     // Dropping it would shrink the page with nobody learning that
     // verification lapsed — an invisible failure.
     render(<ProofCard presented={lapsed} locale="en" />);
-    expect(screen.getByText("Top-3 accuracy ~61%")).toBeTruthy();
+    expect(screen.getByText(/window closed 2026-08-01/)).toBeTruthy();
+  });
+
+  it("does not narrate the lapsed statement, scope or source (SEC-WEB-01)", () => {
+    const { container } = render(<ProofCard presented={lapsed} locale="en" />);
+    expect(container.textContent).not.toContain("Top-3 accuracy ~61%");
+    expect(container.textContent).not.toContain("walk-forward");
+    expect(screen.queryByRole("link")).toBeNull();
   });
 
   it("says so IN WORDS, not by colour alone", () => {
@@ -55,7 +62,7 @@ describe("a lapsed claim", () => {
   it("says so in Turkish too", () => {
     render(<ProofCard presented={lapsed} locale="tr" />);
     expect(screen.getByText(/yeniden doğrulanmalı — süre 2026-08-01 tarihinde doldu/i)).toBeTruthy();
-    expect(screen.getByText("Top-3 doğruluk ~%61")).toBeTruthy();
+    expect(screen.queryByText("Top-3 doğruluk ~%61")).toBeNull();
   });
 
   it("names the date the window closed, not just that it closed", () => {

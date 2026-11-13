@@ -118,6 +118,16 @@ export function validateRecord(record: ProductPublicRecord): string[] {
   const errors: string[] = [];
   const where = (msg: string) => `${record.slug}: ${msg}`;
 
+  // Burun Farkı gate exemption is keyed on the claim id prefix; keep it honest:
+  // the prefix must belong to the burunfarki record and to nothing else.
+  for (const claim of record.claims) {
+    if (isGateExempt(claim) !== (record.slug === "burunfarki")) {
+      errors.push(
+        where(`claim ${claim.id}: the "burunfarki-" id prefix is reserved for the burunfarki record (gate exemption)`),
+      );
+    }
+  }
+
   const knownLifecycles = ["live", "beta", "research", "archived"];
   if (!knownLifecycles.includes(record.lifecycle)) {
     errors.push(where(`unknown lifecycle "${record.lifecycle}"`));
@@ -270,6 +280,57 @@ export function getClaimFreshness(record: ProductPublicRecord, now: Date): Claim
     claim,
     stale: claim.expiresAt ? isExpired(claim.expiresAt, now) : false,
   }));
+}
+
+/**
+ * SEC-WEB-01 — the single gate every render surface asks before it speaks a
+ * claim's statement or figure. A claim whose verification window has closed
+ * (`expiresAt` passed, in the site's zone — see isExpired) may not be
+ * presented in the present tense; surfaces show at most a dated, past-tense
+ * "window closed" marker and never narrate the figure. Time-dependent on
+ * purpose: the same registry closes the gate by itself as dates pass.
+ * Independent of claimState; present-tense eligibility (isPresentTenseEligible)
+ * is a further, stricter test layered on top of this one.
+ */
+export function isClaimPresentable(
+  claim: { id?: string; expiresAt?: string },
+  now: Date,
+): boolean {
+  if (isGateExempt(claim)) return true;
+  return !(claim.expiresAt && isExpired(claim.expiresAt, now));
+}
+
+/**
+ * Burun Farkı kurucu kararına kadar kapsam dışı: the gate does not touch its
+ * claims (they keep rendering exactly as before — lapsed ones marked, figures
+ * shown). Narrowest existing criterion: the `burunfarki-` claim id prefix;
+ * registry data is not changed. Remove this exemption only on a founder decision.
+ */
+export function isGateExempt(claim: { id?: string }): boolean {
+  return claim.id?.startsWith("burunfarki-") === true;
+}
+
+/** Claims of a record that the gate currently lets through. */
+export function listPresentableClaims(record: ProductPublicRecord, now: Date): ProductClaim[] {
+  return record.claims.filter((c) => isClaimPresentable(c, now));
+}
+
+/** Claims whose window closes within `days` days (inclusive), not yet lapsed. For the build report. */
+export function listClaimsExpiringWithin(
+  records: ProductPublicRecord[],
+  now: Date,
+  days: number,
+): { slug: string; claimId: string; expiresAt: string }[] {
+  const horizon = siteDate(new Date(now.getTime() + days * 86_400_000));
+  const out: { slug: string; claimId: string; expiresAt: string }[] = [];
+  for (const record of records) {
+    for (const claim of record.claims) {
+      if (claim.expiresAt && !isExpired(claim.expiresAt, now) && claim.expiresAt <= horizon) {
+        out.push({ slug: record.slug, claimId: claim.id, expiresAt: claim.expiresAt });
+      }
+    }
+  }
+  return out;
 }
 
 /**
