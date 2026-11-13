@@ -923,7 +923,43 @@
     "scene6": {
       "label": "Güven",
       "title": "Güven, ürün ürün gösterilir.",
-      "message": "Veri koruma, kontrol ve onay, ölçülebilir sonuç ve şeffaf ürün aşamasını ürün ve özellik bazında, kanıt durumuyla birlikte ele alıyoruz."
+      "message": "Veri koruma, kontrol ve onay, ölçülebilir sonuç ve şeffaf ürün aşamasını ürün ve özellik bazında, kanıt durumuyla birlikte ele alıyoruz.",
+      "listLabel": "Güven, dört satır: veri koruma, kontrol ve onay, ölçülebilir sonuç, şeffaf ürün aşaması",
+      "sourceLabel": "Kaynak",
+      "srcRecord": "ürün kaydı",
+      "srcRecords": "ürün kayıtları",
+      "srcPrivacy": "{product} gizlilik politikası",
+      "note": "Bu bölüm, ürün kayıtlarının ve gizlilik politikalarının ürün ürün söylediğini tekrar eder. Denetim, sertifika ya da ölçüm değildir. Kayıt bir konuda sessizse boşluğu doldurmaz, sessiz olduğunu söyleriz.",
+      "rows": {
+        "protection": {
+          "title": "Veri koruma",
+          "lead": "Verinin nereye gittiği ürüne ve özelliğe göre değişir; bu yüzden her satır tek bir ürünü adlandırır.",
+          "lines": {
+            "lifeos": "Kayıtlar cihazında kalır ve hesap gerekmez; bazı özellikler App Store aboneliği gerektirir. İzin verirsen sağlık verisi Apple Health veya Health Connect'ten okunur ve cihazda işlenir; sunucuya gönderilmez. Hesap, satın alma ve çökme raporu verisi başka yollardan gider; bunları gizlilik politikası sıralar.",
+            "braavolabs": "Braavolabs mobil uygulamasında veri sunucularda işlenir: hesap bilgileri, iş akışları, çalıştırma sonuçları ve onay kararları çalışma alanında tutulur, AI istekleri gizlilik politikasının adlandırdığı bir model sağlayıcısına gider. Ürün kaydı bilgisayarında çalışan ajanları da anlatır; bu gizlilik politikası yalnız mobil uygulamayı kapsar, o ajanlar için burada veri akışı anlatılmıyor.",
+            "ostinato": "Yakında. İlk sürümde gitar kursunda mikrofon isteğe bağlıdır. Gizlilik sayfasına göre ses yalnız cihaz belleğinde işlenir; ham ses dosyası kaydedilmez veya sunucuya yüklenmez.",
+            "others": "Henüz yayınlanmadı ve kayıtları bir veri akışı anlatmıyor; bu yüzden burada da anlatılmıyor. Motion gizlilik sayfası ailenin tamamını kapsar."
+          }
+        },
+        "control": {
+          "title": "Kontrol ve onay",
+          "lead": "Kararı kimin verdiği hakkında kayıtların söyledikleri.",
+          "lines": {
+            "braavolabs": "Para harcayan adımlar açık bir insan onayını bekler ve her adım denetim izinde görünür. Roller, izinler ve kesin bütçe durdurmaları.",
+            "lifeos": "Sağlık verisi yalnız iznine göre okunur. Çevrimiçi yapay zekâ isteğe bağlıdır: uygulamada sunulduğunda ve kullanmayı seçersen, ekranda gösterilen ve onayladığın metin, gizlilik politikasının anlattığı biçimde işlenmek üzere gönderilir."
+          }
+        },
+        "result": {
+          "title": "Ölçülebilir sonuç",
+          "body": "Henüz yayımlanmış bir sonuç ölçümü yok.",
+          "detail": "Ürün kayıtları sonuç değil, özellik adedi ve açıklama tutar; bunların dayandığı bazı herkese açık kayıt iddialarının süresi dolmuştur. Bu yüzden bu sayfada rakam göstermiyoruz."
+        },
+        "stage": {
+          "title": "Şeffaf ürün aşaması",
+          "lead": "Her ürünün aşaması kendi ürün kaydından okunur.",
+          "note": "LifeOS: «Yayında» iOS içindir; ürün kaydındaki nota göre Android kapalı testtedir. Diğer ürünlerin mağaza kapsamı için ürün sayfasına bakın."
+        }
+      }
     },
     "scene7": {
       "label": "Başlangıç",

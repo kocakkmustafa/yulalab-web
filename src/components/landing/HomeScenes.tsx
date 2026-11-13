@@ -3,6 +3,7 @@ import type { Locale } from "@/lib/types";
 import { HOME_SCENES } from "./home-scenes";
 import { Scene1Identity } from "./Scene1Identity";
 import { Scene2Difference } from "./Scene2Difference";
+import { Scene6Trust } from "./Scene6Trust";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -82,6 +83,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             </p>
             {scene.n === 1 ? <Scene1Identity t={t} ts={ts} /> : null}
             {scene.n === 2 ? <Scene2Difference t={t} ts={ts} /> : null}
+            {scene.n === 6 ? <Scene6Trust t={t} ts={ts} locale={locale} /> : null}
           </section>
         );
       })}
