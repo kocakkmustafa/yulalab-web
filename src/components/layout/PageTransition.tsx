@@ -8,7 +8,7 @@ import { DURATION, EASE_IN } from "@/lib/motion";
 /**
  * Route-level scene change. Entry is handled by the `.page-enter` CSS keyframe
  * on each page's root element (it resolves out of blur); this adds what CSS
- * can't: the LEAVING page blurs and lifts away, and a thin ruler line sweeps a
+ * can't: the LEAVING page fades away, and a thin ruler line sweeps a
  * glass veil across the viewport between the two. The veil only plays after a
  * client navigation, so the first server render and the no-JS document never
  * include it.
@@ -39,8 +39,13 @@ export function PageTransition({ children }: { children: React.ReactNode }) {
               ? { opacity: 1 }
               : {
                   opacity: 0,
-                  y: -8,
-                  filter: "blur(6px)",
+                  // Opacity only: no `y`/`filter` here. When Back/Forward
+                  // returns while an exit is still running, framer-motion
+                  // re-enters the same wrapper and leaves `filter: blur(0px)`
+                  // and `transform: translateY(~0px)` inline. Any non-none
+                  // filter/transform makes the wrapper the containing block of
+                  // `position: fixed` descendants, so the journey stage scrolled
+                  // away with the document (blank screen, restored scroll lost).
                   transition: { duration: DURATION.pageExit, ease: EASE_IN },
                 }
           }
