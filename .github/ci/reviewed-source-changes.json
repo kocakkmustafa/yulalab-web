@@ -1244,9 +1244,9 @@
     {
       "path": "tests/stat-number-locales.test.tsx",
       "publishedSha256": null,
-      "candidateSha256": "8f814db3c58bc2ddab443988715a70d152ea2982843008fc764d276bcf4b2328",
+      "candidateSha256": "19d81b2e70dce6325f945a18c821104a49a144e763bad8cdcdef2d5f7bbbd716",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. SEC-WEB-01: claim s\u00fcresi kap\u0131s\u0131"
+      "reason": "2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance."
     },
     {
       "path": "tests/theme-boot.test.ts",
