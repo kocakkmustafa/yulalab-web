@@ -58,11 +58,11 @@ describe("no internal repository path in shipped text (K9)", () => {
     expect(bad).toEqual([]);
   });
 
-  it("landing components do not render a docs/ path literal", () => {
+  it("landing components render no docs/ or src/ path literal", () => {
     const bad: string[] = [];
     for (const f of walk("src/components/landing").filter((p) => p.endsWith(".tsx"))) {
       for (const s of stringValues(readFileSync(f, "utf8"))) {
-        if (/\bdocs\/[\w.-]+\//.test(s)) bad.push(`${f}: ${s}`);
+        if (/\bdocs\/[\w.-]+\/|^src\/|\bsrc\/[\w.-]+\/[\w.-]+\.tsx?\b/.test(s)) bad.push(`${f}: ${s}`);
       }
     }
     expect(bad).toEqual([]);

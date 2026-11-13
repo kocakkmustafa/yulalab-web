@@ -18,8 +18,6 @@ const DECISION = {
   written: ["question", "did", "learned", "next"] as readonly LabField[],
 } as const;
 
-const NOTES_FILE = "src/data/notes.ts";
-
 function Fields({
   t,
   written,
@@ -153,10 +151,15 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 written={body.written ? { did: { text: body.text, lang: body.lang === want ? undefined : body.lang } } : {}}
               />
               <p
-                data-scene5-source={`${NOTES_FILE}#${note.slug}`}
+                data-scene5-source={note.slug}
                 className="mt-4 font-mono text-[10px] tracking-widest uppercase text-ink-300 [overflow-wrap:anywhere]"
               >
-                {t("scene5.sourceLabel")}: <code className="normal-case tracking-normal">{NOTES_FILE}</code>
+                {t("scene5.sourceLabel")}: <a
+                  href={`${localePath(locale, "/notes")}#${note.slug}`}
+                  className="focusable normal-case tracking-normal underline underline-offset-4 hover:text-ink-200"
+                >
+                  {t("scene5.kindNote")}
+                </a>
                 <span aria-hidden="true">{" · "}</span>
                 {t("scene5.noteId", { slug: note.slug })}
               </p>

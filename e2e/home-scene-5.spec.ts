@@ -75,8 +75,9 @@ for (const view of VIEWS) {
       await expect(scene.locator('[data-scene5-entry="lifeos-live"]')).toContainText("LifeOS artık App Store'da");
       for (const slug of SLUGS) {
         const src = scene.locator(`[data-scene5-entry="${slug}"] [data-scene5-source]`);
-        await expect(src).toHaveAttribute("data-scene5-source", `src/data/notes.ts#${slug}`);
-        await expect(src).toContainText("Kaynak: src/data/notes.ts");
+        await expect(src).toHaveAttribute("data-scene5-source", slug);
+        await expect(src).toContainText("Kaynak: Not");
+        await expect(src.locator("a")).toHaveAttribute("href", new RegExp(`/notes#${slug}$`));
         await expect(src).toContainText(`not: ${slug}`);
       }
       const decision = scene.locator('[data-scene5-entry="adr-003"]');
