@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/types";
 import { HOME_SCENES } from "./home-scenes";
 import { Scene1Identity } from "./Scene1Identity";
+import { Scene2Difference } from "./Scene2Difference";
 
 /**
  * The seven-scene skeleton of the home page (WEB-P0-03a).
@@ -23,6 +24,9 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
   // tr and en are written in full. The other twelve catalogues carry the
   // English copy until translated, so the block says so (WCAG 3.1.2).
   const fallbackEnglish = locale !== "tr" && locale !== "en";
+  // Words injected into that block (status labels) must be English too, or a
+  // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
+  const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
 
   return (
     <div
@@ -77,6 +81,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
               {t(`${scene.key}.message`)}
             </p>
             {scene.n === 1 ? <Scene1Identity t={t} ts={ts} /> : null}
+            {scene.n === 2 ? <Scene2Difference t={t} ts={ts} /> : null}
           </section>
         );
       })}

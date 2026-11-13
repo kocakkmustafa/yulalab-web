@@ -876,7 +876,31 @@
     "scene2": {
       "label": "Difference",
       "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome."
+      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
+      "listLabel": "Common pattern versus our approach, three comparisons",
+      "patternLabel": "Common pattern",
+      "approachLabel": "Our approach",
+      "tagCapability": "Current capability",
+      "tagVision": "Our vision",
+      "sourceLabel": "Source: {product} product record ({status})",
+      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "pairs": {
+        "p1": {
+          "pattern": "More screens, sign-ins and model choices",
+          "approach": "One app, no account needed",
+          "detail": "LifeOS: five life areas in one place, offline-first."
+        },
+        "p2": {
+          "pattern": "False certainty",
+          "approach": "Say where an answer comes from and how unsure it is",
+          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+        },
+        "p3": {
+          "pattern": "Endless notifications",
+          "approach": "Step in at a meaningful time",
+          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+        }
+      }
     },
     "scene3": {
       "label": "Products",
