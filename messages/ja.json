@@ -42,7 +42,8 @@
     "navCaseStudies": "事例",
     "navOperatingSystem": "仕事の進め方",
     "navStudio": "スタジオ",
-    "navConsulting": "AIコンサルティング"
+    "navConsulting": "AIコンサルティング",
+    "navWhyYula": "Why YULA"
   },
   "common": {
     "explore": "詳しく見る",
@@ -282,7 +283,13 @@
   "notes": {
     "eyebrow": "開発ノート",
     "title": "取り組みを、その都度。",
-    "intro": "ここでも透明性を大切にします。製品で何が変わり、何を直し、何が動き始めたかを、短く率直に記録します。"
+    "intro": "ここでも透明性を大切にします。製品で何が変わり、何を直し、何が動き始めたかを、短く率直に記録します。",
+    "articleEyebrow": "Article",
+    "readArticle": "Read the article",
+    "sourcesHeading": "Sources",
+    "verifiedOn": "verified {date}",
+    "seeTransparency": "Transparency page",
+    "backToNotes": "All notes"
   },
   "links": {
     "web": "ウェブサイト",
@@ -924,6 +931,22 @@
     "subject": "AIコンサルティングのご相談",
     "terms": "対応可否、価格、範囲はご相談のうえ確定します。",
     "nav": "AIコンサルティング"
+  },
+  "whyYula": {
+    "eyebrow": "Why YULA",
+    "title": "Why YULA",
+    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
+    "sourcesHeading": "Sources",
+    "s1Title": "Evidence comes before the claim.",
+    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
+    "s2Title": "Portfolio status is read from the registry.",
+    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
+    "s3Title": "The level of evidence is written out.",
+    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
+    "s4Title": "Work you can read.",
+    "s4Body": "The lab's records and notes are reachable directly from here.",
+    "linkLab": "Lab",
+    "linkTransparency": "Transparency"
   },
   "home": {
     "navLabel": "Home page sections",

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { routing } from "@/i18n/routing";
 import { projects } from "@/data/projects";
+import { articleNotes } from "@/data/notes";
 import { siteOrigin } from "@/lib/site-origin";
 
 const STATIC_PATHS = [
@@ -10,6 +11,7 @@ const STATIC_PATHS = [
   "/projects",
   "/lab",
   "/notes",
+  "/why-yula",
   "/case-studies",
   "/operating-system",
   "/contact",
@@ -42,7 +44,8 @@ function altLanguages(origin: string, path: string): Record<string, string> {
 export default function sitemap(): MetadataRoute.Sitemap {
   const origin = siteOrigin();
   const dynamicProjectPaths = projects.map((p) => `/projects/${p.slug}`);
-  const allPaths = [...STATIC_PATHS, ...dynamicProjectPaths];
+  const articlePaths = articleNotes.map((n) => `/notes/${n.slug}`);
+  const allPaths = [...STATIC_PATHS, ...dynamicProjectPaths, ...articlePaths];
 
   const priorityFor = (path: string, isDefaultLocale: boolean): number => {
     const base = (() => {
@@ -50,7 +53,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       if (path === "/projects") return 0.9;
       if (path.startsWith("/projects/")) return 0.8;
       if (path === "/transparency") return 0.8;
-      if (path === "/notes") return 0.6;
+      if (path === "/notes" || path.startsWith("/notes/")) return 0.6;
       if (path === "/privacy" || path === "/support" || path === "/terms") return 0.5;
       if (path.startsWith("/privacy/")) return 0.4;
       return 0.7;

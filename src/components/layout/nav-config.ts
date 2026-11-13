@@ -26,13 +26,14 @@ export const MOBILE_EXTRA_NAV = [
 export const HEADER_CTA = { key: "ctaProjects", href: "/projects" } as const;
 
 export type FooterCompanyKey =
-  | "navConsulting" | "navManifesto" | "navTransparency" | "navProjects" | "navNotes"
+  | "navConsulting" | "navManifesto" | "navTransparency" | "navWhyYula" | "navProjects" | "navNotes"
   | "navStudio" | "navCaseStudies" | "navOperatingSystem" | "navContact";
 
 export const FOOTER_COMPANY_NAV: ReadonlyArray<{ key: FooterCompanyKey; href: string; studioOnly?: boolean }> = [
   { key: "navConsulting", href: "/consulting" },
   { key: "navManifesto", href: "/manifesto" },
   { key: "navTransparency", href: "/transparency" },
+  { key: "navWhyYula", href: "/why-yula" },
   { key: "navProjects", href: "/projects" },
   { key: "navNotes", href: "/notes" },
   { key: "navStudio", href: "/studio", studioOnly: true },

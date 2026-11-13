@@ -36,6 +36,17 @@ describe("fourteen-language routing and public discovery", () => {
   it.each(["xx", "es-MX", "pt-PT", "zh", "zh-Hant", "zh-TW", "zh-HK", "zh-MO", "zh-Hant-CN", "zh-Hant-TW"])("unsupported %s prefixes remain 404", (locale) => {
     expect(middleware(new NextRequest(`https://yulalab.com/${locale}/privacy`)).status).toBe(404);
   });
+  it.each(["/lab", "/why-yula", "/notes", "/notes/how-we-verify-claims", "/en/why-yula", "/de/notes/lifeos-on-device-encryption"])(
+    "real route %s reaches the locale middleware, not a 404",
+    (route) => {
+      expect(middleware(new NextRequest(`https://yulalab.com${route}`)).status).toBe(209);
+    },
+  );
+  it("still 404s language-tag-looking prefixes in front of the new routes", () => {
+    expect(middleware(new NextRequest("https://yulalab.com/why-yula-xx/privacy")).status).toBe(404);
+    expect(middleware(new NextRequest("https://yulalab.com/xx/why-yula")).status).toBe(404);
+    expect(middleware(new NextRequest("https://yulalab.com/es-MX/notes/how-we-verify-claims")).status).toBe(404);
+  });
   it.each([
     ["PT-br", "pt-BR"], ["ZH-HANS", "zh-Hans"], ["zh-CN", "zh-Hans"], ["zh-SG", "zh-Hans"], ["EN", "en"],
   ])("canonicalizes the explicit alias %s without losing query or setting an unrelated language", (alias, canonical) => {
@@ -52,7 +63,7 @@ describe("fourteen-language routing and public discovery", () => {
   });
   it("lists each translated page once without a fabricated modification date", () => {
     const entries = sitemap();
-    expect(entries).toHaveLength(27 * SUPPORTED_LOCALES.length);
+    expect(entries).toHaveLength(31 * SUPPORTED_LOCALES.length);
     expect(new Set(entries.map((entry) => entry.url)).size).toBe(entries.length);
     for (const entry of entries) {
       expect(entry.lastModified).toBeUndefined();

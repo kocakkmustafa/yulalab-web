@@ -3,6 +3,7 @@ import { localized } from "@/lib/localized";
 import type { Metadata } from "next";
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { EyebrowChip } from "@/components/common/EyebrowChip";
 import { StaggerWords } from "@/components/common/StaggerWords";
 import { notes } from "@/data/notes";
@@ -73,6 +74,15 @@ function Notes() {
             <p className="mt-2 text-[15px] leading-relaxed text-ink-300">
               {localized(note.body, locale)}
             </p>
+            {note.kind === "article" ? (
+              <Link
+                href={`/notes/${note.slug}`}
+                className="mt-4 inline-block text-[14px] text-ink-50 link-wipe focusable"
+              >
+                {t("readArticle")}
+                <span className="sr-only">: {localized(note.title, locale)}</span>
+              </Link>
+            ) : null}
           </article>
         ))}
       </section>
