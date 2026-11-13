@@ -384,7 +384,7 @@
   "Nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY, GOVERNANCE.": "九つのプリミティブ：ACQUISITION、SALES、DELIVERY、CONTENT、OPERATIONS、FINANCE、ANALYTICS、MEMORY、GOVERNANCE。",
   "The number of primitive types by name; not the size of the combination space.": "名前のあるプリミティブの種類数であり、組み合わせの空間の大きさではありません。",
   "Nine": "九つ",
-  "14 LLM providers (BYOK) — as of 2026-08-19.": "14のLLMプロバイダー（BYOK）— 2026-08-19時点。",
+  "14 LLM providers (BYOK) — as of 2026-11-08.": "14のLLMプロバイダー（BYOK）— 2026-11-08時点。",
   "The number of supported providers; not a claim that every model from every provider is tested to the same standard.": "対応プロバイダーの数であり、すべてのプロバイダーの全モデルを同じ基準でテストしたという主張ではありません。",
   "An open-ended (template-free) combination space — the system has a fixed step/depth cap (MAX_STEPS_PER_RUN=50), not mathematically unlimited.": "テンプレートに縛られない、開かれた組み合わせ空間です。システムには固定の手順・深さ上限（MAX_STEPS_PER_RUN=50）があり、数学的に無制限ではありません。",
   "A technical capacity ceiling; not a claim about the practical variety a user experiences.": "技術的な容量の上限であり、ユーザーが実際に体験する多様性を主張するものではありません。",

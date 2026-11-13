@@ -1,4 +1,4 @@
-import type { ProductPublicRecord } from "./types";
+import type { ClaimState, ProductClaim, ProductPublicRecord, VerificationMethod } from "./types";
 
 /**
  * Structural, time-independent fail-closed rules (roadmap §6). Deliberately
@@ -26,6 +26,92 @@ function dateErrors(label: string, value: string | undefined): string[] {
   if (!value) return [`${label} missing`];
   if (!ISO_DATE.test(value)) return [`${label} must be a canonical YYYY-MM-DD date`];
   return [];
+}
+
+/** States that may back a present-tense statement (ana talimat §8.5). */
+export const VERIFIED_CLAIM_STATES: readonly ClaimState[] = [
+  "production_verified",
+  "beta_verified",
+  "source_verified",
+];
+
+/** States that must never read as something the product does today. */
+const NOT_PRESENT_TENSE_STATES: readonly ClaimState[] = ["prototype", "planned", "unknown"];
+
+/**
+ * A statement for a prototype/planned/unknown claim must say so itself.
+ * Without this, flipping `publishableAsPresentTense` off while leaving a
+ * present-tense sentence ("X supports Y") still ships the over-claim through
+ * any consumer that reads `statementTr/En` and ignores the flag (the
+ * links.yulalab.com JSON, JSON-LD). Words checked, not sniffed from grammar:
+ * the marker has to be literally in the text.
+ */
+// The marker must START a word ("unplanned", "targeted" and "goals" are not
+// markers) and match either spelling of "yakında"/"YAKINDA" — the `i` flag
+// does not fold the Turkish dotless ı.
+const NOT_YET_MARKER =
+  /(?<![\p{L}])(planlan|planned|prototip|prototype|yak[ıi]nda|coming soon|henüz|not yet|hedef|target\b|goal\b|will\s|olacak|doğrulanmad|unverified|unknown|bilinmiyor)/iu;
+
+const PRESENT_TENSE_EVIDENCE_METHODS: readonly VerificationMethod[] = ["store_build", "live_e2e"];
+const SOURCE_EVIDENCE_METHODS: readonly VerificationMethod[] = ["source_review", "ci"];
+
+function claimStateErrors(record: ProductPublicRecord, claim: ProductClaim): string[] {
+  const errors: string[] = [];
+  const state = claim.claimState;
+  const out = (msg: string) => `${record.slug}: claim ${claim.id} ${msg}`;
+
+  // Rule 1 — never present tense for planned/prototype/unknown.
+  if (state && NOT_PRESENT_TENSE_STATES.includes(state)) {
+    if (claim.publishableAsPresentTense === true) {
+      errors.push(out(`is ${state} but publishableAsPresentTense is true`));
+    }
+    // Rule 6 — and the text itself must not read as present tense.
+    for (const [lang, text] of [
+      ["Tr", claim.statementTr],
+      ["En", claim.statementEn],
+    ] as const) {
+      if (text.trim() !== "" && !NOT_YET_MARKER.test(text)) {
+        errors.push(out(`is ${state} but statement${lang} reads as present tense (no planned/prototype/unverified marker)`));
+      }
+    }
+  }
+
+  // Present tense needs a verified state behind it (covers a missing state).
+  if (claim.publishableAsPresentTense === true && !(state && VERIFIED_CLAIM_STATES.includes(state))) {
+    errors.push(out("is publishableAsPresentTense without a verified claimState"));
+  }
+
+  // Rule 2 — production/beta need store or live evidence, a build, and a matching surface.
+  if (state === "production_verified" || state === "beta_verified") {
+    if (!claim.verificationMethod || !PRESENT_TENSE_EVIDENCE_METHODS.includes(claim.verificationMethod)) {
+      errors.push(out(`${state} requires verificationMethod store_build or live_e2e`));
+    }
+    if (!claim.buildOrCommit) errors.push(out(`${state} requires buildOrCommit`));
+    const surfaceOk = record.surfaces.some((s) =>
+      state === "production_verified" ? s.status === "live" : s.status === "live" || s.status === "beta",
+    );
+    if (!surfaceOk) {
+      errors.push(out(`${state} requires a ${state === "production_verified" ? "live" : "live or beta"} surface on the record`));
+    }
+  }
+
+  // Rule 3 — source_verified needs a source read, a commit, and the matching evidenceKind.
+  if (state === "source_verified") {
+    if (!claim.verificationMethod || !SOURCE_EVIDENCE_METHODS.includes(claim.verificationMethod)) {
+      errors.push(out("source_verified requires verificationMethod source_review or ci"));
+    }
+    if (claim.evidenceKind !== "source-code-verified") {
+      errors.push(out("source_verified requires evidenceKind source-code-verified"));
+    }
+    if (!claim.buildOrCommit) errors.push(out("source_verified requires buildOrCommit"));
+  }
+
+  // Rule 4 — "none" is the product vouching for itself, and nothing more.
+  if (claim.verificationMethod === "none" && claim.evidenceKind !== "self-reported") {
+    errors.push(out("verificationMethod none requires evidenceKind self-reported"));
+  }
+
+  return errors;
 }
 
 export function validateRecord(record: ProductPublicRecord): string[] {
@@ -84,6 +170,10 @@ export function validateRecord(record: ProductPublicRecord): string[] {
         errors.push(where(e));
       }
     }
+    // Outside the statement block on purpose: a claim with both statements
+    // empty must not skip the state rules (publishableAsPresentTense: true on
+    // an empty claim is still a declaration that has to be consistent).
+    errors.push(...claimStateErrors(record, claim));
   }
 
   if (record.lifecycle === "research") {
@@ -180,4 +270,68 @@ export function getClaimFreshness(record: ProductPublicRecord, now: Date): Claim
     claim,
     stale: claim.expiresAt ? isExpired(claim.expiresAt, now) : false,
   }));
+}
+
+/**
+ * May this claim be shown in the present tense right now? Fail closed: an
+ * undeclared state, a missing flag, an unverified state or a lapsed window
+ * each answer no. Only an explicit verified state + an explicit `true` + an
+ * open window answers yes.
+ */
+export function isPresentTenseEligible(claim: ProductClaim, now: Date): boolean {
+  if (claim.expiresAt && isExpired(claim.expiresAt, now)) return false;
+  if (!claim.claimState || !VERIFIED_CLAIM_STATES.includes(claim.claimState)) return false;
+  return claim.publishableAsPresentTense === true;
+}
+
+/**
+ * Build gate: every claim whose window is still open must DECLARE its state
+ * and its present-tense flag. This is the only time-dependent registry check,
+ * and it can only relax over time (a claim that lapses stops being checked —
+ * it already renders as unverified), so it cannot turn "nobody re-verified
+ * this" into a red build — the reason validateRecord stays date-free (see the
+ * header). Lapsed legacy claims are listed by `listUndeclaredLapsedClaims`
+ * instead, for the report, not the gate.
+ */
+export function validateClaimStateDeclared(records: ProductPublicRecord[], now: Date): string[] {
+  const errors: string[] = [];
+  for (const record of records) {
+    for (const claim of record.claims) {
+      const out = (msg: string) => `${record.slug}: claim ${claim.id} ${msg}`;
+      // Not time-dependent: the home overlay, StatCards and case studies read
+      // claims[] directly (not through presentClaims) and judge only freshness,
+      // so a planned/prototype/unknown claim there would be shown as current.
+      // Until those surfaces filter by isPresentTenseEligible (WEB-P0-03),
+      // such facts live in status labels, not in claims[].
+      if (claim.claimState && !VERIFIED_CLAIM_STATES.includes(claim.claimState)) {
+        errors.push(
+          out(
+            `is ${claim.claimState}; keep planned/prototype/unknown facts out of claims[] (status labels) until every claim consumer filters by isPresentTenseEligible`,
+          ),
+        );
+      }
+      if (claim.expiresAt && isExpired(claim.expiresAt, now)) continue;
+      if (!claim.claimState) errors.push(out("has an open verification window but no claimState"));
+      if (typeof claim.publishableAsPresentTense !== "boolean") {
+        errors.push(out("has an open verification window but no publishableAsPresentTense"));
+      }
+    }
+  }
+  return errors;
+}
+
+/** Lapsed claims that never declared a state — surfaced in reports, never failing the build. */
+export function listUndeclaredLapsedClaims(
+  records: ProductPublicRecord[],
+  now: Date,
+): { slug: string; claimId: string; expiresAt: string }[] {
+  const out: { slug: string; claimId: string; expiresAt: string }[] = [];
+  for (const record of records) {
+    for (const claim of record.claims) {
+      if (claim.expiresAt && isExpired(claim.expiresAt, now) && !claim.claimState) {
+        out.push({ slug: record.slug, claimId: claim.id, expiresAt: claim.expiresAt });
+      }
+    }
+  }
+  return out;
 }
