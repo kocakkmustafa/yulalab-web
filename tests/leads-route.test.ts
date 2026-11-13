@@ -446,3 +446,87 @@ describe("the rate-limit key identifies a client, not everyone", () => {
     resetRateLimit();
   });
 });
+
+// SEC-WEB-03: the real limiter threshold and every invalid-input class, driven
+// through the route (no limiter mock). The per-client budget is 30 per 60 s
+// window (src/server/rate-limit.ts MAX_PER_WINDOW). Each request's
+// payload is an exact retry so the shared mail capacity never interferes;
+// only the IP-keyed limiter is under test.
+describe("SEC-WEB-03 rate limit threshold", () => {
+  const IP_A = { "x-forwarded-for": "203.0.113.50" };
+  const IP_B = { "x-forwarded-for": "198.51.100.50" };
+  // Identical payloads are exact retries: 201 with the stored receipt, without
+  // spending the separate shared mail-capacity budget (cf. the test above).
+  const fresh = (_i: number) => body();
+
+  it("accepts exactly 30 requests per client and answers the 31st with 429 rate_limited", async () => {
+    for (let i = 1; i <= 30; i += 1) {
+      const res = await post(fresh(i), IP_A);
+      expect(res.status, `request ${i}`).toBe(201);
+    }
+    const limited = await post(fresh(31), IP_A);
+    expect(limited.status).toBe(429);
+    expect(await limited.text()).toBe(JSON.stringify({ error: "rate_limited" }));
+    // A different client is not affected at the same moment.
+    const other = await post(fresh(99), IP_B);
+    expect(other.status).toBe(201);
+  });
+
+  it("still reports invalid input as 400, not 429, once the client is over budget", async () => {
+    for (let i = 1; i <= 30; i += 1) await post(fresh(i), IP_A);
+    expect((await post(fresh(31), IP_A)).status).toBe(429);
+    const invalid = await post(body({ intent: undefined }), IP_A);
+    expect(invalid.status).toBe(400);
+    await expect(invalid.json()).resolves.toEqual({ error: "intent" });
+  });
+
+  it("does not spend the budget on invalid input: 31 rejected requests, then a valid one is 201", async () => {
+    for (let i = 0; i < 31; i += 1) {
+      const res = await post(body({ intent: undefined }), IP_A);
+      expect(res.status, `invalid ${i}`).toBe(400);
+    }
+    for (let i = 0; i < 31; i += 1) expect((await post("{not json", IP_A)).status).toBe(400);
+    const ok = await post(fresh(1), IP_A);
+    expect(ok.status).toBe(201);
+  });
+});
+
+describe("SEC-WEB-03 invalid input classes", () => {
+  const SECRET = "SENTINEL-PERSONAL-VALUE";
+
+  async function expectRejected(res: Response, status: number, error?: string) {
+    expect(res.status).toBe(status);
+    const text = await res.text();
+    expect(text).not.toContain(SECRET);
+    if (error !== undefined) expect(JSON.parse(text)).toEqual({ error });
+    expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(0);
+  }
+
+  it("rejects a body over 16 384 bytes with 413 too_large", async () => {
+    const big = JSON.stringify(body({ message: "x".repeat(16_400) }));
+    expect(Buffer.byteLength(big)).toBeGreaterThan(16_384);
+    await expectRejected(await post(big), 413, "too_large");
+  });
+
+  it("rejects malformed JSON with 400 malformed_json", async () => {
+    await expectRejected(await post(`{"name": "${SECRET}"`), 400, "malformed_json");
+  });
+
+  it.each([["array", "[1,2]"], ["null", "null"], ["string", `"${SECRET}"`], ["number", "42"]])(
+    "rejects a JSON %s body with 400",
+    async (_label, raw) => {
+      await expectRejected(await post(raw), 400);
+    },
+  );
+
+  it.each([
+    ["name", { name: SECRET.padEnd(121, "n") }],
+    ["email", { email: `${SECRET}${"a".repeat(250)}@example.com` }],
+    ["company", { company: SECRET.padEnd(161, "c") }],
+    ["productSlug", { productSlug: `${SECRET} Bad Slug!` }],
+    ["consent", { consent: "true" }],
+    ["intent", { intent: undefined }],
+  ])("rejects an invalid %s with 400 naming only the field", async (field, override) => {
+    await expectRejected(await post(body(override)), 400, field);
+  });
+});
