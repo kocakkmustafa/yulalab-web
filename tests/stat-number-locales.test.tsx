@@ -15,7 +15,7 @@ const record = publicRegistry.find((product) => product.slug === config.slug)!;
 const clean = (value: string) => value.replace(/[\u061c\u200e\u200f]/g, "").replace(/\s/g, " ");
 
 function renderStats(locale: Locale, stats: ProjectStat[] = config.stats) {
-  const result = render(<StatCards slug={config.slug} stats={stats} record={record} locale={locale} now={new Date("2026-09-01T12:00:00Z")} labels={labels} />);
+  const result = render(<StatCards slug={config.slug} stats={stats} record={record} locale={locale} now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
   return { ...result, values: [...result.container.querySelectorAll("bdi")].map((node) => clean(node.textContent ?? "")) };
 }
 
@@ -42,8 +42,7 @@ describe("explicit numeric stat presentation", () => {
     // Both explicit forms below preserve the same quantities and units.
     if (locale === "ar") expect([expected, ["~29%", "~62%", "1,225"]]).toContainEqual(result.values);
     else expect(result.values).toEqual(expected);
-    // Fixed NOW inside the claim's window (expires 2026-09-24): figures are shown.
-    expect(result.container.textContent?.match(/needs re-verification/g)).toBeNull();
+    expect(result.container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
     expect(JSON.stringify(config.stats)).toBe(original);
   });
 

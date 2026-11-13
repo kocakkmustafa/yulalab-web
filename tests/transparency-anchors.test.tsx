@@ -70,10 +70,9 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
     const lapsed = publicRegistry.flatMap((r) => presentClaims(r, now)).filter((p) => p.kind === "lapsed");
     expect(Number(screen.getByTestId("summary-lapsed").querySelector("dd")!.textContent)).toBe(lapsed.length);
     const body = document.body.textContent ?? "";
-    // SEC-WEB-01: lapsed claims stay as dated markers; their prose is not shown.
+    // Burun Farkı is outside the SEC-WEB-01 gate: its lapsed claims render exactly as on main.
     expect(lapsed.length).toBeGreaterThan(0);
-    for (const p of lapsed) expect(body).not.toContain(p.claim.statementTr);
-    expect(body).toContain("yeniden doğrulanmalı — süre 2026-09-24 tarihinde doldu");
+    for (const p of lapsed) expect(body).toContain(p.claim.statementTr);
   });
 
   it("derives the status summary from the registry", async () => {

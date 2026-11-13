@@ -7,7 +7,7 @@ import Image from "next/image";
 import { track } from "@/lib/analytics/client";
 import { Link } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/components/layout/LocaleSwitcher";
-import { siteDate } from "@/lib/public-registry";
+import { isGateExempt, siteDate } from "@/lib/public-registry";
 import type {
   ExperienceCopy,
   ExperienceProduct,
@@ -238,7 +238,7 @@ export function ProofLedger({ copy, product, today, compact = false }: ProofLedg
             : "current";
         // SEC-WEB-01: a lapsed claim is never narrated — dates and the
         // "reverification due" label only, same layout slots.
-        const lapsed = freshness === "stale";
+        const lapsed = freshness === "stale" && !isGateExempt(claim);
         return (
           <li key={claim.id} className={styles.claim} data-freshness={freshness}>
             <div className={styles.claimHeading}>

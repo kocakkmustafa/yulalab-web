@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/types";
 import { text } from "@/lib/localized";
 import type { PresentedClaim } from "@/lib/proof";
+import { isGateExempt } from "@/lib/public-registry";
 import { SourceStamp } from "./SourceStamp";
 
 /**
@@ -21,21 +22,23 @@ export function ProofCard({
 }) {
   const { claim } = presented;
   const lapsed = presented.kind === "lapsed";
-  const statement = lapsed ? "" : text(locale, claim.statementTr, claim.statementEn);
+  // Burun Farkı is outside the gate (isGateExempt): it renders as before.
+  const redact = lapsed && !isGateExempt(claim);
+  const statement = redact ? "" : text(locale, claim.statementTr, claim.statementEn);
 
   return (
     <li
       className="glass p-6 h-full"
       style={lapsed ? { borderColor: "rgba(251,191,36,0.28)" } : undefined}
     >
-      {lapsed ? null : (
+      {redact ? null : (
         <p className="text-[15px] leading-[1.7] text-ink-100">{statement}</p>
       )}
       <SourceStamp
         evidenceKind={claim.evidenceKind}
         verifiedAt={claim.verifiedAt}
-        source={lapsed ? "" : claim.source}
-        scope={lapsed ? undefined : text(locale, claim.scopeTr, claim.scopeEn)}
+        source={redact ? "" : claim.source}
+        scope={redact ? undefined : text(locale, claim.scopeTr, claim.scopeEn)}
         locale={locale}
         expiredOn={lapsed ? presented.expiredOn : undefined}
       />

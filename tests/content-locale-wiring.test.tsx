@@ -61,7 +61,7 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
       expect(product.href).toBe(localePath(locale, `/projects/${source.slug}`));
       for (const [claimIndex, item] of product.claims.entries()) {
         const live = isClaimPresentable(record.claims[claimIndex], new Date());
-        expect(item.withheld).toBe(!live);
+        expect(Boolean(item.withheld)).toBe(!live);
         expect(item.statement).toBe(live ? `${locale}::${record.claims[claimIndex].statementEn}` : "");
         expect(item.scope).toBe(live ? `${locale}::${record.claims[claimIndex].scopeEn}` : "");
         expect(item.source).toBe(live ? record.claims[claimIndex].source : "");

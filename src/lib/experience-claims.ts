@@ -30,7 +30,8 @@ export function toExperienceClaims(
       scope: presentable ? text(locale, claim.scopeTr, claim.scopeEn) : "",
       verifiedAt: claim.verifiedAt,
       expiresAt: claim.expiresAt,
-      withheld: !presentable,
+      // Present only when set, so ungated claims (Burun Farkı) are byte-identical to before.
+      ...(presentable ? {} : { withheld: true }),
     };
   });
 }

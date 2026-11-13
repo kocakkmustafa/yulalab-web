@@ -13,6 +13,8 @@ import { validateCaseStudies } from "../src/lib/case-studies";
 import { presentClaims } from "../src/lib/proof";
 import {
   isClaimPresentable,
+  isExpired,
+  isGateExempt,
   listClaimsExpiringWithin,
   listUndeclaredLapsedClaims,
   validateClaimStateDeclared,
@@ -86,6 +88,17 @@ const lapsedWithheld = publicRegistry.flatMap((r) =>
     .filter((c) => !isClaimPresentable(c, NOW))
     .map((c) => `${r.slug}/${c.id} (expired ${c.expiresAt})`),
 );
+// Burun Farkı is outside the gate until a founder decision: reported, never enforced.
+const lapsedExempt = publicRegistry.flatMap((r) =>
+  r.claims
+    .filter((c) => isGateExempt(c) && c.expiresAt && isExpired(c.expiresAt, NOW))
+    .map((c) => `${r.slug}/${c.id} (expired ${c.expiresAt})`),
+);
+if (lapsedExempt.length > 0) {
+  console.log(
+    `verify-public-registry: info — kapsam dışı (Burun Farkı): ${lapsedExempt.length} dolmuş claim kapıya tabi değil: ${lapsedExempt.join(", ")}`,
+  );
+}
 if (lapsedWithheld.length > 0) {
   console.log(
     `verify-public-registry: info — ${lapsedWithheld.length} expired claim(s) withheld from present-tense surfaces: ${lapsedWithheld.join(", ")}`,

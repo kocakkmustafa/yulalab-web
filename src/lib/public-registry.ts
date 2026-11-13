@@ -282,8 +282,22 @@ export function getClaimFreshness(record: ProductPublicRecord, now: Date): Claim
  * Independent of claimState; present-tense eligibility (isPresentTenseEligible)
  * is a further, stricter test layered on top of this one.
  */
-export function isClaimPresentable(claim: Pick<ProductClaim, "expiresAt">, now: Date): boolean {
+export function isClaimPresentable(
+  claim: { id?: string; expiresAt?: string },
+  now: Date,
+): boolean {
+  if (isGateExempt(claim)) return true;
   return !(claim.expiresAt && isExpired(claim.expiresAt, now));
+}
+
+/**
+ * Burun Farkı kurucu kararına kadar kapsam dışı: the gate does not touch its
+ * claims (they keep rendering exactly as before — lapsed ones marked, figures
+ * shown). Narrowest existing criterion: the `burunfarki-` claim id prefix;
+ * registry data is not changed. Remove this exemption only on a founder decision.
+ */
+export function isGateExempt(claim: { id?: string }): boolean {
+  return claim.id?.startsWith("burunfarki-") === true;
 }
 
 /** Claims of a record that the gate currently lets through. */
@@ -301,7 +315,7 @@ export function listClaimsExpiringWithin(
   const out: { slug: string; claimId: string; expiresAt: string }[] = [];
   for (const record of records) {
     for (const claim of record.claims) {
-      if (claim.expiresAt && isClaimPresentable(claim, now) && claim.expiresAt <= horizon) {
+      if (claim.expiresAt && !isExpired(claim.expiresAt, now) && claim.expiresAt <= horizon) {
         out.push({ slug: record.slug, claimId: claim.id, expiresAt: claim.expiresAt });
       }
     }
