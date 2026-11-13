@@ -944,6 +944,7 @@
     "limits": "لا نعد بزيادة الإيرادات أو مخرجات نموذج خالية من الأخطاء أو موعد إصدار قبل الاستكشاف. الوصول إلى بيئة الإنتاج والنشر يتطلبان اتفاقًا منفصلًا.",
     "contactTitle": "أخبرنا بما تريد تحسينه.",
     "contactBody": "ابدأ بسير عملك والمشكلة والجدول الزمني. لا ترسل كلمات مرور أو مفاتيح API أو بيانات عملاء سرية. يفتح رابط البريد تطبيق بريدك؛ ولا تُرسل هذه الصفحة أي بيانات.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "لنتحدّث عن مشروعك",
     "subject": "استفسار عن استشارات الذكاء الاصطناعي",
     "terms": "نحدّد التوافر والأسعار والنطاق أثناء النقاش.",

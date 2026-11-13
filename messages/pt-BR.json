@@ -944,6 +944,7 @@
     "limits": "Não prometemos aumento de receita, resultados perfeitos do modelo ou data de lançamento antes da descoberta. Acesso à produção e implantação exigem um acordo separado.",
     "contactTitle": "Conte o que você quer melhorar.",
     "contactBody": "Comece pelo fluxo de trabalho, pelo problema e pelo prazo. Não envie senhas, chaves de API ou dados confidenciais de clientes. O link de e-mail abre seu aplicativo de correio; esta página não envia nenhuma informação.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Vamos conversar sobre seu projeto",
     "subject": "Consulta sobre consultoria em IA",
     "terms": "Disponibilidade, preços e escopo são confirmados durante a conversa.",

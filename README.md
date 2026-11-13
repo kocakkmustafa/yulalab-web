@@ -233,8 +233,12 @@ and privacy review.
 The hosting policy is free tier only; keep deployments within the Free
 allowance and do not enable paid overage. Preserve ISR, API and verification CSP behavior.
 `vercel.json` cron entries are Vercel-specific: they do not schedule
-jobs on Netlify. Configuring an alternative scheduler and proving delivery and
-retention are prerequisites for activating those server workflows there.
+jobs on Netlify. The Netlify-side schedulers are `netlify/functions/mail-drain.ts`
+(every 15 minutes, `GET /api/mail`) and `netlify/functions/purge-daily.ts`
+(01:00 UTC, `GET /api/purge`); both call the route with `Authorization: Bearer
+$CRON_SECRET` and do nothing until `CRON_SECRET` is set in the Netlify UI.
+Proving delivery and retention is still a prerequisite for activating those
+server workflows there (see the founder checklist in the Yulalab vault).
 
 ## License
 

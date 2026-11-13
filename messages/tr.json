@@ -944,6 +944,7 @@
     "limits": "Keşif öncesinde gelir artışı, hatasız model çıktısı veya yayın tarihi taahhüt etmeyiz. Üretim erişimi ve yayın ayrı mutabakat gerektirir.",
     "contactTitle": "Neyi iyileştirmek istediğinizi anlatın.",
     "contactBody": "İş akışınız, problem ve zaman planınızla başlayın. Parola, API anahtarı veya gizli müşteri verisi göndermeyin. E-posta bağlantısı posta uygulamanızı açar; bu sayfa üzerinden veri gönderilmez.",
+    "contactBodyForm": "İş akışınız, problem ve zaman planınızla başlayın. Parola, API anahtarı veya gizli müşteri verisi göndermeyin. Aşağıdaki formu doldurabilir ya da e-posta bağlantısını kullanabilirsiniz; e-posta bağlantısı posta uygulamanızı açar.",
     "cta": "Projenizi konuşalım",
     "subject": "AI danışmanlığı görüşmesi",
     "terms": "Uygunluk, ücretlendirme ve kapsam görüşmede netleşir.",

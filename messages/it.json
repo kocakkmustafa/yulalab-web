@@ -944,6 +944,7 @@
     "limits": "Prima dell'analisi iniziale non promettiamo aumenti di ricavi, risultati perfetti dei modelli o una data di rilascio. Accesso alla produzione e distribuzione richiedono un accordo separato.",
     "contactTitle": "Raccontaci cosa vuoi migliorare.",
     "contactBody": "Parti dal flusso di lavoro, dal problema e dai tempi. Non inviare password, chiavi API o dati riservati dei clienti. Il link e-mail apre la tua app di posta; questa pagina non invia alcun dato.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Parliamo del tuo progetto",
     "subject": "Richiesta di consulenza sull'AI",
     "terms": "Disponibilità, prezzi e ambito vengono confermati durante il confronto.",

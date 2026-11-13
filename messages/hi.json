@@ -944,6 +944,7 @@
     "limits": "शुरुआती आकलन से पहले हम आय बढ़ने, मॉडल के पूर्णतः सही परिणाम या रिलीज़ तारीख का वादा नहीं करते। प्रोडक्शन तक पहुँच और डिप्लॉयमेंट के लिए अलग सहमति चाहिए।",
     "contactTitle": "बताएँ कि आप क्या सुधारना चाहते हैं।",
     "contactBody": "अपना कार्यप्रवाह, समस्या और समय-सीमा बताएँ। पासवर्ड, API कुंजी या ग्राहकों का गोपनीय डेटा न भेजें। ईमेल लिंक आपका मेल ऐप खोलता है; यह पेज कुछ भी सबमिट नहीं करता।",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "अपनी परियोजना पर बात करें",
     "subject": "AI परामर्श संबंधी पूछताछ",
     "terms": "उपलब्धता, कीमत और दायरा बातचीत में पुष्ट किए जाते हैं।",

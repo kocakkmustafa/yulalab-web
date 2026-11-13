@@ -944,6 +944,7 @@
     "limits": "Przed rozpoznaniem nie obiecujemy wzrostu przychodów, idealnych wyników modelu ani daty wydania. Dostęp do środowiska produkcyjnego i wdrożenie wymagają osobnej umowy.",
     "contactTitle": "Powiedz, co chcesz usprawnić.",
     "contactBody": "Zacznij od procesu, problemu i harmonogramu. Nie przesyłaj haseł, kluczy API ani poufnych danych klientów. Odnośnik otwiera aplikację pocztową; ta strona niczego nie wysyła.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Porozmawiajmy o projekcie",
     "subject": "Zapytanie o doradztwo AI",
     "terms": "Dostępność, ceny i zakres potwierdzamy w rozmowie.",

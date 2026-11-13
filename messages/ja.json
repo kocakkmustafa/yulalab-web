@@ -944,6 +944,7 @@
     "limits": "ヒアリング前に、売上増加、完全なモデル出力、公開日を約束しません。本番環境へのアクセスとデプロイには、別途合意が必要です。",
     "contactTitle": "改善したいことを教えてください。",
     "contactBody": "業務フロー、課題、ご希望の時期からお聞かせください。パスワード、APIキー、機密の顧客データは送らないでください。メールリンクはメールアプリを開くだけで、このページから内容が送信されることはありません。",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "プロジェクトを相談",
     "subject": "AIコンサルティングのご相談",
     "terms": "対応可否、価格、範囲はご相談のうえ確定します。",

@@ -944,6 +944,7 @@
     "limits": "탐색 전에 매출 증가, 완벽한 모델 출력, 출시일을 약속하지 않습니다. 운영 환경 접근과 배포는 별도 합의가 필요합니다.",
     "contactTitle": "무엇을 개선하고 싶은지 알려주세요.",
     "contactBody": "업무 흐름, 문제, 일정을 먼저 알려주세요. 비밀번호, API 키, 고객 기밀 데이터는 보내지 마세요. 이메일 링크는 메일 앱을 열며 이 페이지에서 아무것도 제출되지 않습니다.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "프로젝트 상담하기",
     "subject": "AI 컨설팅 문의",
     "terms": "이용 가능 여부, 가격, 범위는 대화를 통해 확정합니다.",
