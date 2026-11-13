@@ -1,3 +1,4 @@
+import { storeSlotsOf } from "@/lib/store-slots";
 import { localeAlternates } from "@/i18n/locales";
 import { localized } from "@/lib/localized";
 import type { Metadata } from "next";
@@ -98,6 +99,7 @@ function ProjectsIndex() {
       category: localized(project.category, locale),
       tagline: localized(project.tagline, locale),
       access: accessOf(project, locale, p),
+      storeSlots: storeSlotsOf(project),
       privacyUrl: record?.privacyUrl,
       screenshot: shot && shot.kind === "product" ? { src: shot.src, alt: shot.alt } : undefined,
     };

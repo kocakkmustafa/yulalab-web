@@ -1,0 +1,129 @@
+// @vitest-environment jsdom
+import type { ComponentProps } from "react";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { cleanup, render, screen, within } from "@testing-library/react";
+import { NextIntlClientProvider } from "next-intl";
+import { ProductUniverse, type UniverseItem } from "@/components/universe/ProductUniverse";
+import { projects } from "@/data/projects";
+import { groupProducts } from "@/lib/product-index";
+import { storeSlotsOf } from "@/lib/store-slots";
+import type { ProjectConfig } from "@/lib/types";
+import tr from "../messages/tr.json";
+import en from "../messages/en.json";
+
+vi.mock("@/i18n/navigation", () => ({
+  Link: (props: ComponentProps<"a">) => <a {...props} />,
+}));
+vi.mock("next/image", () => ({
+  // eslint-disable-next-line @next/next/no-img-element
+  default: ({ alt, src }: ComponentProps<"img"> & { fill?: boolean }) => <img alt={alt} src={src as string} />,
+}));
+
+const bySlug = (slug: string) => projects.find((p) => p.slug === slug)!;
+const slotMap = (slug: string) =>
+  Object.fromEntries((storeSlotsOf(bySlug(slug)) ?? []).map((s) => [s.kind, s.href]));
+
+/** WEB-P0-07d: one store link per product card, "coming soon" where there is none. */
+describe("storeSlotsOf", () => {
+  it("links the published App Store listings and leaves Google Play as coming soon", () => {
+    for (const slug of ["lifeos", "braavolabs"]) {
+      const m = slotMap(slug);
+      expect(m.appstore).toMatch(/^https:\/\/apps\.apple\.com\//);
+      expect(m.playstore).toBeUndefined();
+    }
+  });
+
+  it("coming-soon products get two slots and no link", () => {
+    for (const slug of ["gravita", "lissom", "jablab", "ostinato", "choreia"]) {
+      expect(storeSlotsOf(bySlug(slug))).toEqual([
+        { kind: "appstore", name: "App Store", href: undefined },
+        { kind: "playstore", name: "Google Play", href: undefined },
+      ]);
+    }
+  });
+
+  it("a web product without a store listing gets no store row", () => {
+    expect(storeSlotsOf(bySlug("burunfarki"))).toBeUndefined();
+  });
+
+  it("never exposes a closed-test / TestFlight listing", () => {
+    const fake = (href: string, kind: "appstore" | "playstore"): ProjectConfig => ({
+      ...bySlug("lifeos"),
+      links: [{ kind, href }],
+    });
+    for (const href of [
+      "https://testflight.apple.com/join/AbCdEf",
+      "https://play.google.com/apps/testing/com.example.app",
+      "https://play.google.com/apps/internaltest/4700000000000000000",
+    ]) {
+      const kind = href.includes("testflight") ? "appstore" : "playstore";
+      expect((storeSlotsOf(fake(href, kind)) ?? []).every((s) => s.href === undefined)).toBe(true);
+    }
+    for (const p of projects) {
+      for (const s of storeSlotsOf(p) ?? []) {
+        expect(s.href ?? "").not.toMatch(/testflight|apps\/(testing|internaltest)/i);
+      }
+    }
+  });
+
+  it("Ostinato has no store link at all while it is coming soon", () => {
+    expect(bySlug("ostinato").links.filter((l) => l.href)).toEqual([]);
+    expect(Object.values(slotMap("ostinato")).every((h) => h === undefined)).toBe(true);
+  });
+});
+
+const groups = groupProducts(projects);
+const featured = new Set(groups.featured.map((p) => p.slug));
+const ITEMS: UniverseItem[] = [...groups.featured, ...groups.portfolio].map((p) => ({
+  slug: p.slug,
+  name: p.name,
+  status: p.status,
+  group: featured.has(p.slug) ? "featured" : "portfolio",
+  category: "cat",
+  tagline: `tagline ${p.slug}`,
+  access: { stores: [], contact: { href: "mailto:x@example.com", label: "Ask" } },
+  storeSlots: storeSlotsOf(p),
+}));
+const STRINGS = { privacy: "Privacy", support: "Support", supportUrl: "/support", statusLink: "Status", screenEmpty: "No screenshot" };
+
+function mount(locale: "tr" | "en") {
+  window.matchMedia = ((query: string) => ({
+    matches: false, // narrow screen: no side panel, the row itself must carry the stores
+    media: query,
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  })) as unknown as typeof window.matchMedia;
+  return render(
+    <NextIntlClientProvider locale={locale} messages={locale === "tr" ? tr : en} timeZone="Europe/Istanbul">
+      <ProductUniverse items={ITEMS} strings={STRINGS} />
+    </NextIntlClientProvider>,
+  );
+}
+
+beforeEach(() => window.history.replaceState(null, "", "/projects"));
+afterEach(cleanup);
+
+describe("ProductUniverse store row", () => {
+  it.each([
+    ["en", "Coming soon"],
+    ["tr", "Yakında"],
+  ] as const)("draws a store link or a coming-soon slot on every mobile product row (%s)", (locale, soon) => {
+    mount(locale);
+    const row = (slug: string) => within(document.querySelector(`[data-testid="universe-row"][data-slug="${slug}"]`) as HTMLElement);
+
+    const lifeos = row("lifeos");
+    const appStore = lifeos.getByRole("link", { name: /App Store/ });
+    expect(appStore.getAttribute("href")).toMatch(/^https:\/\/apps\.apple\.com\//);
+    expect(lifeos.getByText(`Google Play · ${soon}`)).toBeTruthy();
+    expect(lifeos.queryByRole("link", { name: /Google Play/ })).toBeNull();
+
+    const ostinato = row("ostinato");
+    expect(ostinato.getByText(`App Store · ${soon}`)).toBeTruthy();
+    expect(ostinato.getByText(`Google Play · ${soon}`)).toBeTruthy();
+    expect(ostinato.queryAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/projects/ostinato"]);
+
+    // a web product keeps its row without any store chips
+    expect(document.querySelector('[data-slug="burunfarki"] [data-testid="universe-row-stores"]')).toBeNull();
+    expect(screen.getAllByTestId("universe-row-stores").length).toBe(7);
+  });
+});
