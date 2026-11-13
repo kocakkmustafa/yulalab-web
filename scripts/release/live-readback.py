@@ -109,10 +109,10 @@ for p in pages:
         add(f"Ostinato no stale 155 {p['path']}", stale is None, hit=stale and p["text"][max(0, stale.start() - 60): stale.end() + 40])
 o_tr, o_en = by[("tr", "/projects/ostinato")]["text"], by[("en", "/projects/ostinato")]["text"]
 add("Ostinato tr: 235+5 / 48+2 / 283+7 ders, 690/676 yok + mic text",
-    "235 dersle (+5 test dersi)" in o_tr and "48 dersle (+2 test dersi)" in o_tr and "283 ders açık (+7 test dersi)" in o_tr
+    "235 dersle (+5 test dersi)" in o_tr and "48 dersle (+2 test dersi)" in o_tr and "283 ders (+7 test dersi)" in o_tr
     and not re.search(r"\b(690|676)\b", o_tr) and "oturum sonunda silinir" in o_tr and "kaydedilmez" not in o_tr)
 add("Ostinato en: 235+5 / 48+2 / 283+7 lessons, no 690/676 + mic text",
-    "235 lessons (+5 test lessons)" in o_en and "48 lessons (+2 test lessons)" in o_en and "283 lessons open in total (+7 test lessons)" in o_en
+    "235 lessons (+5 test lessons)" in o_en and "48 lessons (+2 test lessons)" in o_en and "283 lessons in total (+7 test lessons)" in o_en
     and not re.search(r"\b(690|676)\b", o_en) and "deleted when the session ends" in o_en and "not recorded" not in o_en.lower())
 for title in ["Metronom, akan tab ve döngü.", "Kurulum sihirbazı.", "Akort listesi.", "Seri ve haftalık hedef.", "MIDI, referans ses ve daha fazlası."]:
     add(f"Ostinato tr card: {title}", title in o_tr)
