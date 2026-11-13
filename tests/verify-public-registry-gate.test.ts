@@ -8,7 +8,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * Dirty: a presenter regression that calls an expired non-exempt claim
  * "verified" -> exit(1), naming the claim.
  */
-const NOW = new Date("2026-12-09T12:00:00+03:00"); // 4 non-exempt claims expired, 2 exempt
+import { publicRegistry } from "../src/data/public-registry";
+import { isGateExempt } from "../src/lib/public-registry";
+
+// Derived from the registry: the day after the last gated claim expires.
+const gatedExpiries = publicRegistry
+  .flatMap((r) => r.claims)
+  .filter((c) => !isGateExempt(c) && c.expiresAt)
+  .map((c) => c.expiresAt as string)
+  .sort();
+const lastExpiry = gatedExpiries[gatedExpiries.length - 1];
+const NOW = new Date(`${lastExpiry}T12:00:00+03:00`);
+NOW.setUTCDate(NOW.getUTCDate() + 1);
 
 class Exit extends Error {
   constructor(public code: number) {
@@ -66,7 +77,7 @@ describe("verify-public-registry exit code", () => {
     });
     const { code, errors } = await run();
     expect(code).toBe(1);
-    expect(errors).toMatch(/expired 2026-12-08 but is still presented as verified/);
+    expect(errors).toContain(`expired ${lastExpiry} but is still presented as verified`);
     expect(errors).not.toMatch(/burunfarki-/);
   });
 });
