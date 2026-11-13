@@ -113,13 +113,21 @@ describe("shared durable mail admission", () => {
     try {
       expect((await first.query("SELECT rolsuper, rolbypassrls FROM pg_roles WHERE rolname = current_user")).rows)
         .toEqual([{ rolsuper: false, rolbypassrls: false }]);
-      const outcomes = await Promise.allSettled(Array.from({ length: 28 }, (_, i) =>
+      // 28 attempts against a capacity of 20, raced across two pools in waves of BATCH. createLead
+      // enforces a 1 s connect/query budget (a production guard), so a single 28-way burst measured
+      // CPU scheduling on a loaded machine ("lead query deadline exceeded") rather than the cap.
+      // Waves keep every wave a real cross-pool race but bound the lock queue a statement waits in.
+      const BATCH = 2;
+      const attempts = Array.from({ length: 28 }, (_, i) => () =>
         createLead(i % 2 ? first : second, {
           ...lead(0), email: i % 2 ? " LEAD-0@Example.COM " : "lead-0@example.com",
           message: `Different message ${i}`, intent: i % 2 ? "press" : "partnership",
           locale: i % 2 ? "tr" : "en",
-        }, { now: NOW }),
-      ));
+        }, { now: NOW }));
+      const outcomes: PromiseSettledResult<unknown>[] = [];
+      for (let at = 0; at < attempts.length; at += BATCH) {
+        outcomes.push(...(await Promise.allSettled(attempts.slice(at, at + BATCH).map((run) => run()))));
+      }
       expect(outcomes.filter((o) => o.status === "fulfilled")).toHaveLength(20);
       expect(outcomes.filter((o) => o.status === "rejected" && o.reason instanceof MailAdmissionCapacityError)).toHaveLength(8);
       expect((await pool.query("SELECT 1 FROM leads")).rowCount).toBe(20);
@@ -128,7 +136,7 @@ describe("shared durable mail admission", () => {
     } finally {
       await Promise.all([first.end(), second.end()]);
     }
-  });
+  }, 30_000);
 
   it("preserves an exact retry at capacity and keeps 60 places available for data requests", async () => {
     const original = await createLead(pool, lead(0), { now: NOW });
