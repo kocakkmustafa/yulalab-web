@@ -44,8 +44,8 @@ export const ostinato: ProjectConfig = {
     {
       title: { tr: "Kurslar", en: "Courses" },
       description: {
-        tr: "Gitar: ilk sesten bağımsız çalmaya (60 ders); piyano ve klavye (25), ukulele (24), dört telli bas (24) ve şan (22) için başlangıç temelleri.",
-        en: "Guitar from first sound to independent playing (60 lessons), and beginner foundations in piano and keyboard (25), ukulele (24), four-string bass (24) and voice (22).",
+        tr: "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle açık; şan ve piyano yakında.",
+        en: "The guitar course is open with 240 lessons across four levels, and ear training with 50 lessons across two levels; voice and piano are coming soon.",
       },
       icon: "Sparkles",
     },
