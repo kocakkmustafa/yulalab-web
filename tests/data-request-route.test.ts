@@ -510,3 +510,78 @@ describe("PII stays out of the logs", () => {
     expect(logged).not.toContain("kaan.kocak@example.com");
   });
 });
+
+// SEC-WEB-03: real limiter threshold and invalid-input classes for
+// /api/data-request. Existing flood test only asserts "some 429"; the exact
+// 30-per-60 s budget and the ordering against validation are pinned here.
+describe("SEC-WEB-03 rate limit threshold", () => {
+  const IP_A = { "x-forwarded-for": "203.0.113.60" };
+  const IP_B = { "x-forwarded-for": "198.51.100.60" };
+  const valid = (i: number) => ({ email: `dsr-limit-${i}@example.com`, requestType: "access" });
+
+  it("accepts exactly 30 requests per client and answers the 31st with 429 rate_limited", async () => {
+    for (let i = 1; i <= 30; i += 1) {
+      const res = await post(valid(i), IP_A);
+      expect(res.status, `request ${i}`).toBe(202);
+    }
+    const limited = await post(valid(31), IP_A);
+    expect(limited.status).toBe(429);
+    expect(await limited.text()).toBe(JSON.stringify({ error: "rate_limited" }));
+    expect((await post(valid(99), IP_B)).status).toBe(202);
+  });
+
+  it("does not spend the budget on malformed JSON, non-object JSON or unknown fields", async () => {
+    for (let i = 0; i < 31; i += 1) {
+      expect((await post("{not json", IP_A)).status).toBe(400);
+      expect((await post({ email: "a@b.co", requestType: "access", extra: 1 }, IP_A)).status).toBe(400);
+    }
+    expect((await post(valid(1), IP_A)).status).toBe(202);
+  });
+
+  // Documents CURRENT behaviour, which differs from /api/leads: here the
+  // limiter runs BEFORE email/requestType/locale validation, so those 400s
+  // do consume the budget.
+  it("spends the budget on field-value validation errors (limiter runs before them)", async () => {
+    for (let i = 0; i < 30; i += 1) {
+      expect((await post({ email: "a@b.co", requestType: "sell" }, IP_A)).status).toBe(400);
+    }
+    expect((await post(valid(1), IP_A)).status).toBe(429);
+  });
+});
+
+describe("SEC-WEB-03 invalid input classes", () => {
+  const SECRET = "SENTINEL-PERSONAL-VALUE";
+
+  async function expectRejected(res: Response, status: number, error?: string) {
+    expect(res.status).toBe(status);
+    const text = await res.text();
+    expect(text).not.toContain(SECRET);
+    if (error !== undefined) expect(JSON.parse(text)).toEqual({ error });
+    expect((await pool.query("SELECT 1 FROM data_requests")).rowCount).toBe(0);
+  }
+
+  it("rejects a body over 2 048 bytes with 413 too_large", async () => {
+    const big = JSON.stringify({ email: "a@b.co", requestType: "access", locale: "tr", token: "t".repeat(2_100) });
+    expect(Buffer.byteLength(big)).toBeGreaterThan(2_048);
+    await expectRejected(await post(big), 413, "too_large");
+  });
+
+  it("rejects malformed JSON with 400 malformed_json", async () => {
+    await expectRejected(await post(`{"email": "${SECRET}"`), 400, "malformed_json");
+  });
+
+  it.each([["array", "[1]"], ["null", "null"], ["string", `"${SECRET}"`]])(
+    "rejects a JSON %s body with 400 malformed_json",
+    async (_label, raw) => {
+      await expectRejected(await post(raw), 400, "malformed_json");
+    },
+  );
+
+  it.each([
+    ["email", { email: SECRET, requestType: "access" }],
+    ["requestType", { email: "a@b.co", requestType: SECRET }],
+    ["locale", { email: "a@b.co", requestType: "access", locale: SECRET }],
+  ])("rejects an invalid %s with 400 naming only the field", async (field, payload) => {
+    await expectRejected(await post(payload), 400, field);
+  });
+});
