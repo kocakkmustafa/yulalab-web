@@ -280,6 +280,33 @@ describe("Studio rollback inside the general contact form", () => {
   });
 });
 
+describe("a pinned intent (used by /consulting)", () => {
+  function renderPinned() {
+    return render(
+      <NextIntlClientProvider locale="tr" messages={messages}>
+        <LeadForm intent="partnership" products={[{ slug: "lifeos", name: "LifeOS" }]} studioEnabled={false} />
+      </NextIntlClientProvider>,
+    );
+  }
+
+  it("renders neither the subject selector nor the product selector", () => {
+    renderPinned();
+    expect(screen.queryAllByRole("combobox")).toHaveLength(0);
+    expect(screen.queryByLabelText(messages.leadForm.intent)).toBeNull();
+  });
+
+  it("posts intent partnership and never a productSlug", async () => {
+    const fetchMock = stubFetch(201, { receiptId: "YL-PIN" });
+    renderPinned();
+    fill();
+    fireEvent.submit(screen.getByRole("button", { name: messages.leadForm.submit }));
+    await screen.findByText(/YL-PIN/);
+    const body = postedBody(fetchMock);
+    expect(body.intent).toBe("partnership");
+    expect("productSlug" in body).toBe(false);
+  });
+});
+
 describe("the Studio API error envelope", () => {
   it("renders a known API {error} code with localized copy", async () => {
     stubFetch(400, { error: "email" });
