@@ -274,7 +274,20 @@
     "studioEyebrow": "仕事のご相談",
     "studioLink": "スタジオに申し込む",
     "studioTitle": "具体的な仕事のご相談ですか？",
-    "intakeLanguageNotice": "この言語では、まだオンラインフォームをご利用いただけません。以下のアドレスへメールでご連絡ください。画面の言語は、返信の言語や対応時期を約束するものではありません。"
+    "intakeLanguageNotice": "この言語では、まだオンラインフォームをご利用いただけません。以下のアドレスへメールでご連絡ください。画面の言語は、返信の言語や対応時期を約束するものではありません。",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "ページが見つかりません。",

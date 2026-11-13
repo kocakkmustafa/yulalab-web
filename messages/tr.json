@@ -274,7 +274,20 @@
     "studioEyebrow": "Proje başvurusu",
     "studioLink": "Stüdyo başvurusu",
     "studioTitle": "Bir iş için mi yazıyorsunuz?",
-    "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir."
+    "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir.",
+    "pathsTitle": "Kime ne için?",
+    "pathsUserLabel": "Ürün kullanıcısı",
+    "pathsUserBody": "Ürün desteği ve hesap soruları için destek adresi.",
+    "pathsUserLink": "Destek",
+    "pathsCorpLabel": "Kurumsal",
+    "pathsCorpBody": "Şirketiniz için yapay zeka çalışması. İş adresi:",
+    "pathsCorpLink": "Projenizi konuşalım",
+    "pathsPartnerLabel": "İş ortağı ve yatırımcı",
+    "pathsPartnerBody": "İş ortaklığı ve yatırım görüşmeleri için bize yazın.",
+    "pathsDevLabel": "Geliştirici ve araştırmacı",
+    "pathsDevBody": "Çalışma notları ve açık kayıtlar.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Şeffaflık"
   },
   "notFound": {
     "title": "Sayfa bulunamadı.",

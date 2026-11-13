@@ -274,7 +274,20 @@
     "studioEyebrow": "프로젝트 문의",
     "studioLink": "스튜디오 신청",
     "studioTitle": "프로젝트에 관해 문의하시나요?",
-    "intakeLanguageNotice": "이 언어의 온라인 양식은 아직 제공되지 않습니다. 아래 주소로 이메일을 보낼 수 있습니다. 인터페이스 언어는 답변 언어나 전달 시간을 보장하지 않습니다."
+    "intakeLanguageNotice": "이 언어의 온라인 양식은 아직 제공되지 않습니다. 아래 주소로 이메일을 보낼 수 있습니다. 인터페이스 언어는 답변 언어나 전달 시간을 보장하지 않습니다.",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "페이지를 찾을 수 없습니다.",

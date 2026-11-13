@@ -274,7 +274,20 @@
     "studioEyebrow": "Richiesta per un progetto",
     "studioLink": "Candidatura allo Studio",
     "studioTitle": "Ci scrivi per un lavoro?",
-    "intakeLanguageNotice": "Il modulo online non è ancora disponibile in questa lingua. Puoi scrivere all'indirizzo e-mail qui sotto; la lingua dell'interfaccia non garantisce la lingua o i tempi della risposta."
+    "intakeLanguageNotice": "Il modulo online non è ancora disponibile in questa lingua. Puoi scrivere all'indirizzo e-mail qui sotto; la lingua dell'interfaccia non garantisce la lingua o i tempi della risposta.",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "Pagina non trovata.",

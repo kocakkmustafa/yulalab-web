@@ -274,7 +274,20 @@
     "studioEyebrow": "استفسار عن مشروع",
     "studioLink": "طلب تعاون مع الاستوديو",
     "studioTitle": "تراسلنا بشأن عمل؟",
-    "intakeLanguageNotice": "النموذج الإلكتروني غير متاح بهذه اللغة بعد. يمكنك مراسلة العنوان أدناه؛ ولا تعني لغة الواجهة وعدًا بلغة الرد أو وقت وصوله."
+    "intakeLanguageNotice": "النموذج الإلكتروني غير متاح بهذه اللغة بعد. يمكنك مراسلة العنوان أدناه؛ ولا تعني لغة الواجهة وعدًا بلغة الرد أو وقت وصوله.",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "لم يُعثر على الصفحة.",
