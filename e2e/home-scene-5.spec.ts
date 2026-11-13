@@ -23,7 +23,7 @@ async function horizontalOverflow(page: Page) {
 async function labTextWithoutDatesAndPaths(page: Page) {
   return page.locator("#scene-5-lab [data-scene5-lab]").evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll("time, [data-scene5-source] code").forEach((n) => n.remove());
+    clone.querySelectorAll("time, [data-scene5-source] code, [data-scene5-source] a").forEach((n) => n.remove());
     return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "").replace(/WEB-P0-03a2/g, "").replace(/\b03a2\b/g, "");
   });
 }
@@ -75,14 +75,15 @@ for (const view of VIEWS) {
       await expect(scene.locator('[data-scene5-entry="lifeos-live"]')).toContainText("LifeOS artık App Store'da");
       for (const slug of SLUGS) {
         const src = scene.locator(`[data-scene5-entry="${slug}"] [data-scene5-source]`);
-        await expect(src).toHaveAttribute("data-scene5-source", `src/data/notes.ts#${slug}`);
-        await expect(src).toContainText("Kaynak: src/data/notes.ts");
+        await expect(src).toHaveAttribute("data-scene5-source", slug);
+        await expect(src).toContainText("Kaynak: Lab notu");
+        await expect(src.locator("a")).toHaveAttribute("href", new RegExp(`/notes#${slug}$`));
         await expect(src).toContainText(`not: ${slug}`);
       }
       const decision = scene.locator('[data-scene5-entry="adr-003"]');
       await expect(decision.locator("time")).toHaveAttribute("datetime", "2026-11-08");
-      await expect(decision.locator("[data-scene5-source]")).toContainText("docs/yula-execution/adr-003-3d-default.md");
-      await expect(decision.locator("a")).toHaveCount(0);
+      await expect(decision.locator("[data-scene5-source]")).toContainText("ADR-003");
+      await expect(decision.locator("a")).toHaveAttribute("href", /\/transparency#adr-003$/);
     });
 
     test("no invented number or measurement, no 'verified' wording", async ({ page }) => {
@@ -97,7 +98,8 @@ for (const view of VIEWS) {
       await page.goto("/");
       const scene = page.locator("#scene-5-lab");
       const links = scene.locator("a");
-      await expect(links).toHaveCount(4);
+      // 3 note titles + 3 note sources + ADR-003 source + "all notes".
+      await expect(links).toHaveCount(8);
       const names = (await links.allInnerTexts()).map((s) => s.trim());
       expect(new Set(names).size).toBe(names.length);
       for (const slug of SLUGS) {

@@ -7,7 +7,7 @@ type Translate = Awaited<ReturnType<typeof getTranslations>>;
 
 /**
  * The one design decision told here: a real record in the repository, with a
- * real date and a real source file. The ADR is ACCEPTED (2026-11-08); its
+ * real date and a link to its public summary. The ADR is ACCEPTED (2026-11-08); its
  * implementation is reviewed separately, and the section says so. Its text lives in the `home.scene5.decision.*`
  * catalogue keys; hypothesis is left unwritten because the source does not
  * state one. See docs/yula-execution/scene-5-evidence.md.
@@ -15,11 +15,8 @@ type Translate = Awaited<ReturnType<typeof getTranslations>>;
 const DECISION = {
   slug: "adr-003",
   date: "2026-11-08",
-  file: "docs/yula-execution/adr-003-3d-default.md",
   written: ["question", "did", "learned", "next"] as readonly LabField[],
 } as const;
-
-const NOTES_FILE = "src/data/notes.ts";
 
 function Fields({
   t,
@@ -90,10 +87,15 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
             {t("scene5.decision.status")}
           </p>
           <p
-            data-scene5-source={DECISION.file}
+            data-scene5-source={DECISION.slug}
             className="mt-2 font-mono text-[10px] tracking-widest uppercase text-ink-300 [overflow-wrap:anywhere]"
           >
-            {t("scene5.sourceLabel")}: <code className="normal-case tracking-normal">{DECISION.file}</code>
+            {t("scene5.sourceLabel")}: <a
+              href={`${localePath(locale, "/transparency")}#${DECISION.slug}`}
+              className="focusable normal-case tracking-normal underline underline-offset-4 hover:text-ink-200"
+            >
+              ADR-003
+            </a>
             <span aria-hidden="true">{" · "}</span>
             {t("scene5.decision.sourceNote")}
             <span aria-hidden="true">{" · "}</span>
@@ -149,10 +151,16 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 written={body.written ? { did: { text: body.text, lang: body.lang === want ? undefined : body.lang } } : {}}
               />
               <p
-                data-scene5-source={`${NOTES_FILE}#${note.slug}`}
+                data-scene5-source={note.slug}
                 className="mt-4 font-mono text-[10px] tracking-widest uppercase text-ink-300 [overflow-wrap:anywhere]"
               >
-                {t("scene5.sourceLabel")}: <code className="normal-case tracking-normal">{NOTES_FILE}</code>
+                {t("scene5.sourceLabel")}: <a
+                  href={`${localePath(locale, "/notes")}#${note.slug}`}
+                  className="focusable normal-case tracking-normal underline underline-offset-4 hover:text-ink-200"
+                >
+                  {t("scene5.kindNote")}
+                  <span className="sr-only">{` (${note.slug})`}</span>
+                </a>
                 <span aria-hidden="true">{" · "}</span>
                 {t("scene5.noteId", { slug: note.slug })}
               </p>
