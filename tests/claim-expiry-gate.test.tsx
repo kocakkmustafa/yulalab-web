@@ -5,6 +5,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import TransparencyPage from "@/app/[locale]/transparency/page";
 import { StatCards } from "@/components/projects/StatCards";
+import { ProofCard } from "@/components/common/ProofCard";
 import { ProofLedger } from "@/components/experience/ExperienceOverlay";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
@@ -15,6 +16,7 @@ import {
   isExpired,
   listClaimsExpiringWithin,
   listPresentableClaims,
+  validateRegistry,
 } from "@/lib/public-registry";
 import type { ExperienceCopy, ExperienceProduct } from "@/components/experience/types";
 import tr from "../messages/tr.json";
@@ -236,5 +238,63 @@ describe("Burun Farkı önce=sonra", () => {
     const { container } = render(<ProofLedger copy={copy} product={product} today="2026-11-14" />);
     for (const c of claims) expect(container.textContent).toContain(c.statement);
     expect(screen.getAllByText("STALE")).toHaveLength(claims.length);
+  });
+});
+
+describe("Burun Farkı önce=sonra — ProofCard (expected values are literals, not derived)", () => {
+  const bfClaim = {
+    id: "burunfarki-topk-accuracy",
+    statementTr: "BF ifade",
+    statementEn: "BF statement",
+    evidenceKind: "measured" as const,
+    source: "https://burunfark.com/dogruluk",
+    scopeTr: "BF kapsam",
+    scopeEn: "BF scope",
+    owner: "Burun Farkı",
+    verifiedAt: "2026-08-25",
+    expiresAt: "2026-09-24",
+  };
+
+  it("lapsed BF card is byte-for-byte main's: dim text-ink-300 sentence, amber border, source link, scope, dated label", () => {
+    const { container } = render(
+      <ProofCard presented={{ kind: "lapsed", claim: bfClaim, expiredOn: "2026-09-24" }} locale="en" />,
+    );
+    expect(container.innerHTML).toBe(
+      '<li class="glass p-6 h-full" style="border-color: rgba(251, 191, 36, 0.28);">' +
+        '<p class="text-[15px] leading-[1.7] text-ink-300">BF statement</p>' +
+        '<div class="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[10.5px] tracking-[0.1em] uppercase text-ink-300">' +
+        "<span>measured</span><span aria-hidden=\"true\">·</span><span>verified 2026-08-25</span>" +
+        '<span aria-hidden="true">·</span><span class="text-amber-300/90 normal-case tracking-normal">needs re-verification — window closed 2026-09-24</span>' +
+        '<span aria-hidden="true">·</span><a href="https://burunfark.com/dogruluk" target="_blank" rel="noreferrer" class="underline underline-offset-2 hover:text-ink-100 focusable">source</a>' +
+        '<span aria-hidden="true">·</span><span class="normal-case tracking-normal text-ink-300 [overflow-wrap:anywhere]">BF scope</span>' +
+        "</div></li>",
+    );
+  });
+
+  it("in-window BF card keeps the bright text-ink-100 sentence, no border override, no re-verification label", () => {
+    const { container } = render(<ProofCard presented={{ kind: "verified", claim: bfClaim }} locale="en" />);
+    expect(container.querySelector("p")!.className).toBe("text-[15px] leading-[1.7] text-ink-100");
+    expect(container.querySelector("li")!.getAttribute("style")).toBeNull();
+    expect(container.textContent).toContain("verified 2026-08-25");
+    expect(container.textContent).not.toMatch(/re-verification/);
+  });
+});
+
+describe("validateRegistry — burunfarki- prefix is reserved for the burunfarki record", () => {
+  const base = publicRegistry.find((r) => r.slug === "burunfarki")!;
+  const other = publicRegistry.find((r) => r.slug === "lifeos")!;
+
+  it("accepts the real registry", () => {
+    expect(validateRegistry(publicRegistry).filter((e) => e.includes("reserved"))).toEqual([]);
+  });
+
+  it("rejects the prefix on another product's claim", () => {
+    const bad = { ...other, claims: [{ ...other.claims[0], id: "burunfarki-sneaky" }] };
+    expect(validateRegistry([bad]).some((e) => e.includes("lifeos: claim burunfarki-sneaky") && e.includes("reserved"))).toBe(true);
+  });
+
+  it("rejects a burunfarki claim without the prefix", () => {
+    const bad = { ...base, claims: [{ ...base.claims[0], id: "topk-accuracy" }] };
+    expect(validateRegistry([bad]).some((e) => e.includes("burunfarki: claim topk-accuracy") && e.includes("reserved"))).toBe(true);
   });
 });

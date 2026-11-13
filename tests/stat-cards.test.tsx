@@ -182,7 +182,7 @@ describe("a stat without a claim reference", () => {
 describe("empty and degraded cases", () => {
   it("renders nothing when a product has no stats", () => {
     const { container } = render(
-      <StatCards slug="x" stats={[]} record={undefined} locale="en" now={new Date()} labels={LABELS} />,
+      <StatCards slug="x" stats={[]} record={undefined} locale="en" now={new Date("2026-11-14T12:00:00+03:00")} labels={LABELS} />,
     );
     expect(container.querySelector("section")).toBeNull();
   });
@@ -195,7 +195,7 @@ describe("empty and degraded cases", () => {
         stats={config.stats}
         record={undefined}
         locale="en"
-        now={new Date()}
+        now={new Date("2026-11-14T12:00:00+03:00")}
         labels={LABELS}
       />,
     );

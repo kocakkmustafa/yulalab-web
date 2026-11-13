@@ -118,6 +118,16 @@ export function validateRecord(record: ProductPublicRecord): string[] {
   const errors: string[] = [];
   const where = (msg: string) => `${record.slug}: ${msg}`;
 
+  // Burun Farkı gate exemption is keyed on the claim id prefix; keep it honest:
+  // the prefix must belong to the burunfarki record and to nothing else.
+  for (const claim of record.claims) {
+    if (isGateExempt(claim) !== (record.slug === "burunfarki")) {
+      errors.push(
+        where(`claim ${claim.id}: the "burunfarki-" id prefix is reserved for the burunfarki record (gate exemption)`),
+      );
+    }
+  }
+
   const knownLifecycles = ["live", "beta", "research", "archived"];
   if (!knownLifecycles.includes(record.lifecycle)) {
     errors.push(where(`unknown lifecycle "${record.lifecycle}"`));

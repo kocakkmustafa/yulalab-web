@@ -29,6 +29,8 @@ beforeEach(() => {
   vi.useFakeTimers({ toFake: ["Date"] });
   vi.setSystemTime(new Date("2026-11-14T12:00:00+03:00"));
 });
+const FIXED_NOW = new Date("2026-11-14T12:00:00+03:00");
+
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
@@ -55,7 +57,7 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
 
   it("states 'no sourced claim yet' in words for a block without claims", async () => {
     await renderTransparency("en");
-    const now = new Date();
+    const now = FIXED_NOW;
     const expected = publicRegistry.filter(
       (r) => presentClaims(r, now).filter((p) => p.kind !== "withheld").length === 0,
     ).length;
@@ -66,13 +68,17 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
 
   it("keeps lapsed claims visible and counts them in the summary", async () => {
     await renderTransparency("tr");
-    const now = new Date();
+    const now = FIXED_NOW;
     const lapsed = publicRegistry.flatMap((r) => presentClaims(r, now)).filter((p) => p.kind === "lapsed");
     expect(Number(screen.getByTestId("summary-lapsed").querySelector("dd")!.textContent)).toBe(lapsed.length);
     const body = document.body.textContent ?? "";
     // Burun Farkı is outside the SEC-WEB-01 gate: its lapsed claims render exactly as on main.
     expect(lapsed.length).toBeGreaterThan(0);
-    for (const p of lapsed) expect(body).toContain(p.claim.statementTr);
+    // Pinned to FIXED_NOW (no real clock). Only Burun Farkı lapsed claims are asserted here;
+    // other products' lapsed claims are gated (see claim-expiry-gate.test.tsx).
+    for (const p of lapsed.filter((x) => x.claim.id.startsWith("burunfarki-"))) {
+      expect(body).toContain(p.claim.statementTr);
+    }
   });
 
   it("derives the status summary from the registry", async () => {

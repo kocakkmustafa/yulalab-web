@@ -32,7 +32,11 @@ export function ProofCard({
       style={lapsed ? { borderColor: "rgba(251,191,36,0.28)" } : undefined}
     >
       {redact ? null : (
-        <p className="text-[15px] leading-[1.7] text-ink-100">{statement}</p>
+        <p
+          className={`text-[15px] leading-[1.7] ${lapsed ? "text-ink-300" : "text-ink-100"}`}
+        >
+          {statement}
+        </p>
       )}
       <SourceStamp
         evidenceKind={claim.evidenceKind}
