@@ -20,7 +20,7 @@ baseline = {item["path"]: item["sha256"] for item in manifest["files"]}
 # sealed focus RESULT SHA256 21014c14dcd9cc25710fb5713f8d5a12c38c47b85341e4d82a75eb420b6e016e (70 PASS).
 # This is candidate source acceptance, not publication or provider acceptance.
 REVIEWED_TEST_ADDITIONS = {
-    "tests/status-pill.test.tsx": "c8c13ea502c9f1416b3f0e2fbef01dc0f3814fc94e60fa5c35690ef7fffacbb2",
+    "tests/status-pill.test.tsx": "e871e675f4de4b024e05e67f07884f6983cf6939aebe70e8a9df4e38cc467d2a",
     "tests/support-feedback.test.tsx": "a5319babc9c69b7ff1b736602cb5ac8f576f934f1751b08be416b7540136738a",
 }
 # 2026-10-16 approved identity / dated normal-app preview candidate additions.
@@ -71,8 +71,8 @@ REVIEWED_A3_SOURCE_HASHES = {
     "src/lib/localized.ts": "69a179dd2ffa5945f14842fd86924157f49efea2a147c734c3270cae14fb214d",
     "src/lib/site-origin.ts": "eb11a1a5a776609d82332d11868430552f9981775456dddaad96fb46f1c19657",
     "tests/client-forms.test.tsx": "5f59ef47c009d614afe31236b67187f9d912948f84c12d550abdd06e707f9d8e",
-    "tests/content-locale-wiring.test.tsx": "d162b59e100a3821cab4cc630f1669923fd6a8d47aa6ae221878f574c6dd4adf",
-    "tests/experience-locale-content.test.tsx": "65e209ac68eeaf6b29f31bed0a95e73af9bd8cd663e861c4ff6d615ac99756b6",
+    "tests/content-locale-wiring.test.tsx": "909e7201585b771d4bff3c9fe7708acd7ff41f1564c14de0b490f59e16f66274",
+    "tests/experience-locale-content.test.tsx": "13408ffaf31f585bad0da6764f59f758f82fab3d7aa291d8fa416570d5782917",
     "tests/leads-contract.test.ts": "0a243539b35253a45091645573013e461beb0950e38e2a5bb5a1d1a06d0bcd93",
     "tests/locale-pages.test.tsx": "19e2e854be5bae33a799f2b4e6664c0b643ea1cc87b74d05c1a381b4ff52d87d",
     "tests/locale-routing.test.ts": "6aa446c9ed1d67ffc6e5f76526cf54950d3e3ef47e3e6a3e7d1e28cd71b46650",
@@ -141,13 +141,13 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/i18n/locales.ts": "397228713653ad4a844884d992387267a5a602e9fb6d30aabe36d0f7c7516ff5",
     "src/i18n/request.ts": "98f4c0fd5758e1b6dd3f0d1516ddebaeaf41f72cfb25b0d868033dcf1c3c8db8",
     "src/lib/localized.ts": "69a179dd2ffa5945f14842fd86924157f49efea2a147c734c3270cae14fb214d",
-    "src/lib/theme.ts": "15435ec4a63fe78ff0cd3c71fd247dd7daaea05c4e14bafce0dc24e2f68e3115",
-    "src/lib/types.ts": "0c1e46e68edbd1ae135e6b30b35a5f6410b159d26fc2de5726d6663fc39a44f0",
+    "src/lib/theme.ts": "9a9849555fdf19db28fabbcd26287718864abc4b4c47008c44bccfc5385bdbc6",
+    "src/lib/types.ts": "e628cf3935ef74232e47e140283f72774694c1418cb46b7c9740aeb08a206661",
     "src/middleware.ts": "d7cf2e17e6c2f70e58aac46c0491b6cffa609979230b543fae3994a604e60041",
     "tailwind.config.ts": "17b4f0065f952e32091828579003756effde1810ea864011e260b437380d53aa",
-    "tests/content-locale-wiring.test.tsx": "d162b59e100a3821cab4cc630f1669923fd6a8d47aa6ae221878f574c6dd4adf",
+    "tests/content-locale-wiring.test.tsx": "909e7201585b771d4bff3c9fe7708acd7ff41f1564c14de0b490f59e16f66274",
     "tests/data-request-verification-page.test.tsx": "9b9b55b79fee198e1f56c0d6cf6ed8d25f81b8122a3bbb460b800f42f0c14844",
-    "tests/experience-locale-content.test.tsx": "65e209ac68eeaf6b29f31bed0a95e73af9bd8cd663e861c4ff6d615ac99756b6",
+    "tests/experience-locale-content.test.tsx": "13408ffaf31f585bad0da6764f59f758f82fab3d7aa291d8fa416570d5782917",
     "tests/locale-contract.test.ts": "a0cc5fcd56bde86aac5eea302f7e7090c28cb999db35771e5c62028ebb98682f",
     "tests/locale-pages.test.tsx": "19e2e854be5bae33a799f2b4e6664c0b643ea1cc87b74d05c1a381b4ff52d87d",
     "tests/locale-request.test.ts": "85ab64df6c54bab649ec5de4a135c692bff165f04cafc6cd05e32f6097e7e80c",
