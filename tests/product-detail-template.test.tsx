@@ -78,10 +78,10 @@ describe.each(["tr", "en"] as const)("%s product detail template (WEB-UX-05c)", 
     expect(screen.getByTestId("access-privacy").getAttribute("href")).toBe(record.privacyUrl);
   });
 
-  it("states the release status and links it to /transparency (anchor arrives with 05e)", () => {
+  it("states the release status and links it to its /transparency#<slug> record", () => {
     renderPage("lifeos", locale);
     const link = screen.getByTestId("status-link");
-    expect(link.getAttribute("href")).toBe("/transparency");
+    expect(link.getAttribute("href")).toBe("/transparency#lifeos");
     expect(link.textContent).toBe(messages.product.statusLink);
     expect(itemOf(link)).toBe(6);
   });

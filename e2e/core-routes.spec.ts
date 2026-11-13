@@ -43,6 +43,7 @@ const STATIC_ROUTES = [
   "/privacy/motion",
   "/terms",
   "/notes",
+  "/lab",
 ];
 
 const PRODUCT_SLUGS = [
