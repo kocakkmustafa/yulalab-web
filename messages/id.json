@@ -944,6 +944,7 @@
     "limits": "Kami tidak menjanjikan kenaikan pendapatan, keluaran model yang sempurna, atau tanggal rilis sebelum penjajakan. Akses dan penerapan ke produksi memerlukan kesepakatan terpisah.",
     "contactTitle": "Ceritakan apa yang ingin Anda tingkatkan.",
     "contactBody": "Mulailah dari alur kerja, masalah, dan jadwal Anda. Jangan mengirim kata sandi, kunci API, atau data rahasia pelanggan. Tautan email membuka aplikasi email Anda; halaman ini tidak mengirimkan apa pun.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Diskusikan proyek Anda",
     "subject": "Pertanyaan konsultasi AI",
     "terms": "Ketersediaan, harga, dan cakupan dikonfirmasi melalui pembahasan.",

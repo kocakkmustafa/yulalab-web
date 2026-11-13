@@ -944,6 +944,7 @@
     "limits": "Vor der Bestandsaufnahme versprechen wir weder Umsatzsteigerungen noch fehlerfreie Modellausgaben oder einen Veröffentlichungstermin. Produktionszugriff und Deployment erfordern eine gesonderte Vereinbarung.",
     "contactTitle": "Was möchten Sie verbessern?",
     "contactBody": "Beginnen Sie mit Ihrem Arbeitsablauf, dem Problem und Ihrem Zeitrahmen. Senden Sie keine Passwörter, API-Schlüssel oder vertraulichen Kundendaten. Der E-Mail-Link öffnet Ihr Mailprogramm. Diese Seite übermittelt nichts.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Projekt besprechen",
     "subject": "Anfrage zur KI-Beratung",
     "terms": "Verfügbarkeit, Preise und Umfang werden im Gespräch bestätigt.",

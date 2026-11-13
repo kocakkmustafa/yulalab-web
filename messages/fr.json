@@ -944,6 +944,7 @@
     "limits": "Nous ne promettons ni hausse de revenus, ni sorties de modèle parfaites, ni date de publication avant la phase de découverte. L’accès à la production et le déploiement nécessitent un accord distinct.",
     "contactTitle": "Dites-nous ce que vous souhaitez améliorer.",
     "contactBody": "Commencez par votre flux de travail, le problème et le calendrier. N’envoyez ni mots de passe, ni clés d’API, ni données clients confidentielles. Le lien e-mail ouvre votre messagerie ; cette page ne transmet aucune demande.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Parlons de votre projet",
     "subject": "Demande de conseil en IA",
     "terms": "La disponibilité, les tarifs et le périmètre sont confirmés au fil des échanges.",

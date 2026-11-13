@@ -944,6 +944,7 @@
     "limits": "在了解需求之前，我们不承诺收入增长、完美的模型输出或发布日期。生产环境访问与部署需要另行约定。",
     "contactTitle": "告诉我们，您想改进什么。",
     "contactBody": "请先说明工作流程、问题和时间安排。不要发送密码、API 密钥或客户机密数据。邮箱链接会打开您的邮件应用；本页不会提交消息内容。",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "讨论您的项目",
     "subject": "AI 咨询请求",
     "terms": "服务档期、价格与范围将在沟通后确认。",

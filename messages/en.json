@@ -944,6 +944,7 @@
     "limits": "We do not promise a revenue increase, perfect model output or a release date before discovery. Production access and deployment require a separate agreement.",
     "contactTitle": "Tell us what you want to improve.",
     "contactBody": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. The email link opens your mail app; nothing is submitted by this page.",
+    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
     "cta": "Discuss your project",
     "subject": "AI consulting enquiry",
     "terms": "Availability, pricing and scope are confirmed in conversation.",
