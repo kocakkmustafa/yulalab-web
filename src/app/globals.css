@@ -454,6 +454,36 @@ button:hover .arrow-nudge {
   outline-offset: 3px;
 }
 
+/* skip link (WCAG 2.4.1): first tab stop, visible only while focused */
+.skip-link {
+  position: fixed;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  background: rgb(var(--yula-ink-50));
+  color: rgb(var(--yula-ink-900));
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+  outline: 3px solid rgb(var(--yula-ink-900));
+  outline-offset: -6px;
+  box-shadow: 0 0 0 2px rgb(var(--yula-ink-50));
+}
+/* main is a programmatic focus target (tabindex=-1, never a Tab stop): after the skip link
+   jumps here Chrome would match :focus-visible and ring the whole page, so no ring at all. */
+.main-focus-target:focus,
+.main-focus-target:focus-visible {
+  outline: none;
+}
+
 /* dotted grid backdrop */
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);

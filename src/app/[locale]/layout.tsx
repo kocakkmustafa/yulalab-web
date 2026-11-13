@@ -111,6 +111,7 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
   const studioOpen = studioEnabled();
+  const headerT = await getTranslations({ locale, namespace: "header" });
 
   return (
     <html
@@ -138,9 +139,12 @@ export default async function LocaleLayout({
           <MotionConfig reducedMotion="user">
             {/* The 3D world is created once here, outside the route
                 transition, and persists while pages change around it. */}
+            <a href="#main-content" className="skip-link">
+              {headerT("skipToContent")}
+            </a>
             <SceneHost>
               <Header />
-              <main>
+              <main id="main-content" tabIndex={-1} className="main-focus-target">
                 <PageTransition>{children}</PageTransition>
               </main>
               <Footer studioEnabled={studioOpen} />
