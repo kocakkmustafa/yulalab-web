@@ -1489,9 +1489,9 @@
     {
       "path": "src/app/[locale]/lab/page.tsx",
       "publishedSha256": null,
-      "candidateSha256": "cb7e269802832aea9da950d94d6251c3f8aff9baa0ec1c4db9548ce8b44c5746",
+      "candidateSha256": "d20a76089fc2148c1cf84d9a4d3aba6d7af4abeb30ec40e2746b73ab87e676e4",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "WEB-UX-05e: new /lab hub route; candidate-only, no publication assertion."
+      "reason": "WEB-UX-05e: new /lab hub route; candidate-only, no publication assertion. WEB-P2 /lab bo\u015f durum metni"
     },
     {
       "path": "src/data/notes.ts",
