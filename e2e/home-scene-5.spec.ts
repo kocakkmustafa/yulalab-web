@@ -23,7 +23,7 @@ async function horizontalOverflow(page: Page) {
 async function labTextWithoutDatesAndPaths(page: Page) {
   return page.locator("#scene-5-lab [data-scene5-lab]").evaluate((el) => {
     const clone = el.cloneNode(true) as HTMLElement;
-    clone.querySelectorAll("time, [data-scene5-source] code").forEach((n) => n.remove());
+    clone.querySelectorAll("time, [data-scene5-source] code, [data-scene5-source] a").forEach((n) => n.remove());
     return clone.innerText.replace(/\d{4}-\d{2}-\d{2}/g, "").replace(/\b3D\b/g, "").replace(/WEB-P0-03a2/g, "").replace(/\b03a2\b/g, "");
   });
 }
@@ -76,7 +76,7 @@ for (const view of VIEWS) {
       for (const slug of SLUGS) {
         const src = scene.locator(`[data-scene5-entry="${slug}"] [data-scene5-source]`);
         await expect(src).toHaveAttribute("data-scene5-source", slug);
-        await expect(src).toContainText("Kaynak: Not");
+        await expect(src).toContainText("Kaynak: Lab notu");
         await expect(src.locator("a")).toHaveAttribute("href", new RegExp(`/notes#${slug}$`));
         await expect(src).toContainText(`not: ${slug}`);
       }
