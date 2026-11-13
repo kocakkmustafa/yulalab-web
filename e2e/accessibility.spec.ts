@@ -50,6 +50,7 @@ async function expectNoBlockingViolations(page: Page, label: string) {
 const ROUTES = [
   ["home", "/"],
   ["products index", "/projects"],
+  ["arabic home (rtl)", "/ar"],
   ["live product", "/projects/burunfarki"],
   ["research product", "/projects/choreia"],
   ["privacy", "/privacy"],
