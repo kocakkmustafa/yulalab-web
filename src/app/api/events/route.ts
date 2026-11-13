@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { parseEventPayload } from "@/lib/analytics/events";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { recordAttribution } from "@/server/attribution";
-import { allowRequest } from "@/server/rate-limit";
+import { allowRequest, clientIp } from "@/server/rate-limit";
 import { readBounded } from "@/server/http";
 
 // pg needs the Node.js runtime; the edge runtime has no TCP sockets.
@@ -85,18 +85,14 @@ function vercelOrigin(): string | undefined {
 /**
  * The rate-limit bucket key.
  *
- * First hop of x-forwarded-for is the client address on Vercel; later hops
- * are attacker-controllable, so only the first is read. Falls back to the
- * session token when no proxy header exists (local development), which is
+ * Client IP via the shared clientIp() (src/server/rate-limit.ts), which
+ * decides per platform which header is trustworthy. Falls back to the
+ * session token when no valid IP exists (local development), which is
  * weak but is the only identifier available there.
  */
 function clientKey(request: Request, session: string): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  const first = forwarded?.split(",")[0]?.trim();
-  if (first) return `ip:${first}`;
-  const realIp = request.headers.get("x-real-ip")?.trim();
-  if (realIp) return `ip:${realIp}`;
-  return `session:${session}`;
+  const ip = clientIp(request.headers);
+  return ip ? `ip:${ip}` : `session:${session}`;
 }
 
 /**

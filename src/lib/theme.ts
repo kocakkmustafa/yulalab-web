@@ -3,8 +3,8 @@ export type ResolvedTheme = "light" | "dark";
 
 export const THEME_STORAGE_KEY = "yula.appearance.v1";
 export const THEME_COLORS: Record<ResolvedTheme, string> = {
-  dark: "#09060e",
-  light: "#f5f3ee",
+  dark: "#0d0e11",
+  light: "#f6f5f0",
 };
 
 export function isThemePreference(value: unknown): value is ThemePreference {

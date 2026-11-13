@@ -43,6 +43,7 @@ const STATIC_ROUTES = [
   "/privacy/motion",
   "/terms",
   "/notes",
+  "/lab",
 ];
 
 const PRODUCT_SLUGS = [
@@ -233,7 +234,26 @@ for (const localeCase of MISSING_ROUTE_CASES) {
         }
         unexpectedHttpResponses.push(summary);
       });
+      // A stylesheet the browser cancelled as a duplicate is not a failed load.
+      // main run 42317954806 (2026-11-07) failed this test once, with
+      // `GET …/_next/static/css/<hash>.css net::ERR_ABORTED`, while 243 other
+      // tests and every PR run of the same tree passed: Chromium can cancel a
+      // second in-flight request for a stylesheet it is already fetching. It is
+      // tolerated ONLY when that same URL also loaded successfully; any other
+      // error text, any other resource type, and a stylesheet that never loaded
+      // still fail the test.
+      const loadedStylesheets = new Set<string>();
+      const abortedStylesheets = new Set<string>();
+      page.on("response", (httpResponse) => {
+        if (httpResponse.status() < 400 && httpResponse.request().resourceType() === "stylesheet") {
+          loadedStylesheets.add(httpResponse.url());
+        }
+      });
       page.on("requestfailed", (request) => {
+        if (request.failure()?.errorText === "net::ERR_ABORTED" && request.resourceType() === "stylesheet") {
+          abortedStylesheets.add(request.url());
+          return;
+        }
         failedRequests.push(`${request.method()} ${request.url()} ${request.failure()?.errorText}`);
       });
 
@@ -296,6 +316,7 @@ for (const localeCase of MISSING_ROUTE_CASES) {
       expect(unexpectedConsoleErrors).toEqual([]);
       expect(unexpectedHttpResponses).toEqual([]);
       expect(failedRequests).toEqual([]);
+      expect([...abortedStylesheets].filter((url) => !loadedStylesheets.has(url))).toEqual([]);
 
       await page.screenshot({
         path: testInfo.outputPath(`${localeCase.locale}-${viewport.label}.png`),

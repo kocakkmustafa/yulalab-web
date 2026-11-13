@@ -47,6 +47,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Manrope", "Inter", "sans-serif"],
+        // 03b adds the display serif via next/font; until --font-serif exists this is a pure fallback and loads no bytes.
+        serif: ["var(--font-serif)", "Georgia", "serif"],
         grotesk: ["var(--font-grotesk)", "Space Grotesk", "Inter", "sans-serif"],
         mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
       },

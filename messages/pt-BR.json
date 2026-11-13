@@ -15,7 +15,15 @@
     "menuClose": "Fechar",
     "studio": "Studio",
     "consulting": "Consultoria em IA",
-    "language": "Idioma"
+    "language": "Idioma",
+    "skipToContent": "Pular para o conteúdo",
+    "products": "Produtos",
+    "lab": "Laboratório",
+    "approach": "Nossa abordagem",
+    "collaboration": "Parcerias",
+    "mainNavigation": "Navegação principal",
+    "doors": "Doors",
+    "doorsPanel": "Starting doors"
   },
   "footer": {
     "tagline": "Um laboratório independente de produtos que usa IA no lugar e no momento certos, sem exagerar suas capacidades.",
@@ -37,7 +45,8 @@
     "navCaseStudies": "Estudos de caso",
     "navOperatingSystem": "Como trabalhamos",
     "navStudio": "Studio",
-    "navConsulting": "Consultoria em IA"
+    "navConsulting": "Consultoria em IA",
+    "navWhyYula": "Why YULA"
   },
   "common": {
     "explore": "Explorar",
@@ -162,7 +171,23 @@
     "shippedNote": "Produtos com um registro anterior de publicação ou beta. Os cartões sinalizam a disponibilidade que precisa ser verificada novamente; fontes datadas e links estão na página de cada produto.",
     "researchHeading": "Em pesquisa",
     "researchNote": "Ainda não lançados: sem páginas nas lojas, links de download ou números verificados. Ficam separados abaixo, pois dar a eles o mesmo peso de produtos lançados faria parecer que são mais do que realmente são.",
-    "researchToggle": "Mostrar produtos em pesquisa ({count})"
+    "researchToggle": "Mostrar produtos em pesquisa ({count})",
+    "featuredHeading": "Featured products",
+    "portfolioHeading": "Portfolio",
+    "filterLabel": "Filter by status",
+    "filterAll": "All",
+    "showing": "Showing {count} products",
+    "summary": "{live} live · {beta} beta · {soon} coming soon",
+    "noMatch": "No product matches this filter.",
+    "panelHeading": "Selected product",
+    "panelHint": "Select a product to see its details here.",
+    "accessHeading": "Access",
+    "openFull": "Open the full page",
+    "closePanel": "Close panel",
+    "preview": "Preview",
+    "previewLabel": "Preview: {name}",
+    "panelStatusLink": "Status and sources",
+    "panelScreenEmpty": "There is no screenshot for this product yet."
   },
   "showcase": {
     "back": "Projetos",
@@ -252,7 +277,20 @@
     "studioEyebrow": "Consulta sobre projeto",
     "studioLink": "Solicitação ao Studio",
     "studioTitle": "Quer falar sobre um trabalho?",
-    "intakeLanguageNotice": "O formulário on-line ainda não está disponível neste idioma. Você pode escrever para o endereço de e-mail abaixo; o idioma da interface não garante o idioma da resposta nem um prazo de entrega."
+    "intakeLanguageNotice": "O formulário on-line ainda não está disponível neste idioma. Você pode escrever para o endereço de e-mail abaixo; o idioma da interface não garante o idioma da resposta nem um prazo de entrega.",
+    "pathsTitle": "Who is this for?",
+    "pathsUserLabel": "Product user",
+    "pathsUserBody": "Product support and account questions go to the support address.",
+    "pathsUserLink": "Support",
+    "pathsCorpLabel": "Business",
+    "pathsCorpBody": "AI work for your company. Business address:",
+    "pathsCorpLink": "Discuss your project",
+    "pathsPartnerLabel": "Partners and investors",
+    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
+    "pathsDevLabel": "Developers and researchers",
+    "pathsDevBody": "Working notes and open records.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Transparency"
   },
   "notFound": {
     "title": "Página não encontrada.",
@@ -261,7 +299,13 @@
   "notes": {
     "eyebrow": "Notas",
     "title": "O que fizemos, à medida que aconteceu.",
-    "intro": "A transparência vale aqui também — notas breves e honestas sobre o que mudou, o que foi corrigido e o que ganhou vida nos nossos produtos."
+    "intro": "A transparência vale aqui também — notas breves e honestas sobre o que mudou, o que foi corrigido e o que ganhou vida nos nossos produtos.",
+    "articleEyebrow": "Article",
+    "readArticle": "Read the article",
+    "sourcesHeading": "Sources",
+    "verifiedOn": "verified {date}",
+    "seeTransparency": "Transparency page",
+    "backToNotes": "All notes"
   },
   "links": {
     "web": "Site",
@@ -538,7 +582,72 @@
     "statVerified": "verificado",
     "statNeedsReverification": "precisa de nova verificação",
     "availabilityUnverified": "O status de publicação precisa de nova verificação",
-    "availabilityCheckedAt": "Última verificação de publicação: {date}. Abra o link para conferir a situação atual."
+    "availabilityCheckedAt": "Última verificação de publicação: {date}. Abra o link para conferir a situação atual.",
+    "accessHeading": "Access",
+    "screenHeading": "Screens and demo",
+    "screenEmpty": "There is no screenshot for this product yet.",
+    "trustHeading": "Privacy and trust",
+    "trustPrivacy": "Privacy policy for this product",
+    "statusHeading": "Release status",
+    "statusLink": "Status and sources",
+    "demoLabel": "Example simulation"
+  },
+  "braavolabsDemo": {
+    "kicker": "Sample plan card",
+    "title": "Describe a job. See its plan, approvals and result in one place.",
+    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
+    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
+    "pickerLabel": "Pick a sample intent",
+    "announce": "Plan card shown",
+    "labels": {
+      "intent": "Sample intent",
+      "example": "Example card",
+      "note": "Example / concept: no real job is executed.",
+      "steps": "Example steps",
+      "approvals": "Approval points",
+      "risk": "Example risk level",
+      "output": "Expected output"
+    },
+    "risk": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "intents": {
+      "content": {
+        "label": "Content",
+        "prompt": "“Prepare a week of posts for our launch.”",
+        "s1": "Read the brief and list the post ideas.",
+        "s2": "Draft each post in your tone.",
+        "s3": "Collect the drafts for your review.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you read the drafts and decide.",
+        "riskNote": "The output is a draft you review.",
+        "output": "A set of draft posts, ready for your review."
+      },
+      "report": {
+        "label": "Report",
+        "prompt": "“Summarise last month's support requests.”",
+        "s1": "Gather the material you point to.",
+        "s2": "Group the findings by theme.",
+        "s3": "Write a short summary.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you choose which material is used.",
+        "riskNote": "It reads your own material, so you decide what it may read.",
+        "output": "A short report draft with the points that need a decision."
+      },
+      "software": {
+        "label": "Software",
+        "prompt": "“Fix the sign-in bug in our app.”",
+        "s1": "Read the code and find the likely cause.",
+        "s2": "Propose a change and a test for it.",
+        "s3": "Present the proposed change.",
+        "a1": "A step that spends money waits for your approval.",
+        "a2": "Example: you review each proposed change.",
+        "riskNote": "It touches the code behind your product, so each change waits for you.",
+        "output": "A proposed code change with its test, for you to review."
+      }
+    }
   },
   "leadForm": {
     "name": "Nome",
@@ -643,6 +752,9 @@
       "support": "Suporte",
       "rights": "Todos os direitos reservados."
     },
+    "open3d": "Open the 3D experience",
+    "open3dOpened": "3D experience opened",
+    "open3dFailed": "Could not open 3D; showing the linear view.",
     "fallback": {
       "label": "Experiência linear",
       "reason": "Quando o movimento ou a camada 3D não estão disponíveis, os mesmos produtos, evidências e links continuam completos nesta visualização."
@@ -673,7 +785,8 @@
       "tierHigh": "Alta",
       "wallService": "Serviço",
       "reset": "Redefinir"
-    }
+    },
+    "loaderSkip": "Skip intro"
   },
   "studio": {
     "applyIntro": "Não pedimos um valor exato de orçamento nem o nome de quem decide — uma faixa e uma função são suficientes.",
@@ -835,5 +948,266 @@
     "subject": "Consulta sobre consultoria em IA",
     "terms": "Disponibilidade, preços e escopo são confirmados durante a conversa.",
     "nav": "Consultoria em IA"
+  },
+  "whyYula": {
+    "eyebrow": "Why YULA",
+    "title": "Why YULA",
+    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
+    "sourcesHeading": "Sources",
+    "s1Title": "Evidence comes before the claim.",
+    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
+    "s2Title": "Portfolio status is read from the registry.",
+    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
+    "s3Title": "The level of evidence is written out.",
+    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
+    "s4Title": "Work you can read.",
+    "s4Body": "The lab's records and notes are reachable directly from here.",
+    "linkLab": "Lab",
+    "linkTransparency": "Transparency"
+  },
+  "home": {
+    "navLabel": "Home page sections",
+    "scene1": {
+      "label": "Identity",
+      "title": "We build technology to make life more possible, not more complicated.",
+      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "ctaProducts": "Explore the products",
+      "ctaHow": "See how we work",
+      "ctaLabel": "Main paths",
+      "signalsLabel": "From intent to result: three examples",
+      "signalsNote": "These are example scenarios, not real product output or measurements.",
+      "example": "Example",
+      "intentLabel": "Intent",
+      "resultLabel": "Result",
+      "signals": {
+        "s1": {
+          "product": "Braavolabs",
+          "intent": "Describe a task.",
+          "result": "A chat and coding agent takes it on; you see the cost of every run."
+        },
+        "s2": {
+          "product": "LifeOS",
+          "intent": "Keep your health, money and assets in one place.",
+          "result": "Five life areas in one app; records stay on your device, no account needed."
+        },
+        "s3": {
+          "product": "Ostinato",
+          "intent": "Start guitar from the first sound.",
+          "result": "Progress step by step with measured practice, and train your ear with drills."
+        }
+      }
+    },
+    "scene2": {
+      "label": "Difference",
+      "title": "Less friction, more results.",
+      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
+      "listLabel": "Common pattern versus our approach, three comparisons",
+      "patternLabel": "Common pattern",
+      "approachLabel": "Our approach",
+      "tagCapability": "Current capability",
+      "tagVision": "Our vision",
+      "sourceLabel": "Source: {product} product record ({status})",
+      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "pairs": {
+        "p1": {
+          "pattern": "More screens, sign-ins and model choices",
+          "approach": "One app, no account needed",
+          "detail": "LifeOS: five life areas in one place, offline-first."
+        },
+        "p2": {
+          "pattern": "False certainty",
+          "approach": "Say where an answer comes from and how unsure it is",
+          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+        },
+        "p3": {
+          "pattern": "Endless notifications",
+          "approach": "Step in at a meaningful time",
+          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+        }
+      }
+    },
+    "scene3": {
+      "label": "Products",
+      "title": "Three systems we prioritise.",
+      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome."
+    },
+    "scene4": {
+      "label": "Engineering",
+      "title": "Independent products. Shared engineering principles.",
+      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
+      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
+      "currentLabel": "Stated in the product record",
+      "plannedLabel": "Planned",
+      "tagCapability": "Current capability",
+      "tagPlanned": "Planned",
+      "tagNone": "No record",
+      "noRecord": "No product record line backs this principle yet.",
+      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
+      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
+      "linksLabel": "Related pages",
+      "linkOperatingSystem": "How this lab works",
+      "linkStudio": "Studio: build with YULA Lab",
+      "linkTransparency": "Transparency",
+      "principles": {
+        "p1": {
+          "name": "Local-first data",
+          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+        },
+        "p2": {
+          "name": "Permission and proof for spending steps",
+          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+        },
+        "p3": {
+          "name": "On-device processing",
+          "planned": "Open new signals only after they are tested on real devices."
+        },
+        "p4": {
+          "name": "An understandable interface",
+          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+        }
+      }
+    },
+    "scene5": {
+      "label": "Lab",
+      "title": "A living lab.",
+      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
+      "listLabel": "Lab records: notes and a design decision",
+      "kindNote": "Lab note",
+      "kindDecision": "Design decision",
+      "fields": {
+        "question": "Question",
+        "hypothesis": "Hypothesis",
+        "did": "What we did",
+        "learned": "What we learned",
+        "next": "Next test"
+      },
+      "empty": "not written yet",
+      "sourceLabel": "Source",
+      "noteId": "note: {slug}",
+      "onlyTr": "No translation ({part}): written in Turkish only.",
+      "onlyEn": "No translation ({part}): written in English only.",
+      "allNotes": "All lab notes",
+      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "decision": {
+        "title": "Should the 3D scene stay on by default on the home page?",
+        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
+        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
+        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
+        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
+        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
+        "sourceNote": "a document in the repository, no separate page on the site",
+        "sourceLang": "The source document is written in Turkish."
+      },
+      "partTitle": "title",
+      "partBody": "text"
+    },
+    "scene6": {
+      "label": "Trust",
+      "title": "Trust is shown product by product.",
+      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
+      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
+      "sourceLabel": "Source",
+      "srcRecord": "product record",
+      "srcRecords": "product records",
+      "srcPrivacy": "{product} privacy policy",
+      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "rows": {
+        "protection": {
+          "title": "Data protection",
+          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "lines": {
+            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
+            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
+            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
+            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+          }
+        },
+        "control": {
+          "title": "Control and approval",
+          "lead": "What the records say about who decides.",
+          "lines": {
+            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
+            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+          }
+        },
+        "result": {
+          "title": "Measurable result",
+          "body": "No outcome measurements are published yet.",
+          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+        },
+        "stage": {
+          "title": "Transparent product stage",
+          "lead": "The stage of each product is read from its product record.",
+          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+        }
+      }
+    },
+    "scene7": {
+      "label": "Start",
+      "title": "Let's take the next step together.",
+      "message": "Explore the products, or let's talk about how we could work together on your business.",
+      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "paths": {
+        "individual": {
+          "title": "For individuals",
+          "products": {
+            "label": "Browse the products",
+            "hint": "Each product has its own page."
+          }
+        },
+        "business": {
+          "title": "For businesses",
+          "consulting": {
+            "label": "See how we can work together",
+            "hint": "AI consulting services and a contact address."
+          }
+        },
+        "engineer": {
+          "title": "For engineers",
+          "notes": {
+            "label": "Read the change notes",
+            "hint": "Short records of what changed."
+          },
+          "approach": {
+            "label": "Read how we work",
+            "hint": "Evidence levels, product states and claim policy."
+          },
+          "contact": {
+            "label": "Get in touch with the team",
+            "hint": "General address for support, technical questions and press."
+          }
+        }
+      }
+    },
+    "doors": {
+      "label": "What brings you here?",
+      "products": {
+        "title": "Explore the products",
+        "audience": "For people who want to try and use the apps.",
+        "products": "Browse the products"
+      },
+      "work": {
+        "title": "AI for my work",
+        "audience": "For teams that want to put AI to work in their business.",
+        "consulting": "See AI consulting"
+      },
+      "partners": {
+        "title": "Collaboration and company",
+        "audience": "For partners, investors and anyone who wants to know the company.",
+        "contact": "See ways to get in touch"
+      },
+      "inspect": {
+        "title": "Inspect",
+        "audience": "For people who want to check how we work and what we claim.",
+        "lab": "Visit the lab",
+        "transparency": "Read the transparency records"
+      }
+    }
+  },
+  "start": {
+    "metaTitle": "Doors",
+    "lede": "Pick one of four paths; each opens a real page on this site.",
+    "forLabel": "Who it is for",
+    "note": "Your choice is not stored; this page records nothing."
   }
 }

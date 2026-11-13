@@ -21,6 +21,9 @@ import { scheduleAfterLoad } from "./loader";
 import { detectExperienceCapabilities } from "./quality";
 import {
   backdropLoadPolicy,
+  mergeProbeTier,
+  worseTier,
+  shouldDeferProbe,
   interpolateSceneProgress,
   SCENE_BACKDROP_PROGRESS,
   SCENE_TRANSITION_MS,
@@ -66,7 +69,6 @@ type SceneHostApi = { setJourney: (journey: SceneJourney | null) => void };
 
 const SceneHostContext = createContext<SceneHostApi | null>(null);
 
-const TIER_RANK: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
 const MOBILE_QUERY = "(max-width: 767px)";
 const FIRST_GESTURE_EVENTS = ["pointerdown", "keydown", "touchstart", "wheel", "scroll"] as const;
 const NO_PRODUCTS: ExperienceProduct[] = [];
@@ -128,6 +130,9 @@ export function SceneHost({ children }: { children: ReactNode }) {
   const [now, setNow] = useState(0);
   const journeyRef = useRef<SceneJourney | null>(null);
   const readyRef = useRef(false);
+  const probeGestureSeen = useRef(false);
+  // Worst tier the canvas itself has reported; a late probe must not raise it.
+  const canvasTier = useRef<QualityTier | null>(null);
   const notifiedSession = useRef<string | null>(null);
   const shownProgress = useRef(SCENE_BACKDROP_PROGRESS);
 
@@ -144,11 +149,39 @@ export function SceneHost({ children }: { children: ReactNode }) {
   }, []);
   const [api] = useState<SceneHostApi>(() => ({ setJourney }));
 
+  // Phones probe WebGL on the first gesture, not on mount, so the probe stays
+  // out of load-time blocking. Until then `capabilities` is null, which every
+  // consumer reads as "not usable yet" (the backdrop effect bails out and the
+  // journey brings its own tier). Read the viewport here, not from `mobile`,
+  // whose first render is always false.
   useEffect(() => {
-    const detected = detectExperienceCapabilities();
-    setCapabilities({ usable: detected.available && !detected.software, tier: detected.tier });
-    setOwnTier(detected.tier);
+    const probe = () => {
+      const detected = detectExperienceCapabilities();
+      setCapabilities({ usable: detected.available && !detected.software, tier: detected.tier });
+      setOwnTier(mergeProbeTier(canvasTier.current, detected.tier));
+    };
+    if (!shouldDeferProbe({ mobile: window.matchMedia(MOBILE_QUERY).matches })) {
+      probe();
+      return;
+    }
+    const stopListening = () => {
+      for (const type of FIRST_GESTURE_EVENTS) window.removeEventListener(type, onGesture);
+    };
+    function onGesture() {
+      stopListening();
+      probeGestureSeen.current = true;
+      probe();
+    }
+    for (const type of FIRST_GESTURE_EVENTS) {
+      window.addEventListener(type, onGesture, { passive: true });
+    }
+    return stopListening;
   }, []);
+
+  // A gesture only pre-approves the page it happened on.
+  useEffect(() => {
+    probeGestureSeen.current = false;
+  }, [pathname]);
 
   const tone: SceneTone = journey ? "journey" : sceneToneForPath(pathname);
 
@@ -174,6 +207,9 @@ export function SceneHost({ children }: { children: ReactNode }) {
       mobile: window.matchMedia(MOBILE_QUERY).matches,
     });
     if (policy === "after-load") return scheduleAfterLoad(request);
+
+    // The gesture that triggered the probe already happened: do not ask for another.
+    if (probeGestureSeen.current) return scheduleAfterLoad(request);
 
     let cancelScheduled: (() => void) | null = null;
     const stopListening = () => {
@@ -229,7 +265,8 @@ export function SceneHost({ children }: { children: ReactNode }) {
   }, []);
 
   const handleTierChange = useCallback((nextTier: QualityTier) => {
-    setOwnTier((current) => (TIER_RANK[nextTier] >= TIER_RANK[current] ? nextTier : current));
+    canvasTier.current = canvasTier.current === null ? nextTier : worseTier(canvasTier.current, nextTier);
+    setOwnTier((current) => worseTier(current, nextTier));
     journeyRef.current?.onTierChange(nextTier);
   }, []);
 

@@ -7,11 +7,16 @@ import { XLogo, Linkedin, Instagram } from "@/components/common/icons";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import type { Locale } from "@/lib/types";
+import { FOOTER_COMPANY_NAV, FOOTER_LEGAL_NAV, SOCIAL_LABEL } from "./nav-config";
+
+// Mobile touch targets: 44px rows; desktop keeps the compact list.
+const LINK_ROWS = "[&_a]:inline-flex [&_a]:items-center max-md:[&_a]:min-h-[44px]";
 
 const SOCIAL_ICON = { x: XLogo, linkedin: Linkedin, instagram: Instagram } as const;
 
 export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const t = useTranslations("footer");
+  const tHeader = useTranslations("header");
   const locale = useLocale() as Locale;
   const year = new Date().getFullYear();
   const emailBreakAt = company.contact.email.indexOf("@") + 1;
@@ -30,7 +35,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-300 uppercase">
             {t("location")}
           </div>
-          <div className="mt-5 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-1">
             {(Object.entries(company.socials) as [keyof typeof SOCIAL_ICON, string][]).map(
               ([key, href]) => {
                 const Icon = SOCIAL_ICON[key];
@@ -41,8 +46,8 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                     href={href}
                     target="_blank"
                     rel="noreferrer"
-                    aria-label={key}
-                    className="text-ink-300 hover:text-ink-50 transition-colors focusable"
+                    aria-label={SOCIAL_LABEL[key]}
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ink-300 hover:text-ink-50 transition-colors focusable"
                   >
                     <Icon size={16} />
                   </a>
@@ -56,12 +61,12 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("projectsHeading")}
           </div>
-          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
+          <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
             {projects.map((p) => (
               <li key={p.slug}>
                 <Link
                   href={`/projects/${p.slug}`}
-                  className="link-wipe hover:text-ink-50"
+                  className="link-wipe focusable hover:text-ink-50"
                 >
                   {p.name}
                 </Link>
@@ -74,52 +79,18 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("companyHeading")}
           </div>
-          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
-            <li>
-              <Link href="/consulting" className="link-wipe">{t("navConsulting")}</Link>
-            </li>
-            <li>
-              <Link href="/manifesto" className="link-wipe">
-                {t("navManifesto")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/transparency" className="link-wipe">
-                {t("navTransparency")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/projects" className="link-wipe">
-                {t("navProjects")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/notes" className="link-wipe">
-                {t("navNotes")}
-              </Link>
-            </li>
-            {studioEnabled ? (
-              <li>
-                <Link href="/studio" className="link-wipe">
-                  {t("navStudio")}
+          <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
+            {FOOTER_COMPANY_NAV.filter((item) => !item.studioOnly || studioEnabled).map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href as "/"}
+                  prefetch={false}
+                  className="link-wipe focusable"
+                >
+                  {item.ns === "header" ? tHeader(item.key) : t(item.key)}
                 </Link>
               </li>
-            ) : null}
-            <li>
-              <Link href="/case-studies" className="link-wipe">
-                {t("navCaseStudies")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/operating-system" className="link-wipe">
-                {t("navOperatingSystem")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" className="link-wipe">
-                {t("navContact")}
-              </Link>
-            </li>
+            ))}
             <li>
               {/* `overflow-wrap: anywhere`, not Tailwind's `break-words`
                   (`break-word`): only `anywhere` also shrinks the element's
@@ -130,7 +101,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                   narrowest supported viewport. */}
               <a
                 href={`mailto:${company.contact.email}`}
-                className="link-wipe [overflow-wrap:anywhere]"
+                className="link-wipe focusable [overflow-wrap:anywhere]"
               >
                 {company.contact.email.slice(0, emailBreakAt)}
                 <wbr />
@@ -144,22 +115,12 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
             {t("legalHeading")}
           </div>
-          <ul className="flex flex-col gap-2.5 text-sm text-ink-200">
-            <li>
-              <Link href="/privacy" className="link-wipe">
-                {t("navPrivacy")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/terms" className="link-wipe">
-                {t("navTerms")}
-              </Link>
-            </li>
-            <li>
-              <Link href="/support" className="link-wipe">
-                {t("navSupport")}
-              </Link>
-            </li>
+          <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
+            {FOOTER_LEGAL_NAV.map((item) => (
+              <li key={item.href}>
+                <Link href={item.href} className="link-wipe focusable">{t(item.key)}</Link>
+              </li>
+            ))}
           </ul>
         </div>
 

@@ -188,6 +188,14 @@ export type ExperienceCopy = {
    */
   ui: {
     glyphLabel: string;
+    /** Opt-in to the 3D journey on small screens (MOBILE_STATIC_DEFAULT). */
+    open3d: string;
+    /** Polite announcement once the 3D journey is running. */
+    open3dOpened: string;
+    /** Visible and announced when 3D was requested but could not start. */
+    open3dFailed: string;
+    /** "en" when `open3d` is the English fallback in a non-English locale (WCAG 3.1.2). */
+    open3dLang?: "en";
     glyphHelp: string;
     developmentView: string;
     closeImage: string;

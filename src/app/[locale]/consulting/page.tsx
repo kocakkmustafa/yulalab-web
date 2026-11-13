@@ -4,6 +4,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { company } from "@/data/company";
 import { ScrambleText } from "@/components/common/ScrambleText";
+import { LeadForm } from "@/components/contact/LeadForm";
+import { supportsLeadIntake } from "@/lib/forms/lead-submission";
+import { leadsEnabled } from "@/server/lead-surface";
 import { SlotLabel } from "@/components/common/SlotLabel";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -22,6 +25,9 @@ export default async function ConsultingPage({ params }: Props) {
   const services = t.raw("services") as { title: string; body: string; output: string }[];
   const steps = t.raw("steps") as string[];
   const email = `mailto:${company.contact.consultingEmail}?subject=${encodeURIComponent(t("subject"))}`;
+  // Read on the server and baked in at build (prerendered), like /contact.
+  // Closed (default) renders exactly the page as before; the mailto stays.
+  const leadFormOpen = leadsEnabled() && supportsLeadIntake(locale);
   return (
     <div className="page-enter max-w-6xl mx-auto px-6 lg:px-10 pt-32 pb-12">
       <section aria-labelledby="consulting-title" className="max-w-3xl">
@@ -55,6 +61,7 @@ export default async function ConsultingPage({ params }: Props) {
         <p className="mt-5 max-w-3xl text-ink-200 leading-relaxed">{t("contactBody")}</p>
         <a data-consulting-email href={email} className="focusable inline-flex mt-7 rounded-full bg-ink-50 text-ink-900 px-6 py-3 font-medium"><SlotLabel>{t("cta")}</SlotLabel> <span aria-hidden="true" className="ml-3">↗</span></a>
         <p className="mt-5 text-ink-200 [overflow-wrap:anywhere]">{company.contact.consultingEmail}</p>
+        {leadFormOpen ? <div className="mt-8" data-consulting-lead-form><LeadForm intent="partnership" studioEnabled={false} products={[]} /></div> : null}
         <p className="mt-3 text-sm text-ink-300">{t("terms")}</p>
       </section>
     </div>

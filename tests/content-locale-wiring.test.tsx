@@ -39,11 +39,12 @@ const claim = {
 describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
   it("joins all homepage products and provenance using the selected locale", async () => {
     const result = await LandingPage({ params: Promise.resolve({ locale }) });
-    const { products, copy } = (result as ReactElement<{ products: ExperienceProduct[]; copy: ExperienceCopy }>).props;
+    const parts = (result as ReactElement<{ children: ReactElement<{ copy?: ExperienceCopy }>[] }>).props.children;
+    const { products, copy } = parts.find((part) => part.props.copy)!.props as unknown as { products: ExperienceProduct[]; copy: ExperienceCopy };
     expect(copy.locale).toBe(locale);
     expect(products).toHaveLength(projects.length);
-    for (const [index, product] of products.entries()) {
-      const source = projects[index];
+    for (const product of products) {
+      const source = projects.find((p) => p.slug === product.slug)!;
       const record = publicRegistry.find((item) => item.slug === source.slug)!;
       expect(product.category).toBe(`${locale}::${source.category.en}`);
       expect(product.tagline).toBe(`${locale}::${source.tagline.en}`);

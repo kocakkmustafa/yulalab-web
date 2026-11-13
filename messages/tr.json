@@ -15,7 +15,15 @@
     "menuClose": "Kapat",
     "studio": "Stüdyo",
     "consulting": "AI danışmanlığı",
-    "language": "Dil"
+    "language": "Dil",
+    "skipToContent": "İçeriğe geç",
+    "products": "Ürünler",
+    "lab": "Laboratuvar",
+    "approach": "Yaklaşımımız",
+    "collaboration": "İş Birliği",
+    "mainNavigation": "Ana gezinme",
+    "doors": "Kapılar",
+    "doorsPanel": "Başlangıç kapıları"
   },
   "footer": {
     "tagline": "Yapay zekayı abartmadan, doğru yerde, doğru zamanda kullanan bağımsız bir ürün laboratuvarı.",
@@ -37,7 +45,8 @@
     "navCaseStudies": "Vaka çalışmaları",
     "navOperatingSystem": "Nasıl çalışıyoruz",
     "navStudio": "Stüdyo",
-    "navConsulting": "AI danışmanlığı"
+    "navConsulting": "AI danışmanlığı",
+    "navWhyYula": "Neden YULA"
   },
   "common": {
     "explore": "Keşfet",
@@ -162,7 +171,23 @@
     "shippedNote": "Daha önce yayın veya beta kaydı bulunan ürünler. Güncel erişim doğrulanmadığında kartta belirtilir; tarihli kaynaklar ve bağlantılar ürün sayfasındadır.",
     "researchHeading": "Araştırma aşamasındakiler",
     "researchNote": "Henüz yayınlanmadılar: mağaza sayfaları, indirme bağlantıları ve doğrulanmış rakamları yok. Aşağıda ayrı tutuluyorlar çünkü yayındaki ürünlerle aynı ağırlıkta gösterilmeleri onları oldukları şeyden fazlası gibi gösterirdi.",
-    "researchToggle": "Araştırma aşamasındaki {count} ürünü göster"
+    "researchToggle": "Araştırma aşamasındaki {count} ürünü göster",
+    "featuredHeading": "Ana ürünler",
+    "portfolioHeading": "Portföy",
+    "filterLabel": "Duruma göre süz",
+    "filterAll": "Hepsi",
+    "showing": "{count} ürün gösteriliyor",
+    "summary": "{live} yayında · {beta} beta · {soon} yakında",
+    "noMatch": "Bu süzgeçle eşleşen ürün yok.",
+    "panelHeading": "Seçili ürün",
+    "panelHint": "Ayrıntıyı burada görmek için bir ürün seçin.",
+    "accessHeading": "Erişim",
+    "openFull": "Tam sayfayı aç",
+    "closePanel": "Paneli kapat",
+    "preview": "Önizle",
+    "previewLabel": "Önizle: {name}",
+    "panelStatusLink": "Durum ve kaynaklar",
+    "panelScreenEmpty": "Bu ürün için henüz ekran görüntüsü yok."
   },
   "showcase": {
     "back": "Projeler",
@@ -252,7 +277,20 @@
     "studioEyebrow": "Proje başvurusu",
     "studioLink": "Stüdyo başvurusu",
     "studioTitle": "Bir iş için mi yazıyorsunuz?",
-    "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir."
+    "intakeLanguageNotice": "Bu dilde çevrimiçi form henüz kullanıma açık değil. Aşağıdaki adresle e-posta gönderebilirsin; arayüz dili yanıt dili veya teslim süresi taahhüdü değildir.",
+    "pathsTitle": "Kime ne için?",
+    "pathsUserLabel": "Ürün kullanıcısı",
+    "pathsUserBody": "Ürün desteği ve hesap soruları için destek adresi.",
+    "pathsUserLink": "Destek",
+    "pathsCorpLabel": "Kurumsal",
+    "pathsCorpBody": "Şirketiniz için yapay zeka çalışması. İş adresi:",
+    "pathsCorpLink": "Projenizi konuşalım",
+    "pathsPartnerLabel": "İş ortağı ve yatırımcı",
+    "pathsPartnerBody": "İş ortaklığı ve yatırım görüşmeleri için bize yazın.",
+    "pathsDevLabel": "Geliştirici ve araştırmacı",
+    "pathsDevBody": "Çalışma notları ve açık kayıtlar.",
+    "pathsDevLab": "Lab",
+    "pathsDevTransparency": "Şeffaflık"
   },
   "notFound": {
     "title": "Sayfa bulunamadı.",
@@ -261,7 +299,13 @@
   "notes": {
     "eyebrow": "Notlar",
     "title": "Yaptıklarımız, olduğu gibi.",
-    "intro": "Şeffaflık burada da geçerli — ürünlerimizde ne değişti, ne düzeldi, ne canlandı; kısa ve dürüst notlar."
+    "intro": "Şeffaflık burada da geçerli — ürünlerimizde ne değişti, ne düzeldi, ne canlandı; kısa ve dürüst notlar.",
+    "articleEyebrow": "Makale",
+    "readArticle": "Makaleyi oku",
+    "sourcesHeading": "Kaynaklar",
+    "verifiedOn": "doğrulama {date}",
+    "seeTransparency": "Şeffaflık sayfası",
+    "backToNotes": "Tüm notlar"
   },
   "links": {
     "web": "Web sitesi",
@@ -477,9 +521,9 @@
       "pitch2Title": "Ölçülü pratik, rastgele tekrar değil.",
       "pitch2Body": "Akan tab şeridini metronomla takip et. Tempoyu %40 ile %120 arasında ayarla, zor ölçüleri döngüye al ya da uygulamanın seni beklemesini seç. Geçtiğin her ders bir sonrakini açar.",
       "pitch3Title": "Gitar ve kulak eğitimi; program 690 derse büyüyor.",
-      "pitch3Body": "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle açık; şan ve piyano sırayla geliyor. Kurulum sihirbazı odanı ve gecikmeyi ölçer, dahili akort aleti telleri hazırlar, haftalık hedef ve seri pratiğini sürdürür.",
+      "pitch3Body": "Gitar kursu dört seviyede 240 dersle, kulak eğitimi iki seviyede 50 dersle gelir; şan ve piyano sırayla geliyor. Kurulum sihirbazı odanı ve gecikmeyi ölçer, dahili akort aleti telleri hazırlar, haftalık hedef ve seri pratiğini sürdürür.",
       "s1Kicker": "01 — Uygulamada",
-      "a1Title": "Gitar ve kulak eğitimi açık.",
+      "a1Title": "Gitar ve kulak eğitimi ilk sırada.",
       "a1Body": "Gitar ilk sesten ileri seviyeye, dört seviyede 240 ders. Kulak eğitimi 50 ders: ekran alıştırmaları, klikle alkış ve bölüm bölüm testler. Şan ve piyano yakında; program 690 derse büyüyor.",
       "a2Title": "Her kursun ilk seviyesi ücretsiz.",
       "a2Body": "Gitarın ilk seviyesi (40 ders) ve kulak eğitiminin ilk seviyesi (25 ders) ücretsizdir ve hesap açmadan çalışır. Sonraki seviyeler Ostinato üyeliğiyle açılır.",
@@ -538,7 +582,72 @@
     "statVerified": "doğrulama",
     "statNeedsReverification": "yeniden doğrulanmalı",
     "availabilityUnverified": "Yayın durumu yeniden doğrulanmalı",
-    "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz."
+    "availabilityCheckedAt": "Son yayın kontrolü: {date}. Bağlantıyı açarak mevcut durumu kontrol edebilirsiniz.",
+    "accessHeading": "Erişim",
+    "screenHeading": "Ekran ve demo",
+    "screenEmpty": "Bu ürün için henüz ekran görüntüsü yok.",
+    "trustHeading": "Gizlilik ve güven",
+    "trustPrivacy": "Bu ürünün gizlilik politikası",
+    "statusHeading": "Yayın durumu",
+    "statusLink": "Durum ve kaynaklar",
+    "demoLabel": "Örnek simülasyon"
+  },
+  "braavolabsDemo": {
+    "kicker": "Örnek plan kartı",
+    "title": "Bir işi tarif et. Planını, onaylarını ve sonucunu aynı yerde gör.",
+    "intro": "Üç örnek niyetten birini seç. Kart, bir planın nasıl görünebileceğini gösterir. Buradaki her şey bu sayfadaki sabit metindir; hiçbir şey tarayıcından çıkmaz.",
+    "disclaimer": "Bu bir interaktif ürün konsepti/plan örneğidir, gerçek iş yürütülmüyor.",
+    "pickerLabel": "Örnek bir niyet seç",
+    "announce": "Plan kartı gösteriliyor",
+    "labels": {
+      "intent": "Örnek niyet",
+      "example": "Örnek kart",
+      "note": "Örnek / konsept: gerçek iş yürütülmüyor.",
+      "steps": "Örnek adımlar",
+      "approvals": "Onay noktaları",
+      "risk": "Örnek risk düzeyi",
+      "output": "Beklenen çıktı"
+    },
+    "risk": {
+      "low": "Düşük",
+      "medium": "Orta",
+      "high": "Yüksek"
+    },
+    "intents": {
+      "content": {
+        "label": "İçerik",
+        "prompt": "“Lansmanımız için bir haftalık paylaşım hazırla.”",
+        "s1": "Özeti oku ve paylaşım fikirlerini listele.",
+        "s2": "Her paylaşımı senin üslubunla taslak olarak yaz.",
+        "s3": "Taslakları incelemen için bir araya getir.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: taslakları sen okur ve karar verirsin.",
+        "riskNote": "Çıktı, senin inceleyeceğin bir taslaktır.",
+        "output": "İncelemene hazır bir taslak paylaşım seti."
+      },
+      "report": {
+        "label": "Rapor",
+        "prompt": "“Geçen ayın destek taleplerini özetle.”",
+        "s1": "Gösterdiğin malzemeyi topla.",
+        "s2": "Bulguları konuya göre grupla.",
+        "s3": "Kısa bir özet yaz.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: hangi malzemenin kullanılacağını sen seçersin.",
+        "riskNote": "Kendi malzemeni okur; neyi okuyabileceğine sen karar verirsin.",
+        "output": "Karar bekleyen noktaları içeren kısa bir rapor taslağı."
+      },
+      "software": {
+        "label": "Yazılım",
+        "prompt": "“Uygulamamızdaki giriş hatasını düzelt.”",
+        "s1": "Kodu oku ve olası nedeni bul.",
+        "s2": "Bir değişiklik ve onun için bir test öner.",
+        "s3": "Önerilen değişikliği sun.",
+        "a1": "Para harcayan bir adım onayını bekler.",
+        "a2": "Örnek: önerilen her değişikliği sen incelersin.",
+        "riskNote": "Ürününün arkasındaki koda dokunur; bu yüzden her değişiklik senin onayını bekler.",
+        "output": "İncelemen için, testiyle birlikte önerilmiş bir kod değişikliği."
+      }
+    }
   },
   "leadForm": {
     "name": "Ad",
@@ -643,6 +752,9 @@
       "support": "Destek",
       "rights": "Tüm hakları saklıdır."
     },
+    "open3d": "3D deneyimi aç",
+    "open3dOpened": "3D deneyim açıldı",
+    "open3dFailed": "3D açılamadı, doğrusal görünüm gösteriliyor.",
     "fallback": {
       "label": "Doğrusal deneyim",
       "reason": "Hareket ya da 3D katman kullanılmadığında aynı ürünler, kanıtlar ve bağlantılar eksiksiz olarak bu görünümde yer alır."
@@ -673,7 +785,8 @@
       "tierHigh": "Yüksek",
       "wallService": "Hizmet",
       "reset": "Sıfırla"
-    }
+    },
+    "loaderSkip": "Girişi atla"
   },
   "studio": {
     "applyIntro": "Kesin bütçe rakamı ya da karar vericinin adı sorulmaz — aralık ve rol yeter.",
@@ -835,5 +948,266 @@
     "subject": "AI danışmanlığı görüşmesi",
     "terms": "Uygunluk, ücretlendirme ve kapsam görüşmede netleşir.",
     "nav": "AI danışmanlığı"
+  },
+  "whyYula": {
+    "eyebrow": "Neden YULA",
+    "title": "Neden YULA",
+    "intro": "Laboratuvarın nasıl çalıştığı, kayıtlardan okunabilecek kadar kısa. Sayılar kayıttan türetilir, bu yüzden kayıttan bağımsız bayatlayamaz.",
+    "sourcesHeading": "Kaynaklar",
+    "s1Title": "Kanıt, iddiadan önce gelir.",
+    "s1Body": "Sitedeki bir ürün iddiası kaynağı, kapsamı ve doğrulama tarihiyle birlikte kayıtta yer alır. Süresi dolan iddia gizlenmez; süresi dolduğu işaretlenerek gösterilir.",
+    "s2Title": "Portföy durumu kayıttan okunur.",
+    "s2Body": "Kayıtta {records} ürün var; yaşam döngüsü durumlarına göre dağılımı aşağıda. Sayılar elle yazılmaz, kayıttan türetilir.",
+    "s3Title": "Kanıtın seviyesi açık yazılır.",
+    "s3Body": "Kayıtta {claims} iddia var. Kendi beyanımız ile kaynak kodda doğrulanan ya da ölçülen aynı şey sayılmaz; her iddia kanıt türünü taşır.",
+    "s4Title": "Okuyabileceğiniz çalışma.",
+    "s4Body": "Laboratuvarın kayıtlarına ve notlarına doğrudan buradan ulaşabilirsiniz.",
+    "linkLab": "Laboratuvar",
+    "linkTransparency": "Şeffaflık"
+  },
+  "home": {
+    "navLabel": "Ana sayfa bölümleri",
+    "scene1": {
+      "label": "Kimlik",
+      "title": "Teknolojiyi daha karmaşık değil, hayatı daha mümkün kılmak için inşa ediyoruz.",
+      "message": "YULA Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır.",
+      "ctaProducts": "Ürünleri keşfet",
+      "ctaHow": "Nasıl çalıştığımızı gör",
+      "ctaLabel": "Ana yollar",
+      "signalsLabel": "Niyetten sonuca: üç örnek",
+      "signalsNote": "Bunlar örnek senaryolardır; gerçek ürün çıktısı ya da ölçüm değildir.",
+      "example": "Örnek",
+      "intentLabel": "Niyet",
+      "resultLabel": "Sonuç",
+      "signals": {
+        "s1": {
+          "product": "Braavolabs",
+          "intent": "Bir işi tarif et.",
+          "result": "Sohbet ve kodlama ajanı işi üstlenir; her çalıştırmanın maliyetini görürsün."
+        },
+        "s2": {
+          "product": "LifeOS",
+          "intent": "Sağlığını, paranı ve varlıklarını tek yerde tut.",
+          "result": "Beş yaşam alanı tek uygulamada; kayıtlar cihazında kalır, hesap gerekmez."
+        },
+        "s3": {
+          "product": "Ostinato",
+          "intent": "Gitara ilk sesten başla.",
+          "result": "Ölçülü pratikle adım adım ilerler, kulağını alıştırmalarla eğitirsin."
+        }
+      }
+    },
+    "scene2": {
+      "label": "Fark",
+      "title": "Daha az sürtünme, daha çok sonuç.",
+      "message": "Daha fazla ekran, giriş ve model seçimi yerine, niyetten sonuca giden en kısa yolu hedefliyoruz.",
+      "listLabel": "Sık görülen yaklaşım ve bizim yaklaşımımız, üç karşılaştırma",
+      "patternLabel": "Sık görülen",
+      "approachLabel": "Yaklaşımımız",
+      "tagCapability": "Mevcut yetenek",
+      "tagVision": "Vizyonumuz",
+      "sourceLabel": "Kaynak: {product} ürün kaydı ({status})",
+      "note": "\"Mevcut yetenek\", ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. \"Vizyonumuz\", ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir.",
+      "pairs": {
+        "p1": {
+          "pattern": "Daha fazla ekran, giriş ve model seçimi",
+          "approach": "Tek uygulama, hesap gerekmez",
+          "detail": "LifeOS: beş yaşam alanı bir arada, çevrimdışı öncelikli."
+        },
+        "p2": {
+          "pattern": "Hatalı kesinlik",
+          "approach": "Cevabın kaynağını ve belirsizliğini açıkça söylemek",
+          "detail": "Hedef, her sonuçta kaynağı ve belirsizliği göstermek. Bunu henüz ürün yeteneği olarak iddia etmiyoruz."
+        },
+        "p3": {
+          "pattern": "Sonsuz bildirim",
+          "approach": "Anlamlı zamanda müdahale etmek",
+          "detail": "Hedef, daha az ve doğru zamanda gelen bildirim. Bunu henüz ürün yeteneği olarak iddia etmiyoruz."
+        }
+      }
+    },
+    "scene3": {
+      "label": "Ürünler",
+      "title": "Öncelik verdiğimiz üç sistem.",
+      "message": "Braavolabs, LifeOS ve Ostinato: iş, yaşam ve müzik için; her biri tek bir insan sonucuna odaklanır."
+    },
+    "scene4": {
+      "label": "Mühendislik",
+      "title": "Bağımsız ürünler. Ortak mühendislik ilkeleri.",
+      "message": "Yerel öncelikli veri, iş başına izin ve kanıt, anlaşılır arayüz: ürünler ayrı, ilkeler ortak.",
+      "listLabel": "Dört ortak mühendislik ilkesi; her biri için ürün kaydında bugün yazanlar ve planlananlar",
+      "currentLabel": "Ürün kaydında yazan",
+      "plannedLabel": "Planlanan",
+      "tagCapability": "Mevcut yetenek",
+      "tagPlanned": "Planlanan",
+      "tagNone": "Kayıt yok",
+      "noRecord": "Bu ilkeyi destekleyen bir ürün kaydı satırı henüz yok.",
+      "sourceLabel": "Kaynak: {product} ürün kaydı, “{feature}”; ürün durumu: {status}",
+      "note": "“Mevcut yetenek”, ilgili ürün için ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. Ürün durumu iOS içindir; Android kapalı testtedir. “Planlanan”, ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir. Ürünler ayrı kalır: ortak bir model ve ortak bir veritabanı yoktur.",
+      "linksLabel": "İlgili sayfalar",
+      "linkOperatingSystem": "Bu laboratuvar nasıl çalışır",
+      "linkStudio": "Studio: YULA Lab ile birlikte inşa et",
+      "linkTransparency": "Şeffaflık",
+      "principles": {
+        "p1": {
+          "name": "Yerel öncelikli veri",
+          "planned": "Aynı ilkeyi diğer ürünlerde de uygulamak, ürünler çıktıkça. Bunu şimdilik onların yeteneği olarak iddia etmiyoruz."
+        },
+        "p2": {
+          "name": "Harcama adımlarında izin ve kanıt",
+          "planned": "Ürünlerde benzer bir izin ve kanıt dili hedefliyoruz. Bunun için bugün ortak bir bileşen ya da sistem yok."
+        },
+        "p3": {
+          "name": "Cihaz içi işleme",
+          "planned": "Yeni sinyalleri ancak gerçek cihazlarda sınandıktan sonra açmak."
+        },
+        "p4": {
+          "name": "Anlaşılır arayüz",
+          "planned": "Bir ekranın ne yaptığını ve ne yapmadığını açıkça söylemek. Bunu belirten bir ürün kaydı henüz yok; bu bir yöndür."
+        }
+      }
+    },
+    "scene5": {
+      "label": "Laboratuvar",
+      "title": "Yaşayan laboratuvar.",
+      "message": "Notlarımızı ve tasarım kararlarımızı kayda geçiriyoruz; her kayıt şablonun doldurulabilen alanlarını gösterir, boş alanlar açıkça yazılır.",
+      "listLabel": "Laboratuvar kayıtları: notlar ve bir tasarım kararı",
+      "kindNote": "Lab notu",
+      "kindDecision": "Tasarım kararı",
+      "fields": {
+        "question": "Soru",
+        "hypothesis": "Hipotez",
+        "did": "Ne yaptık",
+        "learned": "Ne öğrendik",
+        "next": "Sonraki test"
+      },
+      "empty": "henüz yazılmadı",
+      "sourceLabel": "Kaynak",
+      "noteId": "not: {slug}",
+      "onlyTr": "Çeviri yok ({part}): yalnızca Türkçe yazıldı.",
+      "onlyEn": "Çeviri yok ({part}): yalnızca İngilizce yazıldı.",
+      "allNotes": "Tüm laboratuvar notları",
+      "note": "Bu bölüm yalnızca depoda yazılı notları ve belgeleri gösterir. Boş bırakılan alan henüz yazılmadı demektir; doldurmak için bir şey uydurmuyoruz. Bir belge öneriyse öneri olarak etiketlenir.",
+      "decision": {
+        "title": "3D sahne ana sayfada varsayılan olarak açık mı kalsın?",
+        "question": "Ana sayfadaki 3D yolculuk herkeste varsayılan olarak açık mı kalmalı, yoksa mobilde statik mi başlamalı?",
+        "did": "Üç seçenek yazıldı: korumalı hâli olduğu gibi bırakmak, mobilde statik varsayılan, yalnız masaüstünde varsayılan 3D. Ayrıca yerel bir üretim derlemesinde Lighthouse koşuldu; tablo kaynak belgededir.",
+        "learned": "Belgeye göre, yerel mobil sonuç 03a2 öncesinde canlı değerin altındaydı ve yazılı kabul karşılanmıyordu. 03a2 sonrası yerel mobil sonuç oynaktı (makine yoğundu); masaüstüne etkisi bilinmiyor. Canlıda ve gerçek cihazda denenmedi.",
+        "next": "Belgenin önerdiği sonraki adım: sakin bir makinede yeniden ölçüm. Mobil açılış süresinin kaynağı için ayrı bir iş de belgede önerilmiş.",
+        "status": "Durum: kabul edildi, 2026-11-08, Project orchestration; uygulama WEB-P0-03a2.",
+        "sourceNote": "depo içi belge, sitede ayrı sayfası yok",
+        "sourceLang": "Kaynak belge Türkçe yazılmıştır."
+      },
+      "partTitle": "başlık",
+      "partBody": "metin"
+    },
+    "scene6": {
+      "label": "Güven",
+      "title": "Güven, ürün ürün gösterilir.",
+      "message": "Veri koruma, kontrol ve onay, ölçülebilir sonuç ve şeffaf ürün aşamasını ürün ve özellik bazında, kanıt durumuyla birlikte ele alıyoruz.",
+      "listLabel": "Güven, dört satır: veri koruma, kontrol ve onay, ölçülebilir sonuç, şeffaf ürün aşaması",
+      "sourceLabel": "Kaynak",
+      "srcRecord": "ürün kaydı",
+      "srcRecords": "ürün kayıtları",
+      "srcPrivacy": "{product} gizlilik politikası",
+      "note": "Bu bölüm, ürün kayıtlarının ve gizlilik politikalarının ürün ürün söylediğini tekrar eder. Denetim, sertifika ya da ölçüm değildir. Kayıt bir konuda sessizse boşluğu doldurmaz, sessiz olduğunu söyleriz.",
+      "rows": {
+        "protection": {
+          "title": "Veri koruma",
+          "lead": "Verinin nereye gittiği ürüne ve özelliğe göre değişir; bu yüzden her satır tek bir ürünü adlandırır.",
+          "lines": {
+            "lifeos": "Kayıtlar cihazında kalır ve hesap gerekmez; bazı özellikler App Store aboneliği gerektirir. İzin verirsen sağlık verisi Apple Health veya Health Connect'ten okunur ve cihazda işlenir; sunucuya gönderilmez. Hesap, satın alma ve çökme raporu verisi başka yollardan gider; bunları gizlilik politikası sıralar.",
+            "braavolabs": "Braavolabs mobil uygulamasında veri sunucularda işlenir: hesap bilgileri, iş akışları, çalıştırma sonuçları ve onay kararları çalışma alanında tutulur, AI istekleri gizlilik politikasının adlandırdığı bir model sağlayıcısına gider. Ürün kaydı bilgisayarında çalışan ajanları da anlatır; bu gizlilik politikası yalnız mobil uygulamayı kapsar, o ajanlar için burada veri akışı anlatılmıyor.",
+            "ostinato": "Yakında. İlk sürümde gitar kursunda mikrofon isteğe bağlıdır. Gizlilik sayfasına göre ses yalnız cihaz belleğinde işlenir; ham ses dosyası kaydedilmez veya sunucuya yüklenmez.",
+            "others": "Henüz yayınlanmadı ve kayıtları bir veri akışı anlatmıyor; bu yüzden burada da anlatılmıyor. Motion gizlilik sayfası ailenin tamamını kapsar."
+          }
+        },
+        "control": {
+          "title": "Kontrol ve onay",
+          "lead": "Kararı kimin verdiği hakkında kayıtların söyledikleri.",
+          "lines": {
+            "braavolabs": "Para harcayan adımlar açık bir insan onayını bekler ve her adım denetim izinde görünür. Roller, izinler ve kesin bütçe durdurmaları.",
+            "lifeos": "Sağlık verisi yalnız iznine göre okunur. Çevrimiçi yapay zekâ isteğe bağlıdır: uygulamada sunulduğunda ve kullanmayı seçersen, ekranda gösterilen ve onayladığın metin, gizlilik politikasının anlattığı biçimde işlenmek üzere gönderilir."
+          }
+        },
+        "result": {
+          "title": "Ölçülebilir sonuç",
+          "body": "Henüz yayımlanmış bir sonuç ölçümü yok.",
+          "detail": "Ürün kayıtları sonuç değil, özellik adedi ve açıklama tutar; bunların dayandığı bazı herkese açık kayıt iddialarının süresi dolmuştur. Bu yüzden bu sayfada rakam göstermiyoruz."
+        },
+        "stage": {
+          "title": "Şeffaf ürün aşaması",
+          "lead": "Her ürünün aşaması kendi ürün kaydından okunur.",
+          "note": "LifeOS: «Yayında» iOS içindir; ürün kaydındaki nota göre Android kapalı testtedir. Diğer ürünlerin mağaza kapsamı için ürün sayfasına bakın."
+        }
+      }
+    },
+    "scene7": {
+      "label": "Başlangıç",
+      "title": "Birlikte bir sonraki adımı atalım.",
+      "message": "Ürünleri keşfedin ya da işiniz için birlikte çalışmanın yolunu konuşalım.",
+      "groupsLabel": "Başlamanın üç yolu: bireyler, işletmeler, mühendisler için",
+      "paths": {
+        "individual": {
+          "title": "Bireyler için",
+          "products": {
+            "label": "Ürünlere göz at",
+            "hint": "Her ürünün kendi sayfası var."
+          }
+        },
+        "business": {
+          "title": "İşletmeler için",
+          "consulting": {
+            "label": "Birlikte nasıl çalışabileceğimizi gör",
+            "hint": "Yapay zeka danışmanlığı hizmetleri ve bir iletişim adresi."
+          }
+        },
+        "engineer": {
+          "title": "Mühendisler için",
+          "notes": {
+            "label": "Değişiklik notlarını oku",
+            "hint": "Neyin değiştiğine dair kısa kayıtlar."
+          },
+          "approach": {
+            "label": "Çalışma biçimini oku",
+            "hint": "Kanıt seviyeleri, ürün durumları ve iddia politikası."
+          },
+          "contact": {
+            "label": "Ekiple iletişime geç",
+            "hint": "Destek, teknik sorular ve basın için genel adres."
+          }
+        }
+      }
+    },
+    "doors": {
+      "label": "Ne için buradasın?",
+      "products": {
+        "title": "Ürünleri keşfet",
+        "audience": "Uygulamaları denemek ve kullanmak isteyenler için.",
+        "products": "Ürünlere göz at"
+      },
+      "work": {
+        "title": "İşime AI",
+        "audience": "İşinde yapay zekâdan yararlanmak isteyen ekipler için.",
+        "consulting": "AI danışmanlığını gör"
+      },
+      "partners": {
+        "title": "İş birliği ve şirket",
+        "audience": "İş ortakları, yatırımcılar ve şirketi tanımak isteyenler için.",
+        "contact": "İş birliği yollarını gör"
+      },
+      "inspect": {
+        "title": "İnceleme",
+        "audience": "Nasıl çalıştığımızı ve ne söylediğimizi kendisi kontrol etmek isteyenler için.",
+        "lab": "Laboratuvarı gez",
+        "transparency": "Şeffaflık kayıtlarını oku"
+      }
+    }
+  },
+  "start": {
+    "metaTitle": "Kapılar",
+    "lede": "Dört yoldan birini seç; her biri sitenin gerçek bir sayfasına açılır.",
+    "forLabel": "Kim için",
+    "note": "Seçimin saklanmaz; bu sayfa hiçbir şey kaydetmez."
   }
 }

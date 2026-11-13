@@ -11,7 +11,7 @@ import tailwindConfig from "../tailwind.config";
 afterEach(() => vi.restoreAllMocks());
 function boot(saved: unknown, systemDark: boolean, blocked = false) {
   document.documentElement.className = "font-sample";
-  document.head.innerHTML = '<meta name="theme-color" content="#09060e">';
+  document.head.innerHTML = '<meta name="theme-color" content="#0d0e11">';
   runInNewContext(THEME_BOOTSTRAP, {
     document,
     localStorage: { getItem(key: string) { expect(key).toBe(THEME_STORAGE_KEY); if (blocked) throw new Error("blocked storage"); return saved; } },

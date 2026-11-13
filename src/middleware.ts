@@ -92,8 +92,11 @@ export default function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // "lab" and "why-yula" are real top-level routes that also look like language tags.
   if (
     /^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(firstSegment) &&
+    firstSegment !== "lab" &&
+    firstSegment !== "why-yula" &&
     !routing.locales.some((locale) => locale === firstSegment)
   ) {
     return new NextResponse(null, { status: 404 });

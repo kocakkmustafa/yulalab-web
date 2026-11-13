@@ -28,7 +28,7 @@ export function LocaleSwitcher({ onNavigate, compact = false }: Props) {
           router.replace(`${pathname}${window.location.hash}`, { locale: nextLocale });
           onNavigate?.();
         }}
-        className={compact ? "absolute inset-0 h-full w-full cursor-pointer opacity-0" : "focusable max-w-full rounded-full border border-white/15 bg-ink-900 px-3 py-2 text-[12px] text-ink-50"}
+        className={compact ? "absolute inset-0 h-full w-full cursor-pointer opacity-0" : "focusable min-h-[44px] max-w-full rounded-full border border-white/15 bg-ink-900 px-3 py-2 text-[12px] text-ink-50"}
       >
         {SUPPORTED_LOCALES.map((language) => (
           <option key={language} value={language} lang={language} dir={language === "ar" ? "rtl" : "ltr"}>

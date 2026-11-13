@@ -35,6 +35,8 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin", "latin-ext"],
   variable: "--font-grotesk",
   display: "swap",
+  // Yalniz urun sayfalarinda kullanilir; ana sayfa ilk boyamasinda onyukleme yer tutmasin (WEB-P0-03a3).
+  preload: false,
 });
 
 const jetbrains = JetBrains_Mono({
@@ -109,6 +111,7 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
   const studioOpen = studioEnabled();
+  const headerT = await getTranslations({ locale, namespace: "header" });
 
   return (
     <html
@@ -136,9 +139,12 @@ export default async function LocaleLayout({
           <MotionConfig reducedMotion="user">
             {/* The 3D world is created once here, outside the route
                 transition, and persists while pages change around it. */}
+            <a href="#main-content" className="skip-link">
+              {headerT("skipToContent")}
+            </a>
             <SceneHost>
-              <Header studioEnabled={studioOpen} />
-              <main>
+              <Header />
+              <main id="main-content" tabIndex={-1} className="main-focus-target">
                 <PageTransition>{children}</PageTransition>
               </main>
               <Footer studioEnabled={studioOpen} />

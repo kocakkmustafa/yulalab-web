@@ -70,7 +70,7 @@ describe("Motion sales-open copy", () => {
     }
     for (const text of [project.short.tr, project.description.tr]) {
       expect(text).toMatch(/Gitar.*240 ders/);
-      expect(text).toMatch(/kulak eğitimi.*50 dersle açık/);
+      expect(text).toMatch(/kulak eğitimi.*50 dersle gelir/);
       expect(text).toMatch(/690 derse büyüyor/);
       expect(text).toMatch(/kulak eğitiminin ilk seviyesi \(25 ders\)/);
       expect(text).not.toMatch(/dört kurs/i);

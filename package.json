@@ -17,8 +17,12 @@
     "verify:claims": "node --import tsx scripts/verify-public-registry.ts",
     "verify:links": "tsx scripts/verify-public-links.ts",
     "verify:claims:local": "node scripts/verify-claims-local.mjs",
+    "verify:contrast": "node --import tsx scripts/contrast-audit.ts",
     "verify:translations": "node --import tsx scripts/verify-translations.ts",
-    "verify:render-mode": "node scripts/verify-render-mode.mjs"
+    "verify:render-mode": "node scripts/verify-render-mode.mjs",
+    "budget:js": "node scripts/quality/js-budget.mjs",
+    "locale:report": "node --import tsx scripts/locale-report.ts",
+    "notes:draft": "node --import tsx scripts/release-notes-draft.ts"
   },
   "dependencies": {
     "@react-three/drei": "10.7.8",

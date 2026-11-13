@@ -445,6 +445,45 @@ button:hover .arrow-nudge {
   border-radius: 8px;
 }
 
+/* WEB-P0-03b: scene 1 CTA focus. Keeps the pill radius and uses the focus
+   token, which contrasts with the page ground in both themes.
+   WEB-P0-03h: scene 7 CTA focus shares the same rule. */
+.scene1-cta:focus-visible,
+.scene7-cta:focus-visible {
+  outline: 2px solid var(--yula-focus);
+  outline-offset: 3px;
+}
+
+/* skip link (WCAG 2.4.1): first tab stop, visible only while focused */
+.skip-link {
+  position: fixed;
+  inset-block-start: 8px;
+  inset-inline-start: 8px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 9999px;
+  background: rgb(var(--yula-ink-50));
+  color: rgb(var(--yula-ink-900));
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: none;
+  outline: 3px solid rgb(var(--yula-ink-900));
+  outline-offset: -6px;
+  box-shadow: 0 0 0 2px rgb(var(--yula-ink-50));
+}
+/* main is a programmatic focus target (tabindex=-1, never a Tab stop): after the skip link
+   jumps here Chrome would match :focus-visible and ring the whole page, so no ring at all. */
+.main-focus-target:focus,
+.main-focus-target:focus-visible {
+  outline: none;
+}
+
 /* dotted grid backdrop */
 .dot-grid {
   background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
@@ -600,24 +639,24 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
 
 /* User appearance: CSS system fallback also works before JS or without it. */
 :root {
-  --yula-ink-900: 10 10 11;
-  --yula-ink-850: 14 14 16;
-  --yula-ink-800: 19 19 22;
+  --yula-ink-900: 13 14 17;
+  --yula-ink-850: 17 18 22;
+  --yula-ink-800: 22 23 27;
   --yula-ink-700: 26 26 30;
   --yula-ink-600: 38 38 44;
   --yula-ink-500: 58 58 66;
   --yula-ink-400: 144 144 154;
   --yula-ink-300: 154 154 163;
-  --yula-ink-200: 197 197 204;
-  --yula-ink-100: 229 229 234;
-  --yula-ink-50: 244 244 245;
+  --yula-ink-200: 182 182 186;
+  --yula-ink-100: 208 208 206;
+  --yula-ink-50: 228 228 224;
   --yula-surface: rgba(255,255,255,.02);
   --yula-surface-raised: rgba(255,255,255,.04);
   --yula-surface-inset: rgba(255,255,255,.015);
   --yula-hairline: rgba(255,255,255,.10);
   --yula-hairline-strong: rgba(255,255,255,.20);
-  --yula-page-bg: #030407;
-  --yula-page-rgb: 3 4 7;
+  --yula-page-bg: #0d0e11;
+  --yula-page-rgb: 13 14 17;
   --yula-brand-text-mix: 100%;
   --yula-focus: #c4b5fd;
   --yula-warning: #fcd34d;
@@ -632,7 +671,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --yula-ink-900: 245 243 238;
+  --yula-ink-900: 246 245 240;
   --yula-ink-850: 255 253 248;
   --yula-ink-800: 238 234 226;
   --yula-ink-700: 228 223 213;
@@ -641,15 +680,15 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-ink-400: 101 93 85;
   --yula-ink-300: 92 85 79;
   --yula-ink-200: 57 53 47;
-  --yula-ink-100: 33 30 26;
-  --yula-ink-50: 22 19 16;
+  --yula-ink-100: 33 32 30;
+  --yula-ink-50: 17 17 16;
   --yula-surface: rgba(0,0,0,.025);
   --yula-surface-raised: rgba(0,0,0,.055);
   --yula-surface-inset: rgba(0,0,0,.018);
   --yula-hairline: rgba(22,19,16,.18);
   --yula-hairline-strong: rgba(22,19,16,.32);
-  --yula-page-bg: #f5f3ee;
-  --yula-page-rgb: 245 243 238;
+  --yula-page-bg: #f6f5f0;
+  --yula-page-rgb: 246 245 240;
   --yula-brand-text-mix: 38%;
   --yula-focus: #6d36ac;
   --yula-warning: #795200;
@@ -665,7 +704,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) {
-    --yula-ink-900: 245 243 238;
+    --yula-ink-900: 246 245 240;
     --yula-ink-850: 255 253 248;
     --yula-ink-800: 238 234 226;
     --yula-ink-700: 228 223 213;
@@ -674,15 +713,15 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
     --yula-ink-400: 101 93 85;
     --yula-ink-300: 92 85 79;
     --yula-ink-200: 57 53 47;
-    --yula-ink-100: 33 30 26;
-    --yula-ink-50: 22 19 16;
+    --yula-ink-100: 33 32 30;
+    --yula-ink-50: 17 17 16;
     --yula-surface: rgba(0,0,0,.025);
     --yula-surface-raised: rgba(0,0,0,.055);
     --yula-surface-inset: rgba(0,0,0,.018);
     --yula-hairline: rgba(22,19,16,.18);
     --yula-hairline-strong: rgba(22,19,16,.32);
-    --yula-page-bg: #f5f3ee;
-    --yula-page-rgb: 245 243 238;
+    --yula-page-bg: #f6f5f0;
+    --yula-page-rgb: 246 245 240;
     --yula-brand-text-mix: 38%;
     --yula-focus: #6d36ac;
     --yula-warning: #795200;
@@ -957,7 +996,16 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   transition: none;
 }
 
+/* WEB-P0-03b: scene 1 signal arrow. One slow pulse; static under reduced motion
+   (rule lives in the last reduced-motion block below, which motion-parity reads). */
+@keyframes scene1-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.scene1-pulse { animation: scene1-pulse 2.4s ease-in-out infinite; }
+
 @media (prefers-reduced-motion: reduce) {
+  .scene1-pulse { animation: none; opacity: 1; }
   .slot > span,
   .slot::after,
   .mm-item,
@@ -992,5 +1040,41 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   }
   .footer-wordmark text {
     stroke-dashoffset: 0 !important;
+  }
+}
+
+/* ---------------------------------------------------------------------
+   Glass fallback (WEB-UX-05g, design G5). Appended only: the glass rules
+   above are unchanged, so browsers that support backdrop-filter with the
+   default settings render exactly as before.
+
+   Two glass definitions exist on purpose (see docs/yula-execution/
+   glass-surfaces.md): the first `.glass` (16px radius, blur 22px) is the
+   base; the later `.glass` (3px radius, blur 12px, page-rgb wash) is the
+   site skin and wins the cascade for background/blur/radius.
+
+   When the browser cannot blur, or the visitor asks for reduced
+   transparency, glass becomes a flat opaque surface from an existing token
+   (--yula-ink-850, theme-aware). No new colour. `.glass-accent` keeps its
+   own --accent trace by mixing it into that same token.
+   --------------------------------------------------------------------- */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: rgb(var(--yula-ink-850));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-accent {
+    background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .glass {
+    background: rgb(var(--yula-ink-850));
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .glass-accent {
+    background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
   }
 }

@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != '809bd06c2917722750643fc4be08aa27b37edd94':
+        if actual != 'c003312b2d1c691c5df3a85598b2bc636d92e0c1':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
@@ -240,6 +240,22 @@ jobs:
       id: build
       continue-on-error: true
       shell: bash
+    - name: JS byte budget from built output (CWV/Lighthouse not run in CI)
+      run: |
+        {
+          pnpm budget:js
+        } 2>&1 | tee "$RUNNER_TEMP/verification-evidence/js-budget.log"
+      id: js_budget
+      continue-on-error: true
+      shell: bash
+    - name: Locale maintenance report (informational; gate is verify:translations inside build)
+      run: |
+        {
+          pnpm locale:report --markdown | tee -a "$GITHUB_STEP_SUMMARY"
+        } 2>&1 | tee "$RUNNER_TEMP/verification-evidence/locale_report.log"
+      id: locale_report
+      continue-on-error: true
+      shell: bash
     - name: Product render mode from built output
       run: |
         {
@@ -335,7 +351,7 @@ jobs:
         root = Path(os.environ['RUNNER_TEMP']) / 'verification-evidence'
         root.mkdir(exist_ok=True)
         steps = json.loads(os.environ['STEP_RESULTS'])
-        required = ['checkout', 'identity', 'links_checkout', 'pnpm', 'node', 'runner_identity', 'source_pre', 'links_contract', 'contract_fixtures', 'install', 'absence_pre', 'braces_patch', 'native', 'lint', 'typecheck', 'unit', 'claims_local', 'registry', 'links_shape', 'build', 'isr', 'chromium', 'e2e', 'absence_post', 'source_post']
+        required = ['checkout', 'identity', 'links_checkout', 'pnpm', 'node', 'runner_identity', 'source_pre', 'links_contract', 'contract_fixtures', 'install', 'absence_pre', 'braces_patch', 'native', 'lint', 'typecheck', 'unit', 'claims_local', 'registry', 'links_shape', 'build', 'isr', 'js_budget', 'chromium', 'e2e', 'absence_post', 'source_post']
         results = {name: {'outcome': steps.get(name, {}).get('outcome', 'UNRUN'), 'conclusion': steps.get(name, {}).get('conclusion', 'UNRUN')} for name in required + ['audit_prod', 'audit_full']}
         issues = [name + ':' + results[name]['outcome'] for name in required if results[name]['outcome'] != 'success']
         audit_issues = []

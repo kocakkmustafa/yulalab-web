@@ -849,22 +849,30 @@ test("all mobile product actions remain reachable with enlarged text", async ({ 
   }
 });
 
-// Founder decision 2026-10-31: the home journey introduces finished products
-// and states no publication status; only an app not yet in a store carries a
-// "Coming soon" chip. Publication evidence lives on /transparency.
-for (const [locale, comingSoon] of [["tr", "Yakında"], ["en", "Coming soon"]] as const) {
-  test(`homepage states no publication status for released products (${locale})`, async ({ page }) => {
+// Founder decision 2026-11-09 ("Evet, rozet ekle", WEB-UX-05a): every home
+// product carries the status label of its registry lifecycle (live → "Live",
+// beta → "Beta", research → "Coming soon"). Publication evidence itself still
+// lives on /transparency; no label is invented here.
+for (const [locale, live, beta, comingSoon] of [
+  ["tr", "Yayında", "Beta", "Yakında"],
+  ["en", "Live", "Beta", "Coming soon"],
+] as const) {
+  test(`homepage labels each product with its registry status (${locale})`, async ({ page }) => {
     const prefix = locale === "en" ? "/en" : "";
-    for (const [progress, slug] of [[0.21625, "lifeos"], [0.11125, "braavolabs"]] as const) {
+    for (const [progress, slug, lifecycle, label] of [
+      [0.21625, "lifeos", "live", live],
+      [0.11125, "braavolabs", "beta", beta],
+    ] as const) {
       await page.goto(`${prefix}/?capture=1&progress=${progress}&tier=low`);
       const panel = page.locator(`[data-product="${slug}"][data-active="true"]`);
       await expect(panel).toBeVisible();
-      await expect(panel.locator("[data-lifecycle]")).toHaveCount(0);
+      await expect(panel.locator(`[data-lifecycle="${lifecycle}"]`)).toHaveText(label);
     }
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(prefix || "/");
     const linear = page.locator('[data-experience-static="true"]');
-    await expect(linear.locator('[data-lifecycle="live"], [data-lifecycle="beta"]')).toHaveCount(0);
+    await expect(linear.locator('[data-lifecycle="live"]').first()).toHaveText(live);
+    await expect(linear.locator('[data-lifecycle="beta"]').first()).toHaveText(beta);
     await expect(linear.locator('[data-lifecycle="research"]').first()).toHaveText(comingSoon);
   });
 }
@@ -942,6 +950,11 @@ test("native history returns to each product without replaying the opening", { t
       await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 1_000 });
       await expect.poll(async () => Math.abs(await page.evaluate(() => scrollY) - before)).toBeLessThan(3);
       await expect(root).toHaveAttribute("data-active-product", slug);
+      // The stage must stay pinned to the viewport after Back. A leftover
+      // filter/transform on an ancestor (PageTransition) turns it into a
+      // scrolling box: the screen goes blank at the restored position.
+      await expect.poll(() => page.locator('[data-yula-experience] [class*="viewport"]').first()
+        .evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBe(0);
       if (traversal === 0) {
         await page.goForward();
         await page.waitForURL(`**/projects/${slug}`);

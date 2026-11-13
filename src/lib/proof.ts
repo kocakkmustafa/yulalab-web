@@ -1,5 +1,5 @@
-import type { ProductPublicRecord } from "./types";
-import { isExpired } from "./public-registry";
+import type { ClaimState, ProductPublicRecord } from "./types";
+import { VERIFIED_CLAIM_STATES, isExpired, isPresentTenseEligible } from "./public-registry";
 
 /**
  * What a claim or surface should look like on screen once its verification
@@ -25,6 +25,16 @@ export type PresentedClaim =
       claim: ProductPublicRecord["claims"][number];
     }
   | {
+      /**
+       * Declared prototype/planned/unknown (or an explicit "not present
+       * tense"). Belongs on a status/roadmap label, never in the claims
+       * section — ClaimsSection renders only "verified" and "lapsed", so this
+       * kind is withheld there by construction (CORE-P0-02 §5).
+       */
+      kind: "withheld";
+      claim: ProductPublicRecord["claims"][number];
+    }
+  | {
       kind: "lapsed";
       claim: ProductPublicRecord["claims"][number];
       /** The date the verification window closed, so the gap is dateable. */
@@ -33,11 +43,37 @@ export type PresentedClaim =
 
 export function presentClaims(record: ProductPublicRecord, now: Date): PresentedClaim[] {
   return record.claims.map((claim) => {
+    // A planned/prototype/unknown claim is withheld whatever its window says:
+    // "needs re-verification" would be the wrong thing to tell a reader about
+    // something that was never claimed as true today.
+    if (claim.claimState && !VERIFIED_CLAIM_STATES.includes(claim.claimState)) {
+      return { kind: "withheld", claim };
+    }
     if (claim.expiresAt && isExpired(claim.expiresAt, now)) {
       return { kind: "lapsed", claim, expiredOn: claim.expiresAt };
     }
+    // Legacy claims that declared nothing keep the old behaviour (verified while
+    // the window is open) — the build gate forces declaration, so this branch
+    // cannot be reached by new data. Anything that DID declare a state must be
+    // eligible, or it is withheld.
+    const declared = claim.claimState !== undefined || claim.publishableAsPresentTense !== undefined;
+    if (declared && !isPresentTenseEligible(claim, now)) {
+      return { kind: "withheld", claim };
+    }
     return { kind: "verified", claim };
   });
+}
+
+/**
+ * The claim's state as a reader should see it. `stale` is derived here and
+ * never stored: an expired window wins over whatever state was written.
+ */
+export function deriveClaimState(
+  claim: ProductPublicRecord["claims"][number],
+  now: Date,
+): ClaimState | "stale" {
+  if (claim.expiresAt && isExpired(claim.expiresAt, now)) return "stale";
+  return claim.claimState ?? "unknown";
 }
 
 /** ProductPage uses this to qualify publication status while keeping links usable. */

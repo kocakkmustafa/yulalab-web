@@ -35,12 +35,6 @@ async function scrollTimeline(page: Page, progress: number) {
   }, scrollProgressForTimeline(progress))).toBe(true);
 }
 
-async function settledDialog(page: Page) {
-  // Touch input and overflow measurements are only meaningful once the reader's
-  // opening animation has finished.
-  await page.waitForFunction(() => document.getAnimations().every(animation => animation.playState !== "running"));
-}
-
 for (const locale of ["tr", "en"] as const) {
   test(`linear view retains the current content and keyboard focus (${locale})`, { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
     test.setTimeout(120_000);
@@ -144,7 +138,7 @@ for (const viewport of [{ width: 390, height: 667 }, { width: 1440, height: 900 
   });
 }
 
-test("English touch scrolling survives the image reader and compact layouts", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
+test("English touch scrolling survives compact layouts", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {
   test.setTimeout(60_000);
   await page.setViewportSize({ width: 390, height: 667 });
   const root = await openJourney(page, "/en");
@@ -164,27 +158,10 @@ test("English touch scrolling survives the image reader and compact layouts", { 
   const documentTouchY = await page.evaluate(() => scrollY);
   await scrollTimeline(page, 0.26875);
   await expect(root).toHaveAttribute("data-active-product", "gravita");
-  await page.getByRole("button", {name:"Enlarge screen"}).tap();
-  const reader = page.getByRole("dialog", {name:/Development view/});
-  const region = reader.getByRole("region", {name:"Complete development screen"});
-  await expect(reader).toBeVisible();
-  await settledDialog(page);
-  await expect.poll(() => reader.locator("img").evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
-  // The image can report its natural size before layout makes the region overflow.
-  await expect.poll(() => region.evaluate(node => node.scrollHeight - node.clientHeight)).toBeGreaterThan(50);
-  const before = await page.evaluate(() => scrollY);
-  const box = await region.boundingBox();
-  expect(box).not.toBeNull();
-  // Start inside the reader, not 25px above its bottom edge: at 390x667 the emulated
-  // viewport fills the window, and a touch that close to the bottom can fall outside
-  // the window's real drawing area — Chrome then delivers the touch events but never
-  // turns them into a scroll ("Position out of bounds" for synthesized gestures).
-  await swipe(box!.x + box!.width / 2, box!.y + box!.height * 0.75, box!.y + box!.height * 0.25);
-  await expect.poll(() => region.evaluate(node => node.scrollTop)).toBeGreaterThan(50);
-  expect(await page.evaluate(() => scrollY)).toBe(before);
-  const readerTouchY = await region.evaluate(node => node.scrollTop);
-  await testInfo.attach("touch-reader", {body:await page.screenshot(),contentType:"image/png"});
-  await reader.getByRole("button", {name:"Close image"}).tap();
+  // The home journey no longer opens development captures (founder decision
+  // 2026-10-31; page.tsx passes `developmentPreviews: []`), so there is no
+  // "Enlarge screen" reader to open; this test keeps the document touch scroll
+  // and the compact layouts.
   const layouts = [];
   for(const viewport of [{width:667,height:375},{width:320,height:568}]) {
     await page.setViewportSize(viewport);
@@ -198,7 +175,7 @@ test("English touch scrolling survives the image reader and compact layouts", { 
     layouts.push({viewport,scrollY:await page.evaluate(() => scrollY)});
     await testInfo.attach(`compact-${viewport.width}`,{body:await page.screenshot(),contentType:"image/png"});
   }
-  await testInfo.attach("touch-and-layout",{body:JSON.stringify({documentTouchY,readerTouchY,layouts}),contentType:"application/json"});
+  await testInfo.attach("touch-and-layout",{body:JSON.stringify({documentTouchY,layouts}),contentType:"application/json"});
 });
 
 test("English project Back and Forward retain the same journey document", { tag: "@hardware-webgl" }, async ({ page }, testInfo) => {

@@ -38,6 +38,48 @@ const REQUIRED: Array<[namespace: string, key: string]> = [
   ["projectsIndex", "researchHeading"],
   ["projectsIndex", "researchNote"],
   ["projectsIndex", "researchToggle"],
+  // WEB-UX-05b: read by the server page and the universe component; a missing
+  // key would print its literal path inside the panel (caught once by a
+  // browser console error, not by any unit test).
+  ["projectsIndex", "featuredHeading"],
+  ["projectsIndex", "portfolioHeading"],
+  ["projectsIndex", "filterLabel"],
+  ["projectsIndex", "filterAll"],
+  ["projectsIndex", "showing"],
+  ["projectsIndex", "summary"],
+  ["projectsIndex", "noMatch"],
+  ["projectsIndex", "panelHeading"],
+  ["projectsIndex", "panelHint"],
+  ["projectsIndex", "accessHeading"],
+  ["projectsIndex", "openFull"],
+  ["projectsIndex", "closePanel"],
+  ["projectsIndex", "preview"],
+  ["projectsIndex", "previewLabel"],
+  ["projectsIndex", "panelStatusLink"],
+  ["projectsIndex", "panelScreenEmpty"],
+  // /contact#yollar audience paths (WEB-UX-05f). Server component: a missing key renders its raw path.
+  ["contact", "pathsTitle"],
+  ["contact", "pathsUserLabel"],
+  ["contact", "pathsUserBody"],
+  ["contact", "pathsUserLink"],
+  ["contact", "pathsCorpLabel"],
+  ["contact", "pathsCorpBody"],
+  ["contact", "pathsCorpLink"],
+  ["contact", "pathsPartnerLabel"],
+  ["contact", "pathsPartnerBody"],
+  ["contact", "pathsDevLabel"],
+  ["contact", "pathsDevBody"],
+  ["contact", "pathsDevLab"],
+  ["contact", "pathsDevTransparency"],
+  // WEB-UX-05d: home doors, header Doors panel, loader skip button.
+  ["header", "doors"],
+  ["header", "doorsPanel"],
+  ["experience", "loaderSkip"],
+  // WEB-UX-05g: the /start doors page.
+  ["start", "metaTitle"],
+  ["start", "lede"],
+  ["start", "forLabel"],
+  ["start", "note"],
 ];
 
 describe.each([

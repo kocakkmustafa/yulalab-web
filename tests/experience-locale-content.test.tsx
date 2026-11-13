@@ -37,7 +37,8 @@ vi.mock("@/i18n/navigation", () => ({
 vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found"); } }));
 vi.mock("next-intl/server", () => ({
   setRequestLocale: vi.fn(),
-  getTranslations: async ({ locale }: { locale: Locale }) => createTranslator({ locale, messages: catalogues[locale], namespace: "experience" }),
+  getTranslations: async ({ locale, namespace = "experience" }: { locale: Locale; namespace?: string }) =>
+    createTranslator({ locale, messages: catalogues[locale], namespace } as Parameters<typeof createTranslator>[0]),
 }));
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
@@ -47,7 +48,9 @@ afterEach(() => { cleanup(); navigation.replace.mockReset(); });
 async function load(locale: Locale) {
   navigation.locale = locale;
   const page = await LandingPage({ params: Promise.resolve({ locale }) });
-  return (page as ReactElement<{ copy: ExperienceCopy; products: ExperienceProduct[] }>).props;
+  // The page is a fragment: the journey first, then the seven-scene block.
+  const parts = (page as ReactElement<{ children: ReactElement<{ copy?: ExperienceCopy }>[] }>).props.children;
+  return parts.find((part) => part.props.copy)!.props as unknown as { copy: ExperienceCopy; products: ExperienceProduct[] };
 }
 function provider(locale: Locale, children: ReactElement) {
   return <NextIntlClientProvider locale={locale} messages={catalogues[locale]} timeZone="UTC"><ThemeProvider>{children}</ThemeProvider></NextIntlClientProvider>;
@@ -60,9 +63,10 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     const { copy, products } = await load(locale);
     const { container } = render(provider(locale, <StaticExperience copy={copy} products={products} soundEnabled={false} onSoundToggle={vi.fn()} />));
     expect(container.querySelector("#experience-hero a")?.getAttribute("href")).toBe(localePath(locale, "/consulting"));
-    expect(container.querySelector("#experience-product-braavolabs")?.textContent).toContain(products[0].category);
-    expect(products[0].category).not.toBe("Autonomous AI Company OS");
-    expect(products[0].short).not.toBe("An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.");
+    const braavolabs = products.find((p) => p.slug === "braavolabs")!;
+    expect(container.querySelector("#experience-product-braavolabs")?.textContent).toContain(braavolabs.category);
+    expect(braavolabs.category).not.toBe("Autonomous AI Company OS");
+    expect(braavolabs.short).not.toBe("An autonomous AI company OS for small teams. Primitives, agent networks and transparent cost — one panel.");
     // Home introduces products by app icon (founder decision 2026-10-31).
     // Served as an optimized rendition, never the 1-1.6 MB store master.
     const icon = new URL(container.querySelector("#experience-product-lifeos img")?.getAttribute("src") ?? "", "http://x");
@@ -102,5 +106,22 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
     }
     expect(container.querySelector(`time[datetime="${first.verifiedAt}"]`)?.getAttribute("dir")).toBe("ltr");
     expect(screen.getAllByText(text(locale, "kaynak kodda doğrulandı", "verified in source code")).length).toBeGreaterThan(0);
+  });
+});
+
+// Scene order is a visual contract (experience/ positions and wireframe variants
+// are index-based). Literal list = main 069477c, deliberately not imported.
+describe("homepage scene product order", () => {
+  it("hands the scene the original order and filled live/beta labels", async () => {
+    const original = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
+    const { SCENE_PRODUCT_ORDER } = await import("@/lib/product-index");
+    expect([...SCENE_PRODUCT_ORDER]).toEqual(original);
+    const { products } = await load("en");
+    expect(products.map((p) => p.slug)).toEqual(original);
+    const label = (slug: string) => products.find((p) => p.slug === slug)!.lifecycleLabel;
+    expect(label("burunfarki")).toBe(en.status.live);
+    expect(label("lifeos")).toBe(en.status.live);
+    expect(label("braavolabs")).toBe(en.status.beta);
+    expect(label("ostinato")).toBe(en.status.comingSoon);
   });
 });

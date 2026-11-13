@@ -32,7 +32,7 @@ beforeEach(() => {
   document.documentElement.removeAttribute("data-theme");
   document.documentElement.removeAttribute("data-theme-preference");
   document.documentElement.style.colorScheme = "";
-  document.head.innerHTML = '<meta name="theme-color" content="#09060e">';
+  document.head.innerHTML = '<meta name="theme-color" content="#0d0e11">';
 });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
@@ -51,7 +51,7 @@ describe("actual theme provider and native control, local synthetic environment"
     expect(document.documentElement.dataset.theme).toBe("dark");
     system(false);
     expect(document.documentElement.style.colorScheme).toBe("light");
-    expect(document.querySelector('meta[name="theme-color"]')?.getAttribute("content")).toBe("#f5f3ee");
+    expect(document.querySelector('meta[name="theme-color"]')?.getAttribute("content")).toBe("#f6f5f0");
     expect(fetch).not.toHaveBeenCalled();
     view.unmount();
     expect(remove).toHaveBeenCalledOnce();
