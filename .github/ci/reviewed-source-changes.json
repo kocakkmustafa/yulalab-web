@@ -1394,6 +1394,34 @@
       "candidateSha256": "f91e5784ce8737cb42a28c42ca9e93af518fce046e3b014aafa627710538a74c",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-02b header/footer/mobile menu: nav-config, 14-language header keys, locale switcher target size"
+    },
+    {
+      "path": "src/app/api/events/route.ts",
+      "publishedSha256": "816b5bc62a6b8469ba816bbe2862ba93a597f11677f85596a046bd056c0d5eec",
+      "candidateSha256": "e5d26deb9ec81694d6d6b3f311086fd96a63213b3fbdcd8938a8f5b366c9ee3d",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP"
+    },
+    {
+      "path": "src/app/api/leads/route.ts",
+      "publishedSha256": "6c6c64e4d5c0109fa35fcfa6e6def93504fa19e08e926abb107465b92df06ad0",
+      "candidateSha256": "88c97595f6aa3a276823c7b50f13be6849e864a6b9da6538876b780d0ca1e1b5",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP"
+    },
+    {
+      "path": "src/server/rate-limit.ts",
+      "publishedSha256": "36535a89b3d1a67c1706b3f4c2d7df3c8a6d276e534a8db5ff6a1bdc09cc00ad",
+      "candidateSha256": "44c4450122e3eecaddd55d58dea7881e4374109a8c84a3f86424fa7191071e75",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c rate limit istemci IP WEB-P0-07c inceleme d\u00fczeltmesi"
+    },
+    {
+      "path": "src/app/api/data-request/route.ts",
+      "publishedSha256": "d17946ccc424bdb19b56c337dfd68ce44d66e43c82fed5e559fae2152773853e",
+      "candidateSha256": "e296a43db90ed6beeae415ab1e39d44dba4f53832879e5ed6bd8374a3660c49c",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "WEB-P0-07c inceleme düzeltmesi"
     }
   ]
 }
