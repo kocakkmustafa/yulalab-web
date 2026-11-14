@@ -6,7 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { ProductUniverse, type UniverseItem } from "@/components/universe/ProductUniverse";
 import { projects } from "@/data/projects";
 import { groupProducts } from "@/lib/product-index";
-import { CLOSED_TEST_HREF, firstPublicLink, isPublicHref, storeSlotsOf } from "@/lib/store-slots";
+import { CLOSED_TEST_HREF, firstPublicLink, isComingSoon, isPublicHref, storeLinksOf, storeSlotsOf } from "@/lib/store-slots";
 import type { ProjectConfig } from "@/lib/types";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
@@ -93,6 +93,66 @@ describe("storeSlotsOf", () => {
     expect(firstPublicLink(p, "appstore")).toBe("https://apps.apple.com/app/id1");
     expect(firstPublicLink(p, "playstore")).toBeUndefined();
     expect(storeSlotsOf(p)?.find((s) => s.kind === "appstore")?.href).toBe("https://apps.apple.com/app/id1");
+  });
+
+  it("closed-test hosts/paths are rejected, public listings are kept", () => {
+    for (const href of [
+      "https://appdistribution.firebase.google.com/testerapps/1",
+      "https://appdistribution.firebase.dev/i/abc",
+      "https://play.google.com/apps/internaltest/4700000000",
+      "https://play.google.com/store/apps/testing/com.example.app",
+    ]) {
+      expect(isPublicHref(href), href).toBe(false);
+    }
+    for (const href of [
+      "https://apps.apple.com/app/id1",
+      "https://play.google.com/store/apps/details?id=com.appdistribution.x",
+      "https://play.google.com/store/apps/details?id=com.example.internaltest",
+    ]) {
+      expect(isPublicHref(href), href).toBe(true);
+    }
+    expect(isPublicHref(null)).toBe(false);
+  });
+
+  describe("storeLinksOf / firstPublicLink shared by index and product page", () => {
+    const mk = (status: ProjectConfig["status"], links: ProjectConfig["links"]): ProjectConfig => ({
+      ...bySlug("lifeos"),
+      status,
+      links,
+    });
+    const pub = [
+      { kind: "appstore", href: "https://apps.apple.com/app/id1" },
+      { kind: "playstore", href: "https://play.google.com/store/apps/details?id=a.b" },
+    ] as ProjectConfig["links"];
+
+    it("coming soon + public links: no store link on any surface", () => {
+      for (const status of ["coming-soon", "in-development"] as const) {
+        const p = mk(status, pub);
+        expect(isComingSoon(p)).toBe(true);
+        expect(storeLinksOf(p)).toEqual([]);
+        expect(firstPublicLink(p, "appstore")).toBeUndefined();
+        expect((storeSlotsOf(p) ?? []).every((s) => s.href === undefined)).toBe(true);
+      }
+    });
+    it("empty links and null href yield nothing", () => {
+      expect(storeLinksOf(mk("live" as ProjectConfig["status"], []))).toEqual([]);
+      const nul = mk("live" as ProjectConfig["status"], [
+        { kind: "appstore", href: null },
+      ] as unknown as ProjectConfig["links"]);
+      expect(storeLinksOf(nul)).toEqual([]);
+      expect(firstPublicLink(nul, "appstore")).toBeUndefined();
+    });
+    it("published product keeps public links, skips closed-test, honours exceptKind", () => {
+      const p = mk("live" as ProjectConfig["status"], [
+        { kind: "appstore", href: "https://testflight.apple.com/join/X" },
+        ...pub,
+      ]);
+      expect(storeLinksOf(p).map((l) => l.href)).toEqual([
+        "https://apps.apple.com/app/id1",
+        "https://play.google.com/store/apps/details?id=a.b",
+      ]);
+      expect(storeLinksOf(p, "appstore").map((l) => l.kind)).toEqual(["playstore"]);
+    });
   });
 
   it("Ostinato has no store link at all while it is coming soon", () => {

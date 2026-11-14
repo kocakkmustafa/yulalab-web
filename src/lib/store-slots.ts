@@ -3,17 +3,55 @@ import type { ProjectConfig } from "@/lib/types";
 
 const STORE_NAME = { appstore: "App Store", playstore: "Google Play" } as const;
 
-/** Closed-test / pre-release listings are never shown as a public store link. */
-export const CLOSED_TEST_HREF = /testflight\.apple\.com|beta\.itunes\.apple\.com|play\.google\.com\/apps\/test|play\.google\.com\/(?:apps\/(?:testing|internaltest)|store\/apps\/testing)|appdistribution|\/internaltest\b/i;
+/**
+ * Closed-test / pre-release listings are never shown as a public store link.
+ * Anchored to the host (and path) so a public listing that merely contains
+ * "appdistribution" in a query (`id=com.appdistribution.x`) is kept.
+ */
+export const CLOSED_TEST_HREF = new RegExp(
+  "^(?:https?:)?//(?:[^/?#]*\\.)?(?:" +
+    "testflight\\.apple\\.com(?:[/?#]|$)" +
+    "|beta\\.itunes\\.apple\\.com(?:[/?#]|$)" +
+    "|appdistribution\\.firebase\\.(?:google\\.)?(?:com|dev)(?:[/?#]|$)" +
+    "|play\\.google\\.com/(?:apps/(?:test|internaltest)|store/apps/testing)" +
+    ")",
+  "i",
+);
+
+type StoreKind = "appstore" | "playstore";
+
+const isStoreKind = (kind: string): kind is StoreKind => kind === "appstore" || kind === "playstore";
+
+/** Coming-soon / in-development products carry no store-availability claim. */
+export function isComingSoon(project: ProjectConfig): boolean {
+  return project.status === "coming-soon" || project.status === "in-development";
+}
 
 /** True when the href is a public destination (not a closed-test / beta listing). */
 export function isPublicHref(href: string | null | undefined): href is string {
   return Boolean(href) && !CLOSED_TEST_HREF.test(href as string);
 }
 
-/** First public (non closed-test) link of a kind; closed-test links are skipped, not returned. */
+/**
+ * First public link of a kind. Closed-test links are skipped, and a store kind
+ * yields nothing while the product is coming soon.
+ */
 export function firstPublicLink(project: ProjectConfig, kind: string): string | undefined {
+  if (isStoreKind(kind) && isComingSoon(project)) return undefined;
   return project.links.find((l) => l.kind === kind && isPublicHref(l.href))?.href ?? undefined;
+}
+
+/** Public store links (first per store), optionally without the primary CTA kind; empty while coming soon. */
+export function storeLinksOf(
+  project: ProjectConfig,
+  exceptKind?: string,
+): { kind: StoreKind; href: string }[] {
+  return (["appstore", "playstore"] as const)
+    .filter((kind) => kind !== exceptKind)
+    .flatMap((kind) => {
+      const href = firstPublicLink(project, kind);
+      return href ? [{ kind, href }] : [];
+    });
 }
 
 /**
@@ -24,15 +62,12 @@ export function firstPublicLink(project: ProjectConfig, kind: string): string | 
  */
 export function storeSlotsOf(project: ProjectConfig): UniverseItem["storeSlots"] {
   if (!project.kind.includes("mobile")) return undefined;
-  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
-  const hrefOf = (kind: "appstore" | "playstore") => {
-    return firstPublicLink(project, kind);
-  };
-  const appstore = hrefOf("appstore");
-  const playstore = hrefOf("playstore");
-  if (!comingSoon && !appstore && !playstore) return undefined;
-  return [
-    { kind: "appstore", name: STORE_NAME.appstore, href: comingSoon ? undefined : appstore },
-    { kind: "playstore", name: STORE_NAME.playstore, href: comingSoon ? undefined : playstore },
-  ];
+  const comingSoon = isComingSoon(project);
+  const links = storeLinksOf(project);
+  if (!comingSoon && links.length === 0) return undefined;
+  return (["appstore", "playstore"] as const).map((kind) => ({
+    kind,
+    name: STORE_NAME[kind],
+    href: links.find((l) => l.kind === kind)?.href,
+  }));
 }
