@@ -34,14 +34,22 @@ export function median(values) {
   return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
+const validRun = (r) => r && Number.isFinite(r.performance) && Number.isFinite(r.accessibility);
+
+/** Hedef koşu sayısına göre asgari geçerli koşu: 3 -> 2, 1 -> 1. */
+export function minRuns(target) {
+  return Math.max(1, Math.ceil((target * 2) / 3));
+}
+
 /**
  * runs: [{performance, accessibility, tbt?, lcp?, cls?}] (performance/a11y 0-100).
- * Dönüş: {runs, medians, pass, failures[]}. Boş girdi = kaldı.
+ * Yalnız perf VE a11y sayısal olan koşular sayılır; tüm medyanlar aynı koşu kümesinden alınır.
+ * Geçerli koşu asgarinin altındaysa durum "eksik" olur ve geçti sayılmaz.
  */
-export function evaluate(preset, runs, thresholds = THRESHOLDS) {
+export function evaluate(preset, runs, thresholds = THRESHOLDS, target = 3) {
   const limit = thresholds[preset];
   if (!limit) throw new Error(`bilinmeyen preset: ${preset}`);
-  const list = runs ?? [];
+  const list = (runs ?? []).filter(validRun);
   const medians = {
     performance: median(list.map((r) => r.performance)),
     accessibility: median(list.map((r) => r.accessibility)),
@@ -50,14 +58,34 @@ export function evaluate(preset, runs, thresholds = THRESHOLDS) {
     cls: median(list.map((r) => r.cls)),
   };
   const failures = [];
-  if (list.length === 0 || medians.performance === null || medians.accessibility === null) {
-    failures.push("ölçüm yok (boş koşu listesi)");
+  let status = "geçti";
+  if (list.length < minRuns(target)) {
+    status = "eksik";
+    failures.push(`eksik ölçüm: ${list.length}/${target} geçerli koşu (en az ${minRuns(target)})`);
   } else {
     for (const key of ["performance", "accessibility"]) {
       if (medians[key] < limit[key]) failures.push(`${key} ${medians[key]} < ${limit[key]}`);
     }
+    if (failures.length) status = "kaldı";
   }
-  return { preset, runs: list.length, medians, pass: failures.length === 0, failures };
+  return { preset, runs: list.length, target, medians, status, pass: failures.length === 0, failures };
+}
+
+/** continue-on-error job'unda kırmızı görünmediği için GitHub annotation satırları. */
+export function annotations(results) {
+  const lines = results.filter((r) => !r.pass).map((r) => `::warning title=Lighthouse ${r.route} ${r.preset}::${r.status}: ${r.failures.join("; ")}`);
+  if (results.length === 0) lines.push("::warning title=Lighthouse::ölçüm sonucu yok");
+  return lines;
+}
+
+/** Sunucu açılmadı / beklenmeyen hata: results.json + summary.md içeriği. */
+export function failureReport(reason) {
+  const text = String(reason);
+  return {
+    json: { lighthouse: LIGHTHOUSE_VERSION, thresholds: THRESHOLDS, pass: false, error: text, results: [] },
+    markdown: `## Lighthouse özeti\n\nÖlçüm alınamadı: ${text}\n`,
+    annotation: `::warning title=Lighthouse::ölçüm alınamadı: ${text.replace(/\r?\n/g, " ")}`,
+  };
 }
 
 export function toMarkdown(results) {
@@ -65,13 +93,13 @@ export function toMarkdown(results) {
   const lines = [
     "## Lighthouse özeti (koşu medyanı)",
     "",
-    "| Rota | Preset | Koşu | Perf | A11y | TBT ms | LCP ms | CLS | Sonuç |",
+    "| Rota | Preset | Geçerli koşu | Perf | A11y | TBT ms | LCP ms | CLS | Sonuç |",
     "|---|---|---|---|---|---|---|---|---|",
   ];
   for (const r of results) {
     const m = r.medians;
     lines.push(
-      `| ${r.route} | ${r.preset} | ${r.runs} | ${fmt(m.performance)} | ${fmt(m.accessibility)} | ${fmt(m.tbt)} | ${fmt(m.lcp)} | ${fmt(m.cls, 3)} | ${r.pass ? "GEÇTİ" : "KALDI: " + r.failures.join("; ")} |`,
+      `| ${r.route} | ${r.preset} | ${r.runs}/${r.target ?? r.runs} | ${fmt(m.performance)} | ${fmt(m.accessibility)} | ${fmt(m.tbt)} | ${fmt(m.lcp)} | ${fmt(m.cls, 3)} | ${r.pass ? "GEÇTİ" : r.status.toUpperCase() + ": " + r.failures.join("; ")} |`,
     );
   }
   lines.push("", `Eşik: perf >= ${THRESHOLDS.mobile.performance} (mobil), >= ${THRESHOLDS.desktop.performance} (masaüstü); a11y >= ${THRESHOLDS.mobile.accessibility}. TBT/LCP/CLS yalnız bilgi.`);
@@ -124,12 +152,12 @@ async function main() {
   mkdirSync(path.join(out, "raw"), { recursive: true });
 
   let server;
-  if (!external) {
-    const nextBin = path.resolve("node_modules/next/dist/bin/next");
-    server = spawn(process.execPath, [nextBin, "start", "-p", String(port)], { stdio: "ignore", env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" } });
-  }
   const results = [];
   try {
+    if (!external) {
+      const nextBin = path.resolve("node_modules/next/dist/bin/next");
+      server = spawn(process.execPath, [nextBin, "start", "-p", String(port)], { stdio: "ignore", env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1" } });
+    }
     await waitReady(`${base}${routes[0]}`);
     for (const route of routes) {
       for (const preset of presets) {
@@ -146,17 +174,25 @@ async function main() {
           }
           runs.push(extractRun(JSON.parse(readFileSync(file, "utf8"))));
         }
-        results.push({ route, ...evaluate(preset, runs) });
+        results.push({ route, ...evaluate(preset, runs, THRESHOLDS, runsPer) });
       }
     }
-  } finally {
+  } catch (error) {
+    const report = failureReport(error?.message ?? error);
+    writeFileSync(path.join(out, "results.json"), JSON.stringify(report.json, null, 2) + "\n");
+    writeFileSync(path.join(out, "summary.md"), report.markdown);
+    console.log(report.markdown);
+    console.log(report.annotation);
     server?.kill("SIGTERM");
+    process.exit(1);
   }
+  server?.kill("SIGTERM");
   const pass = overallPass(results);
   writeFileSync(path.join(out, "results.json"), JSON.stringify({ lighthouse: LIGHTHOUSE_VERSION, thresholds: THRESHOLDS, pass, results }, null, 2) + "\n");
   const md = toMarkdown(results);
   writeFileSync(path.join(out, "summary.md"), md);
   console.log(md);
+  for (const line of annotations(results)) console.log(line);
   process.exit(pass ? 0 : 1);
 }
 

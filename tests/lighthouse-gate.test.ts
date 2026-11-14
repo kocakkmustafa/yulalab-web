@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluate, median, overallPass, extractRun, toMarkdown } from "../scripts/lighthouse.mjs";
+import { annotations, failureReport, minRuns, evaluate, median, overallPass, extractRun, toMarkdown } from "../scripts/lighthouse.mjs";
 
 const run = (performance: number, accessibility: number) => ({ performance, accessibility, tbt: 100, lcp: 2000, cls: 0 });
 
@@ -23,10 +23,11 @@ describe("lighthouse kapısı", () => {
     const r = evaluate("desktop", [run(79, 94), run(79, 94), run(79, 94)]);
     expect(r.pass).toBe(false);
     expect(r.failures).toHaveLength(2);
+    expect(r.status).toBe("kaldı");
   });
 
   it("sınır değerleri geçer (80 / 95)", () => {
-    expect(evaluate("mobile", [run(80, 95)]).pass).toBe(true);
+    expect(evaluate("mobile", [run(80, 95)], undefined, 1).pass).toBe(true);
   });
 
   it("boş girdi kalır, bilinmeyen preset hata verir", () => {
@@ -40,8 +41,37 @@ describe("lighthouse kapısı", () => {
   it("extractRun ve markdown", () => {
     const lhr = { categories: { performance: { score: 0.876 }, accessibility: { score: 1 } }, audits: { "total-blocking-time": { numericValue: 123 } } };
     expect(extractRun(lhr)).toMatchObject({ performance: 88, accessibility: 100, tbt: 123, lcp: null });
-    const md = toMarkdown([{ route: "/tr", ...evaluate("mobile", [run(90, 100)]) }]);
-    expect(md).toContain("| /tr | mobile | 1 | 90 | 100 |");
+    const md = toMarkdown([{ route: "/tr", ...evaluate("mobile", [run(90, 100)], undefined, 1) }]);
+    expect(md).toContain("| /tr | mobile | 1/1 | 90 | 100 |");
     expect(md).toContain("GEÇTİ");
+  });
+
+  it("kısmi koşu geçti sayılmaz (3 hedefte 1 başarılı = eksik), 2 yeterli", () => {
+    const one = evaluate("mobile", [run(95, 100)], undefined, 3);
+    expect(one.status).toBe("eksik");
+    expect(one.pass).toBe(false);
+    expect(evaluate("mobile", [run(95, 100), run(90, 100)], undefined, 3).pass).toBe(true);
+    expect(minRuns(3)).toBe(2);
+    expect(minRuns(1)).toBe(1);
+  });
+
+  it("null skorlu koşu elenir; medyanlar aynı kümeden gelir", () => {
+    const runs = [run(90, 100), { performance: 10, accessibility: null }, { performance: null, accessibility: 100 }, run(70, 96)];
+    const r = evaluate("mobile", runs as never, undefined, 3);
+    expect(r.runs).toBe(2);
+    expect(r.medians.performance).toBe(80);
+    expect(r.medians.accessibility).toBe(98);
+  });
+
+  it("annotation ve hata yolu raporu", () => {
+    const bad = { route: "/tr", ...evaluate("mobile", [run(50, 100), run(50, 100), run(50, 100)]) };
+    expect(annotations([bad])[0]).toMatch(/^::warning title=Lighthouse \/tr mobile::kaldı/);
+    expect(annotations([{ route: "/tr", ...evaluate("mobile", [run(90, 100), run(90, 100)]) }])).toEqual([]);
+    expect(annotations([])).toHaveLength(1);
+    const f = failureReport("sunucu hazır olmadı\nx");
+    expect(f.markdown).toContain("Ölçüm alınamadı: sunucu hazır olmadı");
+    expect(f.json.pass).toBe(false);
+    expect(f.annotation.startsWith("::warning")).toBe(true);
+    expect(f.annotation).not.toContain("\n");
   });
 });
