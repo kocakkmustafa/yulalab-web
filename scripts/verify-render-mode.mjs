@@ -34,6 +34,9 @@ const TIME_DERIVED = [
   /^\/(tr|en)\/projects\/[a-z0-9-]+$/,
   /^\/(tr|en)\/operating-system$/,
   /^\/(tr|en)\/case-studies$/,
+  // SEC-WEB-01a: home and /transparency print claim freshness too.
+  /^\/(tr|en)$/,
+  /^\/(tr|en)\/transparency$/,
 ];
 const productRoutes = routes.filter(([route]) => TIME_DERIVED.some((re) => re.test(route)));
 
