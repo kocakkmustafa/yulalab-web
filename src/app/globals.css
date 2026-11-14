@@ -617,9 +617,10 @@ body:not(:has([data-yula-experience="true"])) {
 /* Brand-coloured "open page" action: light brand colours (lime, sand) fail
    AA on the light ground, so the light theme mixes them toward the ink. */
 /* Product brand foreground (src/lib/brand-ink.ts): dark tint / light primary per theme. */
-[data-brand-fg] { --brand-fg: var(--brand-d); color: color-mix(in srgb, var(--brand-fg) var(--brand-a, 100%), transparent); }
-:root[data-theme="light"] [data-brand-fg] { --brand-fg: var(--brand-l); }
-@media (prefers-color-scheme: light) { :root:not([data-theme]) [data-brand-fg] { --brand-fg: var(--brand-l); } }
+[data-brand-fg], [data-brand-var] { --brand-fg: var(--brand-d); }
+:root[data-theme="light"] :is([data-brand-fg], [data-brand-var]) { --brand-fg: var(--brand-l); }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) :is([data-brand-fg], [data-brand-var]) { --brand-fg: var(--brand-l); } }
+[data-brand-fg] { color: color-mix(in srgb, var(--brand-fg) var(--brand-a, 100%), transparent); }
 [data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--brand-fg) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
 @media (max-width: 767px) {
   [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
