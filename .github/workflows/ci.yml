@@ -568,3 +568,17 @@ jobs:
       run: pnpm exec playwright install --with-deps chromium
     - name: Open-mode e2e (consulting + contact; no retries, so flakiness stays visible)
       run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Job özeti
+      if: ${{ always() }}
+      run: |
+        echo "Açık kip e2e (LEADS_ENABLED=1): ${{ job.status }}. Gate'e alma: art arda 3+ yeşil koşu sonrası." >> "$GITHUB_STEP_SUMMARY"
+    - name: Sonuç artefaktı (test-results + playwright-report)
+      if: ${{ always() }}
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: leads-open-e2e-results
+        path: |
+          test-results/
+          playwright-report/
+        if-no-files-found: ignore
+        retention-days: 14

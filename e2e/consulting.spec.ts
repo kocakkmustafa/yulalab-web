@@ -72,10 +72,12 @@ for (const [prefix, menuName, consultingName, title] of [
     // `goto` resolves on the load event, before React has hydrated the Header.
     // A click that lands earlier hits a button without its onClick (the drawer
     // never opens), and the lead-form chunk on the open-mode page makes that
-    // window longer. React tags hydrated DOM nodes with `__reactProps$*`, so
-    // wait for that instead of racing the click.
+    // window longer. React tags hydrated DOM nodes with `__reactProps$*`
+    // (`__reactFiber$*` as a fallback: the prefix is an internal detail that
+    // can change between React versions), so wait for either instead of
+    // racing the click.
     await expect.poll(
-      () => menu.evaluate(el => Object.keys(el).some(key => key.startsWith("__reactProps$"))),
+      () => menu.evaluate(el => Object.keys(el).some(key => key.startsWith("__reactProps$") || key.startsWith("__reactFiber$"))),
       { timeout: 15_000 },
     ).toBe(true);
     await menu.click();
