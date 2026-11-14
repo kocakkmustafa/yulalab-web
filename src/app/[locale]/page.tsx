@@ -15,6 +15,11 @@ import { toExperienceClaims } from "@/lib/experience-claims";
 import { PRODUCT_ORDER, SCENE_PRODUCT_ORDER } from "@/lib/product-index";
 import type { Locale, ProductLifecycle } from "@/lib/types";
 
+// SEC-WEB-01a: ISR. `now` is read per (re)generation inside the component, so the
+// claim expiry gate is re-evaluated at least hourly instead of freezing at build.
+// Must stay a literal number (Next reads it statically).
+export const revalidate = 3600;
+
 function localizeInternalRoute(route: string, locale: Locale): string {
   if (!route.startsWith("/") || route.startsWith("//")) {
     throw new Error(`Homepage product CTA must be an internal route: ${route}`);
