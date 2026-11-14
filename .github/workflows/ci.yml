@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != '95ac52bd0a79e76e82d90cf824df3d3ab69de3e3':
+        if actual != '030450eab82faf44a9589a25c7030d0063806fef':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
@@ -532,4 +532,53 @@ jobs:
         name: lighthouse-results
         path: lighthouse-results/
         if-no-files-found: warn
+        retention-days: 14
+  leads-open-e2e:
+    # WEB-LEADS-OPEN-MODE: LEADS_ENABLED bayrağı `next build` sırasında okunur, bu yüzden açık kip
+    # ayrı bir build ister. Raporlayan kapı: continue-on-error ile BAŞLAR, build-and-test'e bağlı
+    # değil, Final gate'e girmez. Ağ her zaman mock'lu; veritabanı, posta ve sır yok.
+    # Kapıya alma kararı: art arda 3+ yeşil koşu gözlendikten sonra (PR gövdesi).
+    name: Açık kip e2e (LEADS_ENABLED=1 build; raporlar, bloklamaz)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    continue-on-error: true
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      YULA_E2E_PORT: '4192'
+      LEADS_ENABLED: '1'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+    - name: Set up pinned pnpm
+      uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      with:
+        version: 10.33.0
+    - name: Set up pinned Node
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 26.9.0
+    - name: Install frozen product dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Build Next artifacts with LEADS_ENABLED=1
+      run: pnpm build
+    - name: Install Chromium
+      run: pnpm exec playwright install --with-deps chromium
+    - name: Open-mode e2e (consulting + contact; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Job özeti
+      if: ${{ always() }}
+      run: |
+        echo "Açık kip e2e (LEADS_ENABLED=1): ${{ job.status }}. Gate'e alma: art arda 3+ yeşil koşu sonrası." >> "$GITHUB_STEP_SUMMARY"
+    - name: Sonuç artefaktı (test-results + playwright-report)
+      if: ${{ always() }}
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: leads-open-e2e-results
+        path: |
+          test-results/
+          playwright-report/
+        if-no-files-found: ignore
         retention-days: 14

@@ -6,8 +6,10 @@ import AxeBuilder from "@axe-core/playwright";
  * LEADS_ENABLED=1 (default closed) and the locale is tr/en. The flag is read
  * while /consulting is prerendered, i.e. at `next build`, not `next start`:
  * for open-mode tests run `LEADS_ENABLED=1 pnpm build` first, then
- * `LEADS_ENABLED=1 playwright test e2e/consulting.spec.ts`. CI builds with the
- * default env, so only closed-mode assertions run (no skipped tests). The
+ * `LEADS_ENABLED=1 playwright test e2e/consulting.spec.ts`. The main CI job
+ * builds with the default env, so only closed-mode assertions run (no skipped
+ * tests); the separate non-blocking `leads-open-e2e` job builds with
+ * LEADS_ENABLED=1 and runs consulting.spec.ts + contact.spec.ts. The
  * mailto path is asserted in both modes. The network is always mocked.
  */
 const leadsOpen = process.env.LEADS_ENABLED === "1";
@@ -67,6 +69,17 @@ for (const [prefix, menuName, consultingName, title] of [
     await page.emulateMedia({ reducedMotion: "reduce" });
     await page.goto(`${prefix}/contact`);
     const menu = page.locator("header button[aria-controls='site-mobile-navigation']");
+    // `goto` resolves on the load event, before React has hydrated the Header.
+    // A click that lands earlier hits a button without its onClick (the drawer
+    // never opens), and the lead-form chunk on the open-mode page makes that
+    // window longer. React tags hydrated DOM nodes with `__reactProps$*`
+    // (`__reactFiber$*` as a fallback: the prefix is an internal detail that
+    // can change between React versions), so wait for either instead of
+    // racing the click.
+    await expect.poll(
+      () => menu.evaluate(el => Object.keys(el).some(key => key.startsWith("__reactProps$") || key.startsWith("__reactFiber$"))),
+      { timeout: 15_000 },
+    ).toBe(true);
     await menu.click();
     const dialog = page.getByRole("dialog", { name: menuName, exact: true });
     await expect(dialog).toBeVisible();
@@ -82,7 +95,7 @@ for (const [prefix, menuName, consultingName, title] of [
     await expect(menu).toBeFocused();
     await menu.click();
     await dialog.getByRole("link", { name: consultingName, exact: true }).click();
-    await expect(page).toHaveURL(new RegExp(`${prefix}/consulting$`));
+    await expect(page).toHaveURL(new RegExp(`${prefix}/consulting$`), { timeout: 15_000 });
     await expect(page.locator("dialog")).not.toBeVisible();
     await expect(page.getByRole("heading", { level: 1, name: title })).toBeVisible();
   });
