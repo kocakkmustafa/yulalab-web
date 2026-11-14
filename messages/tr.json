@@ -1030,7 +1030,22 @@
     "scene3": {
       "label": "Ürünler",
       "title": "Öncelik verdiğimiz üç sistem.",
-      "message": "Braavolabs, LifeOS ve Ostinato: iş, yaşam ve müzik için; her biri tek bir insan sonucuna odaklanır."
+      "message": "Braavolabs, LifeOS ve Ostinato: iş, yaşam ve müzik için; her biri tek bir insan sonucuna odaklanır.",
+      "listLabel": "Üç amiral ürün; her biri için tek insan sonucu, demo yuvası, kanıt durumu ve ürüne bağlantı",
+      "demoHeading": "Demo yuvası",
+      "demo": {
+        "real": "gerçek ürün testi",
+        "example": "örnek/simülasyon",
+        "soon": "henüz gelmedi"
+      },
+      "proofHeading": "Kanıt durumu",
+      "proof": {
+        "verified": "Doğrulanmış iddia (pencere açık): {count}",
+        "lapsed": "Doğrulama penceresi {date} tarihinde kapandı; doğrulandı diye gösterilmez.",
+        "none": "Henüz doğrulanmış iddia yok."
+      },
+      "go": "{name} sayfasına git",
+      "allProducts": "Tüm ürünler"
     },
     "scene4": {
       "label": "Mühendislik",

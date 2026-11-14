@@ -1030,7 +1030,22 @@
     "scene3": {
       "label": "Products",
       "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome."
+      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
+      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
+      "demoHeading": "Demo slot",
+      "demo": {
+        "real": "real product test",
+        "example": "example / simulation",
+        "soon": "not here yet"
+      },
+      "proofHeading": "Evidence status",
+      "proof": {
+        "verified": "Verified claims (window open): {count}",
+        "lapsed": "Verification window closed on {date}; not shown as verified.",
+        "none": "No verified claim yet."
+      },
+      "go": "Go to {name}",
+      "allProducts": "All products"
     },
     "scene4": {
       "label": "Engineering",
