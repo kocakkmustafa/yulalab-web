@@ -39,7 +39,7 @@ vi.mock("@/components/common/StaggerWords", () => ({ StaggerWords: ({ text }: { 
 vi.mock("@/components/common/Reveal", () => ({ Reveal: ({ children }: { children: ReactNode }) => <div>{children}</div> }));
 
 const NOW = new Date("2026-11-14T12:00:00+03:00");
-const AFTER_ALL = new Date("2026-12-09T12:00:00+03:00");
+const AFTER_ALL = new Date("2027-01-14T12:00:00+03:00");
 const LABELS = { verified: "verified", needsReverification: "needs re-verification" };
 
 afterEach(() => {
@@ -62,12 +62,12 @@ describe("isClaimPresentable", () => {
   });
 
   it("boundary: valid through its own date, withheld from the first instant of the next day (site zone)", () => {
-    expect(isClaimPresentable(claim("2026-12-08"), new Date("2026-12-08T23:59:59+03:00"))).toBe(true);
-    expect(isClaimPresentable(claim("2026-12-08"), new Date("2026-12-09T00:00:00+03:00"))).toBe(false);
+    expect(isClaimPresentable(claim("2027-01-13"), new Date("2027-01-13T23:59:59+03:00"))).toBe(true);
+    expect(isClaimPresentable(claim("2027-01-13"), new Date("2027-01-14T00:00:00+03:00"))).toBe(false);
   });
 
   it("presents a claim that has not expired", () => {
-    expect(isClaimPresentable(claim("2026-12-08"), NOW)).toBe(true);
+    expect(isClaimPresentable(claim("2027-01-13"), NOW)).toBe(true);
   });
 });
 
@@ -77,7 +77,7 @@ describe("today's registry through the gate", () => {
     expect(publicRegistry.flatMap((r) => listPresentableClaims(r, NOW))).toHaveLength(6);
   });
 
-  it("NOW=2026-12-09: the four non-Burun-Farkı claims close the gate by themselves; only the 2 exempt ones remain", () => {
+  it("NOW=2027-01-14: the four non-Burun-Farkı claims close the gate by themselves; only the 2 exempt ones remain", () => {
     const presentable = publicRegistry.flatMap((r) => listPresentableClaims(r, AFTER_ALL));
     expect(presentable.map((c) => c.id).sort()).toEqual(["burunfarki-explainability", "burunfarki-topk-accuracy"]);
     const hidden = allClaims.filter((c) => !isClaimPresentable(c, AFTER_ALL));
@@ -85,10 +85,11 @@ describe("today's registry through the gate", () => {
     expect(hidden.some((c) => c.id.startsWith("burunfarki-"))).toBe(false);
   });
 
-  it("warns about the 4 claims that expire within 30 days of 2026-11-14", () => {
-    const soon = listClaimsExpiringWithin(publicRegistry, NOW, 30);
+  it("warns about the 4 claims that expire within 30 days of 2026-12-20", () => {
+    expect(listClaimsExpiringWithin(publicRegistry, NOW, 30)).toHaveLength(0);
+    const soon = listClaimsExpiringWithin(publicRegistry, new Date("2026-12-20T12:00:00+03:00"), 30);
     expect(soon).toHaveLength(4);
-    expect(new Set(soon.map((s) => s.expiresAt))).toEqual(new Set(["2026-12-08"]));
+    expect(new Set(soon.map((s) => s.expiresAt))).toEqual(new Set(["2027-01-13"]));
   });
 
   it("presenter never calls an expired claim verified", () => {
@@ -121,13 +122,13 @@ describe("/transparency", () => {
     expect(text).toContain("süre 2026-09-18 tarihinde doldu");
   });
 
-  it("NOW=2026-12-09: non-Burun-Farkı statements are gone, dated marker stays; Burun Farkı unchanged", async () => {
+  it("NOW=2027-01-14: non-Burun-Farkı statements are gone, dated marker stays; Burun Farkı unchanged", async () => {
     const text = await body(AFTER_ALL);
     for (const c of allClaims) {
       if (c.id.startsWith("burunfarki-")) expect(text).toContain(c.statementTr);
       else expect(text).not.toContain(c.statementTr);
     }
-    expect(text).toContain("süre 2026-12-08 tarihinde doldu");
+    expect(text).toContain("süre 2027-01-13 tarihinde doldu");
   });
 
   it("two renders at different clocks change the lapsed-marker count (SEC-WEB-01a)", async () => {
@@ -155,7 +156,7 @@ describe("StatCards", () => {
     expect(container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
   });
 
-  it("shows a figure whose claim is still open (LifeOS at 2026-11-14) and withholds it after 2026-12-08", () => {
+  it("shows a figure whose claim is still open (LifeOS at 2026-11-14) and withholds it after 2027-01-13", () => {
     const config = projects.find((p) => p.slug === "lifeos")!;
     const linked = config.stats.find((s) => s.claimId)!;
     const before = render_("lifeos", NOW);
@@ -174,7 +175,7 @@ describe("home experience data and overlay", () => {
     expect(items.every((i) => i.statement !== "")).toBe(true);
   });
 
-  it("NOW=2026-12-09: the 4 gated claims travel redacted, the 2 Burun Farkı claims intact", () => {
+  it("NOW=2027-01-14: the 4 gated claims travel redacted, the 2 Burun Farkı claims intact", () => {
     const items = publicRegistry.flatMap((r) => toExperienceClaims(r, "en", AFTER_ALL));
     const redacted = items.filter((i) => i.withheld);
     expect(redacted).toHaveLength(4);
@@ -194,7 +195,7 @@ describe("home experience data and overlay", () => {
     const live = render(<ProofLedger copy={copy} product={product} today="2026-11-14" />);
     expect(live.container.textContent).toContain(claims[0].statement);
     cleanup();
-    const lapsed = render(<ProofLedger copy={copy} product={product} today="2026-12-09" />);
+    const lapsed = render(<ProofLedger copy={copy} product={product} today="2027-01-14" />);
     expect(lapsed.container.textContent).not.toContain(claims[0].statement);
     expect(screen.getAllByText("STALE").length).toBe(claims.length);
     expect(lapsed.container.textContent).toContain(claims[0].expiresAt);
@@ -208,7 +209,7 @@ describe("Burun Farkı önce=sonra", () => {
 
   it.each([
     ["2026-11-14", NOW],
-    ["2026-12-09", AFTER_ALL],
+    ["2027-01-14", AFTER_ALL],
   ])("claim presentation and exports are unchanged at %s", (_label, now) => {
     expect(listPresentableClaims(bf, now)).toEqual(bf.claims);
     expect(bf.claims.every((c) => isClaimPresentable(c, now))).toBe(true);
