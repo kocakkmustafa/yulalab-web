@@ -27,7 +27,7 @@ export function Scene3Products({
   const lang = locale === "tr" ? "tr" : "en";
   return (
     <div data-scene3-body="true" className="mt-12">
-      <ul role="list" aria-label={t("scene3.listLabel")} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible md:pb-0">
+      <ul role="list" aria-label={t("scene3.listLabel")} className="grid min-w-0 gap-3 md:grid-cols-3 md:gap-4">
         {FLAGSHIP_SLUGS.map((slug) => {
           const project = projects.find((p) => p.slug === slug);
           if (!project) throw new Error(`Scene 3: missing product ${slug}`);
@@ -37,7 +37,7 @@ export function Scene3Products({
             <li
               key={slug}
               data-scene3-cell={slug}
-              className="flex w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-ink-50/15 p-4 md:w-auto md:p-6"
+              className="flex min-w-0 flex-col rounded-2xl border border-ink-50/15 p-4 md:p-6"
             >
               <h3 className="font-display text-xl font-semibold">{project.name}</h3>
               <p className="mt-3 text-base text-ink-100">
@@ -47,18 +47,18 @@ export function Scene3Products({
                 data-scene3-demo={slot}
                 className="mt-3 rounded-xl border border-dashed border-ink-50/25 bg-ink-50/[0.04] p-3 md:mt-5 md:p-4"
               >
-                <p className="sr-only md:not-sr-only md:block font-mono text-[10px] tracking-widest uppercase text-ink-300">
+                <p className="font-mono text-[10px] tracking-widest uppercase text-ink-300">
                   {t("scene3.demoHeading")}
                 </p>
-                <p className="text-sm text-ink-50 md:mt-2">{t(`scene3.demo.${slot}`)}</p>
+                <p className="mt-1 text-sm text-ink-50 md:mt-2">{t(`scene3.demo.${slot}`)}</p>
               </div>
-              <p className="sr-only md:not-sr-only md:mt-4 md:block font-mono text-[10px] tracking-widest uppercase text-ink-300">
+              <p className="mt-3 font-mono text-[10px] tracking-widest uppercase text-ink-300 md:mt-4">
                 {t("scene3.proofHeading")}
               </p>
               <p
                 data-scene3-proof={badge.state}
                 className={
-                  "mt-2 text-sm md:mt-1 " + (badge.state === "verified" ? "text-ink-50" : "text-ink-300")
+                  "mt-1 text-sm " + (badge.state === "verified" ? "text-ink-50" : "text-ink-300")
                 }
               >
                 {badge.state === "verified"

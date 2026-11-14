@@ -76,6 +76,12 @@ describe("Scene 3 flagship cells", () => {
     expect(badge("ostinato")).toBe("none");
   });
 
+  it("has no horizontal scroll container (WCAG 1.4.10 reflow)", () => {
+    const html = render(OPEN);
+    expect(html).not.toMatch(/overflow-x|snap-x/);
+    expect(html).toContain("min-w-0");
+  });
+
   it("uses the Turkish labels in tr", () => {
     const html = render(OPEN, "tr");
     expect(html).toContain("örnek/simülasyon");
