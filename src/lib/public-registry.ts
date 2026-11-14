@@ -381,6 +381,52 @@ export function validateClaimStateDeclared(records: ProductPublicRecord[], now: 
   return errors;
 }
 
+/**
+ * SEC-WEB-01b — the claim shape of the published portfolio-registry.json.
+ * A claim the gate (`isClaimPresentable`) refuses at `now` keeps its identity,
+ * provenance and dates (`id`, `claimState`, `source`, scope, `verifiedAt`,
+ * `expiresAt`) but loses what would narrate it: statements are emptied,
+ * `figures`/`figureWords` dropped, `publishableAsPresentTense` forced false,
+ * and `presentation: "withheld"` marks it. Burun Farkı (`isGateExempt`) claims
+ * and presentable claims are returned untouched (same object).
+ */
+export type ExportedClaim = ProductClaim & {
+  presentation?: "withheld";
+  withheldReason?: "verification-window-closed";
+};
+
+export function withholdIfLapsed(claim: ProductClaim, now: Date): ExportedClaim {
+  if (isClaimPresentable(claim, now)) return claim;
+  // Dropped on purpose: the statement text, the asserted figures and the word forms.
+  const { figures: _figures, figureWords: _figureWords, ...rest } = claim;
+  void _figures;
+  void _figureWords;
+  return {
+    ...rest,
+    statementTr: "",
+    statementEn: "",
+    publishableAsPresentTense: false,
+    presentation: "withheld",
+    withheldReason: "verification-window-closed",
+  };
+}
+
+export const REGISTRY_EXPORT_SCHEMA = {
+  version: 2,
+  notes:
+    "asOf is the site-zone date (Europe/Istanbul) the file was generated for. A claim whose expiresAt was before asOf has its statements emptied and presentation \"withheld\" (Burun Farkı claims are exempt). The file can go stale after asOf: a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone), whatever the file says, and must treat presentation \"withheld\" as no statement.",
+} as const;
+
+/** Pure: the exact JSON object written to public/portfolio-registry.json for `now`. */
+export function buildRegistryExport(records: ProductPublicRecord[], now: Date) {
+  return {
+    generatedAt: "static", // content is a function of source data + asOf, never of the wall clock at write time
+    asOf: siteDate(now),
+    schema: REGISTRY_EXPORT_SCHEMA,
+    products: records.map((r) => ({ ...r, claims: r.claims.map((c) => withholdIfLapsed(c, now)) })),
+  };
+}
+
 /** Lapsed claims that never declared a state — surfaced in reports, never failing the build. */
 export function listUndeclaredLapsedClaims(
   records: ProductPublicRecord[],
