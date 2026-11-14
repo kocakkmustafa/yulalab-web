@@ -616,7 +616,11 @@ body:not(:has([data-yula-experience="true"])) {
 [data-project-index-card] > div:first-child { border: 1px solid rgba(255,255,255,.12); }
 /* Brand-coloured "open page" action: light brand colours (lime, sand) fail
    AA on the light ground, so the light theme mixes them toward the ink. */
-[data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--card-brand) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
+/* Product brand foreground (src/lib/brand-ink.ts): dark tint / light primary per theme. */
+[data-brand-fg] { --brand-fg: var(--brand-d); color: color-mix(in srgb, var(--brand-fg) var(--brand-a, 100%), transparent); }
+:root[data-theme="light"] [data-brand-fg] { --brand-fg: var(--brand-l); }
+@media (prefers-color-scheme: light) { :root:not([data-theme]) [data-brand-fg] { --brand-fg: var(--brand-l); } }
+[data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--brand-fg) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
 @media (max-width: 767px) {
   [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
   [data-site-header="true"] > div > a > span { font-size: 24px; }

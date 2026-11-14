@@ -24,6 +24,7 @@ import { presentClaims } from "@/lib/proof";
 import { DevelopmentPreviewSection } from "@/components/projects/DevelopmentPreviewSection";
 import { developmentPreviews } from "@/data/product-presentations";
 import { text } from "@/lib/localized";
+import { brandInk } from "@/lib/brand-ink";
 import { lifecycleRows } from "@/lib/operating-system";
 
 /**
@@ -412,7 +413,8 @@ function PillarCard({
         </span>
         <span
           className="font-mono text-[10.5px] tracking-widest uppercase"
-          style={{ color: `${p.brand.primary}DD` }}
+          data-brand-fg="true"
+          style={brandInk(p.brand, 87)}
         >
           {label}
         </span>
@@ -435,7 +437,8 @@ function PillarCard({
           <div>
             <div
               className="font-mono text-[10px] tracking-widest uppercase mb-1"
-              style={{ color: `${p.brand.primary}CC` }}
+              data-brand-fg="true"
+              style={brandInk(p.brand, 80)}
             >
               {detailLabel}
             </div>
@@ -451,7 +454,8 @@ function PillarCard({
       <Link
         href={`/projects/${slug}`}
         className="mt-6 inline-flex items-center gap-2 text-[13.5px] text-ink-100 self-start link-wipe focusable"
-        style={{ color: p.brand.primary }}
+        data-brand-fg="true"
+        style={brandInk(p.brand)}
       >
         {cta} {p.name}
         <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />

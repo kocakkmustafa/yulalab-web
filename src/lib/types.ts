@@ -12,6 +12,8 @@ export type ProjectKind = "web" | "mobile" | "platform" | "research";
 export type ProjectBrand = {
   /** Hero / call-to-action color. */
   primary: string;
+  /** Optional lighter tint of `primary` for text/icons on the dark theme, set only when `primary` is below 4.5:1 / 3:1 there. */
+  primaryOnDark?: string;
   /** Secondary accent (gradients, hover states). */
   secondary: string;
   /** Tertiary highlight color. */

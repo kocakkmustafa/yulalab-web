@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
@@ -11,6 +11,7 @@ import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import { zoomThrough } from "@/lib/zoom-through";
 import { ALPHA, HAIRLINE } from "@/lib/color";
+import { brandInk } from "@/lib/brand-ink";
 import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
 type ProductAsset = Extract<ProjectAsset, { kind: "product" }>;
@@ -77,7 +78,8 @@ function CompactCard({ project, copy }: { project: ProjectConfig; copy: ProjectC
         <span className="text-[13px] text-ink-200">{t("explore")}</span>
         <span
           className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-hairline group-hover:border-hairline-strong transition-colors"
-          style={{ color: project.brand.primary }}
+          data-brand-fg="true"
+          style={brandInk(project.brand)}
         >
           <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
         </span>
@@ -190,7 +192,8 @@ function BigCard({
           <span
             data-card-action="true"
             className="inline-flex items-center gap-2 text-[13.5px]"
-            style={{ "--card-brand": p.brand.primary } as CSSProperties}
+            data-brand-fg="true"
+            style={brandInk(p.brand)}
           >
             <span className="arrow-nudge inline-flex">{tc("openPage")}</span>
             <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
