@@ -27,7 +27,7 @@ export function Scene3Products({
   const lang = locale === "tr" ? "tr" : "en";
   return (
     <div data-scene3-body="true" className="mt-12">
-      <ul role="list" aria-label={t("scene3.listLabel")} className="grid gap-4 md:grid-cols-3">
+      <ul role="list" aria-label={t("scene3.listLabel")} className="flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:overflow-visible md:pb-0">
         {FLAGSHIP_SLUGS.map((slug) => {
           const project = projects.find((p) => p.slug === slug);
           if (!project) throw new Error(`Scene 3: missing product ${slug}`);
@@ -37,7 +37,7 @@ export function Scene3Products({
             <li
               key={slug}
               data-scene3-cell={slug}
-              className="flex flex-col rounded-2xl border border-ink-50/15 p-5 md:p-6"
+              className="flex w-[82%] shrink-0 snap-start flex-col rounded-2xl border border-ink-50/15 p-4 md:w-auto md:p-6"
             >
               <h3 className="font-display text-xl font-semibold">{project.name}</h3>
               <p className="mt-3 text-base text-ink-100">
@@ -45,20 +45,20 @@ export function Scene3Products({
               </p>
               <div
                 data-scene3-demo={slot}
-                className="mt-5 rounded-xl border border-dashed border-ink-50/25 bg-ink-50/[0.04] p-4"
+                className="mt-3 rounded-xl border border-dashed border-ink-50/25 bg-ink-50/[0.04] p-3 md:mt-5 md:p-4"
               >
-                <p className="font-mono text-[10px] tracking-widest uppercase text-ink-300">
+                <p className="sr-only md:not-sr-only md:block font-mono text-[10px] tracking-widest uppercase text-ink-300">
                   {t("scene3.demoHeading")}
                 </p>
-                <p className="mt-2 text-sm text-ink-50">{t(`scene3.demo.${slot}`)}</p>
+                <p className="text-sm text-ink-50 md:mt-2">{t(`scene3.demo.${slot}`)}</p>
               </div>
-              <p className="mt-4 font-mono text-[10px] tracking-widest uppercase text-ink-300">
+              <p className="sr-only md:not-sr-only md:mt-4 md:block font-mono text-[10px] tracking-widest uppercase text-ink-300">
                 {t("scene3.proofHeading")}
               </p>
               <p
                 data-scene3-proof={badge.state}
                 className={
-                  "mt-1 text-sm " + (badge.state === "verified" ? "text-ink-50" : "text-ink-300")
+                  "mt-2 text-sm md:mt-1 " + (badge.state === "verified" ? "text-ink-50" : "text-ink-300")
                 }
               >
                 {badge.state === "verified"
@@ -70,7 +70,7 @@ export function Scene3Products({
               <a
                 href={localePath(locale, `/projects/${slug}`)}
                 data-scene3-go={slug}
-                className="focusable mt-5 inline-flex min-h-[44px] items-center underline underline-offset-4 hover:text-ink-50"
+                className="focusable mt-auto inline-flex min-h-[44px] pt-2 items-center underline underline-offset-4 hover:text-ink-50"
               >
                 {t("scene3.go", { name: project.name })}
               </a>
