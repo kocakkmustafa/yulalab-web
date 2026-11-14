@@ -733,9 +733,9 @@
     {
       "path": "src/components/common/JsonLd.tsx",
       "publishedSha256": "cb8bfef11d39d048126221d8c62326cb6be44076a7ada8021fcce98e5ea51bc8",
-      "candidateSha256": "2139750735a3be0988d5212de8b24ba9b2495e51ba32f2b836a2fcb35318b7ae",
+      "candidateSha256": "81e4ac0ba45687afff84f151ab1126a0f5e97fc99e2fb437a4eda35559133c98",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. REL-03 publisher/data-controller record applied from the user-confirmed input (2026-10-24; controller line without a repeated legal name). Counsel-approved legal additions + founder decisions 2026-10-29 (Motion Ek A/B, LifeOS A-6/8/9/11/12/13/15/16/18/24/28, Braavolabs A-3; sole proprietorship, email only, no postal address; retention periods; no transfer-safeguard claim)"
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. REL-03 publisher/data-controller record applied from the user-confirmed input (2026-10-24; controller line without a repeated legal name). Counsel-approved legal additions + founder decisions 2026-10-29 (Motion Ek A/B, LifeOS A-6/8/9/11/12/13/15/16/18/24/28, Braavolabs A-3; sole proprietorship, email only, no postal address; retention periods; no transfer-safeguard claim) WEB-P2 JsonLd halka acik baglanti"
     },
     {
       "path": "src/components/common/ProofCard.tsx",

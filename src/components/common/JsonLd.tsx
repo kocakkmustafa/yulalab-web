@@ -3,6 +3,7 @@ import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import { presentSurfaces } from "@/lib/proof";
+import { firstPublicLink } from "@/lib/store-slots";
 
 /** Canonical production origin for absolute schema.org URLs. */
 const ORIGIN = "https://yulalab.com";
@@ -48,7 +49,7 @@ export function JsonLd({ now = new Date() }: { now?: Date } = {}) {
   const apps = projects.filter((p) => {
     const record = publicRegistry.find((entry) => entry.slug === p.slug);
     if (!record || (record.lifecycle !== "live" && record.lifecycle !== "beta")) return false;
-    const primary = p.links.find((link) => link.kind === (p.primaryCtaKind ?? "web"))?.href;
+    const primary = firstPublicLink(p, p.primaryCtaKind ?? "web");
     return Boolean(primary && presentSurfaces(record, now).some(({ surface, statusConfirmed }) =>
       statusConfirmed && (surface.status === "live" || surface.status === "beta") &&
       surface.url.replace(/\/$/, "") === primary.replace(/\/$/, ""),
@@ -56,8 +57,8 @@ export function JsonLd({ now = new Date() }: { now?: Date } = {}) {
   }).map((p) => {
     const meta = APP_META[p.slug] ?? { category: "MobileApplication", os: "iOS" };
     const canonical =
-      p.links.find((l) => l.kind === "web" && l.href)?.href ??
-      p.links.find((l) => l.kind === "appstore" && l.href)?.href ??
+      firstPublicLink(p, "web") ??
+      firstPublicLink(p, "appstore") ??
       `${ORIGIN}/projects/${p.slug}`;
     return {
       "@type": "SoftwareApplication",
