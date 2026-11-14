@@ -546,6 +546,8 @@ jobs:
       NEXT_TELEMETRY_DISABLED: '1'
       YULA_E2E_PORT: '4192'
       LEADS_ENABLED: '1'
+      # WEB-P1-02: Ostinato ritim demosu bayrağı da build sırasında okunur; açık kip aynı build'de koşar.
+      OSTINATO_DEMO_ENABLED: '1'
     steps:
     - name: Checkout
       uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -566,8 +568,8 @@ jobs:
       run: pnpm build
     - name: Install Chromium
       run: pnpm exec playwright install --with-deps chromium
-    - name: Open-mode e2e (consulting + contact; no retries, so flakiness stays visible)
-      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Open-mode e2e (consulting + contact + ostinato demo; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
     - name: Job özeti
       if: ${{ always() }}
       run: |
