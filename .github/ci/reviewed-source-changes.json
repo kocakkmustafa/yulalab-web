@@ -1604,6 +1604,13 @@
       "candidateSha256": "5f315fcd82d0a032fc01968267f7e2a73b7f8b9f70e549fc7eac6ef3089c8a89",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "BRAND-01d Yula Lab yazimi"
+    },
+    {
+      "path": "scripts/verify-render-mode.mjs",
+      "publishedSha256": "47d0eabc27bfc84525a8344fd883b76607ae53dd5b1b2a685b958e9feebcbafa",
+      "candidateSha256": "bca7e503996accd15007314e504206dedb519840da1220c634d86217a75b3789",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "SEC-WEB-01a revalidate"
     }
   ]
 }
