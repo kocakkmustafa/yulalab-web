@@ -82,7 +82,7 @@
     {
       "path": "public/portfolio-registry.json",
       "publishedSha256": "d89f1a2cd815e9416d8ee3d1147c8dc2f6e564d1d3f84d496c4334cde1fb11f6",
-      "candidateSha256": "d3989a23dcd2118b176ae1ba63fd39b8d9b0b7250ff49035ccf1a2a186389e1d",
+      "candidateSha256": "1507a4d901db8f192765db3ad4a4e789118af155497d5d6816b027c7dc4e3dfa",
       "reason": "Regenerate public JSON from the reviewed 2026-09-23 four-surface public readback source. Preserve all product claims, metrics, expired evidence and Motion records unchanged. Same-day inclusive expiry avoids exceeding the 24-hour proof window. This candidate artifact is not publication evidence. 2026-10-30 Motion stat cards removed instead of registry claims (gate 0c5e168 NONPASS: homepage proof stage and claims e2e depend on Motion having no claims) 2026-11-01 K7 combined candidate (founder decisions K1-K9 relayed by Yonetim; feat/site-vision-content 8ba1991 + feat/ui-reference aaf7e07): finished-product showcase with roadmap labels matched to product main branches, publication status moved to /transparency, K6 prices, store buttons and notify-me mail, internal evidence paths hidden (K9), 14-language instruments/HUD, neutral room palette, Lenis smooth scroll, footer logotype. Local unit, build and full E2E evidence in scratch/2026-10-23-ekip-dagitimi/raporlar/yulalab.tr.md. WEB-UX-05e: /lab + /transparency genişlemesi; sitemap, middleware, ürün sayfası durum bağlantısı, 12 dil içerik yedeği SEC-WEB-01b portfolio registry",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
@@ -1384,7 +1384,7 @@
     {
       "path": "src/lib/public-registry.ts",
       "publishedSha256": "ef2c740a6a50b76cbd130f95c69c2a4c33f2a43e2d8570896423e89a4a0c0b83",
-      "candidateSha256": "de7cf406f2a76145c7c810caf96f148b8f6f28ac69e0d4907039e9244cb0dc59",
+      "candidateSha256": "c824e669dbdc22b33187515313c12d45e187470770bdcd3b475e738c89ceb086",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-04 (2026-11-08): claim state/verification method fields, consistency rules, derived stale, withheld kind and build gate; Braavolabs x3 and LifeOS source claims re-verified (braavolabs/platform@f3f753272e1b, lifeos/app@a010a550c052); statement date refreshed in 12 locale files. Local lint/typecheck/vitest/translations/claims evidence; candidate-only, no publication assertion. | WEB-UX-05e: /lab + /transparency genişlemesi; sitemap, middleware, ürün sayfası durum bağlantısı, 12 dil içerik yedeği SEC-WEB-01: main (#93 d7bfc6d) ile tazeleme SEC-WEB-01b portfolio registry"
     },
@@ -1608,7 +1608,7 @@
     {
       "path": "scripts/export-public-registry.ts",
       "publishedSha256": "3c9b6cd98867ed12b473099e8dca8783e288e35cb93772912aafbfdc9860529f",
-      "candidateSha256": "cbba4249a2ac08196c7f650c51282e46e3fd0ffb3875f050b2094b9a1992f442",
+      "candidateSha256": "a841996efa3febf4d7ae0038ad4adcc3e2f51bd4751ba1a0c8b924ef0ba03ff2",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "SEC-WEB-01b portfolio registry"
     }
