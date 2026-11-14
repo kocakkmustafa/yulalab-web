@@ -14,6 +14,9 @@ from pathlib import Path, PurePosixPath
 HANDLER = "___netlify-server-handler"
 MIDDLEWARE = "___netlify-edge-handler-src-middleware"
 GENERATOR = "@netlify/plugin-nextjs@5.16.2"
+# Repo-owned scheduled functions (netlify/functions/*.ts, WEB-P0-07b), pinned by name.
+# Netlify's own bundler emits them with no generator key; runtimeVersion follows AWS_LAMBDA_JS_RUNTIME like the handler.
+SCHEDULED = {"mail-drain": "*/15 * * * *", "purge-daily": "0 1 * * *"}
 MIDDLEWARE_PATTERN = (
     r"^(?:/(_next/data/[^/]{1,}))?(?:/((?!api|_next|_vercel|.*\..*).*))"
     r"(\.json|\.rsc|\.segments/.+\.segment\.rsc)?[/#\?]?$"
@@ -295,14 +298,36 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swa
     require(read(f".netlify/functions-internal/{HANDLER}/.next/BUILD_ID").decode().strip() == build_id, "handler build identity mismatch")
     require(read("public/portfolio-registry.json") == read(f"{static_directory}/portfolio-registry.json"), "registry byte mismatch")
     functions = json.loads(regular_file(functions_directory, "manifest.json").read_bytes())
-    require(isinstance(functions["functions"], list) and len(functions["functions"]) == 1, "expected one server function")
-    handler = functions["functions"][0]
-    require(handler["name"] == HANDLER, "server function identity mismatch")
+    listed = functions["functions"]
+    require(isinstance(listed, list) and len(listed) == 1 + len(SCHEDULED), "unexpected server function count")
+    names = [entry.get("name") for entry in listed]
+    require(len(set(names)) == len(names), "duplicate server function")
+    require(set(names) == {HANDLER, *SCHEDULED}, "unexpected server function set")
+    by_name = {entry["name"]: entry for entry in listed}
+    handler = by_name[HANDLER]
     require(handler["generator"] == GENERATOR, "server function generator mismatch")
     require(handler.get("runtimeVersion") == "nodejs24.x", "server function runtime must be explicitly nodejs24.x")
-    zip_path = regular_file(functions_directory, f"{HANDLER}.zip")
-    require(zip_path.stat().st_size > 0, "empty server function zip")
-    require(handler["path"] == str(zip_path), "server function package path mismatch")
+    zip_paths = {}
+    for name in (HANDLER, *SCHEDULED):
+        zip_paths[name] = regular_file(functions_directory, f"{name}.zip")
+        require(zip_paths[name].stat().st_size > 0, "empty server function zip")
+        require(by_name[name]["path"] == str(zip_paths[name]), "server function package path mismatch")
+    zip_path = zip_paths[HANDLER]
+    for name, schedule in SCHEDULED.items():
+        entry = by_name[name]
+        require(entry.get("schedule") == schedule, "scheduled function schedule mismatch")
+        require(entry.get("runtime") == "js", "scheduled function runtime mismatch")
+        require("generator" not in entry, "scheduled function must not carry a generator")
+        require(entry.get("runtimeVersion") == "nodejs24.x", "scheduled function runtime must be explicitly nodejs24.x")
+        require(isinstance(entry.get("mainFile"), str) and
+                Path(entry["mainFile"]).parts[-3:] == ("netlify", "functions", f"{name}.ts"), "scheduled function source mismatch")
+        regular_file(root, f"netlify/functions/{name}.ts")
+        with zipfile.ZipFile(zip_paths[name]) as archive:
+            members = archive.namelist()
+            require(len(members) == len(set(members)), "duplicate scheduled zip member")
+            require(all(safe_archive_name(member) for member in members), "unsafe scheduled zip member path")
+            require(archive.testzip() is None, "scheduled zip CRC mismatch")
+            require(f"netlify/functions/{name}.cjs" in members, "scheduled zip entry missing")
     with zipfile.ZipFile(zip_path) as archive:
         names = archive.namelist()
         require(len(names) == len(set(names)), "duplicate server zip member")
@@ -341,6 +366,7 @@ def validate(root, *, functions_dist=None, edge_functions_dist=None, publish_swa
              ("netlify.toml", "pnpm-lock.yaml", f"{build_directory}/BUILD_ID",
               f"{build_directory}/prerender-manifest.json", f"{static_directory}/portfolio-registry.json")]
     paths += [regular_file(functions_directory, "manifest.json"), zip_path,
+              *[zip_paths[name] for name in SCHEDULED],
               regular_file(edge_directory, "manifest.json"), *edge_assets]
     files = []
     for artifact_path in paths:
