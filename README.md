@@ -1,8 +1,8 @@
 <div align="center">
 
-# YULA Lab — Umbrella Site
+# Yula Lab — Umbrella Site
 
-**[yulalab.com](https://yulalab.com)** · The public marketing and showcase site for YULA Lab — an independent product lab designing AI-native, data-driven products that simplify everyday life.
+**[yulalab.com](https://yulalab.com)** · The public marketing and showcase site for Yula Lab — an independent product lab designing AI-native, data-driven products that simplify everyday life.
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org)
 [![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev)
@@ -133,7 +133,7 @@ src/
 │   ├── manifesto/, contact/     # Page-specific bits
 │   └── common/                  # Atoms (icons, monogram, marks, banner)
 ├── data/
-│   ├── company.ts               # YULA Lab identity (vision, mission, socials)
+│   ├── company.ts               # Yula Lab identity (vision, mission, socials)
 │   └── projects/                # One file per venture
 ├── i18n/                        # next-intl routing, navigation, request config
 ├── lib/                         # types.ts, utils.ts
@@ -142,7 +142,7 @@ messages/
 ├── tr.json                      # Turkish copy
 └── en.json                      # English copy
 public/
-├── brand/                       # YULA Lab logo / banner
+├── brand/                       # Yula Lab logo / banner
 ├── projects/<slug>/             # Per-project brand assets
 ├── icon.svg, apple-icon.svg
 └── manifest.webmanifest

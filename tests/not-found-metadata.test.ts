@@ -32,7 +32,7 @@ describe("locale-aware not-found metadata", () => {
         type: "website",
         locale: expected.ogLocale,
         url: expected.canonical,
-        siteName: "YULA Lab",
+        siteName: "Yula Lab",
         title: expected.title,
         description: expected.description,
       });

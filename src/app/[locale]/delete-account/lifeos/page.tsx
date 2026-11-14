@@ -46,7 +46,7 @@ export default async function LifeosAccountDeletionPage({
             ← {text(locale, "LifeOS gizlilik politikası", "LifeOS privacy policy")}
           </Link>
 
-          <div className="mt-6"><EyebrowChip>LifeOS · YULA Lab</EyebrowChip></div>
+          <div className="mt-6"><EyebrowChip>LifeOS · Yula Lab</EyebrowChip></div>
           <h1 className="mt-6 font-display font-extrabold text-ink-50 leading-[0.96] tracking-tightest text-[40px] sm:text-[52px] md:text-[60px]">
             {text(locale, "LifeOS hesabını ve verilerini silme", "Delete your LifeOS account and data")}
           </h1>

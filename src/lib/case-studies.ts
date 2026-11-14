@@ -128,7 +128,7 @@ export type CaseStudy = {
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 /** The only grantor a self-owned case may name. */
-const SELF_OWNER = "YULA Lab";
+const SELF_OWNER = "Yula Lab";
 
 function bothLanguages(label: string, tr: string, en: string): string[] {
   const errors: string[] = [];

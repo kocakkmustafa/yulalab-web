@@ -69,8 +69,8 @@ for (const [label, path] of ROUTES) {
 }
 
 for (const [locale, path, homeName, linearName, languageName] of [
-  ["tr", "/?capture=1&progress=0&tier=low", "YULA Lab — Ana sayfa", "2D — Doğrusal deneyim", "Dil"],
-  ["en", "/en?capture=1&progress=0&tier=low", "YULA Lab — Home", "2D — Linear experience", "Language"],
+  ["tr", "/?capture=1&progress=0&tier=low", "Yula Lab — Ana sayfa", "2D — Doğrusal deneyim", "Dil"],
+  ["en", "/en?capture=1&progress=0&tier=low", "Yula Lab — Home", "2D — Linear experience", "Language"],
 ] as const) {
   test(`visible control labels remain inside their accessible names (${locale})`, async ({ page }) => {
     await page.goto(path, { waitUntil: "domcontentloaded" });

@@ -5,7 +5,7 @@ import { getProjectBySlug, getProjectSlugs } from "@/data/projects";
 export const runtime = "nodejs";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
-export const alt = "YULA Lab venture showcase card";
+export const alt = "Yula Lab venture showcase card";
 
 export function generateStaticParams() {
   return getProjectSlugs().map((slug) => ({ slug }));
@@ -119,7 +119,7 @@ export default async function ProjectOgImage({
             >
               YL
             </div>
-            <span style={{ display: "flex" }}>YULA Lab</span>
+            <span style={{ display: "flex" }}>Yula Lab</span>
           </div>
 
           <div

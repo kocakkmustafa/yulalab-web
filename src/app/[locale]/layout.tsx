@@ -67,7 +67,7 @@ export async function generateMetadata({
     metadataBase: new URL(siteOrigin()),
     title: {
       default: t("title"),
-      template: "%s · YULA Lab",
+      template: "%s · Yula Lab",
     },
     description: t("description"),
     applicationName: company.name,

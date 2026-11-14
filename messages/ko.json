@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — 내일의 제품을 오늘 설계합니다.",
-    "description": "YULA Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다."
+    "title": "Yula Lab — 내일의 제품을 오늘 설계합니다.",
+    "description": "Yula Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다."
   },
   "header": {
     "home": "홈",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "제품 연구소 · 튀르키예",
     "heroTitle": "내일의 제품을 오늘 설계합니다.",
-    "heroDescription": "YULA Lab은 일상을 단순하게 만드는 AI 기반·데이터 중심 제품을 설계하는 독립 제품 연구소입니다. 모든 프로젝트는 미적 완성도, 윤리, 실질적 영향이 만나는 지점에서 만들어집니다.",
+    "heroDescription": "Yula Lab은 일상을 단순하게 만드는 AI 기반·데이터 중심 제품을 설계하는 독립 제품 연구소입니다. 모든 프로젝트는 미적 완성도, 윤리, 실질적 영향이 만나는 지점에서 만들어집니다.",
     "heroMeta": {
       "products": "제품 8개",
       "studio": "연구소 1곳",
@@ -81,7 +81,7 @@
     "bannerCaption": "제품 · 연구소 · 튀르키예",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "비전",
-    "visionBody": "자신의 데이터를 활용하는 도구는 데이터를 누구에게도 넘기지 않고도 작동할 수 있습니다. YULA Lab은 이것이 기술적으로뿐 아니라 사업적으로도 가능함을 보여주기 위해 존재합니다.",
+    "visionBody": "자신의 데이터를 활용하는 도구는 데이터를 누구에게도 넘기지 않고도 작동할 수 있습니다. Yula Lab은 이것이 기술적으로뿐 아니라 사업적으로도 가능함을 보여주기 위해 존재합니다.",
     "missionEyebrow": "미션",
     "missionBody": "모든 제품은 측정 가능한 주장을 제시하며, 결과가 우리에게 유리하든 아니든 그 수치를 페이지에 남깁니다. 사용자는 무엇을 얻을 수 있고 무엇을 얻을 수 없는지 알 수 있습니다.",
     "manifestoNote": "네 가지 가치를 바탕으로 한 엔지니어링 문화.",
@@ -95,12 +95,12 @@
       "manifesto": "선언문",
       "projeler": "프로젝트",
       "seffaflik": "투명성",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "1인 AI 제품 연구소 · 튀르키예",
     "heroTitleA": "소수의 제품.",
     "heroTitleB": "오래도록 깊이 고민합니다.",
-    "heroLede": "YULA Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다.",
+    "heroLede": "Yula Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다.",
     "heroCta": "포트폴리오 보기",
     "scrollHint": "스크롤하여 계속하기",
     "visionKicker": "01 — 비전과 미션",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "선언문",
     "title": "서두르기보다 제대로 만듭니다.",
-    "intro": "YULA Lab은 유행보다 근거를 중시하는 독립 제품 연구소입니다. 각 제품은 절제되고 투명한 설계로 사람의 삶에 측정 가능한 변화를 만든다는 하나의 원칙을 서로 다른 모습으로 구현합니다.",
+    "intro": "Yula Lab은 유행보다 근거를 중시하는 독립 제품 연구소입니다. 각 제품은 절제되고 투명한 설계로 사람의 삶에 측정 가능한 변화를 만든다는 하나의 원칙을 서로 다른 모습으로 구현합니다.",
     "nameEyebrow": "이름",
     "nameTitle": "Yula: 길을 밝혀주는 빛.",
     "nameBody": "Yula는 어둠 속에서 길을 안내하는 작고 꾸준한 빛을 뜻합니다. Lab은 실험, 측정, 반복의 규율로 그 빛을 뒷받침합니다. 둘을 합치면 우리의 방식이 됩니다. 과하지 않은 따뜻함, 요란하지 않은 안내입니다.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "투명성",
     "title": "블랙박스는 없습니다. 언제나.",
-    "intro": "YULA Lab에서 투명성은 기능이 아니라 기본입니다. 모든 제품은 같은 약속을 합니다. 모델, 비용, 데이터를 직접 확인할 수 있습니다. AI 제품을 쓰면서 눈을 감아야 해서는 안 됩니다.",
+    "intro": "Yula Lab에서 투명성은 기능이 아니라 기본입니다. 모든 제품은 같은 약속을 합니다. 모델, 비용, 데이터를 직접 확인할 수 있습니다. AI 제품을 쓰면서 눈을 감아야 해서는 안 됩니다.",
     "promiseEyebrow": "우리의 약속",
     "promiseBody": "제품 페이지에서 기록된 주장, 출처, 알려진 한계를 공유합니다. 검증 날짜와 범위를 함께 표시하며 만료된 기록을 최신 근거로 제시하지 않습니다.",
     "pillarsEyebrow": "핵심 제품 세 개, 투명성을 구현하는 세 방식",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · 독립 제품 연구소",
       "title": "소수의 제품. 오래도록 깊이 고민합니다.",
-      "lede": "YULA Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다.",
+      "lede": "Yula Lab은 자체 제품을 개발하고 업무 흐름 진단부터 프로토타입, 통합, 평가까지 AI 컨설팅을 제공합니다.",
       "notice": "기록과 출처는 투명성 페이지에 있습니다.",
       "scroll": "스크롤하여 계속하기"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

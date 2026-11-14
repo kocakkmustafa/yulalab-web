@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — Geleceğin ürünlerini bugün tasarlıyoruz.",
-    "description": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme."
+    "title": "Yula Lab — Geleceğin ürünlerini bugün tasarlıyoruz.",
+    "description": "Yula Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme."
   },
   "header": {
     "home": "Ana Sayfa",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "Ürün Laboratuvarı · Türkiye",
     "heroTitle": "Geleceğin ürünlerini bugün tasarlıyoruz.",
-    "heroDescription": "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
+    "heroDescription": "Yula Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
     "heroMeta": {
       "products": "8 ürün",
       "studio": "1 laboratuvar",
@@ -81,7 +81,7 @@
     "bannerCaption": "PRODUCT · LAB · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Vizyon",
-    "visionBody": "İnsanın kendi verisiyle çalışan araçlar, o veriyi kimseye teslim etmeden çalışabilir. YULA Lab bunun yalnız teknik olarak değil, ticari olarak da mümkün olduğunu göstermek için var.",
+    "visionBody": "İnsanın kendi verisiyle çalışan araçlar, o veriyi kimseye teslim etmeden çalışabilir. Yula Lab bunun yalnız teknik olarak değil, ticari olarak da mümkün olduğunu göstermek için var.",
     "missionEyebrow": "Misyon",
     "missionBody": "Her ürün ölçülebilir bir iddia ile çıkar; sayı iyi de olsa kötü de olsa aynı sayfada durur. Kullanıcı ne aldığını ve neyi almadığını bilir.",
     "manifestoNote": "Dört değer üzerine kurulu bir mühendislik kültürü.",
@@ -95,12 +95,12 @@
       "manifesto": "Manifesto",
       "projeler": "Projeler",
       "seffaflik": "Şeffaflık",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "Tek kişilik AI ürün laboratuvarı · Türkiye",
     "heroTitleA": "Az sayıda ürün.",
     "heroTitleB": "Uzun süre üzerinde düşünülmüş.",
-    "heroLede": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
+    "heroLede": "Yula Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
     "heroCta": "Portföyü gör",
     "scrollHint": "Kaydırarak ilerleyin",
     "visionKicker": "01 — Vizyon & Misyon",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "Manifesto",
     "title": "Aceleyle değil, özenle.",
-    "intro": "YULA Lab; trende değil, kanıta yaslanan bağımsız bir ürün laboratuvarı. Ürünlerimizin her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.",
+    "intro": "Yula Lab; trende değil, kanıta yaslanan bağımsız bir ürün laboratuvarı. Ürünlerimizin her biri aynı disiplinin farklı yüzü: insan hayatında ölçülebilir bir farkı, abartısız ve şeffaf bir tasarımla yaratmak.",
     "nameEyebrow": "İsim",
     "nameTitle": "Yula: yol gösteren ışık.",
     "nameBody": "Yula, karanlıkta yön gösteren küçük ama güvenilir ışığın adı. Lab ise onun tam karşılığı bir disiplin: deney, ölçüm, tekrar. İki kelime bir araya gelince ortaya çıkan şey budur — sıcaklığı olan ama abartmayan, ışık tutan ama gösteriş yapmayan bir çalışma biçimi.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "Şeffaflık",
     "title": "Kara kutu değil. Hiçbir zaman.",
-    "intro": "YULA Lab'te şeffaflık bir özellik değil — varsayılan. Her ürünümüz aynı söze sahip: modeli, maliyeti, veriyi nasıl tuttuğumuzu açıkça gösteririz. Bir AI ürününü kullanıyorsunuz; gözünüzü kapatmak zorunda değilsiniz.",
+    "intro": "Yula Lab'te şeffaflık bir özellik değil — varsayılan. Her ürünümüz aynı söze sahip: modeli, maliyeti, veriyi nasıl tuttuğumuzu açıkça gösteririz. Bir AI ürününü kullanıyorsunuz; gözünüzü kapatmak zorunda değilsiniz.",
     "promiseEyebrow": "Verdiğimiz söz",
     "promiseBody": "Ürün sayfalarında kayda aldığımız iddiaları, kaynaklarını ve bilinen sınırlarını paylaşırız. Doğrulama tarihini ve kapsamını birlikte gösterir, süresi dolmuş kayıtları güncel kanıt olarak sunmayız.",
     "pillarsEyebrow": "Üç temel ürün, üç farklı şeffaflık mekaniği",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · BAĞIMSIZ ÜRÜN LABORATUVARI",
       "title": "Az sayıda ürün. Uzun süre düşünülmüş.",
-      "lede": "YULA Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
+      "lede": "Yula Lab kendi ürünlerini geliştirir ve AI danışmanlığı sunar: iş akışı değerlendirmesinden prototipe, entegrasyona ve ölçüme.",
       "notice": "Kayıtlar ve kaynaklar şeffaflık sayfasında.",
       "scroll": "Kaydırarak ilerleyin"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Kimlik",
       "title": "Teknolojiyi daha karmaşık değil, hayatı daha mümkün kılmak için inşa ediyoruz.",
-      "message": "YULA Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır.",
+      "message": "Yula Lab; kişisel yaşam, dijital çalışma ve müzik öğreniminde gerçek sonuçlara odaklanan bağımsız bir ürün ve mühendislik laboratuvarıdır.",
       "ctaProducts": "Ürünleri keşfet",
       "ctaHow": "Nasıl çalıştığımızı gör",
       "ctaLabel": "Ana yollar",
@@ -1062,7 +1062,7 @@
       "note": "“Mevcut yetenek”, ilgili ürün için ürün kaydında yazılı olan demektir; bağımsız bir doğrulama ya da ölçüm değildir. Ürün durumu iOS içindir; Android kapalı testtedir. “Planlanan”, ilerlediğimiz yöndür; ürünlerin bugün yaptığı bir şey değildir. Ürünler ayrı kalır: ortak bir model ve ortak bir veritabanı yoktur.",
       "linksLabel": "İlgili sayfalar",
       "linkOperatingSystem": "Bu laboratuvar nasıl çalışır",
-      "linkStudio": "Studio: YULA Lab ile birlikte inşa et",
+      "linkStudio": "Studio: Yula Lab ile birlikte inşa et",
       "linkTransparency": "Şeffaflık",
       "principles": {
         "p1": {

@@ -28,7 +28,7 @@ function goodCase(): CaseStudy {
     titleEn: "Fixture case",
     permission: {
       kind: "self-owned",
-      grantedBy: "YULA Lab",
+      grantedBy: "Yula Lab",
       grantedAt: "2026-08-01",
       scopeTr: "Ürün YULA'ya ait; kişi/müşteri kimliği paylaşılmıyor.",
       scopeEn: "Product is YULA-owned; no person or customer identity is shared.",
