@@ -157,7 +157,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "tests/stat-cards.test.tsx": "4f753787330a7b9a28be85873059a447bccc11fb736d9572d87d2d70d0c27cb3",
     "tests/stat-number-locales.test.tsx": "19d81b2e70dce6325f945a18c821104a49a144e763bad8cdcdef2d5f7bbbd716",
     "tests/theme-boot.test.ts": "170758f19a13b86ea9337d0eb2020febbf7a1b1c2af9fa2fa4c932848e5e16cc",
-    "tests/theme.test.tsx": "4086ad19c6e6c46e774b45e1743475d477fe38794cc5fff43aba737a258048fe"
+    "tests/theme.test.tsx": "12f859d49202e5c0c305b1ababc81431ad688b59902e2e475b9f29ca96e8efca"
 }
 # END REVIEWED THEME14 SOURCE HASHES
 EXPECTED_REVIEWED_HASHES = {
