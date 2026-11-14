@@ -6,7 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { ProductUniverse, type UniverseItem } from "@/components/universe/ProductUniverse";
 import { projects } from "@/data/projects";
 import { groupProducts } from "@/lib/product-index";
-import { storeSlotsOf } from "@/lib/store-slots";
+import { CLOSED_TEST_HREF, firstPublicLink, isPublicHref, storeSlotsOf } from "@/lib/store-slots";
 import type { ProjectConfig } from "@/lib/types";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
@@ -64,6 +64,35 @@ describe("storeSlotsOf", () => {
         expect(s.href ?? "").not.toMatch(/testflight|apps\/(testing|internaltest)/i);
       }
     }
+  });
+
+  it("recognises beta.itunes and play apps/test links as closed test", () => {
+    for (const href of [
+      "https://beta.itunes.apple.com/v1/app/123",
+      "https://play.google.com/apps/test/com.example.app/1",
+      "https://play.google.com/apps/testing/com.example.app",
+    ]) {
+      expect(CLOSED_TEST_HREF.test(href)).toBe(true);
+      expect(isPublicHref(href)).toBe(false);
+    }
+    expect(isPublicHref("https://apps.apple.com/app/id1")).toBe(true);
+    expect(isPublicHref("https://play.google.com/store/apps/details?id=a.b")).toBe(true);
+    expect(isPublicHref(undefined)).toBe(false);
+  });
+
+  it("firstPublicLink skips a leading closed-test link and picks the first public one", () => {
+    const p: ProjectConfig = {
+      ...bySlug("lifeos"),
+      links: [
+        { kind: "appstore", href: "https://testflight.apple.com/join/X" },
+        { kind: "appstore", href: "https://apps.apple.com/app/id1" },
+        { kind: "appstore", href: "https://apps.apple.com/app/id2" },
+        { kind: "playstore", href: "https://play.google.com/apps/test/a/1" },
+      ],
+    };
+    expect(firstPublicLink(p, "appstore")).toBe("https://apps.apple.com/app/id1");
+    expect(firstPublicLink(p, "playstore")).toBeUndefined();
+    expect(storeSlotsOf(p)?.find((s) => s.kind === "appstore")?.href).toBe("https://apps.apple.com/app/id1");
   });
 
   it("Ostinato has no store link at all while it is coming soon", () => {
