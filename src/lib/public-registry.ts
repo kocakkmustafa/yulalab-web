@@ -414,7 +414,7 @@ export function withholdIfLapsed(claim: ProductClaim, now: Date): ExportedClaim 
 export const REGISTRY_EXPORT_SCHEMA = {
   version: 2,
   notes:
-    "asOf is the site-zone date (Europe/Istanbul) the file was generated for. A claim whose expiresAt was before asOf has its statements emptied and presentation \"withheld\" (Burun Farkı claims are exempt). The file can go stale after asOf: a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone), whatever the file says, and must treat presentation \"withheld\" as no statement.",
+    "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, EXCEPT Burun Farkı claims (id prefix burunfarki-, exempt from the gate, exported unchanged), the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) unless the claim id starts with burunfarki-, and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a non-exempt claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit.",
 } as const;
 
 /** Pure: the exact JSON object written to public/portfolio-registry.json for `now`. */
@@ -425,6 +425,63 @@ export function buildRegistryExport(records: ProductPublicRecord[], now: Date) {
     schema: REGISTRY_EXPORT_SCHEMA,
     products: records.map((r) => ({ ...r, claims: r.claims.map((c) => withholdIfLapsed(c, now)) })),
   };
+}
+
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/;
+
+/** Noon in the site zone for a YYYY-MM-DD day (Istanbul is fixed UTC+3). Null when not a real date. */
+export function dateFromAsOf(day: string): Date | null {
+  if (!ISO_DAY.test(day)) return null;
+  const d = new Date(`${day}T12:00:00+03:00`);
+  return Number.isNaN(d.getTime()) || siteDate(d) !== day ? null : d;
+}
+
+/**
+ * SEC-WEB-01b — `export-public-registry --check`. Errors: unparsable/invalid
+ * or future asOf; a non-exempt claim that lapsed AFTER the file's asOf (the
+ * file would keep publishing its statement); any other byte difference.
+ * Warning only: asOf behind today with no claim lapsed in between.
+ */
+export function checkRegistryExport(
+  existing: string,
+  records: ProductPublicRecord[],
+  now: Date,
+): { errors: string[]; warnings: string[] } {
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  let parsed: { asOf?: unknown };
+  try {
+    parsed = JSON.parse(existing) as { asOf?: unknown };
+  } catch {
+    return { errors: ["public/portfolio-registry.json is not valid JSON — run `npm run export:registry`."], warnings };
+  }
+  const asOf = parsed.asOf;
+  const asOfDate = typeof asOf === "string" ? dateFromAsOf(asOf) : null;
+  if (typeof asOf !== "string" || !asOfDate) {
+    return { errors: ["file has no valid asOf (YYYY-MM-DD) — run `npm run export:registry`."], warnings };
+  }
+  const today = siteDate(now);
+  if (asOf > today) {
+    return { errors: [`asOf ${asOf} is in the future (today ${today}) — run \`npm run export:registry\`.`], warnings };
+  }
+  for (const record of records) {
+    for (const claim of record.claims) {
+      if (isGateExempt(claim) || !claim.expiresAt) continue;
+      if (!isExpired(claim.expiresAt, asOfDate) && isExpired(claim.expiresAt, now)) {
+        errors.push(
+          `portfolio-registry.json bayat: claim ${claim.id} ${claim.expiresAt} tarihinde doldu (asOf ${asOf}); \`npm run export:registry\` ile yeniden üret ve commit'le.`,
+        );
+      }
+    }
+  }
+  if (errors.length) return { errors, warnings };
+  const expected = `${JSON.stringify(buildRegistryExport(records, asOfDate), null, 2)}\n`;
+  if (existing !== expected) {
+    errors.push("public/portfolio-registry.json is stale — run `npm run export:registry` and commit the result.");
+  } else if (asOf < today) {
+    warnings.push(`asOf ${asOf} is behind ${today}; no claim has lapsed since. Consumers must still filter by expiresAt.`);
+  }
+  return { errors, warnings };
 }
 
 /** Lapsed claims that never declared a state — surfaced in reports, never failing the build. */
