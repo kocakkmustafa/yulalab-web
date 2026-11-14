@@ -11,7 +11,7 @@ import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import { zoomThrough } from "@/lib/zoom-through";
 import { ALPHA, HAIRLINE } from "@/lib/color";
-import { brandInk } from "@/lib/brand-ink";
+import { brandInk, monogramPanel } from "@/lib/brand-ink";
 import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
 type ProductAsset = Extract<ProjectAsset, { kind: "product" }>;
@@ -145,7 +145,7 @@ function BigCard({
               className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
               style={{
                 background: p.brand.gradient,
-                opacity: 0.85,
+                opacity: monogramPanel(p.brand).gradientOpacity,
                 transition: "transform 800ms var(--ease-soft)",
               }}
             />
@@ -153,7 +153,7 @@ function BigCard({
               <div
                 className="font-display font-extrabold tracking-tightest leading-none select-none"
                 style={{
-                  color: "rgba(0,0,0,0.55)",
+                  color: `rgba(0,0,0,${monogramPanel(p.brand).glyphAlpha})`,
                   fontSize: "clamp(120px, 20vw, 220px)",
                   fontFamily: p.brand.fontDisplay,
                   textShadow: "0 1px 0 rgba(255,255,255,0.18)",

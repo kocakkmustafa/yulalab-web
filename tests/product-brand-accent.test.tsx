@@ -5,7 +5,10 @@ import { cleanup, render } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { ProductPage } from "@/components/projects/ProductPage";
 import { projects } from "@/data/projects";
-import { brandInk } from "@/lib/brand-ink";
+import { brandInk, monogramPanel } from "@/lib/brand-ink";
+import { ProjectCard } from "@/components/landing/ProjectCard";
+import fs from "node:fs";
+import path from "node:path";
 import { composite, contrast, readGlobalsCss, toRgb } from "../scripts/contrast-audit";
 import tr from "../messages/tr.json";
 
@@ -13,6 +16,7 @@ vi.mock("@/i18n/navigation", () => ({ Link: (props: ComponentProps<"a">) => <a {
 vi.mock("@/components/common/Reveal", () => ({ Reveal: ({ children }: { children: ReactNode }) => <div>{children}</div> }));
 vi.mock("@/components/common/TrackView", () => ({ TrackView: () => null }));
 vi.mock("@/components/common/GlassSheen", () => ({ GlassSheen: () => null }));
+vi.stubGlobal("IntersectionObserver", class { observe() {} unobserve() {} disconnect() {} takeRecords() { return []; } });
 afterEach(cleanup);
 
 const css = readGlobalsCss();
@@ -44,11 +48,35 @@ describe("product page accent follows the app colour", () => {
     expect(root.style.getPropertyValue("--brand-l")).toBe(bySlug(slug).brand.primary);
     expect(root.style.getPropertyValue("--brand-d")).toBe(bySlug(slug).brand.primaryOnDark);
   });
-  it("other products keep their own accent", () => {
+  it.each(["burunfarki", "braavolabs"])("%s keeps its ACCENT-map accent (no theme wiring)", (slug) => {
     const { container } = render(
-      <NextIntlClientProvider locale="tr" messages={tr} timeZone="Europe/Istanbul"><ProductPage project={bySlug("burunfarki")} /></NextIntlClientProvider>,
+      <NextIntlClientProvider locale="tr" messages={tr} timeZone="Europe/Istanbul"><ProductPage project={bySlug(slug)} /></NextIntlClientProvider>,
     );
     expect(container.querySelector("[data-brand-var]")).toBeNull();
+    const expected = { burunfarki: "#7FD8B0", braavolabs: "#D8B87F" }[slug as "burunfarki" | "braavolabs"];
+    const root = container.firstElementChild as HTMLElement;
+    expect(root.style.getPropertyValue("--accent").toLowerCase()).toBe(expected.toLowerCase());
+  });
+});
+
+describe("data-brand-fg stays on the consumers", () => {
+  const copy = { category: "c", tagline: "t", short: "s" };
+  it.each(["ostinato", "lifeos"])("%s: compact and big ProjectCard carry data-brand-fg with the dark tint", (slug) => {
+    const project = bySlug(slug);
+    for (const props of [{ variant: "compact" as const }, { variant: "big" as const, index: 0, total: 2 }]) {
+      const { container, unmount } = render(
+        <NextIntlClientProvider locale="tr" messages={tr} timeZone="Europe/Istanbul"><ProjectCard project={project} copy={copy} {...props} /></NextIntlClientProvider>,
+      );
+      const el = container.querySelector("[data-brand-fg]") as HTMLElement;
+      expect(el, `${props.variant}`).toBeTruthy();
+      expect(el.style.getPropertyValue("--brand-d")).toBe(project.brand.primaryOnDark);
+      unmount();
+    }
+  });
+  it("transparency page keeps data-brand-fg on all three brand-coloured spots", () => {
+    const src = fs.readFileSync(path.resolve(__dirname, "../src/app/[locale]/transparency/page.tsx"), "utf8");
+    expect(src.match(/data-brand-fg="true"/g)?.length).toBe(3);
+    expect(src.match(/brandInk\(/g)?.length).toBeGreaterThanOrEqual(3);
   });
 });
 
@@ -66,11 +94,21 @@ describe("OG card + dark monogram glyph on the app-colour gradient", () => {
     }
     return toRgb(stops[stops.length - 1][0]);
   };
-  it.each(["ostinato", "lifeos"])("%s: dark glyph keeps >=3:1 (large) / >=4.5:1 (OG 'YL') across the glyph band 30-70%", (slug) => {
+  // Real BigCard layers: gradient at monogramPanel opacity over brand.background,
+  // glyph on top, then the card's black overlay (from-black/60 via-black/10 to-black/30,
+  // so 0.10-0.35 across the glyph's vertical extent) over both.
+  it.each(["ostinato", "lifeos"])("%s: card monogram glyph keeps >=3:1 on the real layer stack, glyph band 30-70%", (slug) => {
+    const { gradientOpacity, glyphAlpha } = monogramPanel(bySlug(slug).brand);
+    for (let p = 30; p <= 70; p += 5) for (const overlay of [0.1, 0.2, 0.35]) {
+      const base = composite(toRgb(bySlug(slug).brand.background), [...at(STOPS[slug], p), gradientOpacity] as [number, number, number, number]);
+      const glyph = composite(base, [0, 0, 0, glyphAlpha]);
+      expect(contrast(composite(glyph, [0, 0, 0, overlay]), composite(base, [0, 0, 0, overlay]))).toBeGreaterThanOrEqual(3);
+    }
+  });
+  it.each(["ostinato", "lifeos"])("%s: OG 'YL' badge glyph keeps >=4.5:1 across the band 30-70%", (slug) => {
     for (let p = 30; p <= 70; p += 5) {
       const bg = at(STOPS[slug], p);
-      expect(contrast(composite(bg, [0, 0, 0, 0.55]), bg)).toBeGreaterThanOrEqual(3); // card monogram, 120px+
-      expect(contrast(toRgb(bySlug(slug).brand.background), bg)).toBeGreaterThanOrEqual(4.5); // OG badge
+      expect(contrast(toRgb(bySlug(slug).brand.background), bg)).toBeGreaterThanOrEqual(4.5);
     }
   });
   it.each(["ostinato", "lifeos"])("%s: OG accent on its dark background is >=4.5:1", (slug) => {

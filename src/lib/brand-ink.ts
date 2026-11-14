@@ -14,3 +14,13 @@ export function brandInk(brand: ProjectBrand, alphaPercent = 100): CSSProperties
     "--brand-a": `${brand.primaryOnDark ? 100 : alphaPercent}%`,
   } as CSSProperties;
 }
+
+/**
+ * Fallback monogram panel (ProjectCard BigCard, no product shot): gradient
+ * layer opacity and glyph colour. A deep-purple gradient start needs the full
+ * gradient and an opaque dark glyph to keep >= 3:1 under the card's black
+ * overlay; other products keep the original 0.85 / 0.55.
+ */
+export function monogramPanel(brand: ProjectBrand): { gradientOpacity: number; glyphAlpha: number } {
+  return brand.primaryOnDark ? { gradientOpacity: 1, glyphAlpha: 1 } : { gradientOpacity: 0.85, glyphAlpha: 0.55 };
+}
