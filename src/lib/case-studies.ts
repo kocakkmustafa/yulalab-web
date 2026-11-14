@@ -6,7 +6,7 @@ import {
   spelledMagnitudes,
   stripLabelTokens,
 } from "./figure-match";
-import { isExpired } from "./public-registry";
+import { isExpired, isGateExempt } from "./public-registry";
 import { presentedKindOf } from "./proof";
 
 /**
@@ -382,7 +382,7 @@ export function publishableCaseStudies(
     if (claim.expiresAt && isExpired(claim.expiresAt, now)) return false;
     // WEB-P0-03d: a claim presentClaims withholds cannot carry a case outcome.
     const record = registry.find((r) => r.slug === study.productSlug);
-    if (presentedKindOf(record, claim.id, now) === "withheld") return false;
+    if (!isGateExempt(claim) && presentedKindOf(record, claim.id, now) === "withheld") return false;
     return true;
   });
 }

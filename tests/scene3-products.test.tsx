@@ -67,6 +67,15 @@ describe("Scene 3 flagship cells", () => {
     expect(html).not.toContain("real product test");
   });
 
+  it("badge per cell: braavolabs and lifeos verified while open, ostinato none", () => {
+    const html = render(OPEN);
+    const badge = (slug: string) =>
+      html.match(new RegExp('data-scene3-cell="' + slug + '"[\\s\\S]*?data-scene3-proof="(\\w+)"'))?.[1];
+    expect(badge("braavolabs")).toBe("verified");
+    expect(badge("lifeos")).toBe("verified");
+    expect(badge("ostinato")).toBe("none");
+  });
+
   it("uses the Turkish labels in tr", () => {
     const html = render(OPEN, "tr");
     expect(html).toContain("örnek/simülasyon");
@@ -113,6 +122,16 @@ describe("proofBadgeOf / presentedKindOf", () => {
   it("lapsed once every window closed; unknown claim id is undefined", () => {
     expect(proofBadgeOf(lifeos, AFTER_ALL).state).toBe("lapsed");
     expect(presentedKindOf(lifeos, "no-such-claim", OPEN)).toBeUndefined();
+  });
+  it("a planned burunfarki- claim stays on the journey; the same claim under another id is dropped", () => {
+    const bf = publicRegistry.find((r) => r.slug === "burunfarki") as ProductPublicRecord;
+    const open = day(bf.claims.map((c) => c.expiresAt as string).sort()[0], -1);
+    const mk = (prefix: string): ProductPublicRecord => ({
+      ...bf,
+      claims: bf.claims.slice(0, 1).map((c) => ({ ...c, id: prefix + "-x", claimState: "planned" as const })),
+    });
+    expect(toExperienceClaims(mk("burunfarki"), "en", open)).toHaveLength(1);
+    expect(toExperienceClaims(mk("other"), "en", open)).toHaveLength(0);
   });
   it("the journey drops withheld claims at the source", () => {
     const record = planned({ claimState: "planned", expiresAt: expiries[expiries.length - 1] });

@@ -372,6 +372,27 @@ describe("published case studies", () => {
     const beforeClaimExpiry = new Date(`${claim.expiresAt}T00:00:00+03:00`);
     const afterClaimExpiry = new Date("2099-01-01T00:00:00+03:00");
 
+    it("a planned burunfarki- claim (gate-exempt) keeps its case; a non-exempt planned claim drops it", () => {
+      const c = fresh();
+      c.expiresAt = "2099-01-01";
+      const withState = (id: string) =>
+        publicRegistry.map((r) =>
+          r.slug !== "burunfarki"
+            ? r
+            : {
+                ...r,
+                claims: r.claims.map((k) =>
+                  k.id === "burunfarki-topk-accuracy" ? { ...k, id, claimState: "planned" as const } : k,
+                ),
+              },
+        );
+      // Exempt id prefix: stays published although the copy is declared planned.
+      expect(publishableCaseStudies([c], withState("burunfarki-topk-accuracy"), beforeClaimExpiry)).toHaveLength(1);
+      // Same copy under a non-exempt id: the withheld branch drops the case.
+      const other = { ...c, outcome: { ...c.outcome, claimId: "other-topk-accuracy" } };
+      expect(publishableCaseStudies([other], withState("other-topk-accuracy"), beforeClaimExpiry)).toHaveLength(0);
+    });
+
     it("publishes a valid, in-window case", () => {
       const c = fresh();
       c.expiresAt = "2099-01-01";

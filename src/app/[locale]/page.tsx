@@ -267,7 +267,7 @@ export default async function LandingPage({
   return (
     <>
       <YulaExperience products={experienceProducts} copy={copy} />
-      <HomeScenes locale={locale} />
+      <HomeScenes locale={locale} now={now} />
     </>
   );
 }
