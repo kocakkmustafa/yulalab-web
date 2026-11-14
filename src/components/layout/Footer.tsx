@@ -27,7 +27,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
         <div className="col-span-2 md:col-span-1">
           <div className="flex items-center gap-2.5">
             <YulaMark />
-            <span className="font-display font-semibold">YULA Lab</span>
+            <span className="font-display font-semibold">Yula Lab</span>
           </div>
           <p className="mt-4 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
             {t("tagline")}

@@ -8,6 +8,7 @@ import { ThemeControl } from "@/components/theme/ThemeControl";
 import { THEME_COPY, themeCopy } from "@/components/theme/theme-copy";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
+import { audit, parseBlocks, readGlobalsCss, MIN_RATIO, MIN_NON_TEXT_RATIO } from "../scripts/contrast-audit";
 
 let dark = false;
 let listeners: Set<(event: MediaQueryListEvent) => void>;
@@ -140,4 +141,27 @@ describe("actual theme provider and native control, local synthetic environment"
     }
     expect(() => themeCopy("xx")).toThrow("Unsupported theme locale");
   });
+});
+
+// Ortak kural adları (docs/design-tokens.md) -> aynı kontrast çiftleri ve eşikler (scripts/contrast-audit.ts).
+describe("ortak kural adlarıyla kontrast eşikleri", () => {
+  const rows = audit(parseBlocks(readGlobalsCss()));
+  const roles: Record<string, { tokens: string[]; min: number }> = {
+    "a11y.contrast.text": { tokens: ["ink-50", "ink-100", "ink-200", "ink-300", "ink-400", "focus", "warning", "warning-strong", "success", "success-strong", "danger", "exp-accent"], min: MIN_RATIO },
+    "a11y.contrast.ui": { tokens: ["control-line"], min: MIN_NON_TEXT_RATIO },
+    "color.role.success": { tokens: ["success", "success-strong"], min: MIN_RATIO },
+    "color.role.warning": { tokens: ["warning", "warning-strong"], min: MIN_RATIO },
+    "color.role.danger": { tokens: ["danger"], min: MIN_RATIO },
+    "color.role.focus": { tokens: ["focus"], min: MIN_RATIO },
+    "color.role.text-muted": { tokens: ["ink-400"], min: MIN_RATIO },
+  };
+  for (const [rule, { tokens, min }] of Object.entries(roles)) {
+    it(`${rule} >= ${min}:1 in both themes`, () => {
+      const scoped = rows.filter((row) => tokens.includes(row.fg));
+      expect(scoped.length).toBeGreaterThan(0);
+      expect(new Set(scoped.map((row) => row.theme))).toEqual(new Set(["dark", "light"]));
+      for (const row of scoped) expect(row.min, `${rule} ${row.theme} ${row.fg}`).toBe(min);
+      expect(scoped.filter((row) => row.ratio < min).map((row) => `${row.theme} ${row.fg} ${row.ratio.toFixed(2)}`)).toEqual([]);
+    });
+  }
 });

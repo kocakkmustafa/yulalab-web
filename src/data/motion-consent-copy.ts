@@ -34,7 +34,7 @@ export type MotionConsentCopy = {
  */
 export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
   "tr": {
-    "title": "Veli onayı · Motion · YULA Lab",
+    "title": "Veli onayı · Motion · Yula Lab",
     "heading": "Motion hesabı için veli onayı",
     "intro": "Bir genç, Motion uygulamalarında hesap açtı ve sizin onayınızı istedi. Onaylarsanız hesap özellikleri açılır; reddederseniz hesap ve verileri silinir.",
     "loading": "Onay isteği yükleniyor…",
@@ -58,7 +58,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Sorularınız için support@yulalab.com adresine yazın"
   },
   "en": {
-    "title": "Parental approval · Motion · YULA Lab",
+    "title": "Parental approval · Motion · Yula Lab",
     "heading": "Parental approval for a Motion account",
     "intro": "A teen created an account in the Motion apps and asked for your approval. If you approve, account features open; if you decline, the account and its data are deleted.",
     "loading": "Loading the approval request…",
@@ -82,7 +82,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Questions: write to support@yulalab.com"
   },
   "es-419": {
-    "title": "Aprobación parental · Motion · YULA Lab",
+    "title": "Aprobación parental · Motion · Yula Lab",
     "heading": "Aprobación parental para una cuenta de Motion",
     "intro": "Un adolescente creó una cuenta en las aplicaciones Motion y pidió tu aprobación. Si apruebas, se habilitan las funciones de la cuenta; si rechazas, la cuenta y sus datos se eliminan.",
     "loading": "Cargando la solicitud de aprobación…",
@@ -106,7 +106,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Dudas: escribe a support@yulalab.com"
   },
   "pt-BR": {
-    "title": "Aprovação dos responsáveis · Motion · YULA Lab",
+    "title": "Aprovação dos responsáveis · Motion · Yula Lab",
     "heading": "Aprovação dos responsáveis para uma conta Motion",
     "intro": "Um adolescente criou uma conta nos aplicativos Motion e pediu a sua aprovação. Se você aprovar, os recursos da conta são liberados; se recusar, a conta e seus dados são excluídos.",
     "loading": "Carregando a solicitação de aprovação…",
@@ -130,7 +130,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Dúvidas: escreva para support@yulalab.com"
   },
   "de": {
-    "title": "Zustimmung der Eltern · Motion · YULA Lab",
+    "title": "Zustimmung der Eltern · Motion · Yula Lab",
     "heading": "Zustimmung der Eltern für ein Motion-Konto",
     "intro": "Ein Jugendlicher hat in den Motion-Apps ein Konto erstellt und um Ihre Zustimmung gebeten. Wenn Sie zustimmen, werden die Kontofunktionen freigeschaltet; wenn Sie ablehnen, werden das Konto und seine Daten gelöscht.",
     "loading": "Zustimmungsanfrage wird geladen…",
@@ -154,7 +154,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Fragen: schreiben Sie an support@yulalab.com"
   },
   "fr": {
-    "title": "Accord parental · Motion · YULA Lab",
+    "title": "Accord parental · Motion · Yula Lab",
     "heading": "Accord parental pour un compte Motion",
     "intro": "Un adolescent a créé un compte dans les applications Motion et demande votre accord. Si vous acceptez, les fonctionnalités du compte s'ouvrent ; si vous refusez, le compte et ses données sont supprimés.",
     "loading": "Chargement de la demande d'accord…",
@@ -178,7 +178,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Questions : écrivez à support@yulalab.com"
   },
   "ja": {
-    "title": "保護者の承認 · Motion · YULA Lab",
+    "title": "保護者の承認 · Motion · Yula Lab",
     "heading": "Motionアカウントの保護者承認",
     "intro": "10代の利用者がMotionアプリでアカウントを作成し、あなたの承認を求めています。承認するとアカウント機能が利用可能になり、拒否するとアカウントとそのデータは削除されます。",
     "loading": "承認リクエストを読み込んでいます…",
@@ -202,7 +202,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "お問い合わせ：support@yulalab.com"
   },
   "ar": {
-    "title": "موافقة ولي الأمر · Motion · YULA Lab",
+    "title": "موافقة ولي الأمر · Motion · Yula Lab",
     "heading": "موافقة ولي الأمر على حساب Motion",
     "intro": "أنشأ مراهق حسابًا في تطبيقات Motion وطلب موافقتك. إذا وافقت، تُفتح ميزات الحساب؛ وإذا رفضت، يُحذف الحساب وبياناته.",
     "loading": "جارٍ تحميل طلب الموافقة…",
@@ -226,7 +226,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "للاستفسار: support@yulalab.com"
   },
   "it": {
-    "title": "Approvazione dei genitori · Motion · YULA Lab",
+    "title": "Approvazione dei genitori · Motion · Yula Lab",
     "heading": "Approvazione dei genitori per un account Motion",
     "intro": "Un adolescente ha creato un account nelle app Motion e ha chiesto la tua approvazione. Se approvi, le funzioni dell'account si attivano; se rifiuti, l'account e i suoi dati vengono eliminati.",
     "loading": "Caricamento della richiesta di approvazione…",
@@ -250,7 +250,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Domande: scrivi a support@yulalab.com"
   },
   "ko": {
-    "title": "부모 승인 · Motion · YULA Lab",
+    "title": "부모 승인 · Motion · Yula Lab",
     "heading": "Motion 계정 부모 승인",
     "intro": "청소년이 Motion 앱에서 계정을 만들고 승인을 요청했습니다. 승인하면 계정 기능이 열리고, 거절하면 계정과 데이터가 삭제됩니다.",
     "loading": "승인 요청을 불러오는 중…",
@@ -274,7 +274,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "문의: support@yulalab.com"
   },
   "id": {
-    "title": "Persetujuan orang tua · Motion · YULA Lab",
+    "title": "Persetujuan orang tua · Motion · Yula Lab",
     "heading": "Persetujuan orang tua untuk akun Motion",
     "intro": "Seorang remaja membuat akun di aplikasi Motion dan meminta persetujuan Anda. Jika Anda menyetujui, fitur akun dibuka; jika menolak, akun dan datanya dihapus.",
     "loading": "Memuat permintaan persetujuan…",
@@ -298,7 +298,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Pertanyaan: tulis ke support@yulalab.com"
   },
   "pl": {
-    "title": "Zgoda rodzica · Motion · YULA Lab",
+    "title": "Zgoda rodzica · Motion · Yula Lab",
     "heading": "Zgoda rodzica na konto Motion",
     "intro": "Nastolatek założył konto w aplikacjach Motion i prosi o twoją zgodę. Jeśli się zgodzisz, funkcje konta zostaną odblokowane; jeśli odmówisz, konto i jego dane zostaną usunięte.",
     "loading": "Wczytywanie prośby o zgodę…",
@@ -322,7 +322,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "Pytania: napisz na support@yulalab.com"
   },
   "hi": {
-    "title": "माता-पिता की स्वीकृति · Motion · YULA Lab",
+    "title": "माता-पिता की स्वीकृति · Motion · Yula Lab",
     "heading": "Motion खाते के लिए माता-पिता की स्वीकृति",
     "intro": "एक किशोर ने Motion ऐप में खाता बनाया है और आपकी स्वीकृति माँगी है। स्वीकृति देने पर खाता सुविधाएँ खुल जाती हैं; अस्वीकार करने पर खाता और उसका डेटा हटा दिया जाता है।",
     "loading": "स्वीकृति अनुरोध लोड हो रहा है…",
@@ -346,7 +346,7 @@ export const MOTION_CONSENT_COPY: Record<Locale, MotionConsentCopy> = {
     "email": "प्रश्न: support@yulalab.com पर लिखें"
   },
   "zh-Hans": {
-    "title": "家长批准 · Motion · YULA Lab",
+    "title": "家长批准 · Motion · Yula Lab",
     "heading": "Motion 账户家长批准",
     "intro": "一名青少年在 Motion 应用中创建了账户，并请求您的批准。批准后账户功能将开放；拒绝则账户及其数据会被删除。",
     "loading": "正在加载批准请求…",

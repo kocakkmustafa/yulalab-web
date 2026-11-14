@@ -1,4 +1,4 @@
-import { storeSlotsOf } from "@/lib/store-slots";
+import { firstPublicLink, isComingSoon, storeLinksOf, storeSlotsOf } from "@/lib/store-slots";
 import { localeAlternates } from "@/i18n/locales";
 import { localized } from "@/lib/localized";
 import type { Metadata } from "next";
@@ -55,17 +55,12 @@ function accessOf(
   p: Record<string, string>,
 ): UniverseItem["access"] {
   const kind = project.primaryCtaKind ?? "web";
-  const web = project.links.find((l) => l.kind === kind)?.href;
+  const web = firstPublicLink(project, kind);
   const email = project.contactEmail ?? company.contact.email;
-  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
+  const comingSoon = isComingSoon(project);
   return {
     primary: web ? { href: web, label: p.ctaPrimary } : undefined,
-    stores: project.links
-      .filter(
-        (l): l is { kind: "appstore" | "playstore"; href: string } =>
-          (l.kind === "appstore" || l.kind === "playstore") && Boolean(l.href) && l.kind !== kind,
-      )
-      .map((l) => ({ kind: l.kind, href: l.href, label: STORE_NAME[l.kind] })),
+    stores: storeLinksOf(project, kind).map((l) => ({ ...l, label: STORE_NAME[l.kind] })),
     notify: comingSoon
       ? {
           href: `mailto:${email}?subject=${encodeURIComponent(`${project.name} — ${localized(NOTIFY_ME, locale)}`)}`,

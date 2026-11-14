@@ -50,7 +50,7 @@ export function FooterWordmark() {
           className="font-display"
           style={{ fontSize: 236, fontWeight: 700, letterSpacing: "-0.02em" }}
         >
-          YULA Lab
+          Yula Lab
         </text>
       </svg>
     </div>

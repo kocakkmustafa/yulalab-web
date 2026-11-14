@@ -71,6 +71,13 @@ truncated files; the ESZIP check is not a semantic parser or execution proof.
 The server ZIP may contain the adapter's normal pnpm dependency links; the
 checker does not extract or execute the archive.
 
+The manifest must list exactly three functions: the adapter's
+`___netlify-server-handler` and the two repo-owned scheduled functions
+`mail-drain` (`*/15 * * * *`) and `purge-daily` (`0 1 * * *`). Scheduled
+functions must carry no generator, `runtime: js`, explicit `nodejs24.x`, their
+`netlify/functions/<name>.ts` source, and a valid ZIP at the manifest path. Any
+other, missing or duplicate function fails.
+
 Run `python3 -B -O .github/ci/test-netlify-contract.py` for the small temporary
 regression fixtures; CI runs them automatically before the offline build.
 After a provider build packages its Functions and edge bundles, the native

@@ -14,7 +14,7 @@ export function YulaBanner() {
       <div className="absolute inset-0 mesh-default opacity-70" />
       <Image
         src={company.brand.banner}
-        alt="YULA Lab banner"
+        alt="Yula Lab banner"
         fill
         priority
         sizes="(max-width: 1024px) 100vw, 40vw"

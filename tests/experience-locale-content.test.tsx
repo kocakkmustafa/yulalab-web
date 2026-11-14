@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { createElement, type AnchorHTMLAttributes, type ReactElement } from "react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { createTranslator, NextIntlClientProvider } from "next-intl";
 import LandingPage from "@/app/[locale]/page";
@@ -43,7 +43,11 @@ vi.mock("next-intl/server", () => ({
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/lib/analytics/client", () => ({ track: vi.fn() }));
 
-afterEach(() => { cleanup(); navigation.replace.mockReset(); });
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-14T12:00:00+03:00"));
+});
+afterEach(() => { cleanup(); navigation.replace.mockReset(); vi.useRealTimers(); });
 
 async function load(locale: Locale) {
   navigation.locale = locale;
@@ -91,8 +95,8 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
   it("keeps translated proof caveats and isolates public sources and ISO dates, hiding internal paths", async () => {
     const { copy, products } = await load(locale);
     const product = products.find((item) => item.claims.length > 0)!;
-    const { container } = render(<ProofLedger copy={copy} product={product} today="2099-01-01" />);
-    expect(screen.getAllByText(copy.proof.stale).length).toBeGreaterThan(0);
+    const { container } = render(<ProofLedger copy={copy} product={product} today="2026-11-14" />);
+    expect(screen.getAllByText(copy.proof.verified).length).toBeGreaterThan(0);
     const first = product.claims[0];
     expect(screen.getAllByText(first.statement).length).toBeGreaterThan(0);
     // K9: an internal path is never printed; a public source is an LTR link.

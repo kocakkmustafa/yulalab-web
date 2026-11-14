@@ -65,6 +65,21 @@ export function presentClaims(record: ProductPublicRecord, now: Date): Presented
 }
 
 /**
+ * How one claim of a record reads at `now`, through `presentClaims` (the one
+ * place that decides it). Surfaces that hold a claim id rather than the whole
+ * record (stat cards, the home journey, case studies) ask this instead of
+ * reading `claims[]` raw. `undefined` when the record has no such claim.
+ */
+export function presentedKindOf(
+  record: ProductPublicRecord | undefined,
+  claimId: string | undefined,
+  now: Date,
+): PresentedClaim["kind"] | undefined {
+  if (!record || !claimId) return undefined;
+  return presentClaims(record, now).find((p) => p.claim.id === claimId)?.kind;
+}
+
+/**
  * The claim's state as a reader should see it. `stale` is derived here and
  * never stored: an expired window wins over whatever state was written.
  */

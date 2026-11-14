@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "@/components/common/icons";
@@ -11,6 +11,7 @@ import { StatusPill } from "@/components/common/StatusPill";
 import { EASE_OUT, HOVER_SPRING } from "@/lib/motion";
 import { zoomThrough } from "@/lib/zoom-through";
 import { ALPHA, HAIRLINE } from "@/lib/color";
+import { brandInk, monogramPanel } from "@/lib/brand-ink";
 import type { ProjectAsset, ProjectConfig } from "@/lib/types";
 
 type ProductAsset = Extract<ProjectAsset, { kind: "product" }>;
@@ -77,7 +78,8 @@ function CompactCard({ project, copy }: { project: ProjectConfig; copy: ProjectC
         <span className="text-[13px] text-ink-200">{t("explore")}</span>
         <span
           className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-hairline group-hover:border-hairline-strong transition-colors"
-          style={{ color: project.brand.primary }}
+          data-brand-fg="true"
+          style={brandInk(project.brand)}
         >
           <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />
         </span>
@@ -143,7 +145,7 @@ function BigCard({
               className="absolute inset-0 transition-transform duration-700 group-hover:scale-[1.03]"
               style={{
                 background: p.brand.gradient,
-                opacity: 0.85,
+                opacity: monogramPanel(p.brand).gradientOpacity,
                 transition: "transform 800ms var(--ease-soft)",
               }}
             />
@@ -151,7 +153,7 @@ function BigCard({
               <div
                 className="font-display font-extrabold tracking-tightest leading-none select-none"
                 style={{
-                  color: "rgba(0,0,0,0.55)",
+                  color: `rgba(0,0,0,${monogramPanel(p.brand).glyphAlpha})`,
                   fontSize: "clamp(120px, 20vw, 220px)",
                   fontFamily: p.brand.fontDisplay,
                   textShadow: "0 1px 0 rgba(255,255,255,0.18)",
@@ -190,7 +192,8 @@ function BigCard({
           <span
             data-card-action="true"
             className="inline-flex items-center gap-2 text-[13.5px]"
-            style={{ "--card-brand": p.brand.primary } as CSSProperties}
+            data-brand-fg="true"
+            style={brandInk(p.brand)}
           >
             <span className="arrow-nudge inline-flex">{tc("openPage")}</span>
             <ArrowRight size={14} strokeWidth={2} className="arrow-nudge" />

@@ -92,8 +92,8 @@ export const notes: Note[] = [
     },
     paragraphs: [
       {
-        tr: "LifeOS'un cihaz-üstü veritabanı AES-256 ile şifrelenir: anahtar 256 bittir ve güvenli rastgele üretimle oluşturulur. Bulut senkronu varsayılan olarak kapalıdır ve isteğe bağlıdır. Bu, 2026-11-08'de kaynak incelemesiyle doğrulandı (lifeos/app@a010a550c052).",
-        en: "The LifeOS on-device database is encrypted with AES-256: the key is 256 bits and is generated with cryptographically secure randomness. Cloud sync defaults to off and is opt-in. This was verified by source review on 2026-11-08 (lifeos/app@a010a550c052).",
+        tr: "LifeOS'un cihaz-üstü veritabanı AES-256 ile şifrelenir: anahtar 256 bittir ve güvenli rastgele üretimle oluşturulur. Bulut senkronu bu sürümde kapalıdır. Bu, 2026-11-14'te kaynak incelemesiyle doğrulandı (lifeos/app@8e7e10ecaa74).",
+        en: "The LifeOS on-device database is encrypted with AES-256: the key is 256 bits and is generated with cryptographically secure randomness. Cloud sync is turned off in this release. This was verified by source review on 2026-11-14 (lifeos/app@8e7e10ecaa74).",
       },
       {
         tr: "Kapsam: doğrulama şifreleme mekanizmasını ve anahtar üretimini kapsar. \"SQLCipher\" adı artık o kütüphanenin kendisini değil, sqlite3mc'nin SQLCipher-uyumlu modunu (PRAGMA cipher='sqlcipher') anlatır; işlevsel olarak aynıdır, isimlendirme tarihseldir.",
@@ -104,12 +104,12 @@ export const notes: Note[] = [
         en: "For the App Store listing, the basis in the record is the public Apple lookup of 2026-09-23: on that day the listing showed LifeOS 1.6.0 with a minimum iOS version of 16.0. This concerns listing availability alone; it is not a claim about any date after that, and the validity window of that check ended the same day.",
       },
       {
-        tr: "Şifreleme iddiasının kayıttaki geçerlilik sonu 2026-12-08'dir; bu tarihten sonra yeniden doğrulanana kadar güncel sayılmamalıdır.",
-        en: "The encryption claim's expiry date in the record is 2026-12-08; after that date it should not be treated as current until it is verified again.",
+        tr: "Şifreleme iddiasının kayıttaki geçerlilik sonu 2027-01-13'dir; bu tarihten sonra yeniden doğrulanana kadar güncel sayılmamalıdır.",
+        en: "The encryption claim's expiry date in the record is 2027-01-13; after that date it should not be treated as current until it is verified again.",
       },
     ],
     sources: [
-      { label: "On-device encryption claim (source-code-verified)", ref: "lifeos-on-device-encryption", verifiedAt: "2026-11-08" },
+      { label: "On-device encryption claim (source-code-verified)", ref: "lifeos-on-device-encryption", verifiedAt: "2026-11-14" },
       { label: "iOS listing surface record (public Apple lookup)", ref: "registry:lifeos/surface/ios", verifiedAt: "2026-09-23" },
     ],
   },
@@ -127,26 +127,26 @@ export const notes: Note[] = [
     },
     paragraphs: [
       {
-        tr: "Braavolabs kaynak kodunda dokuz primitif tanımlıdır: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY ve GOVERNANCE. Bu, 2026-11-08'de kaynak incelemesiyle doğrulandı (braavolabs/platform@f3f753272e1b). Sayı, primitif tiplerinin ad olarak sayısıdır; kombinasyon uzayının büyüklüğü değildir.",
-        en: "The Braavolabs source code defines nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY and GOVERNANCE. This was verified by source review on 2026-11-08 (braavolabs/platform@f3f753272e1b). The number counts primitive types by name; it is not the size of the combination space.",
+        tr: "Braavolabs kaynak kodunda dokuz primitif tanımlıdır: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY ve GOVERNANCE. Bu, 2026-11-14'te kaynak incelemesiyle doğrulandı (braavolabs/platform@99109610bc52). Sayı, primitif tiplerinin ad olarak sayısıdır; kombinasyon uzayının büyüklüğü değildir.",
+        en: "The Braavolabs source code defines nine primitives: ACQUISITION, SALES, DELIVERY, CONTENT, OPERATIONS, FINANCE, ANALYTICS, MEMORY and GOVERNANCE. This was verified by source review on 2026-11-14 (braavolabs/platform@99109610bc52). The number counts primitive types by name; it is not the size of the combination space.",
       },
       {
-        tr: "Aynı tarihte aynı incelemede 14 LLM sağlayıcısı (BYOK) sayıldı. Bu, desteklenen sağlayıcı sayısıdır; her sağlayıcının her modelinin aynı kalitede test edildiği anlamına gelmez.",
-        en: "The same review on the same date counted 14 LLM providers (BYOK). This is the number of supported providers; it does not mean every model from every provider is tested to the same standard.",
+        tr: "Aynı incelemede 14 LLM sağlayıcısı (BYOK) sayıldı. Bu, desteklenen sağlayıcı sayısıdır; her sağlayıcının her modelinin aynı kalitede test edildiği anlamına gelmez.",
+        en: "The same review counted 14 LLM providers (BYOK). This is the number of supported providers; it does not mean every model from every provider is tested to the same standard.",
       },
       {
         tr: "Birleşim uzayı geniştir ve şablonsuzdur; ancak sistemde sabit bir adım tavanı vardır: MAX_STEPS_PER_RUN=50. Yani uzay matematiksel olarak sınırsız değildir. Bu teknik bir kapasite tavanıdır; kullanıcının pratikte yaşayacağı çeşitlilik hakkında bir iddia değildir.",
         en: "The combination space is open-ended and template-free, but the system has a fixed step cap: MAX_STEPS_PER_RUN=50. The space is therefore not mathematically unlimited. This is a technical capacity ceiling; it is not a claim about the practical variety a user experiences.",
       },
       {
-        tr: "Üç kaydın da kayıttaki geçerlilik sonu 2026-12-08'dir; bu tarihten sonra yeniden doğrulanana kadar güncel sayılmamalıdır.",
-        en: "All three records expire on 2026-12-08 in the registry; after that date they should not be treated as current until verified again.",
+        tr: "Üç kaydın da kayıttaki geçerlilik sonu 2027-01-13'dir; bu tarihten sonra yeniden doğrulanana kadar güncel sayılmamalıdır.",
+        en: "All three records expire on 2027-01-13 in the registry; after that date they should not be treated as current until verified again.",
       },
     ],
     sources: [
-      { label: "Primitive count claim (9)", ref: "braavolabs-primitive-count", verifiedAt: "2026-11-08" },
-      { label: "Provider count claim (14)", ref: "braavolabs-provider-count", verifiedAt: "2026-11-08" },
-      { label: "Combination space claim (MAX_STEPS_PER_RUN=50)", ref: "braavolabs-combination-space", verifiedAt: "2026-11-08" },
+      { label: "Primitive count claim (9)", ref: "braavolabs-primitive-count", verifiedAt: "2026-11-14" },
+      { label: "Provider count claim (14)", ref: "braavolabs-provider-count", verifiedAt: "2026-11-14" },
+      { label: "Combination space claim (MAX_STEPS_PER_RUN=50)", ref: "braavolabs-combination-space", verifiedAt: "2026-11-14" },
     ],
   },
   {

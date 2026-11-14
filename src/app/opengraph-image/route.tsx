@@ -87,7 +87,7 @@ export function GET() {
           >
             YL
           </div>
-          <span style={{ display: "flex" }}>YULA Lab</span>
+          <span style={{ display: "flex" }}>Yula Lab</span>
         </div>
 
         <div

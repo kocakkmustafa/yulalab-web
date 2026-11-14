@@ -44,6 +44,32 @@ function renderFor(slug: string, now: Date) {
   );
 }
 
+describe("planned claims (WEB-P0-03d notSpoken)", () => {
+  const { config, record } = product("burunfarki");
+  const stat = config.stats.find((s) => s.claimId)!;
+  const claim = record.claims.find((c) => c.id === stat.claimId)!;
+  const now = onExpiryDay(claim.expiresAt!);
+  now.setUTCDate(now.getUTCDate() - 1);
+  const asPlanned = (id: string): typeof record => ({
+    ...record,
+    claims: record.claims.map((c) => (c.id === stat.claimId ? { ...c, id, claimState: "planned" as const } : c)),
+  });
+  const view = (rec: typeof record, s: typeof stat) =>
+    render(<StatCards slug="burunfarki" stats={[s]} record={rec} locale="en" now={now} labels={LABELS} />);
+
+  it("a planned burunfarki- claim (gate-exempt) keeps the figure on the card", () => {
+    const { container } = view(asPlanned(stat.claimId!), stat);
+    expect(container.textContent).not.toContain("—");
+    expect(container.textContent).not.toContain("needs re-verification");
+  });
+
+  it("a planned non-exempt claim withholds the figure", () => {
+    const { container } = view(asPlanned("other-claim"), { ...stat, claimId: "other-claim" });
+    expect(container.textContent).toContain("—");
+    expect(container.textContent).toContain("needs re-verification");
+  });
+});
+
 describe("a stat backed by a claim", () => {
   const { record } = product("burunfarki");
   const claim = record.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
@@ -149,7 +175,9 @@ describe("resolving the right claim, not just any claim", () => {
     // 2026-02-02: the first claim has lapsed, the second has not.
     renderFixture(new Date("2026-02-02T12:00:00+03:00"));
     const one = screen.getByText("111").closest("div")!.parentElement!;
-    const two = screen.getByText("222").closest("div")!.parentElement!;
+    // SEC-WEB-01: the lapsed claim's figure is withheld ("—"), not shown as current.
+    expect(screen.queryByText("222")).toBeNull();
+    const two = screen.getAllByText("—")[0].closest("div")!.parentElement!;
     expect(one.textContent).toContain("verified 2026-06-15");
     expect(two.textContent).toContain("needs re-verification");
     expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(1);
@@ -180,7 +208,7 @@ describe("a stat without a claim reference", () => {
 describe("empty and degraded cases", () => {
   it("renders nothing when a product has no stats", () => {
     const { container } = render(
-      <StatCards slug="x" stats={[]} record={undefined} locale="en" now={new Date()} labels={LABELS} />,
+      <StatCards slug="x" stats={[]} record={undefined} locale="en" now={new Date("2026-11-14T12:00:00+03:00")} labels={LABELS} />,
     );
     expect(container.querySelector("section")).toBeNull();
   });
@@ -193,7 +221,7 @@ describe("empty and degraded cases", () => {
         stats={config.stats}
         record={undefined}
         locale="en"
-        now={new Date()}
+        now={new Date("2026-11-14T12:00:00+03:00")}
         labels={LABELS}
       />,
     );

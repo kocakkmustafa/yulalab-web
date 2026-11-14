@@ -13,11 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "notFound" });
   return {
     metadataBase: new URL("https://yulalab.com"),
-    title: "404 · YULA Lab",
+    title: "404 · Yula Lab",
     description: t("title"),
     openGraph: {
-      title: "404 · YULA Lab", description: t("title"),
-      images: [{ url: "https://yulalab.com/opengraph-image", width: 1200, height: 630, alt: "YULA Lab" }],
+      title: "404 · Yula Lab", description: t("title"),
+      images: [{ url: "https://yulalab.com/opengraph-image", width: 1200, height: 630, alt: "Yula Lab" }],
     },
     twitter: { card: "summary_large_image", images: ["https://yulalab.com/opengraph-image"] },
   };

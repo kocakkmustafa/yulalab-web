@@ -39,7 +39,7 @@ const samePlaceholders = (a: string, b: string) => JSON.stringify(placeholders(a
  * Case-sensitive whole-word/phrase matches; extend deliberately, not by guess.
  */
 export const LANGUAGE_INDEPENDENT_TERMS: readonly string[] = [
-  "YULA Lab", "Braavolabs", "LifeOS", "Burun Farkı", "Ostinato", "Lissom", "Gravita", "Choreia", "JabLab",
+  "Yula Lab", "YULA Lab", "Braavolabs", "LifeOS", "Burun Farkı", "Ostinato", "Lissom", "Gravita", "Choreia", "JabLab",
   "iOS", "iPhone", "iPad", "Android", "macOS", "Netlify", "Next.js", "Claude", "Anthropic", "GitHub",
   "App Store", "Google Play", "Supabase", "Instagram", "LinkedIn", "YouTube",
 ];

@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { isClaimPresentable } from "@/lib/public-registry";
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactElement } from "react";
 import LandingPage from "@/app/[locale]/page";
@@ -27,7 +28,15 @@ vi.mock("next/navigation", () => ({ notFound: () => { throw new Error("not found
 vi.mock("@/components/experience/YulaExperience", () => ({ YulaExperience: () => null }));
 vi.mock("@/components/projects/ProductPage", () => ({ ProductPage: () => null }));
 
-afterEach(cleanup);
+// Fixed clock (SEC-WEB-01): no test here may depend on the real date.
+beforeEach(() => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-11-14T12:00:00+03:00"));
+});
+afterEach(() => {
+  cleanup();
+  vi.useRealTimers();
+});
 
 const claim = {
   id: "locale-contract", statementTr: "Kaynak iddia", statementEn: "Claim source",
@@ -51,9 +60,11 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
       expect(product.short).toBe(`${locale}::${source.short.en}`);
       expect(product.href).toBe(localePath(locale, `/projects/${source.slug}`));
       for (const [claimIndex, item] of product.claims.entries()) {
-        expect(item.statement).toBe(`${locale}::${record.claims[claimIndex].statementEn}`);
-        expect(item.scope).toBe(`${locale}::${record.claims[claimIndex].scopeEn}`);
-        expect(item.source).toBe(record.claims[claimIndex].source);
+        const live = isClaimPresentable(record.claims[claimIndex], new Date());
+        expect(Boolean(item.withheld)).toBe(!live);
+        expect(item.statement).toBe(live ? `${locale}::${record.claims[claimIndex].statementEn}` : "");
+        expect(item.scope).toBe(live ? `${locale}::${record.claims[claimIndex].scopeEn}` : "");
+        expect(item.source).toBe(live ? record.claims[claimIndex].source : "");
         expect(item.verifiedAt).toBe(record.claims[claimIndex].verifiedAt);
       }
       for (const [shotIndex, shot] of product.screenshots.entries()) {
@@ -76,9 +87,10 @@ describe.each(SUPPORTED_LOCALES)("content consumers in %s", (locale) => {
 
   it("renders translated claim/source labels and preserves source IDs and dates", () => {
     render(<ProofCard presented={{ kind: "lapsed", claim, expiredOn: "2026-02-02" }} locale={locale} />);
-    expect(screen.getByText(`${locale}::Claim source`)).toBeTruthy();
+    // SEC-WEB-01: a lapsed claim keeps its dated marker but not its prose.
+    expect(screen.queryByText(`${locale}::Claim source`)).toBeNull();
+    expect(screen.queryByText(`${locale}::Narrow scope`)).toBeNull();
     expect(screen.getByText(`${locale}::verified in source code`)).toBeTruthy();
-    expect(screen.getByText(`${locale}::Narrow scope`)).toBeTruthy();
     expect(screen.getByText(`${locale}::needs re-verification — window closed 2026-02-02`)).toBeTruthy();
     expect(document.body.textContent).not.toContain("ventures/source/record.ts");
     expect(screen.queryByRole("link")).toBeNull();

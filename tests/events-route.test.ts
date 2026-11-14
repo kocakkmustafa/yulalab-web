@@ -29,6 +29,8 @@ beforeEach(async () => {
   process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
   process.env.ATTRIBUTION_SECRET = "test-secret-not-a-real-one";
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN;
+  // This suite runs against a schema with 0006 applied (`funnel: true`).
+  process.env.EVENTS_V2_ENABLED = "1";
 });
 
 afterEach(async () => {
@@ -39,6 +41,7 @@ afterEach(async () => {
   delete process.env.YULA_PURGE_DATABASE_URL;
   delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.ATTRIBUTION_SECRET;
+  delete process.env.EVENTS_V2_ENABLED;
 });
 
 function body(overrides: Record<string, unknown> = {}) {

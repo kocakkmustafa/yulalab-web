@@ -98,7 +98,7 @@ test.describe("honest language fallback", () => {
     await expect(block).toHaveAttribute("lang", "en");
     await expect(block).toHaveAttribute("dir", "ltr");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#scene-1-identity h2")).toHaveText(/YULA Lab|technology/i);
+    await expect(page.locator("#scene-1-identity h2")).toHaveText(/Yula Lab|technology/i);
   });
 
 });

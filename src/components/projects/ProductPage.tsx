@@ -18,19 +18,20 @@ import { publicRegistry } from "@/data/public-registry";
 import { productShowcase, SHOWCASE_LABELS } from "@/data/product-showcase";
 import { company } from "@/data/company";
 import { localized } from "@/lib/localized";
+import { brandInk } from "@/lib/brand-ink";
+import { firstPublicLink, isComingSoon, storeLinksOf } from "@/lib/store-slots";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
 /**
  * Per-product accent used by the site's own pages.
  *
- * Deliberately not `project.brand.primary`: those are each product's own
- * app-store identity (Burun Farkı's is a saturated gold, for instance), and
- * unrelated saturated hues side by side make the umbrella site look like a
- * directory. These are muted siblings tuned to sit together against black
- * while still telling the products apart.
+ * Products that carry a `brand.primaryOnDark` (Ostinato, LifeOS) follow their
+ * app brand colour (founder decision "Uygulama renkleri esas", 2026-11-08):
+ * `primary` on the light theme, `primaryOnDark` on the dark theme, resolved by
+ * CSS (`--brand-fg`). The others keep muted siblings tuned to sit together
+ * against black while still telling the products apart.
  */
 const ACCENT: Record<string, string> = {
-  lifeos: "#8FB8E8",
   burunfarki: "#7FD8B0",
   braavolabs: "#D8B87F",
 };
@@ -53,7 +54,9 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   const tFooter = useTranslations("footer");
   const locale = useLocale() as Locale;
   const p = t.raw(project.slug) as Record<string, string>;
-  const accent = ACCENT[project.slug] ?? "#7FD8DC";
+  const themed = Boolean(project.brand.primaryOnDark);
+  const accent = themed ? "var(--brand-fg)" : (ACCENT[project.slug] ?? "#7FD8DC");
+  const tint = (pct: number) => `color-mix(in srgb, ${accent} ${pct}%, transparent)`;
 
   // Registry record: the only source for the privacy/support targets, so a
   // link cannot point somewhere the registry does not name.
@@ -69,12 +72,9 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   // product. Publication status, dated claims and their freshness live on
   // /transparency, not here.
   const ctaKind = project.primaryCtaKind ?? "web";
-  const web = project.links.find((l) => l.kind === ctaKind)?.href;
-  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
-  const storeLinks = project.links.filter(
-    (link): link is { kind: "appstore" | "playstore"; href: string } =>
-      (link.kind === "appstore" || link.kind === "playstore") && Boolean(link.href) && link.kind !== ctaKind,
-  );
+  const web = firstPublicLink(project, ctaKind);
+  const comingSoon = isComingSoon(project);
+  const storeLinks = storeLinksOf(project, ctaKind);
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
@@ -90,7 +90,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   return (
     <div
       className="page-enter relative min-h-screen"
-      style={{ ["--accent" as string]: accent }}
+      {...(themed ? { "data-brand-var": "true" } : {})}
+      style={{ ...(themed ? brandInk(project.brand) : {}), ["--accent" as string]: accent }}
     >
       {/* Funnel step 1 of 2: the view this page's outbound CTA is
           measured against. Without it "product view → outbound" has no
@@ -121,7 +122,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <span
               aria-hidden
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: accent, boxShadow: `0 0 10px ${accent}b3` }}
+              style={{ background: accent, boxShadow: `0 0 10px ${tint(70)}` }}
             />
             <span className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300">
               {p.eyebrow}
@@ -205,8 +206,8 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                       rel="noreferrer"
                       className="inline-flex items-center justify-center gap-2.5 px-6 py-4 text-sm rounded-[10px] focusable transition-colors"
                       style={{
-                        border: `1px solid ${accent}5c`,
-                        background: `linear-gradient(150deg, ${accent}29, ${accent}0d)`,
+                        border: `1px solid ${tint(36)}`,
+                        background: `linear-gradient(150deg, ${tint(16)}, ${tint(5)})`,
                       }}
                     >
                       {p.ctaPrimary}

@@ -2,7 +2,6 @@ import { localized, text } from "@/lib/localized";
 import { isLocale, localePath } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { evidenceKindLabel } from "@/components/common/SourceStamp";
 import { TrackView } from "@/components/common/TrackView";
 import { HomeScenes } from "@/components/landing/HomeScenes";
 import { YulaExperience } from "@/components/experience/YulaExperience";
@@ -13,8 +12,14 @@ import type {
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
+import { toExperienceClaims } from "@/lib/experience-claims";
 import { PRODUCT_ORDER, SCENE_PRODUCT_ORDER } from "@/lib/product-index";
 import type { Locale, ProductLifecycle } from "@/lib/types";
+
+// SEC-WEB-01a: ISR. `now` is read per (re)generation inside the component, so the
+// claim expiry gate is re-evaluated at least hourly instead of freezing at build.
+// Must stay a literal number (Next reads it statically).
+export const revalidate = 3600;
 
 function localizeInternalRoute(route: string, locale: Locale): string {
   if (!route.startsWith("/") || route.startsWith("//")) {
@@ -86,6 +91,7 @@ export default async function LandingPage({
     archived: "",
   };
 
+  const now = new Date();
   const experienceProducts: ExperienceProduct[] = sceneProjects.map((project) => {
     const record = registryBySlug.get(project.slug);
     if (!record) {
@@ -129,17 +135,7 @@ export default async function LandingPage({
       developmentPreviews: [],
       // Claim prose and every provenance field travel as one indivisible
       // record so the client cannot display a figure without its caveat.
-      claims: record.claims.map((claim) => ({
-        id: claim.id,
-        figure: claim.figures?.join(" · ") ?? null,
-        statement: text(locale, claim.statementTr, claim.statementEn),
-        evidenceKind: claim.evidenceKind,
-        evidenceLabel: evidenceKindLabel(claim.evidenceKind, locale),
-        source: claim.source,
-        scope: text(locale, claim.scopeTr, claim.scopeEn),
-        verifiedAt: claim.verifiedAt,
-        expiresAt: claim.expiresAt,
-      })),
+      claims: toExperienceClaims(record, locale, now),
       updatedAt: record.updatedAt,
     };
   });
@@ -278,7 +274,7 @@ export default async function LandingPage({
     <>
       <TrackView event="home_view" />
       <YulaExperience products={experienceProducts} copy={copy} />
-      <HomeScenes locale={locale} />
+      <HomeScenes locale={locale} now={now} />
     </>
   );
 }

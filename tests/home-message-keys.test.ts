@@ -26,6 +26,7 @@ for (const scene of HOME_SCENES) {
   for (const leaf of ["label", "title", "message"]) used.add(`home.${scene.key}.${leaf}`);
 }
 used.add("home.navLabel");
+for (const leaf of ["listLabel", "demoHeading", "demo.real", "demo.example", "demo.soon", "proofHeading", "proof.verified", "proof.lapsed", "proof.none", "go", "allProducts"]) used.add(`home.scene3.${leaf}`);
 // Scene 7 doors (WEB-UX-05d), the header Doors panel and the loader skip button.
 used.add("home.doors.label");
 for (const [door, links] of Object.entries({

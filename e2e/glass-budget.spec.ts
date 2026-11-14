@@ -46,6 +46,7 @@ for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 
     test.use({ viewport });
     for (const route of ROUTES) {
       test(`${route}: simultaneous backdrop-filter elements <= ${MAX_SIMULTANEOUS_BLURS}`, async ({ page }) => {
+        test.setTimeout(60_000); // the scroll sweep of "/" sat at ~29 of 30 s on main
         await page.goto(route);
         await page.waitForLoadState("load");
         await page.waitForTimeout(1500); // settle page-enter / route veil

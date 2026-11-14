@@ -18,7 +18,7 @@ export type VerificationCopy = {
 /** Email verification is distinct from fulfilling the underlying data request. */
 export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
   "tr": {
-    "title": "Veri talebini doğrula · YULA Lab",
+    "title": "Veri talebini doğrula · Yula Lab",
     "heading": "Veri talebini doğrula",
     "intro": "Bu işlem, talebin e-posta adresinin size ait olduğunu doğrular.",
     "button": "Talebi doğrula",
@@ -32,7 +32,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Talebin durumunu e-posta ile teyit et"
   },
   "en": {
-    "title": "Verify data request · YULA Lab",
+    "title": "Verify data request · Yula Lab",
     "heading": "Verify your data request",
     "intro": "This action confirms that the request email address belongs to you.",
     "button": "Verify request",
@@ -46,7 +46,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Confirm the request status by email"
   },
   "es-419": {
-    "title": "Verifica tu solicitud de datos · YULA Lab",
+    "title": "Verifica tu solicitud de datos · Yula Lab",
     "heading": "Verifica tu solicitud de datos",
     "intro": "Esta acción confirma que la dirección de correo de la solicitud te pertenece.",
     "button": "Verificar solicitud",
@@ -60,7 +60,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Confirmar el estado de la solicitud por correo"
   },
   "pt-BR": {
-    "title": "Verifique sua solicitação de dados · YULA Lab",
+    "title": "Verifique sua solicitação de dados · Yula Lab",
     "heading": "Verifique sua solicitação de dados",
     "intro": "Esta ação confirma que o endereço de e-mail da solicitação pertence a você.",
     "button": "Verificar solicitação",
@@ -74,7 +74,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Confirmar o status da solicitação por e-mail"
   },
   "de": {
-    "title": "Datenanfrage bestätigen · YULA Lab",
+    "title": "Datenanfrage bestätigen · Yula Lab",
     "heading": "Bestätigen Sie Ihre Datenanfrage",
     "intro": "Diese Aktion bestätigt, dass die E-Mail-Adresse der Anfrage Ihnen gehört.",
     "button": "Anfrage bestätigen",
@@ -88,7 +88,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Status der Anfrage per E-Mail erfragen"
   },
   "fr": {
-    "title": "Vérifiez votre demande relative aux données · YULA Lab",
+    "title": "Vérifiez votre demande relative aux données · Yula Lab",
     "heading": "Vérifiez votre demande relative aux données",
     "intro": "Cette action confirme que l’adresse e-mail associée à la demande vous appartient.",
     "button": "Vérifier la demande",
@@ -102,7 +102,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Confirmer le statut de la demande par e-mail"
   },
   "ja": {
-    "title": "データのご依頼の確認 · YULA Lab",
+    "title": "データのご依頼の確認 · Yula Lab",
     "heading": "データのご依頼を確認",
     "intro": "この操作で、ご依頼に使われたメールアドレスがご本人のものであることを確認します。",
     "button": "依頼を確認",
@@ -116,7 +116,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "メールで依頼の状況を問い合わせる"
   },
   "ar": {
-    "title": "تأكيد طلب البيانات · YULA Lab",
+    "title": "تأكيد طلب البيانات · Yula Lab",
     "heading": "أكّد طلب بياناتك",
     "intro": "يؤكد هذا الإجراء أن عنوان البريد الإلكتروني الوارد في الطلب يخصك.",
     "button": "تأكيد الطلب",
@@ -130,7 +130,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "الاستفسار عن حالة الطلب بالبريد الإلكتروني"
   },
   "it": {
-    "title": "Verifica la richiesta sui dati · YULA Lab",
+    "title": "Verifica la richiesta sui dati · Yula Lab",
     "heading": "Verifica la tua richiesta sui dati",
     "intro": "Questa azione conferma che l'indirizzo e-mail della richiesta appartiene a te.",
     "button": "Verifica la richiesta",
@@ -144,7 +144,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Conferma lo stato della richiesta via e-mail"
   },
   "ko": {
-    "title": "데이터 요청 확인 · YULA Lab",
+    "title": "데이터 요청 확인 · Yula Lab",
     "heading": "데이터 요청 확인",
     "intro": "이 작업은 요청에 사용한 이메일 주소가 본인 소유임을 확인합니다.",
     "button": "요청 확인",
@@ -158,7 +158,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "이메일로 요청 상태 확인"
   },
   "id": {
-    "title": "Verifikasi permintaan data · YULA Lab",
+    "title": "Verifikasi permintaan data · Yula Lab",
     "heading": "Verifikasi permintaan data Anda",
     "intro": "Tindakan ini mengonfirmasi bahwa alamat email pada permintaan adalah milik Anda.",
     "button": "Verifikasi permintaan",
@@ -172,7 +172,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Konfirmasikan status permintaan lewat email"
   },
   "pl": {
-    "title": "Potwierdź wniosek dotyczący danych · YULA Lab",
+    "title": "Potwierdź wniosek dotyczący danych · Yula Lab",
     "heading": "Potwierdź wniosek dotyczący danych",
     "intro": "Ta czynność potwierdza, że adres e-mail podany we wniosku należy do Ciebie.",
     "button": "Potwierdź wniosek",
@@ -186,7 +186,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "Potwierdź status wniosku e-mailem"
   },
   "hi": {
-    "title": "डेटा संबंधी अनुरोध का सत्यापन · YULA Lab",
+    "title": "डेटा संबंधी अनुरोध का सत्यापन · Yula Lab",
     "heading": "अपने डेटा संबंधी अनुरोध का सत्यापन करें",
     "intro": "यह कार्रवाई पुष्टि करती है कि अनुरोध का ईमेल पता आपका है।",
     "button": "अनुरोध का सत्यापन करें",
@@ -200,7 +200,7 @@ export const VERIFICATION_COPY: Record<Locale, VerificationCopy> = {
     "email": "ईमेल से अनुरोध की स्थिति की पुष्टि करें"
   },
   "zh-Hans": {
-    "title": "确认数据请求 · YULA Lab",
+    "title": "确认数据请求 · Yula Lab",
     "heading": "确认您的数据请求",
     "intro": "此操作用于确认请求中的邮箱地址属于您。",
     "button": "确认请求",
