@@ -492,3 +492,44 @@ jobs:
         else:
             raise SystemExit('FULL_AUDIT_OUTSIDE_ACCEPTED_RISK_OR_UNVERIFIED')
         PY_GATE
+  lighthouse:
+    # QA-WEB-02: raporlayan kapı. continue-on-error ile BAŞLAR (paylaşılan runner gürültülü,
+    # TBT kararsız); build-and-test'e bağlı değil, Final gate'e girmez, onu yavaşlatmaz.
+    name: Lighthouse (mobil + masaüstü, 3 koşu medyanı; raporlar, bloklamaz)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    continue-on-error: true
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+    - name: Set up pinned pnpm
+      uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      with:
+        version: 10.33.0
+    - name: Set up pinned Node
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 26.9.0
+    - name: Install frozen product dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Build Next artifacts
+      run: pnpm build
+    - name: Lighthouse (hazır Chrome ile; npx lighthouse sabit sürüm)
+      run: node scripts/lighthouse.mjs --runs 3 --out lighthouse-results
+    - name: Job özeti
+      if: ${{ always() }}
+      run: |
+        if [ -f lighthouse-results/summary.md ]; then cat lighthouse-results/summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+    - name: Sonuç artefaktı (JSON + markdown özet)
+      if: ${{ always() }}
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+      with:
+        name: lighthouse-results
+        path: lighthouse-results/
+        if-no-files-found: warn
+        retention-days: 14

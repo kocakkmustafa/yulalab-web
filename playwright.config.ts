@@ -2,6 +2,7 @@ import { defineConfig, devices } from "@playwright/test";
 import { LOCAL_ONLY_BROWSER_ARGS } from "./.github/ci/browser-options";
 import { E2E_MOTION_CONSENT_ENDPOINT } from "./e2e/motion-consent-endpoint";
 
+// Lighthouse/CWV kapısı ayrı: scripts/lighthouse.mjs (CI job `lighthouse`, port 4191, raporlar).
 const port = Number(process.env.YULA_E2E_PORT ?? "4173");
 if (!Number.isInteger(port) || port < 1024 || port > 65535) throw new Error("Invalid YULA_E2E_PORT");
 
