@@ -18,6 +18,7 @@ import { publicRegistry } from "@/data/public-registry";
 import { productShowcase, SHOWCASE_LABELS } from "@/data/product-showcase";
 import { company } from "@/data/company";
 import { localized } from "@/lib/localized";
+import { firstPublicLink, isComingSoon, storeLinksOf } from "@/lib/store-slots";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
 /**
@@ -69,12 +70,9 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
   // product. Publication status, dated claims and their freshness live on
   // /transparency, not here.
   const ctaKind = project.primaryCtaKind ?? "web";
-  const web = project.links.find((l) => l.kind === ctaKind)?.href;
-  const comingSoon = project.status === "coming-soon" || project.status === "in-development";
-  const storeLinks = project.links.filter(
-    (link): link is { kind: "appstore" | "playstore"; href: string } =>
-      (link.kind === "appstore" || link.kind === "playstore") && Boolean(link.href) && link.kind !== ctaKind,
-  );
+  const web = firstPublicLink(project, ctaKind);
+  const comingSoon = isComingSoon(project);
+  const storeLinks = storeLinksOf(project, ctaKind);
   // The same click must carry the same event name on both surfaces. The hub
   // already reports a store destination as `store_outbound`; this page
   // hardcoded `product_primary_cta`, so "how many people did we send to the
