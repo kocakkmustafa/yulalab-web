@@ -533,3 +533,38 @@ jobs:
         path: lighthouse-results/
         if-no-files-found: warn
         retention-days: 14
+  leads-open-e2e:
+    # WEB-LEADS-OPEN-MODE: LEADS_ENABLED bayrağı `next build` sırasında okunur, bu yüzden açık kip
+    # ayrı bir build ister. Raporlayan kapı: continue-on-error ile BAŞLAR, build-and-test'e bağlı
+    # değil, Final gate'e girmez. Ağ her zaman mock'lu; veritabanı, posta ve sır yok.
+    # Kapıya alma kararı: art arda 3+ yeşil koşu gözlendikten sonra (PR gövdesi).
+    name: Açık kip e2e (LEADS_ENABLED=1 build; raporlar, bloklamaz)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    continue-on-error: true
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+      YULA_E2E_PORT: '4192'
+      LEADS_ENABLED: '1'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      with:
+        fetch-depth: 1
+        persist-credentials: false
+    - name: Set up pinned pnpm
+      uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa
+      with:
+        version: 10.33.0
+    - name: Set up pinned Node
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      with:
+        node-version: 26.9.0
+    - name: Install frozen product dependencies
+      run: pnpm install --frozen-lockfile
+    - name: Build Next artifacts with LEADS_ENABLED=1
+      run: pnpm build
+    - name: Install Chromium
+      run: pnpm exec playwright install --with-deps chromium
+    - name: Open-mode e2e (consulting + contact; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
