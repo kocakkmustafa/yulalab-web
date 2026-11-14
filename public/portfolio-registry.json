@@ -1,5 +1,10 @@
 {
   "generatedAt": "static",
+  "asOf": "2026-11-14",
+  "schema": {
+    "version": 2,
+    "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, EXCEPT Burun Farkı claims (id prefix burunfarki-, exempt from the gate, exported unchanged), the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) unless the claim id starts with burunfarki-, and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a non-exempt claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
+  },
   "products": [
     {
       "slug": "braavolabs",
