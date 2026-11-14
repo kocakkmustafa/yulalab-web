@@ -40,7 +40,7 @@ describe("OstinatoRhythmDemo (WEB-P1-02)", () => {
     expect(has("rhythm-last")).toContain("Perfect");
     // A held key (repeat) is not another tap; a click is not a tap either.
     fireEvent.keyDown(tap, { key: " ", repeat: true });
-    fireEvent.click(tap);
+    fireEvent.click(tap, { detail: 1 });
 
     advance(8 * BEAT_MS);
     expect(screen.queryByTestId("rhythm-tap")).toBeNull();
@@ -84,7 +84,7 @@ describe("OstinatoRhythmDemo (WEB-P1-02)", () => {
     expect(getUserMedia).toHaveBeenCalledTimes(1);
     expect(mic.getAttribute("aria-pressed")).toBe("false");
     expect(screen.queryByRole("alert")).toBeNull();
-    fireEvent.click(screen.getByTestId("rhythm-start"));
+    await act(async () => void fireEvent.click(screen.getByTestId("rhythm-start")));
     expect(screen.getByTestId("rhythm-tap")).toBeTruthy();
   });
 
@@ -97,5 +97,86 @@ describe("OstinatoRhythmDemo (WEB-P1-02)", () => {
     }
     expect(tr.ostinatoDemo.kicker).toBe("Ritim hissi denemesi");
     expect(tr.ostinatoDemo.perfect).toBe("Mükemmel");
+  });
+
+  it("counts a click with no pointer (assistive tech) once, and does not double-count pointer clicks", () => {
+    render(<OstinatoRhythmDemo text={text} />);
+    fireEvent.click(screen.getByTestId("rhythm-start"));
+    const tap = screen.getByTestId("rhythm-tap");
+    toScoredBeat(0);
+    advance(10);
+    fireEvent.pointerDown(tap);
+    expect(has("rhythm-last")).toContain("Perfect, 10 ms late");
+    advance(100);
+    fireEvent.click(tap, { detail: 1 }); // the click that follows the pointerdown
+    expect(has("rhythm-last")).toContain("Perfect, 10 ms late");
+    // detail 0: voice control / screen reader activation is a tap on its own.
+    advance(BEAT_MS - 110 + 40);
+    fireEvent.click(tap, { detail: 0 });
+    expect(has("rhythm-last")).toContain("Perfect, 40 ms late");
+  });
+
+  describe("audio clock and microphone races", () => {
+    const fakeAudio = (resume: () => Promise<void>) => {
+      class FakeAudio {
+        currentTime = 0;
+        destination = {};
+        resume = resume;
+        close = () => Promise.resolve();
+        getOutputTimestamp = () => ({ contextTime: this.currentTime, performanceTime: performance.now() });
+        createAnalyser = () => ({ fftSize: 0, getFloatTimeDomainData: () => {} });
+        createMediaStreamSource = () => ({ connect: () => {} });
+      }
+      vi.stubGlobal("AudioContext", FakeAudio);
+      return FakeAudio;
+    };
+
+    it("places the first beat only after resume() settles, on the mapped audio clock", async () => {
+      let release: () => void = () => {};
+      fakeAudio(() => new Promise<void>((r) => (release = r)));
+      render(<OstinatoRhythmDemo text={text} />);
+      fireEvent.click(screen.getByTestId("rhythm-start"));
+      expect(screen.queryByTestId("rhythm-tap")).toBeNull(); // not running while resume is pending
+      advance(500); // slow resume: a click-time clock would now be 500 ms off
+      await act(async () => release());
+      const tap = screen.getByTestId("rhythm-tap");
+      toScoredBeat(0);
+      fireEvent.keyDown(tap, { key: " " });
+      expect(has("rhythm-last")).toContain("Perfect");
+      expect(has("rhythm-last")).toContain("0 ms");
+    });
+
+    const micSetup = () => {
+      fakeAudio(() => Promise.resolve());
+      const stop = vi.fn();
+      let resolve: (s: unknown) => void = () => {};
+      const getUserMedia = vi.fn(() => new Promise((r) => (resolve = r)));
+      Object.defineProperty(navigator, "mediaDevices", { value: { getUserMedia }, configurable: true });
+      return { stop, getUserMedia, grant: () => resolve({ getTracks: () => [{ stop }] }) };
+    };
+
+    it("locks the button while the permission prompt is open and asks once", async () => {
+      const m = micSetup();
+      render(<OstinatoRhythmDemo text={text} />);
+      const mic = screen.getByTestId("rhythm-mic") as HTMLButtonElement;
+      await act(async () => void fireEvent.click(mic));
+      expect(mic.disabled).toBe(true);
+      await act(async () => void fireEvent.click(mic));
+      expect(m.getUserMedia).toHaveBeenCalledTimes(1);
+      await act(async () => m.grant());
+      expect(mic.disabled).toBe(false);
+      expect(mic.getAttribute("aria-pressed")).toBe("true");
+    });
+
+    it("stops a stream that arrives after unmount and starts no listening loop", async () => {
+      const m = micSetup();
+      const setIv = vi.spyOn(window, "setInterval");
+      const { unmount } = render(<OstinatoRhythmDemo text={text} />);
+      await act(async () => void fireEvent.click(screen.getByTestId("rhythm-mic")));
+      unmount();
+      await act(async () => m.grant());
+      expect(m.stop).toHaveBeenCalledTimes(1);
+      expect(setIv).not.toHaveBeenCalled();
+    });
   });
 });

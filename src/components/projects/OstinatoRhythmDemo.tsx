@@ -50,10 +50,14 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
   const timers = useRef<number[]>([]);
   const phaseRef = useRef<Phase>("idle");
   const stream = useRef<MediaStream | null>(null);
+  const alive = useRef(true);
+  const micGen = useRef(0);
+  const [micBusy, setMicBusy] = useState(false);
   const tapBtn = useRef<HTMLButtonElement>(null);
   const resultHeading = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
+    alive.current = true;
     setMicAvailable(typeof navigator !== "undefined" && !!navigator.mediaDevices?.getUserMedia);
   }, []);
 
@@ -67,6 +71,8 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
   }, []);
   useEffect(
     () => () => {
+      alive.current = false;
+      micGen.current++;
       clearTimers();
       stopMic();
       void ctx.current?.close().catch(() => {});
@@ -112,32 +118,46 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
     );
   }, [text]);
 
-  const start = () => {
-    const ac = ensureCtx();
+  /** Audio-clock seconds -> performance-clock ms, from one paired reading taken after resume(). */
+  const mapper = (ac: Ctx | null) => {
+    if (!ac) {
+      const p0 = performance.now();
+      return (t: number) => p0 + t * 1000;
+    }
+    const ts = typeof ac.getOutputTimestamp === "function" ? ac.getOutputTimestamp() : null;
+    if (ts && ts.contextTime !== undefined && ts.performanceTime && ts.performanceTime > 0) {
+      const { contextTime, performanceTime } = ts;
+      return (t: number) => performanceTime + (t - contextTime) * 1000;
+    }
+    const lat = (ac.outputLatency || ac.baseLatency || 0) * 1000;
+    const c0 = ac.currentTime;
+    const p0 = performance.now();
+    return (t: number) => p0 + (t - c0) * 1000 + lat;
+  };
+
+  const starting = useRef(false);
+  const begin = (ac: Ctx | null) => {
     clearTimers();
     taps.current = [];
     setResult(null);
     setLast(null);
     setCountIn(true);
-    void ac?.resume().catch(() => {});
-    const lat = ac ? (ac.outputLatency || ac.baseLatency || 0) * 1000 : 0;
-    const audioNow = ac ? ac.currentTime : 0;
-    const perfNow = performance.now();
-    const first = perfNow + LEAD_S * 1000 + lat;
-    beats.current = Array.from({ length: COUNT_IN + SCORED }, (_, k) => first + k * BEAT_MS);
+    const toPerf = mapper(ac);
+    const t00 = (ac ? ac.currentTime : 0) + LEAD_S;
+    beats.current = Array.from({ length: COUNT_IN + SCORED }, (_, k) => toPerf(t00 + (k * BEAT_MS) / 1000));
     beats.current.forEach((when, k) => {
       if (ac) {
         try {
-        const t0 = audioNow + LEAD_S + (k * BEAT_MS) / 1000;
-        const osc = ac.createOscillator();
-        const gain = ac.createGain();
-        osc.frequency.value = k < COUNT_IN ? 660 : 880;
-        gain.gain.setValueAtTime(0.0001, t0);
-        gain.gain.exponentialRampToValueAtTime(0.4, t0 + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.08);
-        osc.connect(gain).connect(ac.destination);
-        osc.start(t0);
-        osc.stop(t0 + 0.1);
+          const t0 = t00 + (k * BEAT_MS) / 1000;
+          const osc = ac.createOscillator();
+          const gain = ac.createGain();
+          osc.frequency.value = k < COUNT_IN ? 660 : 880;
+          gain.gain.setValueAtTime(0.0001, t0);
+          gain.gain.exponentialRampToValueAtTime(0.4, t0 + 0.005);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.08);
+          osc.connect(gain).connect(ac.destination);
+          osc.start(t0);
+          osc.stop(t0 + 0.1);
         } catch {
           // Sound is best effort; the visual beat and scoring still run.
         }
@@ -156,6 +176,22 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
     phaseRef.current = "running";
     setPhase("running");
     setAnnounce(text.running);
+  };
+
+  const start = () => {
+    if (starting.current) return;
+    const ac = ensureCtx();
+    if (!ac) return begin(null);
+    // The first beat is placed only after resume() settles, so the audio clock is running.
+    starting.current = true;
+    void ac
+      .resume()
+      .catch(() => {})
+      .then(() => {
+        starting.current = false;
+        if (!alive.current) return;
+        begin(ac);
+      });
   };
 
   // Focus management: tap button when the round starts, result heading when it ends.
@@ -177,16 +213,33 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
 
   // Optional microphone: loudness onsets count as taps. Only after the visitor opts in.
   const micTimer = useRef<number | null>(null);
+  const stopMicLoop = () => {
+    if (micTimer.current) window.clearInterval(micTimer.current);
+    micTimer.current = null;
+  };
   const toggleMic = async () => {
+    if (micBusy) return;
     if (micOn) {
+      micGen.current++;
+      stopMicLoop();
       stopMic();
       setMicOn(false);
       return;
     }
     const ac = ensureCtx();
     if (!ac) return;
+    // Never keep two streams: drop any earlier one before asking for a new one.
+    stopMicLoop();
+    stopMic();
+    const gen = ++micGen.current;
+    setMicBusy(true);
     try {
       const s = await navigator.mediaDevices.getUserMedia({ audio: true });
+      if (!alive.current || gen !== micGen.current) {
+        // Unmounted or cancelled while the permission prompt was open.
+        s.getTracks().forEach((tr) => tr.stop());
+        return;
+      }
       stream.current = s;
       void ac.resume().catch(() => {});
       const analyser = ac.createAnalyser();
@@ -196,10 +249,9 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
       let avg = 0.01;
       let armed = true;
       let lastOnset = 0;
-      if (micTimer.current) window.clearInterval(micTimer.current);
       micTimer.current = window.setInterval(() => {
         if (!stream.current) {
-          if (micTimer.current) window.clearInterval(micTimer.current);
+          stopMicLoop();
           return;
         }
         analyser.getFloatTimeDomainData(buf);
@@ -220,6 +272,8 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
     } catch {
       // Denied or unavailable: stay on tapping, silently.
       stopMic();
+    } finally {
+      if (alive.current && gen === micGen.current) setMicBusy(false);
     }
   };
   useEffect(
@@ -241,7 +295,7 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
           </button>
         ) : null}
         {micAvailable ? (
-          <button type="button" aria-pressed={micOn} onClick={() => void toggleMic()} data-testid="rhythm-mic" className={BTN + (micOn ? " font-semibold underline decoration-2 underline-offset-4" : "")}>
+          <button type="button" aria-pressed={micOn} onClick={() => void toggleMic()} disabled={micBusy} data-testid="rhythm-mic" className={BTN + (micOn ? " font-semibold underline decoration-2 underline-offset-4" : "")}>
             {text.micLabel}
           </button>
         ) : null}
@@ -270,7 +324,13 @@ export default function OstinatoRhythmDemo({ text }: { text: OstinatoDemoText })
               tapBtn.current?.focus();
               registerTap(eventTime(e));
             }}
-            onClick={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.preventDefault();
+              // detail 0 = no pointer involved (assistive tech, voice control): count it.
+              // Real pointer clicks (detail >= 1) were already counted on pointerdown;
+              // keyboard presses never reach here because keydown prevents the click.
+              if (e.detail === 0) registerTap(performance.now());
+            }}
             onKeyDown={onKeyDown}
             onKeyUp={onKeyUp}
             className={BTN + " w-full sm:w-80 min-h-28 text-center text-[18px] touch-manipulation select-none"}
