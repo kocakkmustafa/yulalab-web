@@ -1,6 +1,7 @@
 import { localized } from "@/lib/localized";
 import type { ProductPublicRecord, ProjectStat, Locale } from "@/lib/types";
-import { isClaimPresentable, isExpired } from "@/lib/public-registry";
+import { isClaimPresentable, isExpired, isGateExempt } from "@/lib/public-registry";
+import { presentedKindOf } from "@/lib/proof";
 import { linkedClaimFor } from "@/lib/stat-provenance";
 
 /**
@@ -50,7 +51,10 @@ export function StatCards({
         const claim = linkedClaimFor(slug, stat, record ? [record] : []);
         const stale = claim ? isExpired(claim.expiresAt, now) : false;
         // SEC-WEB-01 gate (Burun Farkı exempt): figure withheld only when not presentable.
-        const withheld = claim ? !isClaimPresentable(claim, now) : false;
+        // WEB-P0-03d: a claim presentClaims withholds (planned/prototype/not
+        // present-tense eligible) is not a current figure either.
+        const notSpoken = claim ? presentedKindOf(record, claim.id, now) === "withheld" && !isGateExempt(claim) : false;
+        const withheld = claim ? !isClaimPresentable(claim, now) || notSpoken : false;
         const numeric = stat.numericDisplay;
         // Raw evidence strings can contain technical names (AES-256), units
         // or locale-specific punctuation. Only explicit numeric metadata is formatted.
@@ -73,7 +77,7 @@ export function StatCards({
             </div>
             {claim ? (
               <div className="mt-4 font-mono text-[9.5px] tracking-[0.1em] uppercase text-ink-300">
-                {stale ? (
+                {stale || notSpoken ? (
                   // In words, not by colour alone — the whole point is that
                   // this reads as "not currently verified", including to a
                   // reader who cannot see the tint.

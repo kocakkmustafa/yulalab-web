@@ -6,7 +6,8 @@ import {
   spelledMagnitudes,
   stripLabelTokens,
 } from "./figure-match";
-import { isExpired } from "./public-registry";
+import { isExpired, isGateExempt } from "./public-registry";
+import { presentedKindOf } from "./proof";
 
 /**
  * Case studies — the strongest claim this site can make.
@@ -379,6 +380,9 @@ export function publishableCaseStudies(
       ?.claims.find((c) => c.id === study.outcome?.claimId);
     if (!claim) return false;
     if (claim.expiresAt && isExpired(claim.expiresAt, now)) return false;
+    // WEB-P0-03d: a claim presentClaims withholds cannot carry a case outcome.
+    const record = registry.find((r) => r.slug === study.productSlug);
+    if (!isGateExempt(claim) && presentedKindOf(record, claim.id, now) === "withheld") return false;
     return true;
   });
 }

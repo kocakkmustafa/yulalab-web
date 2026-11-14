@@ -4,6 +4,7 @@ import { studioEnabled } from "@/server/studio-surface";
 import { HOME_SCENES } from "./home-scenes";
 import { Scene1Identity } from "./Scene1Identity";
 import { Scene2Difference } from "./Scene2Difference";
+import { Scene3Products } from "./Scene3Products";
 import { Scene6Trust } from "./Scene6Trust";
 import { Scene4Engineering } from "./Scene4Engineering";
 import { Scene7Start } from "./Scene7Start";
@@ -22,7 +23,7 @@ import { Scene5Lab } from "./Scene5Lab";
  *
  * Each scene states one message; the bodies are filled by WEB-P0-03b..03h.
  */
-export async function HomeScenes({ locale }: { locale: Locale }) {
+export async function HomeScenes({ locale, now = new Date() }: { locale: Locale; now?: Date }) {
   const t = await getTranslations({ locale, namespace: "home" });
 
   // tr and en are written in full. The other twelve catalogues carry the
@@ -88,6 +89,7 @@ export async function HomeScenes({ locale }: { locale: Locale }) {
             </p>
             {scene.n === 1 ? <Scene1Identity t={t} ts={ts} /> : null}
             {scene.n === 2 ? <Scene2Difference t={t} ts={ts} /> : null}
+            {scene.n === 3 ? <Scene3Products t={t} locale={locale} now={now} /> : null}
             {scene.n === 6 ? <Scene6Trust t={t} ts={ts} locale={locale} /> : null}
             {scene.n === 4 ? (
               <Scene4Engineering
