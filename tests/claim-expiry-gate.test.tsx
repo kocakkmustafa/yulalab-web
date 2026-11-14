@@ -129,6 +129,15 @@ describe("/transparency", () => {
     }
     expect(text).toContain("süre 2026-12-08 tarihinde doldu");
   });
+
+  it("two renders at different clocks change the lapsed-marker count (SEC-WEB-01a)", async () => {
+    const lapsed = (t: string) => t.match(/süre \d{4}-\d{2}-\d{2} tarihinde doldu/g)?.length ?? 0;
+    const before = lapsed(await body(NOW));
+    cleanup();
+    const after = lapsed(await body(AFTER_ALL));
+    expect(before).toBe(2);
+    expect(after).toBeGreaterThan(before);
+  });
 });
 
 describe("StatCards", () => {
