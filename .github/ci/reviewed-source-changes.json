@@ -1258,9 +1258,9 @@
     {
       "path": "tests/theme.test.tsx",
       "publishedSha256": null,
-      "candidateSha256": "4086ad19c6e6c46e774b45e1743475d477fe38794cc5fff43aba737a258048fe",
+      "candidateSha256": "12f859d49202e5c0c305b1ababc81431ad688b59902e2e475b9f29ca96e8efca",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. 2026-11-08 WEB-P0-02a: iki temali marka tokenlari (acik/gece zemin ve metin), kontrast denetimi, tema testleri; aday display serif yalniz belge. Aday-yalniz, yayin kaniti degil."
+      "reason": "2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. 2026-11-08 WEB-P0-02a: iki temali marka tokenlari (acik/gece zemin ve metin), kontrast denetimi, tema testleri; aday display serif yalniz belge. Aday-yalniz, yayin kaniti degil. CORE-WEB-01 token esleme"
     },
     {
       "path": "e2e/claims-section.spec.ts",
