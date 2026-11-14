@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — projektujemy dziś produkty jutra.",
-    "description": "YULA Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację."
+    "title": "Yula Lab — projektujemy dziś produkty jutra.",
+    "description": "Yula Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację."
   },
   "header": {
     "home": "Strona główna",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "Laboratorium produktów · Turcja",
     "heroTitle": "Projektujemy dziś produkty jutra.",
-    "heroDescription": "YULA Lab to niezależne laboratorium projektujące produkty oparte na AI i danych, które upraszczają codzienność. Każdy projekt łączy estetykę, etykę i rzeczywisty wpływ.",
+    "heroDescription": "Yula Lab to niezależne laboratorium projektujące produkty oparte na AI i danych, które upraszczają codzienność. Każdy projekt łączy estetykę, etykę i rzeczywisty wpływ.",
     "heroMeta": {
       "products": "8 produktów",
       "studio": "1 laboratorium",
@@ -81,7 +81,7 @@
     "bannerCaption": "PRODUKTY · LABORATORIUM · TURCJA",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Wizja",
-    "visionBody": "Narzędzia korzystające z Twoich danych mogą działać bez przekazywania ich komukolwiek. YULA Lab pokazuje, że jest to możliwe nie tylko technicznie, lecz także biznesowo.",
+    "visionBody": "Narzędzia korzystające z Twoich danych mogą działać bez przekazywania ich komukolwiek. Yula Lab pokazuje, że jest to możliwe nie tylko technicznie, lecz także biznesowo.",
     "missionEyebrow": "Misja",
     "missionBody": "Każdy produkt przedstawia mierzalne deklaracje, a wyniki pozostają na stronie, nawet gdy nie są dla nas korzystne. Użytkownicy wiedzą, co otrzymują, a czego nie.",
     "manifestoNote": "Kultura inżynierska oparta na czterech wartościach.",
@@ -95,12 +95,12 @@
       "manifesto": "Manifest",
       "projeler": "Projekty",
       "seffaflik": "Przejrzystość",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "Jednoosobowe laboratorium produktów AI · Turcja",
     "heroTitleA": "Niewiele produktów.",
     "heroTitleB": "Długo i starannie przemyślanych.",
-    "heroLede": "YULA Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację.",
+    "heroLede": "Yula Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację.",
     "heroCta": "Zobacz portfolio",
     "scrollHint": "Przewiń, aby kontynuować",
     "visionKicker": "01 — Wizja i misja",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "Manifest",
     "title": "Staranność zamiast pośpiechu.",
-    "intro": "YULA Lab to niezależne laboratorium produktów oparte na dowodach, nie trendach. Każdy produkt realizuje tę samą dyscyplinę: mierzalną poprawę życia dzięki oszczędnemu i przejrzystemu projektowaniu.",
+    "intro": "Yula Lab to niezależne laboratorium produktów oparte na dowodach, nie trendach. Każdy produkt realizuje tę samą dyscyplinę: mierzalną poprawę życia dzięki oszczędnemu i przejrzystemu projektowaniu.",
     "nameEyebrow": "Nazwa",
     "nameTitle": "Yula: światło wskazujące drogę.",
     "nameBody": "Yula oznacza małe, stałe światło prowadzące przez ciemność. Lab to druga strona tej idei: dyscyplina eksperymentu, pomiaru i powtarzania. Razem opisują całą metodę: ciepło bez nadmiaru, wskazówki bez widowiska.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "Przejrzystość",
     "title": "Bez czarnych skrzynek. Nigdy.",
-    "intro": "W YULA Lab przejrzystość nie jest funkcją, lecz standardem. Każdy produkt obiecuje to samo: widoczność modelu, kosztów i danych. Korzystając z AI, nie musisz zamykać oczu.",
+    "intro": "W Yula Lab przejrzystość nie jest funkcją, lecz standardem. Każdy produkt obiecuje to samo: widoczność modelu, kosztów i danych. Korzystając z AI, nie musisz zamykać oczu.",
     "promiseEyebrow": "Nasza obietnica",
     "promiseBody": "Na stronach produktów udostępniamy zapisane deklaracje, ich źródła i znane ograniczenia. Daty weryfikacji pokazujemy wraz z zakresem i nie przedstawiamy wygasłych zapisów jako aktualnych dowodów.",
     "pillarsEyebrow": "Trzy kluczowe produkty, trzy mechanizmy przejrzystości",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · NIEZALEŻNE LABORATORIUM PRODUKTÓW",
       "title": "Niewiele produktów. Długo i starannie przemyślanych.",
-      "lede": "YULA Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację.",
+      "lede": "Yula Lab rozwija własne produkty i oferuje doradztwo AI: od oceny procesów pracy po prototypy, integracje i ewaluację.",
       "notice": "Zapisy i źródła są na stronie przejrzystości.",
       "scroll": "Przewiń, aby kontynuować"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

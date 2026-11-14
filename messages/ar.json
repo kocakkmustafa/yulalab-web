@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — نصمّم منتجات الغد اليوم.",
-    "description": "يطوّر YULA Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم."
+    "title": "Yula Lab — نصمّم منتجات الغد اليوم.",
+    "description": "يطوّر Yula Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم."
   },
   "header": {
     "home": "الرئيسية",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "مختبر منتجات · تركيا",
     "heroTitle": "نصمّم منتجات الغد اليوم.",
-    "heroDescription": "YULA Lab مختبر مستقل يصمّم منتجات تتمحور حول الذكاء الاصطناعي وتستند إلى البيانات لتبسيط الحياة اليومية. يُبنى كل مشروع عند تقاطع الجماليات والأخلاق والأثر.",
+    "heroDescription": "Yula Lab مختبر مستقل يصمّم منتجات تتمحور حول الذكاء الاصطناعي وتستند إلى البيانات لتبسيط الحياة اليومية. يُبنى كل مشروع عند تقاطع الجماليات والأخلاق والأثر.",
     "heroMeta": {
       "products": "8 منتجات",
       "studio": "1 مختبر",
@@ -81,7 +81,7 @@
     "bannerCaption": "منتجات · مختبر · تركيا",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "الرؤية",
-    "visionBody": "يمكن للأدوات التي تعمل ببياناتك الخاصة أن تعمل دون تسليم تلك البيانات لأي جهة. وُجد YULA Lab ليثبت أن ذلك ممكن تجاريًا، لا تقنيًا فحسب.",
+    "visionBody": "يمكن للأدوات التي تعمل ببياناتك الخاصة أن تعمل دون تسليم تلك البيانات لأي جهة. وُجد Yula Lab ليثبت أن ذلك ممكن تجاريًا، لا تقنيًا فحسب.",
     "missionEyebrow": "الرسالة",
     "missionBody": "يصدر كل منتج مع ادعاء قابل للقياس، ويبقى الرقم على الصفحة سواء كان في صالحنا أم لا. يعرف المستخدم ما يحصل عليه، وما لا يحصل عليه.",
     "manifestoNote": "ثقافة هندسية قائمة على أربع قيم.",
@@ -95,12 +95,12 @@
       "manifesto": "بيان المبادئ",
       "projeler": "المشاريع",
       "seffaflik": "الشفافية",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "مختبر منتجات ذكاء اصطناعي يديره شخص واحد · تركيا",
     "heroTitleA": "منتجات قليلة.",
     "heroTitleB": "نفكّر فيها طويلًا.",
-    "heroLede": "يطوّر YULA Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم.",
+    "heroLede": "يطوّر Yula Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم.",
     "heroCta": "استعرض المنتجات",
     "scrollHint": "مرّر للمتابعة",
     "visionKicker": "01 — الرؤية والرسالة",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "بيان المبادئ",
     "title": "بإتقان، لا بعجلة.",
-    "intro": "YULA Lab مختبر مستقل للمنتجات، يستند إلى الأدلة لا إلى الصيحات. كل منتج من منتجاتنا وجه مختلف للانضباط نفسه: إحداث فرق قابل للقياس في حياة الناس بتصميم متزن وشفاف.",
+    "intro": "Yula Lab مختبر مستقل للمنتجات، يستند إلى الأدلة لا إلى الصيحات. كل منتج من منتجاتنا وجه مختلف للانضباط نفسه: إحداث فرق قابل للقياس في حياة الناس بتصميم متزن وشفاف.",
     "nameEyebrow": "الاسم",
     "nameTitle": "Yula: ضوء يدلّ على الطريق.",
     "nameBody": "Yula كلمة تعني ضوءًا صغيرًا ثابتًا يرشدك في الظلام. ويقابلها Lab: انضباط التجربة والقياس والتكرار. ومعًا يعبّران عن المنهج كله: دفء دون إفراط، وإرشاد دون استعراض.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "الشفافية",
     "title": "لا صناديق سوداء. أبدًا.",
-    "intro": "في YULA Lab، الشفافية هي الوضع الافتراضي وليست ميزة إضافية. كل منتج يقدّم الوعد نفسه: النموذج والتكلفة والبيانات ظاهرة لك. أنت تستخدم منتج ذكاء اصطناعي، ولا ينبغي أن تضطر إلى إغماض عينيك.",
+    "intro": "في Yula Lab، الشفافية هي الوضع الافتراضي وليست ميزة إضافية. كل منتج يقدّم الوعد نفسه: النموذج والتكلفة والبيانات ظاهرة لك. أنت تستخدم منتج ذكاء اصطناعي، ولا ينبغي أن تضطر إلى إغماض عينيك.",
     "promiseEyebrow": "وعدنا",
     "promiseBody": "نشارك في صفحات المنتجات الادعاءات المسجّلة ومصادرها وحدودها المعروفة. ونعرض تواريخ التحقق مع نطاقه، ولا نقدّم السجلات المنتهية بوصفها أدلة حالية.",
     "pillarsEyebrow": "ثلاثة منتجات أساسية، وثلاث آليات للشفافية",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · مختبر مستقل للمنتجات",
       "title": "منتجات قليلة. نفكّر فيها طويلًا.",
-      "lede": "يطوّر YULA Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم.",
+      "lede": "يطوّر Yula Lab منتجاته الخاصة ويقدّم استشارات في الذكاء الاصطناعي: من تقييم سير العمل إلى النماذج الأولية والتكاملات والتقييم.",
       "notice": "السجلات والمصادر موجودة في صفحة الشفافية.",
       "scroll": "مرّر للمتابعة"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

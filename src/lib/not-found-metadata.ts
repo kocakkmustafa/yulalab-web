@@ -43,7 +43,7 @@ export function notFoundMetadata(locale: Locale): Metadata {
       type: "website",
       locale: localized.ogLocale,
       url: localized.canonical,
-      siteName: "YULA Lab",
+      siteName: "Yula Lab",
       title: localized.title,
       description: localized.description,
       images: [
@@ -51,7 +51,7 @@ export function notFoundMetadata(locale: Locale): Metadata {
           url: `${ORIGIN}/opengraph-image`,
           width: 1200,
           height: 630,
-          alt: "YULA Lab — product lab",
+          alt: "Yula Lab — product lab",
         },
       ],
     },

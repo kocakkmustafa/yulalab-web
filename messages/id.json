@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — Kami merancang produk masa depan hari ini.",
-    "description": "YULA Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi."
+    "title": "Yula Lab — Kami merancang produk masa depan hari ini.",
+    "description": "Yula Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi."
   },
   "header": {
     "home": "Beranda",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "Laboratorium produk · Türkiye",
     "heroTitle": "Kami merancang produk masa depan hari ini.",
-    "heroDescription": "YULA Lab adalah laboratorium produk independen yang merancang produk berbasis AI dan data untuk menyederhanakan keseharian. Setiap proyek dibangun di titik temu estetika, etika, dan dampak.",
+    "heroDescription": "Yula Lab adalah laboratorium produk independen yang merancang produk berbasis AI dan data untuk menyederhanakan keseharian. Setiap proyek dibangun di titik temu estetika, etika, dan dampak.",
     "heroMeta": {
       "products": "8 produk",
       "studio": "1 laboratorium",
@@ -81,7 +81,7 @@
     "bannerCaption": "PRODUK · LABORATORIUM · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Visi",
-    "visionBody": "Alat yang bekerja dengan data milik Anda dapat berfungsi tanpa menyerahkan data itu kepada siapa pun. YULA Lab hadir untuk menunjukkan bahwa ini mungkin, bukan hanya secara teknis, tetapi juga secara komersial.",
+    "visionBody": "Alat yang bekerja dengan data milik Anda dapat berfungsi tanpa menyerahkan data itu kepada siapa pun. Yula Lab hadir untuk menunjukkan bahwa ini mungkin, bukan hanya secara teknis, tetapi juga secara komersial.",
     "missionEyebrow": "Misi",
     "missionBody": "Setiap produk dirilis dengan klaim yang dapat diukur, dan angkanya tetap ada di halaman, baik menguntungkan citra kami maupun tidak. Pengguna mengetahui apa yang diperoleh dan apa yang tidak.",
     "manifestoNote": "Budaya rekayasa yang dibangun di atas empat nilai.",
@@ -95,12 +95,12 @@
       "manifesto": "Manifesto",
       "projeler": "Proyek",
       "seffaflik": "Transparansi",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "Laboratorium produk AI yang dikelola satu orang · Türkiye",
     "heroTitleA": "Sedikit produk.",
     "heroTitleB": "Dipikirkan dengan matang.",
-    "heroLede": "YULA Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi.",
+    "heroLede": "Yula Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi.",
     "heroCta": "Lihat portofolio",
     "scrollHint": "Gulir untuk melanjutkan",
     "visionKicker": "01 — Visi dan misi",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "Manifesto",
     "title": "Dengan ketelitian, tanpa tergesa-gesa.",
-    "intro": "YULA Lab adalah laboratorium produk independen yang berlandaskan bukti, bukan tren. Setiap produk kami mencerminkan disiplin yang sama: membuat perbedaan terukur dalam kehidupan manusia melalui desain yang terkendali dan transparan.",
+    "intro": "Yula Lab adalah laboratorium produk independen yang berlandaskan bukti, bukan tren. Setiap produk kami mencerminkan disiplin yang sama: membuat perbedaan terukur dalam kehidupan manusia melalui desain yang terkendali dan transparan.",
     "nameEyebrow": "Nama",
     "nameTitle": "Yula: cahaya yang menunjukkan jalan.",
     "nameBody": "Yula adalah sebutan untuk cahaya kecil dan stabil yang memandu dalam gelap. Lab menjadi pasangannya: disiplin eksperimen, pengukuran, dan pengulangan. Bersama-sama, keduanya merangkum seluruh metode: kehangatan tanpa berlebihan, arahan tanpa pertunjukan.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "Transparansi",
     "title": "Tanpa kotak hitam. Selamanya.",
-    "intro": "Di YULA Lab, transparansi bukan fitur, melainkan standar bawaan. Setiap produk memberikan janji yang sama: model, biaya, dan data dapat Anda lihat. Anda menggunakan produk AI; Anda tidak seharusnya harus menutup mata.",
+    "intro": "Di Yula Lab, transparansi bukan fitur, melainkan standar bawaan. Setiap produk memberikan janji yang sama: model, biaya, dan data dapat Anda lihat. Anda menggunakan produk AI; Anda tidak seharusnya harus menutup mata.",
     "promiseEyebrow": "Janji kami",
     "promiseBody": "Pada halaman produk, kami membagikan klaim tercatat, sumbernya, dan batasan yang diketahui. Tanggal verifikasi ditampilkan bersama cakupannya, dan catatan kedaluwarsa tidak disajikan sebagai bukti terkini.",
     "pillarsEyebrow": "Tiga produk utama, tiga mekanisme transparansi",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · LABORATORIUM PRODUK INDEPENDEN",
       "title": "Sedikit produk. Dipikirkan dengan matang.",
-      "lede": "YULA Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi.",
+      "lede": "Yula Lab mengembangkan produk sendiri dan menyediakan konsultasi AI: dari penilaian alur kerja hingga prototipe, integrasi, dan evaluasi.",
       "notice": "Catatan dan sumber ada di halaman transparansi.",
       "scroll": "Gulir untuk melanjutkan"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

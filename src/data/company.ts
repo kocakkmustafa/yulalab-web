@@ -2,7 +2,7 @@ import type { CompanyConfig } from "@/lib/types";
 import { text } from "@/lib/localized";
 
 export const company: CompanyConfig = {
-  name: "YULA Lab",
+  name: "Yula Lab",
   legalName: "YULA Lab",
   // Founder decision 2026-10-29: sole proprietorship without a registered trade name; the site
   // publishes the support email only (no postal address, phone or tax details).
@@ -16,8 +16,8 @@ export const company: CompanyConfig = {
     en: "We design tomorrow's products today.",
   },
   shortDescription: {
-    tr: "YULA Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
-    en: "YULA Lab is an independent product lab designing AI-native, data-driven products that simplify everyday life — each crafted at the intersection of aesthetics, ethics, and impact.",
+    tr: "Yula Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
+    en: "Yula Lab is an independent product lab designing AI-native, data-driven products that simplify everyday life — each crafted at the intersection of aesthetics, ethics, and impact.",
   },
   vision: {
     tr: "İnsanların hayatını anlamlı şekilde iyileştiren, yapay zekanın en iyi yanlarını gündelik hayata taşıyan bir ürün ailesi kurmak.",

@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — हम आज भविष्य के उत्पाद डिज़ाइन करते हैं।",
-    "description": "YULA Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।"
+    "title": "Yula Lab — हम आज भविष्य के उत्पाद डिज़ाइन करते हैं।",
+    "description": "Yula Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।"
   },
   "header": {
     "home": "मुखपृष्ठ",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "उत्पाद प्रयोगशाला · Türkiye",
     "heroTitle": "हम आज भविष्य के उत्पाद डिज़ाइन करते हैं।",
-    "heroDescription": "YULA Lab एक स्वतंत्र उत्पाद प्रयोगशाला है, जो रोज़मर्रा की ज़िंदगी आसान बनाने वाले AI-आधारित और डेटा-आधारित उत्पाद डिज़ाइन करती है। हर परियोजना सौंदर्य, नैतिकता और प्रभाव के मेल से बनती है।",
+    "heroDescription": "Yula Lab एक स्वतंत्र उत्पाद प्रयोगशाला है, जो रोज़मर्रा की ज़िंदगी आसान बनाने वाले AI-आधारित और डेटा-आधारित उत्पाद डिज़ाइन करती है। हर परियोजना सौंदर्य, नैतिकता और प्रभाव के मेल से बनती है।",
     "heroMeta": {
       "products": "8 उत्पाद",
       "studio": "1 प्रयोगशाला",
@@ -81,7 +81,7 @@
     "bannerCaption": "उत्पाद · प्रयोगशाला · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "दृष्टि",
-    "visionBody": "आपके अपने डेटा पर चलने वाले साधन, वह डेटा किसी को सौंपे बिना भी चल सकते हैं। YULA Lab यह दिखाने के लिए है कि यह केवल तकनीकी तौर पर नहीं, व्यावसायिक तौर पर भी संभव है।",
+    "visionBody": "आपके अपने डेटा पर चलने वाले साधन, वह डेटा किसी को सौंपे बिना भी चल सकते हैं। Yula Lab यह दिखाने के लिए है कि यह केवल तकनीकी तौर पर नहीं, व्यावसायिक तौर पर भी संभव है।",
     "missionEyebrow": "उद्देश्य",
     "missionBody": "हर उत्पाद के साथ एक मापने योग्य दावा प्रकाशित होता है। नतीजा हमारे पक्ष में हो या नहीं, संख्या पेज पर बनी रहती है। उपयोगकर्ता जानते हैं कि उन्हें क्या मिल रहा है — और क्या नहीं।",
     "manifestoNote": "चार मूल्यों पर बनी इंजीनियरिंग संस्कृति।",
@@ -95,12 +95,12 @@
       "manifesto": "घोषणापत्र",
       "projeler": "परियोजनाएँ",
       "seffaflik": "पारदर्शिता",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "एक व्यक्ति की AI उत्पाद प्रयोगशाला · Türkiye",
     "heroTitleA": "कम उत्पाद।",
     "heroTitleB": "हर एक पर लंबे समय तक विचार किया गया।",
-    "heroLede": "YULA Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।",
+    "heroLede": "Yula Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।",
     "heroCta": "पोर्टफोलियो देखें",
     "scrollHint": "आगे बढ़ने के लिए स्क्रॉल करें",
     "visionKicker": "01 — दृष्टि और उद्देश्य",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "घोषणापत्र",
     "title": "कारीगरी के साथ, जल्दबाज़ी के बिना।",
-    "intro": "YULA Lab एक स्वतंत्र उत्पाद प्रयोगशाला है, जो रुझानों के बजाय प्रमाण पर भरोसा करती है। हमारे उत्पाद एक ही अनुशासन के अलग-अलग रूप हैं: संयमित और पारदर्शी डिज़ाइन से लोगों की ज़िंदगी में मापने योग्य बदलाव लाना।",
+    "intro": "Yula Lab एक स्वतंत्र उत्पाद प्रयोगशाला है, जो रुझानों के बजाय प्रमाण पर भरोसा करती है। हमारे उत्पाद एक ही अनुशासन के अलग-अलग रूप हैं: संयमित और पारदर्शी डिज़ाइन से लोगों की ज़िंदगी में मापने योग्य बदलाव लाना।",
     "nameEyebrow": "नाम",
     "nameTitle": "Yula: रास्ता दिखाने वाली रोशनी।",
     "nameBody": "Yula का अर्थ छोटी, स्थिर रोशनी है, जो अँधेरे में रास्ता दिखाती है। Lab उसका दूसरा पहलू है — प्रयोग, मापन और दोहराव का अनुशासन। साथ मिलकर यही हमारी विधि है: बिना अति के आत्मीयता, बिना दिखावे के मार्गदर्शन।",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "पारदर्शिता",
     "title": "कोई ब्लैक बॉक्स नहीं। कभी भी नहीं।",
-    "intro": "YULA Lab में पारदर्शिता कोई अतिरिक्त सुविधा नहीं — सामान्य व्यवस्था है। हर उत्पाद एक ही वादा करता है: मॉडल, लागत और डेटा आपको दिखाई देंगे। AI उत्पाद इस्तेमाल करते समय आपको आँखें मूँदकर भरोसा नहीं करना चाहिए।",
+    "intro": "Yula Lab में पारदर्शिता कोई अतिरिक्त सुविधा नहीं — सामान्य व्यवस्था है। हर उत्पाद एक ही वादा करता है: मॉडल, लागत और डेटा आपको दिखाई देंगे। AI उत्पाद इस्तेमाल करते समय आपको आँखें मूँदकर भरोसा नहीं करना चाहिए।",
     "promiseEyebrow": "हमारा वादा",
     "promiseBody": "हम उत्पाद पेजों पर दर्ज दावे, उनके स्रोत और ज्ञात सीमाएँ साझा करते हैं। सत्यापन की तारीख के साथ उसका दायरा बताते हैं और समाप्त हो चुके रिकॉर्ड को वर्तमान प्रमाण की तरह नहीं दिखाते।",
     "pillarsEyebrow": "तीन मुख्य उत्पाद, पारदर्शिता की तीन व्यवस्थाएँ",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · स्वतंत्र उत्पाद प्रयोगशाला",
       "title": "कम उत्पाद। हर एक पर लंबे समय तक विचार किया गया।",
-      "lede": "YULA Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।",
+      "lede": "Yula Lab अपने उत्पाद विकसित करता है और AI परामर्श देता है: कार्यप्रवाह के आकलन से लेकर प्रोटोटाइप, एकीकरण और मूल्यांकन तक।",
       "notice": "रिकॉर्ड और स्रोत पारदर्शिता पेज पर हैं।",
       "scroll": "आगे बढ़ने के लिए स्क्रॉल करें"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

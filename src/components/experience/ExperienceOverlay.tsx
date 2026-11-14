@@ -144,9 +144,9 @@ export function ExperienceHeader({
       <NextLink
         className={styles.experienceBrand}
         href="#experience-hero"
-        aria-label={`YULA Lab — ${copy.navigation.home}`}
+        aria-label={`Yula Lab — ${copy.navigation.home}`}
       >
-        <span>YULA Lab</span>
+        <span>Yula Lab</span>
       </NextLink>
 
       <nav className={styles.experienceNavigation} aria-label={copy.navigation.home}>
@@ -309,7 +309,7 @@ export function ExperienceClosingContent({ copy, headingId }: ExperienceClosingC
           <Link href="/support">{copy.closing.support}</Link>
         </nav>
         <div className={styles.legalLine}>
-          <span>© {new Date().getFullYear()} YULA Lab</span>
+          <span>© {new Date().getFullYear()} Yula Lab</span>
           <span>{copy.closing.rights}</span>
         </div>
       </div>

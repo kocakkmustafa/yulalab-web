@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — Hoy diseñamos los productos del mañana.",
-    "description": "YULA Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados."
+    "title": "Yula Lab — Hoy diseñamos los productos del mañana.",
+    "description": "Yula Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados."
   },
   "header": {
     "home": "Inicio",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "Laboratorio de productos · Türkiye",
     "heroTitle": "Hoy diseñamos los productos del mañana.",
-    "heroDescription": "YULA Lab es un laboratorio independiente que diseña productos concebidos con IA y guiados por datos para simplificar la vida diaria. Cada proyecto se construye en la intersección de la estética, la ética y el impacto.",
+    "heroDescription": "Yula Lab es un laboratorio independiente que diseña productos concebidos con IA y guiados por datos para simplificar la vida diaria. Cada proyecto se construye en la intersección de la estética, la ética y el impacto.",
     "heroMeta": {
       "products": "8 productos",
       "studio": "1 laboratorio",
@@ -81,7 +81,7 @@
     "bannerCaption": "PRODUCTOS · LABORATORIO · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "Visión",
-    "visionBody": "Las herramientas que trabajan con tus propios datos pueden funcionar sin entregárselos a nadie. YULA Lab existe para demostrar que esto es posible no solo técnicamente, sino también comercialmente.",
+    "visionBody": "Las herramientas que trabajan con tus propios datos pueden funcionar sin entregárselos a nadie. Yula Lab existe para demostrar que esto es posible no solo técnicamente, sino también comercialmente.",
     "missionEyebrow": "Misión",
     "missionBody": "Cada producto se publica con una afirmación medible, y el número permanece en la página, nos favorezca o no. Los usuarios saben qué reciben y qué no.",
     "manifestoNote": "Una cultura de ingeniería basada en cuatro valores.",
@@ -95,12 +95,12 @@
       "manifesto": "Manifiesto",
       "projeler": "Proyectos",
       "seffaflik": "Transparencia",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "Un laboratorio de productos de IA de una sola persona · Türkiye",
     "heroTitleA": "Pocos productos.",
     "heroTitleB": "Pensados durante mucho tiempo.",
-    "heroLede": "YULA Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados.",
+    "heroLede": "Yula Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados.",
     "heroCta": "Ver el portafolio",
     "scrollHint": "Desplázate para continuar",
     "visionKicker": "01 — Visión y misión",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "Manifiesto",
     "title": "Con cuidado, sin prisa.",
-    "intro": "YULA Lab es un laboratorio independiente de productos que se apoya en la evidencia, no en las tendencias. Cada producto es una expresión de la misma disciplina: generar una diferencia medible en la vida de las personas mediante un diseño transparente y moderado.",
+    "intro": "Yula Lab es un laboratorio independiente de productos que se apoya en la evidencia, no en las tendencias. Cada producto es una expresión de la misma disciplina: generar una diferencia medible en la vida de las personas mediante un diseño transparente y moderado.",
     "nameEyebrow": "El nombre",
     "nameTitle": "Yula: una luz que muestra el camino.",
     "nameBody": "Yula es la palabra para una luz pequeña y constante que guía en la oscuridad. Lab es su contraparte: una disciplina de experimentación, medición y repetición. Juntos, forman todo el método: calidez sin excesos, orientación sin espectáculo.",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "Transparencia",
     "title": "Sin cajas negras. Nunca.",
-    "intro": "En YULA Lab, la transparencia no es una función: es lo habitual. Cada producto hace la misma promesa: puedes ver el modelo, el costo y los datos. Si usas un producto de IA, no deberías tener que cerrar los ojos.",
+    "intro": "En Yula Lab, la transparencia no es una función: es lo habitual. Cada producto hace la misma promesa: puedes ver el modelo, el costo y los datos. Si usas un producto de IA, no deberías tener que cerrar los ojos.",
     "promiseEyebrow": "Nuestra promesa",
     "promiseBody": "Compartimos en las páginas de producto las afirmaciones registradas, sus fuentes y los límites conocidos. Mostramos las fechas de verificación junto con su alcance y no presentamos los registros vencidos como evidencia actual.",
     "pillarsEyebrow": "Tres productos principales, tres mecanismos de transparencia",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · LABORATORIO INDEPENDIENTE DE PRODUCTOS",
       "title": "Pocos productos. Pensados durante mucho tiempo.",
-      "lede": "YULA Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados.",
+      "lede": "Yula Lab desarrolla sus propios productos y ofrece consultoría en IA: desde la evaluación de flujos de trabajo hasta prototipos, integraciones y evaluación de resultados.",
       "notice": "Los registros y las fuentes están en la página de transparencia.",
       "scroll": "Desplázate para continuar"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {

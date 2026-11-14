@@ -12,7 +12,7 @@ import { loadInputs, runLocaleReport } from "../scripts/lib/locale-report-cli";
 const repo = path.resolve(import.meta.dirname, "..");
 
 describe("language-independent rule (brand / technical values are never 'pending')", () => {
-  it.each(["YULA Lab", "iOS", "AES-256", "https://yulalab.com", "info@yulalab.com", "/tr/contact", "2026", "—", "KVKK", "LifeOS {count}", "v2"])("%s is independent", (v) => {
+  it.each(["Yula Lab", "YULA Lab", "iOS", "AES-256", "https://yulalab.com", "info@yulalab.com", "/tr/contact", "2026", "—", "KVKK", "LifeOS {count}", "v2"])("%s is independent", (v) => {
     expect(isLanguageIndependent(v)).toBe(true);
   });
   it.each(["Contact", "Contact us", "Privacy policy", "Back to contact", "YULA Lab team"])("%s needs a human translation", (v) => {

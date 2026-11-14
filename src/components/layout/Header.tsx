@@ -129,11 +129,11 @@ export function Header() {
           <Link
             href="/"
             className="flex shrink-0 whitespace-nowrap items-center gap-2.5 group focusable"
-            aria-label="YULA Lab"
+            aria-label="Yula Lab"
           >
             <YulaMark size={28} />
             <span className="font-display font-semibold tracking-tight text-[15px]">
-              YULA Lab
+              Yula Lab
             </span>
           </Link>
 
@@ -273,7 +273,7 @@ export function Header() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <YulaMark />
-              <span className="font-display font-semibold">YULA Lab</span>
+              <span className="font-display font-semibold">Yula Lab</span>
             </div>
             <button
               ref={mobileCloseButton}

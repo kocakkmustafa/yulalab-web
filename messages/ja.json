@@ -1,7 +1,7 @@
 {
   "site": {
-    "title": "YULA Lab — 明日の製品を、今日デザインする。",
-    "description": "YULA Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。"
+    "title": "Yula Lab — 明日の製品を、今日デザインする。",
+    "description": "Yula Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。"
   },
   "header": {
     "home": "ホーム",
@@ -69,7 +69,7 @@
   "landing": {
     "eyebrow": "プロダクトラボ · Türkiye",
     "heroTitle": "明日の製品を、今日デザインする。",
-    "heroDescription": "YULA Labは、日常生活をよりシンプルにする、AIを基盤としたデータ駆動型の製品を設計する独立系プロダクトラボです。すべてのプロジェクトを、美しさ、倫理、実際の効果の交わる場所で育てています。",
+    "heroDescription": "Yula Labは、日常生活をよりシンプルにする、AIを基盤としたデータ駆動型の製品を設計する独立系プロダクトラボです。すべてのプロジェクトを、美しさ、倫理、実際の効果の交わる場所で育てています。",
     "heroMeta": {
       "products": "8製品",
       "studio": "1ラボ",
@@ -81,7 +81,7 @@
     "bannerCaption": "プロダクト · ラボ · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
     "visionEyebrow": "ビジョン",
-    "visionBody": "自分のデータで動くツールは、そのデータを誰かに渡さずに使えるはずです。YULA Labは、それが技術的にも事業としても可能だと示すために存在します。",
+    "visionBody": "自分のデータで動くツールは、そのデータを誰かに渡さずに使えるはずです。Yula Labは、それが技術的にも事業としても可能だと示すために存在します。",
     "missionEyebrow": "ミッション",
     "missionBody": "すべての製品に測定可能な主張を添え、その数値が私たちに都合のよいものでも悪いものでも掲載します。ユーザーは、何が得られ、何が得られないのかを把握できます。",
     "manifestoNote": "四つの価値観を土台にしたエンジニアリング文化。",
@@ -95,12 +95,12 @@
       "manifesto": "マニフェスト",
       "projeler": "プロジェクト",
       "seffaflik": "透明性",
-      "birlesme": "YULA Lab"
+      "birlesme": "Yula Lab"
     },
     "heroEyebrow": "一人で運営するAIプロダクトラボ · Türkiye",
     "heroTitleA": "製品は、少なく。",
     "heroTitleB": "考える時間は、長く。",
-    "heroLede": "YULA Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。",
+    "heroLede": "Yula Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。",
     "heroCta": "ポートフォリオを見る",
     "scrollHint": "スクロールして進む",
     "visionKicker": "01 — ビジョンとミッション",
@@ -153,7 +153,7 @@
   "manifesto": {
     "eyebrow": "マニフェスト",
     "title": "急ぐより、丁寧に。",
-    "intro": "YULA Labは流行ではなく、根拠を大切にする独立系プロダクトラボです。製品の姿は違っても、控えめで透明な設計によって、人の生活に測定可能な違いを生み出すという姿勢は共通しています。",
+    "intro": "Yula Labは流行ではなく、根拠を大切にする独立系プロダクトラボです。製品の姿は違っても、控えめで透明な設計によって、人の生活に測定可能な違いを生み出すという姿勢は共通しています。",
     "nameEyebrow": "名前について",
     "nameTitle": "Yula：進む道を照らす光。",
     "nameBody": "Yulaは、暗がりで道を示す、小さく揺るがない光を表す言葉です。Labはそれを支える、実験、測定、反復の姿勢。過剰にならない温かさ、派手さに頼らない導き。その二つが、私たちの方法です。",
@@ -206,7 +206,7 @@
   "transparency": {
     "eyebrow": "透明性",
     "title": "ブラックボックスは、作らない。",
-    "intro": "YULA Labにとって透明性は追加機能ではなく、基本です。どの製品でも、モデル、費用、データをユーザーに見える形にすることを約束します。AI製品を使うために、目をつぶる必要はありません。",
+    "intro": "Yula Labにとって透明性は追加機能ではなく、基本です。どの製品でも、モデル、費用、データをユーザーに見える形にすることを約束します。AI製品を使うために、目をつぶる必要はありません。",
     "promiseEyebrow": "私たちの約束",
     "promiseBody": "製品ページでは、記録された主張、その情報源、既知の限界を公開します。確認日は対象範囲とともに示し、期限切れの記録を現在有効な根拠として扱いません。",
     "pillarsEyebrow": "三つの主要製品、三つの透明性の仕組み",
@@ -709,7 +709,7 @@
     "hero": {
       "eyebrow": "YULA LAB · 独立系プロダクトラボ",
       "title": "製品は少なく。考える時間は長く。",
-      "lede": "YULA Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。",
+      "lede": "Yula Labは自社製品を開発し、業務フローの評価からプロトタイプ、システム連携、評価まで、AIコンサルティングを提供します。",
       "notice": "記録と出典は透明性のページに掲載しています。",
       "scroll": "スクロールして進む"
     },
@@ -971,7 +971,7 @@
     "scene1": {
       "label": "Identity",
       "title": "We build technology to make life more possible, not more complicated.",
-      "message": "YULA Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
+      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
       "ctaProducts": "Explore the products",
       "ctaHow": "See how we work",
       "ctaLabel": "Main paths",
@@ -1062,7 +1062,7 @@
       "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
       "linksLabel": "Related pages",
       "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with YULA Lab",
+      "linkStudio": "Studio: build with Yula Lab",
       "linkTransparency": "Transparency",
       "principles": {
         "p1": {
