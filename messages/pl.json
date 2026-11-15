@@ -1250,5 +1250,27 @@
     "micLabel": "Also listen with the microphone (optional)",
     "micOn": "Microphone is on. Clap or tap a surface.",
     "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+  },
+  "lifeosDemo": {
+    "kicker": "Synthetic decision and reminder try-out",
+    "title": "Pick a decision, preview its reminder.",
+    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
+    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set and this page saves nothing.",
+    "badge": "Synthetic example",
+    "cardsLegend": "Example decision card",
+    "card1": "Moving date",
+    "card2": "Wardrobe colour choice",
+    "card3": "Book club day",
+    "customLabel": "Or name your own example card (optional)",
+    "customHint": "Do not type anything real. An example name is enough.",
+    "whenLegend": "When should the reminder arrive?",
+    "whenDay": "Tomorrow morning",
+    "whenWeek": "One week from now, in the morning",
+    "preview": "Reminder time: {when}",
+    "setButton": "Set the reminder (simulation)",
+    "doneHeading": "Reminder set (simulation)",
+    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
+    "announceDone": "Reminder set, simulation. {title}: {when}.",
+    "restart": "Try again"
   }
 }
