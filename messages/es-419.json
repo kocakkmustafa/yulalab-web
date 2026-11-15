@@ -1225,5 +1225,30 @@
     "lede": "Pick one of four paths; each opens a real page on this site.",
     "forLabel": "Who it is for",
     "note": "Your choice is not stored; this page records nothing."
+  },
+  "ostinatoDemo": {
+    "kicker": "Rhythm feel try-out",
+    "title": "Tap along with a beat.",
+    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
+    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
+    "start": "Start the beat",
+    "tapButton": "Tap here on the beat",
+    "tapHint": "Space, Enter, click or touch all work.",
+    "countIn": "Listen first. Taps count after the lead-in.",
+    "running": "The beat is playing. Tap along.",
+    "perfect": "Perfect",
+    "good": "Good",
+    "miss": "Missed",
+    "early": "{ms} ms early",
+    "late": "{ms} ms late",
+    "last": "Last tap",
+    "accuracy": "Timing accuracy: {pct}%",
+    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
+    "resultHeading": "Round result",
+    "announceDone": "Round finished. {summary}. {accuracy}.",
+    "restart": "Try again",
+    "micLabel": "Also listen with the microphone (optional)",
+    "micOn": "Microphone is on. Clap or tap a surface.",
+    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
   }
 }

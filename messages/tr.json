@@ -1225,5 +1225,30 @@
     "lede": "Dört yoldan birini seç; her biri sitenin gerçek bir sayfasına açılır.",
     "forLabel": "Kim için",
     "note": "Seçimin saklanmaz; bu sayfa hiçbir şey kaydetmez."
+  },
+  "ostinatoDemo": {
+    "kicker": "Ritim hissi denemesi",
+    "title": "Vuruşla birlikte dokun.",
+    "intro": "Başlat'a bas, vuruşu dinle, sonra Boşluk, Enter, tık ya da dokunuşla vur. Her vuruşa zamanlama notu verilir, sonunda toplamı görürsün.",
+    "note": "Bu sayfaya ait küçük bir deneme. Uygulamanın kendisi değildir, bir şeyin ölçümü de değildir. Hiçbir şey tarayıcından çıkmaz, hiçbir şey saklanmaz.",
+    "start": "Vuruşu başlat",
+    "tapButton": "Vuruşta buraya dokun",
+    "tapHint": "Boşluk, Enter, tık ya da dokunuş çalışır.",
+    "countIn": "Önce dinle. Vuruşlar hazırlıktan sonra sayılır.",
+    "running": "Vuruş çalıyor. Birlikte vur.",
+    "perfect": "Mükemmel",
+    "good": "İyi",
+    "miss": "Kaçtı",
+    "early": "{ms} ms erken",
+    "late": "{ms} ms geç",
+    "last": "Son vuruş",
+    "accuracy": "Zamanlama doğruluğu: %{pct}",
+    "summary": "Mükemmel: {perfect}, İyi: {good}, Kaçtı: {miss}",
+    "resultHeading": "Tur sonucu",
+    "announceDone": "Tur bitti. {summary}. {accuracy}.",
+    "restart": "Tekrar dene",
+    "micLabel": "Mikrofonla da dinle (isteğe bağlı)",
+    "micOn": "Mikrofon açık. Alkışla ya da bir yüzeye vur.",
+    "micNote": "Mikrofon hiçbir zaman gerekmez. Ses cihazında kalır; kaydedilmez, hiçbir yere gönderilmez. Kulaklık, vuruşun mikrofona karışmasını önler."
   }
 }
