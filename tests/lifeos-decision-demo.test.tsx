@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import LifeosDecisionDemo from "@/components/projects/LifeosDecisionDemo";
+import LifeosDecisionDemo, { cleanName } from "@/components/projects/LifeosDecisionDemo";
 import type { LifeosDemoText } from "@/components/projects/LifeosDemoArea";
 import en from "../messages/en.json";
 import tr from "../messages/tr.json";
@@ -47,6 +47,22 @@ describe("LifeosDecisionDemo (WEB-P1-01)", () => {
     fireEvent.change(input, { target: { value: "  Sample plan  " } });
     fireEvent.click(screen.getByTestId("lifeos-set"));
     expect(screen.getByTestId("lifeos-done-body").textContent).toContain("Sample plan");
+  });
+
+  it("strips zero-width and bidi control characters; empty after cleaning falls back to the card", () => {
+    expect(cleanName("a\u200Bb\u200C\u200D\u2060\uFEFFc\u202A\u202E\u2066\u2069d")).toBe("abcd");
+    view();
+    const input = screen.getByLabelText(text.customLabel);
+    fireEvent.change(input, { target: { value: "\u200B\u202E \u2066\uFEFF" } });
+    fireEvent.click(screen.getByTestId("lifeos-set"));
+    expect(screen.getByTestId("lifeos-done-body").textContent).toContain(text.card1);
+    cleanup();
+    view();
+    fireEvent.change(screen.getByLabelText(text.customLabel), { target: { value: "Sa\u202Emple\u200B" } });
+    fireEvent.click(screen.getByTestId("lifeos-set"));
+    const body = screen.getByTestId("lifeos-done-body").textContent!;
+    expect(body).toContain("Sample");
+    expect(body).not.toMatch(/[\u200B\u202E]/);
   });
 
   it("restart returns to the form and focuses the first choice", () => {

@@ -1255,7 +1255,7 @@
     "kicker": "Synthetic decision and reminder try-out",
     "title": "Pick a decision, preview its reminder.",
     "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set and this page saves nothing.",
+    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
     "badge": "Synthetic example",
     "cardsLegend": "Example decision card",
     "card1": "Moving date",

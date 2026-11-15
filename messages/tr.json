@@ -1255,7 +1255,7 @@
     "kicker": "Sentetik karar ve hatırlatma denemesi",
     "title": "Bir karar seç, hatırlatmasını önizle.",
     "intro": "Örnek bir karar kartı seç ya da kendi örnek adını yaz. Hatırlatmanın ne zaman geleceğini önizle, sonra kurulmuş gibi gör.",
-    "note": "Küçük bir deneme; uygulamanın kendisi değildir. Karar kartları uydurmadır. Gerçekte hiçbir hatırlatıcı kurulmaz, bu sayfa hiçbir şey kaydetmez.",
+    "note": "Küçük bir deneme; uygulamanın kendisi değildir. Karar kartları uydurmadır. Gerçekte hiçbir hatırlatıcı kurulmaz; bu deneme hiçbir veri kaydetmez ya da göndermez.",
     "badge": "Sentetik örnek",
     "cardsLegend": "Örnek karar kartı",
     "card1": "Taşınma tarihi",

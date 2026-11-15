@@ -14,6 +14,9 @@ const CARD_KEYS = ["card1", "card2", "card3"] as const;
 const OFFSETS: ReminderOffset[] = ["day", "week"];
 const WHEN_KEY = { day: "whenDay", week: "whenWeek" } as const;
 const MAX_CUSTOM = 40;
+/** Zero-width and bidi control characters are removed from the typed name. */
+export const INVISIBLE = /[\u200B-\u200D\u2060\uFEFF\u202A-\u202E\u2066-\u2069]/g;
+export const cleanName = (s: string) => s.replace(INVISIBLE, "").trim();
 
 const fill = (s: string, v: Record<string, string>) => s.replace(/\{(\w+)\}/g, (_, k: string) => v[k] ?? "");
 
@@ -53,7 +56,7 @@ export default function LifeosDecisionDemo({ text, lang, now = () => new Date(),
     wasDone.current = !!done;
   }, [done]);
 
-  const title = custom.trim() || text[card];
+  const title = cleanName(custom) || text[card];
   const whenOf = (o: ReminderOffset, base: Date) => formatReminder(planReminder(base, o, zone.current), lang, zone.current);
 
   const set = () => {

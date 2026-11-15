@@ -13,6 +13,10 @@ const PAGES = [
   ["tr", "/projects/lifeos", "Hatırlatıcıyı kur (simülasyon)", "Hatırlatıcı kuruldu (simülasyon)", "Dolap rengi seçimi", "Bir hafta sonra, sabah"] as const,
   ["en", "/en/projects/lifeos", "Set the reminder (simulation)", "Reminder set (simulation)", "Wardrobe colour choice", "One week from now, in the morning"] as const,
 ];
+let baseOrigin = "";
+test.beforeEach(({ baseURL }) => {
+  baseOrigin = baseURL ? new URL(baseURL).origin : "";
+});
 const demo = (page: import("@playwright/test").Page) => page.getByTestId("lifeos-decision-demo");
 
 if (!ON) {
@@ -29,11 +33,24 @@ if (!ON) {
       test("keyboard flow completes, is announced, and makes no network or storage use", async ({ page }) => {
         const problems: string[] = [];
         page.on("pageerror", (e) => problems.push(e.message));
+        // Listener first, so nothing before navigation is missed; only requests made
+        // after the interaction starts are judged. Next prefetches and same-origin
+        // static or document loads are not demo traffic.
+        let interacting = false;
+        const requests: string[] = [];
+        page.on("request", (r) => {
+          if (!interacting) return;
+          const h = r.headers();
+          const prefetch = "next-router-prefetch" in h || h["purpose"] === "prefetch" || h["sec-purpose"]?.includes("prefetch");
+          const u = new URL(r.url());
+          const staticOrDoc =
+            ["document", "script", "stylesheet", "image", "font", "media"].includes(r.resourceType()) && u.origin === baseOrigin;
+          if (!prefetch && !staticOrDoc) requests.push(r.method() + " " + r.url() + " [" + r.resourceType() + "]");
+        });
         await page.goto(url + "#dene");
         await expect(demo(page)).toBeVisible();
         await page.waitForLoadState("networkidle");
-        const requests: string[] = [];
-        page.on("request", (r) => requests.push(r.method() + " " + r.url()));
+        interacting = true;
 
         await expect(page.getByTestId("lifeos-demo-badge")).toBeVisible();
         await demo(page).getByRole("radio", { name: card }).focus();
