@@ -198,14 +198,6 @@
       "sha256": "3b9ef73e31836e5e75b3cba371148ee2eba1e394903d8349ef3465fcc90135e3"
     },
     {
-      "path": "public/projects/burunfarki/screenshot-daily-history.png",
-      "sha256": "dd886e9284033962e16b2e525cb76f2503dca72208abf297cfe7283ab333419e"
-    },
-    {
-      "path": "public/projects/burunfarki/screenshot-honest-stats.png",
-      "sha256": "047c00573b7aba9b279b15eb18aa525e54abcdc5a06012fea30fc97a9dc6249b"
-    },
-    {
       "path": "public/projects/lifeos/favicon.png",
       "sha256": "7ab2525f4b86b65d3e4c70358a17e5a1aaf6f437f99cbcc046dad73d59bb9015"
     },

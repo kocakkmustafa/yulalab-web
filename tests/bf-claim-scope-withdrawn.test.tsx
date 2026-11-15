@@ -118,3 +118,21 @@ describe("registry export withholds scope together with the statement", () => {
     expect(file).not.toContain("screenshot-honest-stats");
   });
 });
+
+describe("the withdrawn Burun Farkı claim screenshots are gone from the repository", () => {
+  it("public/projects/burunfarki has neither capture (nothing can serve a Top-1/Top-3 image)", async () => {
+    const { existsSync, readdirSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const dir = join(process.cwd(), "public/projects/burunfarki");
+    expect(existsSync(join(dir, "screenshot-honest-stats.png"))).toBe(false);
+    expect(existsSync(join(dir, "screenshot-daily-history.png"))).toBe(false);
+    expect(readdirSync(dir).filter((f) => f.startsWith("screenshot-"))).toEqual([]);
+  });
+
+  it("the published-files manifest no longer lists them", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const manifest = readFileSync(join(process.cwd(), ".github/ci/published-files.json"), "utf8");
+    expect(manifest).not.toContain("burunfarki/screenshot-");
+  });
+});
