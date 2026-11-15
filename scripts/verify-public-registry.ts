@@ -13,7 +13,6 @@ import { validateCaseStudies } from "../src/lib/case-studies";
 import { presentClaims } from "../src/lib/proof";
 import {
   isClaimPresentable,
-  isExpired,
   listClaimsExpiringWithin,
   listUndeclaredLapsedClaims,
   validateClaimStateDeclared,
