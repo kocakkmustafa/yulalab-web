@@ -1,5 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
+import { parseEventPayload } from "@/lib/analytics/events";
 import { SESSION_STORAGE_KEY, UTM_STORAGE_KEY, rememberUtm, track } from "@/lib/analytics/client";
 
 /**
@@ -41,11 +43,22 @@ afterEach(() => {
 });
 
 describe("track()", () => {
-  it.each(["es-419", "pt-BR", "de", "fr", "ja", "ar"])("does not mislabel %s or create an identifier before event-intake activation", (locale) => {
-    window.history.replaceState({}, "", `/${locale}/projects/lifeos?utm_source=sample`);
+  it.each(SUPPORTED_LOCALES)("records the page locale %s as itself, never as Turkish", async (locale) => {
+    window.history.replaceState({}, "", `/${locale}/projects/lifeos`);
     track({ event: "product_view", product: "lifeos" });
-    expect(beacons).toHaveLength(0);
-    expect(window.sessionStorage.length).toBe(0);
+    expect(beacons).toHaveLength(1);
+    expect((await payloadOf(0)).locale).toBe(locale);
+  });
+
+  it("fires the closed-vocabulary funnel events with no target and no free text", async () => {
+    window.history.replaceState({}, "", "/de");
+    for (const event of ["home_view", "lead_form_started", "lead_form_submitted"] as const) track({ event });
+    expect(beacons).toHaveLength(3);
+    for (let i = 0; i < 3; i++) {
+      const body = await payloadOf(i);
+      expect(parseEventPayload(body).ok).toBe(true);
+      expect(Object.keys(body).sort()).toEqual(["event", "locale", "page", "session", "v"]);
+    }
   });
 
   it.each([["/en/projects/lifeos", "en"], ["/enough", "tr"]])("infers only exact locale segments for %s", async (path, expectedLocale) => {

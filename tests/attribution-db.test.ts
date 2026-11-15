@@ -3,7 +3,7 @@ import type { Pool } from "pg";
 import { createIsolatedSchema, dropSchema } from "./helpers/attribution-db";
 import { recordAttribution, purgeExpiredAttributions } from "@/server/attribution";
 import { rotatingSessionHash } from "@/lib/analytics/session-hash";
-import type { EventPayload } from "@/lib/analytics/events";
+import { LOCALES, type EventPayload } from "@/lib/analytics/events";
 
 /**
  * These tests run against a REAL PostgreSQL, never a fake.
@@ -39,7 +39,7 @@ function payload(overrides: Partial<EventPayload> = {}): EventPayload {
 }
 
 beforeAll(async () => {
-  pool = await createIsolatedSchema(SCHEMA);
+  pool = await createIsolatedSchema(SCHEMA, { funnel: true });
 });
 
 afterAll(async () => {
@@ -137,9 +137,20 @@ describe("the database refuses bad rows even when the application does not", () 
     await expect(insert({ event_name: "made_up_event" })).rejects.toThrow();
   });
 
-  it("rejects an unsupported locale", async () => {
-    await expect(insert({ locale: "de" })).rejects.toThrow();
+  it.each(LOCALES)("accepts the site locale %s", async (locale) => {
+    await expect(insert({ locale })).resolves.toBeDefined();
   });
+
+  it.each(["fr-CA", "zh", "ru", "TR"])("rejects the locale %s outside the 14", async (locale) => {
+    await expect(insert({ locale })).rejects.toThrow();
+  });
+
+  it.each(["home_view", "lead_form_started", "lead_form_submitted"])(
+    "accepts the funnel event %s without a target",
+    async (event_name) => {
+      await expect(insert({ event_name, target_url: null, target_category: null })).resolves.toBeDefined();
+    },
+  );
 
   it("rejects a target without a category and a category without a target", async () => {
     await expect(insert({ target_category: null })).rejects.toThrow();

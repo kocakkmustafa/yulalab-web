@@ -378,6 +378,9 @@ describe("studio analytics reach the real parser", () => {
         ["-X", "-v", "ON_ERROR_STOP=1", "-d", testDatabaseUrl(schema), "-f", migration],
         { stdio: "pipe" },
       );
+      // 0006 widens the same CHECK to the full current vocabulary.
+      const { funnelMigrationSql } = await import("./helpers/attribution-db");
+      await pool.query(funnelMigrationSql());
       const { EVENT_NAMES } = await import("@/lib/analytics/events");
       const accepted = await pool.query(
         `INSERT INTO attributions (event_version, event_name, locale, page_path, session_id_hash)

@@ -14,7 +14,7 @@ const localLoginUrl = (schema: string) => {
 };
 
 beforeAll(async () => {
-  pool = await createIsolatedSchema(SCHEMA);
+  pool = await createIsolatedSchema(SCHEMA, { funnel: true });
 });
 
 afterAll(async () => {
@@ -29,6 +29,8 @@ beforeEach(async () => {
   process.env.YULA_PURGE_DATABASE_URL = "postgres://purge-test@invalid.invalid/yula";
   process.env.ATTRIBUTION_SECRET = "test-secret-not-a-real-one";
   process.env.NEXT_PUBLIC_SITE_URL = ORIGIN;
+  // This suite runs against a schema with 0006 applied (`funnel: true`).
+  process.env.EVENTS_V2_ENABLED = "1";
 });
 
 afterEach(async () => {
@@ -39,6 +41,7 @@ afterEach(async () => {
   delete process.env.YULA_PURGE_DATABASE_URL;
   delete process.env.YULA_DATABASE_SCHEMA;
   delete process.env.ATTRIBUTION_SECRET;
+  delete process.env.EVENTS_V2_ENABLED;
 });
 
 function body(overrides: Record<string, unknown> = {}) {
@@ -86,6 +89,24 @@ describe("POST /api/events", () => {
     const { rows } = await pool.query("SELECT event_name, target_url FROM attributions");
     expect(rows).toHaveLength(1);
     expect(rows[0].event_name).toBe("store_outbound");
+  });
+
+  it.each(["home_view", "lead_form_started", "lead_form_submitted"])(
+    "accepts the funnel event %s in a non-TR/EN locale with 202",
+    async (event) => {
+      const res = await post(
+        body({ event, locale: "pt-BR", page: "/pt-BR", target: undefined, targetCategory: undefined, product: undefined }),
+      );
+      expect(res.status).toBe(202);
+      const { rows } = await pool.query("SELECT event_name, locale FROM attributions");
+      expect(rows).toEqual([{ event_name: event, locale: "pt-BR" }]);
+    },
+  );
+
+  it("rejects a funnel event that carries a target, and a locale outside the 14, with 400", async () => {
+    expect((await post(body({ event: "home_view" }))).status).toBe(400);
+    expect((await post(body({ locale: "ru" }))).status).toBe(400);
+    expect(await pool.query("SELECT * FROM attributions").then((r) => r.rowCount)).toBe(0);
   });
 
   it("rejects an unknown event name with 400", async () => {
