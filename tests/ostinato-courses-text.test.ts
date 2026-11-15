@@ -16,15 +16,15 @@ describe("Ostinato Kurslar maddesi", () => {
     }
   });
 
-  it("description ile aynı sayıları söyler (235+5 ders/4 seviye, 48+2 ders/2 seviye; ADR-002)", () => {
-    expect(description.tr).toContain("dört seviyede 235 dersle (+5 test dersi)");
-    expect(description.tr).toContain("iki seviyede 48 dersle (+2 test dersi)");
-    expect(courses.tr).toContain("dört seviyede 235 dersle (+5 test dersi)");
-    expect(courses.tr).toContain("iki seviyede 48 dersle (+2 test dersi)");
-    expect(description.en).toContain("235 lessons (+5 test lessons) across four levels");
-    expect(description.en).toContain("48 lessons (+2 test lessons) across two levels");
-    expect(courses.en).toContain("235 lessons (+5 test lessons) across four levels");
-    expect(courses.en).toContain("48 lessons (+2 test lessons) across two levels");
+  it("description ile aynı sayıları söyler (235 ders/4 seviye, 48 ders/2 seviye; ADR-002)", () => {
+    expect(description.tr).toContain("dört seviyede 235 dersle");
+    expect(description.tr).toContain("iki seviyede 48 dersle");
+    expect(courses.tr).toContain("dört seviyede 235 dersle");
+    expect(courses.tr).toContain("iki seviyede 48 dersle");
+    expect(description.en).toContain("235 lessons across four levels");
+    expect(description.en).toContain("48 lessons across two levels");
+    expect(courses.en).toContain("235 lessons across four levels");
+    expect(courses.en).toContain("48 lessons across two levels");
     for (const t of [description.tr, description.en, courses.tr, courses.en]) {
       expect(t).not.toMatch(/\b(690|676|240)\b/);
     }
