@@ -2,6 +2,7 @@ import { localized, text } from "@/lib/localized";
 import { isLocale, localePath } from "@/i18n/locales";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { TrackView } from "@/components/common/TrackView";
 import { HomeScenes } from "@/components/landing/HomeScenes";
 import { YulaExperience } from "@/components/experience/YulaExperience";
 import type {
@@ -271,6 +272,7 @@ export default async function LandingPage({
 
   return (
     <>
+      <TrackView event="home_view" />
       <YulaExperience products={experienceProducts} copy={copy} />
       <HomeScenes locale={locale} now={now} />
     </>

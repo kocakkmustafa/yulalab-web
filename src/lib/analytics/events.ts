@@ -1,5 +1,6 @@
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 /**
  * The complete funnel vocabulary (roadmap §8.1). This is an allowlist, not
@@ -22,6 +23,10 @@ export const EVENT_NAMES = [
   "studio_application_started",
   "studio_application_submitted",
   "support_outbound",
+  // WEB-P1-03 funnel steps: home "view", lead form "started" / "submitted".
+  "home_view",
+  "lead_form_started",
+  "lead_form_submitted",
 ] as const;
 
 export type EventName = (typeof EVENT_NAMES)[number];
@@ -33,7 +38,13 @@ export type EventName = (typeof EVENT_NAMES)[number];
  */
 export const EVENT_VERSION = 1;
 
-export const LOCALES = ["tr", "en"] as const;
+/**
+ * Single source of truth is the routing list: an event recorded for a locale
+ * the site serves must never need a second list to be kept in step.
+ * `db/migrations/0006_funnel_events_locales.sql` carries the same values and
+ * `tests/target-rule-parity.test.ts` fails if they drift.
+ */
+export const LOCALES = SUPPORTED_LOCALES;
 export type EventLocale = (typeof LOCALES)[number];
 
 // Exactly the three values categoryForHost() can return. "demo" and
@@ -62,6 +73,9 @@ const TARGET_FORBIDDEN: ReadonlySet<string> = new Set([
   "demo_request_submitted",
   "studio_application_started",
   "studio_application_submitted",
+  "home_view",
+  "lead_form_started",
+  "lead_form_submitted",
 ]);
 
 /** UTM values are machine tokens, never prose. */
@@ -228,7 +242,7 @@ export function parseEventPayload(input: unknown): ParseResult {
   const event = body.event as EventName;
 
   if (typeof body.locale !== "string" || !(LOCALES as readonly string[]).includes(body.locale)) {
-    return fail("locale must be tr or en");
+    return fail("locale must be a supported site locale");
   }
 
   // Rejecting unknown FIELDS is not the same as constraining the VALUES of

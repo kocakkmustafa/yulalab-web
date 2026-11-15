@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseEventPayload } from "@/lib/analytics/events";
+import { parseEventPayload, type EventPayload } from "@/lib/analytics/events";
 import { getPool, isDatabaseConfigured } from "@/server/db";
 import { recordAttribution } from "@/server/attribution";
 import { allowRequest, clientIp } from "@/server/rate-limit";
@@ -13,6 +13,54 @@ export const dynamic = "force-dynamic";
 /** Well above any legitimate event, well below anything worth parsing. */
 const MAX_BODY_BYTES = 2_048;
 
+
+/**
+ * WEB-P1-03 schema gate. Migration 0006 (three funnel events + 14 locales on
+ * the `attributions` CHECK constraints) is NOT applied in production. Until
+ * it is, a write of a "v2" event, or of any non-TR/EN locale, would fail the
+ * old constraints. `EVENTS_V2_ENABLED` (default OFF) keeps those events from
+ * touching the database at all; flip it to "1" only after 0006 is applied.
+ */
+const V2_EVENTS: ReadonlySet<string> = new Set([
+  "home_view",
+  "lead_form_started",
+  "lead_form_submitted",
+]);
+
+function needsV2Schema(payload: EventPayload): boolean {
+  return V2_EVENTS.has(payload.event) || (payload.locale !== "tr" && payload.locale !== "en");
+}
+
+function eventsV2Enabled(): boolean {
+  const flag = process.env.EVENTS_V2_ENABLED;
+  return flag === "1" || flag === "true";
+}
+
+/**
+ * "Schema not there yet" failures: undefined table (42P01), PostgREST's
+ * missing-relation code (PGRST205), or a CHECK violation (23514) on the two
+ * constraints 0006 widens. Anything else is a real failure and stays a 503.
+ */
+function isSchemaPending(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) return false;
+  const { code, constraint, message } = error as {
+    code?: unknown;
+    constraint?: unknown;
+    message?: unknown;
+  };
+  if (code === "42P01" || code === "PGRST205") return true;
+  if (
+    typeof message === "string" &&
+    /relation .* does not exist|could not find the table/i.test(message)
+  ) {
+    return true;
+  }
+  return (
+    code === "23514" &&
+    (constraint === "attributions_event_name_check" ||
+      constraint === "attributions_locale_check")
+  );
+}
 
 /**
  * Same-origin only. The site and the links hub are the two first-party
@@ -105,6 +153,8 @@ function clientKey(request: Request, session: string): string {
  * - 403                  — foreign origin.
  * - 413                  — body too large to be a legitimate event.
  * - 503 `{stored:false}` — storage unconfigured or unavailable.
+ * - 204                  — v2 event (see V2_EVENTS) dropped: `EVENTS_V2_ENABLED`
+ *                          off, or migration 0006 not applied yet.
  *
  * The 503 matters more than it looks. Returning 202 when there is no
  * database would make every dropped event indistinguishable from a stored
@@ -145,6 +195,14 @@ export async function POST(request: Request): Promise<Response> {
     return NextResponse.json({ stored: false, reason: "rate_limited" }, { status: 429 });
   }
 
+  // Gate closed: a v2 event is acknowledged and dropped without a database
+  // round trip. 204 (not 202) because nothing was stored, and not 503
+  // because this is a deliberate, healthy state rather than an outage.
+  const v2 = needsV2Schema(parsed.value);
+  if (v2 && !eventsV2Enabled()) {
+    return new Response(null, { status: 204 });
+  }
+
   const secret = process.env.ATTRIBUTION_SECRET;
   if (!isDatabaseConfigured("intake") || !secret) {
     return NextResponse.json(
@@ -156,6 +214,13 @@ export async function POST(request: Request): Promise<Response> {
   try {
     await recordAttribution(getPool("intake"), parsed.value, { now: new Date(), secret });
   } catch (error) {
+    // Gate open but 0006 missing after all: degrade quietly for v2 events
+    // only. Legacy events keep the honest 503 below.
+    if (v2 && isSchemaPending(error)) {
+      const code = (error as { code?: unknown }).code;
+      console.warn("attribution schema pending", typeof code === "string" ? code : "unknown");
+      return new Response(null, { status: 204 });
+    }
     // Deliberately does not log the payload — only the failure shape.
     console.error("attribution write failed", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ stored: false, reason: "write_failed" }, { status: 503 });

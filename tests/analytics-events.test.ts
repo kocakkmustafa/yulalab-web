@@ -2,11 +2,13 @@ import { describe, expect, it } from "vitest";
 import {
   EVENT_NAMES,
   EVENT_VERSION,
+  LOCALES,
   parseEventPayload,
   outboundHostAllowlist,
 } from "@/lib/analytics/events";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 // A payload that must always pass, so every "make one thing wrong" test
 // below isolates the single rule it is checking.
@@ -45,7 +47,34 @@ describe("event allowlist", () => {
       "studio_application_started",
       "studio_application_submitted",
       "support_outbound",
+      "home_view",
+      "lead_form_started",
+      "lead_form_submitted",
     ]);
+  });
+
+  it.each(["home_view", "lead_form_started", "lead_form_submitted"])(
+    "accepts the WEB-P1-03 funnel event %s without a target",
+    (event) => {
+      const result = parseEventPayload(
+        valid({ event, target: undefined, targetCategory: undefined, product: undefined, page: "/" }),
+      );
+      expect(result.ok, result.ok ? "" : result.reason).toBe(true);
+    },
+  );
+
+  it.each(["home_view", "lead_form_started", "lead_form_submitted"])(
+    "rejects %s when it carries a target",
+    (event) => {
+      const result = parseEventPayload(valid({ event }));
+      expect(result.ok).toBe(false);
+      if (!result.ok) expect(result.reason).toMatch(/must not carry a target/i);
+    },
+  );
+
+  it("rejects an event name that is one character off a new funnel name", () => {
+    expect(parseEventPayload(valid({ event: "home_views", target: undefined, targetCategory: undefined })).ok).toBe(false);
+    expect(parseEventPayload(valid({ event: "lead_form_submit", target: undefined, targetCategory: undefined })).ok).toBe(false);
   });
 
   it("rejects an unknown event name", () => {
@@ -119,8 +148,17 @@ describe("field shapes", () => {
     expect(parseEventPayload(valid({ v: 99 })).ok).toBe(false);
   });
 
-  it("rejects an unsupported locale", () => {
-    expect(parseEventPayload(valid({ locale: "de" })).ok).toBe(false);
+  it("accepts exactly the 14 public site locales, derived from the routing list", () => {
+    expect([...LOCALES]).toEqual([...SUPPORTED_LOCALES]);
+    expect(LOCALES).toHaveLength(14);
+    for (const locale of SUPPORTED_LOCALES) {
+      const result = parseEventPayload(valid({ locale }));
+      expect(result.ok, `${locale}: ${result.ok ? "" : result.reason}`).toBe(true);
+    }
+  });
+
+  it.each(["fr-CA", "zh", "ES-419", "pt", "ru", "", "tr "])("rejects the locale %j outside the 14", (locale) => {
+    expect(parseEventPayload(valid({ locale })).ok).toBe(false);
   });
 
   it("rejects a product slug that is not in the public registry", () => {

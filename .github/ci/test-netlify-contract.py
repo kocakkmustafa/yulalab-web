@@ -19,6 +19,7 @@ HANDLER = "___netlify-server-handler"
 MIDDLEWARE = "___netlify-edge-handler-src-middleware"
 EDGE = ".netlify/edge-functions-dist"
 BUILD_ID = "fixture-build-20260908"
+SCHEDULED = {"mail-drain": "*/15 * * * *", "purge-daily": "0 1 * * *"}
 ERRORS = (ValueError, KeyError, TypeError, OSError, EOFError, tarfile.TarError, zipfile.BadZipFile)
 
 
@@ -115,8 +116,18 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.zip_relative = f".netlify/functions/{HANDLER}.zip"
         self.write(self.zip_relative, b"")
         self.make_zip()
+        scheduled = []
+        for name, schedule in SCHEDULED.items():
+            self.write(f"netlify/functions/{name}.ts", "export default async () => new Response('ok');\n")
+            self.write(f".netlify/functions/{name}.zip", b"")
+            self.make_scheduled_zip(name)
+            scheduled.append({"name": name, "bundler": "nft", "invocationMode": "stream", "runtime": "js",
+                              "runtimeVersion": "nodejs24.x", "schedule": schedule,
+                              "mainFile": str(self.root / f"netlify/functions/{name}.ts"),
+                              "path": str(self.root / f".netlify/functions/{name}.zip")})
         self.functions = {"functions": [{"name": HANDLER, "generator": "@netlify/plugin-nextjs@5.16.2",
-                                        "runtimeVersion": "nodejs24.x", "path": str(self.root / self.zip_relative)}],
+                                        "runtimeVersion": "nodejs24.x", "path": str(self.root / self.zip_relative)},
+                                       *scheduled],
                           "system": {"arch": "fixture", "platform": "fixture"}}
         self.write_json(".netlify/functions/manifest.json", self.functions)
         self.edge = {"bundles": [self.asset("eszip2", minimal_eszip())],
@@ -144,6 +155,10 @@ Cache-Control = "public, max-age=300, must-revalidate"
         with zipfile.ZipFile(self.root / self.zip_relative, "w") as archive:
             archive.writestr(".next/BUILD_ID", build_id)
 
+    def make_scheduled_zip(self, name):
+        with zipfile.ZipFile(self.root / f".netlify/functions/{name}.zip", "w") as archive:
+            archive.writestr(f"netlify/functions/{name}.cjs", "module.exports = {};")
+
     def rejected(self):
         with self.assertRaises(ERRORS):
             contract.validate(self.root)
@@ -160,7 +175,7 @@ Cache-Control = "public, max-age=300, must-revalidate"
                 self.assertEqual(result["buildId"], BUILD_ID)
                 self.assertEqual(result["functionSystem"], {"arch": "fixture", "platform": "fixture"})
                 self.assertEqual(result["edgeFormats"], sorted(b["format"] for b in bundles))
-                self.assertEqual(len(result["files"]), 8 + len(bundles))
+                self.assertEqual(len(result["files"]), 10 + len(bundles))
 
     def test_provider_publish_swap_preserves_actual_artifact_checks(self):
         # Exact adapter5.16.2 publishStaticDir rename sequence; no build execution.
@@ -212,13 +227,13 @@ Cache-Control = "public, max-age=300, must-revalidate"
                 self.rejected()
 
     def test_server_identity_count_runtime_and_package_path(self):
-        handler = self.functions["functions"][0]
-        cases = [[], [handler, handler], [{**handler, "name": "other"}],
-                 [{**handler, "generator": "other"}], [{**handler, "runtimeVersion": "nodejs20.x"}],
-                 [{**handler, "runtimeVersion": "nodejs22.x"}], [{**handler, "runtimeVersion": "nodejs26.x"}],
-                 [{key: value for key, value in handler.items() if key != "runtimeVersion"}],
-                 [{**handler, "path": "/outside/server.zip"}],
-                 [{key: value for key, value in handler.items() if key != "generator"}]]
+        handler, *scheduled = self.functions["functions"]
+        cases = [[], [handler], [handler, handler, *scheduled], [{**handler, "name": "other"}, *scheduled],
+                 [{**handler, "generator": "other"}, *scheduled], [{**handler, "runtimeVersion": "nodejs20.x"}, *scheduled],
+                 [{**handler, "runtimeVersion": "nodejs22.x"}, *scheduled], [{**handler, "runtimeVersion": "nodejs26.x"}, *scheduled],
+                 [{key: value for key, value in handler.items() if key != "runtimeVersion"}, *scheduled],
+                 [{**handler, "path": "/outside/server.zip"}, *scheduled],
+                 [{key: value for key, value in handler.items() if key != "generator"}, *scheduled]]
         for functions in cases:
             with self.subTest(functions=functions):
                 self.write_json(".netlify/functions/manifest.json", {**self.functions, "functions": functions})
@@ -312,7 +327,7 @@ Cache-Control = "public, max-age=300, must-revalidate"
                 self.assertEqual(result["buildId"], BUILD_ID)
                 self.assertEqual(result["registryByteParity"], True)
                 self.assertEqual(result["edgeFormats"], ["eszip2", "tar"])
-                self.assertEqual(len(result["files"]), 10)
+                self.assertEqual(len(result["files"]), 12)
                 receipt = next(file for file in result["files"] if file["path"].endswith(tar["asset"]))
                 self.assertEqual(receipt["sha256"], tar["asset"][:64])
 
@@ -562,6 +577,45 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.write_json(f"{EDGE}/manifest.json", self.edge)
         self.rejected()
 
+    def test_two_scheduled_functions_pass_with_exact_set(self):
+        for order in (self.functions["functions"], list(reversed(self.functions["functions"]))):
+            self.write_json(".netlify/functions/manifest.json", {**self.functions, "functions": order})
+            self.assertEqual(contract.validate(self.root)["status"], "PASS")
+
+    def test_unknown_extra_function_and_missing_scheduler_fail(self):
+        handler, mail, purge = self.functions["functions"]
+        extra = {**mail, "name": "unexpected-fn", "schedule": "* * * * *"}
+        for functions in ([handler, mail, purge, extra], [handler, mail], [handler, purge],
+                          [handler, mail, {**purge, "name": "mail-drain"}],
+                          [handler, mail, {**purge, "name": "purge-other"}]):
+            with self.subTest(names=[f["name"] for f in functions]):
+                self.write_json(".netlify/functions/manifest.json", {**self.functions, "functions": functions})
+                self.rejected()
+
+    def test_scheduled_function_identity_schedule_runtime_source_and_zip(self):
+        handler, mail, purge = self.functions["functions"]
+        cases = [{"schedule": "* * * * *"}, {"schedule": None}, {"runtime": "go"}, {"generator": "@netlify/plugin-nextjs@5.16.2"},
+                 {"runtimeVersion": "nodejs22.x"}, {"runtimeVersion": None}, {"path": "/outside/mail-drain.zip"},
+                 {"mainFile": "/repo/netlify/functions/other.ts"}, {"mainFile": None}]
+        for change in cases:
+            with self.subTest(change=change):
+                mutated = {key: value for key, value in {**mail, **change}.items() if value is not None}
+                self.write_json(".netlify/functions/manifest.json", {**self.functions, "functions": [handler, mutated, purge]})
+                self.rejected()
+        self.write_json(".netlify/functions/manifest.json", self.functions)
+        self.assertEqual(contract.validate(self.root)["status"], "PASS")
+        path = self.root / ".netlify/functions/mail-drain.zip"
+        original = path.read_bytes()
+        path.write_bytes(b"")
+        self.rejected()
+        path.write_bytes(original[:-8])
+        self.rejected()
+        path.write_bytes(original)
+        self.make_scheduled_zip("mail-drain")
+        self.assertEqual(contract.validate(self.root)["status"], "PASS")
+        (self.root / "netlify/functions/mail-drain.ts").unlink()
+        self.rejected()
+
     def test_server_zip_truncation_and_wrong_build(self):
         path = self.root / self.zip_relative
         path.write_bytes(path.read_bytes()[:-8])
@@ -605,14 +659,14 @@ Cache-Control = "public, max-age=300, must-revalidate"
         edge = outputs / "edge"
         (self.root / ".netlify/functions").rename(functions)
         (self.root / EDGE).rename(edge)
-        manifest = {**self.functions, "functions": [{**self.functions["functions"][0],
-                    "path": str(functions / f"{HANDLER}.zip")} ]}
+        manifest = {**self.functions, "functions": [
+            {**entry, "path": str(functions / f"{entry['name']}.zip")} for entry in self.functions["functions"]]}
         (functions / "manifest.json").write_text(json.dumps(manifest))
         result = contract.validate(self.root, functions_dist=functions, edge_functions_dist=edge)
         self.assertEqual(result["status"], "PASS")
         self.assertEqual(result["scope"], "provider build artifact; no deployment or runtime execution")
         self.assertEqual(result["buildId"], BUILD_ID)
-        self.assertEqual(len(result["files"]), 9)
+        self.assertEqual(len(result["files"]), 11)
         self.assertIn(str(functions / f"{HANDLER}.zip"), [file["path"] for file in result["files"]])
         for change in [{"path": str(self.root / self.zip_relative)}, {"runtimeVersion": "nodejs26.x"},
                        {"generator": "other"}]:
