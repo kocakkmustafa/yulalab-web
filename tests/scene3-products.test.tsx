@@ -129,15 +129,20 @@ describe("proofBadgeOf / presentedKindOf", () => {
     expect(proofBadgeOf(lifeos, AFTER_ALL).state).toBe("lapsed");
     expect(presentedKindOf(lifeos, "no-such-claim", OPEN)).toBeUndefined();
   });
-  it("a planned burunfarki- claim stays on the journey; the same claim under another id is dropped", () => {
+  it("a planned claim is dropped from the journey, burunfarki- id prefix or not (no exemption); a lapsed one travels redacted", () => {
     const bf = publicRegistry.find((r) => r.slug === "burunfarki") as ProductPublicRecord;
     const open = day(bf.claims.map((c) => c.expiresAt as string).sort()[0], -1);
     const mk = (prefix: string): ProductPublicRecord => ({
       ...bf,
       claims: bf.claims.slice(0, 1).map((c) => ({ ...c, id: prefix + "-x", claimState: "planned" as const })),
     });
-    expect(toExperienceClaims(mk("burunfarki"), "en", open)).toHaveLength(1);
+    expect(toExperienceClaims(mk("burunfarki"), "en", open)).toHaveLength(0);
     expect(toExperienceClaims(mk("other"), "en", open)).toHaveLength(0);
+    // Declared state aside, Burun Farkı's real lapsed claims travel redacted like any lapsed claim.
+    const afterBf = day(bf.claims.map((c) => c.expiresAt as string).sort().pop() as string, 1);
+    const lapsed = toExperienceClaims(bf, "en", afterBf);
+    expect(lapsed).toHaveLength(bf.claims.length);
+    expect(lapsed.every((c) => c.withheld === true && c.statement === "" && c.source === "")).toBe(true);
   });
   it("the journey drops withheld claims at the source", () => {
     const record = planned({ claimState: "planned", expiresAt: expiries[expiries.length - 1] });
