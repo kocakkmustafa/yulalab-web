@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != '3d10615a8a88f88cd3dfc821fd8ef9b39bc00d7d':
+        if actual != '406c3dd3523b875bb0fa394347dfae3183f5e174':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
@@ -546,6 +546,8 @@ jobs:
       NEXT_TELEMETRY_DISABLED: '1'
       YULA_E2E_PORT: '4192'
       LEADS_ENABLED: '1'
+      # WEB-P1-02: Ostinato ritim demosu bayrağı da build sırasında okunur; açık kip aynı build'de koşar.
+      OSTINATO_DEMO_ENABLED: '1'
     steps:
     - name: Checkout
       uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -566,8 +568,8 @@ jobs:
       run: pnpm build
     - name: Install Chromium
       run: pnpm exec playwright install --with-deps chromium
-    - name: Open-mode e2e (consulting + contact; no retries, so flakiness stays visible)
-      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Open-mode e2e (consulting + contact + ostinato demo; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
     - name: Job özeti
       if: ${{ always() }}
       run: |

@@ -6,6 +6,8 @@ import { TrackedLink } from "@/components/common/TrackedLink";
 import { categoriseTarget } from "@/lib/analytics/client";
 import { ProductCompany, ProductFaq, ProductFeatures, ProductPrice } from "@/components/projects/ProductShowcase";
 import { BraavolabsPlanDemo } from "@/components/projects/BraavolabsPlanDemo";
+import { OstinatoDemoArea } from "@/components/projects/OstinatoDemoArea";
+import { ostinatoDemoEnabled } from "@/server/ostinato-demo-surface";
 import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
@@ -351,6 +353,17 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                     {t("demoLabel")}
                   </p>
                   <BraavolabsPlanDemo />
+                </div>
+              ) : null}
+              {project.slug === "ostinato" && ostinatoDemoEnabled() ? (
+                <div id="dene" data-testid="demo-area">
+                  <p
+                    data-testid="demo-label"
+                    className="mb-6 inline-flex rounded-full border border-white/15 px-2.5 py-1 font-mono text-[10px] tracking-[0.16em] uppercase text-ink-300"
+                  >
+                    {t("demoLabel")}
+                  </p>
+                  <OstinatoDemoArea />
                 </div>
               ) : null}
             </div>
