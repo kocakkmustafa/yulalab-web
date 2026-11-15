@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { projects } from "@/data/projects";
+import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 import { publicRegistry } from "@/data/public-registry";
 import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenance";
 
@@ -54,9 +55,12 @@ describe("stats that restate a registry claim must be linked to it", () => {
   });
 
   it("resolves a linked stat back to its claim", () => {
-    const bf = projects.find((p) => p.slug === "burunfarki")!;
-    const stat = bf.stats.find((s) => s.value === "~%62")!;
+    const stat = WITHDRAWN_BF_STATS.find((s) => s.value === "~%62")!;
     expect(linkedClaimFor("burunfarki", stat)?.id).toBe("burunfarki-topk-accuracy");
+  });
+
+  it("carries no Burun Farkı stat at all (claim withdrawn, founder 2a)", () => {
+    expect(projects.find((p) => p.slug === "burunfarki")!.stats).toEqual([]);
   });
 
   it("links exactly the stats that are supposed to be linked", () => {
@@ -68,9 +72,6 @@ describe("stats that restate a registry claim must be linked to it", () => {
     const EXPECTED = [
       ["braavolabs", "Primitives", "9", "braavolabs-primitive-count"],
       ["braavolabs", "LLM Providers", "14", "braavolabs-provider-count"],
-      ["burunfarki", "Top-1 (live tracking)", "~%29", "burunfarki-topk-accuracy"],
-      ["burunfarki", "Top-3 (live tracking)", "~%62", "burunfarki-topk-accuracy"],
-      ["burunfarki", "live-tracked races", "1.225", "burunfarki-topk-accuracy"],
       ["lifeos", "On-device encryption", "AES-256", "lifeos-on-device-encryption"],
     ] as const;
 

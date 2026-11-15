@@ -12,6 +12,7 @@ import { caseStudies } from "../src/data/case-studies";
 import { validateCaseStudies } from "../src/lib/case-studies";
 import { presentClaims } from "../src/lib/proof";
 import {
+  buildRegistryExport,
   isClaimPresentable,
   listClaimsExpiringWithin,
   listUndeclaredLapsedClaims,
@@ -34,6 +35,19 @@ for (const record of publicRegistry) {
     const kind = presented.find((p) => p.claim.id === claim.id)?.kind;
     if (kind === "verified") {
       gateErrors.push(`${record.slug}: claim ${claim.id} expired ${claim.expiresAt} but is still presented as verified`);
+    }
+  }
+}
+
+// (a2) A claim the gate withholds must leave the exported file without any
+// narration: statement, figures AND scope (founder 2a: scope text restates the
+// figure's window, so it is withheld with it).
+for (const product of buildRegistryExport(publicRegistry, NOW).products) {
+  for (const claim of product.claims) {
+    if (claim.presentation !== "withheld") continue;
+    const leaks = [claim.statementTr, claim.statementEn, claim.scopeTr, claim.scopeEn].some((t) => t !== "");
+    if (leaks || claim.figures !== undefined || claim.figureWords !== undefined) {
+      gateErrors.push(`${product.slug}: withheld claim ${claim.id} still exports statement, scope or figures`);
     }
   }
 }

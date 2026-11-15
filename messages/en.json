@@ -371,7 +371,7 @@
       "r1k": "Evaluation",
       "r1v": "Time-ordered split · no lookahead",
       "r2k": "Metrics",
-      "r2v": "Top-1 / Top-3 hit rate",
+      "r2v": "Ranking accuracy",
       "r3k": "Explanation",
       "r3v": "Rule-based · per prediction",
       "r4k": "Publishing",

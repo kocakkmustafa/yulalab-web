@@ -49,23 +49,6 @@ export const burunfarki: ProjectConfig = {
         alt: "Türkiye'de bir yarış parkurunda dörtnala koşan atlar.",
         kind: "atmosphere",
       },
-      // Real captures of the live /dogruluk page (harvested 2026-07-11 via
-      // a headless-browser screenshot service, bypassing the need for
-      // burunfark-web's CSP change — its Vercel production deploy wasn't
-      // picking up that change, so the iframe path (ProjectAsset kind:
-      // "live", still supported by ProductShot/types.ts) is on hold until
-      // that's sorted. This is the decision-rationale evidence FABLE_PLAN
-      // §8.4.4 asked for instead of the stock photo above.
-      {
-        src: "/projects/burunfarki/screenshot-honest-stats.png",
-        alt: "Burun Farkı'nın dürüst performans çerçevesi: Top-1/Top-3 isabet oranları, son 7/30/90 gün.",
-        kind: "product",
-      },
-      {
-        src: "/projects/burunfarki/screenshot-daily-history.png",
-        alt: "Burun Farkı günlük AI tahmin geçmişi: her günün Top-1/Top-3 isabet detayı.",
-        kind: "product",
-      },
     ],
   },
   features: [
@@ -86,22 +69,6 @@ export const burunfarki: ProjectConfig = {
       icon: "BadgeCheck",
     },
     {
-      title: { tr: "Tarihsel arşiv", en: "Historical archive" },
-      description: {
-        tr: "69 günlük canlı takipteki 1.225 yarış — modelin geçmişte nerede yanıldığını da görürsün.",
-        en: "The 1,225 races in the current 69-day live-tracking window — including where the model has been wrong.",
-      },
-      icon: "Database",
-    },
-    {
-      title: { tr: "Canlı takip paneli", en: "Live tracking panel" },
-      description: {
-        tr: "Yayımlanan 69 günlük canlı takip penceresindeki gerçek sonuçlarla modelin getirisini gün gün izle.",
-        en: "Track the model's day-by-day performance against the published 69-day live-results window.",
-      },
-      icon: "TrendingUp",
-    },
-    {
       title: { tr: "Disiplin önerileri", en: "Discipline tools" },
       description: {
         tr: "Bahis değil — bütçe yönetimi, varyans, durma kuralları üzerine eğitsel araçlar.",
@@ -118,32 +85,10 @@ export const burunfarki: ProjectConfig = {
       icon: "Microscope",
     },
   ],
-  // Honest live (post-deployment) walk-forward accuracy, not training-time
-  // backtest. Source: burunfark.com/dogruluk, verified 2026-08-25
-  // (69 days / 1,225 races in the current live DOM). Training-time backtest separately
-  // measured ~69% Top-3 — see the `short` field above for that distinction.
-  // TODO(Y-P0-003): move source/verifiedAt/expiresAt into the public
-  // registry schema once it exists; this comment is a stopgap until then.
-  stats: [
-    {
-      value: "~%29",
-      numericDisplay: { value: 0.29, unit: "percent", approximate: true },
-      label: { tr: "Top-1 (canlı takip)", en: "Top-1 (live tracking)" },
-      claimId: "burunfarki-topk-accuracy",
-    },
-    {
-      value: "~%62",
-      numericDisplay: { value: 0.62, unit: "percent", approximate: true },
-      label: { tr: "Top-3 (canlı takip)", en: "Top-3 (live tracking)" },
-      claimId: "burunfarki-topk-accuracy",
-    },
-    {
-      value: "1.225",
-      numericDisplay: { value: 1225, unit: "integer" },
-      label: { tr: "canlı takip yarışı", en: "live-tracked races" },
-      claimId: "burunfarki-topk-accuracy",
-    },
-  ],
+  // Founder decision 2026-11-15 (2a): the Burun Farkı claim is withdrawn from the
+  // site, so no accuracy figure is carried here. The registry keeps the claim
+  // record only as withheld provenance.
+  stats: [],
   vision: {
     tr: "At yarışını duygusal bir kumardan, denetlenebilir bir kantitatif disipline çeviren açık bir araç ekosistemi.",
     en: "An open ecosystem that turns horse racing from emotional gambling into an auditable quantitative discipline.",

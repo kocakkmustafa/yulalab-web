@@ -3,7 +3,7 @@
   "asOf": "2026-11-15",
   "schema": {
     "version": 2,
-    "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
+    "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr, statementEn, scopeTr and scopeEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
   },
   "products": [
     {
@@ -134,22 +134,7 @@
         "labelEn": "Explore Burun Farkı",
         "url": "/projects/burunfarki"
       },
-      "screenshots": [
-        {
-          "path": "/projects/burunfarki/screenshot-honest-stats.png",
-          "sourceBuild": "headless-browser-capture-2026-07-11",
-          "capturedAt": "2026-07-11",
-          "altTr": "Burun Farkı'nın dürüst performans çerçevesi: Top-1/Top-3 isabet oranları, son 7/30/90 gün.",
-          "altEn": "Burun Farkı's honest performance framing: Top-1/Top-3 hit rates over the last 7/30/90 days."
-        },
-        {
-          "path": "/projects/burunfarki/screenshot-daily-history.png",
-          "sourceBuild": "headless-browser-capture-2026-07-11",
-          "capturedAt": "2026-07-11",
-          "altTr": "Burun Farkı günlük AI tahmin geçmişi: her günün Top-1/Top-3 isabet detayı.",
-          "altEn": "Burun Farkı daily AI prediction history: Top-1/Top-3 hit detail for every day."
-        }
-      ],
+      "screenshots": [],
       "claims": [
         {
           "id": "burunfarki-topk-accuracy",
@@ -157,8 +142,8 @@
           "statementEn": "",
           "evidenceKind": "measured",
           "source": "https://burunfark.com/dogruluk",
-          "scopeTr": "2026-08-25'te sayfada gösterilen 69 günlük/1.225 yarışlık canlı yayın-sonrası aggregate; eğitim-zamanı backtest değil. Kanıt tazelik penceresi 30 gündür.",
-          "scopeEn": "The 69-day/1,225-race live post-deployment aggregate displayed on 2026-08-25; not the training-time backtest. The evidence freshness window is 30 days.",
+          "scopeTr": "",
+          "scopeEn": "",
           "owner": "burun-farki",
           "verifiedAt": "2026-08-25",
           "expiresAt": "2026-09-24",
@@ -172,8 +157,8 @@
           "statementEn": "",
           "evidenceKind": "source-code-verified",
           "source": "ventures/burun-farki/web/src/components/HorseExplainCard.tsx",
-          "scopeTr": "Kullanıcıya gösterilen 'ilk 3 faktör' özelliği, sabit ağırlıklı kural-tabanlı bir sıralama — model çıktısının resmî bir açıklanabilirlik-değeri (ör. Shapley tabanlı bir yöntem) hesaplaması DEĞİL; o yönde bir iddia yapılmaz.",
-          "scopeEn": "The 'top 3 factors' shown to users is a fixed-weight, rule-based ranking — NOT a formal explainability computation over the model output (a Shapley-based method, for instance); no such claim is made.",
+          "scopeTr": "",
+          "scopeEn": "",
           "owner": "burun-farki",
           "verifiedAt": "2026-08-19",
           "expiresAt": "2026-09-18",

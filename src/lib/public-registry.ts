@@ -363,9 +363,10 @@ export function validateClaimStateDeclared(records: ProductPublicRecord[], now: 
 /**
  * SEC-WEB-01b — the claim shape of the published portfolio-registry.json.
  * A claim the gate (`isClaimPresentable`) refuses at `now` keeps its identity,
- * provenance and dates (`id`, `claimState`, `source`, scope, `verifiedAt`,
- * `expiresAt`) but loses what would narrate it: statements are emptied,
- * `figures`/`figureWords` dropped, `publishableAsPresentTense` forced false,
+ * provenance and dates (`id`, `claimState`, `source`, `verifiedAt`,
+ * `expiresAt`) but loses what would narrate it: statements and scope
+ * (`scopeTr`/`scopeEn`, which restate the figure's window and basis) are
+ * emptied, `figures`/`figureWords` dropped, `publishableAsPresentTense` forced false,
  * and `presentation: "withheld"` marks it. Presentable claims are returned untouched (same object).
  */
 export type ExportedClaim = ProductClaim & {
@@ -383,6 +384,10 @@ export function withholdIfLapsed(claim: ProductClaim, now: Date): ExportedClaim 
     ...rest,
     statementTr: "",
     statementEn: "",
+    // Scope text describes the withheld figure ("69-day/1,225-race aggregate"),
+    // so it narrates the claim as much as the statement does (founder 2a).
+    scopeTr: "",
+    scopeEn: "",
     publishableAsPresentTense: false,
     presentation: "withheld",
     withheldReason: "verification-window-closed",
@@ -392,7 +397,7 @@ export function withholdIfLapsed(claim: ProductClaim, now: Date): ExportedClaim 
 export const REGISTRY_EXPORT_SCHEMA = {
   version: 2,
   notes:
-    "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit.",
+    "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr, statementEn, scopeTr and scopeEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit.",
 } as const;
 
 /** Pure: the exact JSON object written to public/portfolio-registry.json for `now`. */

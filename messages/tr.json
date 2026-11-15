@@ -371,7 +371,7 @@
       "r1k": "Değerlendirme",
       "r1v": "Zaman sıralı ayrım · gelecek bilgisi kullanılmaz",
       "r2k": "Metrikler",
-      "r2v": "Top-1 / Top-3 isabet",
+      "r2v": "Sıralama doğruluğu",
       "r3k": "Açıklama",
       "r3v": "Kural-tabanlı · her tahmin için",
       "r4k": "Yayın",

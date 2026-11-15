@@ -371,7 +371,7 @@
       "r1k": "Avaliação",
       "r1v": "Divisão em ordem temporal · sem dados do futuro",
       "r2k": "Métricas",
-      "r2v": "Taxa de acerto Top-1 / Top-3",
+      "r2v": "Precisão do ranking",
       "r3k": "Explicação",
       "r3v": "Baseada em regras · por previsão",
       "r4k": "Publicação",

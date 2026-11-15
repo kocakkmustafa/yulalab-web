@@ -18,8 +18,6 @@ export const serviceMediaPaths = [
   "/projects/choreia/preview-native-20261016.png",
   "/projects/lifeos/preview-onboarding-20261016.png",
   "/projects/braavolabs/screenshot-builder.png",
-  "/projects/burunfarki/screenshot-honest-stats.png",
-  "/projects/burunfarki/screenshot-daily-history.png",
 ] as const;
 
 function sourceTexture(image: HTMLImageElement, path: string, resolution: number) {
