@@ -37,6 +37,22 @@ if (!ON) {
         // after the interaction starts are judged. Next prefetches and same-origin
         // static or document loads are not demo traffic.
         let interacting = false;
+        // Permission prompts are counted, not the permission value: headless
+        // Chromium reports "denied", which says nothing about whether we asked.
+        await page.addInitScript(() => {
+          const w = window as unknown as { __asked: number };
+          w.__asked = 0;
+          const N = window.Notification;
+          if (N) {
+            const orig = N.requestPermission.bind(N);
+            N.requestPermission = (...a: Parameters<typeof orig>) => (w.__asked++, orig(...a));
+          }
+          const md = navigator.mediaDevices;
+          if (md?.getUserMedia) {
+            const g = md.getUserMedia.bind(md);
+            md.getUserMedia = (...a: Parameters<typeof g>) => (w.__asked++, g(...a));
+          }
+        });
         const requests: string[] = [];
         page.on("request", (r) => {
           if (!interacting) return;
@@ -72,13 +88,13 @@ if (!ON) {
           session: sessionStorage.length,
           cookie: document.cookie.includes("lifeos"),
           idb: typeof indexedDB.databases === "function" ? (await indexedDB.databases()).length : 0,
-          notif: typeof Notification === "undefined" ? "none" : Notification.permission,
+          asked: (window as unknown as { __asked: number }).__asked,
         }));
         expect(stored.local).toBe(0);
         expect(stored.session).toBe(0);
         expect(stored.cookie).toBe(false);
         expect(stored.idb).toBe(0);
-        expect(["none", "default"]).toContain(stored.notif);
+        expect(stored.asked).toBe(0);
         expect(problems, problems.join("\n")).toEqual([]);
         expect(requests, requests.join("\n")).toEqual([]);
       });
@@ -86,6 +102,9 @@ if (!ON) {
       test("no horizontal overflow at 320 and 390", async ({ page }) => {
         for (const width of [320, 390]) {
           await page.setViewportSize({ width, height: 800 });
+          // Same URL plus hash is not a reload; start each width from a fresh page, or the
+          // "done" state of the previous width is still showing and the set button is gone.
+          await page.goto("about:blank");
           await page.goto(url + "#dene");
           await expect(demo(page)).toBeVisible();
           expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth), "w" + width).toBe(false);
