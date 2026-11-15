@@ -371,7 +371,7 @@
       "r1k": "Évaluation",
       "r1v": "Découpage chronologique · sans données futures",
       "r2k": "Indicateurs",
-      "r2v": "Taux de réussite Top-1 / Top-3",
+      "r2v": "Précision du classement",
       "r3k": "Explication",
       "r3v": "Fondée sur des règles · par prédiction",
       "r4k": "Publication",

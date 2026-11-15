@@ -116,8 +116,6 @@ export const showcaseImagePaths = [
   ...approvedIdentityPaths,
   "/projects/braavolabs/screenshot-audit-trail.png",
   "/projects/braavolabs/screenshot-builder.png",
-  "/projects/burunfarki/screenshot-honest-stats.png",
-  "/projects/burunfarki/screenshot-daily-history.png",
   ...approvedIdentityPaths.map((path) => path.replace("/icon.png", "/preview-native-20261016.png")),
   "/projects/lifeos/preview-onboarding-20261016.png",
 ];

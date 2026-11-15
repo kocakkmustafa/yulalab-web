@@ -371,7 +371,7 @@
       "r1k": "Evaluasi",
       "r1v": "Pembagian berurutan waktu · tanpa melihat data masa depan",
       "r2k": "Metrik",
-      "r2v": "Tingkat keberhasilan Top-1 / Top-3",
+      "r2v": "Akurasi peringkat",
       "r3k": "Penjelasan",
       "r3v": "Berbasis aturan · per prediksi",
       "r4k": "Publikasi",

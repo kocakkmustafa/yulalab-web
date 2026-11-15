@@ -4,6 +4,7 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { StatCards } from "@/components/projects/StatCards";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
+import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 
 afterEach(cleanup);
 
@@ -35,7 +36,7 @@ function renderFor(slug: string, now: Date) {
   return render(
     <StatCards
       slug={slug}
-      stats={config.stats}
+      stats={slug === "burunfarki" ? WITHDRAWN_BF_STATS : config.stats}
       record={record}
       locale="en"
       now={now}
@@ -45,8 +46,8 @@ function renderFor(slug: string, now: Date) {
 }
 
 describe("planned claims (WEB-P0-03d notSpoken)", () => {
-  const { config, record } = product("burunfarki");
-  const stat = config.stats.find((s) => s.claimId)!;
+  const { record } = product("burunfarki");
+  const stat = WITHDRAWN_BF_STATS.find((s) => s.claimId)!;
   const claim = record.claims.find((c) => c.id === stat.claimId)!;
   const now = onExpiryDay(claim.expiresAt!);
   now.setUTCDate(now.getUTCDate() - 1);
@@ -214,11 +215,10 @@ describe("empty and degraded cases", () => {
   });
 
   it("does not crash, or invent provenance, without a registry record", () => {
-    const { config } = product("burunfarki");
     render(
       <StatCards
         slug="burunfarki"
-        stats={config.stats}
+        stats={WITHDRAWN_BF_STATS}
         record={undefined}
         locale="en"
         now={new Date("2026-11-14T12:00:00+03:00")}

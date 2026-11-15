@@ -9,6 +9,7 @@ import { ProofCard } from "@/components/common/ProofCard";
 import { ProofLedger } from "@/components/experience/ExperienceOverlay";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
+import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 import { toExperienceClaims } from "@/lib/experience-claims";
 import { presentClaims } from "@/lib/proof";
 import {
@@ -144,9 +145,10 @@ describe("/transparency", () => {
 describe("StatCards", () => {
   function render_(slug: string, now: Date) {
     const config = projects.find((p) => p.slug === slug)!;
+    const stats = slug === "burunfarki" ? WITHDRAWN_BF_STATS : config.stats;
     const record = publicRegistry.find((r) => r.slug === slug)!;
     return render(
-      <StatCards slug={slug} stats={config.stats} record={record} locale="en" now={now} labels={LABELS} />,
+      <StatCards slug={slug} stats={stats} record={record} locale="en" now={now} labels={LABELS} />,
     );
   }
 
@@ -242,8 +244,9 @@ describe("Burun Farkı: önce=sonra yerine gizlendi", () => {
 
   it("the Burun Farkı product page renders with no claim narration, no empty card", () => {
     const config = projects.find((p) => p.slug === "burunfarki")!;
+    expect(config.stats).toEqual([]);
     const { container } = render(
-      <StatCards slug="burunfarki" stats={config.stats} record={bf} locale="en" now={AFTER_ALL} labels={LABELS} />,
+      <StatCards slug="burunfarki" stats={WITHDRAWN_BF_STATS} record={bf} locale="en" now={AFTER_ALL} labels={LABELS} />,
     );
     const text = container.textContent ?? "";
     for (const figure of ["~29%", "~62%", "1,225"]) expect(text).not.toContain(figure);

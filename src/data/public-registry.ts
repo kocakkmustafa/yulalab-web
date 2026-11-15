@@ -127,22 +127,7 @@ export const publicRegistry: ProductPublicRecord[] = [
       },
     ],
     primaryCta: { labelTr: "Burun Farkı'nı incele", labelEn: "Explore Burun Farkı", url: "/projects/burunfarki" },
-    screenshots: [
-      {
-        path: "/projects/burunfarki/screenshot-honest-stats.png",
-        sourceBuild: "headless-browser-capture-2026-07-11",
-        capturedAt: "2026-07-11",
-        altTr: "Burun Farkı'nın dürüst performans çerçevesi: Top-1/Top-3 isabet oranları, son 7/30/90 gün.",
-        altEn: "Burun Farkı's honest performance framing: Top-1/Top-3 hit rates over the last 7/30/90 days.",
-      },
-      {
-        path: "/projects/burunfarki/screenshot-daily-history.png",
-        sourceBuild: "headless-browser-capture-2026-07-11",
-        capturedAt: "2026-07-11",
-        altTr: "Burun Farkı günlük AI tahmin geçmişi: her günün Top-1/Top-3 isabet detayı.",
-        altEn: "Burun Farkı daily AI prediction history: Top-1/Top-3 hit detail for every day.",
-      },
-    ],
+    screenshots: [],
     claims: [
       {
         id: "burunfarki-topk-accuracy",

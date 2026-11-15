@@ -1,5 +1,5 @@
 import { Texture } from "three";
-import { useShowcaseTextures } from "@/components/experience/useShowcaseTextures";
+import { serviceMediaPaths, useShowcaseTextures } from "@/components/experience/useShowcaseTextures";
 // @vitest-environment jsdom
 
 import { act, render, renderHook, screen } from "@testing-library/react";
@@ -766,24 +766,30 @@ describe("shared SERVICE source-media ownership", () => {
   }
 
   it("loads on demand, shares one set through reverse scroll, and releases it on replacement/unmount", async () => {
+    // The expected count is the showcase list itself, not a hard-coded number; the
+    // Burun Farkı claim captures are no longer part of it (founder 2a).
+    const N = serviceMediaPaths.length;
+    expect(N).toBeGreaterThan(0);
+    expect(serviceMediaPaths.filter((path) => path.includes("/burunfarki/screenshot-"))).toEqual([]);
+    expect(new Set(serviceMediaPaths).size).toBe(N);
     const h = imageHarness();
     const hook = renderHook(({ enabled, english }) => useShowcaseTextures(english, enabled, 1024), { initialProps: { enabled: false, english: false } });
     expect(h.images).toHaveLength(0);
     hook.rerender({ enabled: true, english: false });
     await h.load();
     const first = hook.result.current;
-    expect(first).toHaveLength(10);
-    expect(h.canvases).toHaveBeenCalledTimes(10);
+    expect(first).toHaveLength(N);
+    expect(h.canvases).toHaveBeenCalledTimes(N);
     hook.rerender({ enabled: false, english: false });
     expect(hook.result.current).toBe(first);
     expect(h.disposed).not.toHaveBeenCalled();
     hook.rerender({ enabled: false, english: true });
     expect(hook.result.current).toHaveLength(0);
-    expect(h.disposed).toHaveBeenCalledTimes(10);
+    expect(h.disposed).toHaveBeenCalledTimes(N);
     await h.load();
-    expect(hook.result.current).toHaveLength(10);
+    expect(hook.result.current).toHaveLength(N);
     hook.unmount();
-    expect(h.disposed).toHaveBeenCalledTimes(20);
+    expect(h.disposed).toHaveBeenCalledTimes(N * 2);
     vi.unstubAllGlobals();
   });
 

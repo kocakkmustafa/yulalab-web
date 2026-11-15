@@ -8,8 +8,6 @@
 export const IMAGE_DIMENSIONS: Readonly<Record<string, { width: number; height: number }>> = {
   "/projects/braavolabs/screenshot-audit-trail.png": { width: 1196, height: 760 },
   "/projects/braavolabs/screenshot-builder.png": { width: 560, height: 400 },
-  "/projects/burunfarki/screenshot-daily-history.png": { width: 1250, height: 460 },
-  "/projects/burunfarki/screenshot-honest-stats.png": { width: 2560, height: 660 },
   "/projects/choreia/preview-native-20261016.png": { width: 1206, height: 2622 },
   "/projects/gravita/preview-native-20261016.png": { width: 1206, height: 2622 },
   "/projects/jablab/preview-native-20261016.png": { width: 1206, height: 2622 },

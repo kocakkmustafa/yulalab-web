@@ -5,6 +5,7 @@ import { StatCards } from "@/components/projects/StatCards";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProjectStat } from "@/lib/types";
+import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 
 // Numeric presentation only; catalogue semantics and browser RTL acceptance are separate.
 vi.mock("@/lib/localized", () => ({ localized: (value: { en: string }) => value.en }));
@@ -17,7 +18,7 @@ const realRecord = publicRegistry.find((product) => product.slug === config.slug
 const record = { ...realRecord, claims: realRecord.claims.map((claim) => ({ ...claim, expiresAt: "2100-01-01" })) };
 const clean = (value: string) => value.replace(/[\u061c\u200e\u200f]/g, "").replace(/\s/g, " ");
 
-function renderStats(locale: Locale, stats: ProjectStat[] = config.stats) {
+function renderStats(locale: Locale, stats: ProjectStat[] = WITHDRAWN_BF_STATS) {
   const result = render(<StatCards slug={config.slug} stats={stats} record={record} locale={locale} now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
   return { ...result, values: [...result.container.querySelectorAll("bdi")].map((node) => clean(node.textContent ?? "")) };
 }
@@ -39,28 +40,32 @@ describe("explicit numeric stat presentation", () => {
     ["hi", ["~29%", "~62%", "1,225"]],
     ["zh-Hans", ["~29%", "~62%", "1,225"]],
   ] satisfies [Locale, string[]][])("renders the same historical figures with %s number and percent conventions", (locale, expected) => {
-    const original = JSON.stringify(config.stats);
+    const original = JSON.stringify(WITHDRAWN_BF_STATS);
     const result = renderStats(locale);
     // ICU/CLDR versions may use Latin or Arabic-Indic digits for bare ar.
     // Both explicit forms below preserve the same quantities and units.
     if (locale === "ar") expect([expected, ["~29%", "~62%", "1,225"]]).toContainEqual(result.values);
     else expect(result.values).toEqual(expected);
     expect(result.container.textContent).not.toContain("needs re-verification");
-    expect(JSON.stringify(config.stats)).toBe(original);
+    expect(JSON.stringify(WITHDRAWN_BF_STATS)).toBe(original);
   });
 
   it("the real, lapsed Burun Farkı record renders no figure at all", () => {
-    const result = render(<StatCards slug={config.slug} stats={config.stats} record={realRecord} locale="en" now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
+    const result = render(<StatCards slug={config.slug} stats={WITHDRAWN_BF_STATS} record={realRecord} locale="en" now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
     expect([...result.container.querySelectorAll("bdi")].map((node) => node.textContent)).toEqual(["—", "—", "—"]);
     expect(result.container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
   });
 
   it("keeps numeric metadata tied to the original evidence quantities and labels", () => {
-    expect(config.stats.map((stat) => [stat.label.en, stat.value, stat.numericDisplay, stat.claimId])).toEqual([
+    expect(WITHDRAWN_BF_STATS.map((stat) => [stat.label.en, stat.value, stat.numericDisplay, stat.claimId])).toEqual([
       ["Top-1 (live tracking)", "~%29", { value: 0.29, unit: "percent", approximate: true }, "burunfarki-topk-accuracy"],
       ["Top-3 (live tracking)", "~%62", { value: 0.62, unit: "percent", approximate: true }, "burunfarki-topk-accuracy"],
       ["live-tracked races", "1.225", { value: 1225, unit: "integer" }, "burunfarki-topk-accuracy"],
     ]);
+  });
+
+  it("the product config itself carries no Burun Farkı figure any more (founder 2a)", () => {
+    expect(config.stats).toEqual([]);
   });
 
   it("leaves technical and unannotated values unchanged instead of parsing strings", () => {

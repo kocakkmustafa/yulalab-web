@@ -371,7 +371,7 @@
       "r1k": "Evaluation",
       "r1v": "Zeitlich geordnete Aufteilung · keine Zukunftsdaten",
       "r2k": "Metriken",
-      "r2v": "Top-1 / Top-3 Trefferquote",
+      "r2v": "Genauigkeit der Rangfolge",
       "r3k": "Erklärung",
       "r3v": "Regelbasiert · je Prognose",
       "r4k": "Veröffentlichung",

@@ -371,7 +371,7 @@
       "r1k": "Ewaluacja",
       "r1v": "Podział chronologiczny · bez podglądania przyszłości",
       "r2k": "Metryki",
-      "r2v": "Skuteczność Top-1 / Top-3",
+      "r2v": "Trafność rankingu",
       "r3k": "Wyjaśnienie",
       "r3v": "Oparte na regułach · dla każdej prognozy",
       "r4k": "Publikowanie",
