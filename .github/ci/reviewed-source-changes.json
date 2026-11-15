@@ -1265,9 +1265,9 @@
     {
       "path": "e2e/claims-section.spec.ts",
       "publishedSha256": "d4a822df2a57d5030437d73c43add47a9957fef926473898369ce295ae2fa0f7",
-      "candidateSha256": "72c89a5e0768c02a0a61f5e5900c36fc50cb4e7c7d6972ba1335c07f02d28683",
+      "candidateSha256": "7209a87c162153752ad370a5cbd195363145afd952e7dcbcf775a2dfc92f79cb",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-22 release CI alignment: oracle follows the 14-language candidate (heading 'Claims and sources'/'İddialar ve kaynakları' because lapsed claims are not verified; EN stat locale format '~62%'). Render, heading, list semantics and provenance checks unchanged. 2026-11-01 K7 combined candidate (founder decisions K1-K9 relayed by Yonetim; feat/site-vision-content 8ba1991 + feat/ui-reference aaf7e07): finished-product showcase with roadmap labels matched to product main branches, publication status moved to /transparency, K6 prices, store buttons and notify-me mail, internal evidence paths hidden (K9), 14-language instruments/HUD, neutral room palette, Lenis smooth scroll, footer logotype. Local unit, build and full E2E evidence in scratch/2026-10-23-ekip-dagitimi/raporlar/yulalab.tr.md."
+      "reason": "2026-10-22 release CI alignment: oracle follows the 14-language candidate (heading 'Claims and sources'/'İddialar ve kaynakları' because lapsed claims are not verified; EN stat locale format '~62%'). Render, heading, list semantics and provenance checks unchanged. 2026-11-01 K7 combined candidate (founder decisions K1-K9 relayed by Yonetim; feat/site-vision-content 8ba1991 + feat/ui-reference aaf7e07): finished-product showcase with roadmap labels matched to product main branches, publication status moved to /transparency, K6 prices, store buttons and notify-me mail, internal evidence paths hidden (K9), 14-language instruments/HUD, neutral room palette, Lenis smooth scroll, footer logotype. Local unit, build and full E2E evidence in scratch/2026-10-23-ekip-dagitimi/raporlar/yulalab.tr.md. test beklentileri muafiyet kaldirmaya uyarlandi"
     },
     {
       "path": "src/app/[locale]/motion/consent/route.ts",
