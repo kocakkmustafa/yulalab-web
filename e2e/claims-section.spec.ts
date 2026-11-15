@@ -33,9 +33,10 @@ for (const [locale, path, heading] of [
       }
     });
 
-    test("makes the public source a followable link and never links an internal path", async ({ page }) => {
+    test("links no internal path and never links a lapsed claim's withheld source", async ({ page }) => {
       const section = page.locator("section", { has: page.getByRole("heading", { name: heading }) });
-      await expect(section.getByRole("link", { name: /^(source|kaynak)$/i }).first()).toHaveAttribute("href", /^https:\/\//);
+      // Burun Farkı's lapsed claims are withheld (no gate exemption): their public source URL is not linked.
+      await expect(section.locator('a[href*="burunfark.com"]')).toHaveCount(0);
       const hrefs = await section.getByRole("link").evaluateAll((els) =>
         els.map((e) => (e as HTMLAnchorElement).getAttribute("href") ?? ""),
       );

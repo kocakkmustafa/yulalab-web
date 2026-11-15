@@ -2,7 +2,6 @@ import type { ComponentProps, ReactNode } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ExperienceProduct } from "@/components/experience/types";
 import { publicRegistry } from "@/data/public-registry";
-import { isGateExempt } from "@/lib/public-registry";
 
 /**
  * SEC-WEB-01a — the home page and /transparency are ISR pages: `revalidate` is an
@@ -38,7 +37,7 @@ vi.mock("@/components/landing/HomeScenes", () => ({ HomeScenes: () => null }));
 
 const gatedExpiries = publicRegistry
   .flatMap((r) => r.claims)
-  .filter((c) => !isGateExempt(c) && c.expiresAt)
+  .filter((c) => c.expiresAt)
   .map((c) => c.expiresAt as string)
   .sort();
 const day = (iso: string, delta: number) => {

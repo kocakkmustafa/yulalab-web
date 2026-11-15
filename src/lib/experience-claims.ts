@@ -1,7 +1,7 @@
 import type { ExperienceClaim } from "@/components/experience/types";
 import { evidenceKindLabel } from "@/components/common/SourceStamp";
 import { text } from "@/lib/localized";
-import { isClaimPresentable, isGateExempt } from "@/lib/public-registry";
+import { isClaimPresentable } from "@/lib/public-registry";
 import { presentClaims } from "@/lib/proof";
 import type { Locale, ProductPublicRecord } from "@/lib/types";
 
@@ -18,7 +18,6 @@ import type { Locale, ProductPublicRecord } from "@/lib/types";
  * (declared planned/prototype/unknown, or not eligible for the present tense)
  * never reaches the journey at all, so every count the overlay and the
  * journey derive from `claims.length` counts only claims that may be spoken.
- * Gate-exempt (Burun Farkı) claims keep their previous behaviour.
  */
 export function toExperienceClaims(
   record: ProductPublicRecord,
@@ -26,7 +25,7 @@ export function toExperienceClaims(
   now: Date,
 ): ExperienceClaim[] {
   const kinds = new Map(presentClaims(record, now).map((p) => [p.claim.id, p.kind]));
-  return record.claims.filter((claim) => isGateExempt(claim) || kinds.get(claim.id) !== "withheld").map((claim) => {
+  return record.claims.filter((claim) => kinds.get(claim.id) !== "withheld").map((claim) => {
     const presentable = isClaimPresentable(claim, now);
     return {
       id: claim.id,
@@ -38,7 +37,7 @@ export function toExperienceClaims(
       scope: presentable ? text(locale, claim.scopeTr, claim.scopeEn) : "",
       verifiedAt: claim.verifiedAt,
       expiresAt: claim.expiresAt,
-      // Present only when set, so ungated claims (Burun Farkı) are byte-identical to before.
+      // Present only when set, so presentable claims are byte-identical to before.
       ...(presentable ? {} : { withheld: true }),
     };
   });

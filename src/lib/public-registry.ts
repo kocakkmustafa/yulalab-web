@@ -118,16 +118,6 @@ export function validateRecord(record: ProductPublicRecord): string[] {
   const errors: string[] = [];
   const where = (msg: string) => `${record.slug}: ${msg}`;
 
-  // Burun Farkı gate exemption is keyed on the claim id prefix; keep it honest:
-  // the prefix must belong to the burunfarki record and to nothing else.
-  for (const claim of record.claims) {
-    if (isGateExempt(claim) !== (record.slug === "burunfarki")) {
-      errors.push(
-        where(`claim ${claim.id}: the "burunfarki-" id prefix is reserved for the burunfarki record (gate exemption)`),
-      );
-    }
-  }
-
   const knownLifecycles = ["live", "beta", "research", "archived"];
   if (!knownLifecycles.includes(record.lifecycle)) {
     errors.push(where(`unknown lifecycle "${record.lifecycle}"`));
@@ -296,18 +286,7 @@ export function isClaimPresentable(
   claim: { id?: string; expiresAt?: string },
   now: Date,
 ): boolean {
-  if (isGateExempt(claim)) return true;
   return !(claim.expiresAt && isExpired(claim.expiresAt, now));
-}
-
-/**
- * Burun Farkı kurucu kararına kadar kapsam dışı: the gate does not touch its
- * claims (they keep rendering exactly as before — lapsed ones marked, figures
- * shown). Narrowest existing criterion: the `burunfarki-` claim id prefix;
- * registry data is not changed. Remove this exemption only on a founder decision.
- */
-export function isGateExempt(claim: { id?: string }): boolean {
-  return claim.id?.startsWith("burunfarki-") === true;
 }
 
 /** Claims of a record that the gate currently lets through. */
@@ -387,8 +366,7 @@ export function validateClaimStateDeclared(records: ProductPublicRecord[], now: 
  * provenance and dates (`id`, `claimState`, `source`, scope, `verifiedAt`,
  * `expiresAt`) but loses what would narrate it: statements are emptied,
  * `figures`/`figureWords` dropped, `publishableAsPresentTense` forced false,
- * and `presentation: "withheld"` marks it. Burun Farkı (`isGateExempt`) claims
- * and presentable claims are returned untouched (same object).
+ * and `presentation: "withheld"` marks it. Presentable claims are returned untouched (same object).
  */
 export type ExportedClaim = ProductClaim & {
   presentation?: "withheld";
@@ -414,7 +392,7 @@ export function withholdIfLapsed(claim: ProductClaim, now: Date): ExportedClaim 
 export const REGISTRY_EXPORT_SCHEMA = {
   version: 2,
   notes:
-    "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, EXCEPT Burun Farkı claims (id prefix burunfarki-, exempt from the gate, exported unchanged), the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) unless the claim id starts with burunfarki-, and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a non-exempt claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit.",
+    "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit.",
 } as const;
 
 /** Pure: the exact JSON object written to public/portfolio-registry.json for `now`. */
@@ -438,7 +416,7 @@ export function dateFromAsOf(day: string): Date | null {
 
 /**
  * SEC-WEB-01b — `export-public-registry --check`. Errors: unparsable/invalid
- * or future asOf; a non-exempt claim that lapsed AFTER the file's asOf (the
+ * or future asOf; a claim that lapsed AFTER the file's asOf (the
  * file would keep publishing its statement); any other byte difference.
  * Warning only: asOf behind today with no claim lapsed in between.
  */
@@ -466,7 +444,7 @@ export function checkRegistryExport(
   }
   for (const record of records) {
     for (const claim of record.claims) {
-      if (isGateExempt(claim) || !claim.expiresAt) continue;
+      if (!claim.expiresAt) continue;
       if (!isExpired(claim.expiresAt, asOfDate) && isExpired(claim.expiresAt, now)) {
         errors.push(
           `portfolio-registry.json bayat: claim ${claim.id} ${claim.expiresAt} tarihinde doldu (asOf ${asOf}); \`npm run export:registry\` ile yeniden üret ve commit'le.`,

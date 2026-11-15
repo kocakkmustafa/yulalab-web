@@ -72,12 +72,12 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
     const lapsed = publicRegistry.flatMap((r) => presentClaims(r, now)).filter((p) => p.kind === "lapsed");
     expect(Number(screen.getByTestId("summary-lapsed").querySelector("dd")!.textContent)).toBe(lapsed.length);
     const body = document.body.textContent ?? "";
-    // Burun Farkı is outside the SEC-WEB-01 gate: its lapsed claims render exactly as on main.
     expect(lapsed.length).toBeGreaterThan(0);
-    // Pinned to FIXED_NOW (no real clock). Only Burun Farkı lapsed claims are asserted here;
-    // other products' lapsed claims are gated (see claim-expiry-gate.test.tsx).
-    for (const p of lapsed.filter((x) => x.claim.id.startsWith("burunfarki-"))) {
-      expect(body).toContain(p.claim.statementTr);
+    // Pinned to FIXED_NOW (no real clock). Lapsed claims stay listed by id/source/dates only:
+    // the gate withholds their statement, Burun Farkı included (no exemption).
+    for (const p of lapsed) {
+      expect(body).not.toContain(p.claim.statementTr);
+      expect(body).toContain(p.claim.expiresAt!);
     }
   });
 

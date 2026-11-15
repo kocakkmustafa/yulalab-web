@@ -135,15 +135,23 @@ test("reduced-motion homepage document has no serious or critical violations", a
   await context.close();
 });
 
-test("the claims section survives a keyboard-only path to its source link", async ({ page }) => {
+test("the claims section stays keyboard-reachable: every link in it focuses and is a URL, no withheld source link", async ({ page }) => {
   // The proof surface is the point of the site; it has to be reachable
   // without a mouse.
   // Founder decision 2026-10-31: the dated claims live on /transparency.
   await page.goto("/en/transparency");
-  const link = page.getByRole("link", { name: /^source$/i }).first();
-  await link.focus();
-  await expect(link).toBeFocused();
-  await expect(link).toHaveAttribute("href", /^https:\/\//);
+  const section = page.locator("section", { has: page.getByRole("heading", { name: "Claims and sources", level: 2 }) });
+  await expect(section.getByRole("heading", { name: "Claims and sources", level: 2 })).toBeVisible();
+  // Lapsed claims (Burun Farkı included, no exemption) withhold their source link.
+  await expect(section.locator('a[href*="burunfark.com"]')).toHaveCount(0);
+  const links = section.getByRole("link");
+  const count = await links.count();
+  for (let i = 0; i < count; i += 1) {
+    const link = links.nth(i);
+    await link.focus();
+    await expect(link).toBeFocused();
+    await expect(link).toHaveAttribute("href", /^https?:\/\//);
+  }
 });
 
 test("respects prefers-reduced-motion", async ({ browser }) => {

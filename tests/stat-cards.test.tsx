@@ -57,13 +57,13 @@ describe("planned claims (WEB-P0-03d notSpoken)", () => {
   const view = (rec: typeof record, s: typeof stat) =>
     render(<StatCards slug="burunfarki" stats={[s]} record={rec} locale="en" now={now} labels={LABELS} />);
 
-  it("a planned burunfarki- claim (gate-exempt) keeps the figure on the card", () => {
+  it("a planned burunfarki- claim is withheld like any other (no exemption)", () => {
     const { container } = view(asPlanned(stat.claimId!), stat);
-    expect(container.textContent).not.toContain("—");
-    expect(container.textContent).not.toContain("needs re-verification");
+    expect(container.textContent).toContain("—");
+    expect(container.textContent).toContain("needs re-verification");
   });
 
-  it("a planned non-exempt claim withholds the figure", () => {
+  it("a planned claim under another id withholds the figure", () => {
     const { container } = view(asPlanned("other-claim"), { ...stat, claimId: "other-claim" });
     expect(container.textContent).toContain("—");
     expect(container.textContent).toContain("needs re-verification");

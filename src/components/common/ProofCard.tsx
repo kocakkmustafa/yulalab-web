@@ -1,7 +1,6 @@
 import type { Locale } from "@/lib/types";
 import { text } from "@/lib/localized";
 import type { PresentedClaim } from "@/lib/proof";
-import { isGateExempt } from "@/lib/public-registry";
 import { SourceStamp } from "./SourceStamp";
 
 /**
@@ -22,8 +21,7 @@ export function ProofCard({
 }) {
   const { claim } = presented;
   const lapsed = presented.kind === "lapsed";
-  // Burun Farkı is outside the gate (isGateExempt): it renders as before.
-  const redact = lapsed && !isGateExempt(claim);
+  const redact = lapsed;
   const statement = redact ? "" : text(locale, claim.statementTr, claim.statementEn);
 
   return (

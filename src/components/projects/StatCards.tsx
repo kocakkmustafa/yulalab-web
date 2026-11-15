@@ -1,6 +1,6 @@
 import { localized } from "@/lib/localized";
 import type { ProductPublicRecord, ProjectStat, Locale } from "@/lib/types";
-import { isClaimPresentable, isExpired, isGateExempt } from "@/lib/public-registry";
+import { isClaimPresentable, isExpired } from "@/lib/public-registry";
 import { presentedKindOf } from "@/lib/proof";
 import { linkedClaimFor } from "@/lib/stat-provenance";
 
@@ -50,10 +50,10 @@ export function StatCards({
         // whole suite still green.
         const claim = linkedClaimFor(slug, stat, record ? [record] : []);
         const stale = claim ? isExpired(claim.expiresAt, now) : false;
-        // SEC-WEB-01 gate (Burun Farkı exempt): figure withheld only when not presentable.
+        // SEC-WEB-01 gate: figure withheld only when not presentable.
         // WEB-P0-03d: a claim presentClaims withholds (planned/prototype/not
         // present-tense eligible) is not a current figure either.
-        const notSpoken = claim ? presentedKindOf(record, claim.id, now) === "withheld" && !isGateExempt(claim) : false;
+        const notSpoken = claim ? presentedKindOf(record, claim.id, now) === "withheld" : false;
         const withheld = claim ? !isClaimPresentable(claim, now) || notSpoken : false;
         const numeric = stat.numericDisplay;
         // Raw evidence strings can contain technical names (AES-256), units

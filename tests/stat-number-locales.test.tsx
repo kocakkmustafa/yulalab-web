@@ -11,7 +11,10 @@ vi.mock("@/lib/localized", () => ({ localized: (value: { en: string }) => value.
 afterEach(cleanup);
 const labels = { verified: "verified", needsReverification: "needs re-verification" };
 const config = projects.find((project) => project.slug === "burunfarki")!;
-const record = publicRegistry.find((product) => product.slug === config.slug)!;
+const realRecord = publicRegistry.find((product) => product.slug === config.slug)!;
+// Burun Farkı's own claims have lapsed and are withheld (no gate exemption), so
+// number formatting is exercised on an in-window fixture of the same record.
+const record = { ...realRecord, claims: realRecord.claims.map((claim) => ({ ...claim, expiresAt: "2100-01-01" })) };
 const clean = (value: string) => value.replace(/[\u061c\u200e\u200f]/g, "").replace(/\s/g, " ");
 
 function renderStats(locale: Locale, stats: ProjectStat[] = config.stats) {
@@ -42,8 +45,14 @@ describe("explicit numeric stat presentation", () => {
     // Both explicit forms below preserve the same quantities and units.
     if (locale === "ar") expect([expected, ["~29%", "~62%", "1,225"]]).toContainEqual(result.values);
     else expect(result.values).toEqual(expected);
-    expect(result.container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
+    expect(result.container.textContent).not.toContain("needs re-verification");
     expect(JSON.stringify(config.stats)).toBe(original);
+  });
+
+  it("the real, lapsed Burun Farkı record renders no figure at all", () => {
+    const result = render(<StatCards slug={config.slug} stats={config.stats} record={realRecord} locale="en" now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
+    expect([...result.container.querySelectorAll("bdi")].map((node) => node.textContent)).toEqual(["—", "—", "—"]);
+    expect(result.container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
   });
 
   it("keeps numeric metadata tied to the original evidence quantities and labels", () => {
