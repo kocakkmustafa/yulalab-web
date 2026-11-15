@@ -1,9 +1,9 @@
 {
   "generatedAt": "static",
-  "asOf": "2026-11-14",
+  "asOf": "2026-11-15",
   "schema": {
     "version": 2,
-    "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, EXCEPT Burun Farkı claims (id prefix burunfarki-, exempt from the gate, exported unchanged), the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) unless the claim id starts with burunfarki-, and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a non-exempt claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
+    "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr and statementEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, scope, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
   },
   "products": [
     {
@@ -153,32 +153,33 @@
       "claims": [
         {
           "id": "burunfarki-topk-accuracy",
-          "figures": [
-            "~%29",
-            "~%62",
-            "1.225"
-          ],
-          "statementTr": "1.225 canlı takip yarışında Top-1 ~%29 (%28,6), Top-3 ~%62 (%62,0) — yayın-sonrası dürüst takip. Eğitim-zamanı backtest ayrıca ~%69 Top-3 ölçmüştü (farklı ölçüm).",
-          "statementEn": "Across 1,225 live-tracked races, Top-1 ~29% (28.6%) and Top-3 ~62% (62.0%) — honest post-deployment tracking. A separate training-time backtest measured ~69% Top-3 (a different measurement).",
+          "statementTr": "",
+          "statementEn": "",
           "evidenceKind": "measured",
           "source": "https://burunfark.com/dogruluk",
           "scopeTr": "2026-08-25'te sayfada gösterilen 69 günlük/1.225 yarışlık canlı yayın-sonrası aggregate; eğitim-zamanı backtest değil. Kanıt tazelik penceresi 30 gündür.",
           "scopeEn": "The 69-day/1,225-race live post-deployment aggregate displayed on 2026-08-25; not the training-time backtest. The evidence freshness window is 30 days.",
           "owner": "burun-farki",
           "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-09-24"
+          "expiresAt": "2026-09-24",
+          "publishableAsPresentTense": false,
+          "presentation": "withheld",
+          "withheldReason": "verification-window-closed"
         },
         {
           "id": "burunfarki-explainability",
-          "statementTr": "Kural-tabanlı katkı sıralaması her tahmin için ayrı listelenir: hangi değişken sıralamayı ne yönde etkiledi.",
-          "statementEn": "A rule-based contribution ranking is listed per prediction: which variable moved the ranking, and in which direction.",
+          "statementTr": "",
+          "statementEn": "",
           "evidenceKind": "source-code-verified",
           "source": "ventures/burun-farki/web/src/components/HorseExplainCard.tsx",
           "scopeTr": "Kullanıcıya gösterilen 'ilk 3 faktör' özelliği, sabit ağırlıklı kural-tabanlı bir sıralama — model çıktısının resmî bir açıklanabilirlik-değeri (ör. Shapley tabanlı bir yöntem) hesaplaması DEĞİL; o yönde bir iddia yapılmaz.",
           "scopeEn": "The 'top 3 factors' shown to users is a fixed-weight, rule-based ranking — NOT a formal explainability computation over the model output (a Shapley-based method, for instance); no such claim is made.",
           "owner": "burun-farki",
           "verifiedAt": "2026-08-19",
-          "expiresAt": "2026-09-18"
+          "expiresAt": "2026-09-18",
+          "publishableAsPresentTense": false,
+          "presentation": "withheld",
+          "withheldReason": "verification-window-closed"
         }
       ],
       "privacyUrl": "/privacy/burunfarki",

@@ -1,12 +1,11 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ExperienceProduct } from "@/components/experience/types";
 import { publicRegistry } from "@/data/public-registry";
-import { isGateExempt } from "@/lib/public-registry";
 
 /**
  * SEC-WEB-01c — page-level proof that src/app/[locale]/page.tsx runs the claim
- * expiry gate: an expired claim reaches the home experience redacted; Burun Farkı
- * (isGateExempt) keeps its prose. The clock is pinned per test.
+ * expiry gate: an expired claim (Burun Farkı included) reaches the home experience
+ * redacted. The clock is pinned per test.
  */
 vi.mock("next-intl/server", () => ({
   setRequestLocale: () => {},
@@ -28,7 +27,7 @@ vi.mock("@/components/landing/HomeScenes", () => ({ HomeScenes: () => null }));
 // Dates derive from the registry so renewing claims does not break the tests.
 const all = publicRegistry.flatMap((r) => r.claims);
 const gatedExpiries = all
-  .filter((c) => !isGateExempt(c) && c.expiresAt)
+  .filter((c) => c.expiresAt && !c.id.startsWith("burunfarki-"))
   .map((c) => c.expiresAt as string)
   .sort();
 const day = (iso: string, delta: number) => {
@@ -36,10 +35,8 @@ const day = (iso: string, delta: number) => {
   d.setUTCDate(d.getUTCDate() + delta);
   return d;
 };
-const NOW = day(gatedExpiries[0], -1); // inside every gated window
+const NOW = day(gatedExpiries[0], -1); // inside every renewed claim's window (Burun Farkı's two lapsed long ago)
 const AFTER_ALL = day(gatedExpiries[gatedExpiries.length - 1], 1); // past the last one
-const gatedCount = all.filter((c) => !isGateExempt(c)).length;
-const exemptCount = all.length - gatedCount;
 
 afterEach(() => vi.useRealTimers());
 
@@ -55,28 +52,21 @@ async function renderHome(now: Date) {
 }
 
 describe("home page claim gate (page.tsx)", () => {
-  it("inside every window nothing is withheld", async () => {
+  it("inside the renewed windows only the two lapsed Burun Farkı claims are withheld", async () => {
     const claims = await renderHome(NOW);
     expect(claims).toHaveLength(all.length);
-    expect(claims.some((c) => c.withheld)).toBe(false);
-    expect(claims.every((c) => c.statement !== "")).toBe(true);
+    const withheld = claims.filter((c) => c.withheld);
+    expect(withheld.map((c) => c.id).sort()).toEqual(["burunfarki-explainability", "burunfarki-topk-accuracy"]);
+    expect(claims.filter((c) => !c.withheld).every((c) => c.statement !== "")).toBe(true);
   });
 
-  it("after expiry the page redacts every gated claim and keeps Burun Farkı intact", async () => {
+  it("after expiry the page redacts every claim, Burun Farkı included", async () => {
     const claims = await renderHome(AFTER_ALL);
-    const gated = claims.filter((c) => !isGateExempt(c));
-    expect(gated).toHaveLength(gatedCount);
-    for (const c of gated) {
+    expect(claims).toHaveLength(all.length);
+    for (const c of claims) {
       expect(c.withheld).toBe(true);
       expect([c.statement, c.scope, c.source, c.figure ?? ""]).toEqual(["", "", "", ""]);
       expect(c.expiresAt).toBeTruthy();
-    }
-    const bf = claims.filter((c) => isGateExempt(c));
-    expect(bf).toHaveLength(exemptCount);
-    for (const c of bf) {
-      const src = all.find((a) => a.id === c.id)!;
-      expect(c.withheld).toBeUndefined();
-      expect(c.statement).toBe(src.statementTr);
     }
   });
 });

@@ -2,7 +2,8 @@
 import { describe, expect, it } from "vitest";
 import { render } from "@testing-library/react";
 import { ClaimsSection } from "@/components/projects/ClaimsSection";
-import type { PresentedClaim } from "@/lib/proof";
+import { publicRegistry } from "@/data/public-registry";
+import { presentClaims, type PresentedClaim } from "@/lib/proof";
 import type { ProductClaim } from "@/lib/types";
 
 // WEB-P0-04 review finding: a section holding only withheld claims rendered an
@@ -34,5 +35,24 @@ describe("ClaimsSection with withheld claims", () => {
       />,
     );
     expect(container.innerHTML).toBe("");
+  });
+
+  it("real Burun Farkı record (no gate exemption): lapsed claims render redacted, dated cards only", () => {
+    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
+    const presented = presentClaims(bf, new Date("2026-11-15T12:00:00+03:00"));
+    const { container } = render(
+      <ClaimsSection
+        presented={presented}
+        locale="en"
+        labels={{ heading: "Verified claims", lapsedHeading: "Needs renewal", lapsedNote: "note" }}
+      />,
+    );
+    const text = container.textContent ?? "";
+    for (const c of bf.claims) {
+      expect(text).not.toContain(c.statementEn);
+      expect(text).not.toContain(c.source);
+    }
+    for (const li of container.querySelectorAll("li")) expect(li.textContent).toMatch(/\d{4}-\d{2}-\d{2}/);
+    expect(container.querySelector("a")).toBeNull();
   });
 });

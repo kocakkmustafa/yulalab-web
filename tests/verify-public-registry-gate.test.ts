@@ -5,16 +5,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
  * The script runs at import time, so each case resets modules, pins the clock,
  * stubs process.exit and the export-check child, and imports it fresh.
  * Clean: the real presenter withholds expired claims -> no exit(1).
- * Dirty: a presenter regression that calls an expired non-exempt claim
+ * Dirty: a presenter regression that calls an expired claim
  * "verified" -> exit(1), naming the claim.
  */
 import { publicRegistry } from "../src/data/public-registry";
-import { isGateExempt } from "../src/lib/public-registry";
 
 // Derived from the registry: the day after the last gated claim expires.
 const gatedExpiries = publicRegistry
   .flatMap((r) => r.claims)
-  .filter((c) => !isGateExempt(c) && c.expiresAt)
+  .filter((c) => c.expiresAt)
   .map((c) => c.expiresAt as string)
   .sort();
 const lastExpiry = gatedExpiries[gatedExpiries.length - 1];
@@ -66,7 +65,7 @@ describe("verify-public-registry exit code", () => {
     expect(process.exit).not.toHaveBeenCalled();
   });
 
-  it("an expired non-exempt claim presented as verified: exit 1 with the claim named", async () => {
+  it("an expired claim presented as verified: exit 1 with the claim named", async () => {
     vi.doMock("../src/lib/proof", async (orig) => {
       const real = await orig<typeof import("../src/lib/proof")>();
       return {
@@ -78,6 +77,6 @@ describe("verify-public-registry exit code", () => {
     const { code, errors } = await run();
     expect(code).toBe(1);
     expect(errors).toContain(`expired ${lastExpiry} but is still presented as verified`);
-    expect(errors).not.toMatch(/burunfarki-/);
+    expect(errors).toMatch(/burunfarki-topk-accuracy/); // no Burun Farkı exemption: lapsed claims are named too
   });
 });

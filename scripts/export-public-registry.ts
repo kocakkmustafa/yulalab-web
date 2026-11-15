@@ -21,7 +21,7 @@ if (errors.length) {
   process.exit(1);
 }
 
-// SEC-WEB-01b: lapsed non-exempt claims are exported withheld (see
+// SEC-WEB-01b: lapsed claims are exported withheld (see
 // buildRegistryExport). Write mode stamps today (site zone) as `asOf`;
 // --check regenerates for the asOf already in the file, so it stays
 // deterministic and does not go red just because a claim lapsed.
