@@ -1250,5 +1250,27 @@
     "micLabel": "Mikrofonla da dinle (isteğe bağlı)",
     "micOn": "Mikrofon açık. Alkışla ya da bir yüzeye vur.",
     "micNote": "Mikrofon hiçbir zaman gerekmez. Ses cihazında kalır; kaydedilmez, hiçbir yere gönderilmez. Kulaklık, vuruşun mikrofona karışmasını önler."
+  },
+  "lifeosDemo": {
+    "kicker": "Sentetik karar ve hatırlatma denemesi",
+    "title": "Bir karar seç, hatırlatmasını önizle.",
+    "intro": "Örnek bir karar kartı seç ya da kendi örnek adını yaz. Hatırlatmanın ne zaman geleceğini önizle, sonra kurulmuş gibi gör.",
+    "note": "Küçük bir deneme; uygulamanın kendisi değildir. Karar kartları uydurmadır. Gerçekte hiçbir hatırlatıcı kurulmaz; bu deneme hiçbir veri kaydetmez ya da göndermez.",
+    "badge": "Sentetik örnek",
+    "cardsLegend": "Örnek karar kartı",
+    "card1": "Taşınma tarihi",
+    "card2": "Dolap rengi seçimi",
+    "card3": "Kitap kulübü günü",
+    "customLabel": "Ya da kendi örnek kartını adlandır (isteğe bağlı)",
+    "customHint": "Gerçek bir şey yazma, örnek bir ad yeter.",
+    "whenLegend": "Hatırlatma ne zaman gelsin?",
+    "whenDay": "Yarın sabah",
+    "whenWeek": "Bir hafta sonra, sabah",
+    "preview": "Hatırlatma zamanı: {when}",
+    "setButton": "Hatırlatıcıyı kur (simülasyon)",
+    "doneHeading": "Hatırlatıcı kuruldu (simülasyon)",
+    "doneBody": "“{title}” için hatırlatma: {when}. Gerçekte hiçbir şey kurulmadı.",
+    "announceDone": "Hatırlatıcı kuruldu, simülasyon. {title}: {when}.",
+    "restart": "Baştan dene"
   }
 }
