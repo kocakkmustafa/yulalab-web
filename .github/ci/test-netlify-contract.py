@@ -8,6 +8,7 @@ import struct
 import tarfile
 import tempfile
 import unittest
+import warnings
 import zipfile
 from pathlib import Path
 from unittest import mock
@@ -159,9 +160,34 @@ Cache-Control = "public, max-age=300, must-revalidate"
         with zipfile.ZipFile(self.root / f".netlify/functions/{name}.zip", "w") as archive:
             archive.writestr(f"netlify/functions/{name}.cjs", "module.exports = {};")
 
-    def rejected(self):
-        with self.assertRaises(ERRORS):
-            contract.validate(self.root)
+    def rejected(self, message=None):
+        # With a message, the exact contract check that fired is asserted (not just any error).
+        if message is None:
+            with self.assertRaises(ERRORS):
+                contract.validate(self.root)
+        else:
+            with self.assertRaisesRegex(contract.ContractError, message):
+                contract.validate(self.root)
+
+    def scheduled_zip(self, name, members, corrupt=False):
+        # Raw member list so duplicate/unsafe names can be built; ZIP_STORED keeps the payload findable for a CRC flip.
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", UserWarning)  # zipfile warns on duplicate names
+            with zipfile.ZipFile(self.root / f".netlify/functions/{name}.zip", "w") as archive:
+                for member in members:
+                    archive.writestr(member, "module.exports = {};")
+        if corrupt:
+            path = self.root / f".netlify/functions/{name}.zip"
+            data = bytearray(path.read_bytes())
+            data[data.index(b"module.exports")] ^= 1
+            path.write_bytes(bytes(data))
+
+    def set_scheduled_entry(self, name, **change):
+        functions = json.loads(json.dumps(self.functions))
+        for index, entry in enumerate(functions["functions"]):
+            if entry["name"] == name:
+                functions["functions"][index] = {key: value for key, value in {**entry, **change}.items() if value is not None}
+        self.write_json(".netlify/functions/manifest.json", functions)
 
     def test_single_and_dual_formats_in_either_order(self):
         tar = self.asset("tar", minimal_tar())
@@ -616,6 +642,81 @@ Cache-Control = "public, max-age=300, must-revalidate"
         (self.root / "netlify/functions/mail-drain.ts").unlink()
         self.rejected()
 
+    def test_scheduled_zip_missing_cjs_entry_fails(self):
+        for name in SCHEDULED:
+            other = next(n for n in SCHEDULED if n != name)
+            for members in ([], ["netlify/functions/unrelated.cjs"], [f"netlify/functions/{other}.cjs"], [f"{name}.cjs"]):
+                with self.subTest(name=name, members=members):
+                    self.scheduled_zip(name, members)
+                    self.rejected("scheduled zip entry missing")
+            self.make_scheduled_zip(name)
+            self.assertEqual(contract.validate(self.root)["status"], "PASS")
+
+    def test_scheduled_zip_duplicate_member_fails(self):
+        for name in SCHEDULED:
+            with self.subTest(name=name):
+                entry = f"netlify/functions/{name}.cjs"
+                self.scheduled_zip(name, [entry, entry])
+                self.rejected("duplicate scheduled zip member")
+                self.make_scheduled_zip(name)
+
+    def test_scheduled_zip_unsafe_member_name_fails(self):
+        for name in SCHEDULED:
+            for unsafe in ("../evil.cjs", "netlify/../../evil.cjs", "/abs/evil.cjs", "netlify\\functions\\evil.cjs"):
+                with self.subTest(name=name, unsafe=unsafe):
+                    self.scheduled_zip(name, [f"netlify/functions/{name}.cjs", unsafe])
+                    self.rejected("unsafe scheduled zip member path")
+            self.make_scheduled_zip(name)
+
+    def test_scheduled_zip_crc_corruption_fails(self):
+        for name in SCHEDULED:
+            with self.subTest(name=name):
+                self.scheduled_zip(name, [f"netlify/functions/{name}.cjs"], corrupt=True)
+                self.rejected("scheduled zip CRC mismatch")
+                self.make_scheduled_zip(name)
+                self.assertEqual(contract.validate(self.root)["status"], "PASS")
+
+    def test_scheduled_zip_empty_or_truncated_fails(self):
+        for name in SCHEDULED:
+            path = self.root / f".netlify/functions/{name}.zip"
+            original = path.read_bytes()
+            with self.subTest(name=name, case="empty"):
+                path.write_bytes(b"")
+                self.rejected("empty server function zip")
+            with self.subTest(name=name, case="truncated"):
+                path.write_bytes(original[:-8])
+                self.rejected()
+            path.write_bytes(original)
+
+    def test_scheduled_manifest_fields_fail_on_their_own_check(self):
+        cases = [({"schedule": "* * * * *"}, "scheduled function schedule mismatch"),
+                 ({"schedule": None}, "scheduled function schedule mismatch"),
+                 ({"runtime": "go"}, "scheduled function runtime mismatch"),
+                 ({"runtime": None}, "scheduled function runtime mismatch"),
+                 ({"generator": "@netlify/plugin-nextjs@5.16.2"}, "scheduled function must not carry a generator"),
+                 ({"runtimeVersion": "nodejs22.x"}, "scheduled function runtime must be explicitly nodejs24.x"),
+                 ({"runtimeVersion": None}, "scheduled function runtime must be explicitly nodejs24.x"),
+                 ({"mainFile": "/repo/netlify/functions/other.ts"}, "scheduled function source mismatch"),
+                 ({"mainFile": None}, "scheduled function source mismatch"),
+                 ({"path": "/outside/zip.zip"}, "server function package path mismatch")]
+        for name in SCHEDULED:
+            for change, message in cases:
+                with self.subTest(name=name, change=change):
+                    self.set_scheduled_entry(name, **change)
+                    self.rejected(message)
+        self.write_json(".netlify/functions/manifest.json", self.functions)
+        self.assertEqual(contract.validate(self.root)["status"], "PASS")
+
+    def test_scheduled_function_missing_source_ts_fails(self):
+        for name in SCHEDULED:
+            with self.subTest(name=name):
+                path = self.root / f"netlify/functions/{name}.ts"
+                original = path.read_bytes()
+                path.unlink()
+                self.rejected("missing artifact: netlify/functions/")
+                path.write_bytes(original)
+                self.assertEqual(contract.validate(self.root)["status"], "PASS")
+
     def test_server_zip_truncation_and_wrong_build(self):
         path = self.root / self.zip_relative
         path.write_bytes(path.read_bytes()[:-8])
@@ -668,12 +769,16 @@ Cache-Control = "public, max-age=300, must-revalidate"
         self.assertEqual(result["buildId"], BUILD_ID)
         self.assertEqual(len(result["files"]), 11)
         self.assertIn(str(functions / f"{HANDLER}.zip"), [file["path"] for file in result["files"]])
-        for change in [{"path": str(self.root / self.zip_relative)}, {"runtimeVersion": "nodejs26.x"},
-                       {"generator": "other"}]:
+        # Scheduled functions stay in the list so each mutation hits its TARGET check, not the function-count check.
+        scheduled = manifest["functions"][1:]
+        for change, message in [({"path": str(self.root / self.zip_relative)}, "server function package path mismatch"),
+                                ({"runtimeVersion": "nodejs26.x"}, "server function runtime must be explicitly nodejs24.x"),
+                                ({"generator": "other"}, "server function generator mismatch")]:
             with self.subTest(change=change):
-                mutated = {**manifest, "functions": [{**manifest["functions"][0], **change}]}
+                mutated_handler = {**manifest["functions"][0], **change}
+                mutated = {**manifest, "functions": [mutated_handler, *scheduled]}
                 (functions / "manifest.json").write_text(json.dumps(mutated))
-                with self.assertRaises(ERRORS):
+                with self.assertRaisesRegex(contract.ContractError, message):
                     contract.validate(self.root, functions_dist=functions, edge_functions_dist=edge)
         (functions / "manifest.json").write_text(json.dumps(manifest))
         asset = edge / self.edge["bundles"][0]["asset"]
