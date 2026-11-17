@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != '4631e281b7451de772c59be45365b31815f8f4b1':
+        if actual != '64ed1753ad20b77ea7d2a9cfc33c350510897027':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
@@ -133,6 +133,7 @@ jobs:
       run: |
         {
           python3 -B -O .github/ci/test-netlify-contract.py
+          python3 -B -O .github/ci/test-audit-gate.py
         } 2>&1 | tee "$RUNNER_TEMP/verification-evidence/contract_fixtures.log"
       id: contract_fixtures
       continue-on-error: true
@@ -347,7 +348,7 @@ jobs:
       run: |
         python3 - <<'PY_RESULTS'
         from pathlib import Path
-        import os, json
+        import os, json, sys
         root = Path(os.environ['RUNNER_TEMP']) / 'verification-evidence'
         root.mkdir(exist_ok=True)
         steps = json.loads(os.environ['STEP_RESULTS'])
@@ -356,32 +357,21 @@ jobs:
         issues = [name + ':' + results[name]['outcome'] for name in required if results[name]['outcome'] != 'success']
         audit_issues = []
         audits = {}
-        known = 'GHSA-vfj7-8cjw-p6xm'
-        known_path = '.>eslint-config-next>@next/eslint-plugin-next>fast-glob>micromatch>braces'
+        # Kabul edilen riskler .github/ci/audit_gate.py icinde (braces eski kabul + picomatch GHSA-fc5q-39xc-vjpf).
+        # picomatch: duzeltme surumu YOK (npm latest 4.0.7); prod yolu next-intl>@parcel/watcher>picomatch@4.0.4
+        # (derleme/katalog izleyicisi), kalan yollar dev. SON TARIH 2026-12-18: duzeltme cikinca kaldir; o gun yeniden degerlendir.
+        sys.path.insert(0, '.github/ci')
+        from audit_gate import classify, ACCEPTED_STATES
         for scope in ['audit_prod', 'audit_full']:
             try:
                 raw = json.loads((root / (scope + '.json')).read_text())
                 code = int((root / (scope + '.exit-code')).read_text())
                 vuln = raw['metadata']['vulnerabilities']
-                advisory_values = list(raw['advisories'].values())
-                dangerous = [a for a in advisory_values if a['severity'] in ('high', 'critical')]
-                valid = raw.get('muted') == [] and code in (0, 1) and int(vuln['critical']) == 0 and int(vuln['high']) == len([a for a in dangerous if a['severity'] == 'high'])
-                if not valid:
-                    state = 'FAIL_UNKNOWN_OR_INCOMPLETE'
-                elif code == 0 and not dangerous:
-                    state = 'PASS_RAW_AUDIT'
-                elif scope == 'audit_full' and code == 1 and len(dangerous) == 1:
-                    advisory = dangerous[0]
-                    findings = advisory.get('findings', [])
-                    exact = advisory.get('github_advisory_id') == known and advisory.get('module_name') == 'braces' and advisory.get('severity') == 'high' and bool(findings)
-                    exact = exact and all(f.get('version') == '3.0.3' and bool(f.get('paths')) and set(f['paths']) == {known_path} for f in findings)
-                    state = 'FAIL_KNOWN_CONDITIONALLY_ACCEPTED' if exact else 'FAIL_OUTSIDE_ACCEPTED_RISK'
-                else:
-                    state = 'FAIL_OUTSIDE_ACCEPTED_RISK'
+                state, dangerous = classify(scope, raw, code)
                 audits[scope] = {'raw_exit_code': code, 'result': state, 'vulnerabilities': vuln, 'muted': raw.get('muted'), 'high_critical_advisories': [a.get('github_advisory_id') for a in dangerous]}
             except Exception as error:
                 audits[scope] = {'result': 'UNVERIFIED_AUDIT_ERROR', 'error': str(error)}
-            if audits[scope]['result'] not in ('PASS_RAW_AUDIT', 'FAIL_KNOWN_CONDITIONALLY_ACCEPTED'):
+            if audits[scope]['result'] not in ACCEPTED_STATES:
                 audit_issues.append(scope + ':' + audits[scope]['result'])
         try:
             unit = json.loads((root / 'unit-results.json').read_text())
@@ -483,12 +473,12 @@ jobs:
             raise SystemExit('AUDIT_OUTSIDE_ACCEPTED_RISK_OR_UNVERIFIED: see raw audits and verification-results.json')
         prod = r['audits'].get('audit_prod', {})
         full = r['audits'].get('audit_full', {})
-        if prod.get('raw_exit_code') != 0 or prod.get('result') != 'PASS_RAW_AUDIT':
+        if not ((prod.get('raw_exit_code') == 0 and prod.get('result') == 'PASS_RAW_AUDIT') or (prod.get('raw_exit_code') == 1 and prod.get('result') == 'PASS_KNOWN_CONDITIONALLY_ACCEPTED')):
             raise SystemExit('PRODUCTION_AUDIT_FAIL_OR_UNVERIFIED')
         if full.get('raw_exit_code') == 0 and full.get('result') == 'PASS_RAW_AUDIT':
             print('Technical and raw audit gates PASS; provider packaging/runtime still separately required')
         elif full.get('raw_exit_code') == 1 and full.get('result') == 'FAIL_KNOWN_CONDITIONALLY_ACCEPTED':
-            print('Technical gates PASS; full audit remains FAIL/raw exit 1 for the exact separately accepted braces advisory. Finding stays open; provider packaging/runtime still separately required.')
+            print('Technical gates PASS; full audit remains FAIL/raw exit 1 for the exact separately accepted advisory (braces or picomatch GHSA-fc5q-39xc-vjpf; picomatch expires 2026-12-18). Finding stays open; provider packaging/runtime still separately required.')
         else:
             raise SystemExit('FULL_AUDIT_OUTSIDE_ACCEPTED_RISK_OR_UNVERIFIED')
         PY_GATE
