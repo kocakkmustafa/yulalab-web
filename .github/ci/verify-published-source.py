@@ -154,8 +154,8 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "tests/locale-routing.test.ts": "d997b9857246ca67c14fde24a53f74fdfa372e1627b615e190d2b1a8507dcd20",
     "tests/locale-switcher.test.tsx": "7f02382ba1b685adc83508c026db3265ea7049c47c2bbbd83b8db5099d001b27",
     "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
-    "tests/stat-cards.test.tsx": "0a9a3798811e4feeec93a348fcd6d2aeabf548a217c92142a043aa86a2b5bea0",
-    "tests/stat-number-locales.test.tsx": "03729b5a8ff31943174488cf63a955406bdf34c4c1865b6e200ed3a580691bb6",
+    "tests/stat-cards.test.tsx": "e31224fe40a418b19cc76721bd7aef873505a9551abd55b27c8fef9a1c17abee",
+    "tests/stat-number-locales.test.tsx": "67910406e9816a48a035dc6a069a135546607c9c13a0a38cda59341fbf748f94",
     "tests/theme-boot.test.ts": "170758f19a13b86ea9337d0eb2020febbf7a1b1c2af9fa2fa4c932848e5e16cc",
     "tests/theme.test.tsx": "12f859d49202e5c0c305b1ababc81431ad688b59902e2e475b9f29ca96e8efca"
 }
