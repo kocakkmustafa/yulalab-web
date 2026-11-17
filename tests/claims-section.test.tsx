@@ -5,6 +5,7 @@ import { ClaimsSection } from "@/components/projects/ClaimsSection";
 import { presentClaims } from "@/lib/proof";
 import { publicRegistry } from "@/data/public-registry";
 import type { PresentedClaim } from "@/lib/proof";
+import { FIXTURE_ACCURACY_RECORD } from "./fixtures/withdrawn-bf-stats";
 
 afterEach(cleanup);
 
@@ -108,14 +109,18 @@ describe("list semantics survive list-style:none", () => {
 });
 
 describe("against the real registry", () => {
-  it("renders Burun Farkı's real claims", () => {
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
+  it("Burun Farkı has no claims left to render", () => {
+    expect(publicRegistry.find((r) => r.slug === "burunfarki")!.claims).toEqual([]);
+  });
+
+  it("renders a registry record's claims (synthetic record; the real Burun Farkı claims were removed 2026-11-18)", () => {
+    const bf = FIXTURE_ACCURACY_RECORD;
     renderSection(presentClaims(bf, new Date("2026-08-19T12:00:00+03:00")));
     expect(screen.getAllByRole("listitem").length).toBe(bf.claims.length);
   });
 
   it("moves them under the lapsed heading once their window closes", () => {
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
+    const bf = FIXTURE_ACCURACY_RECORD;
     renderSection(presentClaims(bf, new Date("2099-01-01T12:00:00+03:00")));
     expect(screen.getByRole("heading", { name: /Needs re-verification/, level: 3 })).toBeTruthy();
     expect(screen.queryByRole("heading", { name: "Verified claims", level: 2 })).toBeTruthy();

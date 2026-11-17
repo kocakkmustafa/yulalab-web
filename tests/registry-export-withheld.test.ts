@@ -39,27 +39,14 @@ describe("buildRegistryExport (SEC-WEB-01b)", () => {
     }
   });
 
-  it("Burun Farkı claims are withheld like the rest once lapsed; the four renewed ones are untouched until their own date", () => {
-    const now = dayOf("2026-11-14");
-    const out = exportedClaims(now);
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!.claims;
-    expect(bf.length).toBeGreaterThan(0);
-    for (const src of bf) {
-      const got = out.find((c) => c.id === src.id)!;
-      expect(got.presentation).toBe("withheld");
-      expect(got.withheldReason).toBe("verification-window-closed");
-      expect(got.statementTr).toBe("");
-      expect(got.statementEn).toBe("");
-      expect(got.figures).toBeUndefined();
-      expect(got.figureWords).toBeUndefined();
-      expect(got.id).toBe(src.id);
-      expect(got.source).toBe(src.source);
-      expect(got.expiresAt).toBe(src.expiresAt);
-    }
-    const bfIds = new Set(bf.map((c) => c.id));
-    for (const src of claims.filter((c) => !bfIds.has(c.id))) {
-      expect(out.find((c) => c.id === src.id)).toEqual(src);
-    }
+  it("the removed Burun Farkı claims are not exported at all (founder, 2026-11-18)", () => {
+    const out = exportedClaims(dayOf("2026-11-14"));
+    const ids = out.map((c) => c.id);
+    expect(ids).not.toContain("burunfarki-topk-accuracy");
+    expect(ids).not.toContain("burunfarki-explainability");
+    expect(publicRegistry.find((r) => r.slug === "burunfarki")!.claims).toEqual([]);
+    // The renewed claims are exported untouched until their own date.
+    for (const src of claims) expect(out.find((c) => c.id === src.id)).toEqual(src);
   });
 
   it("a mid-range date withholds only the lapsed claims", () => {

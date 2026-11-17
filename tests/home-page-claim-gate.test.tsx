@@ -4,7 +4,7 @@ import { publicRegistry } from "@/data/public-registry";
 
 /**
  * SEC-WEB-01c — page-level proof that src/app/[locale]/page.tsx runs the claim
- * expiry gate: an expired claim (Burun Farkı included) reaches the home experience
+ * expiry gate: an expired claim reaches the home experience
  * redacted. The clock is pinned per test.
  */
 vi.mock("next-intl/server", () => ({
@@ -27,7 +27,7 @@ vi.mock("@/components/landing/HomeScenes", () => ({ HomeScenes: () => null }));
 // Dates derive from the registry so renewing claims does not break the tests.
 const all = publicRegistry.flatMap((r) => r.claims);
 const gatedExpiries = all
-  .filter((c) => c.expiresAt && !c.id.startsWith("burunfarki-"))
+  .filter((c) => c.expiresAt)
   .map((c) => c.expiresAt as string)
   .sort();
 const day = (iso: string, delta: number) => {
@@ -35,7 +35,7 @@ const day = (iso: string, delta: number) => {
   d.setUTCDate(d.getUTCDate() + delta);
   return d;
 };
-const NOW = day(gatedExpiries[0], -1); // inside every renewed claim's window (Burun Farkı's two lapsed long ago)
+const NOW = day(gatedExpiries[0], -1); // inside every claim's window
 const AFTER_ALL = day(gatedExpiries[gatedExpiries.length - 1], 1); // past the last one
 
 afterEach(() => vi.useRealTimers());
@@ -52,15 +52,17 @@ async function renderHome(now: Date) {
 }
 
 describe("home page claim gate (page.tsx)", () => {
-  it("inside the renewed windows only the two lapsed Burun Farkı claims are withheld", async () => {
+  it("inside every window nothing is withheld, and the removed Burun Farkı claims are gone", async () => {
     const claims = await renderHome(NOW);
     expect(claims).toHaveLength(all.length);
-    const withheld = claims.filter((c) => c.withheld);
-    expect(withheld.map((c) => c.id).sort()).toEqual(["burunfarki-explainability", "burunfarki-topk-accuracy"]);
-    expect(claims.filter((c) => !c.withheld).every((c) => c.statement !== "")).toBe(true);
+    expect(claims.filter((c) => c.withheld)).toEqual([]);
+    expect(claims.every((c) => c.statement !== "")).toBe(true);
+    const ids = claims.map((c) => c.id);
+    expect(ids).not.toContain("burunfarki-topk-accuracy");
+    expect(ids).not.toContain("burunfarki-explainability");
   });
 
-  it("after expiry the page redacts every claim, Burun Farkı included", async () => {
+  it("after expiry the page redacts every claim", async () => {
     const claims = await renderHome(AFTER_ALL);
     expect(claims).toHaveLength(all.length);
     for (const c of claims) {

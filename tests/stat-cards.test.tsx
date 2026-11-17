@@ -4,13 +4,18 @@ import { cleanup, render, screen } from "@testing-library/react";
 import { StatCards } from "@/components/projects/StatCards";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
-import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
+import { FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 
 afterEach(cleanup);
 
 const LABELS = { verified: "verified", needsReverification: "needs re-verification" };
 
 function product(slug: string) {
+  // Burun Farkı's own claims were removed 2026-11-18; the synthetic record keeps
+  // the same shape (one claim backing three figures) for the generic gate tests.
+  if (slug === FIXTURE_ACCURACY_RECORD.slug) {
+    return { config: { slug, stats: WITHDRAWN_BF_STATS }, record: FIXTURE_ACCURACY_RECORD };
+  }
   const config = projects.find((p) => p.slug === slug)!;
   const record = publicRegistry.find((r) => r.slug === slug)!;
   return { config, record };
@@ -20,7 +25,7 @@ function product(slug: string) {
  * Boundary instants are DERIVED from the claim rather than hardcoded.
  *
  * The first version used FRESH=2026-08-19 / LATE=2099-01-01, which never
- * probed the real edge — burunfarki's claim expires 2026-08-22, so
+ * probed the real edge — the Burun Farkı claim (since removed) expired 2026-08-22, so
  * `claim.expiresAt` was bound to nothing and a component that keyed
  * staleness off `now.getFullYear() >= 2099` passed the whole suite.
  */
@@ -36,7 +41,7 @@ function renderFor(slug: string, now: Date) {
   return render(
     <StatCards
       slug={slug}
-      stats={slug === "burunfarki" ? WITHDRAWN_BF_STATS : config.stats}
+      stats={config.stats}
       record={record}
       locale="en"
       now={now}
@@ -46,7 +51,7 @@ function renderFor(slug: string, now: Date) {
 }
 
 describe("planned claims (WEB-P0-03d notSpoken)", () => {
-  const { record } = product("burunfarki");
+  const { record } = product("fixture-accuracy");
   const stat = WITHDRAWN_BF_STATS.find((s) => s.claimId)!;
   const claim = record.claims.find((c) => c.id === stat.claimId)!;
   const now = onExpiryDay(claim.expiresAt!);
@@ -56,9 +61,9 @@ describe("planned claims (WEB-P0-03d notSpoken)", () => {
     claims: record.claims.map((c) => (c.id === stat.claimId ? { ...c, id, claimState: "planned" as const } : c)),
   });
   const view = (rec: typeof record, s: typeof stat) =>
-    render(<StatCards slug="burunfarki" stats={[s]} record={rec} locale="en" now={now} labels={LABELS} />);
+    render(<StatCards slug="fixture-accuracy" stats={[s]} record={rec} locale="en" now={now} labels={LABELS} />);
 
-  it("a planned burunfarki- claim is withheld like any other (no exemption)", () => {
+  it("a planned claim is withheld like any other (no exemption)", () => {
     const { container } = view(asPlanned(stat.claimId!), stat);
     expect(container.textContent).toContain("—");
     expect(container.textContent).toContain("needs re-verification");
@@ -72,24 +77,24 @@ describe("planned claims (WEB-P0-03d notSpoken)", () => {
 });
 
 describe("a stat backed by a claim", () => {
-  const { record } = product("burunfarki");
-  const claim = record.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+  const { record } = product("fixture-accuracy");
+  const claim = record.claims[0]!;
 
   it("shows the verification date on the last day the claim is valid", () => {
-    renderFor("burunfarki", onExpiryDay(claim.expiresAt));
+    renderFor("fixture-accuracy", onExpiryDay(claim.expiresAt));
     expect(screen.getAllByText(new RegExp(`verified ${claim.verifiedAt}`)).length).toBeGreaterThan(0);
     expect(screen.queryByText(/needs re-verification/i)).toBeNull();
   });
 
   it("flips to needing re-verification the very next day", () => {
     // The real boundary, one day either side — not a year 2099 sentinel.
-    renderFor("burunfarki", dayAfterExpiry(claim.expiresAt));
+    renderFor("fixture-accuracy", dayAfterExpiry(claim.expiresAt));
     expect(screen.getAllByText(/needs re-verification/i).length).toBeGreaterThan(0);
     expect(screen.queryByText(new RegExp(`verified ${claim.verifiedAt}`))).toBeNull();
   });
 
   it("marks all three figures the claim covers", () => {
-    renderFor("burunfarki", dayAfterExpiry(claim.expiresAt));
+    renderFor("fixture-accuracy", dayAfterExpiry(claim.expiresAt));
     expect(screen.getAllByText(/needs re-verification/i)).toHaveLength(3);
   });
 });
@@ -227,5 +232,15 @@ describe("empty and degraded cases", () => {
     );
     expect(screen.getByText("~62%")).toBeTruthy();
     expect(screen.queryByText(/verified/i)).toBeNull();
+  });
+});
+
+describe("removed Burun Farkı claims", () => {
+  it("the real registry no longer holds either expired claim, and the product config carries no linked stat", () => {
+    const { config, record } = product("burunfarki");
+    const ids = record.claims.map((c) => c.id);
+    expect(ids).not.toContain("burunfarki-topk-accuracy");
+    expect(ids).not.toContain("burunfarki-explainability");
+    expect(config.stats).toEqual([]);
   });
 });

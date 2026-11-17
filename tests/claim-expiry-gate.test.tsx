@@ -9,7 +9,7 @@ import { ProofCard } from "@/components/common/ProofCard";
 import { ProofLedger } from "@/components/experience/ExperienceOverlay";
 import { publicRegistry } from "@/data/public-registry";
 import { projects } from "@/data/projects";
-import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
+import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 import { toExperienceClaims } from "@/lib/experience-claims";
 import { presentClaims } from "@/lib/proof";
 import {
@@ -72,18 +72,17 @@ describe("isClaimPresentable", () => {
 });
 
 describe("today's registry through the gate", () => {
-  it("NOW=2026-11-14: 4 of 6 claims are presentable; the two expired Burun Farkı claims are withheld like any other lapsed claim", () => {
-    expect(allClaims).toHaveLength(6);
+  it("NOW=2026-11-14: all 4 claims are presentable; the two expired Burun Farkı claims no longer exist in the registry", () => {
+    expect(allClaims).toHaveLength(4);
     const presentable = publicRegistry.flatMap((r) => listPresentableClaims(r, NOW));
     expect(presentable).toHaveLength(4);
-    expect(presentable.some((c) => c.id.startsWith("burunfarki-"))).toBe(false);
-    const hidden = allClaims.filter((c) => !isClaimPresentable(c, NOW));
-    expect(hidden.map((c) => c.id).sort()).toEqual(["burunfarki-explainability", "burunfarki-topk-accuracy"]);
+    expect(allClaims.some((c) => c.id.startsWith("burunfarki-"))).toBe(false);
+    expect(allClaims.filter((c) => !isClaimPresentable(c, NOW))).toEqual([]);
   });
 
   it("NOW=2027-01-14: the four renewed claims close the gate by themselves; nothing remains presentable", () => {
     expect(publicRegistry.flatMap((r) => listPresentableClaims(r, AFTER_ALL))).toHaveLength(0);
-    expect(allClaims.filter((c) => !isClaimPresentable(c, AFTER_ALL))).toHaveLength(6);
+    expect(allClaims.filter((c) => !isClaimPresentable(c, AFTER_ALL))).toHaveLength(4);
   });
 
   it("warns about the 4 claims that expire within 30 days of 2026-12-20", () => {
@@ -116,14 +115,12 @@ describe("/transparency", () => {
     return document.body.textContent ?? "";
   }
 
-  it("NOW=2026-11-14: renewed claims keep their statement; lapsed Burun Farkı statements are gone, dated marker stays", async () => {
+  it("NOW=2026-11-14: every claim keeps its statement; no lapsed marker and no Burun Farkı claim is rendered", async () => {
     const text = await body(NOW);
-    for (const c of allClaims) {
-      if (c.id.startsWith("burunfarki-")) expect(text).not.toContain(c.statementTr);
-      else expect(text).toContain(c.statementTr);
-    }
-    expect(text).toContain("süre 2026-09-24 tarihinde doldu");
-    expect(text).toContain("süre 2026-09-18 tarihinde doldu");
+    for (const c of allClaims) expect(text).toContain(c.statementTr);
+    expect(text).not.toMatch(/süre \d{4}-\d{2}-\d{2} tarihinde doldu/);
+    expect(text).not.toContain("burunfarki-topk-accuracy");
+    expect(text).not.toContain("burunfarki-explainability");
   });
 
   it("NOW=2027-01-14: no claim statement is shown, dated marker stays", async () => {
@@ -137,23 +134,23 @@ describe("/transparency", () => {
     const before = lapsed(await body(NOW));
     cleanup();
     const after = lapsed(await body(AFTER_ALL));
-    expect(before).toBe(2);
+    expect(before).toBe(0);
     expect(after).toBeGreaterThan(before);
   });
 });
 
 describe("StatCards", () => {
   function render_(slug: string, now: Date) {
-    const config = projects.find((p) => p.slug === slug)!;
-    const stats = slug === "burunfarki" ? WITHDRAWN_BF_STATS : config.stats;
-    const record = publicRegistry.find((r) => r.slug === slug)!;
+    const config = projects.find((p) => p.slug === slug) ?? { stats: [] };
+    const stats = slug === FIXTURE_ACCURACY_RECORD.slug ? WITHDRAWN_BF_STATS : config.stats;
+    const record = slug === FIXTURE_ACCURACY_RECORD.slug ? FIXTURE_ACCURACY_RECORD : publicRegistry.find((r) => r.slug === slug)!;
     return render(
       <StatCards slug={slug} stats={stats} record={record} locale="en" now={now} labels={LABELS} />,
     );
   }
 
-  it("withholds the three Burun Farkı figures and shows the re-verification marker (lapsed, no exemption)", () => {
-    const { container } = render_("burunfarki", NOW);
+  it("withholds the three figures of a lapsed claim and shows the re-verification marker (synthetic claim, expired 2026-09-24)", () => {
+    const { container } = render_(FIXTURE_ACCURACY_RECORD.slug, NOW);
     const text = container.textContent ?? "";
     for (const figure of ["~29%", "~62%", "1,225"]) expect(text).not.toContain(figure);
     expect(text.match(/needs re-verification/g)).toHaveLength(3);
@@ -171,20 +168,20 @@ describe("StatCards", () => {
 });
 
 describe("home experience data and overlay", () => {
-  it("NOW=2026-11-14: the 4 renewed claims travel intact, the 2 lapsed Burun Farkı claims travel redacted", () => {
+  it("NOW=2026-11-14: all 4 claims travel intact; no Burun Farkı claim exists to redact", () => {
     const items = publicRegistry.flatMap((r) => toExperienceClaims(r, "en", NOW));
-    expect(items).toHaveLength(6);
-    const redacted = items.filter((i) => i.withheld);
-    expect(redacted.map((i) => i.id).sort()).toEqual(["burunfarki-explainability", "burunfarki-topk-accuracy"]);
-    for (const i of redacted) expect([i.statement, i.scope, i.source, i.figure ?? ""]).toEqual(["", "", "", ""]);
+    expect(items).toHaveLength(4);
+    expect(items.filter((i) => i.withheld)).toEqual([]);
+    expect(items.map((i) => i.id)).not.toContain("burunfarki-topk-accuracy");
+    expect(items.map((i) => i.id)).not.toContain("burunfarki-explainability");
     const intact = items.filter((i) => !i.withheld);
     expect(intact).toHaveLength(4);
     expect(intact.every((i) => i.statement !== "")).toBe(true);
   });
 
-  it("NOW=2027-01-14: all 6 claims travel redacted", () => {
+  it("NOW=2027-01-14: all 4 claims travel redacted", () => {
     const items = publicRegistry.flatMap((r) => toExperienceClaims(r, "en", AFTER_ALL));
-    expect(items).toHaveLength(6);
+    expect(items).toHaveLength(4);
     for (const i of items) {
       expect(i.withheld).toBe(true);
       expect([i.statement, i.scope, i.source, i.figure ?? ""]).toEqual(["", "", "", ""]);
@@ -208,25 +205,24 @@ describe("home experience data and overlay", () => {
   });
 });
 
-describe("Burun Farkı: önce=sonra yerine gizlendi", () => {
-  // The Burun Farkı exemption is gone: its lapsed claims are withheld like any other.
+describe("Burun Farkı: the two expired claims were removed (founder, 2026-11-18)", () => {
   const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-  const BF_IDS = ["burunfarki-explainability", "burunfarki-topk-accuracy"];
 
   it.each([
     ["2026-11-14", NOW],
     ["2027-01-14", AFTER_ALL],
-  ])("no Burun Farkı claim is presentable and none narrates at %s", (_label, now) => {
+  ])("the product record carries no claim, so nothing is presentable or narrated at %s", (_label, now) => {
+    expect(bf).toBeTruthy();
+    expect(bf.claims).toEqual([]);
     expect(listPresentableClaims(bf, now)).toEqual([]);
-    expect(bf.claims.some((c) => isClaimPresentable(c, now))).toBe(false);
-    const items = toExperienceClaims(bf, "en", now);
-    expect(items.map((i) => i.id).sort()).toEqual(BF_IDS);
-    for (const item of items) {
-      expect(item.withheld).toBe(true);
-      expect([item.statement, item.scope, item.source, item.figure ?? ""]).toEqual(["", "", "", ""]);
-      expect(item.expiresAt).toBeTruthy();
-    }
-    expect(presentClaims(bf, now).filter((p) => p.claim.id === "burunfarki-topk-accuracy")[0].kind).toBe("lapsed");
+    expect(presentClaims(bf, now)).toEqual([]);
+    expect(toExperienceClaims(bf, "en", now)).toEqual([]);
+  });
+
+  it("neither removed id exists anywhere in the registry", () => {
+    const ids = allClaims.map((c) => c.id);
+    expect(ids).not.toContain("burunfarki-topk-accuracy");
+    expect(ids).not.toContain("burunfarki-explainability");
   });
 
   it("the burunfarki- id prefix carries no special meaning any more", () => {
@@ -235,28 +231,22 @@ describe("Burun Farkı: önce=sonra yerine gizlendi", () => {
     expect(isClaimPresentable({ id: "other-x", expiresAt: "2026-09-24" }, NOW)).toBe(false);
   });
 
-  it("at the same NOW the four renewed claims are untouched", () => {
-    const others = publicRegistry.filter((r) => r.slug !== "burunfarki").flatMap((r) => r.claims);
+  it("at the same NOW the four remaining claims are untouched", () => {
+    const others = publicRegistry.flatMap((r) => r.claims);
     expect(others).toHaveLength(4);
     expect(others.every((c) => isClaimPresentable(c, NOW))).toBe(true);
     expect(others.filter((c) => c.expiresAt && isExpired(c.expiresAt, NOW))).toEqual([]);
   });
 
-  it("the Burun Farkı product page renders with no claim narration, no empty card", () => {
+  it("the Burun Farkı product config carries no stat, so no figure can reach the page", () => {
     const config = projects.find((p) => p.slug === "burunfarki")!;
     expect(config.stats).toEqual([]);
-    const { container } = render(
-      <StatCards slug="burunfarki" stats={WITHDRAWN_BF_STATS} record={bf} locale="en" now={AFTER_ALL} labels={LABELS} />,
-    );
-    const text = container.textContent ?? "";
-    for (const figure of ["~29%", "~62%", "1,225"]) expect(text).not.toContain(figure);
-    expect(text.match(/needs re-verification/g)).toHaveLength(3);
   });
 });
 
-describe("Burun Farkı ProofCard — lapsed card is redacted", () => {
+describe("ProofCard (synthetic claim) — lapsed card is redacted", () => {
   const bfClaim = {
-    id: "burunfarki-topk-accuracy",
+    id: FIXTURE_ACCURACY_CLAIM_ID,
     statementTr: "BF ifade",
     statementEn: "BF statement",
     evidenceKind: "measured" as const,
@@ -268,7 +258,7 @@ describe("Burun Farkı ProofCard — lapsed card is redacted", () => {
     expiresAt: "2026-09-24",
   };
 
-  it("lapsed BF card shows no sentence, no scope, no source link; keeps the dated marker", () => {
+  it("lapsed card shows no sentence, no scope, no source link; keeps the dated marker", () => {
     const { container } = render(
       <ProofCard presented={{ kind: "lapsed", claim: bfClaim, expiredOn: "2026-09-24" }} locale="en" />,
     );
@@ -279,7 +269,7 @@ describe("Burun Farkı ProofCard — lapsed card is redacted", () => {
     expect(text).toContain("2026-09-24");
   });
 
-  it("in-window BF-id card keeps the bright text-ink-100 sentence, no border override, no re-verification label", () => {
+  it("in-window card keeps the bright text-ink-100 sentence, no border override, no re-verification label", () => {
     const { container } = render(<ProofCard presented={{ kind: "verified", claim: bfClaim }} locale="en" />);
     expect(container.querySelector("p")!.className).toBe("text-[15px] leading-[1.7] text-ink-100");
     expect(container.querySelector("li")!.getAttribute("style")).toBeNull();
