@@ -100,8 +100,8 @@ export const notes: Note[] = [
         en: "Scope: the verification covers the encryption mechanism and key generation. The name \"SQLCipher\" no longer refers to that library itself but to sqlite3mc's SQLCipher-compatible mode (PRAGMA cipher='sqlcipher'); it is functionally the same, and the naming is historical.",
       },
       {
-        tr: "App Store listesi için kayıttaki dayanak 2026-09-23 tarihli herkese açık Apple sorgusudur: o gün listede LifeOS 1.6.0 görünüyordu, en düşük iOS sürümü 16.0'dı. Bu yalnızca listenin erişilebilirliğidir; o tarihten sonrası için bir iddia değildir ve o doğrulamanın geçerlilik süresi aynı gün sona ermiştir.",
-        en: "For the App Store listing, the basis in the record is the public Apple lookup of 2026-09-23: on that day the listing showed LifeOS 1.6.0 with a minimum iOS version of 16.0. This concerns listing availability alone; it is not a claim about any date after that, and the validity window of that check ended the same day.",
+        tr: "App Store listesi için kayıttaki dayanak 2026-11-18 tarihli herkese açık Apple sorgusudur: o gün listede LifeOS 1.6.1 görünüyordu, en düşük iOS sürümü 16.0'dı. Bu yalnızca listenin erişilebilirliğidir; o tarihten sonrası için bir iddia değildir ve o doğrulamanın geçerlilik sonu 2027-01-17'dir.",
+        en: "For the App Store listing, the basis in the record is the public Apple lookup of 2026-11-18: on that day the listing showed LifeOS 1.6.1 with a minimum iOS version of 16.0. This concerns listing availability alone; it is not a claim about any date after that, and the validity window of that check ends on 2027-01-17.",
       },
       {
         tr: "Şifreleme iddiasının kayıttaki geçerlilik sonu 2027-01-13'dir; bu tarihten sonra yeniden doğrulanana kadar güncel sayılmamalıdır.",
@@ -110,7 +110,7 @@ export const notes: Note[] = [
     ],
     sources: [
       { label: "On-device encryption claim (source-code-verified)", ref: "lifeos-on-device-encryption", verifiedAt: "2026-11-14" },
-      { label: "iOS listing surface record (public Apple lookup)", ref: "registry:lifeos/surface/ios", verifiedAt: "2026-09-23" },
+      { label: "iOS listing surface record (public Apple lookup)", ref: "registry:lifeos/surface/ios", verifiedAt: "2026-11-18" },
     ],
   },
   {

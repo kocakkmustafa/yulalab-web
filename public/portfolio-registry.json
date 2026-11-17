@@ -1,6 +1,6 @@
 {
   "generatedAt": "static",
-  "asOf": "2026-11-15",
+  "asOf": "2026-11-18",
   "schema": {
     "version": 2,
     "notes": "asOf is the site-zone date (Europe/Istanbul) this file was generated for. For every claim whose expiresAt is before asOf, the exporter removes the narration: statementTr, statementEn, scopeTr and scopeEn are empty strings, figures and figureWords are removed, publishableAsPresentTense is false, presentation is \"withheld\" and withheldReason is \"verification-window-closed\"; id, claimState, source, owner, verifiedAt and expiresAt are kept. The file can go stale after asOf (a claim can lapse after the build): a consumer MUST NOT show a claim statement or figure when expiresAt < today (site zone) and must treat presentation \"withheld\" as no statement. CI (export-public-registry --check) fails when a claim lapsed after asOf while the file still carries its statement; fix: regenerate with `npm run export:registry` and commit."
@@ -23,9 +23,9 @@
           "kind": "ios",
           "url": "https://apps.apple.com/us/app/braavolabs/id6771440905",
           "status": "live",
-          "source": "https://itunes.apple.com/lookup?id=6771440905&country=us (US and TR public Apple lookup on 2026-09-23T02:41:37Z (Europe/Istanbul date 2026-09-23): resultCount=1, Braavolabs 1.0.3, minimum iOS 17.0; listing availability only; local 1.0.4 candidate is not the published version)",
-          "verifiedAt": "2026-09-23",
-          "expiresAt": "2026-09-23"
+          "source": "https://itunes.apple.com/lookup?id=6771440905&country=us (US and TR public Apple lookup on 2026-11-18: resultCount=1, Braavolabs 1.1.0 (released 2026-11-04), Free, minimum iOS 17.0; store page https://apps.apple.com/us/app/braavolabs/id6771440905 returned 200; listing availability only)",
+          "verifiedAt": "2026-11-18",
+          "expiresAt": "2027-01-17"
         }
       ],
       "primaryCta": {
@@ -180,17 +180,17 @@
           "kind": "ios",
           "url": "https://apps.apple.com/app/id6771527233",
           "status": "live",
-          "source": "https://itunes.apple.com/lookup?id=6771527233&country=us (US and TR public Apple lookup on 2026-09-23T02:41:37Z (Europe/Istanbul date 2026-09-23): resultCount=1, LifeOS 1.6.0, minimum iOS 16.0; listing availability only; local 1.6.1 candidate is not the published version)",
-          "verifiedAt": "2026-09-23",
-          "expiresAt": "2026-09-23"
+          "source": "https://itunes.apple.com/lookup?id=6771527233&country=us (US and TR public Apple lookup on 2026-11-18: resultCount=1, LifeOS: Personal Life Tracker 1.6.1 (released 2026-11-15), Free, minimum iOS 16.0; store page https://apps.apple.com/app/id6771527233 returned 200; listing availability only)",
+          "verifiedAt": "2026-11-18",
+          "expiresAt": "2027-01-17"
         },
         {
           "kind": "android",
           "url": "",
           "status": "coming-soon",
-          "source": "ventures/yulalab-com/site/src/data/projects/lifeos.ts links array code comment",
-          "verifiedAt": "2026-08-19",
-          "expiresAt": "2026-09-18"
+          "source": "https://play.google.com/store/apps/details?id=com.mustafakaankocak.lifeos&hl=tr (public readback on 2026-11-18: HTTP 404, no public Play listing; consistent with coming-soon) + ventures/yulalab-com/site/src/data/projects/lifeos.ts links array code comment (Play link hidden until production track is live)",
+          "verifiedAt": "2026-11-18",
+          "expiresAt": "2027-01-17"
         }
       ],
       "primaryCta": {
