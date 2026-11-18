@@ -70,9 +70,9 @@ export type GroundSet = {
 };
 
 export const GROUND_SETS = {
-  hero: { edge: "#030110", mid: "#180a42", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
+  hero: { edge: "#02010b", mid: "#130940", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
   portfolio: { edge: "#050505", mid: "#c8c0d0", peak: "#c8c0d0", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
-  proof: { edge: "#030709", mid: "#0b2e40", peak: "#2e9fd8", centre: [0.3, 0.5, 0.375, 0.5], spread: [0.12, 0.5, 0.012, 0.04] },
+  proof: { edge: "#030709", mid: "#0c3246", peak: "#2e9fd8", centre: [0.3, 0.5, 0.375, 0.5], spread: [0.12, 0.5, 0.012, 0.04] },
   night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
   closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
   light: { edge: "#c8d1d4", mid: "#e4eef1", peak: "#e4eef1", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
