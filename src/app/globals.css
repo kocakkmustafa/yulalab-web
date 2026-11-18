@@ -1175,3 +1175,7 @@ html.dark body:has([data-yula-experience="true"]) [data-site-footer="true"] {
   background-image: radial-gradient(ellipse 42% 60% at 50% 52%, #021736 0%, #030917 55%, #000307 100%);
   background-attachment: fixed;
 }
+
+/* W1D: the home page has no shared fixed header (the journey owns its overlay header); its anchors are
+   exact timeline positions, so hash jumps land on them without the shared header offset. */
+html:has([data-yula-experience="true"]) { scroll-padding-top: 0; }
