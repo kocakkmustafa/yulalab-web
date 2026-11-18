@@ -62,6 +62,13 @@ const securityHeaders = [
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // WEB-P2-01b: inline the Lab demo flags at build. Pages revalidate (ISR) at
+  // runtime where Netlify's toml env is not present; without inlining a
+  // re-render would silently close the demos. Unset stays "" (closed).
+  env: {
+    LIFEOS_DEMO_ENABLED: process.env.LIFEOS_DEMO_ENABLED ?? "",
+    OSTINATO_DEMO_ENABLED: process.env.OSTINATO_DEMO_ENABLED ?? "",
+  },
   poweredByHeader: false,
   // Preserve middleware-produced origins verbatim. Without this, Next 15.5's
   // production adapter can normalize a 127.0.0.1 canonical locale redirect
