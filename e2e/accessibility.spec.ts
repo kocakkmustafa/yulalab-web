@@ -15,6 +15,18 @@ async function expectNoBlockingViolations(page: Page, label: string) {
     });
   }
 
+  // Same reasoning for scroll reveals: below-the-fold blocks wait at opacity 0
+  // until scrolled to. With the scene veil now fully opaque the background is a
+  // flat black axe can resolve, so it would score those unrevealed blocks.
+  // Settle them as a reader scrolling the page would, then sample.
+  await page.evaluate(async () => {
+    document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-in"));
+    document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((node) => {
+      node.dataset.revealState = "in";
+    });
+    await new Promise((resolve) => setTimeout(resolve, 900));
+  });
+
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
