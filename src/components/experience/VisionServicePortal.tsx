@@ -52,6 +52,7 @@ const BAND_FRAGMENT = `
     vec3 c = mix(cyan, violet, smoothstep(0.0, 0.34, t));
     c = mix(c, magenta, smoothstep(0.34, 0.68, t));
     c = mix(c, amber, smoothstep(0.68, 1.0, t));
+    c = mix(c, vec3(1.0), 0.45);
     gl_FragColor = vec4(c, 1.0);
   }
 `;
