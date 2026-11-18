@@ -140,12 +140,13 @@ test.describe("keyboard order and focus visibility (desktop)", () => {
     await expect(select).toBeFocused();
     // Real keyboard behaviour: focus stays on the select and typeahead changes the value.
     const before = await select.inputValue();
-    // Native select typeahead: typing the first letter of the "dark" option selects it.
-    const darkLabel = (await select.locator("option[value='dark']").textContent()) ?? "";
-    await page.keyboard.type(darkLabel.trim().charAt(0));
+    // Native select typeahead: typing the first letter of the "light" option selects it
+    // (W1: dark is the default, so the typeahead target is the other theme).
+    const lightLabel = (await select.locator("option[value='light']").textContent()) ?? "";
+    await page.keyboard.type(lightLabel.trim().charAt(0));
     await expect(select).toBeFocused();
-    await expect.poll(() => select.inputValue()).toBe("dark");
-    expect(before).not.toBe("dark");
+    await expect.poll(() => select.inputValue()).toBe("light");
+    expect(before).not.toBe("light");
     await select.selectOption("light");
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
     await select.selectOption("dark");
