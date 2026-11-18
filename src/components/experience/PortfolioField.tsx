@@ -13,7 +13,8 @@ import {
   TextureLoader,
 } from "three";
 import { presentationImageUrl } from "./useShowcaseTextures";
-import { makeIconPresentation, type PresentationImage } from "./presentation-canvas";
+import type { PresentationImage } from "./presentation-canvas";
+import { makeBrightIconPresentation } from "./icon-presentation";
 import {
   CARD_DEPTH_STEP,
   clamp01,
@@ -551,7 +552,7 @@ function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
   product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
 }) {
   const icon = useCardTexture(product.icon, tier, onAssetSettled);
-  const cover = useMemo(() => makeIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
+  const cover = useMemo(() => makeBrightIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
   useEffect(() => () => cover.dispose(), [cover]);
 
   // The approved app icon stands alone as a large rounded square: no backing
