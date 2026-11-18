@@ -1272,5 +1272,23 @@
     "doneBody": "「{title}」のリマインダー: {when}。実際には何も設定されていません。",
     "announceDone": "リマインダーを設定しました。シミュレーションです。{title}: {when}。",
     "restart": "もう一度試す"
+  },
+  "labDemos": {
+    "heading": "ここで試す",
+    "intro": "製品の小さな合成デモです。ブラウザー上で、作り物のデータで動きます。",
+    "listLabel": "製品デモ",
+    "open": "開く",
+    "openNamed": "開く: {product}",
+    "close": "閉じる",
+    "closeNamed": "閉じる: {product}",
+    "loading": "読み込み中…",
+    "productLink": "製品ページで",
+    "noscript": "これらのデモには JavaScript が必要です。各カードから製品ページへ移動できます。",
+    "badge": "合成の例",
+    "panelLabel": "{product}のデモ",
+    "lifeos": "判断カードを選んで、リマインダーがいつ届くかを確かめます。",
+    "ostinato": "ビートに合わせてタップして、タイミングの出来を確かめます。",
+    "error": "デモを読み込めませんでした。接続を確認して、もう一度お試しください。",
+    "retry": "もう一度試す"
   }
 }

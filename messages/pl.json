@@ -1272,5 +1272,23 @@
     "doneBody": "Przypomnienie dla „{title}”: {when}. Nic nie zostało naprawdę ustawione.",
     "announceDone": "Przypomnienie ustawione, symulacja. {title}: {when}.",
     "restart": "Spróbuj ponownie"
+  },
+  "labDemos": {
+    "heading": "Wypróbuj tutaj",
+    "intro": "Małe, syntetyczne próbki naszych produktów. Działają w Twojej przeglądarce na zmyślonych danych.",
+    "listLabel": "Próbki produktów",
+    "open": "Otwórz",
+    "openNamed": "Otwórz: {product}",
+    "close": "Zamknij",
+    "closeNamed": "Zamknij: {product}",
+    "loading": "Wczytywanie…",
+    "productLink": "Na stronie produktu",
+    "noscript": "Te próbki wymagają JavaScriptu. Każda karta prowadzi do strony swojego produktu.",
+    "badge": "Przykład syntetyczny",
+    "panelLabel": "Próbka {product}",
+    "lifeos": "Wybierz kartę decyzji i zobacz, kiedy przyszłoby przypomnienie.",
+    "ostinato": "Stukaj w rytm i zobacz, jak wypadł Twój timing.",
+    "error": "Nie udało się wczytać próbki. Sprawdź połączenie i spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
   }
 }

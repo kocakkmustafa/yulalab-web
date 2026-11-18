@@ -756,7 +756,7 @@
   "Coming soon": "即将推出",
   "The first level of guitar (40 lessons) is free and needs no account, and practising with the microphone is optional.": "吉他的第一级（40 节课时）免费，无需账户；使用麦克风练习是可选的。",
   "Lab": "实验室",
-  "Real decisions and notes; no invented data.": "真实的决策与笔记；没有编造的数据。",
+  "Notes and records come from real decisions and sources; demos, where shown, use synthetic data.": "笔记和记录来自真实的决策与来源；演示（如有展示）使用合成数据。",
   "Notes": "开发笔记",
   "{count} entries · latest {date}": "{count} 条 · 最新 {date}",
   "No notes yet.": "暂无笔记。",

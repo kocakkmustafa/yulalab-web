@@ -14,6 +14,8 @@ import { publicRegistry } from "@/data/public-registry";
 import { publishableCaseStudies } from "@/lib/case-studies";
 import { portfolioCounts } from "@/lib/operating-system";
 import type { Locale } from "@/lib/types";
+import { enabledLabDemoIds } from "@/server/lab-demo-flags";
+import { LabDemoGrid } from "@/components/lab/LabDemoGrid";
 
 /**
  * Lab hub (WEB-UX-05e, 04-design §E6). It only points at records that exist:
@@ -25,8 +27,8 @@ export const revalidate = 900;
 
 const TITLE = { tr: "Laboratuvar", en: "Lab" } as const;
 const LEDE = {
-  tr: "Gerçek kararlar ve notlar; uydurma veri yok.",
-  en: "Real decisions and notes; no invented data.",
+  tr: "Notlar ve kayıtlar gerçek karar ve kaynaklardandır; demolar, gösterildiği yerde, sentetik veriyle çalışır.",
+  en: "Notes and records come from real decisions and sources; demos, where shown, use synthetic data.",
 } as const;
 
 export async function generateMetadata({
@@ -63,6 +65,8 @@ function Lab() {
   );
   const published = publishableCaseStudies(caseStudies, publicRegistry);
   const counts = portfolioCounts();
+  // Flags are read on the server (WEB-P2-01a); a closed flag drops the card.
+  const demoIds = enabledLabDemoIds();
 
   const cardClass = "glass p-6 flex flex-col";
   const linkClass =
@@ -81,6 +85,8 @@ function Lab() {
           {text(locale, LEDE.tr, LEDE.en)}
         </p>
       </section>
+
+      <LabDemoGrid ids={demoIds} />
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pb-24 grid grid-cols-1 lg:grid-cols-3 gap-5">
         <article className={cardClass} data-testid="lab-notes" aria-labelledby="lab-notes-h">

@@ -1272,5 +1272,23 @@
     "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
     "announceDone": "Reminder set, simulation. {title}: {when}.",
     "restart": "Try again"
+  },
+  "labDemos": {
+    "heading": "Try it here",
+    "intro": "Small, synthetic try-outs of our products. They run in your browser with made-up data.",
+    "listLabel": "Product try-outs",
+    "open": "Open",
+    "openNamed": "Open: {product}",
+    "close": "Close",
+    "closeNamed": "Close: {product}",
+    "loading": "Loading…",
+    "productLink": "On the product page",
+    "noscript": "These try-outs need JavaScript. Each card links to its product page instead.",
+    "badge": "Synthetic example",
+    "panelLabel": "{product} try-out",
+    "lifeos": "Pick a decision card and preview when its reminder would arrive.",
+    "ostinato": "Tap along to a beat and see how your timing lands.",
+    "error": "The demo could not be loaded. Check your connection and try again.",
+    "retry": "Try again"
   }
 }

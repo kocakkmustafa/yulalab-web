@@ -1272,5 +1272,23 @@
     "doneBody": "“{title}” için hatırlatma: {when}. Gerçekte hiçbir şey kurulmadı.",
     "announceDone": "Hatırlatıcı kuruldu, simülasyon. {title}: {when}.",
     "restart": "Baştan dene"
+  },
+  "labDemos": {
+    "heading": "Burada dene",
+    "intro": "Ürünlerimizin küçük, sentetik denemeleri. Tarayıcında uydurma verilerle çalışır.",
+    "listLabel": "Ürün denemeleri",
+    "open": "Aç",
+    "openNamed": "Aç: {product}",
+    "close": "Kapat",
+    "closeNamed": "Kapat: {product}",
+    "loading": "Yükleniyor…",
+    "productLink": "Ürün sayfasında",
+    "noscript": "Bu denemeler JavaScript ister. Her kartta ürün sayfası bağlantısı var.",
+    "badge": "Sentetik örnek",
+    "panelLabel": "{product} denemesi",
+    "lifeos": "Bir karar kartı seç, hatırlatmasının ne zaman geleceğini önizle.",
+    "ostinato": "Vuruşa eşlik ederek dokun, zamanlamanın nasıl düştüğünü gör.",
+    "error": "Demo yüklenemedi. Bağlantını kontrol edip yeniden dene.",
+    "retry": "Yeniden dene"
   }
 }
