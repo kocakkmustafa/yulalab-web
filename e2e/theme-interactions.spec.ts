@@ -42,7 +42,7 @@ for (const locale of ["tr", "en"] as const) {
       await page.locator("[data-site-header] nav a[href]").nth(1).click();
       await page.waitForURL((u) => !u.pathname.endsWith("/projects"));
       await expect(page.locator("main h1").first()).toBeVisible();
-      // Exit fade is skipped: the new page is visible well under the 0.45s exit.
+      // Exit fade is skipped under reduced motion: the new page shows at once.
       expect(await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length)).toBe(0);
     });
 
