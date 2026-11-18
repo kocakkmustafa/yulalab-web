@@ -59,6 +59,8 @@ function WorldTheme({ frame }: { frame: TimelineFrame }) {
   return <fog attach="fog" args={[WORLD_DARK_COLOR, 12, 58]} />;
 }
 
+const VALUES_ROOM_START = 0.84;
+
 export function ExperienceWorld({
   displayTheme = "dark",
   glyphRotation,
@@ -134,7 +136,10 @@ export function ExperienceWorld({
       </LightformerEnvironment>
 
       <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} wallTitles={wallTitles} />
-      <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
+      {/* W1D K5: the values room is flat ground light; the glyph and the opaque service panels are gone from there. */}
+      {frame.progress < VALUES_ROOM_START ? (
+        <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
+      ) : null}
       <PortfolioField
         frame={frame}
         mode={mode}
@@ -142,7 +147,9 @@ export function ExperienceWorld({
         products={products}
         tier={tier}
       />
-      <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
+      {frame.progress < VALUES_ROOM_START ? (
+        <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
+      ) : null}
     </>
   );
 }
