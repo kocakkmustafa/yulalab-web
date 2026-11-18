@@ -1748,7 +1748,8 @@
 }
 
 .staticExperience [tabindex="-1"] {
-  scroll-margin-top: calc(86px + var(--safe-top));
+  /* html scroll-padding-top (globals.css) already clears the fixed header; a margin here would stack on it */
+  scroll-margin-top: 0;
 }
 
 .staticExperience .experienceHeader {
@@ -2591,9 +2592,6 @@
 /* 2026-10-18 rendered-reference alignment. Independent materials and owned
    typography; approved product media and the journey mapping are retained. */
 .journey .realHud { display: none; }
-@media (min-width: 768px) {
-  .staticExperience [tabindex="-1"] { scroll-margin-top: calc(136px + var(--safe-top)); }
-}
 .heroCopy {
   top: auto;
   right: calc(clamp(28px, 3.5vw, 56px) + var(--safe-right));
