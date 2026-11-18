@@ -798,5 +798,22 @@
   "Guitar comes with 235 lessons and ear training with 48, 283 lessons in total; voice and piano are coming soon. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free, with no account. The rest opens with an Ostinato membership through the App Store and Google Play.": "ギターは 235 レッスン、聴音は 48 レッスンが付属し、合計 283 レッスンです。ボーカルとピアノは近日公開です。ギターのレベル 1(40 レッスン)と聴音のレベル 1(25 レッスン)は無料で、アカウントも不要です。残りは App Store と Google Play を通じた Ostinato メンバーシップで開きます。",
   "For the scope and limits of case studies, see": "ケーススタディの範囲と限界については、こちらをご覧ください:",
   "the Transparency page.": "透明性ページ。",
-  "When measurement is enabled, the funnel record also includes these events: home page view, and contact form start (first focus on the form) and submission. These events only report that the action happened; nothing you type into a form enters an event. Measurement runs on all 14 language versions of the site, and the recorded language is one of those 14. This funnel record is separate from the page-view measurement mentioned above; it sets no cookies, calls no external service, and records are written to our own database.": "計測が有効な場合、ファネル記録には次のイベントも含まれます: ホームページの表示、問い合わせフォームの開始(フォームへの最初のフォーカス)、送信。これらのイベントは、その操作があったことだけを伝えます。フォームに入力した内容がイベントに入ることはありません。計測はサイトの 14 言語すべてのバージョンで動作し、記録される言語はその 14 のいずれかです。このファネル記録は、前述のページ表示の計測とは別のものです。Cookie は設定せず、外部サービスも呼び出さず、記録は当社自身のデータベースに書き込まれます。"
+  "When measurement is enabled, the funnel record also includes these events: home page view, and contact form start (first focus on the form) and submission. These events only report that the action happened; nothing you type into a form enters an event. Measurement runs on all 14 language versions of the site, and the recorded language is one of those 14. This funnel record is separate from the page-view measurement mentioned above; it sets no cookies, calls no external service, and records are written to our own database.": "計測が有効な場合、ファネル記録には次のイベントも含まれます: ホームページの表示、問い合わせフォームの開始(フォームへの最初のフォーカス)、送信。これらのイベントは、その操作があったことだけを伝えます。フォームに入力した内容がイベントに入ることはありません。計測はサイトの 14 言語すべてのバージョンで動作し、記録される言語はその 14 のいずれかです。このファネル記録は、前述のページ表示の計測とは別のものです。Cookie は設定せず、外部サービスも呼び出さず、記録は当社自身のデータベースに書き込まれます。",
+  "Design preview": "デザインプレビュー",
+  "These images are English design previews of the app interface. They are not a capture of a published version, and not evidence of sales readiness or results.": "これらの画像は、アプリのインターフェースの英語版デザインプレビューです。公開済みバージョンのキャプチャではなく、販売準備や成果の証拠でもありません。",
+  "Design direction": "デザインの方向性",
+  "Board file": "ボードファイル",
+  "Warm Graphite": "ウォームグラファイト",
+  "Silver Plum": "シルバープラム",
+  "LifeOS design preview: welcome screen, \"Your life, in one place\", with a Get started button.": "LifeOS デザインプレビュー：「Your life, in one place」と「Get started」ボタンのあるウェルカム画面。",
+  "LifeOS design preview: Today screen with daily goals, routines and tasks.": "LifeOS デザインプレビュー：1日の目標、ルーティン、タスクを表示する「今日」画面。",
+  "LifeOS design preview: Finance transactions list with monthly total in dollars.": "LifeOS デザインプレビュー：月間合計をドルで表示する家計の取引一覧。",
+  "LifeOS design preview: dark focus timer with rounds completed and focus time.": "LifeOS デザインプレビュー：完了したラウンドと集中時間を表示するダークな集中タイマー。",
+  "LifeOS design preview: dark Health score of 78 with components and an insight.": "LifeOS デザインプレビュー：構成要素とインサイトを含む、スコア78のダークな健康スコア。",
+  "LifeOS design preview: Habits screen with 14-day streak dots per habit.": "LifeOS デザインプレビュー：習慣ごとに14日間の連続記録ドットを表示する習慣画面。",
+  "Design preview: approval details for a newsletter send, with a chat on the left.": "デザインプレビュー：ニュースレター送信の承認詳細。左側にチャットあり。",
+  "Design preview: company activity list with a task flow and audit details.": "デザインプレビュー：タスクフローと監査詳細を含む会社のアクティビティ一覧。",
+  "Design preview: Now panel, approval toast and a connector error card.": "デザインプレビュー：「今」パネル、承認通知、コネクタのエラーカード。",
+  "Design preview: budget settings with per-agent spend and limits.": "デザインプレビュー：エージェントごとの支出と上限を示す予算設定。",
+  "Design preview: approval rules and emergency stop settings.": "デザインプレビュー：承認ルールと緊急停止の設定。"
 }

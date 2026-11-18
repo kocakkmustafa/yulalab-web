@@ -6,8 +6,17 @@
  * without updating this map.
  */
 export const IMAGE_DIMENSIONS: Readonly<Record<string, { width: number; height: number }>> = {
-  "/projects/braavolabs/screenshot-audit-trail.png": { width: 1196, height: 760 },
-  "/projects/braavolabs/screenshot-builder.png": { width: 1184, height: 576 },
+  "/projects/braavolabs/design-preview-01-approval-queue.png": { width: 1500, height: 900 },
+  "/projects/braavolabs/design-preview-02-activity-audit.png": { width: 1500, height: 900 },
+  "/projects/braavolabs/design-preview-03-notifications-error.png": { width: 1500, height: 900 },
+  "/projects/braavolabs/design-preview-04-settings-budget.png": { width: 1500, height: 900 },
+  "/projects/braavolabs/design-preview-05-settings-approval-rules.png": { width: 1500, height: 900 },
+  "/projects/lifeos/design-preview-01-onboarding.png": { width: 1170, height: 2532 },
+  "/projects/lifeos/design-preview-02-today.png": { width: 1170, height: 2532 },
+  "/projects/lifeos/design-preview-03-finance.png": { width: 1170, height: 2532 },
+  "/projects/lifeos/design-preview-04-focus.png": { width: 1170, height: 2532 },
+  "/projects/lifeos/design-preview-05-health-score.png": { width: 1170, height: 2532 },
+  "/projects/lifeos/design-preview-06-habits.png": { width: 1170, height: 2532 },
   "/projects/choreia/preview-native-20261016.png": { width: 1206, height: 2622 },
   "/projects/gravita/preview-native-20261016.png": { width: 1206, height: 2622 },
   "/projects/jablab/preview-native-20261016.png": { width: 1206, height: 2622 },
