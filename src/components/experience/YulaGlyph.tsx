@@ -1,6 +1,5 @@
 "use client";
 
-import { MeshTransmissionMaterial } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -21,6 +20,7 @@ import {
 } from "three";
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
 import { composeGlyphRotation } from "./instruments";
+import { RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
 import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
@@ -247,8 +247,6 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // the existing medium/high material.
   const fallbackOpacity = bodyOpacity * (tier === "low" ? 1 - frame.glyph.glassMix * 0.7 : 1);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
-  const transmission =
-    tier === "high" ? 0.96 * frame.glyph.glassMix : tier === "medium" ? 0.94 * frame.glyph.glassMix : 0;
   const fringeOpacity =
     frame.glyph.glassMix * (tier === "low" ? 0.006 : 0.004) * closingVisibility;
   const outlineOpacity = (0.025 + Math.max(whiteMix, frame.world.whiteMix) * 0.625) * closingVisibility;
@@ -376,36 +374,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       </mesh>
 
       {tier !== "low" ? (
-        <mesh castShadow geometry={geometry} receiveShadow>
-          <MeshTransmissionMaterial
-            anisotropicBlur={tier === "high" ? 0.006 : 0.02}
-            attenuationColor="#ffffff"
-            bumpMap={chromeBump}
-            bumpScale={0.012}
-            attenuationDistance={8}
-            backsideResolution={1}
-            chromaticAberration={tier === "high" ? 0.5 : 0.32}
-            clearcoat={1}
-            clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
-            color={bodyColor}
-            depthWrite={bodyOpacity > 0.55}
-            distortion={0.05}
-            distortionScale={0.34}
-            envMapIntensity={tier === "high" ? 1.8 : 1.5}
-            ior={1.35}
-            metalness={0.04}
-            opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.03 : 0.06}
-            samples={tier === "high" ? 3 : 2}
-            temporalDistortion={0}
-            thickness={tier === "high" ? 0.55 : 0.45}
-            transmission={transmission}
-            transmissionSampler
-            resolution={1}
-            transparent
-            visible={glassVisible}
-          />
-        </mesh>
+        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
       ) : null}
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
