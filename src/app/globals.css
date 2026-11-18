@@ -1161,3 +1161,22 @@ html.dark .home-closing-ground {
 
 /* W1D I1-a: altbilgi YULA wordmark'i saf beyaz (koyu tema). */
 :root:not([data-theme="light"]) .footer-wordmark { color: #ffffff; }
+
+/* W1D K7: 3D akista ana sayfanin son karesi kapanis (dev logo + wordmark) + gercek altbilgi.
+   Yedi sahne blogu DOM'da ve ekran okuyucuya acik kalir, goruntude yer kaplamaz; altbilgi
+   kapanis sahnesinin ustune oturur. Dogrusal (statik) akis degismez. */
+body:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) [data-home-scenes="true"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+body:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) [data-site-footer="true"] {
+  display: block;
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  background: transparent;
+}

@@ -3064,3 +3064,8 @@
 @media (max-width: 767px) {
   .manifestoStage:not(.visionStage) h2 { font-size: 18px; max-width: 28ch; }
 }
+
+/* W1D K7: 3D akista kapanis = dev logo + wordmark; CTA ve baglantilar gercek altbilgide. */
+:global(body:not(:has([data-experience-static="true"]))) .closingContent {
+  display: none;
+}
