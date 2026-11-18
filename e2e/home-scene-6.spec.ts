@@ -193,7 +193,7 @@ test.describe("scene 6 in /ar (RTL page, translated block)", () => {
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene6-row]")).toHaveCount(4);
     // Status words inside the Arabic block are Arabic (no mixed-script text).
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('#scene-6-trust [lang="en"]')).toHaveCount(0);
     await expect(scene.locator('[data-scene6-stage="lifeos"]')).toHaveText("LifeOS · متاح");
     await expect(scene.locator('[data-scene6-stage="lissom"]')).toHaveText("Lissom · قريبًا");
     await expect(scene.locator('[data-scene6-line="protection.braavolabs"] a')).toHaveAttribute("href", "/ar/privacy/braavolabs");

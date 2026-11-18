@@ -96,7 +96,7 @@ test.describe("translated scene block", () => {
     await page.goto("/ar");
     const block = page.locator("[data-home-scenes]");
     await expect(block).not.toHaveAttribute("lang", "en");
-    await expect(block.locator('[lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(block).not.toHaveAttribute("dir", "ltr");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     await expect(page.locator("#scene-1-identity h2")).toHaveText(/[؀-ۿ]/);
     await expect(page.locator("#scene-1-identity h2")).toHaveText("نبني تقنية تجعل الحياة أكثر إمكانًا لا أكثر تعقيدًا.");
@@ -111,7 +111,7 @@ test.describe("translated scene block (ltr locale)", () => {
     await page.goto("/de");
     const block = page.locator("[data-home-scenes]");
     await expect(block).not.toHaveAttribute("lang", "en");
-    await expect(block.locator('[lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(block.locator('#scene-1-identity [lang="en"]')).toHaveCount(0);
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
     await expect(page.locator("html")).toHaveAttribute("lang", "de");
   });

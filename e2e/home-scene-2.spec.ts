@@ -97,7 +97,7 @@ test.describe("scene 2 in /ar (RTL page, translated block)", () => {
     const scene = page.locator("#scene-2-difference");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene2-pair]")).toHaveCount(3);
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('#scene-2-difference [lang="en"]')).toHaveCount(0);
     await expect(scene.locator("[data-scene2-badge]").first()).toHaveText("قدرة حالية");
     // The status word inside the Arabic sentence is Arabic too (no mixed-script text).
     await expect(scene.locator("[data-scene2-source]")).toHaveText("المصدر: سجل منتج LifeOS (متاح)");

@@ -38,7 +38,7 @@ export function LifeosDemoArea() {
       <p className="max-w-[60ch] rounded-xl border border-[color:var(--yula-hairline-strong)] px-4 py-3 mb-8 text-[15.5px] leading-[1.6] text-ink-50">
         {text.note}
       </p>
-      <LifeosDecisionDemo text={text} lang={locale === "tr" ? "tr" : "en"} />
+      <LifeosDecisionDemo text={text} lang={locale === "tr" ? "tr" : "en"} locale={locale} />
     </section>
   );
 }

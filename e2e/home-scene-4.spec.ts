@@ -160,7 +160,11 @@ test.describe("scene 4 in /ar (RTL page, translated block)", () => {
     const scene = page.locator(SCENE);
     await scene.scrollIntoViewIfNeeded();
     await expect(page.locator("[data-home-scenes]")).not.toHaveAttribute("lang", "en");
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('[data-home-scenes] > [lang="en"]')).toHaveCount(0);
+    // The record sentence is tr/en data: marked lang=en dir=ltr inside the rtl page; the surrounding label is not.
+    await expect(scene.locator('[data-scene4-principle] p[lang="en"][dir="ltr"]')).toHaveCount(await scene.locator('[data-scene4-badge="capability"]').count());
+    await expect(scene.locator("[data-scene4-source]").nth(0).locator('span[lang="en"][dir="ltr"]')).toHaveText("Offline-first");
+    await expect(scene.locator("[data-scene4-source]").nth(0)).not.toHaveAttribute("lang", /.+/);
     await expect(scene.locator("[data-scene4-principle]")).toHaveCount(4);
     await expect(scene.locator('[data-scene4-badge="capability"]').first()).toHaveText("قدرة حالية");
     await expect(scene.locator("[data-scene4-source]").nth(0)).toHaveText(

@@ -234,7 +234,7 @@ test.describe("scene 7 in /ar (RTL page, translated block)", () => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     await expect(page.locator("[data-home-scenes]")).not.toHaveAttribute("lang", "en");
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('#scene-7-start [lang="en"]')).toHaveCount(0);
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-home-door]")).toHaveCount(4);

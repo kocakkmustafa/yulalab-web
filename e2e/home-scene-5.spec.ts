@@ -173,10 +173,11 @@ test.describe("scene 5 in /ar (RTL page, translated block)", () => {
     await expect(scene.locator('[data-scene5-entry="site-motion"]')).toContainText("Gave the showcase some life");
     // The note title is a record written in English; it keeps its own lang mark inside the Arabic block.
     await expect(scene.locator('[data-scene5-note-link="site-motion"]')).toHaveAttribute("lang", "en");
+    await expect(scene.locator('[data-scene5-note-link="site-motion"]')).toHaveAttribute("dir", "ltr");
     await expect(scene.locator('[data-scene5-entry="site-motion"] dt').first()).toHaveText("السؤال");
     const block = await page.locator("[data-home-scenes]").evaluate((el) => (el as HTMLElement).innerText);
     expect(block).toMatch(/[؀-ۿ]/);
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('[data-home-scenes] > [lang="en"]')).toHaveCount(0);
     const href = (await scene.locator('[data-scene5-note-link="site-motion"]').getAttribute("href")) ?? "";
     expect(href).toBe("/ar/notes#site-motion");
     expect((await page.request.get(href.split("#")[0])).status()).toBe(200);

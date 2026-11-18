@@ -5,6 +5,7 @@ import LifeosDecisionDemo, { cleanName } from "@/components/projects/LifeosDecis
 import type { LifeosDemoText } from "@/components/projects/LifeosDemoArea";
 import en from "../messages/en.json";
 import tr from "../messages/tr.json";
+import de from "../messages/de.json";
 
 const text = en.lifeosDemo as unknown as LifeosDemoText;
 const trText = tr.lifeosDemo as unknown as LifeosDemoText;
@@ -19,6 +20,20 @@ afterEach(() => {
 });
 
 describe("LifeosDecisionDemo (WEB-P1-01)", () => {
+  it("formats the reminder date in the translated page locale, not the tr/en selector", () => {
+    render(
+      <LifeosDecisionDemo
+        text={de.lifeosDemo as unknown as LifeosDemoText}
+        lang="en"
+        locale="de"
+        now={fixed}
+        timeZone="Europe/Istanbul"
+      />,
+    );
+    expect(screen.getByTestId("lifeos-preview").textContent).toContain("16. November 2026");
+    expect(screen.getByTestId("lifeos-preview").textContent).not.toContain("November 16, 2026");
+  });
+
   it("shows the synthetic label and a preview before anything is chosen", () => {
     view();
     expect(screen.getByTestId("lifeos-demo-badge").textContent).toBe("Synthetic example");

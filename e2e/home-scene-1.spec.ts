@@ -123,7 +123,7 @@ test.describe("scene 1 in /ar (RTL page, translated block)", () => {
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const scene = page.locator("#scene-1-identity");
     await scene.scrollIntoViewIfNeeded();
-    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(page.locator('#scene-1-identity [lang="en"]')).toHaveCount(0);
     await expect(scene.locator('[data-scene1-cta="products"]')).toHaveText("استكشف المنتجات");
     await expect(scene.locator('[data-scene1-cta="how"]')).toHaveText("اطّلع على طريقة عملنا");
     await expect(scene.locator("[data-scene1-signal]")).toHaveCount(3);

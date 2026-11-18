@@ -27,12 +27,14 @@ const OPTION =
 type Props = {
   text: LifeosDemoText;
   lang: "tr" | "en";
+  /** Page locale; formats the reminder date. Defaults to `lang`. */
+  locale?: string;
   /** Test seams: fixed clock and zone. Defaults read the visitor's own. */
   now?: () => Date;
   timeZone?: string;
 };
 
-export default function LifeosDecisionDemo({ text, lang, now = () => new Date(), timeZone }: Props) {
+export default function LifeosDecisionDemo({ text, lang, locale, now = () => new Date(), timeZone }: Props) {
   const [card, setCard] = useState<(typeof CARD_KEYS)[number]>("card1");
   const [custom, setCustom] = useState("");
   const [offset, setOffset] = useState<ReminderOffset>("day");
@@ -57,7 +59,7 @@ export default function LifeosDecisionDemo({ text, lang, now = () => new Date(),
   }, [done]);
 
   const title = cleanName(custom) || text[card];
-  const whenOf = (o: ReminderOffset, base: Date) => formatReminder(planReminder(base, o, zone.current), lang, zone.current);
+  const whenOf = (o: ReminderOffset, base: Date) => formatReminder(planReminder(base, o, zone.current), locale ?? lang, zone.current);
 
   const set = () => {
     const when = whenOf(offset, now());

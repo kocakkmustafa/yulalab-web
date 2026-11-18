@@ -1,4 +1,5 @@
 import type { getTranslations } from "next-intl/server";
+import { recordLangAttrs } from "./record-lang";
 import { localePath } from "@/i18n/locales";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
@@ -40,7 +41,7 @@ export function Scene3Products({
               className="flex min-w-0 flex-col rounded-2xl border border-ink-50/15 p-4 md:p-6"
             >
               <h3 className="font-display text-xl font-semibold">{project.name}</h3>
-              <p className="mt-3 text-base text-ink-100">
+              <p className="mt-3 text-base text-ink-100" {...recordLangAttrs(lang, locale)}>
                 {localized(project.tagline, lang)}
               </p>
               <div
