@@ -24,7 +24,9 @@ async function blockWebGL(page: Page) {
   });
 }
 
-test.describe("mobile static default", () => {
+// W1D K8: phones open the 3D journey by default (MOBILE_STATIC_DEFAULT = false), so the
+// opt-in button flow below no longer exists; kept for history until the flag is removed.
+test.describe.skip("mobile static default", () => {
   test.use({ viewport: PHONE });
 
   test("server HTML carries the flag so first paint is the linear document", async ({ request, page }) => {

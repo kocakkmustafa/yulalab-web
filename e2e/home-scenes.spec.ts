@@ -29,7 +29,9 @@ async function sceneHeadings(page: Page) {
 
 for (const view of VIEWS) {
   test.describe(`home scenes (${view.name})`, () => {
-    test.use({ viewport: view.viewport, locale: view.locale });
+    // W1D K7: in the 3D journey the seven scene blocks stay in the DOM but take no
+    // visible space; the linear (reduced-motion) flow keeps them on screen.
+    test.use({ viewport: view.viewport, locale: view.locale, reducedMotion: "reduce" });
 
     test("seven anchors are visible and reachable by keyboard", async ({ page }) => {
       await page.goto(view.path);

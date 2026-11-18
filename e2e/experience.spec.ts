@@ -219,7 +219,8 @@ test("hero keeps one semantic product-lab H1", async ({ page }) => {
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("body")).toContainText(/product lab|ürün laboratuvarı/i);
   await expect(page.locator('[data-site-header="true"]')).toBeHidden();
-  await expect(page.locator('[data-site-footer="true"]')).toBeHidden();
+  // W1D K7: the footer is the end of the 3D page; it is not on screen at the hero.
+  await expect(page.locator('[data-site-footer="true"]')).not.toBeInViewport();
 });
 
 test("hero status panel leaves the centered glass-Y zone clear", async ({ page }) => {
@@ -540,7 +541,9 @@ test("closing provides trust and legal navigation", async ({ page }) => {
   await expect(page.locator('a[href^="mailto:"]').first()).toBeAttached();
 });
 
-test("tablet closing remains inside the viewport and below the wordmark", async ({ page }) => {
+// W1D K7: in the 3D flow the closing pitch moved to the real footer; the closing stage keeps only the
+// giant glyph and wordmark, so the pitch-geometry checks below no longer apply.
+test.skip("tablet closing remains inside the viewport and below the wordmark", async ({ page }) => {
   for (const viewport of [
     { width: 768, height: 1024 },
     { width: 900, height: 1024 },
@@ -569,7 +572,9 @@ test("tablet closing remains inside the viewport and below the wordmark", async 
   }
 });
 
-test("short desktop closing keeps the wordmark above the pitch", async ({ page }) => {
+// W1D K7: in the 3D flow the closing pitch moved to the real footer; the closing stage keeps only the
+// giant glyph and wordmark, so the pitch-geometry checks below no longer apply.
+test.skip("short desktop closing keeps the wordmark above the pitch", async ({ page }) => {
   for (const viewport of [
     { width: 1280, height: 720 },
     { width: 1366, height: 768 },
