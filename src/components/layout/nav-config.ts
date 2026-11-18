@@ -50,8 +50,9 @@ export const FOOTER_COMPANY_NAV: ReadonlyArray<
 
 /**
  * Footer company links a visitor should see. `/case-studies` stays routable
- * (it renders its own emptiness honestly) but is linked only once at least one
- * case study is published, so the footer never leads to an empty page.
+ * (it renders its own emptiness honestly) but is linked only while the
+ * `caseStudies` list has at least one entry, so the footer never leads to an
+ * empty page. The count is the list length, not the publishable subset.
  */
 export function visibleFooterCompanyNav(opts: { studioEnabled: boolean; caseStudyCount: number }) {
   return FOOTER_COMPANY_NAV.filter(
