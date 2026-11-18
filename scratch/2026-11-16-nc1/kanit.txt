@@ -1,0 +1,42 @@
+[cjs-varlik] bozulan kontrol satiri 330: require(f"netlify/functions/{name}.cjs" in members, "scheduled zip ent
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=8)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[zip-uye-yineleme] bozulan kontrol satiri 327: require(len(members) == len(set(members)), "duplicate scheduled zip me
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=2)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[guvensiz-uye] bozulan kontrol satiri 328: require(all(safe_archive_name(member) for member in members), "unsafe 
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=8)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[crc-testzip] bozulan kontrol satiri 329: require(archive.testzip() is None, "scheduled zip CRC mismatch")
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=2)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[bos-zip] bozulan kontrol satiri 313: require(zip_paths[name].stat().st_size > 0, "empty server function zip
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (errors=2)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[schedule] bozulan kontrol satiri 318: require(entry.get("schedule") == schedule, "scheduled function schedul
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=4)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[runtime] bozulan kontrol satiri 319: require(entry.get("runtime") == "js", "scheduled function runtime mism
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=4)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[generator-yok] bozulan kontrol satiri 320: require("generator" not in entry, "scheduled function must not carry a
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=2)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[runtimeVersion] bozulan kontrol satiri 321: require(entry.get("runtimeVersion") == "nodejs24.x", "scheduled functi
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=4)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[mainFile] bozulan kontrol satiri 322: require(isinstance(entry.get("mainFile"), str) and
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=4)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[kaynak-ts] bozulan kontrol satiri 324: regular_file(root, f"netlify/functions/{name}.ts")
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=2)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[handler-path] bozulan kontrol satiri 314: require(by_name[name]["path"] == str(zip_paths[name]), "server functio
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=1)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[handler-runtime] bozulan kontrol satiri 309: require(handler.get("runtimeVersion") == "nodejs24.x", "server functio
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=1)
+  YESIL (git checkout sonrasi) -> exit=0 OK
+[handler-generator] bozulan kontrol satiri 308: require(handler["generator"] == GENERATOR, "server function generator 
+  KIRMIZI (kontrol devre disi) -> exit=1 FAILED (failures=1)
+  YESIL (git checkout sonrasi) -> exit=0 OK
