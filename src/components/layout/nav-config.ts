@@ -32,9 +32,10 @@ export type FooterCompanyKey =
 /** `header` entries reuse a `header.*` label (e.g. `header.doors`) instead of a `footer.*` one. */
 export const FOOTER_COMPANY_NAV: ReadonlyArray<
   | { key: FooterCompanyKey; href: string; studioOnly?: boolean; ns?: undefined }
-  | { key: "doors"; href: string; studioOnly?: boolean; ns: "header" }
+  | { key: "doors" | "lab"; href: string; studioOnly?: boolean; ns: "header" }
 > = [
   { key: "doors", href: "/start", ns: "header" },
+  { key: "lab", href: "/lab", ns: "header" },
   { key: "navConsulting", href: "/consulting" },
   { key: "navManifesto", href: "/manifesto" },
   { key: "navTransparency", href: "/transparency" },

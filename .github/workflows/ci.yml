@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != 'b214bb63c22738974adc70db9870d610e23121e2':
+        if actual != '966f5d912cd149c898861eafbd4c7fdd95f43653':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
@@ -562,8 +562,8 @@ jobs:
       run: pnpm build
     - name: Install Chromium
       run: pnpm exec playwright install --with-deps chromium
-    - name: Open-mode e2e (consulting + contact + ostinato demo + lifeos demo + braavolabs demo; no retries, so flakiness stays visible)
-      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts e2e/lifeos-decision-demo.spec.ts e2e/lab-demos.spec.ts e2e/lab-braavolabs-demo.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Open-mode e2e (consulting + contact + ostinato demo + lifeos demo + braavolabs demo + lab a11y; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts e2e/lifeos-decision-demo.spec.ts e2e/lab-demos.spec.ts e2e/lab-braavolabs-demo.spec.ts e2e/lab-a11y.spec.ts--workers=1 --retries=0 --reporter=list --trace=retain-on-failure
     - name: Job özeti
       if: ${{ always() }}
       run: |
