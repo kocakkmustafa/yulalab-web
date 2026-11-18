@@ -45,6 +45,8 @@ type YulaExperienceProps = {
 
 type WebGLState = "checking" | "available" | "unavailable";
 
+const MOBILE_SCENE_QUERY = "(max-width: 767px)";
+const PHONE_SCENE_DELAY_MS = 2_500;
 const LOADER_DRAW_DURATION_MS = 3_600;
 const LOADER_EXIT_DURATION_MS = 900;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
@@ -271,7 +273,21 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       setSceneRequested(true);
       return;
     }
-    return scheduleAfterLoad(() => setSceneRequested(true));
+    // Phones fetch and compile three.js only after the first content has been painted and the page has
+    // settled (founder K8: 3D stays on by default on phones; the loader card covers the wait).
+    let timer: number | null = null;
+    const cancel = scheduleAfterLoad(() => {
+      const phone = window.matchMedia(MOBILE_SCENE_QUERY).matches;
+      if (!phone) {
+        setSceneRequested(true);
+        return;
+      }
+      timer = window.setTimeout(() => setSceneRequested(true), PHONE_SCENE_DELAY_MS);
+    });
+    return () => {
+      cancel();
+      if (timer !== null) window.clearTimeout(timer);
+    };
   }, [capture.enabled, loaderVisible, mobileStatic, mounted, sceneRequested, webgl]);
 
   useEffect(() => {
