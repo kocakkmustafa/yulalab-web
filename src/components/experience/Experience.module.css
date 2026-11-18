@@ -3066,6 +3066,6 @@
 }
 
 /* W1D K7: 3D akista kapanis = dev logo + wordmark; CTA ve baglantilar gercek altbilgide. */
-:global(body:not(:has([data-experience-static="true"]))) .closingContent {
+:global(body:has([data-yula-experience="true"][data-experience-ready="true"]):not(:has([data-experience-static="true"]))) .closingContent {
   display: none;
 }

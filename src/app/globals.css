@@ -1165,7 +1165,7 @@ html.dark .home-closing-ground {
 /* W1D K7: 3D akista ana sayfanin son karesi kapanis (dev logo + wordmark) + gercek altbilgi.
    Yedi sahne blogu DOM'da ve ekran okuyucuya acik kalir, goruntude yer kaplamaz; altbilgi
    kapanis sahnesinin ustune oturur. Dogrusal (statik) akis degismez. */
-body:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) [data-home-scenes="true"] {
+body:has([data-yula-experience="true"][data-experience-ready="true"]):not(:has([data-experience-static="true"])) [data-home-scenes="true"] {
   position: absolute;
   width: 1px;
   height: 1px;
@@ -1173,7 +1173,7 @@ body:has([data-yula-experience="true"]):not(:has([data-experience-static="true"]
   clip-path: inset(50%);
   white-space: nowrap;
 }
-body:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) [data-site-footer="true"] {
+body:has([data-yula-experience="true"][data-experience-ready="true"]):not(:has([data-experience-static="true"])) [data-site-footer="true"] {
   display: block;
   position: relative;
   z-index: 2;
