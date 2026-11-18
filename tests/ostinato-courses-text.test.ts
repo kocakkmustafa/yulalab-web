@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { contentMayEqualEn } from "./helpers/same-as-en";
 import { ostinato } from "@/data/projects/ostinato";
 
 const LOCALES = ["ar", "de", "es-419", "fr", "hi", "id", "it", "ja", "ko", "pl", "pt-BR", "zh-Hans"];
@@ -50,7 +51,13 @@ describe("Ostinato Kurslar maddesi", () => {
     const json = JSON.parse(raw) as Record<string, string>;
     expect(OLD_KEY in json).toBe(false);
     expect(raw).not.toContain("beginner foundations in piano");
-    expect(json[courses.en]).toBe(courses.en);
+    expect(courses.en in json).toBe(true);
+    const value = json[courses.en];
+    expect(value.trim()).not.toBe("");
+    if (!contentMayEqualEn(locale, courses.en)) expect(value).not.toBe(courses.en);
+    expect(value).toContain("235");
+    expect(value).toContain("48");
+    expect(value).not.toMatch(/\b(690|676|240)\b/);
     expect(raw.split(JSON.stringify(courses.en) + ":").length - 1).toBe(1);
   });
 });

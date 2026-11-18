@@ -22,8 +22,8 @@
     "approach": "我们的方法",
     "collaboration": "合作",
     "mainNavigation": "主导航",
-    "doors": "Doors",
-    "doorsPanel": "Starting doors"
+    "doors": "入口",
+    "doorsPanel": "起点入口"
   },
   "footer": {
     "tagline": "一家独立的产品实验室，在合适的时间和场景使用 AI，不夸大它的作用。",
@@ -46,7 +46,7 @@
     "navOperatingSystem": "工作方式",
     "navStudio": "工作室",
     "navConsulting": "AI 咨询",
-    "navWhyYula": "Why YULA"
+    "navWhyYula": "为什么是 YULA"
   },
   "common": {
     "explore": "探索",
@@ -172,22 +172,22 @@
     "researchHeading": "研究阶段",
     "researchNote": "尚未发布：没有商店页面、下载链接或经过验证的数字。我们将它们单独列在下方，避免与已发布产品并列而夸大其现状。",
     "researchToggle": "显示研究阶段产品（{count}）",
-    "featuredHeading": "Featured products",
-    "portfolioHeading": "Portfolio",
-    "filterLabel": "Filter by status",
-    "filterAll": "All",
-    "showing": "Showing {count} products",
-    "summary": "{live} live · {beta} beta · {soon} coming soon",
-    "noMatch": "No product matches this filter.",
-    "panelHeading": "Selected product",
-    "panelHint": "Select a product to see its details here.",
-    "accessHeading": "Access",
-    "openFull": "Open the full page",
-    "closePanel": "Close panel",
-    "preview": "Preview",
-    "previewLabel": "Preview: {name}",
-    "panelStatusLink": "Status and sources",
-    "panelScreenEmpty": "There is no screenshot for this product yet."
+    "featuredHeading": "精选产品",
+    "portfolioHeading": "作品组合",
+    "filterLabel": "按状态筛选",
+    "filterAll": "全部",
+    "showing": "显示 {count} 款产品",
+    "summary": "已发布 {live} · 测试版 {beta} · 即将推出 {soon}",
+    "noMatch": "没有符合此筛选条件的产品。",
+    "panelHeading": "所选产品",
+    "panelHint": "选择一款产品，即可在此查看详情。",
+    "accessHeading": "获取方式",
+    "openFull": "打开完整页面",
+    "closePanel": "关闭面板",
+    "preview": "预览",
+    "previewLabel": "预览：{name}",
+    "panelStatusLink": "状态与来源",
+    "panelScreenEmpty": "这款产品暂无截图。"
   },
   "showcase": {
     "back": "项目",
@@ -278,19 +278,19 @@
     "studioLink": "申请工作室合作",
     "studioTitle": "想咨询一项具体工作？",
     "intakeLanguageNotice": "此语言暂不提供在线表单。您可以写信至下方邮箱；界面语言不代表对回复语言或送达时间的承诺。",
-    "pathsTitle": "Who is this for?",
-    "pathsUserLabel": "Product user",
-    "pathsUserBody": "Product support and account questions go to the support address.",
-    "pathsUserLink": "Support",
-    "pathsCorpLabel": "Business",
-    "pathsCorpBody": "AI work for your company. Business address:",
-    "pathsCorpLink": "Discuss your project",
-    "pathsPartnerLabel": "Partners and investors",
-    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
-    "pathsDevLabel": "Developers and researchers",
-    "pathsDevBody": "Working notes and open records.",
-    "pathsDevLab": "Lab",
-    "pathsDevTransparency": "Transparency"
+    "pathsTitle": "您是哪一类访客？",
+    "pathsUserLabel": "产品用户",
+    "pathsUserBody": "产品支持和账户问题，请发送至支持邮箱。",
+    "pathsUserLink": "支持",
+    "pathsCorpLabel": "企业",
+    "pathsCorpBody": "为贵公司提供 AI 服务。商务邮箱：",
+    "pathsCorpLink": "洽谈您的项目",
+    "pathsPartnerLabel": "合作伙伴与投资人",
+    "pathsPartnerBody": "合作与投资洽谈，欢迎写信给我们。",
+    "pathsDevLabel": "开发者与研究者",
+    "pathsDevBody": "工作笔记与公开记录。",
+    "pathsDevLab": "实验室",
+    "pathsDevTransparency": "透明度"
   },
   "notFound": {
     "title": "未找到页面。",
@@ -300,12 +300,12 @@
     "eyebrow": "开发笔记",
     "title": "记录我们做过的事。",
     "intro": "这里同样遵循透明原则：用简短、坦诚的笔记，记录产品的变化、修复和新进展。",
-    "articleEyebrow": "Article",
-    "readArticle": "Read the article",
-    "sourcesHeading": "Sources",
-    "verifiedOn": "verified {date}",
-    "seeTransparency": "Transparency page",
-    "backToNotes": "All notes"
+    "articleEyebrow": "文章",
+    "readArticle": "阅读文章",
+    "sourcesHeading": "来源",
+    "verifiedOn": "{date} 核实",
+    "seeTransparency": "透明度页面",
+    "backToNotes": "全部笔记"
   },
   "links": {
     "web": "网站",
@@ -520,11 +520,11 @@
       "pitch1Body": "打开麦克风开始演奏；Ostinato 会把每个音标记为正确、不同的音或未能听清。不确定时，它不会猜测。音频在您的设备上处理，不会上传。",
       "pitch2Title": "有章法的练习，而不是盲目重复。",
       "pitch2Body": "跟着节拍器，追随滚动的六线谱。速度可在 40% 到 120% 之间调整，可以循环练习难的小节，也可以让应用等您。每通过一节课时，就会解锁下一节。",
-      "pitch3Title": "Guitar and ear training: 283 lessons, voice and piano coming soon.",
-      "pitch3Body": "The guitar course comes with 235 lessons across four levels and ear training with 48 lessons across two; voice and piano follow in turn. A setup wizard measures your room and latency, the built-in tuner gets your strings ready, and a weekly goal and streak keep you playing.",
+      "pitch3Title": "吉他与听音训练：283 节课程，声乐和钢琴即将推出。",
+      "pitch3Body": "吉他课程分四个级别，共 235 节课；听音训练分两个级别，共 48 节课；声乐和钢琴将陆续推出。设置向导会测量您的房间与延迟，内置调音器帮您调好琴弦，每周目标和连续记录助您坚持练习。",
       "s1Kicker": "01 — 应用内容",
-      "a1Title": "Guitar and ear training come first.",
-      "a1Body": "Guitar runs from your first sound to advanced: 235 lessons across four levels. Ear training has 48 lessons: on-screen drills, clapping with the click and part-by-part tests. Voice and piano are coming soon.",
+      "a1Title": "先推出吉他和听音训练。",
+      "a1Body": "吉他课程从第一个音到进阶水平，分四个级别，共 235 节课。听音训练共 48 节课，包括屏幕练习、跟随节拍器拍手和分段测试。声乐和钢琴即将推出。",
       "a2Title": "每门课程的第 1 级免费。",
       "a2Body": "吉他第 1 级（40 节课时）和练耳第 1 级（25 节课时）免费，无需账户即可使用。后续级别可通过 Ostinato 会员解锁。",
       "s2Kicker": "02 — 访问方式",
@@ -583,69 +583,69 @@
     "statNeedsReverification": "需要重新验证",
     "availabilityUnverified": "发布状态需要重新验证",
     "availabilityCheckedAt": "上次发布核查：{date}。您可以打开链接，查看当前状态。",
-    "accessHeading": "Access",
-    "screenHeading": "Screens and demo",
-    "screenEmpty": "There is no screenshot for this product yet.",
-    "trustHeading": "Privacy and trust",
-    "trustPrivacy": "Privacy policy for this product",
-    "statusHeading": "Release status",
-    "statusLink": "Status and sources",
-    "demoLabel": "Example simulation"
+    "accessHeading": "获取方式",
+    "screenHeading": "界面与演示",
+    "screenEmpty": "这款产品暂无截图。",
+    "trustHeading": "隐私与信任",
+    "trustPrivacy": "本产品的隐私政策",
+    "statusHeading": "发布状态",
+    "statusLink": "状态与来源",
+    "demoLabel": "示例模拟"
   },
   "braavolabsDemo": {
-    "kicker": "Sample plan card",
-    "title": "Describe a job. See its plan, approvals and result in one place.",
-    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
-    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
-    "pickerLabel": "Pick a sample intent",
-    "announce": "Plan card shown",
+    "kicker": "示例计划卡片",
+    "title": "描述一项任务，在同一处查看计划、审批和结果。",
+    "intro": "从三个示例意图中任选一个。卡片展示计划可能的样子。这里的一切都是本页的固定文字，没有任何内容离开您的浏览器。",
+    "disclaimer": "这是一个交互式产品概念/计划示例，不会执行任何真实任务。",
+    "pickerLabel": "选择示例意图",
+    "announce": "已显示计划卡片",
     "labels": {
-      "intent": "Sample intent",
-      "example": "Example card",
-      "note": "Example / concept: no real job is executed.",
-      "steps": "Example steps",
-      "approvals": "Approval points",
-      "risk": "Example risk level",
-      "output": "Expected output"
+      "intent": "示例意图",
+      "example": "示例卡片",
+      "note": "示例/概念：不会执行任何真实任务。",
+      "steps": "示例步骤",
+      "approvals": "审批节点",
+      "risk": "示例风险等级",
+      "output": "预期产出"
     },
     "risk": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+      "low": "低",
+      "medium": "中",
+      "high": "高"
     },
     "intents": {
       "content": {
-        "label": "Content",
-        "prompt": "“Prepare a week of posts for our launch.”",
-        "s1": "Read the brief and list the post ideas.",
-        "s2": "Draft each post in your tone.",
-        "s3": "Collect the drafts for your review.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you read the drafts and decide.",
-        "riskNote": "The output is a draft you review.",
-        "output": "A set of draft posts, ready for your review."
+        "label": "内容",
+        "prompt": "“为我们的发布准备一周的帖子。”",
+        "s1": "阅读简报并列出帖子创意。",
+        "s2": "以您的语气撰写每篇帖子的草稿。",
+        "s3": "汇总草稿供您审阅。",
+        "a1": "涉及花费的步骤会等待您的批准。",
+        "a2": "例如：您阅读草稿并作出决定。",
+        "riskNote": "产出是供您审阅的草稿。",
+        "output": "一组可供审阅的帖子草稿。"
       },
       "report": {
-        "label": "Report",
-        "prompt": "“Summarise last month's support requests.”",
-        "s1": "Gather the material you point to.",
-        "s2": "Group the findings by theme.",
-        "s3": "Write a short summary.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you choose which material is used.",
-        "riskNote": "It reads your own material, so you decide what it may read.",
-        "output": "A short report draft with the points that need a decision."
+        "label": "报告",
+        "prompt": "“汇总上个月的支持请求。”",
+        "s1": "收集您指定的资料。",
+        "s2": "按主题归类发现。",
+        "s3": "撰写简短摘要。",
+        "a1": "涉及花费的步骤会等待您的批准。",
+        "a2": "例如：由您选择使用哪些资料。",
+        "riskNote": "它读取的是您自己的资料，因此由您决定它可以读取什么。",
+        "output": "一份简短的报告草稿，列出需要决策的要点。"
       },
       "software": {
-        "label": "Software",
-        "prompt": "“Fix the sign-in bug in our app.”",
-        "s1": "Read the code and find the likely cause.",
-        "s2": "Propose a change and a test for it.",
-        "s3": "Present the proposed change.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you review each proposed change.",
-        "riskNote": "It touches the code behind your product, so each change waits for you.",
-        "output": "A proposed code change with its test, for you to review."
+        "label": "软件",
+        "prompt": "“修复我们应用的登录错误。”",
+        "s1": "阅读代码，找出可能的原因。",
+        "s2": "提出修改方案及相应的测试。",
+        "s3": "展示提议的修改。",
+        "a1": "涉及花费的步骤会等待您的批准。",
+        "a2": "例如：您逐项审阅每个提议的修改。",
+        "riskNote": "它会触及您产品背后的代码，因此每项修改都会等待您的确认。",
+        "output": "一项附带测试的代码修改提案，供您审阅。"
       }
     }
   },
@@ -752,9 +752,9 @@
       "support": "支持",
       "rights": "保留所有权利。"
     },
-    "open3d": "Open the 3D experience",
-    "open3dOpened": "3D experience opened",
-    "open3dFailed": "Could not open 3D; showing the linear view.",
+    "open3d": "打开 3D 体验",
+    "open3dOpened": "3D 体验已打开",
+    "open3dFailed": "无法打开 3D，已显示线性视图。",
     "fallback": {
       "label": "线性视图",
       "reason": "当动效或 3D 层无法使用时，此视图仍完整保留相同的产品、证据与链接。"
@@ -786,7 +786,7 @@
       "wallService": "服务",
       "reset": "重置"
     },
-    "loaderSkip": "Skip intro"
+    "loaderSkip": "跳过开场"
   },
   "studio": {
     "applyIntro": "我们不要求精确预算或决策者姓名；预算范围和角色就足够。",
@@ -944,333 +944,333 @@
     "limits": "在了解需求之前，我们不承诺收入增长、完美的模型输出或发布日期。生产环境访问与部署需要另行约定。",
     "contactTitle": "告诉我们，您想改进什么。",
     "contactBody": "请先说明工作流程、问题和时间安排。不要发送密码、API 密钥或客户机密数据。邮箱链接会打开您的邮件应用；本页不会提交消息内容。",
-    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
+    "contactBodyForm": "请从您的工作流程、问题和时间安排说起。请勿发送密码、API 密钥或机密客户数据。您可以使用下方表单或邮件链接；邮件链接会打开您的邮件应用。",
     "cta": "讨论您的项目",
     "subject": "AI 咨询请求",
     "terms": "服务档期、价格与范围将在沟通后确认。",
     "nav": "AI 咨询"
   },
   "whyYula": {
-    "eyebrow": "Why YULA",
-    "title": "Why YULA",
-    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
-    "sourcesHeading": "Sources",
-    "s1Title": "Evidence comes before the claim.",
-    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
-    "s2Title": "Portfolio status is read from the registry.",
-    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
-    "s3Title": "The level of evidence is written out.",
-    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
-    "s4Title": "Work you can read.",
-    "s4Body": "The lab's records and notes are reachable directly from here.",
-    "linkLab": "Lab",
-    "linkTransparency": "Transparency"
+    "eyebrow": "为什么是 YULA",
+    "title": "为什么是 YULA",
+    "intro": "实验室如何运作，简短到可以对照记录逐条核实。数字取自登记册，因此不会脱离登记册而单独过时。",
+    "sourcesHeading": "来源",
+    "s1Title": "先有证据，再有说法。",
+    "s1Body": "网站上的每条产品说法都登记在册，附带来源、适用范围和核实日期。已过期的说法不会被隐藏，而是显示出来并标明已过期。",
+    "s2Title": "作品组合的状态读取自登记册。",
+    "s2Body": "登记册中有 {records} 款产品，它们在各生命周期阶段的分布见下方。这些数字是推算得出的，而非手工填写。",
+    "s3Title": "证据的等级会写明。",
+    "s3Body": "登记册中有 {claims} 条说法。自行申报不会被视为等同于已通过源代码核实或已实测；每条说法都标注证据类型。",
+    "s4Title": "可以直接阅读的工作。",
+    "s4Body": "实验室的记录和笔记可从这里直接访问。",
+    "linkLab": "实验室",
+    "linkTransparency": "透明度"
   },
   "home": {
-    "navLabel": "Home page sections",
+    "navLabel": "首页板块",
     "scene1": {
-      "label": "Identity",
-      "title": "We build technology to make life more possible, not more complicated.",
-      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
-      "ctaProducts": "Explore the products",
-      "ctaHow": "See how we work",
-      "ctaLabel": "Main paths",
-      "signalsLabel": "From intent to result: three examples",
-      "signalsNote": "These are example scenarios, not real product output or measurements.",
-      "example": "Example",
-      "intentLabel": "Intent",
-      "resultLabel": "Result",
+      "label": "定位",
+      "title": "我们打造的技术，是让生活更有可能，而不是更复杂。",
+      "message": "Yula Lab 是一家独立的产品与工程实验室，专注于个人生活、数字化工作和音乐学习中的实际成果。",
+      "ctaProducts": "探索产品",
+      "ctaHow": "了解我们的工作方式",
+      "ctaLabel": "主要入口",
+      "signalsLabel": "从意图到结果：三个示例",
+      "signalsNote": "这些是示例场景，并非真实的产品输出或测量结果。",
+      "example": "示例",
+      "intentLabel": "意图",
+      "resultLabel": "结果",
       "signals": {
         "s1": {
           "product": "Braavolabs",
-          "intent": "Describe a task.",
-          "result": "A chat and coding agent takes it on; you see the cost of every run."
+          "intent": "描述一项任务。",
+          "result": "由聊天与编程智能体接手，每次运行的费用一目了然。"
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Keep your health, money and assets in one place.",
-          "result": "Five life areas in one app; records stay on your device, no account needed."
+          "intent": "把健康、财务和资产放在同一处。",
+          "result": "一个应用涵盖五大生活领域；记录保存在您的设备上，无需账户。"
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Start guitar from the first sound.",
-          "result": "Progress step by step with measured practice, and train your ear with drills."
+          "intent": "从第一个音开始学吉他。",
+          "result": "通过可衡量的练习逐步进阶，并用训练锻炼听力。"
         }
       }
     },
     "scene2": {
-      "label": "Difference",
-      "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
-      "listLabel": "Common pattern versus our approach, three comparisons",
-      "patternLabel": "Common pattern",
-      "approachLabel": "Our approach",
-      "tagCapability": "Current capability",
-      "tagVision": "Our vision",
-      "sourceLabel": "Source: {product} product record ({status})",
-      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "label": "差异",
+      "title": "更少阻力，更多成果。",
+      "message": "我们不靠增加界面、登录和模型选项，而是追求从意图到结果的最短路径。",
+      "listLabel": "常见做法与我们的做法，三组对比",
+      "patternLabel": "常见做法",
+      "approachLabel": "我们的做法",
+      "tagCapability": "现有能力",
+      "tagVision": "我们的愿景",
+      "sourceLabel": "来源：{product} 产品记录（{status}）",
+      "note": "“现有能力”是指产品记录中有此陈述；这并非独立核实或测量。“我们的愿景”是我们努力的方向，并非产品今天已经做到的事。",
       "pairs": {
         "p1": {
-          "pattern": "More screens, sign-ins and model choices",
-          "approach": "One app, no account needed",
-          "detail": "LifeOS: five life areas in one place, offline-first."
+          "pattern": "更多界面、登录和模型选项",
+          "approach": "一个应用，无需账户",
+          "detail": "LifeOS：五大生活领域集于一处，离线优先。"
         },
         "p2": {
-          "pattern": "False certainty",
-          "approach": "Say where an answer comes from and how unsure it is",
-          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+          "pattern": "虚假的确定性",
+          "approach": "说明答案来自哪里、有多不确定",
+          "detail": "我们的目标是在每个结果中显示来源和不确定性。目前我们并不把它宣称为产品能力。"
         },
         "p3": {
-          "pattern": "Endless notifications",
-          "approach": "Step in at a meaningful time",
-          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+          "pattern": "无休止的通知",
+          "approach": "在有意义的时刻介入",
+          "detail": "我们的目标是更少、时机更恰当的提示。目前我们并不把它宣称为产品能力。"
         }
       }
     },
     "scene3": {
-      "label": "Products",
-      "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
-      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
-      "demoHeading": "Demo slot",
+      "label": "产品",
+      "title": "我们优先推进的三个系统。",
+      "message": "Braavolabs、LifeOS 和 Ostinato：分别面向工作、生活和音乐，各自专注于一个以人为本的成果。",
+      "listLabel": "三款旗舰产品，各有一个以人为本的成果、演示位、证据状态和产品链接",
+      "demoHeading": "演示位",
       "demo": {
-        "real": "real product test",
-        "example": "example / simulation",
-        "soon": "not here yet"
+        "real": "真实产品体验",
+        "example": "示例/模拟",
+        "soon": "暂未提供"
       },
-      "proofHeading": "Evidence status",
+      "proofHeading": "证据状态",
       "proof": {
-        "verified": "Verified claims (window open): {count}",
-        "lapsed": "Verification window closed on {date}; not shown as verified.",
-        "none": "No verified claim yet."
+        "verified": "已核实的说法（有效期内）：{count}",
+        "lapsed": "核实有效期已于 {date} 结束，不再标示为已核实。",
+        "none": "目前还没有已核实的说法。"
       },
-      "go": "Go to {name}",
-      "allProducts": "All products"
+      "go": "前往 {name}",
+      "allProducts": "全部产品"
     },
     "scene4": {
-      "label": "Engineering",
-      "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
-      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
-      "currentLabel": "Stated in the product record",
-      "plannedLabel": "Planned",
-      "tagCapability": "Current capability",
-      "tagPlanned": "Planned",
-      "tagNone": "No record",
-      "noRecord": "No product record line backs this principle yet.",
-      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
-      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
-      "linksLabel": "Related pages",
-      "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with Yula Lab",
-      "linkTransparency": "Transparency",
+      "label": "工程",
+      "title": "各自独立的产品，共同的工程原则。",
+      "message": "本地优先的数据、按任务授权与留痕、易于理解的界面：产品各自独立，原则彼此共享。",
+      "listLabel": "四项共同的工程原则，各附产品记录目前的陈述和计划内容",
+      "currentLabel": "产品记录中的陈述",
+      "plannedLabel": "计划",
+      "tagCapability": "现有能力",
+      "tagPlanned": "计划中",
+      "tagNone": "无记录",
+      "noRecord": "目前还没有产品记录条目支持这一原则。",
+      "sourceLabel": "来源：{product} 产品记录，“{feature}”；产品状态：{status}",
+      "note": "“现有能力”是指该产品的产品记录中有此陈述；这并非独立核实或测量。产品状态指 iOS；Android 处于封闭测试阶段。“计划”只是方向，并非产品今天已经做到的事。各产品彼此独立：没有共享的模型，也没有共享的数据库。",
+      "linksLabel": "相关页面",
+      "linkOperatingSystem": "本实验室如何运作",
+      "linkStudio": "工作室：与 Yula Lab 一起打造",
+      "linkTransparency": "透明度",
       "principles": {
         "p1": {
-          "name": "Local-first data",
-          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+          "name": "本地优先的数据",
+          "planned": "其他产品在发布时采用同样的原则。目前我们并不把它宣称为这些产品的能力。"
         },
         "p2": {
-          "name": "Permission and proof for spending steps",
-          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+          "name": "涉及花费的步骤的授权与留痕",
+          "planned": "目标是在各产品中采用类似的授权与留痕方式。目前没有为此设立的共享组件或系统。"
         },
         "p3": {
-          "name": "On-device processing",
-          "planned": "Open new signals only after they are tested on real devices."
+          "name": "设备端处理",
+          "planned": "新的信号只有在真实设备上测试之后才会开放。"
         },
         "p4": {
-          "name": "An understandable interface",
-          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+          "name": "易于理解的界面",
+          "planned": "清楚说明一个界面能做什么、不能做什么。目前还没有产品记录陈述这一点；这只是一个方向。"
         }
       }
     },
     "scene5": {
-      "label": "Lab",
-      "title": "A living lab.",
-      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
-      "listLabel": "Lab records: notes and a design decision",
-      "kindNote": "Lab note",
-      "kindDecision": "Design decision",
+      "label": "实验室",
+      "title": "一座活的实验室。",
+      "message": "我们记录笔记和设计决策；每条记录都展示可填写的模板字段，空着的字段会如实说明。",
+      "listLabel": "实验室记录：笔记与一项设计决策",
+      "kindNote": "实验室笔记",
+      "kindDecision": "设计决策",
       "fields": {
-        "question": "Question",
-        "hypothesis": "Hypothesis",
-        "did": "What we did",
-        "learned": "What we learned",
-        "next": "Next test"
+        "question": "问题",
+        "hypothesis": "假设",
+        "did": "我们做了什么",
+        "learned": "我们学到了什么",
+        "next": "下一步测试"
       },
-      "empty": "not written yet",
-      "sourceLabel": "Source",
-      "noteId": "note: {slug}",
-      "onlyTr": "No translation ({part}): written in Turkish only.",
-      "onlyEn": "No translation ({part}): written in English only.",
-      "allNotes": "All lab notes",
-      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "empty": "尚未撰写",
+      "sourceLabel": "来源",
+      "noteId": "笔记：{slug}",
+      "onlyTr": "暂无翻译（{part}）：仅有土耳其语版本。",
+      "onlyEn": "暂无翻译（{part}）：仅有英语版本。",
+      "allNotes": "全部实验室笔记",
+      "note": "本板块只显示仓库中已写成的笔记和文档。字段为空，表示尚未撰写；我们不会为了填满而编造任何内容。属于提案的文档会标明是提案。",
       "decision": {
-        "title": "Should the 3D scene stay on by default on the home page?",
-        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
-        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
-        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
-        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
-        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
-        "sourceNote": "a document in the repository, no separate page on the site",
-        "sourceLang": "The source document is written in Turkish."
+        "title": "首页的 3D 场景是否应默认开启？",
+        "question": "首页的 3D 之旅是否应对所有人默认开启，还是让移动端以静态画面开始？",
+        "did": "我们写下了三个方案：保持现有的受保护设置、移动端默认静态，或仅桌面端默认 3D。我们还在本地生产构建上运行了一次 Lighthouse；表格见源文档。",
+        "learned": "据该文档，在 03a2 之前，本地移动端结果低于线上数值，书面验收标准未达成。03a2 之后，本地移动端结果波动较大（机器当时较忙）；对桌面端的影响未知。没有在线上环境或真实设备上做过任何尝试。",
+        "next": "文档建议的下一步：在空闲的机器上再运行一次。文档还建议另行开展一项工作，查明移动端加载时间的来源。",
+        "status": "状态：已采纳，2026-11-08，项目编排；实施 WEB-P0-03a2。",
+        "sourceNote": "仓库中的一份文档，网站上没有单独页面",
+        "sourceLang": "源文档以土耳其语撰写。"
       },
-      "partTitle": "title",
-      "partBody": "text"
+      "partTitle": "标题",
+      "partBody": "正文"
     },
     "scene6": {
-      "label": "Trust",
-      "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
-      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
-      "sourceLabel": "Source",
-      "srcRecord": "product record",
-      "srcRecords": "product records",
-      "srcPrivacy": "{product} privacy policy",
-      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "label": "信任",
+      "title": "信任按产品逐一呈现。",
+      "message": "数据保护、控制与审批、可衡量的结果以及透明的产品阶段，我们按产品和功能逐项说明，并附上证据状态。",
+      "listLabel": "信任，四项：数据保护、控制与审批、可衡量的结果、透明的产品阶段",
+      "sourceLabel": "来源",
+      "srcRecord": "产品记录",
+      "srcRecords": "产品记录",
+      "srcPrivacy": "{product} 隐私政策",
+      "note": "本板块按产品逐一复述产品记录和隐私政策中的内容。它不是审计、认证或测量。记录没有提及的地方，我们会直说，而不是去填补空白。",
       "rows": {
         "protection": {
-          "title": "Data protection",
-          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "title": "数据保护",
+          "lead": "数据流向取决于产品和功能，因此每一行只针对一款产品。",
           "lines": {
-            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
-            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
-            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+            "lifeos": "记录保存在您的设备上，无需账户；部分功能需要 App Store 订阅。您授权的健康数据从 Apple Health 或 Health Connect 读取并在设备上处理，不会发送到服务器。账户、购买和崩溃报告数据走其他途径，隐私政策中有列明。",
+            "braavolabs": "在 Braavolabs 移动应用中，数据在服务器上处理：账户信息、工作流、运行结果和审批决定保存在您的工作区中，AI 请求会发送给隐私政策中点名的模型提供商。产品记录还描述了在您电脑上运行的智能体；本隐私政策仅涵盖移动应用，因此这里没有描述这些智能体的数据流。",
+            "ostinato": "即将推出。首个版本中，吉他课程里的麦克风是可选的。根据隐私页面，音频只在设备内存中处理，不会录制原始音频文件，也不会上传到服务器。",
+            "others": "尚未发布，其记录中没有描述数据流，因此这里也不作描述。Motion 隐私页面涵盖整个产品系列。"
           }
         },
         "control": {
-          "title": "Control and approval",
-          "lead": "What the records say about who decides.",
+          "title": "控制与审批",
+          "lead": "记录中关于由谁来决定的陈述。",
           "lines": {
-            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+            "braavolabs": "涉及花费的步骤会等待人工的明确批准，每一步都会显示在审计轨迹中。角色、权限和硬性预算上限。",
+            "lifeos": "仅在您授权时才读取健康数据。在线 AI 是可选的：当应用提供该功能且您选择使用时，您批准的屏幕显示文本会按隐私政策所述发送进行处理。"
           }
         },
         "result": {
-          "title": "Measurable result",
-          "body": "No outcome measurements are published yet.",
-          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+          "title": "可衡量的结果",
+          "body": "目前尚未公布任何成效测量。",
+          "detail": "产品记录里只有功能数量和说明，没有成效；其背后的部分公开登记册说法也已过期。因此本页不显示任何数字。"
         },
         "stage": {
-          "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record.",
-          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+          "title": "透明的产品阶段",
+          "lead": "每款产品的阶段读取自其产品记录。",
+          "note": "LifeOS：“已发布”适用于 iOS；据产品记录中的一条备注，Android 处于封闭测试阶段。其他产品的商店覆盖范围，请见各自的产品页面。"
         }
       }
     },
     "scene7": {
-      "label": "Start",
-      "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business.",
-      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "label": "开始",
+      "title": "让我们一起迈出下一步。",
+      "message": "探索我们的产品，或聊聊如何在您的业务上携手合作。",
+      "groupsLabel": "三种开始方式：个人、企业、工程师",
       "paths": {
         "individual": {
-          "title": "For individuals",
+          "title": "面向个人",
           "products": {
-            "label": "Browse the products",
-            "hint": "Each product has its own page."
+            "label": "浏览产品",
+            "hint": "每款产品都有自己的页面。"
           }
         },
         "business": {
-          "title": "For businesses",
+          "title": "面向企业",
           "consulting": {
-            "label": "See how we can work together",
-            "hint": "AI consulting services and a contact address."
+            "label": "了解合作方式",
+            "hint": "AI 咨询服务和联系邮箱。"
           }
         },
         "engineer": {
-          "title": "For engineers",
+          "title": "面向工程师",
           "notes": {
-            "label": "Read the change notes",
-            "hint": "Short records of what changed."
+            "label": "阅读变更笔记",
+            "hint": "简短记录有哪些变化。"
           },
           "approach": {
-            "label": "Read how we work",
-            "hint": "Evidence levels, product states and claim policy."
+            "label": "阅读我们的工作方式",
+            "hint": "证据等级、产品状态和声明政策。"
           },
           "contact": {
-            "label": "Get in touch with the team",
-            "hint": "General address for support, technical questions and press."
+            "label": "联系团队",
+            "hint": "支持、技术问题和媒体咨询的通用邮箱。"
           }
         }
       }
     },
     "doors": {
-      "label": "What brings you here?",
+      "label": "您为何而来？",
       "products": {
-        "title": "Explore the products",
-        "audience": "For people who want to try and use the apps.",
-        "products": "Browse the products"
+        "title": "探索产品",
+        "audience": "适合想试用这些应用的人。",
+        "products": "浏览产品"
       },
       "work": {
-        "title": "AI for my work",
-        "audience": "For teams that want to put AI to work in their business.",
-        "consulting": "See AI consulting"
+        "title": "为我的工作引入 AI",
+        "audience": "适合想把 AI 用到业务中的团队。",
+        "consulting": "查看 AI 咨询"
       },
       "partners": {
-        "title": "Collaboration and company",
-        "audience": "For partners, investors and anyone who wants to know the company.",
-        "contact": "See ways to get in touch"
+        "title": "合作与公司",
+        "audience": "适合合作伙伴、投资人，以及想了解公司的人。",
+        "contact": "查看联系方式"
       },
       "inspect": {
-        "title": "Inspect",
-        "audience": "For people who want to check how we work and what we claim.",
-        "lab": "Visit the lab",
-        "transparency": "Read the transparency records"
+        "title": "查证",
+        "audience": "适合想核实我们如何工作、主张什么的人。",
+        "lab": "访问实验室",
+        "transparency": "阅读透明度记录"
       }
     }
   },
   "start": {
-    "metaTitle": "Doors",
-    "lede": "Pick one of four paths; each opens a real page on this site.",
-    "forLabel": "Who it is for",
-    "note": "Your choice is not stored; this page records nothing."
+    "metaTitle": "入口",
+    "lede": "从四条路径中任选一条；每条都会打开本站的一个真实页面。",
+    "forLabel": "适合谁",
+    "note": "您的选择不会被保存；本页不记录任何内容。"
   },
   "ostinatoDemo": {
-    "kicker": "Rhythm feel try-out",
-    "title": "Tap along with a beat.",
-    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
-    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
-    "start": "Start the beat",
-    "tapButton": "Tap here on the beat",
-    "tapHint": "Space, Enter, click or touch all work.",
-    "countIn": "Listen first. Taps count after the lead-in.",
-    "running": "The beat is playing. Tap along.",
-    "perfect": "Perfect",
-    "good": "Good",
-    "miss": "Missed",
-    "early": "{ms} ms early",
-    "late": "{ms} ms late",
-    "last": "Last tap",
-    "accuracy": "Timing accuracy: {pct}%",
-    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
-    "resultHeading": "Round result",
-    "announceDone": "Round finished. {summary}. {accuracy}.",
-    "restart": "Try again",
-    "micLabel": "Also listen with the microphone (optional)",
-    "micOn": "Microphone is on. Clap or tap a surface.",
-    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+    "kicker": "节奏感小试",
+    "title": "跟着节拍点一点。",
+    "intro": "点击开始，听节拍，然后用空格键、回车键、点击或触摸来跟拍。每次点击都会得到一个时机标记，结束时可以看到总成绩。",
+    "note": "这是本页上的一个小体验，不是应用，也不是对任何事物的测量。没有任何内容离开您的浏览器，也不会保存任何内容。",
+    "start": "开始节拍",
+    "tapButton": "在节拍上点这里",
+    "tapHint": "空格键、回车键、点击或触摸都可以。",
+    "countIn": "先听一听。预备拍之后的点击才会计分。",
+    "running": "节拍正在播放。跟着点吧。",
+    "perfect": "完美",
+    "good": "不错",
+    "miss": "错过",
+    "early": "提前 {ms} 毫秒",
+    "late": "延迟 {ms} 毫秒",
+    "last": "最后一次点击",
+    "accuracy": "节奏准确率：{pct}%",
+    "summary": "完美：{perfect}，不错：{good}，错过：{miss}",
+    "resultHeading": "本轮结果",
+    "announceDone": "本轮结束。{summary}。{accuracy}。",
+    "restart": "再试一次",
+    "micLabel": "同时用麦克风聆听（可选）",
+    "micOn": "麦克风已开启。拍手或敲击一个物体表面。",
+    "micNote": "麦克风从来都不是必需的。声音留在您的设备上，不会被录制，也不会发送到任何地方。戴上耳机，节拍就不会被麦克风收到。"
   },
   "lifeosDemo": {
-    "kicker": "Synthetic decision and reminder try-out",
-    "title": "Pick a decision, preview its reminder.",
-    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
-    "badge": "Synthetic example",
-    "cardsLegend": "Example decision card",
-    "card1": "Moving date",
-    "card2": "Wardrobe colour choice",
-    "card3": "Book club day",
-    "customLabel": "Or name your own example card (optional)",
-    "customHint": "Do not type anything real. An example name is enough.",
-    "whenLegend": "When should the reminder arrive?",
-    "whenDay": "Tomorrow morning",
-    "whenWeek": "One week from now, in the morning",
-    "preview": "Reminder time: {when}",
-    "setButton": "Set the reminder (simulation)",
-    "doneHeading": "Reminder set (simulation)",
-    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
-    "announceDone": "Reminder set, simulation. {title}: {when}.",
-    "restart": "Try again"
+    "kicker": "模拟决策与提醒小试",
+    "title": "选一个决策，预览它的提醒。",
+    "intro": "选择一张示例决策卡片，或为自己的示例命名。预览提醒何时送达，然后查看设置完成后的样子。",
+    "note": "这是一个小体验，不是应用本身。决策卡片是虚构的。不会设置真实提醒，本体验也不会保存或发送任何数据。",
+    "badge": "模拟示例",
+    "cardsLegend": "示例决策卡片",
+    "card1": "搬家日期",
+    "card2": "衣柜颜色选择",
+    "card3": "读书会日期",
+    "customLabel": "或自己为示例卡片命名（可选）",
+    "customHint": "请勿输入任何真实内容。一个示例名称就够了。",
+    "whenLegend": "提醒应在何时送达？",
+    "whenDay": "明天早上",
+    "whenWeek": "一周后的早上",
+    "preview": "提醒时间：{when}",
+    "setButton": "设置提醒（模拟）",
+    "doneHeading": "提醒已设置（模拟）",
+    "doneBody": "“{title}”的提醒：{when}。实际上没有设置任何内容。",
+    "announceDone": "提醒已设置，模拟。{title}：{when}。",
+    "restart": "再试一次"
   }
 }

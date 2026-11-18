@@ -22,12 +22,12 @@
     "approach": "私たちのアプローチ",
     "collaboration": "協業",
     "mainNavigation": "メインナビゲーション",
-    "doors": "Doors",
-    "doorsPanel": "Starting doors"
+    "doors": "入口",
+    "doorsPanel": "はじめの入口"
   },
   "footer": {
     "tagline": "AIを誇張せず、適切な場面で適切に使う、独立系のプロダクトラボ。",
-    "location": "Türkiye",
+    "location": "トルコ",
     "projectsHeading": "プロジェクト",
     "companyHeading": "会社",
     "founderHeading": "創業者",
@@ -46,7 +46,7 @@
     "navOperatingSystem": "仕事の進め方",
     "navStudio": "スタジオ",
     "navConsulting": "AIコンサルティング",
-    "navWhyYula": "Why YULA"
+    "navWhyYula": "なぜ YULA か"
   },
   "common": {
     "explore": "詳しく見る",
@@ -76,7 +76,7 @@
       "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
-    "bannerCardBottomLabel": "Türkiye",
+    "bannerCardBottomLabel": "トルコ",
     "bannerWord": "YULA",
     "bannerCaption": "プロダクト · ラボ · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
@@ -172,22 +172,22 @@
     "researchHeading": "研究段階",
     "researchNote": "まだ公開していません。ストアページ、ダウンロードリンク、検証済みの数値もありません。公開済み製品と同列に並べて実態以上に見せないよう、以下に分けて掲載しています。",
     "researchToggle": "研究段階の製品を表示（{count}）",
-    "featuredHeading": "Featured products",
-    "portfolioHeading": "Portfolio",
-    "filterLabel": "Filter by status",
-    "filterAll": "All",
-    "showing": "Showing {count} products",
-    "summary": "{live} live · {beta} beta · {soon} coming soon",
-    "noMatch": "No product matches this filter.",
-    "panelHeading": "Selected product",
-    "panelHint": "Select a product to see its details here.",
-    "accessHeading": "Access",
-    "openFull": "Open the full page",
-    "closePanel": "Close panel",
-    "preview": "Preview",
-    "previewLabel": "Preview: {name}",
-    "panelStatusLink": "Status and sources",
-    "panelScreenEmpty": "There is no screenshot for this product yet."
+    "featuredHeading": "注目のプロダクト",
+    "portfolioHeading": "ポートフォリオ",
+    "filterLabel": "ステータスで絞り込む",
+    "filterAll": "すべて",
+    "showing": "{count} 件のプロダクトを表示中",
+    "summary": "公開中 {live} · ベータ {beta} · 近日公開 {soon}",
+    "noMatch": "この条件に合うプロダクトはありません。",
+    "panelHeading": "選択中のプロダクト",
+    "panelHint": "プロダクトを選ぶと、ここに詳細が表示されます。",
+    "accessHeading": "アクセス",
+    "openFull": "ページ全体を開く",
+    "closePanel": "パネルを閉じる",
+    "preview": "プレビュー",
+    "previewLabel": "プレビュー: {name}",
+    "panelStatusLink": "ステータスと情報源",
+    "panelScreenEmpty": "このプロダクトのスクリーンショットはまだありません。"
   },
   "showcase": {
     "back": "プロジェクト",
@@ -271,26 +271,26 @@
     "pressLabel": "取材",
     "pressHint": "インタビュー、イベントへのご招待、プレスリリースのご依頼。",
     "locationEyebrow": "所在地",
-    "locationTitle": "Türkiye",
+    "locationTitle": "トルコ",
     "locationNote": "打ち合わせは火曜〜木曜、対面・オンライン併用。",
     "studioBody": "このページのアドレスは一般的なご連絡用です。具体的なプロジェクトについては、スタジオの申請で予算帯、時期、意思決定する方の役割をまとめて伺い、その情報を踏まえてご相談を検討します。",
     "studioEyebrow": "仕事のご相談",
     "studioLink": "スタジオに申し込む",
     "studioTitle": "具体的な仕事のご相談ですか？",
     "intakeLanguageNotice": "この言語では、まだオンラインフォームをご利用いただけません。以下のアドレスへメールでご連絡ください。画面の言語は、返信の言語や対応時期を約束するものではありません。",
-    "pathsTitle": "Who is this for?",
-    "pathsUserLabel": "Product user",
-    "pathsUserBody": "Product support and account questions go to the support address.",
-    "pathsUserLink": "Support",
-    "pathsCorpLabel": "Business",
-    "pathsCorpBody": "AI work for your company. Business address:",
-    "pathsCorpLink": "Discuss your project",
-    "pathsPartnerLabel": "Partners and investors",
-    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
-    "pathsDevLabel": "Developers and researchers",
-    "pathsDevBody": "Working notes and open records.",
-    "pathsDevLab": "Lab",
-    "pathsDevTransparency": "Transparency"
+    "pathsTitle": "どなた向けですか?",
+    "pathsUserLabel": "プロダクトのユーザー",
+    "pathsUserBody": "プロダクトのサポートやアカウントに関するご質問は、サポート窓口へお送りください。",
+    "pathsUserLink": "サポート",
+    "pathsCorpLabel": "法人のお客様",
+    "pathsCorpBody": "御社のための AI 活用。法人向けの連絡先:",
+    "pathsCorpLink": "プロジェクトについて相談する",
+    "pathsPartnerLabel": "パートナー・投資家",
+    "pathsPartnerBody": "提携や出資のご相談はこちらからご連絡ください。",
+    "pathsDevLabel": "開発者・研究者",
+    "pathsDevBody": "作業ノートと公開記録。",
+    "pathsDevLab": "ラボ",
+    "pathsDevTransparency": "透明性"
   },
   "notFound": {
     "title": "ページが見つかりません。",
@@ -300,12 +300,12 @@
     "eyebrow": "開発ノート",
     "title": "取り組みを、その都度。",
     "intro": "ここでも透明性を大切にします。製品で何が変わり、何を直し、何が動き始めたかを、短く率直に記録します。",
-    "articleEyebrow": "Article",
-    "readArticle": "Read the article",
-    "sourcesHeading": "Sources",
-    "verifiedOn": "verified {date}",
-    "seeTransparency": "Transparency page",
-    "backToNotes": "All notes"
+    "articleEyebrow": "記事",
+    "readArticle": "記事を読む",
+    "sourcesHeading": "情報源",
+    "verifiedOn": "確認日 {date}",
+    "seeTransparency": "透明性ページ",
+    "backToNotes": "ノート一覧"
   },
   "links": {
     "web": "ウェブサイト",
@@ -520,11 +520,11 @@
       "pitch1Body": "マイクを起動して弾くだけ。Ostinatoは一音ごとに「正しい」「違う音」「聞き取れなかった」を表示します。確信が持てないときは、推測しません。音声は端末上で処理され、アップロードはされません。",
       "pitch2Title": "やみくもな反復ではなく、着実な練習を。",
       "pitch2Body": "流れるタブ譜を、メトロノームに合わせて追いかけましょう。テンポは40%から120%まで調整でき、難しい小節をループしたり、アプリに待ってもらったりできます。合格したレッスンごとに、次のレッスンが開きます。",
-      "pitch3Title": "Guitar and ear training: 283 lessons, voice and piano coming soon.",
-      "pitch3Body": "The guitar course comes with 235 lessons across four levels and ear training with 48 lessons across two; voice and piano follow in turn. A setup wizard measures your room and latency, the built-in tuner gets your strings ready, and a weekly goal and streak keep you playing.",
+      "pitch3Title": "ギターと聴音: 283 レッスン。ボーカルとピアノは近日公開。",
+      "pitch3Body": "ギターコースは 4 レベルで 235 レッスン、聴音は 2 レベルで 48 レッスンが付属します。ボーカルとピアノは順次追加されます。セットアップウィザードが部屋とレイテンシーを測定し、内蔵チューナーが弦を整え、週間目標と連続記録が練習の継続を支えます。",
       "s1Kicker": "01 — アプリ内",
-      "a1Title": "Guitar and ear training come first.",
-      "a1Body": "Guitar runs from your first sound to advanced: 235 lessons across four levels. Ear training has 48 lessons: on-screen drills, clapping with the click and part-by-part tests. Voice and piano are coming soon.",
+      "a1Title": "まずはギターと聴音から。",
+      "a1Body": "ギターは最初の一音から上級まで、4 レベルで 235 レッスン。聴音は 48 レッスンで、画面上のドリル、クリックに合わせた手拍子、パートごとのテストがあります。ボーカルとピアノは近日公開です。",
       "a2Title": "各コースのレベル1は無料。",
       "a2Body": "ギターのレベル1（40レッスン）と耳のトレーニングのレベル1（25レッスン）は無料で、アカウントなしで利用できます。以降のレベルは、Ostinatoメンバーシップで利用できます。",
       "s2Kicker": "02 — アクセス",
@@ -583,69 +583,69 @@
     "statNeedsReverification": "再確認が必要",
     "availabilityUnverified": "公開状況の再確認が必要",
     "availabilityCheckedAt": "最終公開状況確認：{date}。リンクから現在の状況をご確認ください。",
-    "accessHeading": "Access",
-    "screenHeading": "Screens and demo",
-    "screenEmpty": "There is no screenshot for this product yet.",
-    "trustHeading": "Privacy and trust",
-    "trustPrivacy": "Privacy policy for this product",
-    "statusHeading": "Release status",
-    "statusLink": "Status and sources",
-    "demoLabel": "Example simulation"
+    "accessHeading": "アクセス",
+    "screenHeading": "画面とデモ",
+    "screenEmpty": "このプロダクトのスクリーンショットはまだありません。",
+    "trustHeading": "プライバシーと信頼",
+    "trustPrivacy": "このプロダクトのプライバシーポリシー",
+    "statusHeading": "リリース状況",
+    "statusLink": "ステータスと情報源",
+    "demoLabel": "シミュレーション例"
   },
   "braavolabsDemo": {
-    "kicker": "Sample plan card",
-    "title": "Describe a job. See its plan, approvals and result in one place.",
-    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
-    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
-    "pickerLabel": "Pick a sample intent",
-    "announce": "Plan card shown",
+    "kicker": "プランカードのサンプル",
+    "title": "仕事を伝えるだけ。プラン、承認、結果をひとつの場所で確認できます。",
+    "intro": "3 つのサンプルの意図から 1 つ選んでください。カードはプランの一例を示します。ここにあるものはすべてこのページ内の固定テキストで、ブラウザの外には何も送信されません。",
+    "disclaimer": "これはインタラクティブなプロダクトコンセプト/プラン例であり、実際の仕事は実行されません。",
+    "pickerLabel": "サンプルの意図を選ぶ",
+    "announce": "プランカードを表示しました",
     "labels": {
-      "intent": "Sample intent",
-      "example": "Example card",
-      "note": "Example / concept: no real job is executed.",
-      "steps": "Example steps",
-      "approvals": "Approval points",
-      "risk": "Example risk level",
-      "output": "Expected output"
+      "intent": "サンプルの意図",
+      "example": "例のカード",
+      "note": "例/コンセプト: 実際の仕事は実行されません。",
+      "steps": "例のステップ",
+      "approvals": "承認ポイント",
+      "risk": "例のリスクレベル",
+      "output": "期待される成果物"
     },
     "risk": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+      "low": "低",
+      "medium": "中",
+      "high": "高"
     },
     "intents": {
       "content": {
-        "label": "Content",
-        "prompt": "“Prepare a week of posts for our launch.”",
-        "s1": "Read the brief and list the post ideas.",
-        "s2": "Draft each post in your tone.",
-        "s3": "Collect the drafts for your review.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you read the drafts and decide.",
-        "riskNote": "The output is a draft you review.",
-        "output": "A set of draft posts, ready for your review."
+        "label": "コンテンツ",
+        "prompt": "「ローンチに向けた 1 週間分の投稿を用意して。」",
+        "s1": "ブリーフを読み、投稿のアイデアを一覧にする。",
+        "s2": "あなたの口調で各投稿を下書きする。",
+        "s3": "確認用に下書きをまとめる。",
+        "a1": "お金がかかるステップは、あなたの承認を待ちます。",
+        "a2": "例: 下書きを読んで、あなたが判断する。",
+        "riskNote": "成果物は、あなたが確認する下書きです。",
+        "output": "確認用に整えた下書き投稿のセット。"
       },
       "report": {
-        "label": "Report",
-        "prompt": "“Summarise last month's support requests.”",
-        "s1": "Gather the material you point to.",
-        "s2": "Group the findings by theme.",
-        "s3": "Write a short summary.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you choose which material is used.",
-        "riskNote": "It reads your own material, so you decide what it may read.",
-        "output": "A short report draft with the points that need a decision."
+        "label": "レポート",
+        "prompt": "「先月のサポート依頼をまとめて。」",
+        "s1": "あなたが指定した資料を集める。",
+        "s2": "結果をテーマごとにまとめる。",
+        "s3": "短い要約を書く。",
+        "a1": "お金がかかるステップは、あなたの承認を待ちます。",
+        "a2": "例: どの資料を使うかをあなたが選ぶ。",
+        "riskNote": "あなた自身の資料を読むため、何を読んでよいかはあなたが決めます。",
+        "output": "判断が必要な点を添えた、短いレポートの下書き。"
       },
       "software": {
-        "label": "Software",
-        "prompt": "“Fix the sign-in bug in our app.”",
-        "s1": "Read the code and find the likely cause.",
-        "s2": "Propose a change and a test for it.",
-        "s3": "Present the proposed change.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you review each proposed change.",
-        "riskNote": "It touches the code behind your product, so each change waits for you.",
-        "output": "A proposed code change with its test, for you to review."
+        "label": "ソフトウェア",
+        "prompt": "「アプリのサインインのバグを直して。」",
+        "s1": "コードを読み、原因の可能性を探す。",
+        "s2": "変更案とそのテストを提案する。",
+        "s3": "提案した変更を提示する。",
+        "a1": "お金がかかるステップは、あなたの承認を待ちます。",
+        "a2": "例: 提案された変更をひとつずつあなたが確認する。",
+        "riskNote": "プロダクトの土台となるコードに触れるため、変更はひとつずつあなたの承認を待ちます。",
+        "output": "テスト付きのコード変更案。あなたが確認します。"
       }
     }
   },
@@ -752,9 +752,9 @@
       "support": "サポート",
       "rights": "無断転載を禁じます。"
     },
-    "open3d": "Open the 3D experience",
-    "open3dOpened": "3D experience opened",
-    "open3dFailed": "Could not open 3D; showing the linear view.",
+    "open3d": "3D 体験を開く",
+    "open3dOpened": "3D 体験を開きました",
+    "open3dFailed": "3D を開けませんでした。リニア表示を表示しています。",
     "fallback": {
       "label": "リニア表示",
       "reason": "モーションや3D表示を利用できない場合も、この表示ですべての製品、根拠、リンクを確認できます。"
@@ -786,7 +786,7 @@
       "wallService": "サービス",
       "reset": "リセット"
     },
-    "loaderSkip": "Skip intro"
+    "loaderSkip": "イントロをスキップ"
   },
   "studio": {
     "applyIntro": "正確な予算額や意思決定者のお名前は求めません。予算帯と役割だけで十分です。",
@@ -944,333 +944,333 @@
     "limits": "ヒアリング前に、売上増加、完全なモデル出力、公開日を約束しません。本番環境へのアクセスとデプロイには、別途合意が必要です。",
     "contactTitle": "改善したいことを教えてください。",
     "contactBody": "業務フロー、課題、ご希望の時期からお聞かせください。パスワード、APIキー、機密の顧客データは送らないでください。メールリンクはメールアプリを開くだけで、このページから内容が送信されることはありません。",
-    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
+    "contactBodyForm": "まずは業務の流れ、課題、希望のスケジュールをお知らせください。パスワード、API キー、機密性のある顧客データは送らないでください。下のフォームまたはメールリンクをご利用いただけます。メールリンクを押すとメールアプリが開きます。",
     "cta": "プロジェクトを相談",
     "subject": "AIコンサルティングのご相談",
     "terms": "対応可否、価格、範囲はご相談のうえ確定します。",
     "nav": "AIコンサルティング"
   },
   "whyYula": {
-    "eyebrow": "Why YULA",
-    "title": "Why YULA",
-    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
-    "sourcesHeading": "Sources",
-    "s1Title": "Evidence comes before the claim.",
-    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
-    "s2Title": "Portfolio status is read from the registry.",
-    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
-    "s3Title": "The level of evidence is written out.",
-    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
-    "s4Title": "Work you can read.",
-    "s4Body": "The lab's records and notes are reachable directly from here.",
-    "linkLab": "Lab",
-    "linkTransparency": "Transparency"
+    "eyebrow": "なぜ YULA か",
+    "title": "なぜ YULA か",
+    "intro": "ラボの仕組みを、記録と照らし合わせて確かめられる短さでまとめました。数字は登録簿から算出しているため、登録簿と切り離して古くなることはありません。",
+    "sourcesHeading": "情報源",
+    "s1Title": "主張より先に根拠を。",
+    "s1Body": "サイト上のプロダクトに関する主張は、情報源、範囲、確認日とともに登録簿に載っています。有効期限が切れた主張は隠さず、期限切れと明示して表示します。",
+    "s2Title": "ポートフォリオの状況は登録簿から読み取ります。",
+    "s2Body": "登録簿には {records} 件のプロダクトがあり、ライフサイクルの各状態への内訳は以下のとおりです。数字は手入力ではなく算出されたものです。",
+    "s3Title": "根拠のレベルを明記します。",
+    "s3Body": "登録簿には {claims} 件の主張があります。自己申告は、ソースコードで確認済みのものや実測とは同じ扱いにしません。すべての主張に根拠の種類が付いています。",
+    "s4Title": "読める形の仕事。",
+    "s4Body": "ラボの記録とノートには、ここから直接アクセスできます。",
+    "linkLab": "ラボ",
+    "linkTransparency": "透明性"
   },
   "home": {
-    "navLabel": "Home page sections",
+    "navLabel": "ホームページのセクション",
     "scene1": {
-      "label": "Identity",
-      "title": "We build technology to make life more possible, not more complicated.",
-      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
-      "ctaProducts": "Explore the products",
-      "ctaHow": "See how we work",
-      "ctaLabel": "Main paths",
-      "signalsLabel": "From intent to result: three examples",
-      "signalsNote": "These are example scenarios, not real product output or measurements.",
-      "example": "Example",
-      "intentLabel": "Intent",
-      "resultLabel": "Result",
+      "label": "アイデンティティ",
+      "title": "暮らしを複雑にするのではなく、可能性を広げるテクノロジーをつくります。",
+      "message": "Yula Lab は、個人の生活、デジタルな仕事、音楽の学びにおける確かな成果に取り組む、独立したプロダクト兼エンジニアリングのラボです。",
+      "ctaProducts": "プロダクトを見る",
+      "ctaHow": "私たちの進め方を見る",
+      "ctaLabel": "主な入口",
+      "signalsLabel": "意図から結果まで: 3 つの例",
+      "signalsNote": "これらは例として示すシナリオで、実際のプロダクトの出力や測定値ではありません。",
+      "example": "例",
+      "intentLabel": "意図",
+      "resultLabel": "結果",
       "signals": {
         "s1": {
           "product": "Braavolabs",
-          "intent": "Describe a task.",
-          "result": "A chat and coding agent takes it on; you see the cost of every run."
+          "intent": "仕事を伝える。",
+          "result": "チャット兼コーディングのエージェントが引き受け、実行ごとのコストが見えます。"
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Keep your health, money and assets in one place.",
-          "result": "Five life areas in one app; records stay on your device, no account needed."
+          "intent": "健康、お金、資産をひとつの場所に。",
+          "result": "ひとつのアプリに 5 つの生活領域。記録は端末に残り、アカウントは不要です。"
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Start guitar from the first sound.",
-          "result": "Progress step by step with measured practice, and train your ear with drills."
+          "intent": "最初の一音からギターを始める。",
+          "result": "測定付きの練習で一歩ずつ進み、ドリルで耳を鍛えます。"
         }
       }
     },
     "scene2": {
-      "label": "Difference",
-      "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
-      "listLabel": "Common pattern versus our approach, three comparisons",
-      "patternLabel": "Common pattern",
-      "approachLabel": "Our approach",
-      "tagCapability": "Current capability",
-      "tagVision": "Our vision",
-      "sourceLabel": "Source: {product} product record ({status})",
-      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "label": "違い",
+      "title": "手間は少なく、成果は多く。",
+      "message": "画面やサインイン、モデル選びを増やすのではなく、意図から成果までの最短の道を目指します。",
+      "listLabel": "よくあるやり方と私たちのやり方、3 つの比較",
+      "patternLabel": "よくあるやり方",
+      "approachLabel": "私たちのやり方",
+      "tagCapability": "現在の機能",
+      "tagVision": "私たちのビジョン",
+      "sourceLabel": "情報源: {product} のプロダクト記録({status})",
+      "note": "「現在の機能」は、プロダクト記録に記載があることを意味します。独立した検証や測定ではありません。「私たちのビジョン」は目指している方向であり、今のプロダクトができることではありません。",
       "pairs": {
         "p1": {
-          "pattern": "More screens, sign-ins and model choices",
-          "approach": "One app, no account needed",
-          "detail": "LifeOS: five life areas in one place, offline-first."
+          "pattern": "増えていく画面、サインイン、モデル選び",
+          "approach": "ひとつのアプリ、アカウント不要",
+          "detail": "LifeOS: 5 つの生活領域をひとつの場所に、オフライン優先で。"
         },
         "p2": {
-          "pattern": "False certainty",
-          "approach": "Say where an answer comes from and how unsure it is",
-          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+          "pattern": "偽りの確かさ",
+          "approach": "答えの出どころと不確かさを伝える",
+          "detail": "目標は、すべての結果に情報源と不確かさを示すことです。これをプロダクトの機能とはまだ主張していません。"
         },
         "p3": {
-          "pattern": "Endless notifications",
-          "approach": "Step in at a meaningful time",
-          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+          "pattern": "止まらない通知",
+          "approach": "意味のあるタイミングで声をかける",
+          "detail": "目標は、数を減らし、より適切なタイミングで知らせることです。これをプロダクトの機能とはまだ主張していません。"
         }
       }
     },
     "scene3": {
-      "label": "Products",
-      "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
-      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
-      "demoHeading": "Demo slot",
+      "label": "プロダクト",
+      "title": "優先する 3 つのシステム。",
+      "message": "Braavolabs、LifeOS、Ostinato。仕事、生活、音楽のためのもので、それぞれがひとつの人間的な成果に集中しています。",
+      "listLabel": "3 つの主力プロダクト。それぞれ、ひとつの人間的な成果、デモ枠、根拠の状況、プロダクトへのリンクがあります",
+      "demoHeading": "デモ枠",
       "demo": {
-        "real": "real product test",
-        "example": "example / simulation",
-        "soon": "not here yet"
+        "real": "実プロダクトのテスト",
+        "example": "例/シミュレーション",
+        "soon": "まだここにはありません"
       },
-      "proofHeading": "Evidence status",
+      "proofHeading": "根拠の状況",
       "proof": {
-        "verified": "Verified claims (window open): {count}",
-        "lapsed": "Verification window closed on {date}; not shown as verified.",
-        "none": "No verified claim yet."
+        "verified": "確認済みの主張(有効期間内): {count}",
+        "lapsed": "確認の有効期間は {date} に終了しました。確認済みとしては表示していません。",
+        "none": "確認済みの主張はまだありません。"
       },
-      "go": "Go to {name}",
-      "allProducts": "All products"
+      "go": "{name} へ",
+      "allProducts": "すべてのプロダクト"
     },
     "scene4": {
-      "label": "Engineering",
-      "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
-      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
-      "currentLabel": "Stated in the product record",
-      "plannedLabel": "Planned",
-      "tagCapability": "Current capability",
-      "tagPlanned": "Planned",
-      "tagNone": "No record",
-      "noRecord": "No product record line backs this principle yet.",
-      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
-      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
-      "linksLabel": "Related pages",
-      "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with Yula Lab",
-      "linkTransparency": "Transparency",
+      "label": "エンジニアリング",
+      "title": "独立したプロダクト。共通のエンジニアリング原則。",
+      "message": "ローカル優先のデータ、タスクごとの許可と証明、わかりやすいインターフェース。プロダクトは別々でも、原則は共通です。",
+      "listLabel": "共通のエンジニアリング原則 4 つ。それぞれ、現在プロダクト記録に記載されている内容と計画中の内容を示します",
+      "currentLabel": "プロダクト記録に記載",
+      "plannedLabel": "計画中",
+      "tagCapability": "現在の機能",
+      "tagPlanned": "計画中",
+      "tagNone": "記録なし",
+      "noRecord": "この原則を裏づけるプロダクト記録の記載はまだありません。",
+      "sourceLabel": "情報源: {product} のプロダクト記録「{feature}」。プロダクトの状況: {status}",
+      "note": "「現在の機能」は、そのプロダクトについてプロダクト記録に記載があることを意味します。独立した検証や測定ではありません。プロダクトの状況は iOS を指し、Android はクローズドテスト中です。「計画中」は方向性であり、今のプロダクトができることではありません。プロダクトは別々のままです。共通のモデルも共通のデータベースもありません。",
+      "linksLabel": "関連ページ",
+      "linkOperatingSystem": "このラボの仕組み",
+      "linkStudio": "スタジオ: Yula Lab と一緒につくる",
+      "linkTransparency": "透明性",
       "principles": {
         "p1": {
-          "name": "Local-first data",
-          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+          "name": "ローカル優先のデータ",
+          "planned": "ほかのプロダクトでも、公開に合わせて同じ原則を適用します。それらの機能とはまだ主張していません。"
         },
         "p2": {
-          "name": "Permission and proof for spending steps",
-          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+          "name": "支出を伴うステップの許可と証明",
+          "planned": "プロダクト間で、同様の許可と証明の言語を目指します。現時点で共通のコンポーネントやシステムはありません。"
         },
         "p3": {
-          "name": "On-device processing",
-          "planned": "Open new signals only after they are tested on real devices."
+          "name": "端末内での処理",
+          "planned": "新しいシグナルは、実機でテストしてから開放します。"
         },
         "p4": {
-          "name": "An understandable interface",
-          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+          "name": "わかりやすいインターフェース",
+          "planned": "画面ができることとできないことを、はっきり伝えます。これを記載したプロダクト記録はまだありません。方向性です。"
         }
       }
     },
     "scene5": {
-      "label": "Lab",
-      "title": "A living lab.",
-      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
-      "listLabel": "Lab records: notes and a design decision",
-      "kindNote": "Lab note",
-      "kindDecision": "Design decision",
+      "label": "ラボ",
+      "title": "生きているラボ。",
+      "message": "ノートと設計上の決定を記録しています。各記録には埋められるテンプレートの項目が表示され、空の項目はそのまま明示します。",
+      "listLabel": "ラボの記録: ノートと設計上の決定",
+      "kindNote": "ラボノート",
+      "kindDecision": "設計上の決定",
       "fields": {
-        "question": "Question",
-        "hypothesis": "Hypothesis",
-        "did": "What we did",
-        "learned": "What we learned",
-        "next": "Next test"
+        "question": "問い",
+        "hypothesis": "仮説",
+        "did": "やったこと",
+        "learned": "わかったこと",
+        "next": "次のテスト"
       },
-      "empty": "not written yet",
-      "sourceLabel": "Source",
-      "noteId": "note: {slug}",
-      "onlyTr": "No translation ({part}): written in Turkish only.",
-      "onlyEn": "No translation ({part}): written in English only.",
-      "allNotes": "All lab notes",
-      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "empty": "まだ書かれていません",
+      "sourceLabel": "情報源",
+      "noteId": "ノート: {slug}",
+      "onlyTr": "翻訳なし({part}): トルコ語のみで書かれています。",
+      "onlyEn": "翻訳なし({part}): 英語のみで書かれています。",
+      "allNotes": "ラボノートをすべて見る",
+      "note": "このセクションには、リポジトリに書かれたノートとドキュメントだけを表示します。空の項目は、まだ書かれていないことを意味します。埋めるために何かをでっち上げることはしません。提案段階のドキュメントには、その旨のラベルを付けています。",
       "decision": {
-        "title": "Should the 3D scene stay on by default on the home page?",
-        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
-        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
-        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
-        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
-        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
-        "sourceNote": "a document in the repository, no separate page on the site",
-        "sourceLang": "The source document is written in Turkish."
+        "title": "ホームページの 3D シーンを、既定でオンのままにするべきか?",
+        "question": "ホームページの 3D ジャーニーを全員に対して既定でオンのままにするか、モバイルでは静的表示から始めるか?",
+        "did": "3 つの選択肢を書き出しました。保護付きの現行設定のまま、モバイルは既定で静的、デスクトップのみ既定で 3D、です。ローカルの本番ビルドで Lighthouse も実行しており、表は元のドキュメントにあります。",
+        "learned": "ドキュメントによると、03a2 より前のローカルのモバイル結果は本番の値を下回り、書面の受け入れ基準は満たされていませんでした。03a2 の後はローカルのモバイル結果が不安定でした(マシンが混んでいたため)。デスクトップへの影響は不明です。本番環境でも実機でも試していません。",
+        "next": "ドキュメントが示す次の一手は、静かなマシンでの再実行です。ドキュメントは、モバイルの読み込み時間の原因に関する別作業も提案しています。",
+        "status": "ステータス: 承認済み、2026-11-08、Project orchestration。実装は WEB-P0-03a2。",
+        "sourceNote": "リポジトリ内のドキュメント。サイト上に個別のページはありません",
+        "sourceLang": "元のドキュメントはトルコ語で書かれています。"
       },
-      "partTitle": "title",
-      "partBody": "text"
+      "partTitle": "タイトル",
+      "partBody": "本文"
     },
     "scene6": {
-      "label": "Trust",
-      "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
-      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
-      "sourceLabel": "Source",
-      "srcRecord": "product record",
-      "srcRecords": "product records",
-      "srcPrivacy": "{product} privacy policy",
-      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "label": "信頼",
+      "title": "信頼はプロダクトごとに示します。",
+      "message": "データ保護、管理と承認、測定可能な成果、プロダクト段階の透明性について、プロダクトと機能ごとに、根拠の状況とともにお伝えします。",
+      "listLabel": "信頼の 4 項目: データ保護、管理と承認、測定可能な成果、プロダクト段階の透明性",
+      "sourceLabel": "情報源",
+      "srcRecord": "プロダクト記録",
+      "srcRecords": "プロダクト記録",
+      "srcPrivacy": "{product} のプライバシーポリシー",
+      "note": "このセクションは、プロダクト記録とプライバシーポリシーが述べている内容を、プロダクトごとに繰り返したものです。監査、認証、測定ではありません。記録に記載がない点は、空白を埋めずにその旨をお伝えします。",
       "rows": {
         "protection": {
-          "title": "Data protection",
-          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "title": "データ保護",
+          "lead": "データの行き先はプロダクトや機能によって異なるため、各行でひとつのプロダクトを挙げています。",
           "lines": {
-            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
-            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
-            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+            "lifeos": "記録は端末に残り、アカウントは不要です。一部の機能には App Store のサブスクリプションが必要です。許可した健康データは Apple Health または Health Connect から読み取られ、端末内で処理されます。サーバーには送信されません。アカウント、購入、クラッシュレポートのデータは別の経路をたどり、プライバシーポリシーに記載されています。",
+            "braavolabs": "Braavolabs のモバイルアプリでは、データはサーバーで扱われます。アカウント情報、ワークフロー、実行結果、承認の判断はあなたのワークスペースに保存され、AI へのリクエストはプライバシーポリシーに記載のモデルプロバイダーに送られます。プロダクト記録には、お使いのコンピューターで動くエージェントの説明もあります。このプライバシーポリシーの対象はモバイルアプリのみのため、それらのエージェントについてはここではデータの流れを説明していません。",
+            "ostinato": "近日公開。最初のリリースでは、ギターコースのマイクは任意です。プライバシーページによると、音声は端末のメモリ内でのみ処理され、生の音声ファイルは録音もサーバーへのアップロードもされません。",
+            "others": "未公開で、記録にもデータの流れの記載がないため、ここでは説明していません。Motion のプライバシーページがファミリー全体を対象としています。"
           }
         },
         "control": {
-          "title": "Control and approval",
-          "lead": "What the records say about who decides.",
+          "title": "管理と承認",
+          "lead": "誰が決めるのかについて、記録が述べていること。",
           "lines": {
-            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+            "braavolabs": "お金がかかるステップは、人による明示的な承認を待ち、すべてのステップが監査証跡に残ります。ロール、権限、厳格な予算上限があります。",
+            "lifeos": "健康データは、あなたの許可があるときにだけ読み取られます。オンライン AI は任意です。アプリで提供され、あなたが使うことを選んだ場合に、承認した画面上のテキストが処理のために送信されます。内容はプライバシーポリシーのとおりです。"
           }
         },
         "result": {
-          "title": "Measurable result",
-          "body": "No outcome measurements are published yet.",
-          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+          "title": "測定可能な成果",
+          "body": "成果の測定値はまだ公開していません。",
+          "detail": "プロダクト記録にあるのは機能の数と説明で、成果ではありません。その裏づけとなる公開登録簿の主張の一部は有効期限が切れています。そのため、このページには数値を載せていません。"
         },
         "stage": {
-          "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record.",
-          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+          "title": "プロダクト段階の透明性",
+          "lead": "各プロダクトの段階は、そのプロダクト記録から読み取っています。",
+          "note": "LifeOS: 「公開中」は iOS に当てはまります。プロダクト記録の注記によると、Android はクローズドテスト中です。ほかのプロダクトのストア対応状況は、各プロダクトページをご覧ください。"
         }
       }
     },
     "scene7": {
-      "label": "Start",
-      "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business.",
-      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "label": "はじめる",
+      "title": "次の一歩を、一緒に。",
+      "message": "プロダクトを見てみるか、御社の事業で一緒に何ができるかお話ししましょう。",
+      "groupsLabel": "はじめ方は 3 通り: 個人の方、法人の方、エンジニアの方へ",
       "paths": {
         "individual": {
-          "title": "For individuals",
+          "title": "個人の方へ",
           "products": {
-            "label": "Browse the products",
-            "hint": "Each product has its own page."
+            "label": "プロダクトを見る",
+            "hint": "プロダクトごとに専用のページがあります。"
           }
         },
         "business": {
-          "title": "For businesses",
+          "title": "法人の方へ",
           "consulting": {
-            "label": "See how we can work together",
-            "hint": "AI consulting services and a contact address."
+            "label": "一緒にできることを見る",
+            "hint": "AI コンサルティングサービスと連絡先。"
           }
         },
         "engineer": {
-          "title": "For engineers",
+          "title": "エンジニアの方へ",
           "notes": {
-            "label": "Read the change notes",
-            "hint": "Short records of what changed."
+            "label": "変更ノートを読む",
+            "hint": "変更点の短い記録。"
           },
           "approach": {
-            "label": "Read how we work",
-            "hint": "Evidence levels, product states and claim policy."
+            "label": "私たちの進め方を読む",
+            "hint": "根拠のレベル、プロダクトの状態、主張に関する方針。"
           },
           "contact": {
-            "label": "Get in touch with the team",
-            "hint": "General address for support, technical questions and press."
+            "label": "チームに連絡する",
+            "hint": "サポート、技術的なご質問、取材のための共通の連絡先。"
           }
         }
       }
     },
     "doors": {
-      "label": "What brings you here?",
+      "label": "どんなご用件ですか?",
       "products": {
-        "title": "Explore the products",
-        "audience": "For people who want to try and use the apps.",
-        "products": "Browse the products"
+        "title": "プロダクトを見る",
+        "audience": "アプリを試して使ってみたい方へ。",
+        "products": "プロダクトを見る"
       },
       "work": {
-        "title": "AI for my work",
-        "audience": "For teams that want to put AI to work in their business.",
-        "consulting": "See AI consulting"
+        "title": "仕事に AI を",
+        "audience": "事業に AI を活かしたいチームへ。",
+        "consulting": "AI コンサルティングを見る"
       },
       "partners": {
-        "title": "Collaboration and company",
-        "audience": "For partners, investors and anyone who wants to know the company.",
-        "contact": "See ways to get in touch"
+        "title": "協業と会社について",
+        "audience": "パートナー、投資家、会社について知りたい方へ。",
+        "contact": "連絡方法を見る"
       },
       "inspect": {
-        "title": "Inspect",
-        "audience": "For people who want to check how we work and what we claim.",
-        "lab": "Visit the lab",
-        "transparency": "Read the transparency records"
+        "title": "確かめる",
+        "audience": "私たちの進め方や主張を確かめたい方へ。",
+        "lab": "ラボを見る",
+        "transparency": "透明性の記録を読む"
       }
     }
   },
   "start": {
-    "metaTitle": "Doors",
-    "lede": "Pick one of four paths; each opens a real page on this site.",
-    "forLabel": "Who it is for",
-    "note": "Your choice is not stored; this page records nothing."
+    "metaTitle": "入口",
+    "lede": "4 つの道から 1 つ選んでください。どれもこのサイトの実在のページが開きます。",
+    "forLabel": "対象",
+    "note": "選択は保存されません。このページは何も記録しません。"
   },
   "ostinatoDemo": {
-    "kicker": "Rhythm feel try-out",
-    "title": "Tap along with a beat.",
-    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
-    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
-    "start": "Start the beat",
-    "tapButton": "Tap here on the beat",
-    "tapHint": "Space, Enter, click or touch all work.",
-    "countIn": "Listen first. Taps count after the lead-in.",
-    "running": "The beat is playing. Tap along.",
-    "perfect": "Perfect",
-    "good": "Good",
-    "miss": "Missed",
-    "early": "{ms} ms early",
-    "late": "{ms} ms late",
-    "last": "Last tap",
-    "accuracy": "Timing accuracy: {pct}%",
-    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
-    "resultHeading": "Round result",
-    "announceDone": "Round finished. {summary}. {accuracy}.",
-    "restart": "Try again",
-    "micLabel": "Also listen with the microphone (optional)",
-    "micOn": "Microphone is on. Clap or tap a surface.",
-    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+    "kicker": "リズム感を試す",
+    "title": "ビートに合わせてタップ。",
+    "intro": "スタートを押してビートを聴き、Space、Enter、クリック、タッチでタップします。タップごとにタイミングの判定が付き、最後に合計が表示されます。",
+    "note": "このページ上の小さなお試しです。アプリではなく、何かの測定でもありません。何もブラウザの外へ送信されず、何も保存されません。",
+    "start": "ビートを始める",
+    "tapButton": "ビートに合わせてここをタップ",
+    "tapHint": "Space、Enter、クリック、タッチのどれでも使えます。",
+    "countIn": "まずは聴いてください。カウントインのあとのタップが数えられます。",
+    "running": "ビートが流れています。合わせてタップしてください。",
+    "perfect": "パーフェクト",
+    "good": "グッド",
+    "miss": "ミス",
+    "early": "{ms} ms 早い",
+    "late": "{ms} ms 遅い",
+    "last": "直前のタップ",
+    "accuracy": "タイミングの正確さ: {pct}%",
+    "summary": "パーフェクト: {perfect}、グッド: {good}、ミス: {miss}",
+    "resultHeading": "ラウンドの結果",
+    "announceDone": "ラウンド終了。{summary}。{accuracy}。",
+    "restart": "もう一度試す",
+    "micLabel": "マイクでも聴き取る(任意)",
+    "micOn": "マイクがオンです。手を叩くか、面をたたいてください。",
+    "micNote": "マイクは必須ではありません。音は端末内にとどまり、録音も送信もされません。ヘッドホンを使うと、ビートがマイクに入りません。"
   },
   "lifeosDemo": {
-    "kicker": "Synthetic decision and reminder try-out",
-    "title": "Pick a decision, preview its reminder.",
-    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
-    "badge": "Synthetic example",
-    "cardsLegend": "Example decision card",
-    "card1": "Moving date",
-    "card2": "Wardrobe colour choice",
-    "card3": "Book club day",
-    "customLabel": "Or name your own example card (optional)",
-    "customHint": "Do not type anything real. An example name is enough.",
-    "whenLegend": "When should the reminder arrive?",
-    "whenDay": "Tomorrow morning",
-    "whenWeek": "One week from now, in the morning",
-    "preview": "Reminder time: {when}",
-    "setButton": "Set the reminder (simulation)",
-    "doneHeading": "Reminder set (simulation)",
-    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
-    "announceDone": "Reminder set, simulation. {title}: {when}.",
-    "restart": "Try again"
+    "kicker": "架空の決定とリマインダーのお試し",
+    "title": "決定を選んで、リマインダーを確認。",
+    "intro": "例の決定カードを選ぶか、自分で例の名前を付けてください。リマインダーがいつ届くかを確認し、設定済みの状態を見られます。",
+    "note": "小さなお試しで、アプリそのものではありません。決定カードは架空のものです。実際のリマインダーは設定されず、このお試しはデータを保存も送信もしません。",
+    "badge": "架空の例",
+    "cardsLegend": "例の決定カード",
+    "card1": "引っ越しの日",
+    "card2": "クローゼットの色選び",
+    "card3": "読書会の日",
+    "customLabel": "または、自分で例のカード名を付ける(任意)",
+    "customHint": "実際の内容は入力しないでください。例の名前で十分です。",
+    "whenLegend": "リマインダーはいつ届きますか?",
+    "whenDay": "明日の朝",
+    "whenWeek": "1 週間後の朝",
+    "preview": "リマインダーの時刻: {when}",
+    "setButton": "リマインダーを設定(シミュレーション)",
+    "doneHeading": "リマインダーを設定しました(シミュレーション)",
+    "doneBody": "「{title}」のリマインダー: {when}。実際には何も設定されていません。",
+    "announceDone": "リマインダーを設定しました。シミュレーションです。{title}: {when}。",
+    "restart": "もう一度試す"
   }
 }

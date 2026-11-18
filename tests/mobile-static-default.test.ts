@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { MOBILE_STATIC_DEFAULT, MOBILE_STATIC_QUERY } from "@/components/experience/mobile-default";
+import { mayEqualEn } from "./helpers/same-as-en";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 const root = path.resolve(import.meta.dirname, "..");
@@ -13,16 +14,22 @@ describe("mobile static default (WEB-P0-03a2, ADR-003 c)", () => {
     expect(MOBILE_STATIC_QUERY).toBe("(max-width: 767px)");
   });
 
-  it("the open3d label exists in all 14 catalogues; tr/en written, the rest English fallback", () => {
+  it("the open3d label exists in all 14 catalogues; tr/en written, the other twelve translated", () => {
     const label = (locale: string) => JSON.parse(read(`messages/${locale}.json`)).experience.open3d as string;
     expect(label("tr")).toBe("3D deneyimi aç");
     expect(label("en")).toBe("Open the 3D experience");
     for (const locale of SUPPORTED_LOCALES) expect(typeof label(locale)).toBe("string");
-    for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr")) expect(label(locale)).toBe(label("en"));
+    for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr" && l !== "en")) {
+      expect(label(locale).trim()).not.toBe("");
+      if (!mayEqualEn(locale, "experience.open3d")) expect(label(locale)).not.toBe(label("en"));
+    }
     const key = (locale: string, name: string) => JSON.parse(read("messages/" + locale + ".json")).experience[name] as string;
     for (const name of ["open3dOpened", "open3dFailed"]) {
       expect(key("tr", name)).not.toBe(key("en", name));
-      for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr")) expect(key(locale, name)).toBe(key("en", name));
+      for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr" && l !== "en")) {
+        expect(key(locale, name).trim()).not.toBe("");
+        if (!mayEqualEn(locale, "experience." + name)) expect(key(locale, name)).not.toBe(key("en", name));
+      }
     }
   });
 
