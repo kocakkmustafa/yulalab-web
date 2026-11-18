@@ -17,7 +17,7 @@ import {
   type Texture,
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
-import { segmentProgress, smoothstep, STAGES } from "./timeline";
+import { CARD_DEPTH_STEP, segmentProgress, smoothstep, STAGES } from "./timeline";
 import { resolveWallTint, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
@@ -416,7 +416,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
   const blade = frame.world.bladeProgress;
   const wordmarkZ = frame.progress < STAGES.portfolio[0]
     ? -1.25
-    : -2.35 - frame.productFloat * 1.36;
+    : -2.35 - frame.productFloat * CARD_DEPTH_STEP;
 
   return (
     <group>

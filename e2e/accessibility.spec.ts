@@ -51,13 +51,13 @@ const ROUTES = [
   ["home", "/"],
   ["products index", "/projects"],
   ["arabic home (rtl)", "/ar"],
-  ["live product", "/projects/burunfarki"],
+  ["live product", "/projects/lifeos"],
   ["research product", "/projects/choreia"],
   ["privacy", "/privacy"],
   ["transparency", "/transparency"],
   ["contact", "/contact"],
   ["home (en)", "/en"],
-  ["live product (en)", "/en/projects/burunfarki"],
+  ["live product (en)", "/en/projects/lifeos"],
 ] as const;
 
 for (const [label, path] of ROUTES) {

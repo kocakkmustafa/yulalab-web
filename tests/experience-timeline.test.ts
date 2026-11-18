@@ -1,5 +1,6 @@
 import { STORYBOARD, scrollProgressForTimeline, timelineProgressForScroll } from "@/components/experience/storyboard";
 import { describe, expect, it } from "vitest";
+import { SCENE_PRODUCT_COUNT } from "@/components/experience/timeline";
 import { Color, Euler, PerspectiveCamera, Vector3 } from "three";
 import {
   glyphViewportPose,
@@ -169,10 +170,10 @@ describe("reference-faithful experience timeline", () => {
     expect(segmentProgress(0.6, 0.5, 0.5)).toBe(1);
   });
 
-  it("gives all eight products an equal, stable focus slot", () => {
+  it("gives all scene products an equal, stable focus slot", () => {
     const [start, end] = STAGES.portfolio;
-    for (let index = 0; index < 8; index += 1) {
-      const center = start + ((index + 0.5) / 8) * (end - start);
+    for (let index = 0; index < SCENE_PRODUCT_COUNT; index += 1) {
+      const center = start + ((index + 0.5) / SCENE_PRODUCT_COUNT) * (end - start);
       const frame = evaluateTimeline(center, "desktop");
       expect(frame.productIndex).toBe(index);
       expect(frame.productProgress).toBeCloseTo(0.5, 6);
@@ -183,8 +184,8 @@ describe("reference-faithful experience timeline", () => {
     const [start, end] = STAGES.portfolio;
     const epsilon = (end - start) / 1_000_000;
 
-    for (let incoming = 1; incoming < 8; incoming += 1) {
-      const boundary = start + (incoming / 8) * (end - start);
+    for (let incoming = 1; incoming < SCENE_PRODUCT_COUNT; incoming += 1) {
+      const boundary = start + (incoming / SCENE_PRODUCT_COUNT) * (end - start);
       expect(evaluateTimeline(boundary - epsilon, "desktop").productIndex).toBe(incoming - 1);
 
       const frame = evaluateTimeline(boundary, "desktop");
@@ -249,10 +250,10 @@ describe("reference-faithful experience timeline", () => {
     expect(crossings).toBe(1);
   });
 
-  it("gives all eight proof cards an equal, stable focus slot", () => {
+  it("gives all scene proof cards an equal, stable focus slot", () => {
     const [start, end] = STAGES.proof;
-    for (let index = 0; index < 8; index += 1) {
-      const center = start + ((index + 0.5) / 8) * (end - start);
+    for (let index = 0; index < SCENE_PRODUCT_COUNT; index += 1) {
+      const center = start + ((index + 0.5) / SCENE_PRODUCT_COUNT) * (end - start);
       const frame = evaluateTimeline(center, "desktop");
       expect(frame.proofIndex).toBe(index);
       expect(frame.proofProgress).toBeCloseTo(0.5, 6);
@@ -476,7 +477,7 @@ describe("reference-faithful experience timeline", () => {
       camera.updateProjectionMatrix();
       camera.updateMatrixWorld(true);
 
-      for (let index = 0; index < 8; index += 1) {
+      for (let index = 0; index < SCENE_PRODUCT_COUNT; index += 1) {
         const pose = proofLayoutPose(index, mode);
         const halfWidth = 3.9 / 2;
         const halfHeight = 2.65 / 2;
@@ -543,7 +544,7 @@ describe("spatial portfolio composition", () => {
     it(`keeps the focused primary media bounds within the gallery zone at ${width}x${height}`, () => {
       const widths: number[] = [];
       for (let index = 0; index < 8; index++) {
-        const progress = 0.085 + ((index + 0.5) / 8) * (0.505 - 0.085);
+        const progress = 0.085 + ((index + 0.5) / SCENE_PRODUCT_COUNT) * (0.505 - 0.085);
         const pose = interpolateViewportCamera(progress, width);
         const layout = portfolioViewportComposition(pose, width, height, -1.25 - index * 1.36);
         const camera = new PerspectiveCamera(pose.fov, width / height, 0.05, 130);

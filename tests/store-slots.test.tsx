@@ -43,7 +43,7 @@ describe("storeSlotsOf", () => {
   });
 
   it("a web product without a store listing gets no store row", () => {
-    expect(storeSlotsOf(bySlug("burunfarki"))).toBeUndefined();
+    expect(storeSlotsOf({ ...bySlug("lifeos"), links: [{ kind: "web", href: "https://example.test" }] } as unknown as ProjectConfig)).toBeUndefined();
   });
 
   it("never exposes a closed-test / TestFlight listing", () => {
@@ -211,8 +211,6 @@ describe("ProductUniverse store row", () => {
     expect(ostinato.getByText(`Google Play · ${soon}`)).toBeTruthy();
     expect(ostinato.queryAllByRole("link").map((a) => a.getAttribute("href"))).toEqual(["/projects/ostinato"]);
 
-    // a web product keeps its row without any store chips
-    expect(document.querySelector('[data-slug="burunfarki"] [data-testid="universe-row-stores"]')).toBeNull();
     expect(screen.getAllByTestId("universe-row-stores").length).toBe(7);
   });
 });

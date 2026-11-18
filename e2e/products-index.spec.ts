@@ -18,10 +18,10 @@ for (const [locale, path, comingSoon, live, beta, statusWords] of [
       await page.goto(path);
     });
 
-    test("shows all eight products in one grid without publication grouping", async ({ page }) => {
+    test("shows all seven products in one grid without publication grouping", async ({ page }) => {
       await expect(page.locator("details")).toHaveCount(0);
       const headings = page.getByRole("heading", { level: 3 });
-      await expect(headings).toHaveCount(8);
+      await expect(headings).toHaveCount(7);
       await expect(page.locator("main")).not.toContainText(statusWords);
     });
 
@@ -29,7 +29,7 @@ for (const [locale, path, comingSoon, live, beta, statusWords] of [
       // scoped to the rows: the filter buttons repeat the same three words
       const rows = page.getByTestId("universe-row");
       await expect(rows.getByText(comingSoon, { exact: true })).toHaveCount(STORE_LESS.length);
-      await expect(rows.getByText(live, { exact: true })).toHaveCount(2);
+      await expect(rows.getByText(live, { exact: true })).toHaveCount(1);
       await expect(rows.getByText(beta, { exact: true })).toHaveCount(1);
     });
 
@@ -90,7 +90,7 @@ test.describe("product universe", () => {
   test("mobile: no panel, rows are plain links to the product pages", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/projects?katman=lifeos");
-    await expect(page.getByTestId("universe-row")).toHaveCount(8);
+    await expect(page.getByTestId("universe-row")).toHaveCount(7);
     await expect(page.getByTestId("universe-panel")).toHaveCount(0);
     await expect(page.getByTestId("universe-panel-open")).toHaveCount(0);
     await expect(page.getByRole("link", { name: "LifeOS", exact: true }).first()).toHaveAttribute("href", /\/projects\/lifeos$/);
@@ -117,9 +117,9 @@ test.describe("product pitch", () => {
     });
   }
 
-  test("leaves Burun Farkı without a pitch", async ({ page }) => {
+  test("Burun Farkı page is gone: permanent redirect to the products list", async ({ page }) => {
     await page.goto("/projects/burunfarki");
+    await expect(page).toHaveURL(/\/projects$/);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-    await expect(page.getByTestId("product-pitch")).toHaveCount(0);
   });
 });

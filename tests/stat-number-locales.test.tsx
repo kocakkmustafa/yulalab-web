@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, render } from "@testing-library/react";
 import { StatCards } from "@/components/projects/StatCards";
-import { projects } from "@/data/projects";
+import { burunfarki as config } from "@/data/projects/burunfarki";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProjectStat } from "@/lib/types";
 import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
@@ -11,8 +11,7 @@ import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS 
 vi.mock("@/lib/localized", () => ({ localized: (value: { en: string }) => value.en }));
 afterEach(cleanup);
 const labels = { verified: "verified", needsReverification: "needs re-verification" };
-const config = projects.find((project) => project.slug === "burunfarki")!;
-const realRecord = publicRegistry.find((product) => product.slug === config.slug)!;
+const realRecord = publicRegistry.find((product) => product.slug === config.slug);
 // Number formatting is exercised on an in-window synthetic claim (the real Burun
 // Farkı claims were removed 2026-11-18), shaped like the one the figures came from.
 const record = { ...FIXTURE_ACCURACY_RECORD, claims: FIXTURE_ACCURACY_RECORD.claims.map((claim) => ({ ...claim, expiresAt: "2100-01-01" })) };
@@ -51,7 +50,7 @@ describe("explicit numeric stat presentation", () => {
   });
 
   it("the real Burun Farkı record no longer carries the claims", () => {
-    expect(realRecord.claims).toEqual([]);
+    expect(realRecord).toBeUndefined();
   });
 
   it("keeps numeric metadata tied to the original evidence quantities and labels", () => {

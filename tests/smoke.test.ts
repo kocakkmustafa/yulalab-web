@@ -13,8 +13,8 @@ function isNonEmpty(s: LocalizedString | undefined, field: string, ctx: string) 
 }
 
 describe("public registry precursor — project data integrity", () => {
-  it("has exactly 8 products (3 shipped, 5 coming-soon)", () => {
-    expect(projects).toHaveLength(8);
+  it("has exactly 7 products (1 live, 1 beta, 5 coming-soon)", () => {
+    expect(projects).toHaveLength(7);
   });
 
   it("every slug is unique", () => {
@@ -22,11 +22,9 @@ describe("public registry precursor — project data integrity", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
   });
 
-  it("order values are unique and dense (1..N)", () => {
-    const orders = projects.map((p) => p.order).sort((a, b) => a - b);
-    expect(orders).toEqual(
-      Array.from({ length: projects.length }, (_, i) => i + 1),
-    );
+  it("order values are unique (ProjectConfig.order is superseded by PRODUCT_ORDER)", () => {
+    const orders = projects.map((p) => p.order);
+    expect(new Set(orders).size).toBe(orders.length);
   });
 
   it("every product has a valid status", () => {
@@ -36,10 +34,10 @@ describe("public registry precursor — project data integrity", () => {
     }
   });
 
-  it("status mix matches the public count claim (2 live, 1 beta, 5 coming-soon)", () => {
+  it("status mix matches the public count claim (1 live, 1 beta, 5 coming-soon)", () => {
     const count = (status: string) =>
       projects.filter((p) => p.status === status).length;
-    expect(count("live")).toBe(2);
+    expect(count("live")).toBe(1);
     expect(count("beta")).toBe(1);
     expect(count("coming-soon")).toBe(5);
   });

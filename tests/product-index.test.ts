@@ -108,7 +108,7 @@ describe("verification recency", () => {
 describe("against the real registry", () => {
   it("puts today's three shipped products first and the five Motion apps in research", () => {
     const { primary, research, archived } = partitionForIndex(publicRegistry);
-    expect(primary.map((r) => r.slug).sort()).toEqual(["braavolabs", "burunfarki", "lifeos"]);
+    expect(primary.map((r) => r.slug).sort()).toEqual(["braavolabs", "lifeos"]);
     expect(research).toHaveLength(5);
     expect(archived).toHaveLength(0);
     // Beta must not outrank a live product.
@@ -132,6 +132,6 @@ describe("single product order source (WEB-UX-05a)", () => {
   it("splits featured from portfolio regardless of input order", () => {
     const g = groupProducts([...projects].reverse());
     expect(g.featured.map((p) => p.slug)).toEqual(["lifeos", "braavolabs", "ostinato"]);
-    expect(g.portfolio.map((p) => p.slug)).toEqual(["burunfarki", "gravita", "lissom", "jablab", "choreia"]);
+    expect(g.portfolio.map((p) => p.slug)).toEqual(["gravita", "lissom", "jablab", "choreia"]);
   });
 });

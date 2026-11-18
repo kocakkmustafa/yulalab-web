@@ -44,7 +44,7 @@ describe("buildRegistryExport (SEC-WEB-01b)", () => {
     const ids = out.map((c) => c.id);
     expect(ids).not.toContain("burunfarki-topk-accuracy");
     expect(ids).not.toContain("burunfarki-explainability");
-    expect(publicRegistry.find((r) => r.slug === "burunfarki")!.claims).toEqual([]);
+    expect(publicRegistry.find((r) => r.slug === "burunfarki")).toBeUndefined();
     // The renewed claims are exported untouched until their own date.
     for (const src of claims) expect(out.find((c) => c.id === src.id)).toEqual(src);
   });

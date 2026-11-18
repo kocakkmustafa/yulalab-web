@@ -23,7 +23,7 @@ for (const [locale, path, heading] of [
 
     test("shows each claim with its provenance", async ({ page }) => {
       const section = page.locator("section", { has: page.getByRole("heading", { name: heading }) });
-      await expect(section.getByRole("heading", { name: "Burun Farkı", level: 3 })).toBeVisible();
+      await expect(section.getByRole("heading", { name: "Burun Farkı", level: 3 })).toHaveCount(0);
       const items = section.getByRole("listitem");
       await expect(items.first()).toBeVisible();
       const count = await items.count();
@@ -47,7 +47,7 @@ for (const [locale, path, heading] of [
   });
 }
 
-for (const slug of ["burunfarki", "lifeos", "braavolabs", "choreia"]) {
+for (const slug of ["lifeos", "braavolabs", "choreia"]) {
   test(`the ${slug} product page carries no dated claims or publication status`, async ({ page }) => {
     await page.goto(`/en/projects/${slug}`);
     await expect(page.getByRole("heading", { name: "Claims and sources" })).toHaveCount(0);

@@ -117,13 +117,12 @@ describe.each(["fr", "ja", "ar"] as const)("experience catalogue integration in 
 // are index-based). Literal list = main 069477c, deliberately not imported.
 describe("homepage scene product order", () => {
   it("hands the scene the original order and filled live/beta labels", async () => {
-    const original = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
+    const original = ["braavolabs", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
     const { SCENE_PRODUCT_ORDER } = await import("@/lib/product-index");
     expect([...SCENE_PRODUCT_ORDER]).toEqual(original);
     const { products } = await load("en");
     expect(products.map((p) => p.slug)).toEqual(original);
     const label = (slug: string) => products.find((p) => p.slug === slug)!.lifecycleLabel;
-    expect(label("burunfarki")).toBe(en.status.live);
     expect(label("lifeos")).toBe(en.status.live);
     expect(label("braavolabs")).toBe(en.status.beta);
     expect(label("ostinato")).toBe(en.status.comingSoon);

@@ -69,7 +69,6 @@ export const PRODUCT_ORDER = [
   "lifeos",
   "braavolabs",
   "ostinato",
-  "burunfarki",
   "gravita",
   "lissom",
   "jablab",
@@ -113,7 +112,6 @@ export function groupProducts<T extends { slug: string }>(items: readonly T[]): 
  */
 export const SCENE_PRODUCT_ORDER = [
   "braavolabs",
-  "burunfarki",
   "lifeos",
   "gravita",
   "lissom",

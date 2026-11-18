@@ -59,9 +59,8 @@ const PRODUCT_NAME: Record<string, string> = {
   ostinato: "Ostinato",
 };
 
-// Burun Farkı is not part of this scene; the rest of the portfolio is listed
-// in registry order, status read from each record.
-const STAGE_PRODUCTS = projects.filter((p) => p.slug !== "burunfarki");
+// The whole portfolio is listed in registry order, status read from each record.
+const STAGE_PRODUCTS = projects;
 
 const OTHERS = ["lissom", "gravita", "choreia", "jablab"]
   .map((slug) => projects.find((p) => p.slug === slug)?.name)

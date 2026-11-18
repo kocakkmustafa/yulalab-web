@@ -42,7 +42,7 @@ if (open) {
       await expect(page.getByRole("heading", { level: 2, name: /Ana ürünler/ })).toBeVisible();
       await expect(page.getByRole("heading", { level: 2, name: /Portföy/ })).toBeVisible();
       const items = page.locator('section[aria-labelledby^="grp-"] li');
-      await expect(items).toHaveCount(8);
+      await expect(items).toHaveCount(7);
       await expect(items.first()).toContainText("LifeOS");
       await expect(items.first()).toContainText("Yayında");
       await expect(items.filter({ hasText: "Ostinato" })).toContainText("Yakında");
@@ -50,7 +50,7 @@ if (open) {
       await expect(items).toHaveCount(1);
       await expect(page).toHaveURL(/durum=beta/);
       await page.getByRole("button", { name: "Hepsi" }).click();
-      await expect(items).toHaveCount(8);
+      await expect(items).toHaveCount(7);
       await expect(page.locator("#universe-panel")).toBeVisible();
       await items.filter({ hasText: "Braavolabs" }).getByRole("button", { name: "Önizle" }).click();
       await expect(page).toHaveURL(/katman=braavolabs/);
@@ -64,7 +64,7 @@ if (open) {
       await page.setViewportSize({ width: 390, height: 844 });
       await expect(page.locator("#universe-panel")).toHaveCount(0);
       await expect(page.getByRole("button", { name: "Önizle" })).toHaveCount(0);
-      await expect(page.locator('section[aria-labelledby^="grp-"] li')).toHaveCount(8);
+      await expect(page.locator('section[aria-labelledby^="grp-"] li')).toHaveCount(7);
       expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     });
   });

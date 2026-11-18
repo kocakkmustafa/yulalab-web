@@ -28,7 +28,6 @@ afterEach(cleanup);
 type PillKey = "live" | "beta" | "comingSoon";
 const EXPECTED: Record<string, { lifecycle: string; pill: PillKey }> = {
   braavolabs: { lifecycle: "beta", pill: "beta" },
-  burunfarki: { lifecycle: "live", pill: "live" },
   lifeos: { lifecycle: "live", pill: "live" },
   gravita: { lifecycle: "research", pill: "comingSoon" },
   lissom: { lifecycle: "research", pill: "comingSoon" },

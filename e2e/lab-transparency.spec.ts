@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
  * page status link that deep-links to them, and the placement of the
  * "capital / outside-client" sentence (only /studio and /transparency).
  */
-const SLUGS = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
+const SLUGS = ["braavolabs", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
 const SENTENCE = /Sermaye ya da yatırım sağlamıyoruz|We do not provide capital or investment/;
 
 for (const [locale, prefix] of [["tr", ""], ["en", "/en"]] as const) {

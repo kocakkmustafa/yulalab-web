@@ -38,7 +38,6 @@ import type { Locale, ProjectConfig } from "@/lib/types";
  * against black while still telling the products apart.
  */
 const ACCENT: Record<string, string> = {
-  burunfarki: "#7FD8B0",
   braavolabs: "#D8B87F",
 };
 

@@ -102,13 +102,7 @@ describe("product pitch copy", () => {
     expect(pitch.textContent).toContain(copy.pitch1Body);
   });
 
-  it("leaves pages without a pitch unchanged", () => {
-    const tr = catalogues.tr;
-    render(
-      <NextIntlClientProvider locale="tr" messages={tr} timeZone="Europe/Istanbul">
-        <ProductPage project={getProjectBySlug("burunfarki")!} />
-      </NextIntlClientProvider>,
-    );
-    expect(screen.queryByTestId("product-pitch")).toBeNull();
+  it("Burun Farkı has no product page any more (founder, 2026-11-18)", () => {
+    expect(getProjectBySlug("burunfarki")).toBeUndefined();
   });
 });

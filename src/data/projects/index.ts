@@ -1,7 +1,6 @@
 import type { ProjectConfig } from "@/lib/types";
 import { sortByProductOrder } from "@/lib/product-index";
 import { braavolabs } from "./braavolabs";
-import { burunfarki } from "./burunfarki";
 import { lifeos } from "./lifeos";
 import { gravita } from "./gravita";
 import { lissom } from "./lissom";
@@ -13,7 +12,6 @@ import { choreia } from "./choreia";
 // WEB-UX-05a); ProjectConfig.order is superseded and not read here.
 export const projects: ProjectConfig[] = sortByProductOrder([
   braavolabs,
-  burunfarki,
   lifeos,
   gravita,
   lissom,

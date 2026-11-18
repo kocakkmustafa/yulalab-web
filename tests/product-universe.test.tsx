@@ -79,7 +79,7 @@ describe("product-universe logic", () => {
     expect(matchesFilter("beta", "live")).toBe(false);
   });
   it("derives the summary from the catalogue, not from typed numbers", () => {
-    expect(summariseStatus(projects)).toEqual({ live: 2, beta: 1, soon: 5 });
+    expect(summariseStatus(projects)).toEqual({ live: 1, beta: 1, soon: 5 });
   });
   it("parses ?katman= only for known slugs and keeps other params", () => {
     const slugs = projects.map((p) => p.slug);
@@ -95,7 +95,7 @@ describe("product-universe logic", () => {
 describe("ProductUniverse (desktop)", () => {
   beforeEach(() => setWide(true));
 
-  it("lists all eight products in the single order, grouped, with a pill each", () => {
+  it("lists all seven products in the single order, grouped, with a pill each", () => {
     mount();
     for (const i of ITEMS) {
       expect(screen.getByRole("link", { name: i.name }).getAttribute("href")).toBe(`/projects/${i.slug}`);
@@ -103,7 +103,7 @@ describe("ProductUniverse (desktop)", () => {
     const rows = screen.getAllByTestId("universe-row").map((r) => r.getAttribute("data-slug"));
     expect(rows).toEqual(ITEMS.map((i) => i.slug));
     expect(within(screen.getByTestId("universe-group-featured")).getAllByTestId("universe-row")).toHaveLength(3);
-    expect(screen.getByTestId("status-summary").textContent).toBe("2 live · 1 beta · 5 coming soon");
+    expect(screen.getByTestId("status-summary").textContent).toBe("1 live · 1 beta · 5 coming soon");
   });
 
   it("draws no .glass while the panel is closed", () => {
@@ -160,7 +160,7 @@ describe("ProductUniverse (desktop)", () => {
     expect(screen.queryByTestId("universe-panel-open")).toBeNull();
     expect(window.location.search).toBe("");
     // the summary stays the whole catalogue
-    expect(screen.getByTestId("status-summary").textContent).toBe("2 live · 1 beta · 5 coming soon");
+    expect(screen.getByTestId("status-summary").textContent).toBe("1 live · 1 beta · 5 coming soon");
     fireEvent.click(within(group).getByRole("button", { name: "Coming soon" }));
     expect(screen.getAllByTestId("universe-row")).toHaveLength(5);
   });
@@ -187,6 +187,6 @@ describe("ProductUniverse (mobile / no panel)", () => {
   it("the filter still works", () => {
     mount("tr");
     fireEvent.click(within(screen.getByTestId("universe-filter")).getByRole("button", { name: "Yayında" }));
-    expect(screen.getAllByTestId("universe-row")).toHaveLength(2);
+    expect(screen.getAllByTestId("universe-row")).toHaveLength(1);
   });
 });

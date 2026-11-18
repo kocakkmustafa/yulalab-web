@@ -14,7 +14,7 @@ export * from "./universe-core";
 /** ADR-004 §8 #5: "Ana ürünler" = LifeOS, Braavolabs, Ostinato (in this order). */
 export const MAIN_SLUGS = ["lifeos", "braavolabs", "ostinato"] as const;
 /** Portfolio order (04-design E3 wireframe). */
-export const PORTFOLIO_SLUGS = ["burunfarki", "gravita", "lissom", "jablab", "choreia"] as const;
+export const PORTFOLIO_SLUGS = ["gravita", "lissom", "jablab", "choreia"] as const;
 export const UNIVERSE_ORDER: readonly string[] = [...MAIN_SLUGS, ...PORTFOLIO_SLUGS];
 
 const SURFACE_LABEL: Record<SurfaceKind, string> = {

@@ -48,7 +48,6 @@ const STATIC_ROUTES = [
 
 const PRODUCT_SLUGS = [
   "braavolabs",
-  "burunfarki",
   "lifeos",
   "gravita",
   "lissom",

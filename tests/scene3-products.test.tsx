@@ -89,11 +89,11 @@ describe("Scene 3 flagship cells", () => {
     expect(html).toContain('href="/projects/braavolabs"');
   });
 
-  it("keeps the other five products reachable through the index link", () => {
+  it("keeps the other four products reachable through the index link", () => {
     const html = render(OPEN);
     expect(html).toContain('data-scene3-all="true"');
     expect(html).toContain('href="/en/projects"');
-    expect(PRODUCT_ORDER.filter((s) => !(FLAGSHIP_SLUGS as readonly string[]).includes(s))).toHaveLength(5);
+    expect(PRODUCT_ORDER.filter((s) => !(FLAGSHIP_SLUGS as readonly string[]).includes(s))).toHaveLength(4);
   });
 
   it("says verified only while a claim is open; after every window closed it says lapsed", () => {
@@ -129,8 +129,8 @@ describe("proofBadgeOf / presentedKindOf", () => {
     expect(proofBadgeOf(lifeos, AFTER_ALL).state).toBe("lapsed");
     expect(presentedKindOf(lifeos, "no-such-claim", OPEN)).toBeUndefined();
   });
-  it("a planned claim is dropped from the journey, burunfarki- id prefix or not (no exemption); a lapsed one travels redacted", () => {
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki") as ProductPublicRecord;
+  it("a planned claim is dropped from the journey, id prefix or not (no exemption); a lapsed one travels redacted", () => {
+    const bf = lifeos as ProductPublicRecord;
     const open = day(bf.claims.map((c) => c.expiresAt as string).sort()[0], -1);
     const mk = (prefix: string): ProductPublicRecord => ({
       ...bf,
@@ -138,7 +138,7 @@ describe("proofBadgeOf / presentedKindOf", () => {
     });
     expect(toExperienceClaims(mk("burunfarki"), "en", open)).toHaveLength(0);
     expect(toExperienceClaims(mk("other"), "en", open)).toHaveLength(0);
-    // Declared state aside, Burun Farkı's real lapsed claims travel redacted like any lapsed claim.
+    // Declared state aside, real lapsed claims travel redacted like any lapsed claim.
     const afterBf = day(bf.claims.map((c) => c.expiresAt as string).sort().pop() as string, 1);
     const lapsed = toExperienceClaims(bf, "en", afterBf);
     expect(lapsed).toHaveLength(bf.claims.length);

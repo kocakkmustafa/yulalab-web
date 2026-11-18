@@ -5,7 +5,7 @@ import { scrollProgressForTimeline } from "../src/components/experience/storyboa
 test.use({ hasTouch: true });
 
 const ROOT = '[data-yula-experience="true"]';
-const PRODUCTS = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
+const PRODUCTS = ["braavolabs", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
 
 test.beforeEach(async ({ page }) => {
   await page.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname)
@@ -99,7 +99,7 @@ for (const viewport of [{ width: 390, height: 667 }, { width: 1440, height: 900 
       const origin = await page.evaluate(() => performance.timeOrigin);
       const evidence = [];
       for (const [index, slug] of PRODUCTS.entries()) {
-        await scrollTimeline(page, 0.085 + ((index + 0.5) / 8) * (0.505 - 0.085));
+        await scrollTimeline(page, 0.085 + ((index + 0.5) / PRODUCTS.length) * (0.505 - 0.085));
         await expect(root).toHaveAttribute("data-active-product", slug);
         const panel = page.locator(`article[data-product="${slug}"][data-active="true"]`);
         await expect(panel).toBeVisible();
@@ -166,7 +166,7 @@ test("English touch scrolling survives compact layouts", { tag: "@hardware-webgl
   for(const viewport of [{width:667,height:375},{width:320,height:568}]) {
     await page.setViewportSize(viewport);
     await expect(page.locator("[data-experience-static]")).toBeVisible();
-    expect(await page.locator("[data-experience-static] #experience-portfolio article").count()).toBe(8);
+    expect(await page.locator("[data-experience-static] #experience-portfolio article").count()).toBe(PRODUCTS.length);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     const summary = page.locator("[data-experience-static] header summary");
     await summary.tap();

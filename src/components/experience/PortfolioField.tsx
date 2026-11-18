@@ -14,7 +14,14 @@ import {
 } from "three";
 import { presentationImageUrl } from "./useShowcaseTextures";
 import { makeIdentityPresentation, type PresentationImage } from "./presentation-canvas";
-import { clamp01, interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
+import {
+  CARD_DEPTH_STEP,
+  clamp01,
+  interpolateViewportCamera,
+  SCENE_PRODUCT_COUNT,
+  segmentProgress,
+  smoothstep,
+} from "./timeline";
 import { developmentViewportComposition, portfolioViewportComposition, proofLayoutPose, shouldLoadPortfolioMedia, viewportMobileMix } from "./layout";
 import type {
   ExperienceMode,
@@ -628,7 +635,7 @@ function ProductCard({
             opacity={opacity}
             product={product}
             tier={tier}
-            variant={(productIndex - 3 + 5) % 5}
+            variant={(productIndex - 2 + 5) % 5}
           />
         </group>
       </group>
@@ -660,7 +667,7 @@ function productPose(
   const distance = Math.abs(difference);
   const focus = 1 - smoothstep(clamp01(distance));
   const orbitAngle = difference * 0.6;
-  const focusPlane = -1.25 - frame.productFloat * 1.36;
+  const focusPlane = -1.25 - frame.productFloat * CARD_DEPTH_STEP;
   const arcPosition: Vec3 = [
     composition.center[0] + Math.sin(orbitAngle) * composition.width * 1.65,
     composition.center[1] + Math.sin(orbitAngle * 0.72) * 0.24,
@@ -693,7 +700,7 @@ export function PortfolioField({
     interpolateViewportCamera(frame.progress, viewport.width, mode),
     viewport.width,
     viewport.height,
-    -1.25 - frame.productFloat * 1.36,
+    -1.25 - frame.productFloat * CARD_DEPTH_STEP,
   );
   const enter = smoothstep(segmentProgress(frame.progress, 0.065, 0.105));
   const leave = 1 - smoothstep(segmentProgress(frame.progress, 0.575, 0.615));
@@ -707,7 +714,7 @@ export function PortfolioField({
     () => new Set(),
   );
   const eligibleMediaProducts = useMemo(
-    () => products.slice(0, 8).flatMap((product, index) =>
+    () => products.slice(0, SCENE_PRODUCT_COUNT).flatMap((product, index) =>
       (product.screenshots.length > 0 || Boolean(product.icon) || Boolean(product.developmentPreviews?.length)) && shouldLoadPortfolioMedia(
         fieldOpacity,
         Math.abs(index - frame.productFloat),
@@ -735,7 +742,7 @@ export function PortfolioField({
   const assetPaths = useMemo(
     () => [
       ...new Set(
-        products.slice(0, 8).flatMap((product, index) =>
+        products.slice(0, SCENE_PRODUCT_COUNT).flatMap((product, index) =>
           requestedMediaProducts.has(index)
             ? product.screenshots.length > 0
               ? product.screenshots.map((shot) => shot.path)
@@ -776,9 +783,9 @@ export function PortfolioField({
 
   return (
     <group visible={fieldOpacity > 0.001}>
-      {products.slice(0, 8).map((product, index) => {
+      {products.slice(0, SCENE_PRODUCT_COUNT).map((product, index) => {
         const mediaComposition = product.developmentPreviews?.length
-          ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * 1.36)
+          ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * CARD_DEPTH_STEP)
           : composition;
         const pose = productPose(index, frame, mode, mediaComposition);
         const portfolioDistance = Math.abs(index - frame.productFloat);
