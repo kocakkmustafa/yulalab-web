@@ -546,6 +546,10 @@ button:hover .arrow-nudge {
   .page-enter {
     animation-duration: 1ms;
   }
+  /* pointer-sheen fade on glass cards (Lab cards included): shown or hidden at once */
+  .glass::before {
+    transition: none;
+  }
   .route-veil {
     display: none;
   }
