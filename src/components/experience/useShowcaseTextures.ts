@@ -10,14 +10,12 @@ export function presentationImageUrl(path: string): string {
 
 /** Real, dated source frames. Each surface moves independently; no painted UI or collage. */
 export const serviceMediaPaths = [
-  "/projects/braavolabs/screenshot-audit-trail.png",
   "/projects/gravita/preview-native-20261016.png",
   "/projects/lissom/preview-native-20261016.png",
   "/projects/jablab/preview-native-20261016.png",
   "/projects/ostinato/preview-native-20261016.png",
   "/projects/choreia/preview-native-20261016.png",
   "/projects/lifeos/preview-onboarding-20261016.png",
-  "/projects/braavolabs/screenshot-builder.png",
 ] as const;
 
 function sourceTexture(image: HTMLImageElement, path: string, resolution: number) {

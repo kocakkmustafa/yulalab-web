@@ -39,21 +39,9 @@ export const braavolabs: ProjectConfig = {
     logo: "/projects/braavolabs/logo.png",
     icon: "/projects/braavolabs/icon.png",
     ogImage: "/projects/braavolabs/og.png",
-    // Real captures of the product UI, not mockups — taken 2026-11-18 from a
-    // local build of braavolabs/platform main (cc3fc09) with demo data only
-    // ("Demo Growth Co", invented agent/step text; no personal data).
-    screenshots: [
-      {
-        src: "/projects/braavolabs/screenshot-audit-trail.png",
-        alt: "Braavolabs Çalıştırma Detayı ekranı: beş adımlı bir denetim izi; her adımın durumu, araç çağrısı sayısı ve maliyeti ile yanda çalıştırma metadatası (demo veri).",
-        kind: "product",
-      },
-      {
-        src: "/projects/braavolabs/screenshot-builder.png",
-        alt: "Braavolabs AI Şirketi Oluştur ekranı: fikrin yazıldığı açıklama kutusu (örnek metin: Instagram ve TikTok için içerik üreten ve zamanlayan bir ajans) ve Devam düğmesi.",
-        kind: "product",
-      },
-    ],
+    // Y2 captures dropped from the site 2026-11-18 (founder decision). The two PNGs stay on
+    // disk, unreferenced, because the publication-source gate cannot express a deletion.
+    screenshots: [],
   },
   features: [
     {

@@ -28,7 +28,13 @@ for (const [locale, url, disclaimer, announceAfterContent, note] of PAGES) {
       await ready(page);
       await page.waitForLoadState("networkidle");
       const requests: string[] = [];
-      page.on("request", (r) => requests.push(r.method() + " " + r.url()));
+      // The lazy design-preview images sit right above the demo; scrolling the
+      // demo into view makes the browser fetch them. That is the page's own
+      // lazy loading, not a request the demo makes, so it is not counted.
+      page.on("request", (r) => {
+        if (new URL(r.url()).pathname.includes("/design-preview-")) return;
+        requests.push(r.method() + " " + r.url());
+      });
 
       await expect(demo(page).getByTestId("plan-disclaimer")).toHaveText(disclaimer);
       const radios = demo(page).getByRole("radio");

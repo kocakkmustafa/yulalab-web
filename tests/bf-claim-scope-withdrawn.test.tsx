@@ -54,12 +54,14 @@ describe("the other products keep their screenshots", () => {
     const project = projects.find((p) => p.slug === slug)!;
     const declared = project.visuals.screenshots.filter((s) => s.kind === "product");
     const container = html(slug, "en");
-    expect(container.querySelectorAll("#ekran li img")).toHaveLength(declared.length);
+    // Design previews (data-design-previews) are not product shots and are counted separately.
+    const shots = [...container.querySelectorAll("#ekran li img")].filter((img) => !img.closest("[data-design-previews]"));
+    expect(shots).toHaveLength(declared.length);
   });
 
-  it("braavolabs still shows its two real captures", () => {
+  it("braavolabs declares no product capture after Y2 was removed (design previews are separate)", () => {
     const braavolabs = projects.find((p) => p.slug === "braavolabs")!;
-    expect(braavolabs.visuals.screenshots.filter((s) => s.kind === "product")).toHaveLength(2);
+    expect(braavolabs.visuals.screenshots.filter((s) => s.kind === "product")).toHaveLength(0);
   });
 });
 
