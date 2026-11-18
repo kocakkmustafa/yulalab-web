@@ -71,7 +71,6 @@
     "heroTitle": "Projetamos hoje os produtos de amanhã.",
     "heroDescription": "A Yula Lab é um laboratório independente que projeta produtos concebidos com IA e orientados por dados para simplificar o dia a dia. Cada projeto nasce na interseção entre estética, ética e impacto.",
     "heroMeta": {
-      "products": "8 produtos",
       "studio": "1 laboratório",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Lançamos porque está pronto, não por causa de uma data. Não ampliamos um produto sem ter certeza de que podemos sustentá-lo.",
     "manifestoReadAll": "Ler o manifesto completo",
     "projectsKicker": "04 — Projetos",
-    "projectsCount": "8 produtos · 2 disponíveis · 1 beta · 5 em breve",
     "specHeading": "Ficha técnica",
     "inspect": "Explorar",
     "visualsNote": "Interface ainda em definição · imagens na página do produto",
@@ -220,14 +218,6 @@
         "proof": "→ Primitivas · provedores · evidências datadas na página do produto",
         "detailLabel": "Trilha de auditoria",
         "detailBody": "Cada chamada de ferramenta e decisão é um registro separado; ações que envolvem dinheiro exigem aprovação humana explícita. Exporte a execução completa em CSV / JSON e confira com sua própria contabilidade."
-      },
-      "burunfarki": {
-        "label": "Metodologia aberta",
-        "title": "Os 3 principais fatores de cada previsão.",
-        "claim": "Não escondemos por que o modelo escolheu aquele cavalo. Uma ponderação baseada em regras mostra os 3 principais fatores em linguagem específica da corrida.",
-        "proof": "→ burunfark.com/dogruluk · resumo datado da medição na página do produto",
-        "detailLabel": "Painel de acompanhamento ao vivo",
-        "detailBody": "O painel de acompanhamento ao vivo mostra previsões acertadas e erradas juntas. Leia os resultados com a data da medição, a cobertura de corridas e os detalhamentos por hipódromo, pista e distância."
       },
       "lifeos": {
         "label": "Privacidade no dispositivo",

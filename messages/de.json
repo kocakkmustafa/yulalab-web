@@ -71,7 +71,6 @@
     "heroTitle": "Wir gestalten heute die Produkte von morgen.",
     "heroDescription": "Yula Lab ist ein unabhängiges Produktlabor. Wir gestalten KI-basierte, datengetriebene Produkte, die den Alltag vereinfachen. Jedes Projekt entsteht im Zusammenspiel von Ästhetik, Ethik und Wirkung.",
     "heroMeta": {
-      "products": "8 Produkte",
       "studio": "1 Labor",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Wir veröffentlichen, weil etwas bereit ist, nicht wegen eines Datums. Wir vergrößern ein Produkt erst, wenn wir sicher sind, es dauerhaft betreiben zu können.",
     "manifestoReadAll": "Das vollständige Manifest lesen",
     "projectsKicker": "04 — Projekte",
-    "projectsCount": "8 Produkte · 2 veröffentlicht · 1 Beta · 5 demnächst",
     "specHeading": "Technisches Datenblatt",
     "inspect": "Entdecken",
     "visualsNote": "Oberfläche noch in Abstimmung · Bilder auf der Produktseite",
@@ -220,14 +218,6 @@
         "proof": "→ Primitive · Anbieter · datierte Belege auf der Produktseite",
         "detailLabel": "Prüfprotokoll",
         "detailBody": "Jeder Werkzeugaufruf und jede Entscheidung erhalten eine eigene Zeile. Aktionen mit finanziellen Auswirkungen benötigen die ausdrückliche Freigabe eines Menschen. Der vollständige Durchlauf lässt sich als CSV / JSON exportieren und mit der eigenen Buchhaltung abgleichen."
-      },
-      "burunfarki": {
-        "label": "Offene Methodik",
-        "title": "Die wichtigsten 3 Faktoren jeder Prognose.",
-        "claim": "Wir verbergen nicht, warum das Modell dieses Pferd gewählt hat. Eine regelbasierte Gewichtung zeigt die wichtigsten 3 Faktoren in einer zum Rennen passenden Sprache.",
-        "proof": "→ burunfark.com/dogruluk · datierte Messzusammenfassung auf der Produktseite",
-        "detailLabel": "Live-Verfolgungsansicht",
-        "detailBody": "Die Live-Verfolgungsansicht zeigt erfolgreiche und verfehlte Prognosen gemeinsam. Lesen Sie die Ergebnisse zusammen mit Messdatum, abgedeckten Rennen und Aufschlüsselungen nach Rennbahn, Kurs und Distanz."
       },
       "lifeos": {
         "label": "Datenschutz auf dem Gerät",

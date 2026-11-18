@@ -71,7 +71,6 @@
     "heroTitle": "Nous concevons aujourd’hui les produits de demain.",
     "heroDescription": "Yula Lab est un laboratoire indépendant qui conçoit des produits pensés pour l’IA et guidés par les données afin de simplifier le quotidien. Chaque projet se construit à la croisée de l’esthétique, de l’éthique et de l’impact.",
     "heroMeta": {
-      "products": "8 produits",
       "studio": "1 laboratoire",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Un produit sort parce qu’il est prêt, pas à cause d’une date. Nous ne le faisons grandir que lorsque nous sommes sûrs de pouvoir le maintenir.",
     "manifestoReadAll": "Lire le manifeste complet",
     "projectsKicker": "04 — Projets",
-    "projectsCount": "8 produits · 2 disponibles · 1 bêta · 5 à venir",
     "specHeading": "Fiche technique",
     "inspect": "Explorer",
     "visualsNote": "Interface encore en cours de définition · visuels sur la page du produit",
@@ -220,14 +218,6 @@
         "proof": "→ Primitives · fournisseurs · preuves datées sur la page du produit",
         "detailLabel": "Journal d’audit",
         "detailBody": "Chaque appel d’outil et chaque décision constitue une ligne distincte ; les actions engageant de l’argent exigent une approbation humaine explicite. Exportez l’exécution complète en CSV / JSON et rapprochez-la de votre propre comptabilité."
-      },
-      "burunfarki": {
-        "label": "Méthodologie ouverte",
-        "title": "Les 3 principaux facteurs de chaque prédiction.",
-        "claim": "Nous ne cachons pas pourquoi le modèle a choisi ce cheval. Une pondération fondée sur des règles montre les 3 principaux facteurs dans un langage propre à la course.",
-        "proof": "→ burunfark.com/dogruluk · résumé daté des mesures sur la page du produit",
-        "detailLabel": "Tableau de suivi en direct",
-        "detailBody": "Le tableau de suivi en direct présente ensemble les prédictions réussies et manquées. Lisez les résultats avec leur date de mesure, les courses couvertes et les ventilations par hippodrome, piste et distance."
       },
       "lifeos": {
         "label": "Confidentialité sur l’appareil",

@@ -71,7 +71,6 @@
     "heroTitle": "We design tomorrow's products today.",
     "heroDescription": "Yula Lab is an independent product lab that designs AI-native, data-driven products that simplify everyday life. Every project is built at the intersection of aesthetics, ethics, and impact.",
     "heroMeta": {
-      "products": "8 products",
       "studio": "1 lab",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Shipped because it's ready, not because of a date. We don't grow a product until we're sure we can sustain it.",
     "manifestoReadAll": "Read the full manifesto",
     "projectsKicker": "04 — Projects",
-    "projectsCount": "8 products · 2 live · 1 beta · 5 coming soon",
     "specHeading": "Technical sheet",
     "inspect": "Explore",
     "visualsNote": "Interface still settling · visuals on the product page",
@@ -220,14 +218,6 @@
         "proof": "→ Primitives · providers · dated evidence on the product page",
         "detailLabel": "Audit trail",
         "detailBody": "Every tool call and decision is a separate row; money-touching actions require an explicit human approval. Export the full run as CSV / JSON and reconcile against your own accounting."
-      },
-      "burunfarki": {
-        "label": "Open methodology",
-        "title": "Top 3 factors for every prediction.",
-        "claim": "We don't hide why the model picked that horse. A rule-based weighting shows the top 3 factors in race-specific language.",
-        "proof": "→ burunfark.com/dogruluk · dated measurement summary on the product page",
-        "detailLabel": "Live tracking panel",
-        "detailBody": "The live tracking panel includes winning and missed predictions together. Read results alongside their measurement date, race coverage and breakdowns by track, course and distance."
       },
       "lifeos": {
         "label": "On-device privacy",

@@ -71,7 +71,6 @@
     "heroTitle": "Progettiamo oggi i prodotti di domani.",
     "heroDescription": "Yula Lab è un laboratorio di prodotti indipendente che progetta prodotti basati sull'AI e sui dati per semplificare la vita quotidiana. Ogni progetto nasce dall'incontro tra estetica, etica e impatto.",
     "heroMeta": {
-      "products": "8 prodotti",
       "studio": "1 laboratorio",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Pubblichiamo quando è pronto, non per rispettare una data. Non facciamo crescere un prodotto finché non siamo sicuri di poterlo sostenere.",
     "manifestoReadAll": "Leggi il manifesto completo",
     "projectsKicker": "04 — Progetti",
-    "projectsCount": "8 prodotti · 2 disponibili · 1 beta · 5 in arrivo",
     "specHeading": "Scheda tecnica",
     "inspect": "Esplora",
     "visualsNote": "Interfaccia ancora in definizione · immagini nella pagina del prodotto",
@@ -220,14 +218,6 @@
         "proof": "→ Primitive · fornitori · prove datate nella pagina del prodotto",
         "detailLabel": "Registro di controllo",
         "detailBody": "Ogni chiamata a uno strumento e ogni decisione hanno una riga distinta; le azioni che coinvolgono denaro richiedono l'approvazione esplicita di una persona. Esporta l'intera esecuzione in CSV / JSON e confrontala con la tua contabilità."
-      },
-      "burunfarki": {
-        "label": "Metodologia aperta",
-        "title": "I 3 fattori principali di ogni previsione.",
-        "claim": "Non nascondiamo perché il modello ha scelto quel cavallo. Una ponderazione basata su regole mostra i 3 fattori principali con termini specifici della corsa.",
-        "proof": "→ burunfark.com/dogruluk · riepilogo delle misurazioni datato nella pagina del prodotto",
-        "detailLabel": "Pannello di monitoraggio in tempo reale",
-        "detailBody": "Il pannello di monitoraggio in tempo reale comprende sia le previsioni corrette sia quelle errate. Leggi i risultati insieme alla data di misurazione, alle corse incluse e alle ripartizioni per ippodromo, pista e distanza."
       },
       "lifeos": {
         "label": "Riservatezza sul dispositivo",
