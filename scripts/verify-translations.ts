@@ -105,7 +105,7 @@ for (const locale of secondary) {
   for (const [key, translated] of Object.entries(actualContent)) {
     if (translated === key && !isTechnicalValue(key) && !allowedContent.has(key)) issues.push(`${locale}: content ${JSON.stringify(key.slice(0, 60))} is an untranslated English fallback`);
   }
-  for (const key of allowedMessages) if (actualMessages[key] !== source[key]) issues.push(`${locale}: stale same-as-English allowlist entry ${key}`);
+  for (const key of allowedMessages) if (source[key] === undefined || actualMessages[key] !== source[key]) issues.push(`${locale}: stale same-as-English allowlist entry ${key}`);
   for (const key of allowedContent) if (actualContent[key] !== key) issues.push(`${locale}: stale same-as-English content allowlist entry ${JSON.stringify(key.slice(0, 60))}`);
 }
 console.log(JSON.stringify({ locales: SUPPORTED_LOCALES, messageLeaves: Object.keys(source).length, requiredSourcePhrases: required.size, scope: "catalogue shape, placeholders, source coverage and runtime Intl availability; not translation quality or browser acceptance", intakeLocales: ["tr", "en"], issues }, null, 2));

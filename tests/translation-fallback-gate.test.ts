@@ -64,6 +64,20 @@ describe("EN-fallback gate in verify-translations", () => {
     expect(result.stdout).toContain("is an untranslated English fallback");
   });
 
+  it("flags an allowlist entry for a key that does not exist (typo) and a source locale", () => {
+    const file = path.join(sandbox, "scripts/translation-same-as-en.json");
+    const allow = readJson(file);
+    const original = JSON.parse(JSON.stringify(allow));
+    allow.de.messages.push("no.such.key");
+    allow.tr = { messages: ["contact.title"], content: [] };
+    writeJson(file, allow);
+    const result = run(sandbox);
+    writeJson(file, original);
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain("de: stale same-as-English allowlist entry no.such.key");
+    expect(result.stdout).toContain("tr: allowlist names an unsupported or source locale");
+  });
+
   it("flags a stale allowlist entry whose value is no longer English", () => {
     const file = path.join(sandbox, "scripts/translation-same-as-en.json");
     const allow = readJson(file);

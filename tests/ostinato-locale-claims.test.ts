@@ -31,7 +31,7 @@ describe("Ostinato — 14 dilde coming-soon uyumu", () => {
     }
   });
 
-  it("ana başlık/gövde anahtarları 14 dilde 235/48/283 sayılarıyla tutarlıdır", () => {
+  it("ana başlık/gövde anahtarları 14 dilde 235 ve 48 sayılarıyla tutarlıdır", () => {
     for (const locale of LOCALES) {
       const body = `${ostinato(locale).a1Body} ${ostinato(locale).pitch3Body}`;
       expect(body, locale).toMatch(/235/);
