@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
-  applyThemeToDocument, isThemePreference, resolveTheme, THEME_STORAGE_KEY,
+  applyThemeToDocument, DEFAULT_THEME_PREFERENCE, isThemePreference, resolveTheme, THEME_STORAGE_KEY,
   type ResolvedTheme, type ThemePreference,
 } from "@/lib/theme";
 
@@ -24,9 +24,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Match SSR and hydration. Prepaint CSS/boot already owns visible colors;
   // the client-only WebGL surface waits for `ready`, not a guessed SSR mode.
   const [state, setState] = useState<ThemeState>({
-    preference: "system", resolved: "dark", ready: false, sessionOnly: false,
+    preference: DEFAULT_THEME_PREFERENCE, resolved: "dark", ready: false, sessionOnly: false,
   });
-  const preferenceRef = useRef<ThemePreference>("system");
+  const preferenceRef = useRef<ThemePreference>(DEFAULT_THEME_PREFERENCE);
   const sessionOnlyRef = useRef(false);
   const update = useCallback((preference: ThemePreference, systemDark: boolean, sessionOnly = sessionOnlyRef.current) => {
     preferenceRef.current = preference;
@@ -37,7 +37,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    let preference: ThemePreference = "system";
+    let preference: ThemePreference = DEFAULT_THEME_PREFERENCE;
     try {
       const saved = window.localStorage.getItem(THEME_STORAGE_KEY);
       if (isThemePreference(saved)) preference = saved;
@@ -57,7 +57,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       try {
         if (event.storageArea && event.storageArea !== window.localStorage) return;
       } catch { return; }
-      update(isThemePreference(event.newValue) ? event.newValue : "system", systemIsDark(), false);
+      update(isThemePreference(event.newValue) ? event.newValue : DEFAULT_THEME_PREFERENCE, systemIsDark(), false);
     };
     window.addEventListener("storage", onStorage);
     return () => {

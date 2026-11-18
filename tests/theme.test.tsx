@@ -33,15 +33,18 @@ beforeEach(() => {
   document.documentElement.removeAttribute("data-theme");
   document.documentElement.removeAttribute("data-theme-preference");
   document.documentElement.style.colorScheme = "";
-  document.head.innerHTML = '<meta name="theme-color" content="#0d0e11">';
+  document.head.innerHTML = '<meta name="theme-color" content="#000000">';
 });
 afterEach(() => { cleanup(); vi.unstubAllGlobals(); vi.restoreAllMocks(); });
 
 describe("actual theme provider and native control, local synthetic environment", () => {
   it("follows OS only in system mode, persists explicit choices and cleans up its media listener", () => {
     const view = render(wrapper());
+    // W1: varsayilan koyu; OS yalniz "system" secilince izlenir.
+    expect(document.documentElement.dataset.theme).toBe("dark");
+    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("dark");
+    choose("system");
     expect(document.documentElement.dataset.theme).toBe("light");
-    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("system");
     system(true);
     expect(document.documentElement.dataset.theme).toBe("dark");
     choose("light");
@@ -74,7 +77,8 @@ describe("actual theme provider and native control, local synthetic environment"
     vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => { throw new DOMException("blocked", "SecurityError"); });
     vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => { throw new DOMException("full", "QuotaExceededError"); });
     render(wrapper());
-    expect(document.documentElement.dataset.themePreference).toBe("system");
+    expect(document.documentElement.dataset.themePreference).toBe("dark");
+    choose("light");
     choose("dark");
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("dark");
@@ -99,14 +103,14 @@ describe("actual theme provider and native control, local synthetic environment"
   it("normalizes invalid saved state, synchronizes same-key events and resets to system on removal", () => {
     localStorage.setItem(THEME_STORAGE_KEY, "sepia");
     render(wrapper());
-    expect(document.documentElement.dataset.themePreference).toBe("system");
-    act(() => window.dispatchEvent(new StorageEvent("storage", { key: "other", newValue: "dark" })));
-    expect(document.documentElement.dataset.theme).toBe("light");
-    act(() => window.dispatchEvent(new StorageEvent("storage", { key: THEME_STORAGE_KEY, newValue: "dark" })));
+    expect(document.documentElement.dataset.themePreference).toBe("dark");
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: "other", newValue: "light" })));
     expect(document.documentElement.dataset.theme).toBe("dark");
-    act(() => window.dispatchEvent(new StorageEvent("storage", { key: THEME_STORAGE_KEY, newValue: null })));
-    expect(document.documentElement.dataset.themePreference).toBe("system");
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: THEME_STORAGE_KEY, newValue: "light" })));
     expect(document.documentElement.dataset.theme).toBe("light");
+    act(() => window.dispatchEvent(new StorageEvent("storage", { key: THEME_STORAGE_KEY, newValue: null })));
+    expect(document.documentElement.dataset.themePreference).toBe("dark");
+    expect(document.documentElement.dataset.theme).toBe("dark");
   });
 
   it("keeps a usable deterministic fallback when the media API is unavailable", () => {
@@ -120,7 +124,7 @@ describe("actual theme provider and native control, local synthetic environment"
   it("server-renders a stable control without reading browser preference APIs", () => {
     const saved = vi.spyOn(Storage.prototype, "getItem");
     const html = renderToString(wrapper());
-    expect(html).toContain("system");
+    expect(html).toContain("dark");
     expect(html).toContain("disabled");
     expect(saved).not.toHaveBeenCalled();
     expect(matchMedia).not.toHaveBeenCalled();

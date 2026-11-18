@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Inter, Manrope, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Hanken_Grotesk, IBM_Plex_Mono } from "next/font/google";
 import "../globals.css";
 import { Analytics } from "@vercel/analytics/react";
 import { MotionConfig } from "framer-motion";
@@ -19,28 +19,17 @@ import { studioEnabled } from "@/server/studio-surface";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { THEME_BOOTSTRAP, THEME_COLORS } from "@/lib/theme";
 
-const inter = Inter({
-  subsets: ["latin", "latin-ext"],
+// W1: tek govde+baslik ailesi Hanken Grotesk (degisken agirlik), menu/etiket IBM Plex Mono.
+// --font-display ve --font-grotesk globals.css icinde --font-sans'a eslenir.
+const hanken = Hanken_Grotesk({
+  subsets: ["latin", "latin-ext", "vietnamese"],
   variable: "--font-sans",
   display: "swap",
 });
 
-const manrope = Manrope({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-display",
-  display: "swap",
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin", "latin-ext"],
-  variable: "--font-grotesk",
-  display: "swap",
-  // Yalniz urun sayfalarinda kullanilir; ana sayfa ilk boyamasinda onyukleme yer tutmasin (WEB-P0-03a3).
-  preload: false,
-});
-
-const jetbrains = JetBrains_Mono({
-  subsets: ["latin"],
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin", "latin-ext", "vietnamese"],
+  weight: ["400", "500"],
   variable: "--font-mono",
   display: "swap",
 });
@@ -117,7 +106,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={locale === "ar" ? "rtl" : "ltr"}
-      className={`${inter.variable} ${manrope.variable} ${spaceGrotesk.variable} ${jetbrains.variable}`}
+      className={`${hanken.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
