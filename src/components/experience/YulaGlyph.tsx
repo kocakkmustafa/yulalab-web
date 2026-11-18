@@ -21,6 +21,7 @@ import {
 } from "three";
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
 import { composeGlyphRotation } from "./instruments";
+import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose } from "./layout";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
@@ -116,6 +117,32 @@ const PORTAL_FRAGMENT_SHADER = `
     float scan = 0.96 + 0.04 * sin(screenUv.y * 420.0 + uTime * 0.38);
     gl_FragColor = vec4(portal.rgb * scan, portal.a * wipe * targetFeather * uOpacity);
     #include <colorspace_fragment>
+  }
+`;
+
+const VISION_LIGHT_FRAGMENT_SHADER = `
+  uniform float uOpacity;
+  uniform float uPhase;
+  varying vec3 vLocalPosition;
+
+  vec3 spectrum(float t) {
+    return 0.5 + 0.5 * cos(6.28318 * (t + vec3(0.0, 0.33, 0.67)));
+  }
+  float grain(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  void main() {
+    // The light lives on the glyph's own surface, so the Y is the mask: a
+    // diagonal band in glyph space that never leaves the letter.
+    float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
+    float center = (uPhase - 0.5) * 1.5;
+    float across = (axis - center) / 0.3;
+    float band = smoothstep(1.0, 0.55, abs(across));
+    float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
+    vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
+    colour -= grain(gl_FragCoord.xy) * 0.08;
+    gl_FragColor = vec4(colour, band * uOpacity);
   }
 `;
 
@@ -242,6 +269,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     }),
     [],
   );
+  const visionLightUniforms = useMemo(() => ({ uOpacity: { value: 0 }, uPhase: { value: 0 } }), []);
+  const visionLightMaterial = useRef<ShaderMaterial>(null);
   const portalUniforms = useMemo(
     () => ({
       uPortalTexture: { value: null },
@@ -265,6 +294,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         * (tier === "low" ? 0.48 : 1);
       causticMaterial.current.uniforms.uHeroMix.value = frame.overlay.hero;
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
+    }
+
+    if (visionLightMaterial.current) {
+      const ribbon = holoRibbonState(frame);
+      visionLightMaterial.current.uniforms.uOpacity.value = ribbon.opacity * 0.9;
+      visionLightMaterial.current.uniforms.uPhase.value = Math.min(1, Math.max(0, ribbon.sweep));
     }
 
     if (portalMaterial.current) {
@@ -381,6 +416,19 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
           toneMapped={false}
           transparent
           uniforms={causticUniforms}
+          vertexShader={CAUSTIC_VERTEX_SHADER}
+        />
+      </mesh>
+
+      <mesh geometry={geometry} position={[0, 0, 0.03]} renderOrder={4} scale={0.96}>
+        <shaderMaterial
+          ref={visionLightMaterial}
+          depthTest={false}
+          depthWrite={false}
+          fragmentShader={VISION_LIGHT_FRAGMENT_SHADER}
+          toneMapped={false}
+          transparent
+          uniforms={visionLightUniforms}
           vertexShader={CAUSTIC_VERTEX_SHADER}
         />
       </mesh>
