@@ -562,8 +562,8 @@ jobs:
       run: pnpm build
     - name: Install Chromium
       run: pnpm exec playwright install --with-deps chromium
-    - name: Open-mode e2e (consulting + contact + ostinato demo + lifeos demo + braavolabs demo; no retries, so flakiness stays visible)
-      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts e2e/lifeos-decision-demo.spec.ts e2e/lab-demos.spec.ts e2e/lab-braavolabs-demo.spec.ts --workers=1 --retries=0 --reporter=list --trace=retain-on-failure
+    - name: Open-mode e2e (consulting + contact + ostinato demo + lifeos demo + braavolabs demo + lab a11y; no retries, so flakiness stays visible)
+      run: pnpm exec playwright test e2e/consulting.spec.ts e2e/contact.spec.ts e2e/ostinato-rhythm-demo.spec.ts e2e/lifeos-decision-demo.spec.ts e2e/lab-demos.spec.ts e2e/lab-braavolabs-demo.spec.ts e2e/lab-a11y.spec.ts--workers=1 --retries=0 --reporter=list --trace=retain-on-failure
     - name: Job özeti
       if: ${{ always() }}
       run: |
