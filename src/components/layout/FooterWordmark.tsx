@@ -33,22 +33,22 @@ export function FooterWordmark() {
       ref={ref}
       aria-hidden="true"
       data-footer-wordmark={state}
-      className="footer-wordmark overflow-hidden px-2 text-ink-50/[0.34] select-none"
+      className="footer-wordmark overflow-hidden px-2 text-white select-none"
       dir="ltr"
     >
-      <svg viewBox="0 0 1000 250" className="block w-full h-auto translate-y-[14%]" preserveAspectRatio="xMidYMax meet">
+      <svg viewBox="0 0 1000 250" className="block w-full h-auto translate-y-[9%]" preserveAspectRatio="xMidYMax meet">
+        {/* big Y mark: the same two-stroke Y as the header mark, solid white */}
+        <path d="M28 40L130 160L232 40M130 160V250" fill="none" stroke="currentColor" strokeWidth="62" strokeLinecap="butt" strokeLinejoin="miter" />
         <text
-          x="500"
+          x="640"
           y="244"
           textAnchor="middle"
-          textLength="960"
+          textLength="690"
           lengthAdjust="spacingAndGlyphs"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.1"
-          vectorEffect="non-scaling-stroke"
+          fill="currentColor"
+          stroke="none"
           className="font-display"
-          style={{ fontSize: 330, fontWeight: 700, letterSpacing: "0.02em" }}
+          style={{ fontSize: 330, fontWeight: 700 }}
         >
           YULA
         </text>
