@@ -56,3 +56,39 @@ export function resolveWallTint(progress: number): [number, number, number] {
     return base + (WALL_TINTS.night[channel] - base) * night;
   }) as [number, number, number];
 }
+
+/**
+ * Screen-space room light. Each set is a wide glow plus a narrow peak around
+ * a centre (uv, origin bottom left) falling off to a dark edge; colours are
+ * sRGB hex, spreads are squared-uv variances. Values come from the measured
+ * ground light of the reference scenes (cell colours of the 4x3 grid).
+ */
+export type GroundSet = {
+  edge: string; mid: string; peak: string;
+  centre: [number, number, number, number];
+  spread: [number, number, number, number];
+};
+
+export const GROUND_SETS = {
+  hero: { edge: "#030110", mid: "#180a42", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
+  portfolio: { edge: "#050505", mid: "#4a3e5a", peak: "#d2c8dc", centre: [0.5, 0.62, 0.5, 0.58], spread: [0.1, 0.14, 0.06, 0.09] },
+  proof: { edge: "#030709", mid: "#0b2e40", peak: "#2e9fd8", centre: [0.3, 0.5, 0.375, 0.5], spread: [0.12, 0.5, 0.012, 0.04] },
+  night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  light: { edge: "#c8d1d4", mid: "#e4eef1", peak: "#e4eef1", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
+} as const satisfies Record<string, GroundSet>;
+
+export type GroundWeights = { hero: number; portfolio: number; proof: number; night: number; closing: number; light: number };
+
+export function resolveGroundWeights(progress: number, themeMix: number): GroundWeights {
+  const ss = (a: number, b: number) => smoothstep(segmentProgress(progress, a, b));
+  const dark = 1 - themeMix;
+  return {
+    hero: (1 - ss(0.06, 0.12)) * dark,
+    portfolio: ss(0.06, 0.12) * (1 - ss(0.46, 0.52)) * dark,
+    proof: ss(0.82, 0.84) * (1 - ss(0.88, 0.93)) * dark,
+    night: ss(0.57, 0.62) * (1 - ss(0.69, 0.74)) * dark,
+    closing: ss(0.93, 0.97) * dark,
+    light: themeMix,
+  };
+}

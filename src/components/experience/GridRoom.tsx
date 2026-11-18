@@ -8,17 +8,17 @@ import {
   BufferGeometry,
   CanvasTexture,
   Color,
-  DoubleSide,
   LinearFilter,
   ShaderMaterial,
   SRGBColorSpace,
   Vector3,
   Vector2,
+  Vector4,
   type Texture,
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
 import { CARD_DEPTH_STEP, segmentProgress, smoothstep, STAGES } from "./timeline";
-import { resolveWallTint, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
+import { GROUND_SETS, resolveGroundWeights, resolveWallTint, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR, type GroundSet } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
 export type WallTitles = { works: string; service: string };
@@ -33,7 +33,17 @@ export type GridRoomProps = {
   wallTitles?: WallTitles;
 };
 
-const ROOM_VERTEX_SHADER = /* glsl */ `
+const GROUND_GLSL = /* glsl */ `
+  vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
+    vec2 d = uv - centre.xy;
+    float wide = exp(-(d.x * d.x / spread.x + d.y * d.y / spread.y));
+    vec2 e = uv - centre.zw;
+    float narrow = exp(-(e.x * e.x / spread.z + e.y * e.y / spread.w));
+    return edge + (mid - edge) * wide + (peak - mid) * narrow * wide;
+  }
+`;
+
+const ROOM_VERTEX_SHADER =/* glsl */ `
   varying vec2 vUv;
   varying float vViewDepth;
   varying float vFacing;
@@ -52,6 +62,7 @@ const ROOM_VERTEX_SHADER = /* glsl */ `
 const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform float uWhiteMix; uniform float uOpacity; uniform float uGalleryMix;
   uniform vec3 uBackgroundColor; uniform float uReadingMix; uniform float uHeroMix; uniform float uCompactMix; uniform vec3 uWallTint;
+  uniform vec3 uGEdge; uniform vec3 uGMid; uniform vec3 uGPeak; uniform vec4 uGCenter; uniform vec4 uGSpread; uniform vec3 uGEdgeL; uniform vec3 uGMidL; uniform vec3 uGPeakL; uniform vec4 uGCenterL; uniform vec4 uGSpreadL; uniform float uGroundMix; uniform float uGroundLight; uniform vec2 uAspect;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
   uniform float uProjectionMix; uniform float uProjectionBlend;
@@ -66,6 +77,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float bounds = step(0.0, point.x) * step(point.x, 1.0) * step(0.0, point.y) * step(point.y, 1.0);
     return texture2D(atlas, clamp(point, 0.0, 1.0)).a * bounds;
   }
+  ${GROUND_GLSL}
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
     float major = gridLine(vUv, vec2(16.0, 8.0));
@@ -91,7 +103,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float diagonal = emitterUv.x * 11.0 + emitterUv.y * 5.2 + (cellTone - 0.5) * 0.22;
     float beam = step(abs(fract(diagonal) - 0.5), 0.17 + (emitterTone - 0.5) * 0.05);
     float bay = smoothstep(0.1, 0.2, cellTone) * (0.55 + cellTone * 0.45);
-    float panel = beam * envelope * bay * joint;
+    float panel = beam * envelope * bay * joint * 0.0;
     float breath = 0.98 + 0.02 * sin(uTime * 0.12);
     vec3 color = vec3(0.0006) + vec3(mix(0.002, 0.008, cellTone)) * envelope;
     // Narrow screens see more of the wall at once; keep it a backdrop there.
@@ -144,14 +156,22 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     color = mix(color, vec3(0.62), uWhiteMix * 0.7);
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
-    gl_FragColor = vec4(mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0)), 1.0);
+    vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
+    vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
+    vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
+    // Line work and crosses stay faintly visible on top of the ground light.
+    vec3 lines = vec3(fine * 0.012 + major * 0.02 + cross * 0.06);
+    vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
+    gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>
   }
 `;
 
 const WHITE_RISE_FRAGMENT = /* glsl */ `
   uniform float uRise; uniform float uOpacity; uniform vec2 uViewport; uniform vec3 uColor;
+  uniform vec3 uGEdgeL; uniform vec3 uGMidL; uniform vec3 uGPeakL; uniform vec4 uGCenterL; uniform vec4 uGSpreadL;
   varying vec2 vUv;
+  ${GROUND_GLSL}
   float line(vec2 point, vec2 spacing) {
     vec2 coordinate = point / spacing;
     vec2 distance = abs(fract(coordinate - 0.5) - 0.5) / max(fwidth(coordinate), vec2(0.0001));
@@ -169,42 +189,24 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     vec2 roomPoint = (vUv - vec2(0.44, 0.57)) * vec2(uViewport.x / max(1.0, uViewport.y), 1.0);
     float vignette = smoothstep(0.1, 1.25, length(roomPoint));
     float paper = fract(sin(dot(floor(pixel), vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
-    vec3 color = uColor * (1.0 - vignette * 0.075) + vec3(paper * 0.004);
+    vec3 color = groundColor(vUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL) + vec3(paper * 0.004);
     color = mix(color, vec3(0.32), grid * 0.065 + major * 0.025 + cross * 0.22);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
 `;
 
-const HALFTONE_VERTEX_SHADER = /* glsl */ `
+const BACKDROP_FRAGMENT_SHADER = /* glsl */ `
+  uniform vec3 uGEdge; uniform vec3 uGMid; uniform vec3 uGPeak; uniform vec4 uGCenter; uniform vec4 uGSpread;
+  uniform vec3 uGEdgeL; uniform vec3 uGMidL; uniform vec3 uGPeakL; uniform vec4 uGCenterL; uniform vec4 uGSpreadL;
+  uniform float uGroundMix; uniform float uGroundLight; uniform vec3 uBackgroundColor;
   varying vec2 vUv;
-
+  ${GROUND_GLSL}
   void main() {
-    vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`;
-
-const HALFTONE_FRAGMENT_SHADER = /* glsl */ `
-  uniform float uWhiteMix;
-  uniform float uOpacity;
-  varying vec2 vUv;
-
-  void main() {
-    vec2 cells = vec2(46.0, 28.0);
-    vec2 local = fract(vUv * cells) - 0.5;
-    float radial = length(local);
-    float field = 0.18 + 0.15 * sin(vUv.x * 11.0 + vUv.y * 7.0);
-    float dotMask = 1.0 - smoothstep(field, field + 0.08, radial);
-    float edgeFade = smoothstep(0.0, 0.16, vUv.x) *
-      (1.0 - smoothstep(0.84, 1.0, vUv.x)) *
-      smoothstep(0.0, 0.2, vUv.y) *
-      (1.0 - smoothstep(0.8, 1.0, vUv.y));
-    vec3 color = mix(vec3(0.62), vec3(0.25), uWhiteMix);
-    float alpha = dotMask * edgeFade * uOpacity * mix(0.045, 0.018, uWhiteMix);
-
-    if (alpha < 0.008) discard;
-    gl_FragColor = vec4(color, alpha);
+    vec3 gDark = groundColor(vUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
+    vec3 gLight = groundColor(vUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
+    gl_FragColor = vec4(mix(uBackgroundColor, mix(gDark, gLight, uGroundLight), uGroundMix), 1.0);
+    #include <colorspace_fragment>
   }
 `;
 
@@ -305,6 +307,28 @@ function ClosingGeometry({ draw }: { draw: number }) {
   );
 }
 
+const GROUND_DARK_ENTRIES = (["hero", "portfolio", "proof", "night", "closing"] as const).map(
+  (key) => [key, GROUND_SETS[key]] as const,
+);
+const groundScratch = new Color();
+
+function blendGround(
+  edge: Color, mid: Color, peak: Color, centre: Vector4, spread: Vector4,
+  entries: ReadonlyArray<readonly [number, GroundSet]>, total: number,
+) {
+  edge.setRGB(0, 0, 0); mid.setRGB(0, 0, 0); peak.setRGB(0, 0, 0);
+  centre.set(0, 0, 0, 0); spread.set(0, 0, 0, 0);
+  for (const [weight, set] of entries) {
+    const w = weight / total;
+    if (w <= 0) continue;
+    edge.add(groundScratch.set(set.edge).multiplyScalar(w));
+    mid.add(groundScratch.set(set.mid).multiplyScalar(w));
+    peak.add(groundScratch.set(set.peak).multiplyScalar(w));
+    centre.x += set.centre[0] * w; centre.y += set.centre[1] * w; centre.z += set.centre[2] * w; centre.w += set.centre[3] * w;
+    spread.x += set.spread[0] * w; spread.y += set.spread[1] * w; spread.z += set.spread[2] * w; spread.w += set.spread[3] * w;
+  }
+}
+
 export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL_TITLES }: GridRoomProps) {
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
@@ -328,6 +352,11 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uHeroMix: { value: 0 },
           uCompactMix: { value: 0 },
           uWallTint: { value: new Vector3(1, 1, 1) },
+          uGEdge: { value: new Color() }, uGMid: { value: new Color() }, uGPeak: { value: new Color() },
+          uGCenter: { value: new Vector4() }, uGSpread: { value: new Vector4(1, 1, 1, 1) },
+          uGEdgeL: { value: new Color() }, uGMidL: { value: new Color() }, uGPeakL: { value: new Color() },
+          uGCenterL: { value: new Vector4() }, uGSpreadL: { value: new Vector4(1, 1, 1, 1) },
+          uGroundMix: { value: 0 }, uGroundLight: { value: 0 }, uAspect: { value: new Vector2(1, 1) },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -342,28 +371,34 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
       }),
     [serviceWordmark, worksWordmark],
   );
-  const halftoneMaterial = useMemo(
-    () =>
-      new ShaderMaterial({
-        uniforms: {
-          uWhiteMix: { value: 0 },
-          uOpacity: { value: 1 },
-        },
-        vertexShader: HALFTONE_VERTEX_SHADER,
-        fragmentShader: HALFTONE_FRAGMENT_SHADER,
-        transparent: true,
-        depthWrite: false,
-        side: DoubleSide,
-        toneMapped: false,
-      }),
-    [],
-  );
+  // Screen-filling ground light behind the room: it carries the scene where the
+  // wall does not reach (the camera looks past the cylinder's open end).
+  const backdropMaterial = useMemo(() => {
+    const shared = gridMaterial.uniforms;
+    return new ShaderMaterial({
+      uniforms: {
+        uGEdge: shared.uGEdge, uGMid: shared.uGMid, uGPeak: shared.uGPeak, uGCenter: shared.uGCenter, uGSpread: shared.uGSpread,
+        uGEdgeL: shared.uGEdgeL, uGMidL: shared.uGMidL, uGPeakL: shared.uGPeakL, uGCenterL: shared.uGCenterL, uGSpreadL: shared.uGSpreadL,
+        uGroundMix: shared.uGroundMix, uGroundLight: shared.uGroundLight, uBackgroundColor: shared.uBackgroundColor,
+      },
+      vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }",
+      fragmentShader: BACKDROP_FRAGMENT_SHADER,
+      depthTest: false,
+      depthWrite: false,
+      toneMapped: false,
+    });
+  }, [gridMaterial]);
   const bladeMaterial = useMemo(() => new ShaderMaterial({
     uniforms: {
       uColor: { value: new Color(WORLD_LIGHT_COLOR) },
       uRise: { value: 0 },
       uOpacity: { value: 0 },
       uViewport: { value: new Vector2() },
+      uGEdgeL: { value: new Color(GROUND_SETS.light.edge) },
+      uGMidL: { value: new Color(GROUND_SETS.light.mid) },
+      uGPeakL: { value: new Color(GROUND_SETS.light.peak) },
+      uGCenterL: { value: new Vector4(...GROUND_SETS.light.centre) },
+      uGSpreadL: { value: new Vector4(...GROUND_SETS.light.spread) },
     },
     vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }",
     fragmentShader: WHITE_RISE_FRAGMENT,
@@ -390,6 +425,16 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     bladeMaterial.uniforms.uRise.value = frame.world.bladeProgress;
     bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.815, 0.835));
     bladeMaterial.uniforms.uViewport.value.set(viewport.width, viewport.height);
+    const gw = resolveGroundWeights(frame.progress, frame.world.themeMix);
+    const darkSum = gw.hero + gw.portfolio + gw.proof + gw.night + gw.closing;
+    const u = gridMaterial.uniforms;
+    if (darkSum > 0.0001) {
+      blendGround(u.uGEdge.value, u.uGMid.value, u.uGPeak.value, u.uGCenter.value, u.uGSpread.value, GROUND_DARK_ENTRIES.map(([key, set]) => [gw[key], set]), darkSum);
+    }
+    blendGround(u.uGEdgeL.value, u.uGMidL.value, u.uGPeakL.value, u.uGCenterL.value, u.uGSpreadL.value, [[1, GROUND_SETS.light]], 1);
+    const groundTotal = Math.min(1, darkSum + gw.light);
+    u.uGroundMix.value = groundTotal;
+    u.uGroundLight.value = groundTotal > 0.0001 ? gw.light / groundTotal : 0;
     gridMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
     gridMaterial.uniforms.uBackgroundColor.value.copy(roomColors.dark).lerp(roomColors.light, frame.world.themeMix);
     gridMaterial.uniforms.uGalleryMix.value = frame.world.worksBackdropMix;
@@ -397,20 +442,18 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uOpacity.value = frame.world.roomOpacity
       * (1 - frame.world.worksBackdropMix * 0.2) * (1 - frame.world.whiteMix * 0.38)
       * (1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.7)));
-    halftoneMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
-    halftoneMaterial.uniforms.uOpacity.value = frame.world.roomOpacity * (1 - frame.world.worksBackdropMix * 0.8);
   });
 
   useEffect(
     () => () => {
       gridMaterial.dispose();
       bladeMaterial.dispose();
-      halftoneMaterial.dispose();
+      backdropMaterial.dispose();
       yulaWordmark.dispose();
       worksWordmark.dispose();
       serviceWordmark.dispose();
     },
-    [bladeMaterial, gridMaterial, halftoneMaterial, serviceWordmark, worksWordmark, yulaWordmark],
+    [backdropMaterial, bladeMaterial, gridMaterial, serviceWordmark, worksWordmark, yulaWordmark],
   );
 
   const blade = frame.world.bladeProgress;
@@ -436,22 +479,6 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         <primitive attach="material" object={gridMaterial} />
       </mesh>
 
-      {[
-        { position: [-7.2, 0.8, -4.8] as const, rotation: [0, 0.22, 0.04] as const },
-        { position: [7.4, -0.7, -13.2] as const, rotation: [0, -0.24, -0.03] as const },
-        { position: [-6.4, 1.1, -22.5] as const, rotation: [0, 0.18, 0] as const },
-      ].map((panel, index) => (
-        <mesh
-          key={index}
-          position={panel.position}
-          rotation={panel.rotation}
-          scale={index === 1 ? [1.2, 1.2, 1] : [1, 1, 1]}
-        >
-          <planeGeometry args={[7.5, 5.2, 1, 1]} />
-          <primitive attach="material" object={halftoneMaterial} />
-        </mesh>
-      ))}
-
       <mesh position={[0, 0.1 + heroLift, wordmarkZ]} renderOrder={-2}>
         <planeGeometry args={[wordmarkWidth, 5.2]} />
         <meshBasicMaterial
@@ -463,6 +490,11 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           opacity={frame.world.wordmarkOpacity * (1 - frame.world.worksBackdropMix)}
           toneMapped={false}
         />
+      </mesh>
+
+      <mesh frustumCulled={false} renderOrder={-1000}>
+        <planeGeometry args={[2, 2]} />
+        <primitive attach="material" object={backdropMaterial} />
       </mesh>
 
       <mesh visible={blade > 0.001 && frame.progress < 0.835} frustumCulled={false} renderOrder={3.5}>
