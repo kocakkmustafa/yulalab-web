@@ -170,16 +170,17 @@ test.describe("mobile static default", () => {
     await expect(page.getByRole("button", { name: "Open the 3D experience" })).toBeVisible();
   });
 
-  test("a non-English locale without a translation labels the fallback honestly", async ({ page }) => {
+  test("a translated locale (ar) shows the translated labels, unmarked and rtl", async ({ page }) => {
     await blockWebGL(page);
-    await openHome(page, "/fr");
+    await openHome(page, "/ar");
+    await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const button = page.locator(OPEN);
-    await expect(button).toHaveText("Open the 3D experience");
-    await expect(button).toHaveAttribute("lang", "en");
+    await expect(button).toHaveText("افتح التجربة ثلاثية الأبعاد");
+    await expect(button).not.toHaveAttribute("lang", "en");
     await button.click();
     const failed = page.locator("[data-open-3d-failed]");
-    await expect(failed).toHaveText("Could not open 3D; showing the linear view.");
-    await expect(failed).toHaveAttribute("lang", "en");
+    await expect(failed).toHaveText("تعذّر فتح العرض ثلاثي الأبعاد؛ يُعرض العرض الخطي.");
+    await expect(failed).not.toHaveAttribute("lang", "en");
   });
 
   test("hash deep link lands on its scene on the static phone path", async ({ page }) => {

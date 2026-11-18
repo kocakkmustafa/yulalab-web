@@ -129,7 +129,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 {title.written ? (
                   <a
                     href={`${localePath(locale, "/notes")}#${note.slug}`}
-                    lang={title.lang === want ? undefined : title.lang}
+                    lang={title.lang === locale ? undefined : title.lang}
                     data-scene5-note-link={note.slug}
                     className="focusable underline underline-offset-4 hover:text-ink-200"
                   >
@@ -148,7 +148,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
               ))}
               <Fields
                 t={t}
-                written={body.written ? { did: { text: body.text, lang: body.lang === want ? undefined : body.lang } } : {}}
+                written={body.written ? { did: { text: body.text, lang: body.lang === locale ? undefined : body.lang } } : {}}
               />
               <p
                 data-scene5-source={note.slug}

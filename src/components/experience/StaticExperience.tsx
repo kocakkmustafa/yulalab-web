@@ -65,8 +65,6 @@ export function StaticExperience({
             tabIndex={-1}
             className={styles.open3dFailed}
             data-open-3d-failed="true"
-            lang={copy.ui.open3dLang}
-            dir={copy.ui.open3dLang ? "ltr" : undefined}
           >
             {copy.ui.open3dFailed}
           </p>
@@ -75,8 +73,6 @@ export function StaticExperience({
             type="button"
             className={styles.open3d}
             data-open-3d="true"
-            lang={copy.ui.open3dLang}
-            dir={copy.ui.open3dLang ? "ltr" : undefined}
             onClick={onOpen3d}
           >
             {copy.ui.open3d}

@@ -88,18 +88,19 @@ test.describe("scene 2 in English", () => {
   });
 });
 
-test.describe("scene 2 in /ar (RTL page, English fallback block)", () => {
+test.describe("scene 2 in /ar (RTL page, translated block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy, three pairs, no overflow", async ({ page }) => {
+  test("shows translated Arabic copy, three pairs, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const scene = page.locator("#scene-2-difference");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene2-pair]")).toHaveCount(3);
-    await expect(scene.locator("[data-scene2-badge]").first()).toHaveText("Current capability");
-    // The status word inside the English sentence is English too (no mixed-script text).
-    await expect(scene.locator("[data-scene2-source]")).toHaveText(/^Source: LifeOS product record \(Live\)$/i);
+    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(scene.locator("[data-scene2-badge]").first()).toHaveText("قدرة حالية");
+    // The status word inside the Arabic sentence is Arabic too (no mixed-script text).
+    await expect(scene.locator("[data-scene2-source]")).toHaveText("المصدر: سجل منتج LifeOS (متاح)");
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });
 });

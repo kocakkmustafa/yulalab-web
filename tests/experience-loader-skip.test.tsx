@@ -58,10 +58,10 @@ describe("ExperienceLoader skip", () => {
     expect(onSkip).not.toHaveBeenCalled();
   });
 
-  it("marks the English fallback label outside tr and en (WCAG 3.1.2)", () => {
+  it("leaves the translated skip label unmarked outside tr and en (WCAG 3.1.2)", () => {
     intl.locale = "de";
     render(<ExperienceLoader lines={lines} progress={0.2} onSkip={() => undefined} />);
-    expect(screen.getByRole("button", { name: "Girişi atla" }).getAttribute("lang")).toBe("en");
+    expect(screen.getByRole("button", { name: "Girişi atla" }).hasAttribute("lang")).toBe(false);
     cleanup();
     intl.locale = "tr";
     render(<ExperienceLoader lines={lines} progress={0.2} onSkip={() => undefined} />);

@@ -33,8 +33,8 @@ describe("mobile static default (WEB-P0-03a2, ADR-003 c)", () => {
     }
   });
 
-  it("page labels the English fallback honestly outside tr/en", () => {
-    expect(read("src/app/[locale]/page.tsx")).toContain('open3dLang: locale !== "tr" && locale !== "en" ? "en" : undefined');
+  it("page no longer marks the open3d label as an English fallback", () => {
+    expect(read("src/app/[locale]/page.tsx")).not.toContain("open3dLang");
   });
 
   it("CSS gates the static default behind the flag attribute and the media query only", () => {

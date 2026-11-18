@@ -183,23 +183,24 @@ test.describe("scene 6 in English", () => {
   });
 });
 
-test.describe("scene 6 in /ar (RTL page, English fallback block)", () => {
+test.describe("scene 6 in /ar (RTL page, translated block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy, four rows, no overflow", async ({ page }) => {
+  test("shows translated Arabic copy, four rows, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const scene = page.locator("#scene-6-trust");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene6-row]")).toHaveCount(4);
-    // Status words inside the English block are English (no mixed-script text).
-    await expect(scene.locator('[data-scene6-stage="lifeos"]')).toHaveText("LifeOS · Live");
-    await expect(scene.locator('[data-scene6-stage="lissom"]')).toHaveText("Lissom · Coming soon");
+    // Status words inside the Arabic block are Arabic (no mixed-script text).
+    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
+    await expect(scene.locator('[data-scene6-stage="lifeos"]')).toHaveText("LifeOS · متاح");
+    await expect(scene.locator('[data-scene6-stage="lissom"]')).toHaveText("Lissom · قريبًا");
     await expect(scene.locator('[data-scene6-line="protection.braavolabs"] a')).toHaveAttribute("href", "/ar/privacy/braavolabs");
     for (const href of ["/ar/privacy/lifeos", "/ar/privacy/braavolabs", "/ar/privacy/motion"]) {
       expect((await page.request.get(href)).status(), href).toBe(200);
     }
-    expect(await bodyText(page)).not.toMatch(/[؀-ۿ]/);
+    expect(await bodyText(page)).toMatch(/[؀-ۿ]/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });
 });

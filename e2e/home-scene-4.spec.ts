@@ -151,23 +151,23 @@ test.describe("scene 4 in English", () => {
   });
 });
 
-test.describe("scene 4 in /ar (RTL page, English fallback block)", () => {
+test.describe("scene 4 in /ar (RTL page, translated block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy, four principles, no mixed-language words, no overflow", async ({ page }) => {
+  test("shows translated Arabic copy, four principles, no mixed-language words, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const scene = page.locator(SCENE);
     await scene.scrollIntoViewIfNeeded();
-    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("lang", "en");
-    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("dir", "ltr");
+    await expect(page.locator("[data-home-scenes]")).not.toHaveAttribute("lang", "en");
+    await expect(page.locator('[data-home-scenes] [lang="en"][dir="ltr"]')).toHaveCount(0);
     await expect(scene.locator("[data-scene4-principle]")).toHaveCount(4);
-    await expect(scene.locator('[data-scene4-badge="capability"]').first()).toHaveText("Current capability");
+    await expect(scene.locator('[data-scene4-badge="capability"]').first()).toHaveText("قدرة حالية");
     await expect(scene.locator("[data-scene4-source]").nth(0)).toHaveText(
-      "Source: LifeOS product record, “Offline-first”; product status: Live",
+      "المصدر: سجل منتج LifeOS، «Offline-first»؛ حالة المنتج: متاح",
     );
     const text = await scene.locator("[data-scene4-body]").innerText();
-    expect(text).not.toMatch(/[؀-ۿ]/);
+    expect(text).toMatch(/[؀-ۿ]/);
     expect(text).not.toMatch(/\d/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
   });

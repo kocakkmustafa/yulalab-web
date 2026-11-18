@@ -650,8 +650,6 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
         className={styles.srOnly}
         aria-live="polite"
         aria-atomic="true"
-        lang={copy.ui.open3dLang}
-        dir={copy.ui.open3dLang ? "ltr" : undefined}
         data-open3d-status="true"
       >
         {open3dAnnouncement}
