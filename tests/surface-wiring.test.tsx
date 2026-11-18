@@ -110,7 +110,8 @@ describe("Studio CTA wiring follows the rollback switch", () => {
     expect(layout).toMatch(/<Header \/>/);
     // WEB-P0-02b: the header never advertises Studio; the footer shows it only behind the switch.
     expect(header).not.toMatch(/\/studio|navStudio/);
-    expect(footer).toMatch(/studioOnly \|\| studioEnabled/);
+    expect(footer).toMatch(/visibleFooterCompanyNav\(\{ studioEnabled/);
+    expect(navConfig).toMatch(/studioOnly \|\| opts\.studioEnabled/);
     expect(navConfig).toMatch(/navStudio[^}]*studioOnly: true/);
   });
 

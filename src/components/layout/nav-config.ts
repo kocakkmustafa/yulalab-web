@@ -31,8 +31,8 @@ export type FooterCompanyKey =
 
 /** `header` entries reuse a `header.*` label (e.g. `header.doors`) instead of a `footer.*` one. */
 export const FOOTER_COMPANY_NAV: ReadonlyArray<
-  | { key: FooterCompanyKey; href: string; studioOnly?: boolean; ns?: undefined }
-  | { key: "doors" | "lab"; href: string; studioOnly?: boolean; ns: "header" }
+  | { key: FooterCompanyKey; href: string; studioOnly?: boolean; caseStudiesOnly?: boolean; ns?: undefined }
+  | { key: "doors" | "lab"; href: string; studioOnly?: boolean; caseStudiesOnly?: boolean; ns: "header" }
 > = [
   { key: "doors", href: "/start", ns: "header" },
   { key: "lab", href: "/lab", ns: "header" },
@@ -43,10 +43,21 @@ export const FOOTER_COMPANY_NAV: ReadonlyArray<
   { key: "navProjects", href: "/projects" },
   { key: "navNotes", href: "/notes" },
   { key: "navStudio", href: "/studio", studioOnly: true },
-  { key: "navCaseStudies", href: "/case-studies" },
+  { key: "navCaseStudies", href: "/case-studies", caseStudiesOnly: true },
   { key: "navOperatingSystem", href: "/operating-system" },
   { key: "navContact", href: "/contact" },
 ];
+
+/**
+ * Footer company links a visitor should see. `/case-studies` stays routable
+ * (it renders its own emptiness honestly) but is linked only once at least one
+ * case study is published, so the footer never leads to an empty page.
+ */
+export function visibleFooterCompanyNav(opts: { studioEnabled: boolean; caseStudyCount: number }) {
+  return FOOTER_COMPANY_NAV.filter(
+    (item) => (!item.studioOnly || opts.studioEnabled) && (!item.caseStudiesOnly || opts.caseStudyCount > 0),
+  );
+}
 
 export const FOOTER_LEGAL_NAV = [
   { key: "navPrivacy", href: "/privacy" },

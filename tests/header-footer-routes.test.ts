@@ -1,8 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { FOOTER_COMPANY_NAV, FOOTER_LEGAL_NAV, HEADER_CTA, HEADER_NAV, MOBILE_EXTRA_NAV } from "@/components/layout/nav-config";
+import { FOOTER_COMPANY_NAV, FOOTER_LEGAL_NAV, HEADER_CTA, HEADER_NAV, MOBILE_EXTRA_NAV, visibleFooterCompanyNav } from "@/components/layout/nav-config";
 import { projects } from "@/data/projects";
+import { caseStudies } from "@/data/case-studies";
 import { company } from "@/data/company";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
@@ -90,6 +91,15 @@ describe("header and footer route table", () => {
 
   it("links the Lab from the footer with the translated header label", () => {
     expect(FOOTER_COMPANY_NAV).toContainEqual({ key: "lab", href: "/lab", ns: "header" });
+  });
+
+  it("hides the case studies footer link while none are published, shows it once one exists", () => {
+    const hrefs = (n: number) => visibleFooterCompanyNav({ studioEnabled: true, caseStudyCount: n }).map((i) => i.href);
+    expect(hrefs(0)).not.toContain("/case-studies");
+    expect(hrefs(1)).toContain("/case-studies");
+    // the live footer feeds the real data: today's empty list means no link
+    expect(caseStudies.length === 0).toBe(!hrefs(caseStudies.length).includes("/case-studies"));
+    expect(routes).toContain("/case-studies");
   });
 
   it("renders a footer product link for every project slug", () => {
