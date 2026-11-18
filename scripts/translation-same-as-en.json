@@ -90,7 +90,9 @@
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
       "home.scene4.label",
-      "home.scene7.label"
+      "home.scene7.label",
+      "braavolabsRunDemo.statusLabel",
+      "braavolabsRunDemo.steps.plan.name"
     ],
     "content": [
       "Cookies",
@@ -129,7 +131,9 @@
       "studio.eyebrow",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "braavolabsRunDemo.seconds",
+      "braavolabsRunDemo.steps.plan.name"
     ],
     "content": [
       "Cookies",
@@ -201,7 +205,10 @@
       "home.scene1.signals.s3.product",
       "home.scene5.fields.question",
       "home.scene5.sourceLabel",
-      "home.scene6.sourceLabel"
+      "home.scene6.sourceLabel",
+      "braavolabsRunDemo.pipelineLabel",
+      "braavolabsRunDemo.seconds",
+      "braavolabsRunDemo.steps.plan.name"
     ],
     "content": [
       "Contact",
@@ -286,7 +293,8 @@
       "studio.form.email",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "braavolabsRunDemo.statusLabel"
     ],
     "content": [
       "Email",
@@ -336,7 +344,8 @@
       "studio.eyebrow",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "braavolabsRunDemo.seconds"
     ],
     "content": [
       "HealthKit / Health Connect",
@@ -430,7 +439,10 @@
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
-      "home.scene7.label"
+      "home.scene7.label",
+      "braavolabsRunDemo.statusLabel",
+      "braavolabsRunDemo.seconds",
+      "braavolabsRunDemo.steps.plan.name"
     ],
     "content": [
       "HealthKit / Health Connect"
@@ -481,7 +493,9 @@
       "studio.eyebrow",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "braavolabsRunDemo.statusLabel",
+      "braavolabsRunDemo.seconds"
     ],
     "content": [
       "Cookies",

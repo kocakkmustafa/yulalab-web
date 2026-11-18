@@ -1289,6 +1289,105 @@
     "lifeos": "Escolha um cartão de decisão e veja quando o lembrete chegaria.",
     "ostinato": "Toque no ritmo e veja como ficou o seu tempo.",
     "error": "Não foi possível carregar o teste. Verifique sua conexão e tente de novo.",
-    "retry": "Tentar de novo"
+    "retry": "Tentar de novo",
+    "braavolabs": "Percorra uma execução sintética de um agente e aprove ou rejeite a sua etapa de aprovação."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Trilha sintética da execução de um agente",
+    "title": "Percorra uma execução de agente passo a passo.",
+    "intro": "Uma execução inventada de um agente de IA, apresentada como trilha de auditoria: cada passo com status, tempo e custo. Abra um passo para ver os detalhes. Um passo aguarda a aprovação de uma pessoa.",
+    "note": "Um pequeno teste, não a tela real do Braavolabs. A execução, as chamadas de ferramenta e todos os números são inventados. Nada aqui chama um modelo, um sistema de clientes ou a rede, e os custos não dizem nada sobre preços ou velocidade reais.",
+    "badge": "Exemplo sintético",
+    "timelineLabel": "Passos da execução",
+    "metaHeading": "Metadados da execução",
+    "statusLabel": "Status",
+    "runIdLabel": "ID da execução",
+    "pipelineLabel": "Fluxo",
+    "pipelineValue": "Cobrança de pagamentos atrasados",
+    "stepsLabel": "Passos",
+    "durationLabel": "Tempo",
+    "costLabel": "Custo (exemplo)",
+    "approve": "Aprovar",
+    "reject": "Rejeitar",
+    "reset": "Redefinir",
+    "gateHint": "Este passo aguarda uma pessoa. Escolha para ver como a execução muda.",
+    "announceApproved": "Aprovado. O último passo está em execução.",
+    "announceRejected": "Rejeitado. A execução fica bloqueada na etapa de aprovação e o último passo é ignorado.",
+    "announceDone": "Execução concluída. Custo total, exemplo: {cost}.",
+    "announceReset": "Execução redefinida. A etapa de aprovação voltou a aguardar.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "aguardando",
+    "detailTool": "Chamada de ferramenta (exemplo)",
+    "detailInput": "Entrada (exemplo)",
+    "detailOutput": "Saída (exemplo)",
+    "detailCost": "Detalhamento do custo (exemplo)",
+    "costModelIn": "Entrada do modelo",
+    "costModelOut": "Saída do modelo",
+    "costTool": "Ferramenta",
+    "costTotal": "Total do passo",
+    "status": {
+      "completed": "Concluído",
+      "running": "Em execução",
+      "awaiting": "Aguardando aprovação",
+      "blocked": "Bloqueado",
+      "skipped": "Ignorado",
+      "queued": "Na fila"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plano",
+        "summary": "Divide a tarefa em três passos pequenos: achar faturas vencidas, escrever lembretes, pedir aprovação.",
+        "tool": "Sem chamada de ferramenta. O agente apenas planeja.",
+        "input": "tarefa: cobrar faturas vencidas há mais de 14 dias",
+        "output": "plano: 3 passos, 1 etapa de aprovação"
+      },
+      "tool": {
+        "name": "Chamada de ferramenta",
+        "summary": "Procura faturas vencidas em dados de exemplo: 7 encontradas.",
+        "tool": "1 chamada: busca de faturas (ferramenta inventada, dados de exemplo)",
+        "input": "filtro: vencidas há mais de 14 dias\nlimite: 10",
+        "output": "7 faturas\na maior: cliente de exemplo A"
+      },
+      "draft": {
+        "name": "Rascunho",
+        "summary": "Escreve 7 rascunhos curtos de lembrete. Nada é enviado ainda.",
+        "tool": "Sem chamada de ferramenta. O modelo escreve a partir do resultado da busca.",
+        "input": "7 faturas, tom: amigável e breve",
+        "output": "7 rascunhos, cerca de 50 palavras cada"
+      },
+      "gate": {
+        "name": "Etapa de aprovação",
+        "summary": {
+          "awaiting": "Aguardando uma pessoa aprovar o envio dos 7 rascunhos.",
+          "completed": "Uma pessoa aprovou o envio dos rascunhos.",
+          "blocked": "Uma pessoa rejeitou os rascunhos. A execução está bloqueada aqui."
+        },
+        "tool": "Sem chamada de ferramenta. Uma pessoa decide.",
+        "input": "7 rascunhos, prontos para enviar",
+        "output": {
+          "awaiting": "ainda sem decisão",
+          "completed": "decisão: aprovado",
+          "blocked": "decisão: rejeitado"
+        }
+      },
+      "done": {
+        "name": "Salvar e concluir",
+        "summary": {
+          "queued": "Na fila até a etapa de aprovação ser aprovada.",
+          "running": "Salvando a execução na trilha de auditoria e marcando os rascunhos como enviados (simulado).",
+          "completed": "Execução salva na trilha de auditoria. Rascunhos marcados como enviados (simulado, nada foi enviado).",
+          "skipped": "Ignorado porque a etapa de aprovação foi rejeitada. Nada é salvo nem enviado."
+        },
+        "tool": "1 chamada: gravação no registro de auditoria (ferramenta inventada)",
+        "input": "execução: demo-run-0001",
+        "output": {
+          "queued": "não iniciado",
+          "running": "gravando a entrada de auditoria",
+          "completed": "entrada de auditoria salva",
+          "skipped": "não executado"
+        }
+      }
+    }
   }
 }

@@ -1289,6 +1289,105 @@
     "lifeos": "Wybierz kartę decyzji i zobacz, kiedy przyszłoby przypomnienie.",
     "ostinato": "Stukaj w rytm i zobacz, jak wypadł Twój timing.",
     "error": "Nie udało się wczytać próbki. Sprawdź połączenie i spróbuj ponownie.",
-    "retry": "Spróbuj ponownie"
+    "retry": "Spróbuj ponownie",
+    "braavolabs": "Przejdź przez syntetyczne uruchomienie agenta i zatwierdź lub odrzuć jego bramkę."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Syntetyczny ślad uruchomienia agenta",
+    "title": "Przejdź przez jedno uruchomienie agenta krok po kroku.",
+    "intro": "Zmyślone uruchomienie agenta AI, pokazane jako ścieżka audytu: każdy krok ze statusem, czasem i kosztem. Otwórz krok, aby zobaczyć szczegóły. Jeden krok czeka na zatwierdzenie przez człowieka.",
+    "note": "Mała próba, nie prawdziwy ekran Braavolabs. Uruchomienie, wywołania narzędzi i wszystkie liczby są zmyślone. Nic tu nie wywołuje modelu, systemu klienta ani sieci, a koszty nie mówią nic o prawdziwych cenach ani szybkości.",
+    "badge": "Przykład syntetyczny",
+    "timelineLabel": "Kroki uruchomienia",
+    "metaHeading": "Metadane uruchomienia",
+    "statusLabel": "Status",
+    "runIdLabel": "ID uruchomienia",
+    "pipelineLabel": "Potok",
+    "pipelineValue": "Monitowanie zaległych płatności",
+    "stepsLabel": "Kroki",
+    "durationLabel": "Czas",
+    "costLabel": "Koszt (przykład)",
+    "approve": "Zatwierdź",
+    "reject": "Odrzuć",
+    "reset": "Zresetuj",
+    "gateHint": "Ten krok czeka na człowieka. Wybierz, aby zobaczyć, jak zmieni się uruchomienie.",
+    "announceApproved": "Zatwierdzono. Ostatni krok jest w toku.",
+    "announceRejected": "Odrzucono. Uruchomienie zablokowane na bramce, ostatni krok pominięty.",
+    "announceDone": "Uruchomienie zakończone. Łączny koszt, przykład: {cost}.",
+    "announceReset": "Uruchomienie zresetowane. Bramka zatwierdzania znowu czeka.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "czeka",
+    "detailTool": "Wywołanie narzędzia (przykład)",
+    "detailInput": "Dane wejściowe (przykład)",
+    "detailOutput": "Dane wyjściowe (przykład)",
+    "detailCost": "Podział kosztów (przykład)",
+    "costModelIn": "Wejście modelu",
+    "costModelOut": "Wyjście modelu",
+    "costTool": "Narzędzie",
+    "costTotal": "Suma kroku",
+    "status": {
+      "completed": "Ukończono",
+      "running": "W toku",
+      "awaiting": "Czeka na zatwierdzenie",
+      "blocked": "Zablokowano",
+      "skipped": "Pominięto",
+      "queued": "W kolejce"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Dzieli zadanie na trzy małe kroki: znaleźć zaległe faktury, napisać przypomnienia, poprosić o zatwierdzenie.",
+        "tool": "Brak wywołania narzędzia. Agent tylko planuje.",
+        "input": "zadanie: monitować faktury zaległe powyżej 14 dni",
+        "output": "plan: 3 kroki, 1 bramka zatwierdzania"
+      },
+      "tool": {
+        "name": "Wywołanie narzędzia",
+        "summary": "Szuka zaległych faktur w danych przykładowych: znaleziono 7.",
+        "tool": "1 wywołanie: wyszukiwanie faktur (zmyślone narzędzie, dane przykładowe)",
+        "input": "filtr: zaległe powyżej 14 dni\nlimit: 10",
+        "output": "7 faktur\nnajwyższa: przykładowy klient A"
+      },
+      "draft": {
+        "name": "Szkic",
+        "summary": "Pisze 7 krótkich szkiców przypomnień. Nic jeszcze nie jest wysyłane.",
+        "tool": "Brak wywołania narzędzia. Model pisze na podstawie wyniku wyszukiwania.",
+        "input": "7 faktur, ton: przyjazny i krótki",
+        "output": "7 szkiców, po około 50 słów"
+      },
+      "gate": {
+        "name": "Bramka zatwierdzania",
+        "summary": {
+          "awaiting": "Czeka, aż człowiek zatwierdzi wysłanie 7 szkiców.",
+          "completed": "Człowiek zatwierdził wysłanie szkiców.",
+          "blocked": "Człowiek odrzucił szkice. Uruchomienie jest tu zablokowane."
+        },
+        "tool": "Brak wywołania narzędzia. Decyduje człowiek.",
+        "input": "7 szkiców, gotowych do wysłania",
+        "output": {
+          "awaiting": "jeszcze bez decyzji",
+          "completed": "decyzja: zatwierdzono",
+          "blocked": "decyzja: odrzucono"
+        }
+      },
+      "done": {
+        "name": "Zapisz i zakończ",
+        "summary": {
+          "queued": "W kolejce, dopóki bramka nie zostanie zatwierdzona.",
+          "running": "Zapisuje uruchomienie w ścieżce audytu i oznacza szkice jako wysłane (symulacja).",
+          "completed": "Uruchomienie zapisane w ścieżce audytu. Szkice oznaczone jako wysłane (symulacja, nic nie wysłano).",
+          "skipped": "Pominięto, bo bramka została odrzucona. Nic nie jest zapisywane ani wysyłane."
+        },
+        "tool": "1 wywołanie: zapis do dziennika audytu (zmyślone narzędzie)",
+        "input": "uruchomienie: demo-run-0001",
+        "output": {
+          "queued": "nie rozpoczęto",
+          "running": "zapisywanie wpisu audytu",
+          "completed": "wpis audytu zapisany",
+          "skipped": "nie uruchomiono"
+        }
+      }
+    }
   }
 }

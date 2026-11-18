@@ -1289,6 +1289,105 @@
     "lifeos": "选一张决定卡片，预览它的提醒何时送达。",
     "ostinato": "跟着节拍点按，看看你的节奏落点如何。",
     "error": "无法加载演示。请检查网络连接后重试。",
-    "retry": "重试"
+    "retry": "重试",
+    "braavolabs": "浏览一次合成的智能体运行，并批准或拒绝其审批关卡。"
+  },
+  "braavolabsRunDemo": {
+    "kicker": "合成智能体运行轨迹",
+    "title": "逐步查看一次智能体运行。",
+    "intro": "一次虚构的 AI 智能体运行，以审计轨迹的形式呈现：每一步都有状态、耗时和成本。展开某一步可查看详情。有一步在等待人工批准。",
+    "note": "这只是一个小体验，不是真实的 Braavolabs 界面。运行过程、工具调用和所有数字都是虚构的。这里不会调用模型、客户系统或网络，成本也不代表真实价格或速度。",
+    "badge": "合成示例",
+    "timelineLabel": "运行步骤",
+    "metaHeading": "运行元数据",
+    "statusLabel": "状态",
+    "runIdLabel": "运行 ID",
+    "pipelineLabel": "流程",
+    "pipelineValue": "逾期付款跟进",
+    "stepsLabel": "步骤",
+    "durationLabel": "耗时",
+    "costLabel": "成本（示例）",
+    "approve": "批准",
+    "reject": "拒绝",
+    "reset": "重置",
+    "gateHint": "这一步在等待人工决定。选择后可查看运行如何变化。",
+    "announceApproved": "已批准。最后一步正在运行。",
+    "announceRejected": "已拒绝。运行在关卡处被阻止，最后一步已跳过。",
+    "announceDone": "运行完成。总成本（示例）：{cost}。",
+    "announceReset": "运行已重置。审批关卡重新等待。",
+    "seconds": "{n} 秒",
+    "stepsOf": "{done} / {total}",
+    "waiting": "等待中",
+    "detailTool": "工具调用（示例）",
+    "detailInput": "输入（示例）",
+    "detailOutput": "输出（示例）",
+    "detailCost": "成本明细（示例）",
+    "costModelIn": "模型输入",
+    "costModelOut": "模型输出",
+    "costTool": "工具",
+    "costTotal": "本步合计",
+    "status": {
+      "completed": "已完成",
+      "running": "运行中",
+      "awaiting": "等待批准",
+      "blocked": "已阻止",
+      "skipped": "已跳过",
+      "queued": "排队中"
+    },
+    "steps": {
+      "plan": {
+        "name": "计划",
+        "summary": "把任务拆成三个小步骤：找出逾期发票、撰写提醒、请求批准。",
+        "tool": "没有工具调用。智能体只做规划。",
+        "input": "任务：跟进逾期超过 14 天的发票",
+        "output": "计划：3 个步骤，1 个审批关卡"
+      },
+      "tool": {
+        "name": "工具调用",
+        "summary": "在示例数据中查找逾期发票：找到 7 张。",
+        "tool": "1 次调用：发票查询（虚构工具，示例数据）",
+        "input": "筛选：逾期超过 14 天\n上限：10",
+        "output": "7 张发票\n金额最大：示例客户 A"
+      },
+      "draft": {
+        "name": "草稿",
+        "summary": "撰写 7 份简短的提醒草稿。目前还没有发送任何内容。",
+        "tool": "没有工具调用。模型根据查询结果撰写。",
+        "input": "7 张发票，语气：友好简短",
+        "output": "7 份草稿，每份约 50 字"
+      },
+      "gate": {
+        "name": "审批关卡",
+        "summary": {
+          "awaiting": "等待一位人员批准发送这 7 份草稿。",
+          "completed": "一位人员批准了发送草稿。",
+          "blocked": "一位人员拒绝了草稿。运行在此被阻止。"
+        },
+        "tool": "没有工具调用。由人来决定。",
+        "input": "7 份草稿，可以发送",
+        "output": {
+          "awaiting": "尚无决定",
+          "completed": "决定：已批准",
+          "blocked": "决定：已拒绝"
+        }
+      },
+      "done": {
+        "name": "保存并完成",
+        "summary": {
+          "queued": "排队等待，直到关卡获得批准。",
+          "running": "正在把运行保存到审计轨迹，并将草稿标记为已发送（模拟）。",
+          "completed": "运行已保存到审计轨迹。草稿已标记为已发送（模拟，实际没有发送任何内容）。",
+          "skipped": "因关卡被拒绝而跳过。不会保存或发送任何内容。"
+        },
+        "tool": "1 次调用：写入审计日志（虚构工具）",
+        "input": "运行：demo-run-0001",
+        "output": {
+          "queued": "未开始",
+          "running": "正在写入审计条目",
+          "completed": "审计条目已保存",
+          "skipped": "未运行"
+        }
+      }
+    }
   }
 }

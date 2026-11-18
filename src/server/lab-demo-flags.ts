@@ -1,5 +1,6 @@
 import { LAB_DEMOS, type LabDemoId } from "@/data/lab-demos";
 import { lifeosDemoEnabled } from "@/server/lifeos-demo-surface";
+import { braavolabsDemoEnabled } from "@/server/braavolabs-demo-surface";
 import { ostinatoDemoEnabled } from "@/server/ostinato-demo-surface";
 
 /**
@@ -11,6 +12,7 @@ import { ostinatoDemoEnabled } from "@/server/ostinato-demo-surface";
 export const LAB_DEMO_FLAGS: Record<LabDemoId, { name: string; enabled: () => boolean }> = {
   "lifeos-decision": { name: "LIFEOS_DEMO_ENABLED", enabled: lifeosDemoEnabled },
   "ostinato-rhythm": { name: "OSTINATO_DEMO_ENABLED", enabled: ostinatoDemoEnabled },
+  "braavolabs-run": { name: "BRAAVOLABS_DEMO_ENABLED", enabled: braavolabsDemoEnabled },
 };
 
 /** Ids of the demos whose flag is open right now. */

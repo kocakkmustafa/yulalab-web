@@ -1289,6 +1289,105 @@
     "lifeos": "Pick a decision card and preview when its reminder would arrive.",
     "ostinato": "Tap along to a beat and see how your timing lands.",
     "error": "The demo could not be loaded. Check your connection and try again.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "braavolabs": "Step through a synthetic agent run and approve or reject its gate."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Synthetic agent run trace",
+    "title": "Step through one agent run.",
+    "intro": "A made-up run of an AI agent, laid out as an audit trail: every step with its status, time and cost. Open a step for details. One step waits for a person to approve.",
+    "note": "A small try-out, not the real Braavolabs screen. The run, the tool calls and every number are invented. Nothing here calls a model, a customer system or the network, and the costs say nothing about real prices or speed.",
+    "badge": "Synthetic example",
+    "timelineLabel": "Run steps",
+    "metaHeading": "Run metadata",
+    "statusLabel": "Status",
+    "runIdLabel": "Run ID",
+    "pipelineLabel": "Pipeline",
+    "pipelineValue": "Late-payment follow-up",
+    "stepsLabel": "Steps",
+    "durationLabel": "Time",
+    "costLabel": "Cost (example)",
+    "approve": "Approve",
+    "reject": "Reject",
+    "reset": "Reset",
+    "gateHint": "This step waits for a person. Choose to see how the run changes.",
+    "announceApproved": "Approved. The last step is running.",
+    "announceRejected": "Rejected. The run is blocked at the gate and the last step is skipped.",
+    "announceDone": "Run completed. Total cost, example: {cost}.",
+    "announceReset": "Run reset. The approval gate is waiting again.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "waiting",
+    "detailTool": "Tool call (example)",
+    "detailInput": "Input (example)",
+    "detailOutput": "Output (example)",
+    "detailCost": "Cost breakdown (example)",
+    "costModelIn": "Model input",
+    "costModelOut": "Model output",
+    "costTool": "Tool",
+    "costTotal": "Step total",
+    "status": {
+      "completed": "Completed",
+      "running": "Running",
+      "awaiting": "Awaiting approval",
+      "blocked": "Blocked",
+      "skipped": "Skipped",
+      "queued": "Queued"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Splits the task into three small steps: find overdue invoices, write reminders, ask for approval.",
+        "tool": "No tool call. The agent only plans.",
+        "input": "task: follow up on invoices overdue by more than 14 days",
+        "output": "plan: 3 steps, 1 approval gate"
+      },
+      "tool": {
+        "name": "Tool call",
+        "summary": "Looks up overdue invoices in example data: 7 found.",
+        "tool": "1 call: invoice lookup (made-up tool, example data)",
+        "input": "filter: overdue more than 14 days\nlimit: 10",
+        "output": "7 invoices\nlargest: example customer A"
+      },
+      "draft": {
+        "name": "Draft",
+        "summary": "Writes 7 short reminder drafts. Nothing is sent yet.",
+        "tool": "No tool call. The model writes from the lookup result.",
+        "input": "7 invoices, tone: friendly and brief",
+        "output": "7 drafts, about 50 words each"
+      },
+      "gate": {
+        "name": "Approval gate",
+        "summary": {
+          "awaiting": "Waiting for a person to approve sending the 7 drafts.",
+          "completed": "A person approved sending the drafts.",
+          "blocked": "A person rejected the drafts. The run is blocked here."
+        },
+        "tool": "No tool call. A person decides.",
+        "input": "7 drafts, ready to send",
+        "output": {
+          "awaiting": "no decision yet",
+          "completed": "decision: approved",
+          "blocked": "decision: rejected"
+        }
+      },
+      "done": {
+        "name": "Save and finish",
+        "summary": {
+          "queued": "Queued until the gate is approved.",
+          "running": "Saving the run to the audit trail and marking the drafts as sent (simulated).",
+          "completed": "Run saved to the audit trail. Drafts marked as sent (simulated, nothing was sent).",
+          "skipped": "Skipped because the gate was rejected. Nothing is saved or sent."
+        },
+        "tool": "1 call: audit log write (made-up tool)",
+        "input": "run: demo-run-0001",
+        "output": {
+          "queued": "not started",
+          "running": "writing the audit entry",
+          "completed": "audit entry saved",
+          "skipped": "not run"
+        }
+      }
+    }
   }
 }

@@ -68,6 +68,7 @@ const nextConfig = {
   env: {
     LIFEOS_DEMO_ENABLED: process.env.LIFEOS_DEMO_ENABLED ?? "",
     OSTINATO_DEMO_ENABLED: process.env.OSTINATO_DEMO_ENABLED ?? "",
+    BRAAVOLABS_DEMO_ENABLED: process.env.BRAAVOLABS_DEMO_ENABLED ?? "",
   },
   poweredByHeader: false,
   // Preserve middleware-produced origins verbatim. Without this, Next 15.5's

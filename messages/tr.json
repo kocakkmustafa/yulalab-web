@@ -1289,6 +1289,105 @@
     "lifeos": "Bir karar kartı seç, hatırlatmasının ne zaman geleceğini önizle.",
     "ostinato": "Vuruşa eşlik ederek dokun, zamanlamanın nasıl düştüğünü gör.",
     "error": "Demo yüklenemedi. Bağlantını kontrol edip yeniden dene.",
-    "retry": "Yeniden dene"
+    "retry": "Yeniden dene",
+    "braavolabs": "Sentetik bir ajan çalıştırmasında adım adım gez, onay kapısını onayla ya da reddet."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Sentetik ajan çalıştırması izi",
+    "title": "Bir ajan çalıştırmasını adım adım gez.",
+    "intro": "Bir yapay zekâ ajanının uydurma bir çalıştırması, denetim izi olarak dizilmiş: her adım durumu, süresi ve maliyetiyle. Ayrıntı için bir adımı aç. Bir adım, bir kişinin onayını bekliyor.",
+    "note": "Küçük bir deneme; gerçek Braavolabs ekranı değildir. Çalıştırma, araç çağrıları ve tüm rakamlar uydurmadır. Burada bir modele, müşteri sistemine ya da ağa hiçbir çağrı yapılmaz; maliyetler gerçek fiyat ya da hız hakkında bir şey söylemez.",
+    "badge": "Sentetik örnek",
+    "timelineLabel": "Çalıştırma adımları",
+    "metaHeading": "Çalıştırma metadatası",
+    "statusLabel": "Durum",
+    "runIdLabel": "Çalıştırma kimliği",
+    "pipelineLabel": "Akış",
+    "pipelineValue": "Geciken ödeme takibi",
+    "stepsLabel": "Adımlar",
+    "durationLabel": "Süre",
+    "costLabel": "Maliyet (örnek)",
+    "approve": "Onayla",
+    "reject": "Reddet",
+    "reset": "Sıfırla",
+    "gateHint": "Bu adım bir kişiyi bekliyor. Çalıştırmanın nasıl değiştiğini görmek için seç.",
+    "announceApproved": "Onaylandı. Son adım çalışıyor.",
+    "announceRejected": "Reddedildi. Çalıştırma kapıda engellendi, son adım atlandı.",
+    "announceDone": "Çalıştırma tamamlandı. Toplam maliyet, örnek: {cost}.",
+    "announceReset": "Çalıştırma sıfırlandı. Onay kapısı yeniden bekliyor.",
+    "seconds": "{n} sn",
+    "stepsOf": "{done} / {total}",
+    "waiting": "bekliyor",
+    "detailTool": "Araç çağrısı (örnek)",
+    "detailInput": "Girdi (örnek)",
+    "detailOutput": "Çıktı (örnek)",
+    "detailCost": "Maliyet kırılımı (örnek)",
+    "costModelIn": "Model girdisi",
+    "costModelOut": "Model çıktısı",
+    "costTool": "Araç",
+    "costTotal": "Adım toplamı",
+    "status": {
+      "completed": "Tamamlandı",
+      "running": "Çalışıyor",
+      "awaiting": "Onay bekliyor",
+      "blocked": "Engellendi",
+      "skipped": "Atlandı",
+      "queued": "Sırada"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Görevi üç küçük adıma böler: geciken faturaları bul, hatırlatmaları yaz, onay iste.",
+        "tool": "Araç çağrısı yok. Ajan yalnızca plan yapar.",
+        "input": "görev: 14 günden fazla geciken faturaları takip et",
+        "output": "plan: 3 adım, 1 onay kapısı"
+      },
+      "tool": {
+        "name": "Araç çağrısı",
+        "summary": "Örnek veride geciken faturaları arar: 7 bulundu.",
+        "tool": "1 çağrı: fatura arama (uydurma araç, örnek veri)",
+        "input": "filtre: 14 günden fazla gecikmiş\nsınır: 10",
+        "output": "7 fatura\nen büyüğü: örnek müşteri A"
+      },
+      "draft": {
+        "name": "Taslak",
+        "summary": "7 kısa hatırlatma taslağı yazar. Henüz hiçbir şey gönderilmez.",
+        "tool": "Araç çağrısı yok. Model, arama sonucuna bakarak yazar.",
+        "input": "7 fatura, ton: samimi ve kısa",
+        "output": "7 taslak, her biri yaklaşık 50 sözcük"
+      },
+      "gate": {
+        "name": "Onay kapısı",
+        "summary": {
+          "awaiting": "Bir kişinin 7 taslağın gönderimini onaylaması bekleniyor.",
+          "completed": "Bir kişi taslakların gönderimini onayladı.",
+          "blocked": "Bir kişi taslakları reddetti. Çalıştırma burada engellendi."
+        },
+        "tool": "Araç çağrısı yok. Kararı bir kişi verir.",
+        "input": "7 taslak, göndermeye hazır",
+        "output": {
+          "awaiting": "henüz karar yok",
+          "completed": "karar: onaylandı",
+          "blocked": "karar: reddedildi"
+        }
+      },
+      "done": {
+        "name": "Kaydet ve bitir",
+        "summary": {
+          "queued": "Kapı onaylanana kadar sırada.",
+          "running": "Çalıştırma denetim izine kaydediliyor, taslaklar gönderildi olarak işaretleniyor (simülasyon).",
+          "completed": "Çalıştırma denetim izine kaydedildi. Taslaklar gönderildi olarak işaretlendi (simülasyon, hiçbir şey gönderilmedi).",
+          "skipped": "Kapı reddedildiği için atlandı. Hiçbir şey kaydedilmez ya da gönderilmez."
+        },
+        "tool": "1 çağrı: denetim günlüğüne yazma (uydurma araç)",
+        "input": "çalıştırma: demo-run-0001",
+        "output": {
+          "queued": "başlamadı",
+          "running": "denetim kaydı yazılıyor",
+          "completed": "denetim kaydı yazıldı",
+          "skipped": "çalıştırılmadı"
+        }
+      }
+    }
   }
 }

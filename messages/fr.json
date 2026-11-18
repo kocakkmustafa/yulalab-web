@@ -1289,6 +1289,105 @@
     "lifeos": "Choisis une carte de décision et prévisualise quand son rappel arriverait.",
     "ostinato": "Tape en rythme avec le battement et vois comment tombe ton tempo.",
     "error": "L'essai n'a pas pu être chargé. Vérifie ta connexion et réessaie.",
-    "retry": "Réessayer"
+    "retry": "Réessayer",
+    "braavolabs": "Parcourir une exécution d’agent synthétique et approuver ou refuser sa porte de validation."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Trace d’exécution d’agent synthétique",
+    "title": "Parcourez une exécution d’agent étape par étape.",
+    "intro": "Une exécution inventée d’un agent d’IA, présentée comme une piste d’audit : chaque étape avec son statut, sa durée et son coût. Ouvrez une étape pour les détails. Une étape attend l’approbation d’une personne.",
+    "note": "Un petit essai, pas le véritable écran Braavolabs. L’exécution, les appels d’outils et tous les chiffres sont inventés. Rien ici n’appelle un modèle, un système client ou le réseau, et les coûts ne disent rien des prix ou de la vitesse réels.",
+    "badge": "Exemple synthétique",
+    "timelineLabel": "Étapes de l’exécution",
+    "metaHeading": "Métadonnées de l’exécution",
+    "statusLabel": "Statut",
+    "runIdLabel": "ID d’exécution",
+    "pipelineLabel": "Pipeline",
+    "pipelineValue": "Relance de paiements en retard",
+    "stepsLabel": "Étapes",
+    "durationLabel": "Durée",
+    "costLabel": "Coût (exemple)",
+    "approve": "Approuver",
+    "reject": "Refuser",
+    "reset": "Réinitialiser",
+    "gateHint": "Cette étape attend une personne. Faites un choix pour voir comment l’exécution change.",
+    "announceApproved": "Approuvé. La dernière étape est en cours.",
+    "announceRejected": "Refusé. L’exécution est bloquée à la porte et la dernière étape est ignorée.",
+    "announceDone": "Exécution terminée. Coût total, exemple : {cost}.",
+    "announceReset": "Exécution réinitialisée. La porte de validation attend de nouveau.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "en attente",
+    "detailTool": "Appel d’outil (exemple)",
+    "detailInput": "Entrée (exemple)",
+    "detailOutput": "Sortie (exemple)",
+    "detailCost": "Détail des coûts (exemple)",
+    "costModelIn": "Entrée du modèle",
+    "costModelOut": "Sortie du modèle",
+    "costTool": "Outil",
+    "costTotal": "Total de l’étape",
+    "status": {
+      "completed": "Terminé",
+      "running": "En cours",
+      "awaiting": "En attente d’approbation",
+      "blocked": "Bloqué",
+      "skipped": "Ignoré",
+      "queued": "En file d’attente"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Découpe la tâche en trois petites étapes : trouver les factures en retard, rédiger les relances, demander l’approbation.",
+        "tool": "Aucun appel d’outil. L’agent ne fait que planifier.",
+        "input": "tâche : relancer les factures en retard de plus de 14 jours",
+        "output": "plan : 3 étapes, 1 porte de validation"
+      },
+      "tool": {
+        "name": "Appel d’outil",
+        "summary": "Cherche les factures en retard dans des données d’exemple : 7 trouvées.",
+        "tool": "1 appel : recherche de factures (outil inventé, données d’exemple)",
+        "input": "filtre : retard de plus de 14 jours\nlimite : 10",
+        "output": "7 factures\nla plus élevée : client exemple A"
+      },
+      "draft": {
+        "name": "Brouillon",
+        "summary": "Rédige 7 courts brouillons de relance. Rien n’est encore envoyé.",
+        "tool": "Aucun appel d’outil. Le modèle écrit à partir du résultat de la recherche.",
+        "input": "7 factures, ton : amical et bref",
+        "output": "7 brouillons, environ 50 mots chacun"
+      },
+      "gate": {
+        "name": "Porte de validation",
+        "summary": {
+          "awaiting": "En attente qu’une personne approuve l’envoi des 7 brouillons.",
+          "completed": "Une personne a approuvé l’envoi des brouillons.",
+          "blocked": "Une personne a refusé les brouillons. L’exécution est bloquée ici."
+        },
+        "tool": "Aucun appel d’outil. Une personne décide.",
+        "input": "7 brouillons, prêts à envoyer",
+        "output": {
+          "awaiting": "pas encore de décision",
+          "completed": "décision : approuvé",
+          "blocked": "décision : refusé"
+        }
+      },
+      "done": {
+        "name": "Enregistrer et terminer",
+        "summary": {
+          "queued": "En file d’attente jusqu’à l’approbation de la porte.",
+          "running": "Enregistre l’exécution dans la piste d’audit et marque les brouillons comme envoyés (simulé).",
+          "completed": "Exécution enregistrée dans la piste d’audit. Brouillons marqués comme envoyés (simulé, rien n’a été envoyé).",
+          "skipped": "Ignoré car la porte a été refusée. Rien n’est enregistré ni envoyé."
+        },
+        "tool": "1 appel : écriture dans le journal d’audit (outil inventé)",
+        "input": "exécution : demo-run-0001",
+        "output": {
+          "queued": "pas démarré",
+          "running": "écriture de l’entrée d’audit",
+          "completed": "entrée d’audit enregistrée",
+          "skipped": "non exécuté"
+        }
+      }
+    }
   }
 }
