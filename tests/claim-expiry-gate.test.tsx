@@ -205,18 +205,9 @@ describe("home experience data and overlay", () => {
   });
 });
 
-describe("Burun Farkı: the two expired claims were removed (founder, 2026-11-18)", () => {
-  const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-
-  it.each([
-    ["2026-11-14", NOW],
-    ["2027-01-14", AFTER_ALL],
-  ])("the product record carries no claim, so nothing is presentable or narrated at %s", (_label, now) => {
-    expect(bf).toBeTruthy();
-    expect(bf.claims).toEqual([]);
-    expect(listPresentableClaims(bf, now)).toEqual([]);
-    expect(presentClaims(bf, now)).toEqual([]);
-    expect(toExperienceClaims(bf, "en", now)).toEqual([]);
+describe("Burun Farkı: claims and product removed (founder, 2026-11-18)", () => {
+  it("the product record no longer exists, so nothing can be presented or narrated", () => {
+    expect(publicRegistry.find((r) => r.slug === "burunfarki")).toBeUndefined();
   });
 
   it("neither removed id exists anywhere in the registry", () => {
@@ -238,9 +229,8 @@ describe("Burun Farkı: the two expired claims were removed (founder, 2026-11-18
     expect(others.filter((c) => c.expiresAt && isExpired(c.expiresAt, NOW))).toEqual([]);
   });
 
-  it("the Burun Farkı product config carries no stat, so no figure can reach the page", () => {
-    const config = projects.find((p) => p.slug === "burunfarki")!;
-    expect(config.stats).toEqual([]);
+  it("the Burun Farkı product config is no longer in the projects list", () => {
+    expect(projects.find((p) => p.slug === "burunfarki")).toBeUndefined();
   });
 });
 

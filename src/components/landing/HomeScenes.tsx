@@ -65,7 +65,7 @@ export async function HomeScenes({ locale, now = new Date() }: { locale: Locale;
             id={scene.id}
             data-home-scene={scene.n}
             aria-labelledby={headingId}
-            className="scroll-mt-24 max-w-7xl mx-auto px-6 lg:px-10 py-20 md:py-28 border-b border-white/[0.06] last:border-b-0"
+            className="max-w-7xl mx-auto px-6 lg:px-10 py-20 md:py-28 border-b border-white/[0.06] last:border-b-0"
           >
             <p
               aria-hidden="true"

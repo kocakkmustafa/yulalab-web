@@ -43,7 +43,7 @@ describe("only a shipped product may show a product screenshot", () => {
 
   it("names which products are allowed to have one, so a status flip is deliberate", () => {
     const allowed = configs.filter((c) => c.status === "live" || c.status === "beta").map((c) => c.slug).sort();
-    expect(allowed).toEqual(["braavolabs", "burunfarki", "lifeos"]);
+    expect(allowed).toEqual(["braavolabs", "lifeos"]);
   });
 });
 

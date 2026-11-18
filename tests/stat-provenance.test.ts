@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { projects } from "@/data/projects";
+import { burunfarki } from "@/data/projects/burunfarki";
 import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 import { publicRegistry } from "@/data/public-registry";
 import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenance";
@@ -62,7 +63,7 @@ describe("stats that restate a registry claim must be linked to it", () => {
   });
 
   it("carries no Burun Farkı stat at all (claim withdrawn, founder 2a)", () => {
-    expect(projects.find((p) => p.slug === "burunfarki")!.stats).toEqual([]);
+    expect(burunfarki.stats).toEqual([]);
   });
 
   it("links exactly the stats that are supposed to be linked", () => {

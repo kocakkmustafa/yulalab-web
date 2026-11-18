@@ -56,13 +56,15 @@ for (const view of VIEWS) {
         expect(box!.height).toBeGreaterThanOrEqual(44);
         await page.keyboard.press("Enter");
         await expect(page).toHaveURL(new RegExp(`${target}$`));
-        // The section lands at its scroll-margin-top (6rem = 96px), give or take.
+        // The section lands at html scroll-padding-top (globals.css): 136px under the 120px desktop header,
+        // 88px under the 72px phone header. Sections add no scroll-margin of their own (it would stack).
+        const landing = view.viewport.width < 768 ? 88 : 136;
         await expect
           .poll(() => page.locator(target).evaluate((el) => Math.round(el.getBoundingClientRect().top)))
-          .toBeGreaterThanOrEqual(96 - 12);
+          .toBeGreaterThanOrEqual(landing - 12);
         await expect
           .poll(() => page.locator(target).evaluate((el) => Math.round(el.getBoundingClientRect().top)))
-          .toBeLessThanOrEqual(96 + 12);
+          .toBeLessThanOrEqual(landing + 12);
         await page.evaluate(() => history.replaceState(null, "", location.pathname));
       }
     });

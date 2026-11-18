@@ -38,7 +38,7 @@ for (const viewport of [{ width: 1280, height: 900 }, { width: 320, height: 800 
     expect(styles.hiddenDisplay).toBe("none");
     expect(styles.buttonCursor).toBe("pointer");
     expect(styles.bodyFont).not.toContain("var(");
-    expect(styles.bodyFont).toMatch(/Inter|sans-serif/);
+    expect(styles.bodyFont).toMatch(/Hanken/);
     expect(styles.pageOverflows).toBe(false);
   });
 }
@@ -82,9 +82,9 @@ test("status colors, font variables, gradients and focus transitions retain thei
   expect(Math.abs(red - 252) + Math.abs(green - 211) + Math.abs(blue - 77)).toBeLessThanOrEqual(6);
   expect(styles.emerald).not.toBe("rgb(0, 0, 0)");
   expect(styles.displayFont).not.toContain("var(");
-  expect(styles.displayFont).toMatch(/Manrope|Inter/);
+  expect(styles.displayFont).toMatch(/Hanken/);
   expect(styles.monoFont).not.toContain("var(");
-  expect(styles.monoFont).toMatch(/JetBrains|monospace/);
+  expect(styles.monoFont).toMatch(/IBM Plex|monospace/);
   expect(styles.gradient).toContain("linear-gradient(");
   expect(styles.gradient).toContain("to top");
   expect(styles.gradient).toContain("srgb");

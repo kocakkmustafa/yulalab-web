@@ -213,8 +213,8 @@ describe("validateRegistry — whole-registry checks", () => {
     expect(validateRegistry(publicRegistry)).toEqual([]);
   });
 
-  it("the real registry has exactly 8 records, matching the live product count", () => {
-    expect(publicRegistry).toHaveLength(8);
+  it("the real registry has exactly 7 records, matching the live product count", () => {
+    expect(publicRegistry).toHaveLength(7);
   });
 });
 

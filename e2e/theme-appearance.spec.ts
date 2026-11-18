@@ -4,7 +4,7 @@ import { test, expect, type Page } from "@playwright/test";
 // Storage key and colours are the public contract of src/lib/theme.ts.
 const KEY = "yula.appearance.v1";
 const ROUTE = "/consulting";
-const BG = { light: "rgb(246, 245, 240)", dark: "rgb(13, 14, 17)" } as const;
+const BG = { light: "rgb(246, 245, 240)", dark: "rgb(0, 0, 0)" } as const;
 
 const control = (page: Page) => page.getByRole("combobox", { name: /Görünüm|Appearance/ }).first();
 const theme = (page: Page) => page.evaluate(() => document.documentElement.dataset.theme);
@@ -16,13 +16,21 @@ test.describe("appearance: light, dark, system", () => {
     await page.setViewportSize({ width: 1440, height: 900 });
   });
 
+  test("dark is the default regardless of the OS preference", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light" });
+    await page.goto(ROUTE);
+    await expect(control(page)).toBeEnabled();
+    await expect(control(page)).toHaveValue("dark");
+    expect(await theme(page)).toBe("dark");
+    expect(await bodyBg(page)).toBe(BG.dark);
+  });
+
   test("system mode follows the OS preference live", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "dark" });
     await page.goto(ROUTE);
     await expect(control(page)).toBeEnabled();
-    await expect(control(page)).toHaveValue("system");
+    await control(page).selectOption("system");
     expect(await theme(page)).toBe("dark");
-    expect(await bodyBg(page)).toBe(BG.dark);
     await page.emulateMedia({ colorScheme: "light" });
     await expect.poll(() => theme(page)).toBe("light");
     expect(await bodyBg(page)).toBe(BG.light);

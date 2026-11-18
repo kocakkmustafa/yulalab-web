@@ -32,7 +32,7 @@ const linked = new Set<string>([
 const ALLOWLIST: Record<string, { reason: string; via: string | null; orphanReason?: string }> = {
   "/[...rest]": { reason: "catch-all that renders the localized 404; not a destination", via: "/" },
   "/privacy/braavolabs": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
-  "/privacy/burunfarki": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
+  "/privacy/burunfarki": { reason: "store privacy URL of a product no longer shown on the site; page stays live, not listed on the privacy hub, reached from the privacy page footer links only", via: "/privacy" },
   "/privacy/lifeos": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/motion": { reason: "per-product privacy notice, listed on the privacy hub and support page", via: "/privacy" },
   "/delete-account/lifeos": { reason: "store data-deletion URL for the store listing; also linked from the support page", via: "/support" },

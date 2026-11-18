@@ -49,13 +49,13 @@ describe("motion parity CSS", () => {
   });
 
   it("mirrors the title wipe and the menu entrance for right-to-left pages", () => {
-    expect(parity).toContain('html[data-client-nav="true"][dir="rtl"] .page-enter h1');
+    // W1 BK3: the title wipe is gone (plain fade transition); the menu entrance still mirrors.
+    expect(parity).not.toContain("data-client-nav");
     expect(parity).toContain('[dir="rtl"] .mm-item');
   });
 
-  it("never holds back a first paint: title wipe after client navigation, header moves only", () => {
-    expect(parity).toMatch(/html\[data-client-nav="true"\] \.page-enter h1 {\s*-webkit-mask-image/);
-    expect(parity).not.toMatch(/(^|\n)\.page-enter h1 {\s*-webkit-mask-image/);
+  it("never holds back a first paint: no title mask, header moves only", () => {
+    expect(parity).not.toMatch(/\.page-enter h1 {\s*-webkit-mask-image/);
     const header = parity.slice(parity.indexOf("@keyframes siteHeaderIn"), parity.indexOf("@keyframes siteHeaderIn") + 120);
     expect(header).not.toContain("opacity");
   });
@@ -66,11 +66,10 @@ describe("motion parity CSS", () => {
   });
 
   it("resolves every new effect to its end state under reduced motion", () => {
-    for (const selector of [".slot > span", ".mm-item", ".footer-wordmark text", ".page-enter h1", ".scroll-marquee-track", ".media-in"]) {
+    for (const selector of [".slot > span", ".mm-item", ".footer-wordmark text", ".scroll-marquee-track", ".media-in"]) {
       expect(reduced).toContain(selector);
     }
     expect(reduced).toContain("stroke-dashoffset: 0 !important");
-    expect(reduced).toContain("mask-image: none");
   });
 });
 

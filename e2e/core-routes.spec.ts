@@ -48,7 +48,6 @@ const STATIC_ROUTES = [
 
 const PRODUCT_SLUGS = [
   "braavolabs",
-  "burunfarki",
   "lifeos",
   "gravita",
   "lissom",
@@ -432,19 +431,15 @@ test("products index links to every product detail page", async ({
   }
 });
 
-test("client navigation plays one route veil that never blocks the next page", async ({ page }) => {
+test("client navigation is a plain fade: no route veil, next page never blocked", async ({ page }) => {
   await page.goto("/projects");
-  await expect(page.locator(".route-veil")).toHaveCount(0);
   await page.locator('main a[href$="/projects/lifeos"]').first().click();
   await expect(page).toHaveURL(/\/projects\/lifeos$/);
-  const veil = page.locator(".route-veil");
-  await expect(veil).toHaveCount(1);
-  await expect(veil).toHaveAttribute("aria-hidden", "true");
-  expect(await veil.evaluate((element) => getComputedStyle(element).pointerEvents)).toBe("none");
+  await expect(page.locator(".route-veil")).toHaveCount(0);
   await expect(page.locator("main h1").first()).toBeVisible();
 });
 
-test("route veil stays off under reduced motion", async ({ browser }) => {
+test("route change plays no entry animation under reduced motion", async ({ browser }) => {
   const context = await browser.newContext({ reducedMotion: "reduce" });
   try {
     const page = await context.newPage();
@@ -452,6 +447,7 @@ test("route veil stays off under reduced motion", async ({ browser }) => {
     await page.locator('main a[href$="/projects/lifeos"]').first().click();
     await expect(page).toHaveURL(/\/projects\/lifeos$/);
     await expect(page.locator(".route-veil")).toHaveCount(0);
+    expect(await page.locator(".page-enter").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
   } finally {
     await context.close();
   }

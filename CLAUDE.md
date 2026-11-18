@@ -1,6 +1,6 @@
 # CLAUDE.md — yulalab.com (Next.js 15)
 
-YULA Lab şemsiye/vitrin sitesi — Braavolabs, Burun Farkı ve LifeOS'u sergiler. 14 dilli (next-intl), statik üretim. Kanonik program: `BITIRME-PROGRAMI.md` + `DEFTER.md` (bu dizinde). Vizyon/durum: `../VENTURE.md`.
+YULA Lab şemsiye/vitrin sitesi — Braavolabs, LifeOS ve diğer 5 araştırma ürününü (Gravita, Lissom, JabLab, Ostinato, Choreia) sergiler. 14 dilli (next-intl), statik üretim. Kanonik program: `BITIRME-PROGRAMI.md` + `DEFTER.md` (bu dizinde). Vizyon/durum: `../VENTURE.md`.
 
 ## Komutlar
 ```bash

@@ -17,7 +17,7 @@ import {
 const entries = buildUniverse(publicRegistry, projects, "tr");
 
 describe("prototype universe ordering and grouping", () => {
-  it("uses the single ordering source for all 8 products", () => {
+  it("uses the single ordering source for all 7 products", () => {
     expect(entries.map((e) => e.slug)).toEqual([...UNIVERSE_ORDER]);
     expect(entries).toHaveLength(publicRegistry.length);
     expect(entries.map((e) => e.slug).slice(0, 3)).toEqual(["lifeos", "braavolabs", "ostinato"]);
@@ -26,7 +26,7 @@ describe("prototype universe ordering and grouping", () => {
   it("splits into main products and portfolio", () => {
     const g = groupUniverse(entries);
     expect(g.main.map((e) => e.slug)).toEqual([...MAIN_SLUGS]);
-    expect(g.portfolio.map((e) => e.slug)).toEqual(["burunfarki", "gravita", "lissom", "jablab", "choreia"]);
+    expect(g.portfolio.map((e) => e.slug)).toEqual(["gravita", "lissom", "jablab", "choreia"]);
   });
 
   it("is a stable order independent of registry order", () => {

@@ -33,19 +33,12 @@ function html(slug: string, locale: "tr" | "en") {
   return container;
 }
 
-describe.each(["tr", "en"] as const)("Burun Farkı product page carries no claim (%s)", (locale) => {
-  it("has no accuracy figure, no Top-1/Top-3 wording and no claim screenshot in the HTML", () => {
-    const markup = html("burunfarki", locale).innerHTML;
-    for (const needle of ["screenshot-honest-stats", "screenshot-daily-history", "1.225", "1,225", "%29", "%62", "29%", "62%", "Top-1", "Top-3"]) {
-      expect(markup, needle).not.toContain(needle);
-    }
-  });
-
-  it("renders the honest empty state, not an empty gallery or a broken card", () => {
-    const container = html("burunfarki", locale);
-    expect(container.querySelector("#ekran img")).toBeNull();
-    expect(container.querySelector("#ekran ul")).toBeNull();
-    expect(container.querySelector('[data-testid="screen-empty"]')?.textContent?.trim()).toBeTruthy();
+// Founder decision 2026-11-18: the Burun Farkı product page is removed, so no
+// surface (projects list, registry, product page) can render a Burun Farkı figure.
+describe("Burun Farkı is no longer a product on the site", () => {
+  it("is absent from the projects list and from the public registry", () => {
+    expect(projects.some((p) => p.slug === "burunfarki")).toBe(false);
+    expect(publicRegistry.some((r) => r.slug === "burunfarki")).toBe(false);
   });
 });
 
@@ -62,22 +55,6 @@ describe("the other products keep their screenshots", () => {
   it("braavolabs declares no product capture after Y2 was removed (design previews are separate)", () => {
     const braavolabs = projects.find((p) => p.slug === "braavolabs")!;
     expect(braavolabs.visuals.screenshots.filter((s) => s.kind === "product")).toHaveLength(0);
-  });
-});
-
-describe("Burun Farkı data surfaces carry no figure", () => {
-  const bf = projects.find((p) => p.slug === "burunfarki")!;
-  const record = publicRegistry.find((r) => r.slug === "burunfarki")!;
-
-  it("config has no product screenshot, no stats and no numeric feature text", () => {
-    expect(bf.visuals.screenshots.filter((s) => s.kind === "product")).toEqual([]);
-    expect(bf.stats).toEqual([]);
-    const text = JSON.stringify([bf.features, bf.description, bf.short]);
-    for (const needle of ["1.225", "1,225", "69 g", "69-day", "%29", "%62"]) expect(text, needle).not.toContain(needle);
-  });
-
-  it("registry declares no screenshots for it, so the linear experience and prototype page show none", () => {
-    expect(record.screenshots).toEqual([]);
   });
 });
 

@@ -87,7 +87,7 @@ async function readCompositedCanvasStats(page: Page) {
 test("focused product media settles before visual capture is ready", async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 960, height: 640 });
-  const firstProductCenter = 0.085 + (0.5 / 8) * (0.505 - 0.085);
+  const firstProductCenter = 0.085 + (0.5 / PRODUCT_ORDER.length) * (0.505 - 0.085);
   const root = await openCapture(page, firstProductCenter);
   await expect(root).toHaveAttribute("data-active-product", "braavolabs");
   await expect(page.locator("canvas")).toHaveCount(1, { timeout: 60_000 });
@@ -145,7 +145,6 @@ for (const [progress, stage] of STAGE_CHECKPOINTS) {
 
 const PRODUCT_ORDER = [
   "braavolabs",
-  "burunfarki",
   "lifeos",
   "gravita",
   "lissom",
@@ -168,8 +167,8 @@ for (const viewport of [
   { width: 390, height: 667 },
 ] as const) {
   for (const [index, slug] of [
-    [1, "burunfarki"],
-    [7, "choreia"],
+    [1, "lifeos"],
+    [6, "choreia"],
   ] as const) {
     const progress = 0.085 + ((index + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085);
     test(`${slug} CTA stays inside its ${viewport.width}x${viewport.height} product card`, async ({ page }) => {
@@ -402,7 +401,7 @@ for (const [stageName, edge, progress] of SEMANTIC_STAGE_BOUNDARIES) {
 }
 
 test("product descriptions have one exclusive owner at focus-slot boundaries", async ({ page }) => {
-  const productBoundary = 0.085 + (1 / 8) * (0.505 - 0.085);
+  const productBoundary = 0.085 + (1 / PRODUCT_ORDER.length) * (0.505 - 0.085);
   await openCapture(page, productBoundary);
   const panels = page.locator('[class*="productPanel"]');
   const productOpacities = await panels.evaluateAll((elements) =>
@@ -453,7 +452,7 @@ test("proof descriptions are semantically neutral at focus-slot boundaries", asy
 });
 
 test("an app not yet in a store reads as coming soon, never as a shipped build", async ({ page }) => {
-  const gravitaCenter = 0.085 + ((3 + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085);
+  const gravitaCenter = 0.085 + ((2 + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085);
   const root = await openCapture(page, gravitaCenter);
   await expect(root).toHaveAttribute("data-active-product", "gravita");
   const panel = page.locator('[data-product="gravita"]').first();
@@ -822,8 +821,8 @@ test("native journey anchors retain their target after resizing", { tag: "@hardw
 test("all mobile product actions remain reachable with enlarged text", async ({ page }) => {
   test.setTimeout(120_000);
   await page.setViewportSize({ width: 390, height: 667 });
-  for (let index = 0; index < 8; index++) {
-    await openCapture(page, 0.085 + ((index + 0.5) / 8) * (0.505 - 0.085));
+  for (let index = 0; index < PRODUCT_ORDER.length; index++) {
+    await openCapture(page, 0.085 + ((index + 0.5) / PRODUCT_ORDER.length) * (0.505 - 0.085));
     const panel = page.locator('[data-experience-stage="portfolio"] article[data-active="true"]');
     await panel.evaluate((element) => {
       // Snapshot first so nested inline labels receive exactly 200%, too.
@@ -860,8 +859,8 @@ for (const [locale, live, beta, comingSoon] of [
   test(`homepage labels each product with its registry status (${locale})`, async ({ page }) => {
     const prefix = locale === "en" ? "/en" : "";
     for (const [progress, slug, lifecycle, label] of [
-      [0.21625, "lifeos", "live", live],
-      [0.11125, "braavolabs", "beta", beta],
+      [0.175, "lifeos", "live", live],
+      [0.115, "braavolabs", "beta", beta],
     ] as const) {
       await page.goto(`${prefix}/?capture=1&progress=${progress}&tier=low`);
       const panel = page.locator(`[data-product="${slug}"][data-active="true"]`);
@@ -924,7 +923,7 @@ test("native history returns to each product without replaying the opening", { t
   const root = await openNativeJourney(page);
   const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
   const openingEntry = await page.evaluate(() => window.history.state?.__yulaJourneyV1?.entryId);
-  for (const [slug, progress] of [["braavolabs", 0.11125], ["lifeos", 0.21625]] as const) {
+  for (const [slug, progress] of [["braavolabs", 0.115], ["lifeos", 0.175]] as const) {
     if (slug === "braavolabs") {
       await page.locator('header > nav a[href="#experience-portfolio"]').click();
     } else {
@@ -1020,7 +1019,7 @@ test("native immediate Back then Forward keeps the last scroll before persistenc
     window.scrollTo({ top: y, behavior: "instant" });
     window.history.back();
     return y;
-  }, scrollProgressForTimeline(0.21625));
+  }, scrollProgressForTimeline(0.175));
   await page.waitForURL("**/projects/lifeos");
   await page.goForward();
   await expect(root).toHaveAttribute("data-experience-mounted", "true");
@@ -1042,7 +1041,7 @@ test("English native gallery CTA keeps one locale prefix and returns in the same
   const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
   await page.locator('header > nav a[href="#experience-portfolio"]').click();
   await page.waitForFunction((documentProgress) => Math.abs(scrollY -
-    (document.documentElement.scrollHeight - innerHeight) * documentProgress) < 3, scrollProgressForTimeline(0.11125));
+    (document.documentElement.scrollHeight - innerHeight) * documentProgress) < 3, scrollProgressForTimeline(0.115));
   const link = page.locator('[data-experience-stage="portfolio"] article[data-active="true"] a');
   await expect(link).toHaveAttribute("href", "/en/projects/braavolabs");
   const before = await page.evaluate(() => scrollY);

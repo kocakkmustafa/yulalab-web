@@ -63,7 +63,7 @@ function script(copy: VerificationCopy): string {
     document.querySelector('meta[name="theme-color"]').content = resolved === "dark" ? ${JSON.stringify(THEME_COLORS.dark)} : ${JSON.stringify(THEME_COLORS.light)};
     appearance.value = preference;
   }
-  applyAppearance(document.documentElement.dataset.themePreference || "system");
+  applyAppearance(document.documentElement.dataset.themePreference || "dark");
   appearance.addEventListener("change", () => {
     const preference = appearance.value;
     if (!["light", "dark", "system"].includes(preference)) return;
@@ -79,7 +79,7 @@ function script(copy: VerificationCopy): string {
   window.addEventListener("storage", (event) => {
     try { if (event.storageArea && event.storageArea !== localStorage) return; } catch { return; }
     if (event.key !== ${JSON.stringify(THEME_STORAGE_KEY)} && event.key !== null) return;
-    applyAppearance(["light", "dark", "system"].includes(event.newValue) ? event.newValue : "system");
+    applyAppearance(["light", "dark", "system"].includes(event.newValue) ? event.newValue : "dark");
     sessionNotice.hidden = true;
   });
   const token = new URLSearchParams(raw).get("token") || "";
@@ -177,8 +177,8 @@ export async function GET(
     <label class="appearance">${htmlText(appearance.label)}
       <select id="appearance" disabled>
         <option value="light">${htmlText(appearance.light)}</option>
-        <option value="dark">${htmlText(appearance.dark)}</option>
-        <option value="system" selected>${htmlText(appearance.system)}</option>
+        <option value="dark" selected>${htmlText(appearance.dark)}</option>
+        <option value="system">${htmlText(appearance.system)}</option>
       </select>
     </label>
     <p id="appearance-session" role="status" hidden>${htmlText(appearance.sessionOnly)}</p>

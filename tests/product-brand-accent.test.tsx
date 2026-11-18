@@ -31,7 +31,7 @@ describe("brand foreground CSS picks the right tint per theme", () => {
   it("brandInk exposes both tints; products without a dark tint keep one colour", () => {
     const o = brandInk(bySlug("ostinato").brand) as Record<string, string>;
     expect([o["--brand-d"], o["--brand-l"]]).toEqual(["#8F82BD", "#5F4CA0"]);
-    const b = brandInk(bySlug("burunfarki").brand, 87) as Record<string, string>;
+    const b = brandInk(bySlug("braavolabs").brand, 87) as Record<string, string>;
     expect(b["--brand-d"]).toBe(b["--brand-l"]);
     expect(b["--brand-a"]).toBe("87%");
   });
@@ -48,12 +48,12 @@ describe("product page accent follows the app colour", () => {
     expect(root.style.getPropertyValue("--brand-l")).toBe(bySlug(slug).brand.primary);
     expect(root.style.getPropertyValue("--brand-d")).toBe(bySlug(slug).brand.primaryOnDark);
   });
-  it.each(["burunfarki", "braavolabs"])("%s keeps its ACCENT-map accent (no theme wiring)", (slug) => {
+  it.each(["braavolabs"])("%s keeps its ACCENT-map accent (no theme wiring)", (slug) => {
     const { container } = render(
       <NextIntlClientProvider locale="tr" messages={tr} timeZone="Europe/Istanbul"><ProductPage project={bySlug(slug)} /></NextIntlClientProvider>,
     );
     expect(container.querySelector("[data-brand-var]")).toBeNull();
-    const expected = { burunfarki: "#7FD8B0", braavolabs: "#D8B87F" }[slug as "burunfarki" | "braavolabs"];
+    const expected = { braavolabs: "#D8B87F" }[slug as "braavolabs"];
     const root = container.firstElementChild as HTMLElement;
     expect(root.style.getPropertyValue("--accent").toLowerCase()).toBe(expected.toLowerCase());
   });

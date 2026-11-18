@@ -1,7 +1,6 @@
 import { localized } from "@/lib/localized";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { YulaMark } from "@/components/common/YulaMark";
 import { FooterWordmark } from "./FooterWordmark";
 import { XLogo, Linkedin, Instagram } from "@/components/common/icons";
 import { company } from "@/data/company";
@@ -22,12 +21,28 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const emailBreakAt = company.contact.email.indexOf("@") + 1;
 
   return (
-    <footer data-site-footer="true" className="border-t border-white/[0.06] mt-32">
+    <footer data-site-footer="true" data-reveal className="mt-32 border-t border-hairline">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2 md:col-span-1">
-          <div className="flex items-center gap-2.5">
-            <YulaMark />
-            <span className="font-display font-semibold">Yula Lab</span>
+          {/* K7 closing: the brand Y drawn large (the same two-stroke Y as the
+              header mark), the readable name beside it. */}
+          <div className="flex items-center gap-4">
+            <svg
+              viewBox="0 0 24 24"
+              width={72}
+              height={72}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={1.6}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+              className="text-ink-50 shrink-0"
+            >
+              <path d="M4 4l8 9 8-9" />
+              <path d="M12 13v7" />
+            </svg>
+            <span className="font-display text-2xl font-semibold">Yula Lab</span>
           </div>
           <p className="mt-4 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
             {t("tagline")}
@@ -139,12 +154,12 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
           footer ends. Decorative; the readable brand sits in the first column.
           It draws itself stroke by stroke when the footer is first seen. */}
       <FooterWordmark />
-      <div className="border-t border-white/[0.04]">
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex items-center justify-between text-[12px] text-ink-300">
+      <div className="border-t border-hairline">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-6 flex items-center justify-between text-[12px] text-ink-300 [overflow-wrap:anywhere]">
           <div>
             © {year} {company.legalName}. {t("rights")}
           </div>
-          <div className="font-mono tracking-widest uppercase">{t("version")}</div>
+          <div className="font-mono tracking-[0.1em] uppercase">{t("version")}</div>
         </div>
       </div>
     </footer>

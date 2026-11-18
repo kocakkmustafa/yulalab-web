@@ -109,8 +109,8 @@ describe("list semantics survive list-style:none", () => {
 });
 
 describe("against the real registry", () => {
-  it("Burun Farkı has no claims left to render", () => {
-    expect(publicRegistry.find((r) => r.slug === "burunfarki")!.claims).toEqual([]);
+  it("Burun Farkı is no longer in the registry", () => {
+    expect(publicRegistry.find((r) => r.slug === "burunfarki")).toBeUndefined();
   });
 
   it("renders a registry record's claims (synthetic record; the real Burun Farkı claims were removed 2026-11-18)", () => {

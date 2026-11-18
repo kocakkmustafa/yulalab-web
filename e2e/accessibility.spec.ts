@@ -15,6 +15,18 @@ async function expectNoBlockingViolations(page: Page, label: string) {
     });
   }
 
+  // Same reasoning for scroll reveals: below-the-fold blocks wait at opacity 0
+  // until scrolled to. With the scene veil now fully opaque the background is a
+  // flat black axe can resolve, so it would score those unrevealed blocks.
+  // Settle them as a reader scrolling the page would, then sample.
+  await page.evaluate(async () => {
+    document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-in"));
+    document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((node) => {
+      node.dataset.revealState = "in";
+    });
+    await new Promise((resolve) => setTimeout(resolve, 900));
+  });
+
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
     .analyze();
@@ -51,13 +63,13 @@ const ROUTES = [
   ["home", "/"],
   ["products index", "/projects"],
   ["arabic home (rtl)", "/ar"],
-  ["live product", "/projects/burunfarki"],
+  ["live product", "/projects/lifeos"],
   ["research product", "/projects/choreia"],
   ["privacy", "/privacy"],
   ["transparency", "/transparency"],
   ["contact", "/contact"],
   ["home (en)", "/en"],
-  ["live product (en)", "/en/projects/burunfarki"],
+  ["live product (en)", "/en/projects/lifeos"],
 ] as const;
 
 for (const [label, path] of ROUTES) {
@@ -163,7 +175,7 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en/transparency");
   await expect(page.getByRole("heading", { name: "Claims and sources", level: 2 })).toBeVisible();
-  const unresolved = await page.locator(".reveal,.word").evaluateAll((elements) =>
+  const unresolved = await page.locator(".reveal,.word,[data-reveal],.page-enter").evaluateAll((elements) =>
     elements.filter((element) => {
       const style = getComputedStyle(element);
       return style.opacity !== "1" || style.transform !== "none" ||
@@ -171,6 +183,10 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
     }).length,
   );
   expect(unresolved, "reveals must resolve immediately, including offscreen ancestors").toBe(0);
+  expect(
+    await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length),
+    "no running animation under reduced motion",
+  ).toBe(0);
   await context.close();
 });
 

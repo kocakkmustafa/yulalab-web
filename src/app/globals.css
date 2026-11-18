@@ -10,6 +10,8 @@
 
 :root {
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  /* W1 BK3: ortak etkilesim egrisi (referans olcumu: easeOutQuad benzeri) */
+  --ease-ui: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -23,7 +25,7 @@ body {
 }
 
 body {
-  font-family: var(--font-sans), Inter, system-ui, sans-serif;
+  font-family: var(--font-sans), "Hanken Grotesk", system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -31,6 +33,8 @@ body {
 
 html {
   scroll-behavior: smooth;
+  /* fixed header is 120px (72px on mobile): #hash jumps and focus scrolling stay below it */
+  scroll-padding-top: 136px;
 }
 
 /* Lenis (useSmoothScroll) owns wheel easing on the journey; native smooth
@@ -239,11 +243,15 @@ body:not(:has([data-yula-experience="true"])) main,
   opacity: 0;
   transition: opacity 900ms var(--ease-soft);
 }
-.scene-host[data-scene-tone="page"] .scene-host-veil {
-  opacity: 0.82;
-}
+/* W1 (kurucu: dev camsi YULA glifi ana sayfa disinda gorunmesin): icerik ve
+   sessiz rotalarda perde tam opak; arka plan yalniz siyah izgarali CSS zemin.
+   Sahne yine yasar (ana sayfaya donuste surekliligi korur), yalniz gorunmez. */
+.scene-host[data-scene-tone="page"] .scene-host-veil,
 .scene-host[data-scene-tone="quiet"] .scene-host-veil {
-  opacity: 0.95;
+  opacity: 1;
+  /* no fade-in: a half-faded veil lets the glyph (and axe's contrast probe) see
+     through for 900ms; going back to the journey still fades the veil out. */
+  transition: none;
 }
 /* The scene replaces the page's painted ground only while it is live. The
    root keeps the page colour (painted under the scene), so contrast tools
@@ -255,13 +263,6 @@ html[data-scene="live"] {
 html[data-scene="live"] body {
   background: transparent;
 }
-/* With the world persisting, the route veil keeps only its ruler sweep:
-   blurring the whole scene between pages would hide the continuity. */
-html[data-scene="live"] .route-veil {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
 
 /* IntersectionObserver-driven reveal — deliberately larger than a
    micro-nudge: this is the "something just arrived" signal for section
@@ -270,16 +271,33 @@ html[data-scene="live"] .route-veil {
   opacity: 1;
   transform: none;
   transition:
-    opacity 700ms var(--ease-soft),
-    transform 700ms var(--ease-soft);
+    opacity 800ms var(--ease-ui),
+    transform 800ms var(--ease-ui);
 }
 .reveal.is-ready:not(.is-in) {
   opacity: 0;
-  transform: translateY(28px) scale(0.98);
+  transform: translateY(24px);
 }
 .reveal.is-in {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
+}
+
+/* W1 BK3: data-reveal. Ilerleyici gelistirme: JS yokken (ya da reduced-motion /
+   IntersectionObserver yokken) oge gorunur kalir. src/lib/reveal.ts yalniz
+   ilk ekranin altindaki ogelere data-reveal-state="pending" koyar. */
+[data-reveal][data-reveal-state] {
+  transition:
+    opacity 800ms var(--ease-ui),
+    transform 800ms var(--ease-ui);
+}
+[data-reveal][data-reveal-state="pending"] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-reveal][data-reveal-state="in"] {
+  opacity: 1;
+  transform: none;
 }
 
 /* word stagger reveal */
@@ -300,54 +318,14 @@ html[data-scene="live"] .route-veil {
   transform: translateY(0);
 }
 
-/* page transition */
+/* page transition (W1 BK3, referans parite): yalniz opacity fade. Cikis ~1.0s
+   PageTransition.tsx icinde (tiklamayla baslar), giris ~1.1s burada; ayni ease. */
 .page-enter {
-  animation: pageIn 700ms var(--ease-soft) both;
+  animation: pageIn 1100ms var(--ease-ui) both;
 }
 @keyframes pageIn {
-  from {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    filter: none;
-    transform: translateY(0);
-  }
-}
-
-/* Route veil: a glass wash with one ruler line sweeping across, played by
-   PageTransition after client navigations only. */
-.route-veil {
-  position: fixed;
-  z-index: 60;
-  inset: 0;
-  pointer-events: none;
-  background: rgb(var(--yula-ink-900) / 0.55);
-  color: rgb(var(--yula-ink-50));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  animation: routeVeil 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
-}
-.route-veil i {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 1px;
-  background: currentColor;
-  opacity: 0.55;
-  animation: routeSweep 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
-}
-@keyframes routeVeil {
-  0% { opacity: 0; }
-  35% { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
-}
-@keyframes routeSweep {
-  from { transform: translateX(0); }
-  to { transform: translateX(100vw); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* drift blobs */
@@ -424,7 +402,7 @@ html[data-scene="live"] .route-veil {
     background-color 250ms var(--ease-soft);
 }
 .card-hover:hover {
-  transform: translateY(-2px);
+  transform: scale(1.02);
 }
 
 /* arrow nudge */
@@ -544,20 +522,19 @@ button:hover .arrow-nudge {
     animation: none;
   }
   .page-enter {
-    animation-duration: 1ms;
+    animation: none;
   }
   /* pointer-sheen fade on glass cards (Lab cards included): shown or hidden at once */
   .glass::before {
     transition: none;
-  }
-  .route-veil {
-    display: none;
   }
   .scene-host {
     display: none;
   }
   .reveal,
   .reveal.is-ready:not(.is-in),
+  [data-reveal],
+  [data-reveal][data-reveal-state],
   .word,
   .word.is-ready:not(.is-in) {
     opacity: 1;
@@ -575,14 +552,19 @@ button:hover .arrow-nudge {
 
 /* Independent editorial ground, measured against the rendered Alche pages.
    Shared by project details, consulting, support and legal routes. */
+/* W1: site geneli siyah izgarali zemin. Tek CSS arka plani (sabit, GPU katmani yok):
+   180px artili karo + 36px ince izgara. Ayni katmanlar canli sahnenin ortusunde de
+   kullanilir (sahne canliyken body saydamdir). */
 body:not(:has([data-yula-experience="true"])) {
-  background: var(--yula-page-bg);
-  background-image:
-    radial-gradient(ellipse at 76% 35%, rgba(67,42,122,.16), transparent 58%),
-    radial-gradient(ellipse at 42% 56%, rgba(20,80,98,.13), transparent 62%),
-    repeating-linear-gradient(0deg, transparent 0 23px, rgba(209,219,237,.025) 23px 24px),
-    repeating-linear-gradient(90deg, transparent 0 23px, rgba(209,219,237,.025) 23px 24px);
+  background-color: var(--yula-page-bg);
+  background-image: var(--yula-grid-image);
+  background-size: 180px 180px, 36px 36px, 36px 36px;
   background-attachment: fixed;
+}
+.scene-host-veil {
+  background-color: rgb(var(--yula-page-rgb));
+  background-image: var(--yula-grid-image);
+  background-size: 180px 180px, 36px 36px, 36px 36px;
 }
 .ambient {
   background-image:
@@ -597,17 +579,19 @@ body:not(:has([data-yula-experience="true"])) {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cpath d='M84 90h12M90 84v12' fill='none' stroke='%23b3beca' stroke-width='1'/%3E%3C/svg%3E");
 }
 .glass {
-  background: linear-gradient(150deg, rgba(255,255,255,.035), transparent 65%), rgb(var(--yula-page-rgb) / .58);
+  background: rgb(var(--yula-page-rgb) / .5);
   border-radius: 3px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
-[data-site-header="true"] > div { max-width: none; height: 100px; padding-inline: clamp(24px, 3.5vw, 50px); }
+[data-site-header="true"] > div { max-width: none; height: 120px; padding-inline: clamp(24px, 3.5vw, 50px); }
 [data-site-header="true"] > div > a > .logo-mark { display: none; }
 [data-site-header="true"] > div > a > span { font-size: 26px; font-weight: 600; letter-spacing: .015em; }
-[data-site-header="true"] nav { font-family: var(--font-mono), monospace; font-size: 12px; letter-spacing: .025em; }
-[data-site-footer="true"] { font-family: var(--font-mono), monospace; background: rgb(var(--yula-page-rgb) / .3); }
+[data-site-header="true"] nav { font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 14px; letter-spacing: 1.4px; }
+.header-cta { border-color: rgba(255,255,255,.5); transition: background-color .3s cubic-bezier(.25,.46,.45,.94), border-color .3s cubic-bezier(.25,.46,.45,.94), color .3s cubic-bezier(.25,.46,.45,.94); }
+:root[data-theme="light"] .header-cta { border-color: rgba(22,19,16,.5); }
+[data-site-footer="true"] { font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace; background: rgb(var(--yula-page-rgb) / .3); }
 [data-site-footer="true"] > div:first-child { max-width: none; padding-inline: clamp(24px, 3.5vw, 50px); }
 .project-index { max-width: 1440px; margin-inline: auto; padding: 220px clamp(24px, 5vw, 72px) 0; display: grid; grid-template-columns: minmax(220px, .38fr) minmax(0, .62fr); gap: 40px; }
 .project-index > section { width: 100%; max-width: none; margin: 0; padding: 80px 0 40px; }
@@ -627,7 +611,8 @@ body:not(:has([data-yula-experience="true"])) {
 [data-brand-fg] { color: color-mix(in srgb, var(--brand-fg) var(--brand-a, 100%), transparent); }
 [data-project-index-card] [data-card-action] { color: color-mix(in srgb, var(--brand-fg) var(--yula-brand-text-mix), rgb(var(--yula-ink-50))); }
 @media (max-width: 767px) {
-  [data-site-header="true"] > div { height: 82px; padding-inline: 20px; }
+  [data-site-header="true"] > div { height: 72px; padding-inline: 20px; }
+  html { scroll-padding-top: calc(72px + 16px); }
   [data-site-header="true"] > div > a > span { font-size: 24px; }
   .project-index { display: block; padding: 150px 24px 0; }
   .project-index > section { padding-block: 24px 40px; }
@@ -648,26 +633,32 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
 
 /* User appearance: CSS system fallback also works before JS or without it. */
 :root {
-  --yula-ink-900: 13 14 17;
-  --yula-ink-850: 17 18 22;
-  --yula-ink-800: 22 23 27;
-  --yula-ink-700: 26 26 30;
-  --yula-ink-600: 38 38 44;
-  --yula-ink-500: 58 58 66;
-  --yula-ink-400: 144 144 154;
-  --yula-ink-300: 154 154 163;
-  --yula-ink-200: 182 182 186;
-  --yula-ink-100: 208 208 206;
-  --yula-ink-50: 228 228 224;
+  /* W1: siyah zemin, beyaz metin (alche.studio olcumu); mor yalniz ana sayfa hero. */
+  --yula-ink-900: 0 0 0;
+  --yula-ink-850: 8 8 8;
+  --yula-ink-800: 14 14 14;
+  --yula-ink-700: 22 22 22;
+  --yula-ink-600: 36 36 36;
+  --yula-ink-500: 70 70 70;
+  --yula-ink-400: 142 142 142;
+  --yula-ink-300: 154 154 154;
+  --yula-ink-200: 186 186 186;
+  --yula-ink-100: 222 222 222;
+  --yula-ink-50: 255 255 255;
   --yula-surface: rgba(255,255,255,.02);
   --yula-surface-raised: rgba(255,255,255,.04);
   --yula-surface-inset: rgba(255,255,255,.015);
   --yula-hairline: rgba(255,255,255,.10);
   --yula-hairline-strong: rgba(255,255,255,.20);
-  --yula-page-bg: #0d0e11;
-  --yula-page-rgb: 13 14 17;
+  --yula-page-bg: #000000;
+  --yula-page-rgb: 0 0 0;
+  --yula-accent: #d7ff00;
+  --yula-grid-line: rgba(255,255,255,.035);
+  --yula-grid-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, var(--yula-grid-line) 1px, transparent 1px),
+    linear-gradient(0deg, var(--yula-grid-line) 1px, transparent 1px);
   --yula-brand-text-mix: 100%;
-  --yula-focus: #c4b5fd;
+  --yula-focus: #d7ff00;
   --yula-warning: #fcd34d;
   --yula-warning-strong: #fbbf24;
   --yula-success: #6ee7b7;
@@ -698,6 +689,11 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-hairline-strong: rgba(22,19,16,.32);
   --yula-page-bg: #f6f5f0;
   --yula-page-rgb: 246 245 240;
+  --yula-accent: #4a5d00;
+  --yula-grid-line: rgba(22,19,16,.05);
+  --yula-grid-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23161310' stroke-opacity='.3' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, var(--yula-grid-line) 1px, transparent 1px),
+    linear-gradient(0deg, var(--yula-grid-line) 1px, transparent 1px);
   --yula-brand-text-mix: 38%;
   --yula-focus: #6d36ac;
   --yula-warning: #795200;
@@ -731,6 +727,11 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
     --yula-hairline-strong: rgba(22,19,16,.32);
     --yula-page-bg: #f6f5f0;
     --yula-page-rgb: 246 245 240;
+    --yula-accent: #4a5d00;
+    --yula-grid-line: rgba(22,19,16,.05);
+    --yula-grid-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23161310' stroke-opacity='.3' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, var(--yula-grid-line) 1px, transparent 1px),
+    linear-gradient(0deg, var(--yula-grid-line) 1px, transparent 1px);
     --yula-brand-text-mix: 38%;
     --yula-focus: #6d36ac;
     --yula-warning: #795200;
@@ -758,15 +759,60 @@ input[type="checkbox"] { accent-color: var(--yula-focus); }
 .theme-control[data-compact] select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 .theme-control-symbol { font-size: 21px; line-height: 1; }
 .theme-control:focus-within { outline: 2px solid var(--yula-focus); outline-offset: 4px; }
+/* The native select carries its own ring: Chrome's default auto ring differs per platform (on Linux it
+   measured 1.1:1 against ink-900), so the focus colour is explicit. Compact mode keeps the wrapper ring
+   because its select is transparent; the full control would otherwise show two nested rings. */
+.theme-control select:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 2px; }
+.theme-control:not([data-compact]):focus-within { outline: none; }
 .theme-control select:disabled { cursor: wait; }
 html[lang="hi"] { --font-sans: "Nirmala UI", "Kohinoor Devanagari", "Devanagari Sangam MN", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
 html[lang="ko"] { --font-sans: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
 html[lang="zh-Hans"] { --font-sans: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
 html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,summary,select) { letter-spacing: normal; }
-:root { --yula-exp-accent: #d9b9ff; --yula-danger: #e89db2; --yula-control-line: #777080; }
+:root { --yula-exp-accent: #d9b9ff; --yula-danger: #e89db2; --yula-control-line: #777777; }
 :root[data-theme="light"] { --yula-exp-accent: #643399; --yula-danger: #9a2747; --yula-control-line: #7a7067; }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme]) { --yula-exp-accent: #643399; --yula-danger: #9a2747; --yula-control-line: #7a7067; }
+}
+
+/* ---------------------------------------------------------------------
+   W1 BK3: fare etkilesimleri (referans olcumu: opacity .7, .3s, ease-ui).
+   Yalniz hover:hover cihazlarda; dokunmatikte yok. Ozel imlec yok. Pill (CTA)
+   opaklik yerine saydam -> dolgu doner (.header-cta / [data-pill]).
+   --------------------------------------------------------------------- */
+@media (hover: hover) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link) {
+    transition:
+      opacity 300ms var(--ease-ui),
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui),
+      transform 300ms var(--ease-ui);
+  }
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link):hover {
+    opacity: 0.7;
+  }
+  [data-pill],
+  .header-cta {
+    transition:
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui);
+  }
+  [data-pill]:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #000;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"]) :is(a[href], button),
+  [data-pill],
+  .header-cta {
+    transition: none !important;
+  }
 }
 
 /* ── Motion parity with the reference (2026-11-05) ─────────────────────────
@@ -805,30 +851,6 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
 :is(a, button):focus-visible .slot > span,
 :is(a, button):focus-visible .slot::after {
   transform: translateY(-100%);
-}
-
-/* Inner-page title: after a client navigation it resolves out of blur and is
-   wiped in along the reading direction, like a line being typed. Without
-   @property the mask is invalid and the title simply shows. */
-@property --title-wipe {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 130%;
-}
-/* Client navigations only (PageTransition sets the flag): a document's first
-   paint keeps its title painted, so the largest paint is never held back. */
-html[data-client-nav="true"] .page-enter h1 {
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  mask-image: linear-gradient(90deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  animation: titleWipe 1100ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 140ms both;
-}
-html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
-  -webkit-mask-image: linear-gradient(270deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  mask-image: linear-gradient(270deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-}
-@keyframes titleWipe {
-  from { --title-wipe: 0%; filter: blur(6px); }
-  to { --title-wipe: 130%; filter: blur(0); }
 }
 
 /* Mobile menu: frosted panel, links arrive one after another, a dash marks
@@ -935,6 +957,7 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
     to { transform: translateX(-30%); }
   }
 }
+/* W1: urun adi filigrani gizli; W3 referans yerlesimle geri getirir */
 .product-marquee {
   top: clamp(330px, 46vh, 540px);
 }
@@ -994,6 +1017,20 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   to { transform: none; }
 }
 
+/* W1 tipografi: baslik ve govde Hanken Grotesk, menu/etiket IBM Plex Mono.
+   Sayfa basligi (h1): 80/69.2 masaustu, 56/48.4 mobil, agirlik 600. Ana sayfa
+   deneyimi (W2) kendi basliklarini yonetir, bu kural onu kapsamaz. */
+html { --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
+body:not(:has([data-yula-experience="true"])) main h1 {
+  font-weight: 600;
+  font-size: clamp(3.5rem, 2.2rem + 5.2vw, 5rem);
+  line-height: 0.865;
+  letter-spacing: normal;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
+
 /* Footer wordmark draws each glyph outline when first seen. */
 .footer-wordmark text {
   stroke-dasharray: 2000;
@@ -1033,7 +1070,6 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
     transform: none;
   }
   [data-site-header="true"],
-  .page-enter h1,
   .scroll-marquee-track,
   .scroll-marquee-scroll,
   .media-in,
@@ -1042,10 +1078,6 @@ html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
   }
   .media-parallax {
     scale: none;
-  }
-  .page-enter h1 {
-    -webkit-mask-image: none;
-    mask-image: none;
   }
   .footer-wordmark text {
     stroke-dashoffset: 0 !important;

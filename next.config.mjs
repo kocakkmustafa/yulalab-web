@@ -87,6 +87,19 @@ const nextConfig = {
     globalNotFound: true,
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+  // Founder decision 2026-11-18: the Burun Farkı product page is removed.
+  // Old links and the store marketing URL keep working: permanent redirect to
+  // the product list, in every locale. /privacy/burunfarki stays live.
+  async redirects() {
+    return [
+      { source: "/projects/burunfarki", destination: "/projects", permanent: true },
+      {
+        source: `/:locale(${verificationLocales.join("|")})/projects/burunfarki`,
+        destination: "/:locale/projects",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

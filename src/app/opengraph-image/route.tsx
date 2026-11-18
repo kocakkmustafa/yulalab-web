@@ -145,8 +145,6 @@ export function GET() {
           <span style={{ display: "flex", gap: 16 }}>
             <span style={{ display: "flex" }}>Braavolabs</span>
             <span style={{ display: "flex", color: "#3A3A42" }}>·</span>
-            <span style={{ display: "flex" }}>Burun Farkı</span>
-            <span style={{ display: "flex", color: "#3A3A42" }}>·</span>
             <span style={{ display: "flex" }}>LifeOS</span>
           </span>
         </div>

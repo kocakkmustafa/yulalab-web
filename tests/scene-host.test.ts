@@ -79,6 +79,15 @@ describe("persistent scene wiring", () => {
     expect(css).toMatch(/html\[data-scene="live"\] body \{\s*background: transparent;/);
     const reduced = css.slice(css.indexOf("@media (prefers-reduced-motion: reduce)"));
     expect(reduced).toMatch(/\.scene-host \{\s*display: none;/);
-    expect(css).toMatch(/\.scene-host\[data-scene-tone="quiet"\] \.scene-host-veil \{\s*opacity: 0\.95;/);
+  });
+
+  it("hides the glass YULA glyph behind every inner route: the veil is fully opaque for page and quiet tones", () => {
+    const css = read("src/app/globals.css");
+    expect(css).toMatch(
+      /\.scene-host\[data-scene-tone="page"\] \.scene-host-veil,\s*\.scene-host\[data-scene-tone="quiet"\] \.scene-host-veil \{\s*opacity: 1;/,
+    );
+    expect(css).not.toMatch(/scene-host-veil \{\s*opacity: 0\.(82|95)/);
+    // the journey tone keeps the base veil (opacity 0): the home scene is untouched
+    expect(css).not.toMatch(/data-scene-tone="journey"\] \.scene-host-veil/);
   });
 });

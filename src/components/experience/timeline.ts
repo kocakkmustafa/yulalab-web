@@ -7,6 +7,7 @@ import type {
   Vec3,
 } from "./types";
 import { viewportMobileMix } from "./layout";
+import { SCENE_PRODUCT_ORDER } from "@/lib/product-index";
 
 export const STAGES = {
   hero: [0, 0.085],
@@ -18,6 +19,16 @@ export const STAGES = {
   values: [0.835, 0.955],
   closing: [0.955, 1],
 } as const satisfies Record<ExperienceStage, readonly [number, number]>;
+
+/** Number of product cards on the scene (single source: SCENE_PRODUCT_ORDER). */
+export const SCENE_PRODUCT_COUNT = SCENE_PRODUCT_ORDER.length;
+
+/**
+ * World-unit step between portfolio cards. The reference composition ran eight
+ * cards at 1.36 apart (last card 7 * 1.36 behind the first); the step is
+ * rescaled so the last card keeps that depth for any product count.
+ */
+export const CARD_DEPTH_STEP = (7 * 1.36) / Math.max(1, SCENE_PRODUCT_COUNT - 1);
 
 export const CROSSING_BLADE = {
   centerZ: -14.3,
@@ -305,7 +316,7 @@ function resolveGlyphPosition(
   // portfolio clearance plane at the same time, so it no longer grows past
   // the viewport and then snaps backwards at the stage boundary.
   if (progress < STAGES.portfolio[0]) {
-    const firstCardPlane = -1.25 - 0.5 * 1.36;
+    const firstCardPlane = -1.25 - 0.5 * CARD_DEPTH_STEP;
     const entryDepth = firstCardPlane - clearance;
     const travel = smootherstep(segmentProgress(progress, 0, STAGES.portfolio[0]));
     return [sampled[0], sampled[1], lerp(sampled[2], entryDepth, travel)];
@@ -316,16 +327,16 @@ function resolveGlyphPosition(
   // units per slot. Offset the moving plane by half a slot so the full bevelled
   // volume stays behind the newly active card during hand-offs too.
   if (progress >= STAGES.portfolio[0] && progress < STAGES.proof[0]) {
-    const depthIndex = Math.min(7, productFloat + 0.5);
-    const activePlane = -1.25 - depthIndex * 1.36;
+    const depthIndex = Math.min(SCENE_PRODUCT_COUNT - 1, productFloat + 0.5);
+    const activePlane = -1.25 - depthIndex * CARD_DEPTH_STEP;
     return [sampled[0], sampled[1], activePlane - clearance];
   }
 
-  // During the proof morph the eighth card travels from its arc depth into
+  // During the proof morph the last card travels from its arc depth into
   // the second proof row. Y follows that plane and crosses it exactly once,
   // moving the complete bevelled volume from behind to in front.
   if (progress >= STAGES.proof[0] && progress <= STAGES.proof[1]) {
-    const arcDepth = -1.25 - 7 * 1.36;
+    const arcDepth = -1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP;
     const proofDepth = -13.98;
     const cardDepth = lerp(arcDepth, proofDepth, proofMorph);
     const crossing = smoothstep(segmentProgress(progress, 0.525, 0.56));
@@ -352,8 +363,8 @@ export function evaluateTimeline(
   const p = clamp01(progress);
   const stage = stageAt(p);
   const [stageStart, stageEnd] = STAGES[stage];
-  const product = slotFrame(p, STAGES.portfolio, 8);
-  const proof = slotFrame(p, STAGES.proof, 8);
+  const product = slotFrame(p, STAGES.portfolio, SCENE_PRODUCT_COUNT);
+  const proof = slotFrame(p, STAGES.proof, SCENE_PRODUCT_COUNT);
   const value = slotFrame(p, STAGES.values, 4);
   const whiteRise = smoothstep(segmentProgress(p, STAGES.crossing[0], STAGES.crossing[1]));
   const darkReturn = smoothstep(segmentProgress(p, 0.825, 0.855));

@@ -11,7 +11,6 @@ const ORIGIN = "https://yulalab.com";
 /** schema.org applicationCategory + honest live operatingSystem per product. */
 const APP_META: Record<string, { category: string; os: string }> = {
   lifeos: { category: "HealthApplication", os: "iOS" },
-  burunfarki: { category: "SportsApplication", os: "Web" },
   braavolabs: { category: "BusinessApplication", os: "iOS, Web" },
 };
 

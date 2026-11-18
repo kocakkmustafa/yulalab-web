@@ -45,12 +45,12 @@ const config: Config = {
         },
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "Inter", "system-ui", "sans-serif"],
-        display: ["var(--font-display)", "Manrope", "Inter", "sans-serif"],
+        sans: ["var(--font-sans)", "Hanken Grotesk", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Hanken Grotesk", "system-ui", "sans-serif"],
         // 03b adds the display serif via next/font; until --font-serif exists this is a pure fallback and loads no bytes.
         serif: ["var(--font-serif)", "Georgia", "serif"],
-        grotesk: ["var(--font-grotesk)", "Space Grotesk", "Inter", "sans-serif"],
-        mono: ["var(--font-mono)", "JetBrains Mono", "ui-monospace", "monospace"],
+        grotesk: ["var(--font-grotesk)", "Hanken Grotesk", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "IBM Plex Mono", "ui-monospace", "monospace"],
       },
       letterSpacing: {
         tightest: "-0.04em",

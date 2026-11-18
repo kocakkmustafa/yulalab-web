@@ -50,7 +50,7 @@ for (const [locale, prefix, title, action] of [
         // 05f: the contact path links straight to the mail section (chain /contact → /consulting → mailto shortened).
         await expect(page.getByRole("link", { name: action, exact: true })).toHaveAttribute("href", `${prefix}/consulting#consulting-contact`);
         await page.goto(`${prefix}/projects/burunfarki`);
-        await expect(page.getByText(locale === "tr" ? /tahminler yarıştan önce kayda geçer/ : /predictions are recorded before each race/)).toBeVisible();
+        await expect(page).toHaveURL(new RegExp(`${prefix}/projects$`));
         await page.goto(prefix || "/");
         await expect(page.locator('[data-experience-static="true"]')).toBeVisible();
         await expect(page.getByRole("link", { name: locale === "tr" ? "AI danışmanlığı" : "AI consulting", exact: true }).first()).toHaveAttribute("href", `${prefix}/consulting`);

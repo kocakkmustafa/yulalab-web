@@ -13,7 +13,7 @@ from datetime import datetime, timezone
 LIVE = "https://yulalab.com"
 LOCAL = sys.argv[2] if len(sys.argv) > 2 else "http://localhost:3020"
 LOCALES = ["tr", "en", "es-419", "pt-BR", "de", "fr", "ja", "ar", "it", "ko", "id", "pl", "hi", "zh-Hans"]
-SLUGS = ["braavolabs", "burunfarki", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"]
+SLUGS = ["braavolabs", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"]
 ROUTES = ["", "/projects"] + [f"/projects/{s}" for s in SLUGS] + [
     "/privacy", "/privacy/lifeos", "/privacy/motion", "/privacy/braavolabs", "/privacy/burunfarki",
     "/terms", "/contact", "/support", "/transparency",

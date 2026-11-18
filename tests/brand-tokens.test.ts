@@ -69,7 +69,7 @@ describe("brand tokens: theme contrast and consistency", () => {
   it("design candidates are the live end tokens", () => {
     expect(THEME_COLORS.light).toBe("#f6f5f0");
     expect(toHex(toRgb(blocks.light["ink-50"]))).toBe("#111110");
-    expect(THEME_COLORS.dark).toBe("#0d0e11");
-    expect(toHex(toRgb(blocks.dark["ink-50"]))).toBe("#E4E4E0");
+    expect(THEME_COLORS.dark).toBe("#000000");
+    expect(toHex(toRgb(blocks.dark["ink-50"]))).toBe("#FFFFFF");
   });
 });

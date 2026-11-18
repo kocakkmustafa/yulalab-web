@@ -33,24 +33,24 @@ export function FooterWordmark() {
       ref={ref}
       aria-hidden="true"
       data-footer-wordmark={state}
-      className="footer-wordmark overflow-hidden px-2 text-ink-50/[0.16] select-none"
+      className="footer-wordmark overflow-hidden px-2 text-ink-50/[0.34] select-none"
       dir="ltr"
     >
-      <svg viewBox="0 0 1000 190" className="block w-full h-auto translate-y-[18%]" preserveAspectRatio="xMidYMax meet">
+      <svg viewBox="0 0 1000 250" className="block w-full h-auto translate-y-[14%]" preserveAspectRatio="xMidYMax meet">
         <text
           x="500"
-          y="182"
+          y="244"
           textAnchor="middle"
-          textLength="980"
+          textLength="960"
           lengthAdjust="spacingAndGlyphs"
           fill="none"
           stroke="currentColor"
           strokeWidth="1.1"
           vectorEffect="non-scaling-stroke"
           className="font-display"
-          style={{ fontSize: 236, fontWeight: 700, letterSpacing: "-0.02em" }}
+          style={{ fontSize: 330, fontWeight: 700, letterSpacing: "0.02em" }}
         >
-          Yula Lab
+          YULA
         </text>
       </svg>
     </div>

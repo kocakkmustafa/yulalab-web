@@ -11,7 +11,7 @@ import tailwindConfig from "../tailwind.config";
 afterEach(() => vi.restoreAllMocks());
 function boot(saved: unknown, systemDark: boolean, blocked = false) {
   document.documentElement.className = "font-sample";
-  document.head.innerHTML = '<meta name="theme-color" content="#0d0e11">';
+  document.head.innerHTML = '<meta name="theme-color" content="#000000">';
   runInNewContext(THEME_BOOTSTRAP, {
     document,
     localStorage: { getItem(key: string) { expect(key).toBe(THEME_STORAGE_KEY); if (blocked) throw new Error("blocked storage"); return saved; } },
@@ -34,14 +34,14 @@ describe("fixed public prepaint bootstrap and display-theme frame", () => {
     }
   });
 
-  it("uses system for missing, invalid or blocked storage and stays aligned with the public sync helper", () => {
+  it("uses dark for missing, invalid or blocked storage and stays aligned with the public sync helper", () => {
     for (const value of [null, "sepia", undefined]) {
       boot(value, false);
-      expect(document.documentElement.dataset.theme).toBe("light");
-      expect(document.documentElement.dataset.themePreference).toBe("system");
+      expect(document.documentElement.dataset.theme).toBe("dark");
+      expect(document.documentElement.dataset.themePreference).toBe("dark");
     }
-    boot("dark", false, true);
-    expect(document.documentElement.dataset.theme).toBe("light");
+    boot("light", true, true);
+    expect(document.documentElement.dataset.theme).toBe("dark");
     applyThemeToDocument(document, "dark", "dark");
     expect(document.documentElement.dataset.theme).toBe("dark");
     expect(document.documentElement.style.colorScheme).toBe("dark");

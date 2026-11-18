@@ -15,7 +15,6 @@ import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { TrackView } from "@/components/common/TrackView";
-import { ScrollMarquee } from "@/components/common/ScrollMarquee";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
@@ -38,7 +37,6 @@ import type { Locale, ProjectConfig } from "@/lib/types";
  * against black while still telling the products apart.
  */
 const ACCENT: Record<string, string> = {
-  burunfarki: "#7FD8B0",
   braavolabs: "#D8B87F",
 };
 
@@ -105,11 +103,10 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
       <TrackView event="product_view" product={project.slug} />
       <GlassSheen />
       <div className="ambient" aria-hidden />
-      <ScrollMarquee text={project.name} className="product-marquee" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-10">
         {/* breadcrumb — pt clears the site's fixed 65px header */}
-        <div className="flex items-center justify-between gap-5 pt-24">
+        <div className="flex items-center justify-between gap-5 pt-24 md:pt-36">
           <Link
             href="/projects"
             className="font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400 hover:text-ink-50 transition-colors focusable"

@@ -118,12 +118,12 @@ export function Header() {
       <header
         data-site-header="true"
         className={
-          "fixed top-0 inset-x-0 z-40 transition-all duration-500 " +
+          "fixed top-0 inset-x-0 z-[99] transition-all duration-300 " +
           (scrolled
-            ? "backdrop-blur-xl bg-ink-900/70 border-b border-white/[0.06]"
+            ? "backdrop-blur-[10px] bg-ink-900/50 border-b border-hairline"
             : "bg-transparent border-b border-transparent")
         }
-        style={{ transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)" }}
+        style={{ transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <Link
@@ -137,7 +137,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-4 text-[13.5px] text-ink-200">
+          <nav className="hidden xl:flex items-center gap-6 font-mono text-[14px] uppercase tracking-[1.4px] text-ink-200">
             {HEADER_NAV.map((n) => {
               const isActive = isActiveHref(n.href, stripped);
               return (
@@ -194,7 +194,8 @@ export function Header() {
             <ThemeControl compact />
             <Link
               href={HEADER_CTA.href}
-              className="ml-1 group inline-flex items-center gap-1.5 rounded-full bg-ink-50 text-ink-900 pl-4 pr-3.5 py-2 text-[13px] font-medium hover:bg-ink-100 transition-colors focusable"
+              data-header-cta="true"
+              className="header-cta ml-1 group inline-flex h-10 min-w-[154px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/50 px-5 text-[14px] uppercase tracking-[1.4px] text-ink-50 hover:border-ink-50 hover:bg-ink-50 hover:text-ink-900 transition-colors duration-300 focusable"
             >
               <SlotLabel>{t(HEADER_CTA.key)}</SlotLabel>
               <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
@@ -263,6 +264,7 @@ export function Header() {
         />
         <div
           data-site-mobile-panel="true"
+          data-lenis-prevent
           data-open={mobile ? "true" : "false"}
           className={
             "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm border-l border-hairline p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +

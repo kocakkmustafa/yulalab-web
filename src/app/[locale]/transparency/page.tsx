@@ -6,9 +6,7 @@ import { Link } from "@/i18n/navigation";
 import {
   ArrowUpRight,
   Receipt,
-  Microscope,
   Lock,
-  Eye,
   Cpu,
   ShieldCheck,
 } from "@/components/common/icons";
@@ -79,17 +77,15 @@ export default async function TransparencyPage({
   return <Transparency />;
 }
 
-type PillarSlug = "braavolabs" | "burunfarki" | "lifeos";
+type PillarSlug = "braavolabs" | "lifeos";
 
 const PILLAR_ICONS = {
   braavolabs: Receipt,
-  burunfarki: Microscope,
   lifeos: Lock,
 } as const;
 
 const PILLAR_DETAIL_ICONS = {
   braavolabs: ShieldCheck,
-  burunfarki: Eye,
   lifeos: Cpu,
 } as const;
 
@@ -98,7 +94,7 @@ function Transparency() {
   const tc = useTranslations("common");
   const locale = useLocale() as Locale;
 
-  const pillars: PillarSlug[] = ["braavolabs", "burunfarki", "lifeos"];
+  const pillars: PillarSlug[] = ["braavolabs", "lifeos"];
   const tp = useTranslations("product");
   const ts = useTranslations("studio");
   const now = new Date();
@@ -201,7 +197,7 @@ function Transparency() {
           {t("pillarsTitle")}
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
           {pillars.map((slug) => {
             const project = getProjectBySlug(slug);
             if (!project) return null;

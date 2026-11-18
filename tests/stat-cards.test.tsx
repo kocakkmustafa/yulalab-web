@@ -235,12 +235,11 @@ describe("empty and degraded cases", () => {
   });
 });
 
-describe("removed Burun Farkı claims", () => {
-  it("the real registry no longer holds either expired claim, and the product config carries no linked stat", () => {
-    const { config, record } = product("burunfarki");
-    const ids = record.claims.map((c) => c.id);
+describe("removed Burun Farkı", () => {
+  it("the real registry holds neither the product nor its expired claims", () => {
+    const ids = publicRegistry.flatMap((r) => r.claims.map((c) => c.id));
+    expect(publicRegistry.some((r) => r.slug === "burunfarki")).toBe(false);
     expect(ids).not.toContain("burunfarki-topk-accuracy");
     expect(ids).not.toContain("burunfarki-explainability");
-    expect(config.stats).toEqual([]);
   });
 });
