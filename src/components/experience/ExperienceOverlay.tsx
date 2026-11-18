@@ -109,6 +109,13 @@ function exclusivePanelFocus(
   return focus * focus * (3 - 2 * focus);
 }
 
+/** Opacity of a portfolio caption: 1 while its card dwells centred, 0 half a card away. */
+function portfolioCaptionFocus(index: number, activeIndex: number, distance: number): number {
+  if (index !== activeIndex) return 0;
+  const x = Math.min(1, Math.max(0, (0.5 - Math.abs(distance)) / 0.34));
+  return x * x * (3 - 2 * x);
+}
+
 /** Europe/Istanbul is the registry's documented freshness boundary. */
 const noSiteDateSubscription = () => () => {};
 
@@ -580,10 +587,12 @@ export function ExperienceOverlay({
         </div>
 
         {products.map((product, index) => {
-          const panelOpacity = exclusivePanelFocus(
+          // W1D-D: caption and icon share one envelope. The caption is sharp for as long as its icon dwells
+          // centred (distance on the dwelled float), and hands over to the next one while the cards travel.
+          const panelOpacity = portfolioCaptionFocus(
             index,
             frame.productIndex,
-            frame.productProgress,
+            index - frame.productFloat,
           );
           const active =
             stageIs(frame, "portfolio") &&
@@ -591,7 +600,7 @@ export function ExperienceOverlay({
             panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
           const distance = index - frame.productFloat;
           // The caption resolves out of blur as its work reaches the front.
-          const captionBlur = Math.min(1, Math.abs(distance) * 1.6);
+          const captionBlur = Math.min(1, Math.max(0, Math.abs(distance) - 0.08) * 2.4);
           const panelStyle: PanelStyle = {
             "--panel-opacity": panelOpacity,
             "--panel-offset": Math.max(-1, Math.min(1, distance)),
