@@ -1287,6 +1287,8 @@
     "badge": "Exemple synthétique",
     "panelLabel": "Essai de {product}",
     "lifeos": "Choisis une carte de décision et prévisualise quand son rappel arriverait.",
-    "ostinato": "Tape en rythme avec le battement et vois comment tombe ton tempo."
+    "ostinato": "Tape en rythme avec le battement et vois comment tombe ton tempo.",
+    "error": "L'essai n'a pas pu être chargé. Vérifie ta connexion et réessaie.",
+    "retry": "Réessayer"
   }
 }

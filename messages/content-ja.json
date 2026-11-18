@@ -756,7 +756,7 @@
   "Coming soon": "近日公開",
   "The first level of guitar (40 lessons) is free and needs no account, and practising with the microphone is optional.": "ギターの最初のレベル（40レッスン）は無料で、アカウントは不要です。マイクを使った練習は任意です。",
   "Lab": "ラボ",
-  "Real decisions and notes; no invented data.": "実際の決定とノート。作り話のデータはありません。",
+  "Notes and records come from real decisions and sources; demos, where shown, use synthetic data.": "ノートと記録は実際の決定と情報源に基づきます。デモは、表示されている場合、合成データで動きます。",
   "Notes": "ノート",
   "{count} entries · latest {date}": "{count} 件 · 最新 {date}",
   "No notes yet.": "ノートはまだありません。",

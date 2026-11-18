@@ -1287,6 +1287,8 @@
     "badge": "Synthetic example",
     "panelLabel": "{product} try-out",
     "lifeos": "Pick a decision card and preview when its reminder would arrive.",
-    "ostinato": "Tap along to a beat and see how your timing lands."
+    "ostinato": "Tap along to a beat and see how your timing lands.",
+    "error": "The demo could not be loaded. Check your connection and try again.",
+    "retry": "Try again"
   }
 }

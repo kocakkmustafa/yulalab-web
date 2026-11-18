@@ -756,7 +756,7 @@
   "Coming soon": "출시 예정",
   "The first level of guitar (40 lessons) is free and needs no account, and practising with the microphone is optional.": "기타의 첫 레벨(40개 레슨)은 무료이며 계정이 필요 없고, 마이크를 사용한 연습은 선택 사항입니다.",
   "Lab": "연구소",
-  "Real decisions and notes; no invented data.": "실제 결정과 노트만 있고, 지어낸 데이터는 없어요.",
+  "Notes and records come from real decisions and sources; demos, where shown, use synthetic data.": "노트와 기록은 실제 결정과 출처에서 나옵니다. 데모는 표시되는 곳에서 합성 데이터로 동작합니다.",
   "Notes": "노트",
   "{count} entries · latest {date}": "항목 {count}개 · 최신 {date}",
   "No notes yet.": "아직 노트가 없어요.",

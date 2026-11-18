@@ -1287,6 +1287,8 @@
     "badge": "Contoh sintetis",
     "panelLabel": "Uji coba {product}",
     "lifeos": "Pilih kartu keputusan dan lihat kapan pengingatnya akan datang.",
-    "ostinato": "Ketuk mengikuti ketukan dan lihat seberapa pas waktumu."
+    "ostinato": "Ketuk mengikuti ketukan dan lihat seberapa pas waktumu.",
+    "error": "Uji coba tidak dapat dimuat. Periksa koneksimu lalu coba lagi.",
+    "retry": "Coba lagi"
   }
 }

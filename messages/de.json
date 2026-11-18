@@ -1287,6 +1287,8 @@
     "badge": "Synthetisches Beispiel",
     "panelLabel": "{product}-Kostprobe",
     "lifeos": "Wähle eine Entscheidungskarte und sieh vorab, wann die Erinnerung käme.",
-    "ostinato": "Tippe im Takt mit und sieh, wie dein Timing sitzt."
+    "ostinato": "Tippe im Takt mit und sieh, wie dein Timing sitzt.",
+    "error": "Die Kostprobe konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
+    "retry": "Erneut versuchen"
   }
 }

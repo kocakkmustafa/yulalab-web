@@ -1287,6 +1287,8 @@
     "badge": "Exemplo sintético",
     "panelLabel": "Teste do {product}",
     "lifeos": "Escolha um cartão de decisão e veja quando o lembrete chegaria.",
-    "ostinato": "Toque no ritmo e veja como ficou o seu tempo."
+    "ostinato": "Toque no ritmo e veja como ficou o seu tempo.",
+    "error": "Não foi possível carregar o teste. Verifique sua conexão e tente de novo.",
+    "retry": "Tentar de novo"
   }
 }

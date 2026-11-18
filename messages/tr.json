@@ -1287,6 +1287,8 @@
     "badge": "Sentetik örnek",
     "panelLabel": "{product} denemesi",
     "lifeos": "Bir karar kartı seç, hatırlatmasının ne zaman geleceğini önizle.",
-    "ostinato": "Vuruşa eşlik ederek dokun, zamanlamanın nasıl düştüğünü gör."
+    "ostinato": "Vuruşa eşlik ederek dokun, zamanlamanın nasıl düştüğünü gör.",
+    "error": "Demo yüklenemedi. Bağlantını kontrol edip yeniden dene.",
+    "retry": "Yeniden dene"
   }
 }

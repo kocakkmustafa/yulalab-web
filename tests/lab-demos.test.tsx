@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderToString } from "react-dom/server";
 import { NextIntlClientProvider } from "next-intl";
-import { LAB_DEMOS, enabledLabDemos } from "@/data/lab-demos";
+import { LAB_DEMOS } from "@/data/lab-demos";
+import { enabledLabDemoIds, LAB_DEMO_FLAGS } from "@/server/lab-demo-flags";
 import { LAB_DEMO_LOADERS } from "@/components/lab/lab-demo-loaders";
 import { LabDemoGrid } from "@/components/lab/LabDemoGrid";
 import en from "../messages/en.json";
@@ -38,16 +39,22 @@ describe("lab demo registry (WEB-P2-01a)", () => {
     }
   });
 
+  it("keeps flag names out of the client-safe records", () => {
+    expect(JSON.stringify(LAB_DEMOS)).not.toMatch(/ENABLED/);
+    expect(LAB_DEMO_FLAGS["lifeos-decision"].name).toBe("LIFEOS_DEMO_ENABLED");
+    expect(LAB_DEMO_FLAGS["ostinato-rhythm"].name).toBe("OSTINATO_DEMO_ENABLED");
+  });
+
   it("is closed by default and follows each product flag", () => {
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "");
     vi.stubEnv("OSTINATO_DEMO_ENABLED", "");
-    expect(enabledLabDemos()).toEqual([]);
+    expect(enabledLabDemoIds()).toEqual([]);
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "1");
-    expect(enabledLabDemos().map((d) => d.id)).toEqual(["lifeos-decision"]);
+    expect(enabledLabDemoIds()).toEqual(["lifeos-decision"]);
     vi.stubEnv("OSTINATO_DEMO_ENABLED", "1");
-    expect(enabledLabDemos().map((d) => d.id)).toEqual(["lifeos-decision", "ostinato-rhythm"]);
+    expect(enabledLabDemoIds()).toEqual(["lifeos-decision", "ostinato-rhythm"]);
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "true");
-    expect(enabledLabDemos().map((d) => d.id)).toEqual(["ostinato-rhythm"]);
+    expect(enabledLabDemoIds()).toEqual(["ostinato-rhythm"]);
   });
 });
 
@@ -87,5 +94,27 @@ describe("LabDemoGrid", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close: LifeOS" }));
     expect(screen.queryByTestId("fake-demo")).toBeNull();
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Open: LifeOS" }));
+  });
+
+  it("pre-renders the live region empty, then announces a load failure with a working retry", async () => {
+    const Demo = () => <p data-testid="fake-demo">demo body</p>;
+    const load = vi
+      .spyOn(LAB_DEMO_LOADERS, "lifeos-decision")
+      .mockRejectedValueOnce(new Error("chunk"))
+      .mockResolvedValueOnce(Demo);
+    render(wrap(<LabDemoGrid ids={["lifeos-decision"]} />));
+    const live = screen.getByTestId("lab-demo-live");
+    expect(live.getAttribute("role")).toBe("status");
+    expect(live.textContent).toBe("");
+    fireEvent.click(await screen.findByRole("button", { name: "Open: LifeOS" }));
+    const retry = await screen.findByTestId("lab-demo-retry");
+    expect(screen.getByTestId("lab-demo-live").textContent).toBe(en.labDemos.error);
+    expect(screen.getByTestId("lab-demo-error").textContent).toContain(en.labDemos.error);
+    await waitFor(() => expect(document.activeElement).toBe(retry));
+    fireEvent.click(retry);
+    await screen.findByTestId("fake-demo");
+    expect(load).toHaveBeenCalledTimes(2);
+    expect(screen.queryByTestId("lab-demo-error")).toBeNull();
+    expect(screen.getByTestId("lab-demo-live").textContent).toBe("");
   });
 });

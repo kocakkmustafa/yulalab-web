@@ -26,16 +26,19 @@ export function LabDemoGrid({ ids }: Props) {
   const [hydrated, setHydrated] = useState(false);
   const [open, setOpen] = useState<State | null>(null);
   const panel = useRef<HTMLDivElement>(null);
+  const retryButton = useRef<HTMLButtonElement>(null);
   const lastOpener = useRef<HTMLButtonElement | null>(null);
   useEffect(() => setHydrated(true), []);
   useEffect(() => {
     if (open?.status === "ready") panel.current?.focus();
+    // A failed load leaves the focus on something that can fix it.
+    if (open?.status === "error") retryButton.current?.focus();
   }, [open?.status, open?.id]);
 
   if (demos.length === 0) return null;
 
-  const openDemo = (demo: LabDemo, button: HTMLButtonElement) => {
-    lastOpener.current = button;
+  const openDemo = (demo: LabDemo, button: HTMLButtonElement | null) => {
+    if (button) lastOpener.current = button;
     setOpen({ id: demo.id, status: "loading" });
     LAB_DEMO_LOADERS[demo.id]()
       .then((Comp) => setOpen((cur) => (cur?.id === demo.id ? { id: demo.id, status: "ready", Comp } : cur)))
@@ -46,6 +49,9 @@ export function LabDemoGrid({ ids }: Props) {
     lastOpener.current?.focus();
   };
   const current = demos.find((d) => d.id === open?.id);
+  // One live region, rendered before anything changes in it, so screen
+  // readers announce the loading and error messages that are filled in later.
+  const liveMessage = open?.status === "loading" ? t("loading") : open?.status === "error" ? t("error") : "";
 
   return (
     <section
@@ -93,6 +99,9 @@ export function LabDemoGrid({ ids }: Props) {
           );
         })}
       </ul>
+      <p className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-testid="lab-demo-live">
+        {liveMessage}
+      </p>
       <div
         id="lab-demo-panel"
         ref={panel}
@@ -110,9 +119,25 @@ export function LabDemoGrid({ ids }: Props) {
                 {t("close")}
               </button>
             </div>
-            <p role="status" className="text-[14px] text-ink-300">
-              {open.status === "loading" ? t("loading") : ""}
-            </p>
+            {open.status === "loading" ? (
+              <p aria-hidden="true" className="text-[14px] text-ink-300">
+                {t("loading")}
+              </p>
+            ) : null}
+            {open.status === "error" ? (
+              <div className="flex flex-wrap items-center gap-4" data-testid="lab-demo-error">
+                <p className="text-[15px] text-ink-50">{t("error")}</p>
+                <button
+                  type="button"
+                  ref={retryButton}
+                  className={BTN}
+                  data-testid="lab-demo-retry"
+                  onClick={() => openDemo(current, null)}
+                >
+                  {t("retry")}
+                </button>
+              </div>
+            ) : null}
             {open.status === "ready" && open.Comp ? <open.Comp /> : null}
           </>
         ) : null}

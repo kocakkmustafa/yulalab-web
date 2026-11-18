@@ -1287,6 +1287,8 @@
     "badge": "Przykład syntetyczny",
     "panelLabel": "Próbka {product}",
     "lifeos": "Wybierz kartę decyzji i zobacz, kiedy przyszłoby przypomnienie.",
-    "ostinato": "Stukaj w rytm i zobacz, jak wypadł Twój timing."
+    "ostinato": "Stukaj w rytm i zobacz, jak wypadł Twój timing.",
+    "error": "Nie udało się wczytać próbki. Sprawdź połączenie i spróbuj ponownie.",
+    "retry": "Spróbuj ponownie"
   }
 }

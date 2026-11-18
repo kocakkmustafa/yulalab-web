@@ -1287,6 +1287,8 @@
     "badge": "Ejemplo sintético",
     "panelLabel": "Prueba de {product}",
     "lifeos": "Elige una tarjeta de decisión y previsualiza cuándo llegaría su recordatorio.",
-    "ostinato": "Toca al ritmo del pulso y mira qué tal cae tu sincronía."
+    "ostinato": "Toca al ritmo del pulso y mira qué tal cae tu sincronía.",
+    "error": "No se pudo cargar la prueba. Revisa tu conexión e inténtalo de nuevo.",
+    "retry": "Reintentar"
   }
 }

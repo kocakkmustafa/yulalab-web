@@ -1287,6 +1287,8 @@
     "badge": "Esempio sintetico",
     "panelLabel": "Prova di {product}",
     "lifeos": "Scegli una scheda decisione e guarda in anteprima quando arriverebbe il promemoria.",
-    "ostinato": "Batti a tempo con il ritmo e guarda come cade il tuo timing."
+    "ostinato": "Batti a tempo con il ritmo e guarda come cade il tuo timing.",
+    "error": "Non è stato possibile caricare la prova. Controlla la connessione e riprova.",
+    "retry": "Riprova"
   }
 }

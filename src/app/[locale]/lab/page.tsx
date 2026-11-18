@@ -14,7 +14,7 @@ import { publicRegistry } from "@/data/public-registry";
 import { publishableCaseStudies } from "@/lib/case-studies";
 import { portfolioCounts } from "@/lib/operating-system";
 import type { Locale } from "@/lib/types";
-import { enabledLabDemos } from "@/data/lab-demos";
+import { enabledLabDemoIds } from "@/server/lab-demo-flags";
 import { LabDemoGrid } from "@/components/lab/LabDemoGrid";
 
 /**
@@ -27,8 +27,8 @@ export const revalidate = 900;
 
 const TITLE = { tr: "Laboratuvar", en: "Lab" } as const;
 const LEDE = {
-  tr: "Gerçek kararlar ve notlar; uydurma veri yok.",
-  en: "Real decisions and notes; no invented data.",
+  tr: "Notlar ve kayıtlar gerçek karar ve kaynaklardandır; demolar, gösterildiği yerde, sentetik veriyle çalışır.",
+  en: "Notes and records come from real decisions and sources; demos, where shown, use synthetic data.",
 } as const;
 
 export async function generateMetadata({
@@ -66,7 +66,7 @@ function Lab() {
   const published = publishableCaseStudies(caseStudies, publicRegistry);
   const counts = portfolioCounts();
   // Flags are read on the server (WEB-P2-01a); a closed flag drops the card.
-  const demoIds = enabledLabDemos().map((d) => d.id);
+  const demoIds = enabledLabDemoIds();
 
   const cardClass = "glass p-6 flex flex-col";
   const linkClass =
