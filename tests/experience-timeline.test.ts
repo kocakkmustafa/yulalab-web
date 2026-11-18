@@ -1,6 +1,6 @@
 import { STORYBOARD, scrollProgressForTimeline, timelineProgressForScroll } from "@/components/experience/storyboard";
 import { describe, expect, it } from "vitest";
-import { SCENE_PRODUCT_COUNT } from "@/components/experience/timeline";
+import { CARD_DEPTH_STEP, SCENE_PRODUCT_COUNT } from "@/components/experience/timeline";
 import { Color, Euler, PerspectiveCamera, Vector3 } from "three";
 import {
   glyphViewportPose,
@@ -210,7 +210,7 @@ describe("reference-faithful experience timeline", () => {
     for (let step = 0; step <= 320; step += 1) {
       const progress = start + (step / 320) * (end - start - Number.EPSILON);
       const frame = evaluateTimeline(progress, "desktop");
-      const activeCardDepth = -1.25 - frame.productIndex * 1.36;
+      const activeCardDepth = -1.25 - frame.productIndex * CARD_DEPTH_STEP;
       const glyphFront = frame.glyph.position[2] + glyphDepthExtent(
         frame.glyph.rotation,
         frame.glyph.scale,
@@ -220,7 +220,7 @@ describe("reference-faithful experience timeline", () => {
 
     const beforeCross = evaluateTimeline(0.515, "desktop");
     const beforeCardDepth =
-      (-1.25 - 7 * 1.36) + (-13.98 - (-1.25 - 7 * 1.36)) * beforeCross.world.proofMorph;
+      (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP) + (-13.98 - (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP)) * beforeCross.world.proofMorph;
     const beforeFront = beforeCross.glyph.position[2] + glyphDepthExtent(
       beforeCross.glyph.rotation,
       beforeCross.glyph.scale,
@@ -229,7 +229,7 @@ describe("reference-faithful experience timeline", () => {
 
     const afterCross = evaluateTimeline(0.565, "desktop");
     const afterCardDepth =
-      (-1.25 - 7 * 1.36) + (-13.98 - (-1.25 - 7 * 1.36)) * afterCross.world.proofMorph;
+      (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP) + (-13.98 - (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP)) * afterCross.world.proofMorph;
     const afterBack = afterCross.glyph.position[2] - glyphDepthExtent(
       afterCross.glyph.rotation,
       afterCross.glyph.scale,
@@ -242,7 +242,7 @@ describe("reference-faithful experience timeline", () => {
       const progress = STAGES.proof[0] + (step / 240) * (STAGES.proof[1] - STAGES.proof[0]);
       const frame = evaluateTimeline(progress, "desktop");
       const cardDepth =
-        (-1.25 - 7 * 1.36) + (-13.98 - (-1.25 - 7 * 1.36)) * frame.world.proofMorph;
+        (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP) + (-13.98 - (-1.25 - (SCENE_PRODUCT_COUNT - 1) * CARD_DEPTH_STEP)) * frame.world.proofMorph;
       const side = Math.sign(frame.glyph.position[2] - cardDepth) || previousSide;
       if (side !== previousSide) crossings += 1;
       previousSide = side;
@@ -543,10 +543,10 @@ describe("spatial portfolio composition", () => {
   for (const [width, height] of [[1440, 900], [1280, 560], [768, 1024], [390, 844]]) {
     it(`keeps the focused primary media bounds within the gallery zone at ${width}x${height}`, () => {
       const widths: number[] = [];
-      for (let index = 0; index < 8; index++) {
+      for (let index = 0; index < SCENE_PRODUCT_COUNT; index++) {
         const progress = 0.085 + ((index + 0.5) / SCENE_PRODUCT_COUNT) * (0.505 - 0.085);
         const pose = interpolateViewportCamera(progress, width);
-        const layout = portfolioViewportComposition(pose, width, height, -1.25 - index * 1.36);
+        const layout = portfolioViewportComposition(pose, width, height, -1.25 - index * CARD_DEPTH_STEP);
         const camera = new PerspectiveCamera(pose.fov, width / height, 0.05, 130);
         camera.position.set(...pose.position);
         camera.lookAt(new Vector3(...pose.target));
@@ -619,7 +619,7 @@ describe("real-media framing", () => {
   it("gives the short-phone native frame at least twice the former 70px width", () => {
     const width = 390, height = 667, progress = 0.26875;
     const pose = interpolateViewportCamera(progress, width);
-    const layout = developmentViewportComposition(pose, width, height, -1.25 - 3 * 1.36);
+    const layout = developmentViewportComposition(pose, width, height, -1.25 - 3 * CARD_DEPTH_STEP);
     const camera = new PerspectiveCamera(pose.fov, width / height, 0.05, 130);
     camera.position.set(...pose.position); camera.lookAt(new Vector3(...pose.target)); camera.updateProjectionMatrix(); camera.updateMatrixWorld(true);
     const nativeWidth = 2.65 * 1206 / 2622;
