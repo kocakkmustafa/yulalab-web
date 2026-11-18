@@ -22,7 +22,8 @@ import {
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
 import { composeGlyphRotation } from "./instruments";
 import { holoRibbonState } from "./HoloRibbon";
-import { glyphViewportPose } from "./layout";
+import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
+import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 export type YulaGlyphProps = {
@@ -146,6 +147,10 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
   }
 `;
 
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
 function makeYShape(): Shape {
   const shape = new Shape();
   shape.moveTo(-0.95, 0.9);
@@ -252,14 +257,34 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width / Math.max(1, viewportSize.height),
     viewportSize.width,
   );
+  // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
+  const slotMix = heroSlotMix(frame.progress);
+  const slotPose = useMemo(() => {
+    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
+    const [cx, cy, cz] = frame.camera.position;
+    // The slot is a point on the wordmark plane; the glass Y sits on the camera ray through it, at its own depth.
+    const t = (cz - frame.glyph.position[2]) / (cz - HERO_PLANE_Z);
+    const planeX = heroSlot.x * planeWidth;
+    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
+    return {
+      x: cx + (planeX - cx) * t,
+      y: cy + (planeY - cy) * t,
+      scale: (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * t) / 1.8,
+    };
+  }, [frame.camera.position, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
   const position = useMemo(
     () => [
-      frame.glyph.position[0] + viewportPose.offset[0],
-      frame.glyph.position[1] + viewportPose.offset[1],
+      lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], slotPose.y, slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset],
+    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
   );
+  // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
+  // the Y takes the same horizontal squeeze while it stands in for the first letter.
+  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier, slotPose.scale, slotMix);
+  const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -317,7 +342,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       ref={glyphGroup}
       position={position}
       rotation={rotation}
-      scale={frame.glyph.scale * viewportPose.scaleMultiplier}
+      scale={glyphScaleXYZ}
       visible={closingVisibility > 0.001}
     >
       <mesh

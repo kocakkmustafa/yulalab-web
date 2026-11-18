@@ -1,5 +1,6 @@
 "use client";
 
+import { heroSlot } from "./hero-slot";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo } from "react";
 import {
@@ -210,7 +211,7 @@ const BACKDROP_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
-function makeWordmarkTexture(label: string): CanvasTexture {
+function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 512;
@@ -220,10 +221,28 @@ function makeWordmarkTexture(label: string): CanvasTexture {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "#ffffff";
     context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
-    context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
-
+    const centreY = canvas.height / 2 + 12;
+    const maxWidth = canvas.width * 0.92;
+    if (skipFirstLetter) {
+      // Same layout as the whole word, but the first letter is left empty for the glass Y.
+      const full = context.measureText(label).width;
+      const firstWidth = context.measureText(label.slice(0, 1)).width;
+      const fit = Math.min(1, maxWidth / full);
+      const start = (canvas.width - full * fit) / 2;
+      context.textAlign = "left";
+      context.fillText(label.slice(1), start + firstWidth * fit, centreY, (full - firstWidth) * fit);
+      const cap = context.measureText("U");
+      heroSlot.x = (start + (firstWidth * fit) / 2 - canvas.width / 2) / canvas.width;
+      // Metrics are relative to the "middle" line the text was drawn on.
+      const capTop = centreY - cap.actualBoundingBoxAscent;
+      const capBottom = centreY + cap.actualBoundingBoxDescent;
+      heroSlot.cap = (capBottom - capTop) / canvas.height;
+      heroSlot.y = (canvas.height / 2 - (capTop + capBottom) / 2) / canvas.height;
+    } else {
+      context.textAlign = "center";
+      context.fillText(label, canvas.width / 2, centreY, maxWidth);
+    }
   }
 
   const texture = new CanvasTexture(canvas);
@@ -338,7 +357,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
-  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA"), []);
+  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA", true), []);
   const worksWordmark = useMemo(() => makeWordmarkTexture(wallTitles.works), [wallTitles.works]);
   const serviceWordmark = useMemo(() => makeWordmarkTexture(wallTitles.service), [wallTitles.service]);
   const gridMaterial = useMemo(

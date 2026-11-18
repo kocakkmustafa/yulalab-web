@@ -208,3 +208,11 @@ export function developmentViewportComposition(camera: CameraPose, width: number
     yaw: base.yaw,
   };
 }
+
+/**
+ * W1D: share of the opening composition where the glass Y stands in for the first letter of the word
+ * (1 at the very top, released with the hero exit).
+ */
+export function heroSlotMix(progress: number): number {
+  return 1 - smoothstep((clamp01(progress) - 0.04) / 0.045);
+}
