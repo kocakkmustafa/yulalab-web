@@ -294,6 +294,20 @@ function slotFrame(progress: number, range: readonly [number, number], count: nu
   };
 }
 
+/**
+ * W1D-D: the reference snaps its works to one card at a time (snapTo 1/(n-1)). Without a snap, cards
+ * dwell here instead: about 70% of every slot holds a card centred, the hand-off to the next one
+ * runs inside the remaining 30%. Whole numbers stay fixed points, so the slot index is unchanged.
+ */
+export const PORTFOLIO_DWELL = 0.36;
+
+export function dwellFloat(float: number): number {
+  const base = Math.floor(float + 1e-9);
+  const t = float - base;
+  const eased = smootherstep((t - PORTFOLIO_DWELL) / (1 - 2 * PORTFOLIO_DWELL));
+  return base + eased;
+}
+
 /** Conservative world-space Z extent of the bevelled Y, including fringe shells. */
 export function glyphDepthExtent(rotation: Vec3, scale: number): number {
   const [x, y, z] = rotation;
@@ -414,7 +428,7 @@ export function evaluateTimeline(
     progress: p,
     stage,
     stageProgress: segmentProgress(p, stageStart, stageEnd),
-    productFloat: product.float,
+    productFloat: dwellFloat(product.float),
     productIndex: product.index,
     productProgress: product.progress,
     proofFloat: proof.float,

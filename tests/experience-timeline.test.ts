@@ -630,3 +630,20 @@ describe("real-media framing", () => {
     expect(Math.max(...points.map(p => p.y))).toBeLessThan(0.85);
   });
 });
+
+describe("W1D-D portfolio dwell", () => {
+  it("holds whole card numbers and stays monotonic between them", async () => {
+    const { dwellFloat } = await import("@/components/experience/timeline");
+    for (const whole of [0, 1, 3, 6]) {
+      expect(dwellFloat(whole)).toBeCloseTo(whole, 9);
+      expect(dwellFloat(whole + 0.2)).toBeCloseTo(whole, 9);
+    }
+    expect(dwellFloat(2.5)).toBeCloseTo(2.5, 9);
+    let previous = -1;
+    for (let value = 0; value <= 6; value += 0.01) {
+      const next = dwellFloat(value);
+      expect(next).toBeGreaterThanOrEqual(previous - 1e-9);
+      previous = next;
+    }
+  });
+});
