@@ -15,7 +15,6 @@ import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { TrackView } from "@/components/common/TrackView";
-import { ScrollMarquee } from "@/components/common/ScrollMarquee";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
 import { projects } from "@/data/projects";
@@ -104,7 +103,6 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
       <TrackView event="product_view" product={project.slug} />
       <GlassSheen />
       <div className="ambient" aria-hidden />
-      <ScrollMarquee text={project.name} className="product-marquee" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-10">
         {/* breadcrumb — pt clears the site's fixed 65px header */}

@@ -952,6 +952,7 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
     to { transform: translateX(-30%); }
   }
 }
+/* W1: urun adi filigrani gizli; W3 referans yerlesimle geri getirir */
 .product-marquee {
   top: clamp(330px, 46vh, 540px);
 }
