@@ -1133,7 +1133,7 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
     var(--yula-plus-img),
     linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
     linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
-    radial-gradient(ellipse 880px 520px at 1000px 470px, rgba(27,23,70,.9) 0, rgba(22,18,58,.75) 30%, rgba(12,10,36,.45) 58%, transparent 100%),
+    radial-gradient(ellipse 660px 440px at 940px 460px, rgba(28,24,70,.95) 0, rgba(21,18,56,.7) 34%, rgba(11,10,34,.38) 64%, transparent 100%),
     radial-gradient(ellipse 800px 520px at 900px 470px, rgba(14,36,46,.95) 0, rgba(6,22,34,.65) 45%, transparent 100%),
     radial-gradient(ellipse 800px 470px at 760px 450px, rgba(3,26,40,.95) 0, rgba(4,22,48,.8) 40%, rgba(3,12,44,.5) 70%, transparent 100%);
   background-size: 180px 180px, 36px 36px, 36px 36px, 100% 900px, 100% 900px, 100% 900px;
