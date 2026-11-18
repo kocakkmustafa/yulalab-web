@@ -764,6 +764,46 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
   :root:not([data-theme]) { --yula-exp-accent: #643399; --yula-danger: #9a2747; --yula-control-line: #7a7067; }
 }
 
+/* ---------------------------------------------------------------------
+   W1 BK3: fare etkilesimleri (referans olcumu: opacity .7, .3s, ease-ui).
+   Yalniz hover:hover cihazlarda; dokunmatikte yok. Ozel imlec yok. Pill (CTA)
+   opaklik yerine saydam -> dolgu doner (.header-cta / [data-pill]).
+   --------------------------------------------------------------------- */
+@media (hover: hover) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link) {
+    transition:
+      opacity 300ms var(--ease-ui),
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui),
+      transform 300ms var(--ease-ui);
+  }
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link):hover {
+    opacity: 0.7;
+  }
+  [data-pill],
+  .header-cta {
+    transition:
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui);
+  }
+  [data-pill]:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #000;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"]) :is(a[href], button),
+  [data-pill],
+  .header-cta {
+    transition: none !important;
+  }
+}
+
 /* ── Motion parity with the reference (2026-11-05) ─────────────────────────
    Every effect below is ours (no reference code or assets). Each one resolves
    to the plain end state under prefers-reduced-motion and without support. */
@@ -1065,45 +1105,5 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
   }
   .glass-accent {
     background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
-  }
-}
-
-/* ---------------------------------------------------------------------
-   W1 BK3: fare etkilesimleri (referans olcumu: opacity .7, .3s, ease-ui).
-   Yalniz hover:hover cihazlarda; dokunmatikte yok. Ozel imlec yok. Pill (CTA)
-   opaklik yerine saydam -> dolgu doner (.header-cta / [data-pill]).
-   --------------------------------------------------------------------- */
-@media (hover: hover) {
-  :where(main, [data-site-header="true"], [data-site-footer="true"])
-    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link) {
-    transition:
-      opacity 300ms var(--ease-ui),
-      color 300ms var(--ease-ui),
-      background-color 300ms var(--ease-ui),
-      border-color 300ms var(--ease-ui),
-      transform 300ms var(--ease-ui);
-  }
-  :where(main, [data-site-header="true"], [data-site-footer="true"])
-    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link):hover {
-    opacity: 0.7;
-  }
-  [data-pill],
-  .header-cta {
-    transition:
-      color 300ms var(--ease-ui),
-      background-color 300ms var(--ease-ui),
-      border-color 300ms var(--ease-ui);
-  }
-  [data-pill]:hover {
-    background-color: #fff;
-    border-color: #fff;
-    color: #000;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  :where(main, [data-site-header="true"], [data-site-footer="true"]) :is(a[href], button),
-  [data-pill],
-  .header-cta {
-    transition: none !important;
   }
 }
