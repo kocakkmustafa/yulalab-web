@@ -385,7 +385,14 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       if (linearTarget) {
         requestAnimationFrame(() => linearTarget.scrollIntoView({ block: "start", behavior: "instant" }));
       } else if (restoredScroll > 0 && document.querySelector("[data-yula-static]")) {
-        requestAnimationFrame(() => window.scrollTo(0, restoredScroll));
+        // The linear document is only just shown: keep asking until it is tall enough to reach the spot.
+        let tries = 0;
+        const restore = () => {
+          window.scrollTo(0, restoredScroll);
+          tries += 1;
+          if (Math.abs(window.scrollY - restoredScroll) > 2 && tries < 40) requestAnimationFrame(restore);
+        };
+        requestAnimationFrame(restore);
       }
     };
   }, [capture.enabled, loaderVisible, mobileStatic, mounted]);

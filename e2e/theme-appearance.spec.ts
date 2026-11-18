@@ -4,11 +4,16 @@ import { test, expect, type Page } from "@playwright/test";
 // Storage key and colours are the public contract of src/lib/theme.ts.
 const KEY = "yula.appearance.v1";
 const ROUTE = "/consulting";
-const BG = { light: "rgb(246, 245, 240)", dark: "rgb(0, 0, 0)" } as const;
+// W1D Z1: in the dark theme the inner-page ground is painted on <html> (colour + grid image) and the body is
+// transparent over it; the light theme keeps its solid body colour.
+const BG = { light: "rgb(246, 245, 240)", dark: "rgb(1, 2, 6)" } as const;
 
 const control = (page: Page) => page.getByRole("combobox", { name: /Görünüm|Appearance/ }).first();
 const theme = (page: Page) => page.evaluate(() => document.documentElement.dataset.theme);
-const bodyBg = (page: Page) => page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+const bodyBg = (page: Page) => page.evaluate(() => {
+  const body = getComputedStyle(document.body).backgroundColor;
+  return body === "rgba(0, 0, 0, 0)" ? getComputedStyle(document.documentElement).backgroundColor : body;
+});
 const stored = (page: Page) => page.evaluate((k) => localStorage.getItem(k), KEY);
 
 test.describe("appearance: light, dark, system", () => {
