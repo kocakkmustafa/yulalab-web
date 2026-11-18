@@ -63,7 +63,7 @@ for (const l of LOCALES) {
     test("footer keeps legal, contact and social links and no store link", async ({ page }) => {
       await page.goto(`${l.prefix}/contact`);
       const footer = page.locator('[data-site-footer="true"]');
-      for (const href of ["/privacy", "/terms", "/contact", "/consulting", "/projects", "/notes"]) {
+      for (const href of ["/privacy", "/terms", "/contact", "/consulting", "/projects", "/notes", "/lab"]) {
         await expect(footer.locator(`a[href='${l.prefix}${href}']`).first()).toBeAttached();
       }
       await expect(footer.locator("a[href^='mailto:support@yulalab.com']")).toHaveCount(1);

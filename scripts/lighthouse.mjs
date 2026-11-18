@@ -3,14 +3,14 @@
  * Lighthouse / CWV kapısı (QA-WEB-02).
  *
  * Üretim derlemesini (.next, önce `pnpm build`) yerel porta `next start` ile kaldırır,
- * /tr ve /en rotalarını mobil + masaüstü presetiyle ölçer; her kombinasyon için N koşunun
+ * /tr, /en ve /en/lab rotalarını mobil + masaüstü presetiyle ölçer; her kombinasyon için N koşunun
  * MEDYANINI alır ve eşikle karşılaştırır. Lighthouse'u `npx lighthouse@<sürüm>` ile çalıştırır
  * (projeye bağımlılık eklenmez; önceki denetimler de `npx lighthouse` ile yapıldı).
  *
  * Eşikler: performans mobil >= 80, masaüstü >= 80 (mobilden az olamaz); a11y >= 95 (ikisi de).
  * TBT/LCP/CLS yalnız raporlanır, eşik değildir (paylaşılan CI makinesinde TBT kararsız).
  *
- * Kullanım: node scripts/lighthouse.mjs [--runs 3] [--routes /tr,/en] [--presets mobile,desktop]
+ * Kullanım: node scripts/lighthouse.mjs [--runs 3] [--routes /tr,/en,/en/lab] [--presets mobile,desktop]
  *           [--port 4191] [--out lighthouse-results] [--base-url http://host:port]
  * Çıktı: <out>/results.json, <out>/summary.md, <out>/raw/*.json. Kapı kaldıysa exit 1.
  */
@@ -143,7 +143,7 @@ async function waitReady(url, ms = 60_000) {
 
 async function main() {
   const runsPer = Number(arg("runs", "3"));
-  const routes = arg("routes", "/tr,/en").split(",");
+  const routes = arg("routes", "/tr,/en,/en/lab").split(",");
   const presets = arg("presets", "mobile,desktop").split(",");
   const port = Number(arg("port", "4191"));
   const out = path.resolve(arg("out", "lighthouse-results"));

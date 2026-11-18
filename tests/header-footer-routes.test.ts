@@ -36,7 +36,6 @@ const ALLOWLIST: Record<string, { reason: string; via: string | null; orphanReas
   "/privacy/lifeos": { reason: "per-product privacy notice, listed on the privacy hub", via: "/privacy" },
   "/privacy/motion": { reason: "per-product privacy notice, listed on the privacy hub and support page", via: "/privacy" },
   "/delete-account/lifeos": { reason: "store data-deletion URL for the store listing; also linked from the support page", via: "/support" },
-  "/lab": { reason: "home door and /transparency link target (WEB-UX-05d/05e), not a header entry", via: "/" },
   "/prototype/contact": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
   "/prototype/projects": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
   "/prototype/projects/[slug]": { reason: "WEB-UX-04 prototype route, closed by default (UX_PROTOTYPE!==1 answers 404)", via: null, orphanReason: "closed-by-default prototype; no in-site link by design" },
@@ -87,6 +86,10 @@ describe("header and footer route table", () => {
       ["products", "/projects"], ["lab", "/notes"], ["approach", "/manifesto"], ["collaboration", "/consulting"],
     ]);
     expect(HEADER_NAV.filter((n) => n.primary).map((n) => n.key)).toEqual(["products", "lab", "collaboration"]);
+  });
+
+  it("links the Lab from the footer with the translated header label", () => {
+    expect(FOOTER_COMPANY_NAV).toContainEqual({ key: "lab", href: "/lab", ns: "header" });
   });
 
   it("renders a footer product link for every project slug", () => {
