@@ -9,4 +9,5 @@ import type { LabDemoId } from "@/data/lab-demos";
 export const LAB_DEMO_LOADERS: Record<LabDemoId, () => Promise<ComponentType>> = {
   "lifeos-decision": () => import("@/components/projects/LifeosDemoArea").then((m) => m.LifeosDemoArea),
   "ostinato-rhythm": () => import("@/components/projects/OstinatoDemoArea").then((m) => m.OstinatoDemoArea),
+  "braavolabs-run": () => import("@/components/projects/BraavolabsRunDemoArea").then((m) => m.BraavolabsRunDemoArea),
 };

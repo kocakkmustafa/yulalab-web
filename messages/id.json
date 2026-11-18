@@ -1289,6 +1289,105 @@
     "lifeos": "Pilih kartu keputusan dan lihat kapan pengingatnya akan datang.",
     "ostinato": "Ketuk mengikuti ketukan dan lihat seberapa pas waktumu.",
     "error": "Uji coba tidak dapat dimuat. Periksa koneksimu lalu coba lagi.",
-    "retry": "Coba lagi"
+    "retry": "Coba lagi",
+    "braavolabs": "Telusuri satu proses agen sintetis dan setujui atau tolak gerbang persetujuannya."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Jejak proses agen sintetis",
+    "title": "Telusuri satu proses agen langkah demi langkah.",
+    "intro": "Satu proses agen AI rekaan, ditampilkan sebagai jejak audit: setiap langkah dengan status, waktu, dan biayanya. Buka satu langkah untuk melihat rinciannya. Satu langkah menunggu persetujuan seseorang.",
+    "note": "Uji coba kecil, bukan layar Braavolabs yang asli. Prosesnya, pemanggilan alat, dan semua angka hanya rekaan. Tidak ada yang memanggil model, sistem pelanggan, atau jaringan di sini, dan biayanya tidak menggambarkan harga atau kecepatan yang sebenarnya.",
+    "badge": "Contoh sintetis",
+    "timelineLabel": "Langkah proses",
+    "metaHeading": "Metadata proses",
+    "statusLabel": "Status",
+    "runIdLabel": "ID proses",
+    "pipelineLabel": "Alur",
+    "pipelineValue": "Penagihan pembayaran terlambat",
+    "stepsLabel": "Langkah",
+    "durationLabel": "Waktu",
+    "costLabel": "Biaya (contoh)",
+    "approve": "Setujui",
+    "reject": "Tolak",
+    "reset": "Atur ulang",
+    "gateHint": "Langkah ini menunggu seseorang. Pilih untuk melihat bagaimana proses berubah.",
+    "announceApproved": "Disetujui. Langkah terakhir sedang berjalan.",
+    "announceRejected": "Ditolak. Proses terblokir di gerbang dan langkah terakhir dilewati.",
+    "announceDone": "Proses selesai. Total biaya, contoh: {cost}.",
+    "announceReset": "Proses diatur ulang. Gerbang persetujuan kembali menunggu.",
+    "seconds": "{n} dtk",
+    "stepsOf": "{done} / {total}",
+    "waiting": "menunggu",
+    "detailTool": "Pemanggilan alat (contoh)",
+    "detailInput": "Masukan (contoh)",
+    "detailOutput": "Keluaran (contoh)",
+    "detailCost": "Rincian biaya (contoh)",
+    "costModelIn": "Masukan model",
+    "costModelOut": "Keluaran model",
+    "costTool": "Alat",
+    "costTotal": "Total langkah",
+    "status": {
+      "completed": "Selesai",
+      "running": "Berjalan",
+      "awaiting": "Menunggu persetujuan",
+      "blocked": "Terblokir",
+      "skipped": "Dilewati",
+      "queued": "Dalam antrean"
+    },
+    "steps": {
+      "plan": {
+        "name": "Rencana",
+        "summary": "Membagi tugas menjadi tiga langkah kecil: temukan faktur jatuh tempo, tulis pengingat, minta persetujuan.",
+        "tool": "Tanpa pemanggilan alat. Agen hanya merencanakan.",
+        "input": "tugas: tagih faktur yang terlambat lebih dari 14 hari",
+        "output": "rencana: 3 langkah, 1 gerbang persetujuan"
+      },
+      "tool": {
+        "name": "Pemanggilan alat",
+        "summary": "Mencari faktur terlambat di data contoh: 7 ditemukan.",
+        "tool": "1 pemanggilan: pencarian faktur (alat rekaan, data contoh)",
+        "input": "filter: terlambat lebih dari 14 hari\nbatas: 10",
+        "output": "7 faktur\nterbesar: pelanggan contoh A"
+      },
+      "draft": {
+        "name": "Draf",
+        "summary": "Menulis 7 draf pengingat singkat. Belum ada yang dikirim.",
+        "tool": "Tanpa pemanggilan alat. Model menulis berdasarkan hasil pencarian.",
+        "input": "7 faktur, nada: ramah dan singkat",
+        "output": "7 draf, sekitar 50 kata per draf"
+      },
+      "gate": {
+        "name": "Gerbang persetujuan",
+        "summary": {
+          "awaiting": "Menunggu seseorang menyetujui pengiriman 7 draf.",
+          "completed": "Seseorang menyetujui pengiriman draf.",
+          "blocked": "Seseorang menolak draf. Proses terblokir di sini."
+        },
+        "tool": "Tanpa pemanggilan alat. Seseorang yang memutuskan.",
+        "input": "7 draf, siap dikirim",
+        "output": {
+          "awaiting": "belum ada keputusan",
+          "completed": "keputusan: disetujui",
+          "blocked": "keputusan: ditolak"
+        }
+      },
+      "done": {
+        "name": "Simpan dan selesai",
+        "summary": {
+          "queued": "Dalam antrean sampai gerbang disetujui.",
+          "running": "Menyimpan proses ke jejak audit dan menandai draf sebagai terkirim (simulasi).",
+          "completed": "Proses tersimpan di jejak audit. Draf ditandai terkirim (simulasi, tidak ada yang dikirim).",
+          "skipped": "Dilewati karena gerbang ditolak. Tidak ada yang disimpan atau dikirim."
+        },
+        "tool": "1 pemanggilan: penulisan ke log audit (alat rekaan)",
+        "input": "proses: demo-run-0001",
+        "output": {
+          "queued": "belum dimulai",
+          "running": "menulis entri audit",
+          "completed": "entri audit tersimpan",
+          "skipped": "tidak dijalankan"
+        }
+      }
+    }
   }
 }

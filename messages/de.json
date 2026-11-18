@@ -1289,6 +1289,105 @@
     "lifeos": "Wähle eine Entscheidungskarte und sieh vorab, wann die Erinnerung käme.",
     "ostinato": "Tippe im Takt mit und sieh, wie dein Timing sitzt.",
     "error": "Die Kostprobe konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.",
-    "retry": "Erneut versuchen"
+    "retry": "Erneut versuchen",
+    "braavolabs": "Eine synthetische Agentenausführung durchgehen und ihr Freigabe-Tor genehmigen oder ablehnen."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Synthetischer Ablauf eines Agenten",
+    "title": "Eine Agentenausführung Schritt für Schritt durchgehen.",
+    "intro": "Ein erfundener Lauf eines KI-Agenten, als Prüfspur dargestellt: jeder Schritt mit Status, Zeit und Kosten. Öffne einen Schritt für Details. Ein Schritt wartet auf die Freigabe durch eine Person.",
+    "note": "Ein kleiner Test, nicht der echte Braavolabs-Bildschirm. Der Lauf, die Werkzeugaufrufe und alle Zahlen sind erfunden. Hier wird kein Modell, kein Kundensystem und kein Netzwerk aufgerufen, und die Kosten sagen nichts über echte Preise oder Geschwindigkeit.",
+    "badge": "Synthetisches Beispiel",
+    "timelineLabel": "Schritte der Ausführung",
+    "metaHeading": "Metadaten der Ausführung",
+    "statusLabel": "Status",
+    "runIdLabel": "Lauf-ID",
+    "pipelineLabel": "Ablauf",
+    "pipelineValue": "Nachfassen bei Zahlungsverzug",
+    "stepsLabel": "Schritte",
+    "durationLabel": "Zeit",
+    "costLabel": "Kosten (Beispiel)",
+    "approve": "Genehmigen",
+    "reject": "Ablehnen",
+    "reset": "Zurücksetzen",
+    "gateHint": "Dieser Schritt wartet auf eine Person. Wähle aus, um zu sehen, wie sich der Lauf verändert.",
+    "announceApproved": "Genehmigt. Der letzte Schritt läuft.",
+    "announceRejected": "Abgelehnt. Der Lauf ist am Tor blockiert, der letzte Schritt wird übersprungen.",
+    "announceDone": "Lauf abgeschlossen. Gesamtkosten, Beispiel: {cost}.",
+    "announceReset": "Lauf zurückgesetzt. Das Freigabe-Tor wartet wieder.",
+    "seconds": "{n} Sek.",
+    "stepsOf": "{done} / {total}",
+    "waiting": "wartet",
+    "detailTool": "Werkzeugaufruf (Beispiel)",
+    "detailInput": "Eingabe (Beispiel)",
+    "detailOutput": "Ausgabe (Beispiel)",
+    "detailCost": "Kostenaufschlüsselung (Beispiel)",
+    "costModelIn": "Modelleingabe",
+    "costModelOut": "Modellausgabe",
+    "costTool": "Werkzeug",
+    "costTotal": "Summe des Schritts",
+    "status": {
+      "completed": "Abgeschlossen",
+      "running": "Läuft",
+      "awaiting": "Wartet auf Freigabe",
+      "blocked": "Blockiert",
+      "skipped": "Übersprungen",
+      "queued": "In der Warteschlange"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Teilt die Aufgabe in drei kleine Schritte: überfällige Rechnungen finden, Erinnerungen schreiben, um Freigabe bitten.",
+        "tool": "Kein Werkzeugaufruf. Der Agent plant nur.",
+        "input": "Aufgabe: Rechnungen nachfassen, die mehr als 14 Tage überfällig sind",
+        "output": "Plan: 3 Schritte, 1 Freigabe-Tor"
+      },
+      "tool": {
+        "name": "Werkzeugaufruf",
+        "summary": "Sucht überfällige Rechnungen in Beispieldaten: 7 gefunden.",
+        "tool": "1 Aufruf: Rechnungssuche (erfundenes Werkzeug, Beispieldaten)",
+        "input": "Filter: mehr als 14 Tage überfällig\nLimit: 10",
+        "output": "7 Rechnungen\ngrößte: Beispielkunde A"
+      },
+      "draft": {
+        "name": "Entwurf",
+        "summary": "Schreibt 7 kurze Erinnerungsentwürfe. Noch wird nichts gesendet.",
+        "tool": "Kein Werkzeugaufruf. Das Modell schreibt anhand des Suchergebnisses.",
+        "input": "7 Rechnungen, Ton: freundlich und knapp",
+        "output": "7 Entwürfe, je etwa 50 Wörter"
+      },
+      "gate": {
+        "name": "Freigabe-Tor",
+        "summary": {
+          "awaiting": "Wartet darauf, dass eine Person den Versand der 7 Entwürfe genehmigt.",
+          "completed": "Eine Person hat den Versand der Entwürfe genehmigt.",
+          "blocked": "Eine Person hat die Entwürfe abgelehnt. Der Lauf ist hier blockiert."
+        },
+        "tool": "Kein Werkzeugaufruf. Eine Person entscheidet.",
+        "input": "7 Entwürfe, versandbereit",
+        "output": {
+          "awaiting": "noch keine Entscheidung",
+          "completed": "Entscheidung: genehmigt",
+          "blocked": "Entscheidung: abgelehnt"
+        }
+      },
+      "done": {
+        "name": "Speichern und abschließen",
+        "summary": {
+          "queued": "In der Warteschlange, bis das Tor genehmigt ist.",
+          "running": "Speichert den Lauf in der Prüfspur und markiert die Entwürfe als gesendet (simuliert).",
+          "completed": "Lauf in der Prüfspur gespeichert. Entwürfe als gesendet markiert (simuliert, nichts wurde gesendet).",
+          "skipped": "Übersprungen, weil das Tor abgelehnt wurde. Nichts wird gespeichert oder gesendet."
+        },
+        "tool": "1 Aufruf: Schreiben ins Prüfprotokoll (erfundenes Werkzeug)",
+        "input": "Lauf: demo-run-0001",
+        "output": {
+          "queued": "nicht gestartet",
+          "running": "Prüfeintrag wird geschrieben",
+          "completed": "Prüfeintrag gespeichert",
+          "skipped": "nicht ausgeführt"
+        }
+      }
+    }
   }
 }

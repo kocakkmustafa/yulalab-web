@@ -12,7 +12,7 @@
  * client component reachable from a server module's `import()` into that
  * page's first load. Demos use synthetic data only; no live API, no secret.
  */
-export type LabDemoId = "lifeos-decision" | "ostinato-rhythm";
+export type LabDemoId = "lifeos-decision" | "ostinato-rhythm" | "braavolabs-run";
 
 export type LabDemo = {
   id: LabDemoId;
@@ -20,10 +20,11 @@ export type LabDemo = {
   /** Product page slug; the no-JS fallback links to `/projects/<slug>#dene`. */
   slug: string;
   /** Key under the `labDemos` messages namespace. */
-  descriptionKey: "lifeos" | "ostinato";
+  descriptionKey: "lifeos" | "ostinato" | "braavolabs";
 };
 
 export const LAB_DEMOS: readonly LabDemo[] = [
   { id: "lifeos-decision", product: "LifeOS", slug: "lifeos", descriptionKey: "lifeos" },
   { id: "ostinato-rhythm", product: "Ostinato", slug: "ostinato", descriptionKey: "ostinato" },
+  { id: "braavolabs-run", product: "Braavolabs", slug: "braavolabs", descriptionKey: "braavolabs" },
 ];

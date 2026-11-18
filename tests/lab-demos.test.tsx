@@ -31,7 +31,7 @@ afterEach(() => {
 
 describe("lab demo registry (WEB-P2-01a)", () => {
   it("has LifeOS and Ostinato only, with unique ids and a description message each", () => {
-    expect(LAB_DEMOS.map((d) => d.product)).toEqual(["LifeOS", "Ostinato"]);
+    expect(LAB_DEMOS.map((d) => d.product)).toEqual(["LifeOS", "Ostinato", "Braavolabs"]);
     expect(new Set(LAB_DEMOS.map((d) => d.id)).size).toBe(LAB_DEMOS.length);
     for (const d of LAB_DEMOS) {
       expect(typeof en.labDemos[d.descriptionKey]).toBe("string");
@@ -43,18 +43,25 @@ describe("lab demo registry (WEB-P2-01a)", () => {
     expect(JSON.stringify(LAB_DEMOS)).not.toMatch(/ENABLED/);
     expect(LAB_DEMO_FLAGS["lifeos-decision"].name).toBe("LIFEOS_DEMO_ENABLED");
     expect(LAB_DEMO_FLAGS["ostinato-rhythm"].name).toBe("OSTINATO_DEMO_ENABLED");
+    expect(LAB_DEMO_FLAGS["braavolabs-run"].name).toBe("BRAAVOLABS_DEMO_ENABLED");
   });
 
   it("is closed by default and follows each product flag", () => {
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "");
     vi.stubEnv("OSTINATO_DEMO_ENABLED", "");
+    vi.stubEnv("BRAAVOLABS_DEMO_ENABLED", "");
     expect(enabledLabDemoIds()).toEqual([]);
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "1");
     expect(enabledLabDemoIds()).toEqual(["lifeos-decision"]);
     vi.stubEnv("OSTINATO_DEMO_ENABLED", "1");
     expect(enabledLabDemoIds()).toEqual(["lifeos-decision", "ostinato-rhythm"]);
+    vi.stubEnv("BRAAVOLABS_DEMO_ENABLED", "1");
+    expect(enabledLabDemoIds()).toEqual(["lifeos-decision", "ostinato-rhythm", "braavolabs-run"]);
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "true");
-    expect(enabledLabDemoIds()).toEqual(["ostinato-rhythm"]);
+    expect(enabledLabDemoIds()).toEqual(["ostinato-rhythm", "braavolabs-run"]);
+    vi.stubEnv("OSTINATO_DEMO_ENABLED", "");
+    vi.stubEnv("BRAAVOLABS_DEMO_ENABLED", "yes");
+    expect(enabledLabDemoIds()).toEqual([]);
   });
 });
 

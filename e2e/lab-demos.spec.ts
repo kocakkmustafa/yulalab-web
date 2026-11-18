@@ -7,7 +7,10 @@ import AxeBuilder from "@axe-core/playwright";
  * Ostinato demo specs): both flags "1" in the test process means an open-mode
  * build (CI job `leads-open-e2e`), otherwise the default closed build.
  */
-const ON = process.env.LIFEOS_DEMO_ENABLED === "1" && process.env.OSTINATO_DEMO_ENABLED === "1";
+const ON =
+  process.env.LIFEOS_DEMO_ENABLED === "1" &&
+  process.env.OSTINATO_DEMO_ENABLED === "1" &&
+  process.env.BRAAVOLABS_DEMO_ENABLED === "1";
 const PAGES = [
   ["tr", "/lab", "Aç: LifeOS", "Aç: Ostinato", "Kapat: LifeOS", "Kapat: Ostinato"],
   ["en", "/en/lab", "Open: LifeOS", "Open: Ostinato", "Close: LifeOS", "Close: Ostinato"],
@@ -32,12 +35,13 @@ if (!ON) {
     await page.goto("/lab");
     await page.waitForLoadState("networkidle");
     const js = await scripts();
-    for (const needle of ["lifeos-set", "rhythm-start", "lifeos-decision-demo", "LIFEOS_DEMO_ENABLED", "OSTINATO_DEMO_ENABLED"]) {
+    for (const needle of ["lifeos-set", "rhythm-start", "lifeos-decision-demo", "LIFEOS_DEMO_ENABLED", "OSTINATO_DEMO_ENABLED", "BRAAVOLABS_DEMO_ENABLED", "demo-run-0001"]) {
       expect(js).not.toContain(needle);
     }
     await expect(page.getByTestId("lab-demos")).toHaveCount(0);
     await expect(page.getByTestId("lab-demo-card-lifeos-decision")).toHaveCount(0);
     await expect(page.getByTestId("lab-demo-card-ostinato-rhythm")).toHaveCount(0);
+    await expect(page.getByTestId("lab-demo-card-braavolabs-run")).toHaveCount(0);
     await expect(page.getByTestId("lab-notes")).toBeVisible();
     const html = await page.content();
     expect(html).not.toContain("lab-demo-card");
@@ -46,14 +50,14 @@ if (!ON) {
 } else {
   for (const [locale, url, openLife, openOst, closeLife, closeOst] of PAGES) {
     test.describe(`lab demos (${locale})`, () => {
-      test("two cards as a list; demo code is absent on first load and arrives only on Open", async ({ page }) => {
+      test("three cards as a list; demo code is absent on first load and arrives only on Open", async ({ page }) => {
         const scripts = trackScripts(page);
         const errors: string[] = [];
         page.on("pageerror", (e) => errors.push(e.message));
         await page.goto(url);
         await page.waitForLoadState("networkidle");
         const list = page.getByTestId("lab-demos").getByRole("list");
-        await expect(list.getByRole("listitem")).toHaveCount(2);
+        await expect(list.getByRole("listitem")).toHaveCount(3);
         await expect(page.getByRole("button", { name: openLife })).toBeVisible();
         await expect(page.getByTestId("lab-demo-panel")).toBeHidden();
         const before = await scripts();
@@ -62,6 +66,8 @@ if (!ON) {
         expect(before).not.toContain("lifeos-decision-demo");
         expect(before).not.toContain("LIFEOS_DEMO_ENABLED");
         expect(before).not.toContain("OSTINATO_DEMO_ENABLED");
+        expect(before).not.toContain("BRAAVOLABS_DEMO_ENABLED");
+        expect(before).not.toContain("demo-run-0001");
 
         await page.getByRole("button", { name: openLife }).click();
         await expect(page.getByTestId("lifeos-decision-demo")).toBeVisible();

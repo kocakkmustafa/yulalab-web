@@ -12,6 +12,7 @@
 [context.production.environment]
   LIFEOS_DEMO_ENABLED = "1"
   OSTINATO_DEMO_ENABLED = "1"
+  BRAAVOLABS_DEMO_ENABLED = "1"
 
 [[plugins]]
   package = "./.github/netlify/artifact-proof"

@@ -1289,6 +1289,105 @@
     "lifeos": "Elige una tarjeta de decisión y previsualiza cuándo llegaría su recordatorio.",
     "ostinato": "Toca al ritmo del pulso y mira qué tal cae tu sincronía.",
     "error": "No se pudo cargar la prueba. Revisa tu conexión e inténtalo de nuevo.",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "braavolabs": "Recorre una ejecución sintética de un agente y aprueba o rechaza su compuerta."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Traza sintética de la ejecución de un agente",
+    "title": "Recorre una ejecución de agente paso a paso.",
+    "intro": "Una ejecución inventada de un agente de IA, presentada como pista de auditoría: cada paso con su estado, tiempo y costo. Abre un paso para ver el detalle. Un paso espera la aprobación de una persona.",
+    "note": "Una prueba pequeña, no la pantalla real de Braavolabs. La ejecución, las llamadas a herramientas y todas las cifras son inventadas. Aquí nada llama a un modelo, a un sistema de clientes ni a la red, y los costos no dicen nada sobre precios o velocidad reales.",
+    "badge": "Ejemplo sintético",
+    "timelineLabel": "Pasos de la ejecución",
+    "metaHeading": "Metadatos de la ejecución",
+    "statusLabel": "Estado",
+    "runIdLabel": "ID de ejecución",
+    "pipelineLabel": "Flujo",
+    "pipelineValue": "Seguimiento de pagos atrasados",
+    "stepsLabel": "Pasos",
+    "durationLabel": "Tiempo",
+    "costLabel": "Costo (ejemplo)",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "reset": "Restablecer",
+    "gateHint": "Este paso espera a una persona. Elige para ver cómo cambia la ejecución.",
+    "announceApproved": "Aprobado. El último paso se está ejecutando.",
+    "announceRejected": "Rechazado. La ejecución queda bloqueada en la compuerta y el último paso se omite.",
+    "announceDone": "Ejecución completada. Costo total, ejemplo: {cost}.",
+    "announceReset": "Ejecución restablecida. La compuerta de aprobación vuelve a esperar.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "en espera",
+    "detailTool": "Llamada a herramienta (ejemplo)",
+    "detailInput": "Entrada (ejemplo)",
+    "detailOutput": "Salida (ejemplo)",
+    "detailCost": "Desglose de costos (ejemplo)",
+    "costModelIn": "Entrada del modelo",
+    "costModelOut": "Salida del modelo",
+    "costTool": "Herramienta",
+    "costTotal": "Total del paso",
+    "status": {
+      "completed": "Completado",
+      "running": "En ejecución",
+      "awaiting": "Esperando aprobación",
+      "blocked": "Bloqueado",
+      "skipped": "Omitido",
+      "queued": "En cola"
+    },
+    "steps": {
+      "plan": {
+        "name": "Plan",
+        "summary": "Divide la tarea en tres pasos pequeños: encontrar facturas vencidas, redactar recordatorios, pedir aprobación.",
+        "tool": "Sin llamada a herramienta. El agente solo planifica.",
+        "input": "tarea: dar seguimiento a facturas vencidas hace más de 14 días",
+        "output": "plan: 3 pasos, 1 compuerta de aprobación"
+      },
+      "tool": {
+        "name": "Llamada a herramienta",
+        "summary": "Busca facturas vencidas en datos de ejemplo: se encontraron 7.",
+        "tool": "1 llamada: búsqueda de facturas (herramienta inventada, datos de ejemplo)",
+        "input": "filtro: vencidas hace más de 14 días\nlímite: 10",
+        "output": "7 facturas\nla mayor: cliente de ejemplo A"
+      },
+      "draft": {
+        "name": "Borrador",
+        "summary": "Redacta 7 borradores breves de recordatorio. Todavía no se envía nada.",
+        "tool": "Sin llamada a herramienta. El modelo escribe a partir del resultado de la búsqueda.",
+        "input": "7 facturas, tono: amable y breve",
+        "output": "7 borradores, unas 50 palabras cada uno"
+      },
+      "gate": {
+        "name": "Compuerta de aprobación",
+        "summary": {
+          "awaiting": "Esperando que una persona apruebe el envío de los 7 borradores.",
+          "completed": "Una persona aprobó el envío de los borradores.",
+          "blocked": "Una persona rechazó los borradores. La ejecución queda bloqueada aquí."
+        },
+        "tool": "Sin llamada a herramienta. Decide una persona.",
+        "input": "7 borradores, listos para enviar",
+        "output": {
+          "awaiting": "aún sin decisión",
+          "completed": "decisión: aprobado",
+          "blocked": "decisión: rechazado"
+        }
+      },
+      "done": {
+        "name": "Guardar y terminar",
+        "summary": {
+          "queued": "En cola hasta que se apruebe la compuerta.",
+          "running": "Guardando la ejecución en la pista de auditoría y marcando los borradores como enviados (simulado).",
+          "completed": "Ejecución guardada en la pista de auditoría. Borradores marcados como enviados (simulado, no se envió nada).",
+          "skipped": "Omitido porque se rechazó la compuerta. No se guarda ni se envía nada."
+        },
+        "tool": "1 llamada: escritura en el registro de auditoría (herramienta inventada)",
+        "input": "ejecución: demo-run-0001",
+        "output": {
+          "queued": "sin iniciar",
+          "running": "escribiendo la entrada de auditoría",
+          "completed": "entrada de auditoría guardada",
+          "skipped": "no ejecutado"
+        }
+      }
+    }
   }
 }

@@ -1289,6 +1289,105 @@
     "lifeos": "Scegli una scheda decisione e guarda in anteprima quando arriverebbe il promemoria.",
     "ostinato": "Batti a tempo con il ritmo e guarda come cade il tuo timing.",
     "error": "Non è stato possibile caricare la prova. Controlla la connessione e riprova.",
-    "retry": "Riprova"
+    "retry": "Riprova",
+    "braavolabs": "Scorri un’esecuzione sintetica di un agente e approva o rifiuta il suo punto di controllo."
+  },
+  "braavolabsRunDemo": {
+    "kicker": "Traccia sintetica di un’esecuzione di agente",
+    "title": "Scorri un’esecuzione di agente passo dopo passo.",
+    "intro": "Un’esecuzione inventata di un agente IA, mostrata come traccia di audit: ogni passo con stato, tempo e costo. Apri un passo per i dettagli. Un passo attende l’approvazione di una persona.",
+    "note": "Una piccola prova, non la vera schermata di Braavolabs. L’esecuzione, le chiamate agli strumenti e tutti i numeri sono inventati. Qui nulla chiama un modello, un sistema cliente o la rete, e i costi non dicono nulla sui prezzi o sulla velocità reali.",
+    "badge": "Esempio sintetico",
+    "timelineLabel": "Passi dell’esecuzione",
+    "metaHeading": "Metadati dell’esecuzione",
+    "statusLabel": "Stato",
+    "runIdLabel": "ID esecuzione",
+    "pipelineLabel": "Flusso",
+    "pipelineValue": "Sollecito di pagamenti in ritardo",
+    "stepsLabel": "Passi",
+    "durationLabel": "Tempo",
+    "costLabel": "Costo (esempio)",
+    "approve": "Approva",
+    "reject": "Rifiuta",
+    "reset": "Reimposta",
+    "gateHint": "Questo passo attende una persona. Scegli per vedere come cambia l’esecuzione.",
+    "announceApproved": "Approvato. L’ultimo passo è in corso.",
+    "announceRejected": "Rifiutato. L’esecuzione è bloccata al punto di controllo e l’ultimo passo viene saltato.",
+    "announceDone": "Esecuzione completata. Costo totale, esempio: {cost}.",
+    "announceReset": "Esecuzione reimpostata. Il punto di approvazione è di nuovo in attesa.",
+    "seconds": "{n} s",
+    "stepsOf": "{done} / {total}",
+    "waiting": "in attesa",
+    "detailTool": "Chiamata allo strumento (esempio)",
+    "detailInput": "Input (esempio)",
+    "detailOutput": "Output (esempio)",
+    "detailCost": "Dettaglio dei costi (esempio)",
+    "costModelIn": "Input del modello",
+    "costModelOut": "Output del modello",
+    "costTool": "Strumento",
+    "costTotal": "Totale del passo",
+    "status": {
+      "completed": "Completato",
+      "running": "In corso",
+      "awaiting": "In attesa di approvazione",
+      "blocked": "Bloccato",
+      "skipped": "Saltato",
+      "queued": "In coda"
+    },
+    "steps": {
+      "plan": {
+        "name": "Piano",
+        "summary": "Divide il compito in tre piccoli passi: trovare le fatture scadute, scrivere i solleciti, chiedere l’approvazione.",
+        "tool": "Nessuna chiamata a strumenti. L’agente si limita a pianificare.",
+        "input": "compito: sollecitare le fatture scadute da più di 14 giorni",
+        "output": "piano: 3 passi, 1 punto di approvazione"
+      },
+      "tool": {
+        "name": "Chiamata allo strumento",
+        "summary": "Cerca le fatture scadute nei dati di esempio: 7 trovate.",
+        "tool": "1 chiamata: ricerca fatture (strumento inventato, dati di esempio)",
+        "input": "filtro: scadute da più di 14 giorni\nlimite: 10",
+        "output": "7 fatture\nla più alta: cliente di esempio A"
+      },
+      "draft": {
+        "name": "Bozza",
+        "summary": "Scrive 7 brevi bozze di sollecito. Per ora non viene inviato nulla.",
+        "tool": "Nessuna chiamata a strumenti. Il modello scrive a partire dal risultato della ricerca.",
+        "input": "7 fatture, tono: cordiale e breve",
+        "output": "7 bozze, circa 50 parole ciascuna"
+      },
+      "gate": {
+        "name": "Punto di approvazione",
+        "summary": {
+          "awaiting": "In attesa che una persona approvi l’invio delle 7 bozze.",
+          "completed": "Una persona ha approvato l’invio delle bozze.",
+          "blocked": "Una persona ha rifiutato le bozze. L’esecuzione è bloccata qui."
+        },
+        "tool": "Nessuna chiamata a strumenti. Decide una persona.",
+        "input": "7 bozze, pronte per l’invio",
+        "output": {
+          "awaiting": "ancora nessuna decisione",
+          "completed": "decisione: approvato",
+          "blocked": "decisione: rifiutato"
+        }
+      },
+      "done": {
+        "name": "Salva e concludi",
+        "summary": {
+          "queued": "In coda finché il punto di approvazione non viene approvato.",
+          "running": "Salvataggio dell’esecuzione nella traccia di audit e segnatura delle bozze come inviate (simulato).",
+          "completed": "Esecuzione salvata nella traccia di audit. Bozze segnate come inviate (simulato, non è stato inviato nulla).",
+          "skipped": "Saltato perché il punto di approvazione è stato rifiutato. Non viene salvato né inviato nulla."
+        },
+        "tool": "1 chiamata: scrittura nel registro di audit (strumento inventato)",
+        "input": "esecuzione: demo-run-0001",
+        "output": {
+          "queued": "non avviato",
+          "running": "scrittura della voce di audit",
+          "completed": "voce di audit salvata",
+          "skipped": "non eseguito"
+        }
+      }
+    }
   }
 }
