@@ -1272,5 +1272,21 @@
     "doneBody": "Erinnerung für „{title}“: {when}. Tatsächlich wurde nichts gesetzt.",
     "announceDone": "Erinnerung gesetzt, Simulation. {title}: {when}.",
     "restart": "Nochmal versuchen"
+  },
+  "labDemos": {
+    "heading": "Hier ausprobieren",
+    "intro": "Kleine, synthetische Kostproben unserer Produkte. Sie laufen in deinem Browser mit ausgedachten Daten.",
+    "listLabel": "Produkt-Kostproben",
+    "open": "Öffnen",
+    "openNamed": "Öffnen: {product}",
+    "close": "Schließen",
+    "closeNamed": "Schließen: {product}",
+    "loading": "Wird geladen …",
+    "productLink": "Auf der Produktseite",
+    "noscript": "Diese Kostproben brauchen JavaScript. Jede Karte verlinkt stattdessen auf ihre Produktseite.",
+    "badge": "Synthetisches Beispiel",
+    "panelLabel": "{product}-Kostprobe",
+    "lifeos": "Wähle eine Entscheidungskarte und sieh vorab, wann die Erinnerung käme.",
+    "ostinato": "Tippe im Takt mit und sieh, wie dein Timing sitzt."
   }
 }

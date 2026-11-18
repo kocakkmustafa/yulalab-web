@@ -1272,5 +1272,21 @@
     "doneBody": "Lembrete para “{title}”: {when}. Nada foi realmente definido.",
     "announceDone": "Lembrete definido, simulação. {title}: {when}.",
     "restart": "Tentar de novo"
+  },
+  "labDemos": {
+    "heading": "Experimente aqui",
+    "intro": "Pequenos testes sintéticos dos nossos produtos. Rodam no seu navegador com dados inventados.",
+    "listLabel": "Testes de produto",
+    "open": "Abrir",
+    "openNamed": "Abrir: {product}",
+    "close": "Fechar",
+    "closeNamed": "Fechar: {product}",
+    "loading": "Carregando…",
+    "productLink": "Na página do produto",
+    "noscript": "Estes testes precisam de JavaScript. Cada cartão leva à página do produto.",
+    "badge": "Exemplo sintético",
+    "panelLabel": "Teste do {product}",
+    "lifeos": "Escolha um cartão de decisão e veja quando o lembrete chegaria.",
+    "ostinato": "Toque no ritmo e veja como ficou o seu tempo."
   }
 }

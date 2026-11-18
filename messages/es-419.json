@@ -1272,5 +1272,21 @@
     "doneBody": "Recordatorio para “{title}”: {when}. En realidad no se programó nada.",
     "announceDone": "Recordatorio programado, simulación. {title}: {when}.",
     "restart": "Intentar de nuevo"
+  },
+  "labDemos": {
+    "heading": "Pruébalo aquí",
+    "intro": "Pequeñas pruebas sintéticas de nuestros productos. Funcionan en tu navegador con datos inventados.",
+    "listLabel": "Pruebas de producto",
+    "open": "Abrir",
+    "openNamed": "Abrir: {product}",
+    "close": "Cerrar",
+    "closeNamed": "Cerrar: {product}",
+    "loading": "Cargando…",
+    "productLink": "En la página del producto",
+    "noscript": "Estas pruebas necesitan JavaScript. Cada tarjeta enlaza a la página de su producto.",
+    "badge": "Ejemplo sintético",
+    "panelLabel": "Prueba de {product}",
+    "lifeos": "Elige una tarjeta de decisión y previsualiza cuándo llegaría su recordatorio.",
+    "ostinato": "Toca al ritmo del pulso y mira qué tal cae tu sincronía."
   }
 }

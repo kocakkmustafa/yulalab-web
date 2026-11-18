@@ -1272,5 +1272,21 @@
     "doneBody": "Rappel pour « {title} » : {when}. Rien n’a réellement été programmé.",
     "announceDone": "Rappel programmé, simulation. {title} : {when}.",
     "restart": "Réessayer"
+  },
+  "labDemos": {
+    "heading": "Essayer ici",
+    "intro": "De petits essais synthétiques de nos produits. Ils s'exécutent dans ton navigateur avec des données inventées.",
+    "listLabel": "Essais de produits",
+    "open": "Ouvrir",
+    "openNamed": "Ouvrir : {product}",
+    "close": "Fermer",
+    "closeNamed": "Fermer : {product}",
+    "loading": "Chargement…",
+    "productLink": "Sur la page du produit",
+    "noscript": "Ces essais demandent JavaScript. Chaque carte renvoie vers la page de son produit.",
+    "badge": "Exemple synthétique",
+    "panelLabel": "Essai de {product}",
+    "lifeos": "Choisis une carte de décision et prévisualise quand son rappel arriverait.",
+    "ostinato": "Tape en rythme avec le battement et vois comment tombe ton tempo."
   }
 }

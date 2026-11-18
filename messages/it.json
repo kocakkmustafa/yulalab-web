@@ -1272,5 +1272,21 @@
     "doneBody": "Promemoria per “{title}”: {when}. Non è stato impostato nulla di reale.",
     "announceDone": "Promemoria impostato, simulazione. {title}: {when}.",
     "restart": "Riprova"
+  },
+  "labDemos": {
+    "heading": "Provalo qui",
+    "intro": "Piccole prove sintetiche dei nostri prodotti. Girano nel tuo browser con dati inventati.",
+    "listLabel": "Prove di prodotto",
+    "open": "Apri",
+    "openNamed": "Apri: {product}",
+    "close": "Chiudi",
+    "closeNamed": "Chiudi: {product}",
+    "loading": "Caricamento…",
+    "productLink": "Nella pagina del prodotto",
+    "noscript": "Queste prove richiedono JavaScript. Ogni scheda rimanda alla pagina del suo prodotto.",
+    "badge": "Esempio sintetico",
+    "panelLabel": "Prova di {product}",
+    "lifeos": "Scegli una scheda decisione e guarda in anteprima quando arriverebbe il promemoria.",
+    "ostinato": "Batti a tempo con il ritmo e guarda come cade il tuo timing."
   }
 }

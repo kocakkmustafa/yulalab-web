@@ -1272,5 +1272,21 @@
     "doneBody": "Pengingat untuk “{title}”: {when}. Tidak ada yang benar-benar diatur.",
     "announceDone": "Pengingat diatur, simulasi. {title}: {when}.",
     "restart": "Coba lagi"
+  },
+  "labDemos": {
+    "heading": "Coba di sini",
+    "intro": "Uji coba kecil dan sintetis dari produk kami. Berjalan di browser kamu dengan data rekaan.",
+    "listLabel": "Uji coba produk",
+    "open": "Buka",
+    "openNamed": "Buka: {product}",
+    "close": "Tutup",
+    "closeNamed": "Tutup: {product}",
+    "loading": "Memuat…",
+    "productLink": "Di halaman produk",
+    "noscript": "Uji coba ini butuh JavaScript. Setiap kartu menautkan ke halaman produknya.",
+    "badge": "Contoh sintetis",
+    "panelLabel": "Uji coba {product}",
+    "lifeos": "Pilih kartu keputusan dan lihat kapan pengingatnya akan datang.",
+    "ostinato": "Ketuk mengikuti ketukan dan lihat seberapa pas waktumu."
   }
 }

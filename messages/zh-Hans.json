@@ -1272,5 +1272,21 @@
     "doneBody": "“{title}”的提醒：{when}。实际上没有设置任何内容。",
     "announceDone": "提醒已设置，模拟。{title}：{when}。",
     "restart": "再试一次"
+  },
+  "labDemos": {
+    "heading": "在这里试一试",
+    "intro": "我们产品的小型合成演示，在你的浏览器中用虚构数据运行。",
+    "listLabel": "产品演示",
+    "open": "打开",
+    "openNamed": "打开：{product}",
+    "close": "关闭",
+    "closeNamed": "关闭：{product}",
+    "loading": "加载中…",
+    "productLink": "在产品页面",
+    "noscript": "这些演示需要 JavaScript。每张卡片都链接到对应的产品页面。",
+    "badge": "合成示例",
+    "panelLabel": "{product}演示",
+    "lifeos": "选一张决定卡片，预览它的提醒何时送达。",
+    "ostinato": "跟着节拍点按，看看你的节奏落点如何。"
   }
 }

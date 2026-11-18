@@ -1272,5 +1272,21 @@
     "doneBody": "“{title}” 알림: {when}. 실제로 설정된 것은 없어요.",
     "announceDone": "알림이 설정됨, 시뮬레이션. {title}: {when}.",
     "restart": "다시 해 보기"
+  },
+  "labDemos": {
+    "heading": "여기서 체험하기",
+    "intro": "제품을 가볍게 체험하는 합성 데모입니다. 브라우저에서 가상의 데이터로 실행됩니다.",
+    "listLabel": "제품 체험",
+    "open": "열기",
+    "openNamed": "열기: {product}",
+    "close": "닫기",
+    "closeNamed": "닫기: {product}",
+    "loading": "불러오는 중…",
+    "productLink": "제품 페이지에서",
+    "noscript": "이 체험에는 JavaScript가 필요합니다. 각 카드에서 제품 페이지로 이동할 수 있습니다.",
+    "badge": "합성 예시",
+    "panelLabel": "{product} 체험",
+    "lifeos": "결정 카드를 고르고 알림이 언제 올지 미리 확인합니다.",
+    "ostinato": "박자에 맞춰 탭하고 타이밍이 어떻게 나왔는지 확인합니다."
   }
 }

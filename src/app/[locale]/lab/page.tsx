@@ -14,6 +14,8 @@ import { publicRegistry } from "@/data/public-registry";
 import { publishableCaseStudies } from "@/lib/case-studies";
 import { portfolioCounts } from "@/lib/operating-system";
 import type { Locale } from "@/lib/types";
+import { enabledLabDemos } from "@/data/lab-demos";
+import { LabDemoGrid } from "@/components/lab/LabDemoGrid";
 
 /**
  * Lab hub (WEB-UX-05e, 04-design §E6). It only points at records that exist:
@@ -63,6 +65,8 @@ function Lab() {
   );
   const published = publishableCaseStudies(caseStudies, publicRegistry);
   const counts = portfolioCounts();
+  // Flags are read on the server (WEB-P2-01a); a closed flag drops the card.
+  const demoIds = enabledLabDemos().map((d) => d.id);
 
   const cardClass = "glass p-6 flex flex-col";
   const linkClass =
@@ -81,6 +85,8 @@ function Lab() {
           {text(locale, LEDE.tr, LEDE.en)}
         </p>
       </section>
+
+      <LabDemoGrid ids={demoIds} />
 
       <section className="max-w-7xl mx-auto px-6 lg:px-10 pb-24 grid grid-cols-1 lg:grid-cols-3 gap-5">
         <article className={cardClass} data-testid="lab-notes" aria-labelledby="lab-notes-h">
