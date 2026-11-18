@@ -111,6 +111,8 @@ for (const locale of ["tr", "en"] as const) {
     await page.locator("header button[aria-controls='site-mobile-navigation']").click();
     const panel = page.locator('[data-site-mobile-panel="true"]');
     expect(await panel.evaluate((node) => getComputedStyle(node).overflowY)).toBe("auto");
+    // Lenis must not swallow wheel events over the scrollable drawer (nested scroll)
+    await expect(panel).toHaveAttribute("data-lenis-prevent", "");
     const action = panel.locator(`a[href='${prefix}/projects']`).last();
     await action.scrollIntoViewIfNeeded();
     await expect(action).toBeInViewport({ ratio: 1 });

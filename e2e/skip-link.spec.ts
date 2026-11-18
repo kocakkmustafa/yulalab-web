@@ -74,3 +74,17 @@ for (const c of cases) {
     });
   });
 }
+
+// Fixed header (120px desktop, 72px mobile): a #hash jump must land the target
+// below it, not underneath (globals.css html scroll-padding-top).
+for (const vp of [{ width: 1440, height: 900, header: 120 }, { width: 390, height: 844, header: 72 }]) {
+  test(`#hash jump lands below the fixed header at ${vp.width}px`, async ({ page }) => {
+    await page.setViewportSize({ width: vp.width, height: vp.height });
+    await page.goto("/en/contact");
+    await page.evaluate(() => { window.location.hash = "yollar"; });
+    await expect.poll(() => page.evaluate(() => Math.round(window.scrollY))).toBeGreaterThan(0);
+    await page.waitForTimeout(1200); // smooth scroll settles
+    const top = await page.locator("#yollar").evaluate((el) => el.getBoundingClientRect().top);
+    expect(top).toBeGreaterThanOrEqual(vp.header);
+  });
+}

@@ -264,6 +264,7 @@ export function Header() {
         />
         <div
           data-site-mobile-panel="true"
+          data-lenis-prevent
           data-open={mobile ? "true" : "false"}
           className={
             "absolute right-0 top-0 bottom-0 w-[82%] max-w-sm border-l border-hairline p-6 flex flex-col overflow-y-auto overscroll-contain [&>*]:shrink-0 transition-transform duration-500 " +

@@ -91,7 +91,7 @@ function Contact({
         </p>
       </section>
 
-      <section id="yollar" aria-labelledby="yollar-title" data-contact-paths className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-6 scroll-mt-24">
+      <section id="yollar" aria-labelledby="yollar-title" data-contact-paths className="relative max-w-3xl mx-auto px-6 lg:px-10 pb-6">
         <h2 id="yollar-title" className="font-display text-2xl font-semibold tracking-tight text-ink-50">{t("pathsTitle")}</h2>
         <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
           <li data-contact-path="user" className="py-5">
