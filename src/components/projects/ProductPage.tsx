@@ -106,7 +106,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 lg:px-10">
         {/* breadcrumb — pt clears the site's fixed 65px header */}
-        <div className="flex items-center justify-between gap-5 pt-24">
+        <div className="flex items-center justify-between gap-5 pt-24 md:pt-36">
           <Link
             href="/projects"
             className="font-mono text-[10.5px] tracking-[0.16em] uppercase text-ink-400 hover:text-ink-50 transition-colors focusable"
