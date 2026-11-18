@@ -66,6 +66,8 @@ for (const l of LOCALES) {
       for (const href of ["/privacy", "/terms", "/contact", "/consulting", "/projects", "/notes", "/lab"]) {
         await expect(footer.locator(`a[href='${l.prefix}${href}']`).first()).toBeAttached();
       }
+      // No case study is published (src/data/case-studies.ts is empty on purpose): no link to the empty page.
+      await expect(footer.locator(`a[href='${l.prefix}/case-studies']`)).toHaveCount(0);
       await expect(footer.locator("a[href^='mailto:support@yulalab.com']")).toHaveCount(1);
       await expect(footer.locator("a[href*='apps.apple.com'], a[href*='play.google.com']")).toHaveCount(0);
       for (const social of await footer.locator("a[target='_blank']").all()) {

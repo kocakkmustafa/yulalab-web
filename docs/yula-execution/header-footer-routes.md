@@ -14,7 +14,7 @@ Kaynak: `src/components/layout/nav-config.ts`. Rota silinmedi, yeniden adlandır
 | Ana Sayfa | `/` | marka bağlantısı | ikincil | — | |
 | İletişim | `/contact` | — | ikincil | evet | |
 | Projeleri Keşfet (CTA) | `/projects` | evet | alt eylem | — | Mevcut e2e sözleşmesi (son eylem) korundu |
-| Şeffaflık, Vaka çalışmaları, Nasıl çalışıyoruz | `/transparency`, `/case-studies`, `/operating-system` | — | — | evet | Header sadeleşti; footer'dan erişilir |
+| Şeffaflık, Vaka çalışmaları, Nasıl çalışıyoruz | `/transparency`, `/case-studies`, `/operating-system` | — | — | evet | Header sadeleşti; footer'dan erişilir (`/case-studies` bağlantısı yalnız `caseStudies` listesi doluyken görünür, WEB-KOD-02) |
 | Kapılar / Gateways | `/start` | — (panel bağlantıları sabit) | — | evet (Şirket listesinin başı; `header.doors` etiketi) | WEB-UX-05g: yetim sayfa kalmasın |
 | Stüdyo | `/studio` | — (kaldırıldı) | — | yalnız `STUDIO_ENABLED=true` | Anahtar yalnız footer'ı yönetir |
 | Gizlilik, Kullanım Şartları, Destek | `/privacy`, `/terms`, `/support` | — | — | evet | |

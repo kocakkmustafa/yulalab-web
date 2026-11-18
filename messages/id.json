@@ -71,7 +71,6 @@
     "heroTitle": "Kami merancang produk masa depan hari ini.",
     "heroDescription": "Yula Lab adalah laboratorium produk independen yang merancang produk berbasis AI dan data untuk menyederhanakan keseharian. Setiap proyek dibangun di titik temu estetika, etika, dan dampak.",
     "heroMeta": {
-      "products": "8 produk",
       "studio": "1 laboratorium",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Kami merilis karena produknya siap, bukan karena tanggal tertentu. Kami tidak mengembangkan skala produk sebelum yakin dapat mempertahankannya.",
     "manifestoReadAll": "Baca manifesto lengkap",
     "projectsKicker": "04 — Proyek",
-    "projectsCount": "8 produk · 2 tersedia · 1 beta · 5 segera hadir",
     "specHeading": "Lembar teknis",
     "inspect": "Jelajahi",
     "visualsNote": "Antarmuka masih disempurnakan · gambar tersedia di halaman produk",
@@ -220,14 +218,6 @@
         "proof": "→ Primitif · penyedia · bukti bertanggal pada halaman produk",
         "detailLabel": "Jejak audit",
         "detailBody": "Setiap pemanggilan alat dan keputusan dicatat dalam baris terpisah; tindakan yang melibatkan uang memerlukan persetujuan manusia secara tegas. Ekspor seluruh eksekusi sebagai CSV / JSON dan cocokkan dengan pembukuan Anda."
-      },
-      "burunfarki": {
-        "label": "Metodologi terbuka",
-        "title": "3 faktor utama untuk setiap prediksi.",
-        "claim": "Kami tidak menyembunyikan alasan model memilih kuda tertentu. Pembobotan berbasis aturan menampilkan 3 faktor utama dengan istilah yang sesuai dengan balapan.",
-        "proof": "→ burunfark.com/dogruluk · ringkasan pengukuran bertanggal pada halaman produk",
-        "detailLabel": "Panel pemantauan langsung",
-        "detailBody": "Panel pemantauan langsung menampilkan prediksi yang benar maupun meleset. Baca hasilnya bersama tanggal pengukuran, cakupan balapan, serta rincian menurut arena, lintasan, dan jarak."
       },
       "lifeos": {
         "label": "Privasi di perangkat",

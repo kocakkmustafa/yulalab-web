@@ -71,7 +71,6 @@
     "heroTitle": "Geleceğin ürünlerini bugün tasarlıyoruz.",
     "heroDescription": "Yula Lab, yapay zeka ve veri odaklı, insanın hayatını sadeleştiren ürünler tasarlayan bağımsız bir ürün laboratuvarıdır. Her projemiz; estetik, etik ve etki üçgeninde inşa edilir.",
     "heroMeta": {
-      "products": "8 ürün",
       "studio": "1 laboratuvar",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Tarih için değil, hazır olduğu için çıkarılır. Bir ürünü sürdürebileceğimizden emin olmadan büyütmeyiz.",
     "manifestoReadAll": "Manifestonun tamamını oku",
     "projectsKicker": "04 — Projeler",
-    "projectsCount": "8 ürün · 2 yayında · 1 beta · 5 yakında",
     "specHeading": "Teknik künye",
     "inspect": "İncele",
     "visualsNote": "Arayüz kesinleşiyor · görseller ürün sayfasında",
@@ -220,14 +218,6 @@
         "proof": "→ Primitifler · sağlayıcılar · ürün sayfasında tarihli kanıtlar",
         "detailLabel": "Audit trail",
         "detailBody": "Her tool call ve her karar ayrı satır olarak kaydedilir; parayla ilgili işlemler açık insan onayı gerektirir (spend approval gate). Run sonunda CSV / JSON olarak indirip kendi muhasebenizle eşleştirebilirsiniz."
-      },
-      "burunfarki": {
-        "label": "Açık metodoloji",
-        "title": "Her tahmin için ilk 3 etken.",
-        "claim": "Modelin neden o atı önerdiğini gizlemiyoruz. Kural-tabanlı ağırlıklandırmayla en etkili 3 faktörü yarış-spesifik dilde anlatıyoruz.",
-        "proof": "→ burunfark.com/dogruluk · ürün sayfasında tarihli ölçüm özeti",
-        "detailLabel": "Canlı takip paneli",
-        "detailBody": "Canlı takip panelinde kazanan tahminlerle yanılan tahminler birlikte incelenir. Sonuçları değerlendirirken ölçüm tarihini, yarış kapsamını ve hipodrom, pist, mesafe kırılımlarını birlikte okuyun."
       },
       "lifeos": {
         "label": "Cihaz üstü gizlilik",

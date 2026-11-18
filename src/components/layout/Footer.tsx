@@ -6,7 +6,8 @@ import { XLogo, Linkedin, Instagram } from "@/components/common/icons";
 import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import type { Locale } from "@/lib/types";
-import { FOOTER_COMPANY_NAV, FOOTER_LEGAL_NAV, SOCIAL_LABEL } from "./nav-config";
+import { caseStudies } from "@/data/case-studies";
+import { FOOTER_LEGAL_NAV, SOCIAL_LABEL, visibleFooterCompanyNav } from "./nav-config";
 
 // Mobile touch targets: 44px rows; desktop keeps the compact list.
 const LINK_ROWS = "[&_a]:inline-flex [&_a]:items-center max-md:[&_a]:min-h-[44px]";
@@ -95,7 +96,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
             {t("companyHeading")}
           </div>
           <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
-            {FOOTER_COMPANY_NAV.filter((item) => !item.studioOnly || studioEnabled).map((item) => (
+            {visibleFooterCompanyNav({ studioEnabled, caseStudyCount: caseStudies.length }).map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href as "/"}

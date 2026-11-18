@@ -71,7 +71,6 @@
     "heroTitle": "Projektujemy dziś produkty jutra.",
     "heroDescription": "Yula Lab to niezależne laboratorium projektujące produkty oparte na AI i danych, które upraszczają codzienność. Każdy projekt łączy estetykę, etykę i rzeczywisty wpływ.",
     "heroMeta": {
-      "products": "8 produktów",
       "studio": "1 laboratorium",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Wydajemy, gdy produkt jest gotowy, a nie dlatego, że nadszedł termin. Rozwijamy go dopiero, gdy wiemy, że potrafimy go utrzymać.",
     "manifestoReadAll": "Przeczytaj cały manifest",
     "projectsKicker": "04 — Projekty",
-    "projectsCount": "8 produktów · 2 dostępne · 1 w wersji beta · 5 wkrótce",
     "specHeading": "Karta techniczna",
     "inspect": "Poznaj",
     "visualsNote": "Interfejs wciąż się kształtuje · materiały na stronie produktu",
@@ -220,14 +218,6 @@
         "proof": "→ Elementy składowe · dostawcy · datowane dowody na stronie produktu",
         "detailLabel": "Ślad audytowy",
         "detailBody": "Każde wywołanie narzędzia i każda decyzja to osobny wiersz; działania finansowe wymagają wyraźnej zgody człowieka. Wyeksportuj cały przebieg jako CSV / JSON i uzgodnij go z własną księgowością."
-      },
-      "burunfarki": {
-        "label": "Otwarta metodologia",
-        "title": "3 najważniejsze czynniki każdej prognozy.",
-        "claim": "Nie ukrywamy, dlaczego model wybrał danego konia. Wagi oparte na regułach pokazują 3 główne czynniki w kontekście konkretnego wyścigu.",
-        "proof": "→ burunfark.com/dogruluk · datowane podsumowanie pomiarów na stronie produktu",
-        "detailLabel": "Panel śledzenia na żywo",
-        "detailBody": "Panel obejmuje zarówno trafne, jak i nietrafne prognozy. Odczytuj wyniki wraz z datą pomiaru, zakresem wyścigów oraz podziałem na tory, trasy i dystanse."
       },
       "lifeos": {
         "label": "Prywatność na urządzeniu",

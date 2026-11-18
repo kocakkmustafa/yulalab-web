@@ -73,7 +73,7 @@ describe("/start doors page (WEB-UX-05g)", () => {
 
     // The footer renders every company link, /start included, through one Link: it must opt out of prefetch.
     const footer = source("src/components/layout/Footer.tsx");
-    const from = footer.indexOf("FOOTER_COMPANY_NAV.filter");
+    const from = footer.indexOf("visibleFooterCompanyNav(");
     expect(from).toBeGreaterThan(-1);
     const companyLink = footer.slice(from, footer.indexOf("</Link>", from));
     expect(companyLink).toMatch(/<Link[^>]*\bhref=\{item\.href as "\/"\}[^>]*\bprefetch=\{false\}/);

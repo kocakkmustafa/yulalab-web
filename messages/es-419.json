@@ -71,7 +71,6 @@
     "heroTitle": "Hoy diseñamos los productos del mañana.",
     "heroDescription": "Yula Lab es un laboratorio independiente que diseña productos concebidos con IA y guiados por datos para simplificar la vida diaria. Cada proyecto se construye en la intersección de la estética, la ética y el impacto.",
     "heroMeta": {
-      "products": "8 productos",
       "studio": "1 laboratorio",
       "place": "TR · 2025"
     },
@@ -136,7 +135,6 @@
     "m6Body": "Se publica porque está listo, no por una fecha. No hacemos crecer un producto hasta estar seguros de poder sostenerlo.",
     "manifestoReadAll": "Leer el manifiesto completo",
     "projectsKicker": "04 — Proyectos",
-    "projectsCount": "8 productos · 2 disponibles · 1 beta · 5 próximamente",
     "specHeading": "Ficha técnica",
     "inspect": "Explorar",
     "visualsNote": "La interfaz aún se está definiendo · imágenes en la página del producto",
@@ -220,14 +218,6 @@
         "proof": "→ Primitivas · proveedores · evidencia fechada en la página del producto",
         "detailLabel": "Registro de auditoría",
         "detailBody": "Cada llamada a una herramienta y cada decisión es un registro separado; las acciones que involucran dinero requieren aprobación humana explícita. Exporta la ejecución completa como CSV / JSON y concíliala con tu propia contabilidad."
-      },
-      "burunfarki": {
-        "label": "Metodología abierta",
-        "title": "Los 3 principales factores de cada predicción.",
-        "claim": "No ocultamos por qué el modelo eligió ese caballo. Una ponderación basada en reglas muestra los 3 principales factores en lenguaje específico de la carrera.",
-        "proof": "→ burunfark.com/dogruluk · resumen fechado de la medición en la página del producto",
-        "detailLabel": "Panel de seguimiento en vivo",
-        "detailBody": "El panel de seguimiento en vivo incluye tanto predicciones acertadas como fallidas. Lee los resultados junto con su fecha de medición, la cobertura de carreras y los desgloses por hipódromo, pista y distancia."
       },
       "lifeos": {
         "label": "Privacidad en el dispositivo",
