@@ -664,7 +664,7 @@ export function ExperienceOverlay({
           <p className={styles.kicker}>{copy.proof.kicker}</p>
           <h2 id="experience-proof-title">{copy.proof.title}</h2>
         </div>
-        <div className={styles.proofGrid} aria-label={`${copy.proof.kicker}: ${copy.proof.source}`}>
+        <div className={styles.proofGrid} role="group" aria-label={`${copy.proof.kicker}: ${copy.proof.source}`}>
           {proofProducts.map((product, index) => {
             const panelOpacity = exclusivePanelFocus(
               index,

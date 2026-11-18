@@ -113,8 +113,7 @@ describe("the caveat reaches both readerships", () => {
 
   it("renders the reader's language, not the author's", async () => {
     const { ProofCard } = await import("@/components/common/ProofCard");
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-    const claim = bf.claims[0];
+    const claim = publicRegistry.flatMap((r) => r.claims)[0];
     render(<ProofCard presented={{ kind: "verified", claim }} locale="en" />);
     expect(screen.getByText(new RegExp(claim.scopeEn.slice(0, 25).replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeTruthy();
   });

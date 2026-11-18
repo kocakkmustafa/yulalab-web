@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { projects } from "@/data/projects";
-import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
+import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 import { publicRegistry } from "@/data/public-registry";
 import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenance";
 
@@ -20,7 +20,7 @@ import { linkedClaimFor, unsourcedQuantitativeStats } from "@/lib/stat-provenanc
  * data rather than recovered from the sentence.
  *
  * Prose matching could not tell an asserted figure from a disclaimed one.
- * The Burun Farkı claim contains "~69%" precisely to warn readers that the
+ * The (removed) Burun Farkı claim contained "~69%" precisely to warn readers that the
  * training-time backtest is a different measurement — and the regex read it
  * as a warrant, so promoting Top-3 to ~%69 passed the honesty guard. That is
  * the exact figure Y-P0-001 existed to correct. The Braavolabs
@@ -56,7 +56,9 @@ describe("stats that restate a registry claim must be linked to it", () => {
 
   it("resolves a linked stat back to its claim", () => {
     const stat = WITHDRAWN_BF_STATS.find((s) => s.value === "~%62")!;
-    expect(linkedClaimFor("burunfarki", stat)?.id).toBe("burunfarki-topk-accuracy");
+    expect(linkedClaimFor(FIXTURE_ACCURACY_RECORD.slug, stat, [FIXTURE_ACCURACY_RECORD])?.id).toBe(FIXTURE_ACCURACY_CLAIM_ID);
+    // Against the real registry the removed Burun Farkı claim resolves to nothing.
+    expect(linkedClaimFor("burunfarki", { ...stat, claimId: "burunfarki-topk-accuracy" })).toBeUndefined();
   });
 
   it("carries no Burun Farkı stat at all (claim withdrawn, founder 2a)", () => {
@@ -122,8 +124,8 @@ describe("a linked stat must be a figure its claim declares", () => {
     // The failure mode a prose matcher had no case for: PRESENT but not
     // asserted. ~69% appears in the Burun Farkı statement solely to mark the
     // training-time backtest as a different measurement.
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-    const claim = bf.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+    // Synthetic stand-in for the removed Burun Farkı claim (same shape and wording).
+    const claim = FIXTURE_ACCURACY_RECORD.claims[0];
     expect(claim.statementEn).toContain("69");
     expect(claimAsserts(claim, "~%69")).toBe(false);
     expect(claimAsserts(claim, "~%62")).toBe(true);

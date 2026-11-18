@@ -135,38 +135,7 @@
         "url": "/projects/burunfarki"
       },
       "screenshots": [],
-      "claims": [
-        {
-          "id": "burunfarki-topk-accuracy",
-          "statementTr": "",
-          "statementEn": "",
-          "evidenceKind": "measured",
-          "source": "https://burunfark.com/dogruluk",
-          "scopeTr": "",
-          "scopeEn": "",
-          "owner": "burun-farki",
-          "verifiedAt": "2026-08-25",
-          "expiresAt": "2026-09-24",
-          "publishableAsPresentTense": false,
-          "presentation": "withheld",
-          "withheldReason": "verification-window-closed"
-        },
-        {
-          "id": "burunfarki-explainability",
-          "statementTr": "",
-          "statementEn": "",
-          "evidenceKind": "source-code-verified",
-          "source": "ventures/burun-farki/web/src/components/HorseExplainCard.tsx",
-          "scopeTr": "",
-          "scopeEn": "",
-          "owner": "burun-farki",
-          "verifiedAt": "2026-08-19",
-          "expiresAt": "2026-09-18",
-          "publishableAsPresentTense": false,
-          "presentation": "withheld",
-          "withheldReason": "verification-window-closed"
-        }
-      ],
+      "claims": [],
       "privacyUrl": "/privacy/burunfarki",
       "supportUrl": "/support",
       "updatedAt": "2026-08-28"

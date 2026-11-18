@@ -6,7 +6,13 @@ import {
   type CaseStudy,
 } from "@/lib/case-studies";
 import { caseStudies } from "@/data/case-studies";
-import { publicRegistry } from "@/data/public-registry";
+import { publicRegistry as realRegistry } from "@/data/public-registry";
+import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD } from "./fixtures/withdrawn-bf-stats";
+
+// Burun Farkı's two claims were removed from the real registry (2026-11-18). The
+// validator tests need a claim of the same shape (figures + a disclaimed number),
+// so they run against the real registry plus a synthetic fixture record.
+const publicRegistry = [...realRegistry, FIXTURE_ACCURACY_RECORD];
 
 /**
  * The case-study gate (roadmap Y-P1-003).
@@ -23,7 +29,7 @@ import { publicRegistry } from "@/data/public-registry";
 function goodCase(): CaseStudy {
   return {
     slug: "fixture-case",
-    productSlug: "burunfarki",
+    productSlug: FIXTURE_ACCURACY_RECORD.slug,
     titleTr: "Fixture vakası",
     titleEn: "Fixture case",
     permission: {
@@ -49,7 +55,7 @@ function goodCase(): CaseStudy {
       },
     ],
     outcome: {
-      claimId: "burunfarki-topk-accuracy",
+      claimId: FIXTURE_ACCURACY_CLAIM_ID,
       figure: "~%62",
       metricTr: "Top-3 doğruluğu",
       metricEn: "Top-3 accuracy",
@@ -108,10 +114,10 @@ describe("case-study gate", () => {
    * now locked at this surface too.
    */
   const figureAttacks: [string, string, string][] = [
-    ["a figure the claim mentions only to DISCLAIM", "burunfarki-topk-accuracy", "~%69"],
-    ["a number recovered from the claim's ISO date", "burunfarki-topk-accuracy", "19"],
-    ["a bare substring of a real figure", "burunfarki-topk-accuracy", "~%6"],
-    ["a decimal that collapses onto a real figure", "burunfarki-topk-accuracy", "~%6.1"],
+    ["a figure the claim mentions only to DISCLAIM", FIXTURE_ACCURACY_CLAIM_ID, "~%69"],
+    ["a number recovered from the claim's ISO date", FIXTURE_ACCURACY_CLAIM_ID, "19"],
+    ["a bare substring of a real figure", FIXTURE_ACCURACY_CLAIM_ID, "~%6"],
+    ["a decimal that collapses onto a real figure", FIXTURE_ACCURACY_CLAIM_ID, "~%6.1"],
   ];
   for (const [label, claimId, figure] of figureAttacks) {
     it(`REFUSES ${label} ("${figure}")`, () => {
@@ -339,7 +345,7 @@ describe("case-study gate", () => {
 
 describe("published case studies", () => {
   it("every published case passes the gate", () => {
-    expect(validateCaseStudies(caseStudies, publicRegistry)).toEqual([]);
+    expect(validateCaseStudies(caseStudies, realRegistry)).toEqual([]);
   });
 
   /**
@@ -350,7 +356,7 @@ describe("published case studies", () => {
    * expectation deliberately, having read the gate above.
    */
   it("publishes only cases whose product gates are actually met", () => {
-    expect(publishableCaseStudies(caseStudies, publicRegistry)).toHaveLength(0);
+    expect(publishableCaseStudies(caseStudies, realRegistry)).toHaveLength(0);
   });
 
   /**
@@ -365,29 +371,29 @@ describe("published case studies", () => {
       c.slug = "temporal-fixture";
       return c;
     };
-    // burunfarki-topk-accuracy's own window is what the outcome rests on.
+    // the fixture claim's own window is what the outcome rests on.
     const claim = publicRegistry
-      .find((r) => r.slug === "burunfarki")!
-      .claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+      .find((r) => r.slug === FIXTURE_ACCURACY_RECORD.slug)!
+      .claims.find((c) => c.id === FIXTURE_ACCURACY_CLAIM_ID)!;
     const beforeClaimExpiry = new Date(`${claim.expiresAt}T00:00:00+03:00`);
     const afterClaimExpiry = new Date("2099-01-01T00:00:00+03:00");
 
-    it("a planned claim drops its case, burunfarki- prefix or not", () => {
+    it("a planned claim drops its case, whatever its id", () => {
       const c = fresh();
       c.expiresAt = "2099-01-01";
       const withState = (id: string) =>
         publicRegistry.map((r) =>
-          r.slug !== "burunfarki"
+          r.slug !== FIXTURE_ACCURACY_RECORD.slug
             ? r
             : {
                 ...r,
                 claims: r.claims.map((k) =>
-                  k.id === "burunfarki-topk-accuracy" ? { ...k, id, claimState: "planned" as const } : k,
+                  k.id === FIXTURE_ACCURACY_CLAIM_ID ? { ...k, id, claimState: "planned" as const } : k,
                 ),
               },
         );
       // No id-prefix exemption: the withheld branch drops the case.
-      expect(publishableCaseStudies([c], withState("burunfarki-topk-accuracy"), beforeClaimExpiry)).toHaveLength(0);
+      expect(publishableCaseStudies([c], withState(FIXTURE_ACCURACY_CLAIM_ID), beforeClaimExpiry)).toHaveLength(0);
       // Same copy under another id: dropped too.
       const other = { ...c, outcome: { ...c.outcome, claimId: "other-topk-accuracy" } };
       expect(publishableCaseStudies([other], withState("other-topk-accuracy"), beforeClaimExpiry)).toHaveLength(0);

@@ -72,9 +72,12 @@ describe("/transparency per-product anchors (WEB-UX-05e)", () => {
     const lapsed = publicRegistry.flatMap((r) => presentClaims(r, now)).filter((p) => p.kind === "lapsed");
     expect(Number(screen.getByTestId("summary-lapsed").querySelector("dd")!.textContent)).toBe(lapsed.length);
     const body = document.body.textContent ?? "";
-    expect(lapsed.length).toBeGreaterThan(0);
-    // Pinned to FIXED_NOW (no real clock). Lapsed claims stay listed by id/source/dates only:
-    // the gate withholds their statement, Burun Farkı included (no exemption).
+    // The two expired Burun Farkı claims were the only lapsed ones at FIXED_NOW and were
+    // removed (founder, 2026-11-18), so the count is 0 now; the summary must still equal it.
+    expect(body).not.toContain("burunfarki-topk-accuracy");
+    expect(body).not.toContain("burunfarki-explainability");
+    // Pinned to FIXED_NOW (no real clock). Any lapsed claim stays listed by id/source/dates only:
+    // the gate withholds its statement (no per-product exemption).
     for (const p of lapsed) {
       expect(body).not.toContain(p.claim.statementTr);
       expect(body).toContain(p.claim.expiresAt!);

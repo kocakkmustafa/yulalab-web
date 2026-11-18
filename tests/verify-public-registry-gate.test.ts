@@ -77,6 +77,9 @@ describe("verify-public-registry exit code", () => {
     const { code, errors } = await run();
     expect(code).toBe(1);
     expect(errors).toContain(`expired ${lastExpiry} but is still presented as verified`);
-    expect(errors).toMatch(/burunfarki-topk-accuracy/); // no Burun Farkı exemption: lapsed claims are named too
+    // Every remaining lapsed claim is named (no per-product exemption).
+    for (const claim of publicRegistry.flatMap((r) => r.claims)) expect(errors).toContain(claim.id);
+    // The two expired Burun Farkı claims were removed (2026-11-18) and cannot reappear here.
+    expect(errors).not.toMatch(/burunfarki-(topk-accuracy|explainability)/);
   });
 });

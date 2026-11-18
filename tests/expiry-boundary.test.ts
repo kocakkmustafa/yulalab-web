@@ -53,8 +53,9 @@ describe("the expiry date is valid through its own day", () => {
 
 describe("with the real registry shape (date-only values)", () => {
   it("keeps a claim verified on the last day of its window", () => {
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-    const claim = bf.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+    // Burun Farkı's own claims were removed (2026-11-18); use a record that still has one.
+    const bf = publicRegistry.find((r) => r.claims.some((c) => c.expiresAt))!;
+    const claim = bf.claims.find((c) => c.expiresAt)!;
     const onExpiryDay = new Date(`${claim.expiresAt}T12:00:00+03:00`);
     const [presented] = presentClaims(
       { ...bf, claims: [claim] },
@@ -64,8 +65,9 @@ describe("with the real registry shape (date-only values)", () => {
   });
 
   it("lapses it the day after", () => {
-    const bf = publicRegistry.find((r) => r.slug === "burunfarki")!;
-    const claim = bf.claims.find((c) => c.id === "burunfarki-topk-accuracy")!;
+    // Burun Farkı's own claims were removed (2026-11-18); use a record that still has one.
+    const bf = publicRegistry.find((r) => r.claims.some((c) => c.expiresAt))!;
+    const claim = bf.claims.find((c) => c.expiresAt)!;
     const nextDay = new Date(new Date(`${claim.expiresAt}T12:00:00+03:00`).getTime() + 86_400_000);
     const [presented] = presentClaims({ ...bf, claims: [claim] }, nextDay);
     expect(presented.kind).toBe("lapsed");

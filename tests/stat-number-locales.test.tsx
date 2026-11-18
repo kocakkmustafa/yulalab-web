@@ -5,7 +5,7 @@ import { StatCards } from "@/components/projects/StatCards";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import type { Locale, ProjectStat } from "@/lib/types";
-import { WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
+import { FIXTURE_ACCURACY_CLAIM_ID, FIXTURE_ACCURACY_RECORD, WITHDRAWN_BF_STATS } from "./fixtures/withdrawn-bf-stats";
 
 // Numeric presentation only; catalogue semantics and browser RTL acceptance are separate.
 vi.mock("@/lib/localized", () => ({ localized: (value: { en: string }) => value.en }));
@@ -13,9 +13,9 @@ afterEach(cleanup);
 const labels = { verified: "verified", needsReverification: "needs re-verification" };
 const config = projects.find((project) => project.slug === "burunfarki")!;
 const realRecord = publicRegistry.find((product) => product.slug === config.slug)!;
-// Burun Farkı's own claims have lapsed and are withheld (no gate exemption), so
-// number formatting is exercised on an in-window fixture of the same record.
-const record = { ...realRecord, claims: realRecord.claims.map((claim) => ({ ...claim, expiresAt: "2100-01-01" })) };
+// Number formatting is exercised on an in-window synthetic claim (the real Burun
+// Farkı claims were removed 2026-11-18), shaped like the one the figures came from.
+const record = { ...FIXTURE_ACCURACY_RECORD, claims: FIXTURE_ACCURACY_RECORD.claims.map((claim) => ({ ...claim, expiresAt: "2100-01-01" })) };
 const clean = (value: string) => value.replace(/[\u061c\u200e\u200f]/g, "").replace(/\s/g, " ");
 
 function renderStats(locale: Locale, stats: ProjectStat[] = WITHDRAWN_BF_STATS) {
@@ -50,17 +50,15 @@ describe("explicit numeric stat presentation", () => {
     expect(JSON.stringify(WITHDRAWN_BF_STATS)).toBe(original);
   });
 
-  it("the real, lapsed Burun Farkı record renders no figure at all", () => {
-    const result = render(<StatCards slug={config.slug} stats={WITHDRAWN_BF_STATS} record={realRecord} locale="en" now={new Date("2099-01-01T12:00:00Z")} labels={labels} />);
-    expect([...result.container.querySelectorAll("bdi")].map((node) => node.textContent)).toEqual(["—", "—", "—"]);
-    expect(result.container.textContent?.match(/needs re-verification/g)).toHaveLength(3);
+  it("the real Burun Farkı record no longer carries the claims", () => {
+    expect(realRecord.claims).toEqual([]);
   });
 
   it("keeps numeric metadata tied to the original evidence quantities and labels", () => {
     expect(WITHDRAWN_BF_STATS.map((stat) => [stat.label.en, stat.value, stat.numericDisplay, stat.claimId])).toEqual([
-      ["Top-1 (live tracking)", "~%29", { value: 0.29, unit: "percent", approximate: true }, "burunfarki-topk-accuracy"],
-      ["Top-3 (live tracking)", "~%62", { value: 0.62, unit: "percent", approximate: true }, "burunfarki-topk-accuracy"],
-      ["live-tracked races", "1.225", { value: 1225, unit: "integer" }, "burunfarki-topk-accuracy"],
+      ["Top-1 (live tracking)", "~%29", { value: 0.29, unit: "percent", approximate: true }, FIXTURE_ACCURACY_CLAIM_ID],
+      ["Top-3 (live tracking)", "~%62", { value: 0.62, unit: "percent", approximate: true }, FIXTURE_ACCURACY_CLAIM_ID],
+      ["live-tracked races", "1.225", { value: 1225, unit: "integer" }, FIXTURE_ACCURACY_CLAIM_ID],
     ]);
   });
 

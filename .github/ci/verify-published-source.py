@@ -126,7 +126,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/app/globals.css": "b1d33313425f232972d353d51915c0517ead9f12866b94da4c7da6e317b59091",
     "src/components/experience/Experience.module.css": "e923c3d398c223fe6d8192ae2c259377aad389805f232c28a80a8609ecdd3829",
     "src/components/experience/ExperienceCanvas.tsx": "04eca23c83748f72d21e93deb7f7dfa81a7bca9e3b91a7f7c31fc8c640ccb0c6",
-    "src/components/experience/ExperienceOverlay.tsx": "62fd1b31b53438c25c4cad00aec84a9261a8f7d3f56d3111c0e161c0154f8f41",
+    "src/components/experience/ExperienceOverlay.tsx": "91913558b9837e61afb112dc17b93016896e7793c8e34970a5158b79aa227c68",
     "src/components/experience/ExperienceWorld.tsx": "f965f661ef6873561b6981ddd4ec90b4bd2f0de1049d6231495e57aed1230b5d",
     "src/components/experience/YulaExperience.tsx": "adec6585ea7db08a5cfdeed5af7adcf4662600252f75bd73346097090ca94e6c",
     "src/components/experience/theme.ts": "cee0ad410f3e8bbad90d51603529029b595996a610c12cc115bf602a524e83e9",
@@ -154,8 +154,8 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "tests/locale-routing.test.ts": "d997b9857246ca67c14fde24a53f74fdfa372e1627b615e190d2b1a8507dcd20",
     "tests/locale-switcher.test.tsx": "7f02382ba1b685adc83508c026db3265ea7049c47c2bbbd83b8db5099d001b27",
     "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
-    "tests/stat-cards.test.tsx": "0a9a3798811e4feeec93a348fcd6d2aeabf548a217c92142a043aa86a2b5bea0",
-    "tests/stat-number-locales.test.tsx": "03729b5a8ff31943174488cf63a955406bdf34c4c1865b6e200ed3a580691bb6",
+    "tests/stat-cards.test.tsx": "e31224fe40a418b19cc76721bd7aef873505a9551abd55b27c8fef9a1c17abee",
+    "tests/stat-number-locales.test.tsx": "67910406e9816a48a035dc6a069a135546607c9c13a0a38cda59341fbf748f94",
     "tests/theme-boot.test.ts": "170758f19a13b86ea9337d0eb2020febbf7a1b1c2af9fa2fa4c932848e5e16cc",
     "tests/theme.test.tsx": "12f859d49202e5c0c305b1ababc81431ad688b59902e2e475b9f29ca96e8efca"
 }
