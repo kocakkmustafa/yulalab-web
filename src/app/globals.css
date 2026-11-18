@@ -241,11 +241,12 @@ body:not(:has([data-yula-experience="true"])) main,
   opacity: 0;
   transition: opacity 900ms var(--ease-soft);
 }
-.scene-host[data-scene-tone="page"] .scene-host-veil {
-  opacity: 0.82;
-}
+/* W1 (kurucu: dev camsi YULA glifi ana sayfa disinda gorunmesin): icerik ve
+   sessiz rotalarda perde tam opak; arka plan yalniz siyah izgarali CSS zemin.
+   Sahne yine yasar (ana sayfaya donuste surekliligi korur), yalniz gorunmez. */
+.scene-host[data-scene-tone="page"] .scene-host-veil,
 .scene-host[data-scene-tone="quiet"] .scene-host-veil {
-  opacity: 0.95;
+  opacity: 1;
 }
 /* The scene replaces the page's painted ground only while it is live. The
    root keeps the page colour (painted under the scene), so contrast tools

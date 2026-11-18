@@ -89,6 +89,15 @@ for (const locale of ["tr", "en"] as const) {
       await expect(page.locator("main#main-content")).toBeFocused({ timeout: 8000 });
     });
 
+    test("inner routes hide the 3D scene glyph: veil fully opaque", async ({ page }) => {
+      for (const path of [`${base}/projects`, `${base}/contact`, `${base}/lab`]) {
+        await page.goto(path);
+        const veil = page.locator(".scene-host-veil");
+        if ((await veil.count()) === 0) continue; // scene not mounted: plain CSS ground
+        await expect.poll(() => veil.evaluate((el) => Number(getComputedStyle(el).opacity)), { timeout: 5000 }).toBe(1);
+      }
+    });
+
     test("390px: no horizontal overflow", async ({ page }) => {
       await page.setViewportSize({ width: 390, height: 844 });
       for (const path of [`${base}/projects`, `${base}/contact`, `${base}/notes`]) {
