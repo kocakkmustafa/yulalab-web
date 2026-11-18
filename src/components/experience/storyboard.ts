@@ -1,10 +1,13 @@
 /** Scroll allocation inspired by observed public reference sections, 2026-10-16.
  * Camera/geometry time stays independent so native anchors and history can
  * invert the same continuous mapping without changing the physical poses.
+ *
+ * W1D-D H1-b: same wheel input, same scrollY (about 1270 px at 8 s). The reference shows the works card there, so the
+ * opening (wordmark, glass Y, giant PROJECTS word) is compressed into the first ~980 px (0.045 of the journey).
  */
 export const STORYBOARD = [
   { scene: "hero", scroll: 0, timeline: 0 },
-  { scene: "portfolio", scroll: 0.087, timeline: 0.085 },
+  { scene: "portfolio", scroll: 0.045, timeline: 0.085 },
   { scene: "proof", scroll: 0.334, timeline: 0.505 },
   { scene: "crossing", scroll: 0.395, timeline: 0.575 },
   { scene: "mission", scroll: 0.437, timeline: 0.69 },
