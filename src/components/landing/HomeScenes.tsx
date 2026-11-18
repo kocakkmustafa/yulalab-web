@@ -35,7 +35,7 @@ export async function HomeScenes({ locale, now = new Date() }: { locale: Locale;
   return (
     <div
       data-home-scenes="true"
-      className="relative z-[1] bg-[rgb(var(--yula-page-rgb))] text-ink-50 border-t border-white/10"
+      className="home-closing-ground relative z-[1] bg-[rgb(var(--yula-page-rgb))] text-ink-50 border-t border-white/10"
     >
       <nav
         aria-label={t("navLabel")}

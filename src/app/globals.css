@@ -1152,3 +1152,9 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
    gibi durmaz (bolum olarak kalir); gercek site altbilgisi ana sayfa sahneleri blogunun
    sonunda, sayfanin en altinda gorunur. 3D akista altbilgi gizli kalir. */
 body:has([data-experience-static="true"]) [data-site-footer="true"] { display: block; }
+
+/* W1D K6/K7: ana sayfa kapanis bolumu zemini (koyu temada siyah-lacivert isik, ekrana sabit). */
+html.dark .home-closing-ground {
+  background-image: radial-gradient(ellipse 42% 60% at 50% 52%, #021736 0%, #030917 55%, #000307 100%);
+  background-attachment: fixed;
+}
