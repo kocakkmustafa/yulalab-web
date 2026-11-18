@@ -247,6 +247,9 @@ body:not(:has([data-yula-experience="true"])) main,
 .scene-host[data-scene-tone="page"] .scene-host-veil,
 .scene-host[data-scene-tone="quiet"] .scene-host-veil {
   opacity: 1;
+  /* no fade-in: a half-faded veil lets the glyph (and axe's contrast probe) see
+     through for 900ms; going back to the journey still fades the veil out. */
+  transition: none;
 }
 /* The scene replaces the page's painted ground only while it is live. The
    root keeps the page colour (painted under the scene), so contrast tools
