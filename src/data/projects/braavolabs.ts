@@ -39,17 +39,18 @@ export const braavolabs: ProjectConfig = {
     logo: "/projects/braavolabs/logo.png",
     icon: "/projects/braavolabs/icon.png",
     ogImage: "/projects/braavolabs/og.png",
-    // Real captures from the live product (braavolabs.com), not mockups —
-    // harvested 2026-07-11 via headless browser, cropped to the UI itself.
+    // Real captures of the product UI, not mockups — taken 2026-11-18 from a
+    // local build of braavolabs/platform main (cc3fc09) with demo data only
+    // ("Demo Growth Co", invented agent/step text; no personal data).
     screenshots: [
       {
         src: "/projects/braavolabs/screenshot-audit-trail.png",
-        alt: "Braavolabs canlı denetim izi: her ajan adımının araç çağrısı ve maliyeti gerçek zamanlı akıyor.",
+        alt: "Braavolabs Çalıştırma Detayı ekranı: beş adımlı bir denetim izi; her adımın durumu, araç çağrısı sayısı ve maliyeti ile yanda çalıştırma metadatası (demo veri).",
         kind: "product",
       },
       {
         src: "/projects/braavolabs/screenshot-builder.png",
-        alt: "Braavolabs AI Şirket Kurucusu: tek bir komutla çok-ajanlı bir ekip kuruluyor.",
+        alt: "Braavolabs AI Şirketi Oluştur ekranı: fikrin yazıldığı açıklama kutusu (örnek metin: Instagram ve TikTok için içerik üreten ve zamanlayan bir ajans) ve Devam düğmesi.",
         kind: "product",
       },
     ],

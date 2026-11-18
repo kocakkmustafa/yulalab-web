@@ -21,6 +21,7 @@ import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import { productShowcase, SHOWCASE_LABELS } from "@/data/product-showcase";
 import { company } from "@/data/company";
+import { IMAGE_DIMENSIONS } from "@/data/image-dimensions";
 import { localized } from "@/lib/localized";
 import { brandInk } from "@/lib/brand-ink";
 import { firstPublicLink, isComingSoon, storeLinksOf } from "@/lib/store-slots";
@@ -335,11 +336,16 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <div data-item="4">
               {productShots.length ? (
                 <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0 mb-12">
-                  {productShots.map((shot) => (
-                    <li key={shot.src} className="relative aspect-[16/10] overflow-clip rounded-xl border border-white/10">
-                      <Image src={shot.src} alt={shot.alt} fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-top" />
-                    </li>
-                  ))}
+                  {productShots.map((shot) => {
+                    // Box follows the capture's own ratio: a wide card (builder, ~2:1)
+                    // must not be cropped to 16:10 and lose its edges.
+                    const dim = IMAGE_DIMENSIONS[shot.src];
+                    return (
+                      <li key={shot.src} className="relative self-start overflow-clip rounded-xl border border-white/10" style={{ aspectRatio: dim ? `${dim.width} / ${dim.height}` : "16 / 10" }}>
+                        <Image src={shot.src} alt={shot.alt} fill sizes="(min-width: 1024px) 40vw, 100vw" className="object-cover object-top" />
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <p data-testid="screen-empty" className="mb-12 max-w-[60ch] text-[15px] leading-[1.7] text-ink-300">
