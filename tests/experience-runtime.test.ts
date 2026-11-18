@@ -274,11 +274,23 @@ describe("experience quality policy", () => {
     expect(detectInitialTier()).toBe("medium");
   });
 
-  it("keeps a capable high-DPR phone at medium instead of treating size as weakness", () => {
+  // W1D K8: phones open the 3D journey by default, at the light tier (mobile Lighthouse budget).
+  it("opens a capable high-DPR phone at the light tier", () => {
     installRuntimeSignals({
       width: 390,
       height: 844,
       dpr: 3,
+      cores: 8,
+      memory: 8,
+    });
+    expect(detectInitialTier()).toBe("low");
+  });
+
+  it("keeps a capable tablet-width screen at medium", () => {
+    installRuntimeSignals({
+      width: 1024,
+      height: 768,
+      dpr: 2,
       cores: 8,
       memory: 8,
     });

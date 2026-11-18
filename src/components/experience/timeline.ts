@@ -41,6 +41,16 @@ const GLYPH_CARD_CLEARANCE = 0.16;
 /** Progress where the manifesto copy starts to appear (inside the crossing stage). */
 export const MISSION_COPY_START = 0.635;
 
+/**
+ * Where each stage's overlay may be visible. Equal to STAGES except W1D K3-a: the manifesto copy is on
+ * screen through the whole white room, so the (empty) crossing overlay hands over to it earlier.
+ */
+export const OVERLAY_BANDS = {
+  ...STAGES,
+  crossing: [STAGES.crossing[0], MISSION_COPY_START],
+  mission: [MISSION_COPY_START, STAGES.mission[1]],
+} as const satisfies Record<ExperienceStage, readonly [number, number]>;
+
 const STAGE_ORDER = Object.keys(STAGES) as ExperienceStage[];
 
 export const CAMERA_TRACKS: Record<ExperienceMode, readonly CameraKey[]> = {
@@ -397,14 +407,7 @@ export function evaluateTimeline(
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
   const overlay = Object.fromEntries(
-    STAGE_ORDER.map((name) => [
-      name,
-      // W1D K3-a: the manifesto copy is visible through the whole white room, so it starts fading in
-      // inside the (otherwise empty) crossing band, ahead of the stage boundary.
-      name === "mission"
-        ? bandOpacity(p, MISSION_COPY_START, STAGES.mission[1])
-        : bandOpacity(p, STAGES[name][0], STAGES[name][1]),
-    ]),
+    STAGE_ORDER.map((name) => [name, bandOpacity(p, OVERLAY_BANDS[name][0], OVERLAY_BANDS[name][1])]),
   ) as Record<ExperienceStage, number>;
 
   return {

@@ -19,6 +19,7 @@ import {
 import {
   CAMERA_TRACKS,
   CROSSING_BLADE,
+  OVERLAY_BANDS,
   STAGES,
   evaluateTimeline,
   glyphDepthExtent,
@@ -112,8 +113,8 @@ describe("reference-faithful experience timeline", () => {
   });
 
   it("hands full-screen overlay ownership across an empty boundary frame", () => {
-    const orderedStages = Object.entries(STAGES) as [
-      keyof typeof STAGES,
+    const orderedStages = Object.entries(OVERLAY_BANDS) as [
+      keyof typeof OVERLAY_BANDS,
       readonly [number, number],
     ][];
 
