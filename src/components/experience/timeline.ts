@@ -38,6 +38,9 @@ export const CROSSING_BLADE = {
 const GLYPH_LOCAL_HALF_EXTENTS: Vec3 = [1.05, 1, 0.24];
 const GLYPH_CARD_CLEARANCE = 0.16;
 
+/** Progress where the manifesto copy starts to appear (inside the crossing stage). */
+export const MISSION_COPY_START = 0.635;
+
 const STAGE_ORDER = Object.keys(STAGES) as ExperienceStage[];
 
 export const CAMERA_TRACKS: Record<ExperienceMode, readonly CameraKey[]> = {
@@ -394,7 +397,14 @@ export function evaluateTimeline(
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
   const overlay = Object.fromEntries(
-    STAGE_ORDER.map((name) => [name, bandOpacity(p, STAGES[name][0], STAGES[name][1])]),
+    STAGE_ORDER.map((name) => [
+      name,
+      // W1D K3-a: the manifesto copy is visible through the whole white room, so it starts fading in
+      // inside the (otherwise empty) crossing band, ahead of the stage boundary.
+      name === "mission"
+        ? bandOpacity(p, MISSION_COPY_START, STAGES.mission[1])
+        : bandOpacity(p, STAGES[name][0], STAGES[name][1]),
+    ]),
   ) as Record<ExperienceStage, number>;
 
   return {

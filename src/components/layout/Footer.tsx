@@ -23,17 +23,18 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
 
   return (
     <footer data-site-footer="true" data-reveal className="mt-32 border-t border-hairline">
-      <div className="px-[clamp(24px,3.5vw,50px)] pt-16 pb-10 grid gap-12 lg:grid-cols-[minmax(0,1fr)_auto] text-[14px]">
+      <div className="px-[clamp(24px,3.5vw,50px)] pt-16 lg:pt-24 pb-6 lg:pb-8 grid gap-8 lg:gap-12 lg:grid-cols-[minmax(0,1fr)_auto] text-[14px]">
        <div className="grid grid-cols-2 gap-10 min-w-0 lg:grid-cols-[minmax(0,1fr)_auto]">
         <div className="col-span-2 md:col-span-1">
           <span className="font-display text-2xl font-semibold">Yula Lab</span>
-          <p className="mt-4 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
+          <p className="mt-2 lg:mt-1 text-sm text-ink-300 leading-relaxed max-w-[26ch]">
             {t("tagline")}
           </p>
-          <div className="mt-6 font-mono text-[11px] tracking-widest text-ink-300 uppercase">
+          <div className="mt-4 lg:mt-2 flex flex-wrap items-center gap-x-6 gap-y-0">
+          <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase">
             {t("location")}
           </div>
-          <div className="mt-3 flex items-center gap-1">
+          <div className="flex items-center gap-1">
             {(Object.entries(company.socials) as [keyof typeof SOCIAL_ICON, string][]).map(
               ([key, href]) => {
                 const Icon = SOCIAL_ICON[key];
@@ -52,6 +53,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                 );
               },
             )}
+          </div>
           </div>
         </div>
 
@@ -100,7 +102,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
             <div className="font-mono text-[11px] tracking-widest text-ink-300 uppercase mb-4">
               {t("companyHeading")}
             </div>
-            <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 ${LINK_ROWS}`}>
+            <ul className={`flex flex-col gap-2.5 max-md:gap-0 text-sm text-ink-200 lg:grid lg:grid-flow-col lg:grid-rows-6 lg:!gap-x-10 lg:!gap-y-0 ${LINK_ROWS}`}>
               {visibleFooterCompanyNav({ studioEnabled, caseStudyCount: caseStudies.length }).map((item) => (
                 <li key={item.href}>
                   <Link

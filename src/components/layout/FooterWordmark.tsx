@@ -37,20 +37,25 @@ export function FooterWordmark() {
       dir="ltr"
     >
       <svg viewBox="0 0 1000 250" className="block w-full h-auto translate-y-[9%]" preserveAspectRatio="xMidYMax meet">
-        {/* big Y mark: the same two-stroke Y as the header mark, solid white */}
-        <path d="M28 40L130 160L232 40M130 160V250" fill="none" stroke="currentColor" strokeWidth="62" strokeLinecap="butt" strokeLinejoin="miter" />
+        {/* One word, one Y: the brand Y mark stands in for the first letter of YULA and shares the
+            baseline and cap height of "ULA" (founder: the reference has a single initial logo). */}
+        <path
+          transform="translate(150 134.5) scale(128.3)"
+          d="M-.95 -.9H-.43L0 -.27 .43 -.9H.95L.27 .08V.9H-.27V.08Z"
+          fill="currentColor"
+        />
         <text
-          x="640"
-          y="244"
-          textAnchor="middle"
-          textLength="690"
-          lengthAdjust="spacingAndGlyphs"
+          x="290"
+          y="250"
+          textAnchor="start"
+          textLength="700"
+          lengthAdjust="spacing"
           fill="currentColor"
           stroke="none"
           className="font-display"
           style={{ fontSize: 330, fontWeight: 700 }}
         >
-          YULA
+          ULA
         </text>
       </svg>
     </div>

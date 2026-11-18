@@ -484,7 +484,9 @@ export function ExperienceOverlay({
     "crossing",
     frame.overlay.crossing,
   );
-  const missionActive = stageSemanticActive(frame, "mission", frame.overlay.mission);
+  // W1D K3-a: the copy fades in during the crossing stage already.
+  const missionActive =
+    (stageIs(frame, "mission") || stageIs(frame, "crossing")) && frame.overlay.mission > SEMANTIC_VISIBILITY_THRESHOLD;
   const visionActive = stageSemanticActive(frame, "vision", frame.overlay.vision);
   const valuesActive = stageSemanticActive(frame, "values", frame.overlay.values);
   const today = useExperienceSiteDate();
@@ -799,11 +801,6 @@ export function ExperienceOverlay({
         inert={!closingInteractive}
         aria-labelledby="experience-closing-title"
       >
-        <div className={styles.closingWordmark} aria-hidden="true">
-          <svg viewBox="-1.1 -1.1 2.2 2.2" fill="currentColor">
-            <path transform="scale(1 -1)" d="M-.95 .9H-.43L0 .27 .43 .9H.95L.27-.08V-.9H-.27V-.08Z" />
-          </svg>
-        </div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
       <DevelopmentPreviewDialog product={previewProduct} ui={copy.ui} onClose={closePreview} />

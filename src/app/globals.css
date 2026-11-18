@@ -172,10 +172,11 @@ html.lenis body {
    experience root is present. `:has()` is evaluated during the first style
    pass, so there is no client-side double-header flash. */
 body:has([data-yula-experience="true"]) [data-site-header="true"],
-body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"],
-body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"] {
   display: none;
 }
+/* W1D K7 (founder: "Kartlar kalsin"): the real footer closes the home page after the cards and the
+   scene blocks, in the 3D flow as well. */
 
 /* `viewport-fit=cover` lets the immersive canvas paint behind a notch. Keep
    the shared site chrome and every non-experience route inside the same safe
@@ -1162,21 +1163,15 @@ html.dark .home-closing-ground {
 /* W1D I1-a: altbilgi YULA wordmark'i saf beyaz (koyu tema). */
 :root:not([data-theme="light"]) .footer-wordmark { color: #ffffff; }
 
-/* W1D K7: 3D akista ana sayfanin son karesi kapanis (dev logo + wordmark) + gercek altbilgi.
-   Yedi sahne blogu DOM'da ve ekran okuyucuya acik kalir, goruntude yer kaplamaz; altbilgi
-   kapanis sahnesinin ustune oturur. Dogrusal (statik) akis degismez. */
-body:has([data-yula-experience="true"][data-experience-ready="true"]):not(:has([data-experience-static="true"])) [data-home-scenes="true"] {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-body:has([data-yula-experience="true"][data-experience-ready="true"]):not(:has([data-experience-static="true"])) [data-site-footer="true"] {
-  display: block;
+/* W1D K7: ana sayfada gercek altbilgi kartlarin ve sahne bloklarinin sonrasinda, sabit 3D katmanin
+   ustunde ve opak zeminde kapanir (tek logo: [Y]ULA). */
+body:has([data-yula-experience="true"]) [data-site-footer="true"] {
   position: relative;
   z-index: 2;
   margin-top: 0;
-  background: transparent;
+  background-color: rgb(var(--yula-page-rgb));
+}
+html.dark body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+  background-image: radial-gradient(ellipse 42% 60% at 50% 52%, #021736 0%, #030917 55%, #000307 100%);
+  background-attachment: fixed;
 }
