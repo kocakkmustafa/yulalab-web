@@ -9,8 +9,8 @@ const root = path.resolve(import.meta.dirname, "..");
 const read = (file: string) => fs.readFileSync(path.join(root, file), "utf8");
 
 describe("mobile static default (WEB-P0-03a2, ADR-003 c)", () => {
-  it("is on, and scoped to <= 767 px", () => {
-    expect(MOBILE_STATIC_DEFAULT).toBe(true);
+  it("is off (W1D K8: 3D is the phone default), query stays <= 767 px", () => {
+    expect(MOBILE_STATIC_DEFAULT).toBe(false);
     expect(MOBILE_STATIC_QUERY).toBe("(max-width: 767px)");
   });
 
