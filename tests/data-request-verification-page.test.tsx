@@ -464,14 +464,14 @@ describe("standalone verification appearance correctness simulation", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it.each([true, false])("an invalid stored value follows the system (dark=%s)", async (systemDark) => {
+  it.each([true, false])("an invalid stored value falls back to the dark default (system dark=%s)", async (systemDark) => {
     const fetchMock = vi.fn<PageFetch>();
     const page = await mountPage("hi", fetchMock, token, { stored: "unsupported", systemDark });
     const root = page.dom.window.document.documentElement;
-    expect(root.dataset.themePreference).toBe("system");
-    expect(root.dataset.theme).toBe(systemDark ? "dark" : "light");
-    expect(root.style.colorScheme).toBe(systemDark ? "dark" : "light");
-    expect(page.appearance.value).toBe("system");
+    expect(root.dataset.themePreference).toBe("dark");
+    expect(root.dataset.theme).toBe("dark");
+    expect(root.style.colorScheme).toBe("dark");
+    expect(page.appearance.value).toBe("dark");
     expect(page.storage.setItem).not.toHaveBeenCalled();
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -480,7 +480,10 @@ describe("standalone verification appearance correctness simulation", () => {
     const fetchMock = vi.fn<PageFetch>();
     const page = await mountPage("pl", fetchMock, token, { systemDark: true, legacyMedia });
     const root = page.dom.window.document.documentElement;
+    expect(root.dataset.theme).toBe("dark");
     page.setSystemDark(false);
+    expect(root.dataset.theme).toBe("dark");
+    choose(page, "system");
     expect(root.dataset.theme).toBe("light");
     choose(page, "dark");
     expect(root.dataset.themePreference).toBe("dark");
@@ -495,7 +498,7 @@ describe("standalone verification appearance correctness simulation", () => {
     expect(root.style.colorScheme).toBe("dark");
     expect(root.classList.contains("dark")).toBe(true);
     expect(page.appearance.value).toBe("system");
-    expect(page.storage.setItem.mock.calls).toEqual([[THEME_STORAGE_KEY, "dark"], [THEME_STORAGE_KEY, "system"]]);
+    expect(page.storage.setItem.mock.calls).toEqual([[THEME_STORAGE_KEY, "system"], [THEME_STORAGE_KEY, "dark"], [THEME_STORAGE_KEY, "system"]]);
     expect(page.status.textContent).toBe("");
     expect(page.button.hidden).toBe(false);
     expect(fetchMock).not.toHaveBeenCalled();
@@ -520,13 +523,13 @@ describe("standalone verification appearance correctness simulation", () => {
   it("a blocked storage accessor still permits OS and current-tab appearance without affecting verification", async () => {
     const fetchMock = vi.fn<PageFetch>();
     const page = await mountPage("ja", fetchMock, token, { blockedStorage: true, systemDark: false });
+    expect(page.dom.window.document.documentElement.dataset.theme).toBe("dark");
+    choose(page, "light");
     expect(page.dom.window.document.documentElement.dataset.theme).toBe("light");
-    choose(page, "dark");
-    expect(page.dom.window.document.documentElement.dataset.theme).toBe("dark");
     expect(page.sessionNotice.hidden).toBe(false);
-    page.storageEvent(THEME_STORAGE_KEY, "light");
-    expect(page.dom.window.document.documentElement.dataset.theme).toBe("dark");
-    expect(page.appearance.value).toBe("dark");
+    page.storageEvent(THEME_STORAGE_KEY, "dark");
+    expect(page.dom.window.document.documentElement.dataset.theme).toBe("light");
+    expect(page.appearance.value).toBe("light");
     expect(page.sessionNotice.hidden).toBe(false);
     expect(fetchMock).not.toHaveBeenCalled();
   });
@@ -535,7 +538,7 @@ describe("standalone verification appearance correctness simulation", () => {
     const fetchMock = vi.fn<PageFetch>();
     const page = await mountPage("zh-Hans", fetchMock, token, { noMedia: true });
     expect(page.dom.window.document.documentElement.dataset.theme).toBe("dark");
-    expect(page.appearance.value).toBe("system");
+    expect(page.appearance.value).toBe("dark");
     choose(page, "light");
     expect(page.dom.window.document.documentElement.dataset.theme).toBe("light");
     expect(page.dom.window.document.documentElement.style.colorScheme).toBe("light");
@@ -556,14 +559,14 @@ describe("standalone verification appearance correctness simulation", () => {
     expect(page.appearance.value).toBe("light");
     expect(page.sessionNotice.hidden).toBe(true);
     page.storageEvent(THEME_STORAGE_KEY, "unsupported");
-    expect(root.dataset.themePreference).toBe("system");
-    expect(root.dataset.theme).toBe("light");
-    page.storageEvent(THEME_STORAGE_KEY, "dark");
+    expect(root.dataset.themePreference).toBe("dark");
     expect(root.dataset.theme).toBe("dark");
-    page.storageEvent(null, null);
-    expect(root.dataset.themePreference).toBe("system");
+    page.storageEvent(THEME_STORAGE_KEY, "light");
     expect(root.dataset.theme).toBe("light");
-    expect(page.appearance.value).toBe("system");
+    page.storageEvent(null, null);
+    expect(root.dataset.themePreference).toBe("dark");
+    expect(root.dataset.theme).toBe("dark");
+    expect(page.appearance.value).toBe("dark");
     expect(page.storage.setItem).not.toHaveBeenCalled();
     expect(page.status.textContent).toBe("");
     expect(fetchMock).not.toHaveBeenCalled();
