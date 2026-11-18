@@ -370,7 +370,8 @@ test("adjacent semantic stages hand off through one neutral boundary frame", asy
 const SEMANTIC_STAGE_BOUNDARIES = [
   ["proof", "incoming", 0.505],
   ["proof", "outgoing", 0.575],
-  ["mission", "incoming", 0.69],
+  // W1D K3-a: the manifesto copy starts inside the crossing stage (MISSION_COPY_START).
+  ["mission", "incoming", 0.635],
   ["mission", "outgoing", 0.765],
   ["vision", "incoming", 0.765],
   ["vision", "outgoing", 0.835],
@@ -541,89 +542,35 @@ test("closing provides trust and legal navigation", async ({ page }) => {
   await expect(page.locator('a[href^="mailto:"]').first()).toBeAttached();
 });
 
-// W1D K7: in the 3D flow the closing pitch moved to the real footer; the closing stage keeps only the
-// giant glyph and wordmark, so the pitch-geometry checks below no longer apply.
-test.skip("tablet closing remains inside the viewport and below the wordmark", async ({ page }) => {
-  for (const viewport of [
-    { width: 768, height: 1024 },
-    { width: 900, height: 1024 },
-  ]) {
+// W1D K7 (founder: "Kartlar kalsın"): the closing call-to-action stays visible in the stage; the single
+// logo (Y + ULA) lives in the real footer at the very end. The stage carries no logo of its own, and its
+// content must sit fully inside the viewport at phone, tablet and short-desktop sizes.
+for (const viewport of [
+  { width: 390, height: 667 },
+  { width: 390, height: 844 },
+  { width: 768, height: 1024 },
+  { width: 900, height: 1024 },
+  { width: 1280, height: 720 },
+  { width: 1366, height: 768 },
+]) {
+  test(`closing call to action stays inside the viewport at ${viewport.width}x${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport);
     await openCapture(page, 1);
     const closing = page.locator('section[class*="closingStage"]');
     const content = closing.locator('[class*="closingContent"]');
-    const wordmark = closing.locator('[class*="closingWordmark"]');
     const kicker = closing.locator('[class*="closingPitch"] [class*="kicker"]');
     await expect(content).toBeVisible();
-    const [contentBounds, wordmarkBounds, kickerBounds] = await Promise.all([
-      content.boundingBox(),
-      wordmark.boundingBox(),
-      kicker.boundingBox(),
-    ]);
-    expect(contentBounds).not.toBeNull();
-    expect(contentBounds!.x).toBeGreaterThanOrEqual(0);
-    expect(contentBounds!.x + contentBounds!.width).toBeLessThanOrEqual(viewport.width);
-    expect(wordmarkBounds!.y + wordmarkBounds!.height).toBeLessThanOrEqual(
-      kickerBounds!.y - 6,
-    );
-    expect(await content.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(
-      true,
-    );
-  }
-});
-
-// W1D K7: in the 3D flow the closing pitch moved to the real footer; the closing stage keeps only the
-// giant glyph and wordmark, so the pitch-geometry checks below no longer apply.
-test.skip("short desktop closing keeps the wordmark above the pitch", async ({ page }) => {
-  for (const viewport of [
-    { width: 1280, height: 720 },
-    { width: 1366, height: 768 },
-  ]) {
-    await page.setViewportSize(viewport);
-    await openCapture(page, 1);
-    const closing = page.locator('section[class*="closingStage"]');
-    const wordmarkBounds = await closing
-      .locator('[class*="closingWordmark"]')
-      .boundingBox();
-    const kickerBounds = await closing
-      .locator('[class*="closingPitch"] [class*="kicker"]')
-      .boundingBox();
-    expect(wordmarkBounds).not.toBeNull();
-    expect(kickerBounds).not.toBeNull();
-    expect(wordmarkBounds!.y + wordmarkBounds!.height).toBeLessThanOrEqual(
-      kickerBounds!.y - 6,
-    );
-  }
-});
-
-test("mobile closing separates the wordmark from the call to action", async ({ page }) => {
-  for (const viewport of [
-    { width: 390, height: 667 },
-    { width: 390, height: 844 },
-  ]) {
-    await page.setViewportSize(viewport);
-    await openCapture(page, 1);
-
-    const closing = page.locator('section[class*="closingStage"]');
-    const content = closing.locator('[class*="closingContent"]');
-    const wordmark = closing.locator('[class*="closingWordmark"]');
-    const kicker = closing.locator('[class*="closingPitch"] [class*="kicker"]');
-    await expect(content).toBeVisible();
-
-    const [contentBounds, wordmarkBounds, kickerBounds] = await Promise.all([
-      content.boundingBox(),
-      wordmark.boundingBox(),
-      kicker.boundingBox(),
-    ]);
-    expect(contentBounds).not.toBeNull();
-    expect(wordmarkBounds).not.toBeNull();
-    expect(kickerBounds).not.toBeNull();
-    expect(wordmarkBounds!.y + wordmarkBounds!.height).toBeLessThanOrEqual(
-      kickerBounds!.y - 6,
-    );
-    expect(contentBounds!.y + contentBounds!.height).toBeLessThanOrEqual(viewport.height);
-  }
-});
+    await expect(kicker).toBeVisible();
+    await expect(closing.locator('[class*="closingWordmark"]')).toHaveCount(0);
+    const bounds = await content.boundingBox();
+    expect(bounds).not.toBeNull();
+    expect(bounds!.x).toBeGreaterThanOrEqual(0);
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(viewport.width);
+    expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(viewport.height);
+    expect(await content.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+    await expect(page.locator("[data-site-footer]")).toHaveCount(1);
+  });
+}
 
 test("linear-view control exposes the complete document on demand", async ({ page }) => {
   await openCapture(page, 0);
@@ -666,7 +613,8 @@ test("mobile header keeps the journey navigation reachable", async ({ page }) =>
   await openCapture(page, 0);
   const menu = page.locator('summary[aria-label="Projeler"], summary[aria-label="Projects"]');
   await menu.click();
-  await expect(page.getByRole("link", { name: "Manifesto", exact: true })).toBeVisible();
+  // The footer (now at the end of the home page) also carries a Manifesto link; the menu is the header's.
+  await expect(page.locator("header").getByRole("link", { name: "Manifesto", exact: true })).toBeVisible();
   await expect(page.locator('[data-site-mobile-drawer="true"]')).toBeHidden();
 });
 
@@ -748,12 +696,11 @@ for (const viewport of [
 
     const closing = page.locator('[data-experience-stage="closing"]');
     const content = closing.locator('[class*="closingContent"]');
-    const wordmark = closing.locator('[class*="closingWordmark"]');
     const email = closing.locator('a[href^="mailto:"]');
     const trustLinks = closing.locator('[class*="trustLinks"] a');
     await expect(closing).toHaveAttribute("data-active", "true");
     await expect(content).toBeVisible();
-    await expect(wordmark).toBeVisible();
+    await expect(closing.locator('[class*="closingWordmark"]')).toHaveCount(0);
     await expect(email).toBeVisible();
     expect(await trustLinks.count()).toBeGreaterThanOrEqual(5);
     for (const link of await trustLinks.all()) await expect(link).toBeVisible();
@@ -761,11 +708,10 @@ for (const viewport of [
     const closingFit = await closing.evaluate((element) => {
       const stage = element as HTMLElement;
       const contentElement = stage.querySelector<HTMLElement>('[class*="closingContent"]');
-      const wordmarkElement = stage.querySelector<HTMLElement>('[class*="closingWordmark"]');
       const emailElement = stage.querySelector<HTMLElement>('a[href^="mailto:"]');
       const trustElement = stage.querySelector<HTMLElement>('[class*="trustLinks"]');
-      if (!contentElement || !wordmarkElement || !emailElement || !trustElement) return null;
-      const rects = [contentElement, wordmarkElement, emailElement, trustElement]
+      if (!contentElement || !emailElement || !trustElement) return null;
+      const rects = [contentElement, emailElement, trustElement]
         .map((item) => item.getBoundingClientRect());
       return {
         allInsideViewport: rects.every((rect) =>
@@ -776,8 +722,6 @@ for (const viewport of [
         ),
         contentNoClip: contentElement.scrollHeight <= contentElement.clientHeight + 1,
         stageNoClip: stage.scrollHeight <= stage.clientHeight + 1,
-        wordmarkBottom: rects[1].bottom,
-        contentTop: rects[0].top,
       };
     });
 
@@ -785,7 +729,6 @@ for (const viewport of [
     expect(closingFit!.allInsideViewport).toBe(true);
     expect(closingFit!.contentNoClip).toBe(true);
     expect(closingFit!.stageNoClip).toBe(true);
-    expect(closingFit!.wordmarkBottom).toBeLessThanOrEqual(closingFit!.contentTop - 6);
   });
 }
 
@@ -933,12 +876,12 @@ test("native history returns to each product without replaying the opening", { t
       await page.locator('header > nav a[href="#experience-portfolio"]').click();
     } else {
       await page.evaluate((value) => window.scrollTo({
-        top: (document.documentElement.scrollHeight - innerHeight) * value,
+        top: (document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * value,
         behavior: "instant",
       }), scrollProgressForTimeline(progress));
     }
     await page.waitForFunction((value) => Math.abs(scrollY -
-      (document.documentElement.scrollHeight - innerHeight) * value) < 3, scrollProgressForTimeline(progress));
+      (document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * value) < 3, scrollProgressForTimeline(progress));
     await expect(root).toHaveAttribute("data-active-product", slug);
     const before = await page.evaluate(() => scrollY);
     await expect.poll(() => page.evaluate(() => Boolean(history.state?.__NA && history.state?.__PRIVATE_NEXTJS_INTERNALS_TREE))).toBe(true);
@@ -1020,7 +963,7 @@ test("native immediate Back then Forward keeps the last scroll before persistenc
   await expect(root).toHaveAttribute("data-experience-ready", "true", { timeout: 30_000 });
   await expect(root).toHaveAttribute("data-loader-visible", "false", { timeout: 30_000 });
   const target = await page.evaluate((documentProgress) => {
-    const y = Math.round((document.documentElement.scrollHeight - innerHeight) * documentProgress);
+    const y = Math.round((document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * documentProgress);
     window.scrollTo({ top: y, behavior: "instant" });
     window.history.back();
     return y;
@@ -1046,7 +989,7 @@ test("English native gallery CTA keeps one locale prefix and returns in the same
   const documentStartedAt = await page.evaluate(() => performance.timeOrigin);
   await page.locator('header > nav a[href="#experience-portfolio"]').click();
   await page.waitForFunction((documentProgress) => Math.abs(scrollY -
-    (document.documentElement.scrollHeight - innerHeight) * documentProgress) < 3, scrollProgressForTimeline(0.115));
+    (document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * documentProgress) < 3, scrollProgressForTimeline(0.115));
   const link = page.locator('[data-experience-stage="portfolio"] article[data-active="true"] a');
   await expect(link).toHaveAttribute("href", "/en/projects/braavolabs");
   const before = await page.evaluate(() => scrollY);

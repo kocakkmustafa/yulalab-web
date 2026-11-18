@@ -54,7 +54,7 @@ async function bodyText(page: Page) {
 
 for (const view of VIEWS) {
   test.describe(`scene 7 start (${view.name})`, () => {
-    test.use({ viewport: view.viewport, locale: "tr-TR", reducedMotion: "reduce" });
+    test.use({ viewport: view.viewport, locale: "tr-TR" });
 
     test("four doors with equal weight, five links, no filled primary", async ({ page }) => {
       await page.goto("/");

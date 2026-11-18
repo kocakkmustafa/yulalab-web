@@ -45,6 +45,26 @@ type YulaExperienceProps = {
 
 type WebGLState = "checking" | "available" | "unavailable";
 
+const LINEAR_SCROLL_KEY = "yula.linear-scroll.v1";
+
+// Scroll position of the linear document, kept per URL for Back (the browser restores before it is shown).
+function readLinearScroll(): number {
+  try {
+    const saved = JSON.parse(window.sessionStorage.getItem(LINEAR_SCROLL_KEY) ?? "null") as { href: string; y: number } | null;
+    return saved && saved.href === window.location.href && Number.isFinite(saved.y) ? saved.y : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeLinearScroll(y: number, href: string): void {
+  try {
+    window.sessionStorage.setItem(LINEAR_SCROLL_KEY, JSON.stringify({ href, y }));
+  } catch {
+    // Blocked storage only loses the restored position.
+  }
+}
+
 const MOBILE_SCENE_QUERY = "(max-width: 767px)";
 const PHONE_SCENE_DELAY_MS = 2_500;
 const LOADER_DRAW_DURATION_MS = 3_600;
@@ -299,6 +319,30 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   }, []);
 
   useEffect(() => {
+    // Remember where the linear document was scrolled to: a soft navigation away (a product link)
+    // unmounts the journey with the DOM already gone and without a pagehide, so track it while it is shown.
+    const href = window.location.href;
+    let y = 0;
+    const track = () => {
+      // Navigation resets the scroll before the unmount: ignore events once the URL has moved on.
+      if (window.location.href !== href) return;
+      const linear = document.querySelector<HTMLElement>("[data-yula-static]");
+      if (linear && linear.style.display !== "none") y = window.scrollY;
+    };
+    const save = () => {
+      if (y > 0) writeLinearScroll(y, href);
+    };
+    window.addEventListener("scroll", track, { passive: true });
+    // A plain link leaves with a real page load: only pagehide runs then.
+    window.addEventListener("pagehide", save);
+    return () => {
+      window.removeEventListener("scroll", track);
+      window.removeEventListener("pagehide", save);
+      save();
+    };
+  }, []);
+
+  useEffect(() => {
     // The static phone path has no opening card: no scroll lock, no reset to
     // the top, so native hash deep links and Back restoration keep working.
     if (!mounted || mobileStatic || capture.enabled || !loaderVisible || journeyReturn.current) return;
@@ -308,6 +352,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     const previousOverscroll = root.style.overscrollBehavior;
     const previousRestoration = window.history.scrollRestoration;
     const resetOpeningScroll = () => window.scrollTo(0, 0);
+    // Where the browser restored the page before the opening pinned it (Back navigation).
+    const restoredScroll = Math.max(window.scrollY, readLinearScroll());
 
     window.history.scrollRestoration = "manual";
     root.style.overflow = "hidden";
@@ -328,6 +374,18 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       const target = sceneId ? document.getElementById(sceneId) : null;
       if (target) {
         requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
+        return;
+      }
+      // W1D K8: without WebGL the phone lands on the linear document once the card leaves; honour an
+      // `#experience-*` deep link into it, or the position the browser restored on Back.
+      const linearMatch = /^#experience-[a-z0-9-]+$/.exec(window.location.hash);
+      const linearTarget = linearMatch
+        ? document.querySelector<HTMLElement>(`[data-yula-static] ${linearMatch[0]}`)
+        : null;
+      if (linearTarget) {
+        requestAnimationFrame(() => linearTarget.scrollIntoView({ block: "start", behavior: "instant" }));
+      } else if (restoredScroll > 0 && document.querySelector("[data-yula-static]")) {
+        requestAnimationFrame(() => window.scrollTo(0, restoredScroll));
       }
     };
   }, [capture.enabled, loaderVisible, mobileStatic, mounted]);

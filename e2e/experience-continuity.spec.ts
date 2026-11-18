@@ -28,7 +28,7 @@ async function scrollTimeline(page: Page, progress: number) {
   // target position holds for two frames.
   await expect(page.locator(ROOT)).toHaveAttribute("data-experience-ready", "true");
   await expect.poll(() => page.evaluate(async value => {
-    const top = (document.documentElement.scrollHeight - innerHeight) * value;
+    const top = (document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * value;
     scrollTo({ top, behavior: "instant" });
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     return Math.abs(scrollY - top) <= 2;

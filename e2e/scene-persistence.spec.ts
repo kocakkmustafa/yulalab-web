@@ -41,7 +41,7 @@ test("one renderer survives journey → product → legal → history", { tag: "
 
   // Settle on one product before following its link (Lenis eases scrolling).
   await expect.poll(() => page.evaluate(async () => {
-    const top = (document.documentElement.scrollHeight - innerHeight) * 0.2;
+    const top = (document.querySelector<HTMLElement>('[data-yula-experience="true"]')!.getBoundingClientRect().bottom + scrollY - innerHeight) * 0.2;
     scrollTo({ top, behavior: "instant" });
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     return Math.abs(scrollY - top) <= 2;
