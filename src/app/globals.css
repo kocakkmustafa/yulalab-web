@@ -759,6 +759,11 @@ input[type="checkbox"] { accent-color: var(--yula-focus); }
 .theme-control[data-compact] select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; }
 .theme-control-symbol { font-size: 21px; line-height: 1; }
 .theme-control:focus-within { outline: 2px solid var(--yula-focus); outline-offset: 4px; }
+/* The native select carries its own ring: Chrome's default auto ring differs per platform (on Linux it
+   measured 1.1:1 against ink-900), so the focus colour is explicit. Compact mode keeps the wrapper ring
+   because its select is transparent; the full control would otherwise show two nested rings. */
+.theme-control select:focus-visible { outline: 2px solid var(--yula-focus); outline-offset: 2px; }
+.theme-control:not([data-compact]):focus-within { outline: none; }
 .theme-control select:disabled { cursor: wait; }
 html[lang="hi"] { --font-sans: "Nirmala UI", "Kohinoor Devanagari", "Devanagari Sangam MN", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
 html[lang="ko"] { --font-sans: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", sans-serif; --font-display: var(--font-sans); --font-grotesk: var(--font-sans); }
