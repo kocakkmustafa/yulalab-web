@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "使命",
-      "title": "少做几款产品，并衡量它们的主张。"
+      "title": "我们只做少量产品，并长期与它们相伴。你的数据留在你的设备上，我们每一项主张的来源都是公开的。",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "愿景",

@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "MISJA",
-      "title": "Wydajemy niewiele produktów i mierzymy to, co deklarują."
+      "title": "Robimy niewiele produktów i żyjemy z nimi długo. Twoje dane zostają na urządzeniu, a źródło każdego twierdzenia jest jawne.",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "WIZJA",

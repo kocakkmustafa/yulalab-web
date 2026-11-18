@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "미션",
-      "title": "소수의 제품을 출시하고, 그 주장을 측정합니다."
+      "title": "우리는 적은 수의 제품을 만들고 오래 함께합니다. 데이터는 기기에 남고, 모든 주장의 근거는 공개되어 있습니다.",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "비전",

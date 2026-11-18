@@ -3047,3 +3047,20 @@
   .stageWord[data-stage-word="vision"] span { font-size: 22vw; }
   .visionStage h2 { font-size: 20px; }
 }
+
+/* W1D K3: sirket manifestosu sol ortada, siyah zeminli satir vurgusu, altinda kucuk EN satir. */
+.manifestoStage:not(.visionStage) h2 {
+  max-width: 34ch;
+  font-size: clamp(20px, 1.9vw, 28px);
+  line-height: 1.75;
+}
+.manifestoStage:not(.visionStage) > p:last-child {
+  max-width: 46ch;
+  margin-top: 22px;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: .02em;
+}
+@media (max-width: 767px) {
+  .manifestoStage:not(.visionStage) h2 { font-size: 18px; max-width: 28ch; }
+}

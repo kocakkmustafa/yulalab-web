@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "ミッション",
-      "title": "製品を絞り、その主張を測定する。"
+      "title": "私たちは少数のプロダクトを作り、長く付き合います。データは端末に残り、すべての主張の根拠は公開されています。",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "ビジョン",

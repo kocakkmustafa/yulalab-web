@@ -716,7 +716,7 @@ export function ExperienceOverlay({
       >
         <p className={styles.kicker}>{copy.mission.kicker}</p>
         <h2 id="experience-mission-title"><span>{copy.mission.title}</span></h2>
-        <p>{copy.mission.body}</p>
+        <p>{copy.mission.sub}</p>
       </section>
 
       <section

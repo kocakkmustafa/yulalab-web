@@ -170,7 +170,7 @@ export function StaticExperience({
         <article>
           <p className={styles.kicker}>{copy.mission.kicker}</p>
           <h2>{copy.mission.title}</h2>
-          <p>{copy.mission.body}</p>
+          <p>{copy.mission.sub}</p>
         </article>
         <article id="experience-vision" tabIndex={-1}>
           <p className={styles.kicker}>{copy.vision.kicker}</p>

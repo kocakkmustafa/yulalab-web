@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "الرسالة",
-      "title": "نطلق منتجات قليلة، ونقيس ما تدّعيه."
+      "title": "نصنع منتجات قليلة ونعيش معها زمنًا طويلًا. تبقى بياناتك على جهازك، ومصدر كل ادعاء لدينا مفتوح.",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "الرؤية",

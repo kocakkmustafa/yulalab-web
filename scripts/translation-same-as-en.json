@@ -20,7 +20,8 @@
       "links.telegram",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect",
@@ -92,7 +93,8 @@
       "home.scene4.label",
       "home.scene7.label",
       "braavolabsRunDemo.statusLabel",
-      "braavolabsRunDemo.steps.plan.name"
+      "braavolabsRunDemo.steps.plan.name",
+      "experience.mission.sub"
     ],
     "content": [
       "Cookies",
@@ -133,7 +135,8 @@
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
       "braavolabsRunDemo.seconds",
-      "braavolabsRunDemo.steps.plan.name"
+      "braavolabsRunDemo.steps.plan.name",
+      "experience.mission.sub"
     ],
     "content": [
       "Cookies",
@@ -208,7 +211,8 @@
       "home.scene6.sourceLabel",
       "braavolabsRunDemo.pipelineLabel",
       "braavolabsRunDemo.seconds",
-      "braavolabsRunDemo.steps.plan.name"
+      "braavolabsRunDemo.steps.plan.name",
+      "experience.mission.sub"
     ],
     "content": [
       "Contact",
@@ -242,7 +246,8 @@
       "links.telegram",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect",
@@ -294,7 +299,8 @@
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
-      "braavolabsRunDemo.statusLabel"
+      "braavolabsRunDemo.statusLabel",
+      "experience.mission.sub"
     ],
     "content": [
       "Email",
@@ -345,7 +351,8 @@
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
-      "braavolabsRunDemo.seconds"
+      "braavolabsRunDemo.seconds",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect",
@@ -373,7 +380,8 @@
       "links.telegram",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect"
@@ -400,7 +408,8 @@
       "links.telegram",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect"
@@ -442,7 +451,8 @@
       "home.scene7.label",
       "braavolabsRunDemo.statusLabel",
       "braavolabsRunDemo.seconds",
-      "braavolabsRunDemo.steps.plan.name"
+      "braavolabsRunDemo.steps.plan.name",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect"
@@ -495,7 +505,8 @@
       "home.scene1.signals.s2.product",
       "home.scene1.signals.s3.product",
       "braavolabsRunDemo.statusLabel",
-      "braavolabsRunDemo.seconds"
+      "braavolabsRunDemo.seconds",
+      "experience.mission.sub"
     ],
     "content": [
       "Cookies",
@@ -527,7 +538,8 @@
       "links.telegram",
       "home.scene1.signals.s1.product",
       "home.scene1.signals.s2.product",
-      "home.scene1.signals.s3.product"
+      "home.scene1.signals.s3.product",
+      "experience.mission.sub"
     ],
     "content": [
       "HealthKit / Health Connect"
