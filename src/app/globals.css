@@ -1177,5 +1177,6 @@ html.dark body:has([data-yula-experience="true"]) [data-site-footer="true"] {
 }
 
 /* W1D: the home page has no shared fixed header (the journey owns its overlay header); its anchors are
-   exact timeline positions, so hash jumps land on them without the shared header offset. */
-html:has([data-yula-experience="true"]) { scroll-padding-top: 0; }
+   exact timeline positions, so hash jumps land on them without the shared header offset (the linear
+   document keeps it: its sticky header sits above the focus target). */
+html:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) { scroll-padding-top: 0; }
