@@ -1147,3 +1147,8 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
 :root[data-theme="dark"] .scene-host:is([data-scene-tone="page"], [data-scene-tone="quiet"]) { visibility: hidden; }
 :root[data-theme="dark"] [data-site-footer="true"] { background: transparent; }
 :root[data-theme="dark"] .glass { background: rgb(255 255 255 / .025); }
+
+/* W1D K9: dogrusal (statik) ana sayfa akisinda kapanis blogu artik sayfa ortasinda altbilgi
+   gibi durmaz (bolum olarak kalir); gercek site altbilgisi ana sayfa sahneleri blogunun
+   sonunda, sayfanin en altinda gorunur. 3D akista altbilgi gizli kalir. */
+body:has([data-experience-static="true"]) [data-site-footer="true"] { display: block; }

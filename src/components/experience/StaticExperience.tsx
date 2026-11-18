@@ -195,9 +195,9 @@ export function StaticExperience({
         </div>
       </section>
 
-      <footer id="experience-closing" tabIndex={-1} className={styles.staticClosing}>
+      <section id="experience-closing" tabIndex={-1} aria-labelledby="static-experience-closing-title" className={styles.staticClosing}>
         <ExperienceClosingContent copy={copy} headingId="static-experience-closing-title" />
-      </footer>
+      </section>
     </div>
   );
 }
