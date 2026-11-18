@@ -20,6 +20,7 @@ import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
 import { StageWord } from "./StageWord";
+import { resolveExperiencePalette } from "./theme";
 import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
@@ -62,10 +63,13 @@ function stageStyle(opacity: number): StageStyle {
 }
 
 function overlayStyle(whiteMix: number): OverlayStyle {
+  // W1D S1: on the light vision/mission rooms the whole chrome (logo, menu,
+  // controls, captions) switches to #000; the dark rooms keep the theme's white.
+  const lightRoom = resolveExperiencePalette(whiteMix).surface === "light";
   return {
-    "--experience-fg": "var(--yula-exp-fg)",
-    "--experience-muted": "var(--yula-exp-muted)",
-    "--experience-line": "var(--yula-exp-line)",
+    "--experience-fg": lightRoom ? "#000000" : "var(--yula-exp-fg)",
+    "--experience-muted": lightRoom ? "rgb(0 0 0 / .72)" : "var(--yula-exp-muted)",
+    "--experience-line": lightRoom ? "rgb(0 0 0 / .45)" : "var(--yula-exp-line)",
     "--white-mix": whiteMix,
   };
 }
@@ -498,7 +502,7 @@ export function ExperienceOverlay({
     : proofScaled - proofProductIndex;
 
   return (
-    <div className={styles.overlay} style={overlayStyle(frame.world.themeMix)}>
+    <div className={styles.overlay} style={overlayStyle(Math.max(frame.world.themeMix, frame.world.whiteMix))}>
       <ExperienceHeader
         copy={copy}
         soundEnabled={soundEnabled}
