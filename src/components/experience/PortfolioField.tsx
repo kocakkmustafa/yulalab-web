@@ -13,7 +13,7 @@ import {
   TextureLoader,
 } from "three";
 import { presentationImageUrl } from "./useShowcaseTextures";
-import { makeIdentityPresentation, type PresentationImage } from "./presentation-canvas";
+import { makeIconPresentation, type PresentationImage } from "./presentation-canvas";
 import {
   CARD_DEPTH_STEP,
   clamp01,
@@ -551,18 +551,16 @@ function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
   product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
 }) {
   const icon = useCardTexture(product.icon, tier, onAssetSettled);
-  const cover = useMemo(() => makeIdentityPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
+  const cover = useMemo(() => makeIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
   useEffect(() => () => cover.dispose(), [cover]);
-  const backing = useBentPanel(4.02, 2.31);
-  const face = useBentPanel(3.9, 2.19375);
 
+  // The approved app icon stands alone as a large rounded square: no backing
+  // box, no frame, so the room light reads around it.
   return (
     <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
-      <mesh geometry={backing} position={[0, 0, -PANEL_BACKING_DEPTH]}>
-        <meshStandardMaterial color="#131017" opacity={opacity} transparent depthWrite={opacity > 0.9} metalness={0.3} roughness={0.32} side={DoubleSide} />
-      </mesh>
-      <mesh geometry={face}>
-        <meshBasicMaterial map={cover} opacity={opacity} transparent={opacity < 0.999} depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
+      <mesh>
+        <planeGeometry args={[2.6, 2.6]} />
+        <meshBasicMaterial map={cover} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
       </mesh>
     </group>
   );

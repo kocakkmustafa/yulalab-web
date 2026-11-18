@@ -49,3 +49,21 @@ export function makeIdentityPresentation(product: ExperienceProduct, icon: Prese
   }
   return canvasTexture(canvas);
 }
+
+/** The product icon alone, clipped to a rounded square (iOS-style 22.4% radius) on a transparent canvas. */
+export function makeIconPresentation(product: ExperienceProduct, icon: PresentationImage | undefined) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 768; canvas.height = 768;
+  const c = canvas.getContext("2d");
+  if (c) {
+    c.clearRect(0, 0, 768, 768);
+    c.save();
+    c.beginPath();
+    c.roundRect(0, 0, 768, 768, 172);
+    c.clip();
+    c.fillStyle = product.colors.background; c.fillRect(0, 0, 768, 768);
+    if (icon) c.drawImage(icon, 0, 0, 768, 768);
+    c.restore();
+  }
+  return canvasTexture(canvas);
+}
