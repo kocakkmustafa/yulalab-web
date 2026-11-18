@@ -9,6 +9,7 @@ import { MotionConfig } from "framer-motion";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { SiteEffects } from "@/components/layout/SiteEffects";
 import { SceneHost } from "@/components/experience/SceneHost";
 import { JsonLd } from "@/components/common/JsonLd";
 import { routing } from "@/i18n/routing";
@@ -131,6 +132,7 @@ export default async function LocaleLayout({
             <a href="#main-content" className="skip-link">
               {headerT("skipToContent")}
             </a>
+            <SiteEffects />
             <SceneHost>
               <Header />
               <main id="main-content" tabIndex={-1} className="main-focus-target">

@@ -21,7 +21,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
   const emailBreakAt = company.contact.email.indexOf("@") + 1;
 
   return (
-    <footer data-site-footer="true" className="mt-32 border-t border-hairline">
+    <footer data-site-footer="true" data-reveal className="mt-32 border-t border-hairline">
       <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid grid-cols-2 md:grid-cols-5 gap-10">
         <div className="col-span-2 md:col-span-1">
           {/* K7 closing: the brand Y drawn large (the same two-stroke Y as the

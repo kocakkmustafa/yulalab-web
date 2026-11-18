@@ -46,7 +46,7 @@ export function PageHeader({
   lede?: ReactNode;
 }) {
   return (
-    <header className="pb-16">
+    <header data-reveal className="pb-16">
       <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-400 mb-8">
         {kicker}
       </p>

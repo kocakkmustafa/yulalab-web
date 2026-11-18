@@ -10,6 +10,8 @@
 
 :root {
   --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  /* W1 BK3: ortak etkilesim egrisi (referans olcumu: easeOutQuad benzeri) */
+  --ease-ui: cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -255,13 +257,6 @@ html[data-scene="live"] {
 html[data-scene="live"] body {
   background: transparent;
 }
-/* With the world persisting, the route veil keeps only its ruler sweep:
-   blurring the whole scene between pages would hide the continuity. */
-html[data-scene="live"] .route-veil {
-  background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
 
 /* IntersectionObserver-driven reveal — deliberately larger than a
    micro-nudge: this is the "something just arrived" signal for section
@@ -270,16 +265,33 @@ html[data-scene="live"] .route-veil {
   opacity: 1;
   transform: none;
   transition:
-    opacity 700ms var(--ease-soft),
-    transform 700ms var(--ease-soft);
+    opacity 800ms var(--ease-ui),
+    transform 800ms var(--ease-ui);
 }
 .reveal.is-ready:not(.is-in) {
   opacity: 0;
-  transform: translateY(28px) scale(0.98);
+  transform: translateY(24px);
 }
 .reveal.is-in {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translateY(0);
+}
+
+/* W1 BK3: data-reveal. Ilerleyici gelistirme: JS yokken (ya da reduced-motion /
+   IntersectionObserver yokken) oge gorunur kalir. src/lib/reveal.ts yalniz
+   ilk ekranin altindaki ogelere data-reveal-state="pending" koyar. */
+[data-reveal][data-reveal-state] {
+  transition:
+    opacity 800ms var(--ease-ui),
+    transform 800ms var(--ease-ui);
+}
+[data-reveal][data-reveal-state="pending"] {
+  opacity: 0;
+  transform: translateY(24px);
+}
+[data-reveal][data-reveal-state="in"] {
+  opacity: 1;
+  transform: none;
 }
 
 /* word stagger reveal */
@@ -300,54 +312,15 @@ html[data-scene="live"] .route-veil {
   transform: translateY(0);
 }
 
-/* page transition */
+/* page transition (W1 BK3): yalniz opacity fade. Cikis 450ms PageTransition.tsx
+   icinde (framer), giris 550ms burada; ayni ease. Referans ~1.0s+1.1s; INP ve
+   Lighthouse icin toplam ~1.0s'e kisaltildi. */
 .page-enter {
-  animation: pageIn 700ms var(--ease-soft) both;
+  animation: pageIn 550ms var(--ease-ui) both;
 }
 @keyframes pageIn {
-  from {
-    opacity: 0;
-    filter: blur(8px);
-    transform: translateY(14px);
-  }
-  to {
-    opacity: 1;
-    filter: none;
-    transform: translateY(0);
-  }
-}
-
-/* Route veil: a glass wash with one ruler line sweeping across, played by
-   PageTransition after client navigations only. */
-.route-veil {
-  position: fixed;
-  z-index: 60;
-  inset: 0;
-  pointer-events: none;
-  background: rgb(var(--yula-ink-900) / 0.55);
-  color: rgb(var(--yula-ink-50));
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  animation: routeVeil 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
-}
-.route-veil i {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 1px;
-  background: currentColor;
-  opacity: 0.55;
-  animation: routeSweep 720ms cubic-bezier(0.7, 0, 0.3, 1) both;
-}
-@keyframes routeVeil {
-  0% { opacity: 0; }
-  35% { opacity: 1; }
-  100% { opacity: 0; visibility: hidden; }
-}
-@keyframes routeSweep {
-  from { transform: translateX(0); }
-  to { transform: translateX(100vw); }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* drift blobs */
@@ -424,7 +397,7 @@ html[data-scene="live"] .route-veil {
     background-color 250ms var(--ease-soft);
 }
 .card-hover:hover {
-  transform: translateY(-2px);
+  transform: scale(1.02);
 }
 
 /* arrow nudge */
@@ -544,20 +517,19 @@ button:hover .arrow-nudge {
     animation: none;
   }
   .page-enter {
-    animation-duration: 1ms;
+    animation: none;
   }
   /* pointer-sheen fade on glass cards (Lab cards included): shown or hidden at once */
   .glass::before {
     transition: none;
-  }
-  .route-veil {
-    display: none;
   }
   .scene-host {
     display: none;
   }
   .reveal,
   .reveal.is-ready:not(.is-in),
+  [data-reveal],
+  [data-reveal][data-reveal-state],
   .word,
   .word.is-ready:not(.is-in) {
     opacity: 1;
@@ -830,30 +802,6 @@ html:is([lang="hi"], [lang="ko"], [lang="zh-Hans"]) :is(h1,h2,h3,p,label,button,
   transform: translateY(-100%);
 }
 
-/* Inner-page title: after a client navigation it resolves out of blur and is
-   wiped in along the reading direction, like a line being typed. Without
-   @property the mask is invalid and the title simply shows. */
-@property --title-wipe {
-  syntax: "<percentage>";
-  inherits: false;
-  initial-value: 130%;
-}
-/* Client navigations only (PageTransition sets the flag): a document's first
-   paint keeps its title painted, so the largest paint is never held back. */
-html[data-client-nav="true"] .page-enter h1 {
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  mask-image: linear-gradient(90deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  animation: titleWipe 1100ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 140ms both;
-}
-html[data-client-nav="true"][dir="rtl"] .page-enter h1 {
-  -webkit-mask-image: linear-gradient(270deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-  mask-image: linear-gradient(270deg, #000 calc(var(--title-wipe) - 18%), transparent var(--title-wipe));
-}
-@keyframes titleWipe {
-  from { --title-wipe: 0%; filter: blur(6px); }
-  to { --title-wipe: 130%; filter: blur(0); }
-}
-
 /* Mobile menu: frosted panel, links arrive one after another, a dash marks
    the current page and grows under the finger/pointer. */
 [data-site-mobile-panel="true"] {
@@ -1070,7 +1018,6 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
     transform: none;
   }
   [data-site-header="true"],
-  .page-enter h1,
   .scroll-marquee-track,
   .scroll-marquee-scroll,
   .media-in,
@@ -1079,10 +1026,6 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
   }
   .media-parallax {
     scale: none;
-  }
-  .page-enter h1 {
-    -webkit-mask-image: none;
-    mask-image: none;
   }
   .footer-wordmark text {
     stroke-dashoffset: 0 !important;
@@ -1122,5 +1065,45 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
   }
   .glass-accent {
     background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
+  }
+}
+
+/* ---------------------------------------------------------------------
+   W1 BK3: fare etkilesimleri (referans olcumu: opacity .7, .3s, ease-ui).
+   Yalniz hover:hover cihazlarda; dokunmatikte yok. Ozel imlec yok. Pill (CTA)
+   opaklik yerine saydam -> dolgu doner (.header-cta / [data-pill]).
+   --------------------------------------------------------------------- */
+@media (hover: hover) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link) {
+    transition:
+      opacity 300ms var(--ease-ui),
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui),
+      transform 300ms var(--ease-ui);
+  }
+  :where(main, [data-site-header="true"], [data-site-footer="true"])
+    :is(a[href], button):not(:disabled, [aria-disabled="true"], [data-pill], .header-cta, .skip-link):hover {
+    opacity: 0.7;
+  }
+  [data-pill],
+  .header-cta {
+    transition:
+      color 300ms var(--ease-ui),
+      background-color 300ms var(--ease-ui),
+      border-color 300ms var(--ease-ui);
+  }
+  [data-pill]:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #000;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :where(main, [data-site-header="true"], [data-site-footer="true"]) :is(a[href], button),
+  [data-pill],
+  .header-cta {
+    transition: none !important;
   }
 }
