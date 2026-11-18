@@ -109,11 +109,12 @@ for (const [locale, url, disclaimer, announceAfterContent, note] of PAGES) {
       expect(await page.getByTestId("pd-ekran").evaluate((d) => (d as HTMLDetailsElement).open)).toBe(true);
     });
 
-    // The demo declares no animation or transition at all, so the result is the
-    // same under both preferences; both are asserted (there is no animated
-    // control to compare against inside the demo).
+    // The demo declares no @keyframes animation and no transition of its own. Under no-preference the
+    // only motion is the theme's global 300ms hover feedback on a[href]/button (globals.css, "hover:hover"
+    // block: opacity, color, background-color, border-color, transform), which runs as a CSSTransition the
+    // moment the clicked radio's neighbour button is hovered. Reduced motion removes even that.
     for (const reducedMotion of ["reduce", "no-preference"] as const) {
-      test("motion " + reducedMotion + ": demo has no animations or transitions", async ({ browser }) => {
+      test("motion " + reducedMotion + ": demo has no animations of its own", async ({ browser }) => {
         const context = await browser.newContext({ reducedMotion, locale: "tr-TR" });
         const page = await context.newPage();
         await page.goto(url);
@@ -121,12 +122,20 @@ for (const [locale, url, disclaimer, announceAfterContent, note] of PAGES) {
         await demo(page).getByRole("radio").nth(1).click();
         const motion = await demo(page).evaluate((el) => {
           const all = [el, ...Array.from(el.querySelectorAll("*"))];
+          const themeHover = /^(opacity|color|background-color|border-[a-z-]*color|transform)(, )?/;
           return {
-            animations: el.getAnimations({ subtree: true }).length,
+            keyframes: el.getAnimations({ subtree: true }).filter((a) => !(a instanceof CSSTransition)).length,
+            foreignTransitions: all.filter((n) => {
+              if (parseFloat(getComputedStyle(n).transitionDuration) <= 0) return false;
+              const props = getComputedStyle(n).transitionProperty.split(", ");
+              return !(["A", "BUTTON"].includes(n.tagName) && props.every((p) => themeHover.test(p)));
+            }).length,
             transitions: all.filter((n) => parseFloat(getComputedStyle(n).transitionDuration) > 0).length,
+            running: el.getAnimations({ subtree: true }).length,
           };
         });
-        expect(motion).toEqual({ animations: 0, transitions: 0 });
+        expect({ keyframes: motion.keyframes, foreignTransitions: motion.foreignTransitions }).toEqual({ keyframes: 0, foreignTransitions: 0 });
+        if (reducedMotion === "reduce") expect({ transitions: motion.transitions, running: motion.running }).toEqual({ transitions: 0, running: 0 });
         await context.close();
       });
     }

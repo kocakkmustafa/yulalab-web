@@ -246,9 +246,21 @@ test.describe("reduced motion", () => {
 test.describe("reduced motion off (control)", () => {
   test.use({ viewport: { width: 390, height: 844 }, contextOptions: { reducedMotion: "no-preference" } });
 
-  test("a product page does carry looping animation, so the detector is meaningful", async ({ page }) => {
+  // The product page used to carry a looping brand watermark (ScrollMarquee) that served as the control.
+  // W1 hides it until W3 (d090bcd), so the page no longer loops by itself. The control is now an injected
+  // infinite animation on the real product page: with reduced motion OFF it must be seen as running,
+  // proving the "no looping animation" checks above are not vacuous on this route (no global kill-switch).
+  test("a product page under no-preference does not suppress looping animation, so the detector is meaningful", async ({ page }) => {
     await page.goto("/tr/projects/lifeos");
     await page.waitForLoadState("networkidle");
-    expect((await loopingAnimations(page)).length).toBeGreaterThan(0);
+    await page.evaluate(() => {
+      const style = document.createElement("style");
+      style.textContent = "@keyframes yula-probe{to{transform:translateX(1px)}}#yula-probe{animation:yula-probe 1s linear infinite}";
+      document.head.append(style);
+      const el = document.createElement("div");
+      el.id = "yula-probe";
+      document.body.append(el);
+    });
+    expect(await loopingAnimations(page)).toContain("yula-probe");
   });
 });
