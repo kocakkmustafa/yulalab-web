@@ -6,12 +6,12 @@ import { useEffect, useMemo } from "react";
 import {
   Color,
   Scene,
+  ShaderMaterial,
   SRGBColorSpace,
   UnsignedByteType,
   type Texture,
 } from "three";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
-import { ServiceCorridorVisual } from "./ValueDioramas";
 import { YulaGlyph } from "./YulaGlyph";
 
 export type VisionServicePortalProps = {
@@ -27,6 +27,55 @@ const PORTAL_RESOLUTION: Record<QualityTier, number> = {
   low: 256,
 };
 
+/**
+ * W1D-D K4-a: the side screen seen through the Y is a clean colour band, never source media (screenshots
+ * carried small text and line fragments into the letter). Full-screen quad, so the glyph's screen-space
+ * lookup reads smooth diagonal bands that drift slowly with the journey.
+ */
+const BAND_VERTEX = `
+  varying vec2 vUv;
+  void main() {
+    vUv = position.xy * 0.5 + 0.5;
+    gl_Position = vec4(position.xy, 0.999, 1.0);
+  }
+`;
+const BAND_FRAGMENT = `
+  varying vec2 vUv;
+  uniform float uShift;
+  void main() {
+    float axis = vUv.x * 0.72 + vUv.y * 0.55 + uShift;
+    vec3 cyan = vec3(0.16, 0.86, 1.0);
+    vec3 violet = vec3(0.52, 0.32, 1.0);
+    vec3 magenta = vec3(1.0, 0.26, 0.78);
+    vec3 amber = vec3(1.0, 0.72, 0.28);
+    float t = fract(axis);
+    vec3 c = mix(cyan, violet, smoothstep(0.0, 0.34, t));
+    c = mix(c, magenta, smoothstep(0.34, 0.68, t));
+    c = mix(c, amber, smoothstep(0.68, 1.0, t));
+    gl_FragColor = vec4(c, 1.0);
+  }
+`;
+
+function ColorBandScreen({ shift }: { shift: number }) {
+  const material = useMemo(
+    () => new ShaderMaterial({
+      vertexShader: BAND_VERTEX,
+      fragmentShader: BAND_FRAGMENT,
+      uniforms: { uShift: { value: 0 } },
+      depthTest: false,
+      depthWrite: false,
+    }),
+    [],
+  );
+  material.uniforms.uShift.value = shift;
+  useEffect(() => () => material.dispose(), [material]);
+  return (
+    <mesh frustumCulled={false} material={material}>
+      <planeGeometry args={[2, 2]} />
+    </mesh>
+  );
+}
+
 function fitRenderTarget(width: number, height: number, limit: number) {
   const safeWidth = Math.max(1, width);
   const safeHeight = Math.max(1, height);
@@ -41,7 +90,7 @@ function fitRenderTarget(width: number, height: number, limit: number) {
  * Renders only the lightweight SERVICE media surfaces into a capped target.
  * The texture is composited by YulaGlyph, so the real extruded Y is the mask.
  */
-export function VisionServicePortal({ frame, tier, glyphRotation, mediaTextures }: VisionServicePortalProps) {
+export function VisionServicePortal({ frame, tier, glyphRotation }: VisionServicePortalProps) {
   const renderer = useThree((state) => state.gl);
   const camera = useThree((state) => state.camera);
   const size = useThree((state) => state.size);
@@ -90,18 +139,7 @@ export function VisionServicePortal({ frame, tier, glyphRotation, mediaTextures 
       {portalActive
         ? createPortal(
           <>
-            <fog attach="fog" args={["#07050a", 9, 54]} />
-            <ambientLight intensity={0.9} />
-            <directionalLight color="#f0e5ff" intensity={2.4} position={[5, 8, 7]} />
-            <pointLight color="#39e6ff" intensity={18} position={[-5, 1, -21]} />
-            <pointLight color="#ff43c8" intensity={16} position={[5, -1, -27]} />
-            <ServiceCorridorVisual
-              frame={frame}
-              opacity={1}
-              tier={tier}
-              withDioramas={false}
-              mediaTextures={mediaTextures}
-            />
+            <ColorBandScreen shift={frame.progress * 1.6} />
           </>,
           portalScene,
         )
