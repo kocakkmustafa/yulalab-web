@@ -196,8 +196,6 @@ export type ExperienceCopy = {
     open3dOpened: string;
     /** Visible and announced when 3D was requested but could not start. */
     open3dFailed: string;
-    /** "en" when `open3d` is the English fallback in a non-English locale (WCAG 3.1.2). */
-    open3dLang?: "en";
     glyphHelp: string;
     developmentView: string;
     closeImage: string;

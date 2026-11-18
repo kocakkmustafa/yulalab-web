@@ -7,6 +7,7 @@ import LabPage from "@/app/[locale]/lab/page";
 import { notes } from "@/data/notes";
 import { caseStudies } from "@/data/case-studies";
 import { publicRegistry } from "@/data/public-registry";
+import koContent from "../messages/content-ko.json";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
 
@@ -65,8 +66,14 @@ describe("/lab (WEB-UX-05e)", () => {
     expect(container.querySelectorAll("h1")).toHaveLength(1);
   });
 
-  it("falls back to English for a locale without a translation", async () => {
+  it("writes the translated title for a translated locale and falls back to English only for an unknown locale", async () => {
     await renderLab("ko");
+    const ko = (koContent as Record<string, string>)["Lab"];
+    expect(ko).toBeTruthy();
+    expect(ko).not.toBe("Lab");
+    expect(screen.getByRole("heading", { level: 1 }).textContent).toBe(ko);
+    cleanup();
+    await renderLab("xx");
     expect(screen.getByRole("heading", { level: 1 }).textContent).toBe("Lab");
   });
 

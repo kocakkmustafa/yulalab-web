@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 /**
  * WEB-P1-01, server side. Rendered by ProductPage only when
  * LIFEOS_DEMO_ENABLED=1. The interactive part is a dynamic import, so with
- * the flag off nothing here reaches the page's JS. Copy exists in tr and en;
- * the other twelve locales show the English copy honestly marked lang="en".
+ * the flag off nothing here reaches the page's JS. Copy is translated for
+ * all fourteen locales; the section carries the page locale as its lang.
  */
 const LifeosDecisionDemo = dynamic(() => import("@/components/projects/LifeosDecisionDemo"));
 
@@ -19,15 +19,13 @@ export type LifeosDemoText = Record<(typeof LIFEOS_DEMO_TEXT_KEYS)[number], stri
 export function LifeosDemoArea() {
   const t = useTranslations("lifeosDemo");
   const locale = useLocale();
-  const native = locale === "tr" || locale === "en";
   const text = Object.fromEntries(LIFEOS_DEMO_TEXT_KEYS.map((k) => [k, t.raw(k) as string])) as LifeosDemoText;
   return (
     <section
       className="pb-24"
       aria-labelledby="lifeos-demo-heading"
       data-testid="lifeos-decision-demo"
-      lang={locale === "tr" ? "tr" : "en"}
-      dir={native ? undefined : "ltr"}
+      lang={locale}
     >
       <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300 mb-4">{text.kicker}</p>
       <h2
@@ -40,7 +38,7 @@ export function LifeosDemoArea() {
       <p className="max-w-[60ch] rounded-xl border border-[color:var(--yula-hairline-strong)] px-4 py-3 mb-8 text-[15.5px] leading-[1.6] text-ink-50">
         {text.note}
       </p>
-      <LifeosDecisionDemo text={text} lang={locale === "tr" ? "tr" : "en"} />
+      <LifeosDecisionDemo text={text} lang={locale === "tr" ? "tr" : "en"} locale={locale} />
     </section>
   );
 }

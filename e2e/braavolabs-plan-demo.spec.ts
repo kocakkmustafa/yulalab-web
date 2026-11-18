@@ -164,14 +164,15 @@ for (const [locale, url, disclaimer, announceAfterContent, note] of PAGES) {
   });
 }
 
-test("/ar shows the English fallback marked lang=en dir=ltr, with no Arabic letters in the block", async ({ page }) => {
+test("/ar shows the translated Arabic block in an rtl page, with no English-fallback marker", async ({ page }) => {
   await page.goto("/ar/projects/braavolabs");
   await ready(page);
   const section = demo(page);
-  await expect(section).toHaveAttribute("lang", "en");
-  await expect(section).toHaveAttribute("dir", "ltr");
-  expect(await section.innerText()).not.toMatch(/[؀-ۿ]/);
-  await expect(section.getByTestId("plan-disclaimer")).toContainText("no real job is executed");
+  await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
+  await expect(section).not.toHaveAttribute("lang", "en");
+  await expect(section.locator('[lang="en"]')).toHaveCount(0);
+  expect(await section.innerText()).toMatch(/[؀-ۿ]/);
+  await expect(section.getByTestId("plan-disclaimer")).toContainText("ولا يُنفَّذ أي عمل حقيقي");
 });
 
 test.describe("JavaScript disabled", () => {

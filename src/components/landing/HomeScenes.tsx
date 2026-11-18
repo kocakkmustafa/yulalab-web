@@ -26,20 +26,15 @@ import { Scene5Lab } from "./Scene5Lab";
 export async function HomeScenes({ locale, now = new Date() }: { locale: Locale; now?: Date }) {
   const t = await getTranslations({ locale, namespace: "home" });
 
-  // tr and en are written in full. The other twelve catalogues carry the
-  // English copy until translated, so the block says so (WCAG 3.1.2).
-  const fallbackEnglish = locale !== "tr" && locale !== "en";
-  // Words injected into that block (status labels) must be English too, or a
-  // right-to-left word lands inside an `lang="en" dir="ltr"` sentence.
-  const ts = await getTranslations({ locale: fallbackEnglish ? "en" : locale, namespace: "status" });
+  // All fourteen catalogues are translated, so the block inherits the page's
+  // lang/dir; no language override is needed (WCAG 3.1.2).
+  const ts = await getTranslations({ locale, namespace: "status" });
   // `/studio` exists only while the server flag is on (it answers 404 otherwise).
   const studioOpen = studioEnabled();
 
   return (
     <div
       data-home-scenes="true"
-      lang={fallbackEnglish ? "en" : undefined}
-      dir={fallbackEnglish ? "ltr" : undefined}
       className="relative z-[1] bg-[rgb(var(--yula-page-rgb))] text-ink-50 border-t border-white/10"
     >
       <nav

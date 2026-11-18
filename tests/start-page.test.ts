@@ -8,6 +8,7 @@ import sitemap from "@/app/sitemap";
 import { HOME_DOORS } from "@/components/landing/home-doors";
 import { FOOTER_COMPANY_NAV } from "@/components/layout/nav-config";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
+import { mayEqualEn } from "./helpers/same-as-en";
 import tr from "../messages/tr.json";
 import en from "../messages/en.json";
 
@@ -30,10 +31,13 @@ describe("/start doors page (WEB-UX-05g)", () => {
     for (const value of Object.values(start)) expect(value.trim()).not.toBe("");
   });
 
-  it("tr and en are written; the other languages carry the English fallback", () => {
+  it("tr and en are written; the other twelve languages are translated (differ from English unless allowlisted)", () => {
     expect(trStart.lede).not.toBe(enStart.lede);
     for (const locale of SUPPORTED_LOCALES.filter((l) => l !== "tr" && l !== "en")) {
-      expect(read(locale).start).toEqual(enStart);
+      const start = read(locale).start;
+      for (const [k, enVal] of Object.entries(enStart)) {
+        if (!mayEqualEn(locale, "start." + k)) expect(start[k], locale + " start." + k).not.toBe(enVal);
+      }
     }
   });
 

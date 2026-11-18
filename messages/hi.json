@@ -22,12 +22,12 @@
     "approach": "हमारा दृष्टिकोण",
     "collaboration": "सहयोग",
     "mainNavigation": "मुख्य नेविगेशन",
-    "doors": "Doors",
-    "doorsPanel": "Starting doors"
+    "doors": "द्वार",
+    "doorsPanel": "शुरुआती द्वार"
   },
   "footer": {
     "tagline": "एक स्वतंत्र उत्पाद प्रयोगशाला, जो AI का इस्तेमाल सही समय और सही जगह पर करती है, बिना उसकी क्षमताओं को बढ़ा-चढ़ाकर बताए।",
-    "location": "Türkiye",
+    "location": "तुर्किये",
     "projectsHeading": "परियोजनाएँ",
     "companyHeading": "कंपनी",
     "founderHeading": "संस्थापक",
@@ -46,7 +46,7 @@
     "navOperatingSystem": "हम कैसे काम करते हैं",
     "navStudio": "स्टूडियो",
     "navConsulting": "AI परामर्श",
-    "navWhyYula": "Why YULA"
+    "navWhyYula": "YULA क्यों"
   },
   "common": {
     "explore": "देखें",
@@ -76,7 +76,7 @@
       "place": "TR · 2025"
     },
     "bannerCardTopLabel": "YL · 001",
-    "bannerCardBottomLabel": "Türkiye",
+    "bannerCardBottomLabel": "तुर्किये",
     "bannerWord": "YULA",
     "bannerCaption": "उत्पाद · प्रयोगशाला · TÜRKİYE",
     "bannerSpec": "YULA / banner.png · 2400×1400",
@@ -172,22 +172,22 @@
     "researchHeading": "अनुसंधान में",
     "researchNote": "अभी जारी नहीं हुए: न स्टोर पेज, न डाउनलोड लिंक, न सत्यापित संख्याएँ। इन्हें नीचे अलग रखा है, क्योंकि जारी उत्पादों जितना महत्व देना उनकी स्थिति को बढ़ा-चढ़ाकर दिखाएगा।",
     "researchToggle": "अनुसंधान वाले उत्पाद दिखाएँ ({count})",
-    "featuredHeading": "Featured products",
-    "portfolioHeading": "Portfolio",
-    "filterLabel": "Filter by status",
-    "filterAll": "All",
-    "showing": "Showing {count} products",
-    "summary": "{live} live · {beta} beta · {soon} coming soon",
-    "noMatch": "No product matches this filter.",
-    "panelHeading": "Selected product",
-    "panelHint": "Select a product to see its details here.",
-    "accessHeading": "Access",
-    "openFull": "Open the full page",
-    "closePanel": "Close panel",
-    "preview": "Preview",
-    "previewLabel": "Preview: {name}",
-    "panelStatusLink": "Status and sources",
-    "panelScreenEmpty": "There is no screenshot for this product yet."
+    "featuredHeading": "खास उत्पाद",
+    "portfolioHeading": "पोर्टफ़ोलियो",
+    "filterLabel": "स्थिति के अनुसार छाँटें",
+    "filterAll": "सभी",
+    "showing": "{count} उत्पाद दिख रहे हैं",
+    "summary": "{live} उपलब्ध · {beta} बीटा · {soon} जल्द आ रहे हैं",
+    "noMatch": "इस फ़िल्टर से कोई उत्पाद मेल नहीं खाता।",
+    "panelHeading": "चुना गया उत्पाद",
+    "panelHint": "यहाँ विवरण देखने के लिए कोई उत्पाद चुनें।",
+    "accessHeading": "पहुँच",
+    "openFull": "पूरा पेज खोलें",
+    "closePanel": "पैनल बंद करें",
+    "preview": "पूर्वावलोकन",
+    "previewLabel": "पूर्वावलोकन: {name}",
+    "panelStatusLink": "स्थिति और स्रोत",
+    "panelScreenEmpty": "इस उत्पाद का अभी कोई स्क्रीनशॉट नहीं है।"
   },
   "showcase": {
     "back": "परियोजनाएँ",
@@ -271,26 +271,26 @@
     "pressLabel": "प्रेस",
     "pressHint": "साक्षात्कार, कार्यक्रम के निमंत्रण और प्रेस विज्ञप्ति के अनुरोध।",
     "locationEyebrow": "स्थान",
-    "locationTitle": "Türkiye",
+    "locationTitle": "तुर्किये",
     "locationNote": "मंगलवार – गुरुवार बैठकें, ऑनलाइन और आमने-सामने दोनों रूपों में।",
     "studioBody": "इस पेज का पता सामान्य पत्राचार के लिए है। अगर आपके मन में कोई परियोजना है, तो स्टूडियो आवेदन बजट सीमा, समय और निर्णय लेने में आपकी भूमिका की जानकारी एक साथ लेता है, ताकि हम इन्हीं जानकारियों के आधार पर पूछताछ का आकलन कर सकें।",
     "studioEyebrow": "परियोजना संबंधी पूछताछ",
     "studioLink": "स्टूडियो आवेदन",
     "studioTitle": "किसी काम के बारे में लिख रहे हैं?",
     "intakeLanguageNotice": "ऑनलाइन फ़ॉर्म अभी इस भाषा में उपलब्ध नहीं है। नीचे दिए पते पर ईमेल कर सकते हैं; इंटरफ़ेस की भाषा से उत्तर की भाषा या पहुँचने के समय की गारंटी नहीं मिलती।",
-    "pathsTitle": "Who is this for?",
-    "pathsUserLabel": "Product user",
-    "pathsUserBody": "Product support and account questions go to the support address.",
-    "pathsUserLink": "Support",
-    "pathsCorpLabel": "Business",
-    "pathsCorpBody": "AI work for your company. Business address:",
-    "pathsCorpLink": "Discuss your project",
-    "pathsPartnerLabel": "Partners and investors",
-    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
-    "pathsDevLabel": "Developers and researchers",
-    "pathsDevBody": "Working notes and open records.",
-    "pathsDevLab": "Lab",
-    "pathsDevTransparency": "Transparency"
+    "pathsTitle": "यह किसके लिए है?",
+    "pathsUserLabel": "उत्पाद उपयोगकर्ता",
+    "pathsUserBody": "उत्पाद सहायता और खाते से जुड़े सवाल सहायता पते पर भेजें।",
+    "pathsUserLink": "सहायता",
+    "pathsCorpLabel": "व्यवसाय",
+    "pathsCorpBody": "आपकी कंपनी के लिए AI का काम। व्यवसाय का पता:",
+    "pathsCorpLink": "अपनी परियोजना पर चर्चा करें",
+    "pathsPartnerLabel": "साझेदार और निवेशक",
+    "pathsPartnerBody": "साझेदारी और निवेश की बातचीत के लिए हमें लिखें।",
+    "pathsDevLabel": "डेवलपर और शोधकर्ता",
+    "pathsDevBody": "कामकाजी नोट्स और खुले अभिलेख।",
+    "pathsDevLab": "प्रयोगशाला",
+    "pathsDevTransparency": "पारदर्शिता"
   },
   "notFound": {
     "title": "पेज नहीं मिला।",
@@ -300,12 +300,12 @@
     "eyebrow": "नोट्स",
     "title": "हमने क्या किया, जैसा हुआ वैसा लिखा।",
     "intro": "यहाँ भी पारदर्शिता लागू है — हमारे उत्पादों में क्या बदला, क्या ठीक हुआ और क्या शुरू हुआ, इस पर छोटे, ईमानदार नोट्स।",
-    "articleEyebrow": "Article",
-    "readArticle": "Read the article",
-    "sourcesHeading": "Sources",
-    "verifiedOn": "verified {date}",
-    "seeTransparency": "Transparency page",
-    "backToNotes": "All notes"
+    "articleEyebrow": "लेख",
+    "readArticle": "लेख पढ़ें",
+    "sourcesHeading": "स्रोत",
+    "verifiedOn": "सत्यापित: {date}",
+    "seeTransparency": "पारदर्शिता पेज",
+    "backToNotes": "सभी नोट्स"
   },
   "links": {
     "web": "वेबसाइट",
@@ -520,11 +520,11 @@
       "pitch1Body": "माइक्रोफ़ोन चालू करें और बजाएँ; Ostinato हर स्वर को सही, कोई दूसरा स्वर, या सुनाई नहीं दिया के रूप में चिह्नित करता है। जब उसे पक्का पता न हो, तो वह अंदाज़ा नहीं लगाता। ऑडियो आपके डिवाइस पर संसाधित होता है और कभी अपलोड नहीं होता।",
       "pitch2Title": "सधा हुआ अभ्यास, बेतरतीब दोहराव नहीं।",
       "pitch2Body": "मेट्रोनोम के साथ चलती टैब का अनुसरण करें। टेम्पो 40% से 120% तक कहीं भी सेट करें, कठिन बार को लूप करें, या ऐप को अपना इंतज़ार करने दें। आपका पास किया हर पाठ अगला पाठ खोलता है।",
-      "pitch3Title": "Guitar and ear training: 283 lessons, voice and piano coming soon.",
-      "pitch3Body": "The guitar course comes with 235 lessons across four levels and ear training with 48 lessons across two; voice and piano follow in turn. A setup wizard measures your room and latency, the built-in tuner gets your strings ready, and a weekly goal and streak keep you playing.",
+      "pitch3Title": "गिटार और कान का प्रशिक्षण: 283 पाठ, आवाज़ और पियानो जल्द आ रहे हैं।",
+      "pitch3Body": "गिटार कोर्स में चार स्तरों में 235 पाठ हैं और कान के प्रशिक्षण में दो स्तरों में 48 पाठ; आवाज़ और पियानो बारी-बारी से आएँगे। सेटअप विज़ार्ड आपके कमरे और लेटेंसी को मापता है, बिल्ट-इन ट्यूनर आपके तार तैयार करता है, और साप्ताहिक लक्ष्य व स्ट्रीक आपको बजाते रहने में मदद करते हैं।",
       "s1Kicker": "01 — ऐप में",
-      "a1Title": "Guitar and ear training come first.",
-      "a1Body": "Guitar runs from your first sound to advanced: 235 lessons across four levels. Ear training has 48 lessons: on-screen drills, clapping with the click and part-by-part tests. Voice and piano are coming soon.",
+      "a1Title": "गिटार और कान का प्रशिक्षण पहले।",
+      "a1Body": "गिटार पहली आवाज़ से उन्नत स्तर तक चलता है: चार स्तरों में 235 पाठ। कान के प्रशिक्षण में 48 पाठ हैं: स्क्रीन पर अभ्यास, क्लिक के साथ ताली और हिस्सा-दर-हिस्सा परीक्षण। आवाज़ और पियानो जल्द आ रहे हैं।",
       "a2Title": "हर पाठ्यक्रम का स्तर 1 मुफ़्त है।",
       "a2Body": "गिटार का स्तर 1 (40 पाठ) और कान के प्रशिक्षण का स्तर 1 (25 पाठ) मुफ़्त हैं और बिना खाते के चलते हैं। आगे के स्तर Ostinato मेंबरशिप से खुलते हैं।",
       "s2Kicker": "02 — पहुँच",
@@ -583,69 +583,69 @@
     "statNeedsReverification": "दोबारा सत्यापन चाहिए",
     "availabilityUnverified": "प्रकाशन की स्थिति का दोबारा सत्यापन चाहिए",
     "availabilityCheckedAt": "प्रकाशन की पिछली जाँच: {date}। वर्तमान स्थिति जाँचने के लिए लिंक खोल सकते हैं।",
-    "accessHeading": "Access",
-    "screenHeading": "Screens and demo",
-    "screenEmpty": "There is no screenshot for this product yet.",
-    "trustHeading": "Privacy and trust",
-    "trustPrivacy": "Privacy policy for this product",
-    "statusHeading": "Release status",
-    "statusLink": "Status and sources",
-    "demoLabel": "Example simulation"
+    "accessHeading": "पहुँच",
+    "screenHeading": "स्क्रीन और डेमो",
+    "screenEmpty": "इस उत्पाद का अभी कोई स्क्रीनशॉट नहीं है।",
+    "trustHeading": "गोपनीयता और भरोसा",
+    "trustPrivacy": "इस उत्पाद की गोपनीयता नीति",
+    "statusHeading": "रिलीज़ की स्थिति",
+    "statusLink": "स्थिति और स्रोत",
+    "demoLabel": "उदाहरण सिमुलेशन"
   },
   "braavolabsDemo": {
-    "kicker": "Sample plan card",
-    "title": "Describe a job. See its plan, approvals and result in one place.",
-    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
-    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
-    "pickerLabel": "Pick a sample intent",
-    "announce": "Plan card shown",
+    "kicker": "नमूना योजना कार्ड",
+    "title": "कोई काम बताइए। उसकी योजना, मंज़ूरियाँ और नतीजा एक जगह देखिए।",
+    "intro": "तीन नमूना इरादों में से एक चुनें। कार्ड दिखाता है कि योजना कैसी हो सकती है। यहाँ सब कुछ इसी पेज में लिखा स्थिर पाठ है; आपके ब्राउज़र से कुछ बाहर नहीं जाता।",
+    "disclaimer": "यह एक इंटरैक्टिव उत्पाद अवधारणा / योजना का उदाहरण है; कोई वास्तविक काम नहीं चलाया जाता।",
+    "pickerLabel": "नमूना इरादा चुनें",
+    "announce": "योजना कार्ड दिखाया गया",
     "labels": {
-      "intent": "Sample intent",
-      "example": "Example card",
-      "note": "Example / concept: no real job is executed.",
-      "steps": "Example steps",
-      "approvals": "Approval points",
-      "risk": "Example risk level",
-      "output": "Expected output"
+      "intent": "नमूना इरादा",
+      "example": "उदाहरण कार्ड",
+      "note": "उदाहरण / अवधारणा: कोई वास्तविक काम नहीं चलाया जाता।",
+      "steps": "उदाहरण चरण",
+      "approvals": "मंज़ूरी के बिंदु",
+      "risk": "उदाहरण जोखिम स्तर",
+      "output": "अपेक्षित नतीजा"
     },
     "risk": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+      "low": "कम",
+      "medium": "मध्यम",
+      "high": "अधिक"
     },
     "intents": {
       "content": {
-        "label": "Content",
-        "prompt": "“Prepare a week of posts for our launch.”",
-        "s1": "Read the brief and list the post ideas.",
-        "s2": "Draft each post in your tone.",
-        "s3": "Collect the drafts for your review.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you read the drafts and decide.",
-        "riskNote": "The output is a draft you review.",
-        "output": "A set of draft posts, ready for your review."
+        "label": "सामग्री",
+        "prompt": "“हमारे लॉन्च के लिए एक हफ़्ते की पोस्ट तैयार करो।”",
+        "s1": "ब्रीफ़ पढ़ना और पोस्ट के विचार सूचीबद्ध करना।",
+        "s2": "हर पोस्ट आपके लहजे में लिखना।",
+        "s3": "आपकी समीक्षा के लिए ड्राफ़्ट इकट्ठा करना।",
+        "a1": "पैसा खर्च करने वाला चरण आपकी मंज़ूरी का इंतज़ार करता है।",
+        "a2": "उदाहरण: आप ड्राफ़्ट पढ़कर तय करते हैं।",
+        "riskNote": "नतीजा एक ड्राफ़्ट है जिसकी समीक्षा आप करते हैं।",
+        "output": "ड्राफ़्ट पोस्ट का एक सेट, आपकी समीक्षा के लिए तैयार।"
       },
       "report": {
-        "label": "Report",
-        "prompt": "“Summarise last month's support requests.”",
-        "s1": "Gather the material you point to.",
-        "s2": "Group the findings by theme.",
-        "s3": "Write a short summary.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you choose which material is used.",
-        "riskNote": "It reads your own material, so you decide what it may read.",
-        "output": "A short report draft with the points that need a decision."
+        "label": "रिपोर्ट",
+        "prompt": "“पिछले महीने के सहायता अनुरोधों का सार लिखो।”",
+        "s1": "आपकी बताई सामग्री को इकट्ठा करना।",
+        "s2": "निष्कर्षों को विषय के अनुसार समूहित करना।",
+        "s3": "एक छोटा सार लिखना।",
+        "a1": "पैसा खर्च करने वाला चरण आपकी मंज़ूरी का इंतज़ार करता है।",
+        "a2": "उदाहरण: कौन-सी सामग्री इस्तेमाल होगी, यह आप चुनते हैं।",
+        "riskNote": "यह आपकी अपनी सामग्री पढ़ता है, इसलिए वह क्या पढ़ सकता है, यह आप तय करते हैं।",
+        "output": "उन बिंदुओं के साथ एक छोटी रिपोर्ट का ड्राफ़्ट जिन पर निर्णय चाहिए।"
       },
       "software": {
-        "label": "Software",
-        "prompt": "“Fix the sign-in bug in our app.”",
-        "s1": "Read the code and find the likely cause.",
-        "s2": "Propose a change and a test for it.",
-        "s3": "Present the proposed change.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you review each proposed change.",
-        "riskNote": "It touches the code behind your product, so each change waits for you.",
-        "output": "A proposed code change with its test, for you to review."
+        "label": "सॉफ़्टवेयर",
+        "prompt": "“हमारे ऐप का साइन-इन बग ठीक करो।”",
+        "s1": "कोड पढ़ना और संभावित कारण खोजना।",
+        "s2": "एक बदलाव और उसका टेस्ट सुझाना।",
+        "s3": "सुझाया गया बदलाव प्रस्तुत करना।",
+        "a1": "पैसा खर्च करने वाला चरण आपकी मंज़ूरी का इंतज़ार करता है।",
+        "a2": "उदाहरण: आप हर सुझाए गए बदलाव की समीक्षा करते हैं।",
+        "riskNote": "यह आपके उत्पाद के पीछे के कोड को छूता है, इसलिए हर बदलाव आपका इंतज़ार करता है।",
+        "output": "टेस्ट के साथ एक सुझाया गया कोड बदलाव, आपकी समीक्षा के लिए।"
       }
     }
   },
@@ -752,9 +752,9 @@
       "support": "सहायता",
       "rights": "सर्वाधिकार सुरक्षित।"
     },
-    "open3d": "Open the 3D experience",
-    "open3dOpened": "3D experience opened",
-    "open3dFailed": "Could not open 3D; showing the linear view.",
+    "open3d": "3D अनुभव खोलें",
+    "open3dOpened": "3D अनुभव खुल गया",
+    "open3dFailed": "3D नहीं खुल सका; रैखिक दृश्य दिखाया जा रहा है।",
     "fallback": {
       "label": "सरल क्रमबद्ध अनुभव",
       "reason": "जब गति या 3D परत उपलब्ध न हो, तब भी इस दृश्य में वही उत्पाद, प्रमाण और लिंक पूरे उपलब्ध रहते हैं।"
@@ -786,7 +786,7 @@
       "wallService": "सेवा",
       "reset": "रीसेट करें"
     },
-    "loaderSkip": "Skip intro"
+    "loaderSkip": "परिचय छोड़ें"
   },
   "studio": {
     "applyIntro": "हम बजट की सटीक रकम या निर्णय लेने वाले व्यक्ति का नाम नहीं पूछते — एक सीमा और भूमिका काफ़ी हैं।",
@@ -944,333 +944,333 @@
     "limits": "शुरुआती आकलन से पहले हम आय बढ़ने, मॉडल के पूर्णतः सही परिणाम या रिलीज़ तारीख का वादा नहीं करते। प्रोडक्शन तक पहुँच और डिप्लॉयमेंट के लिए अलग सहमति चाहिए।",
     "contactTitle": "बताएँ कि आप क्या सुधारना चाहते हैं।",
     "contactBody": "अपना कार्यप्रवाह, समस्या और समय-सीमा बताएँ। पासवर्ड, API कुंजी या ग्राहकों का गोपनीय डेटा न भेजें। ईमेल लिंक आपका मेल ऐप खोलता है; यह पेज कुछ भी सबमिट नहीं करता।",
-    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
+    "contactBodyForm": "अपने कार्यप्रवाह, समस्या और समय-सीमा से शुरू करें। पासवर्ड, API कुंजियाँ या गोपनीय ग्राहक डेटा न भेजें। आप नीचे दिया फ़ॉर्म या ईमेल लिंक इस्तेमाल कर सकते हैं; ईमेल लिंक आपका मेल ऐप खोलता है।",
     "cta": "अपनी परियोजना पर बात करें",
     "subject": "AI परामर्श संबंधी पूछताछ",
     "terms": "उपलब्धता, कीमत और दायरा बातचीत में पुष्ट किए जाते हैं।",
     "nav": "AI परामर्श"
   },
   "whyYula": {
-    "eyebrow": "Why YULA",
-    "title": "Why YULA",
-    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
-    "sourcesHeading": "Sources",
-    "s1Title": "Evidence comes before the claim.",
-    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
-    "s2Title": "Portfolio status is read from the registry.",
-    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
-    "s3Title": "The level of evidence is written out.",
-    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
-    "s4Title": "Work you can read.",
-    "s4Body": "The lab's records and notes are reachable directly from here.",
-    "linkLab": "Lab",
-    "linkTransparency": "Transparency"
+    "eyebrow": "YULA क्यों",
+    "title": "YULA क्यों",
+    "intro": "प्रयोगशाला कैसे काम करती है, इतने संक्षेप में कि अभिलेखों से मिलाकर जाँचा जा सके। संख्याएँ रजिस्ट्री से निकाली गई हैं, इसलिए वे उससे अलग पुरानी नहीं हो सकतीं।",
+    "sourcesHeading": "स्रोत",
+    "s1Title": "दावे से पहले प्रमाण।",
+    "s1Body": "साइट पर उत्पाद का हर दावा रजिस्ट्री में उसके स्रोत, दायरे और सत्यापन की तारीख के साथ रहता है। जिस दावे की अवधि खत्म हो जाती है, उसे छिपाया नहीं जाता; दिखाया जाता है और समाप्त चिह्नित किया जाता है।",
+    "s2Title": "पोर्टफ़ोलियो की स्थिति रजिस्ट्री से पढ़ी जाती है।",
+    "s2Body": "रजिस्ट्री में {records} उत्पाद हैं; जीवनचक्र की अवस्थाओं में उनका बँटवारा नीचे है। संख्याएँ निकाली गई हैं, हाथ से नहीं लिखी गईं।",
+    "s3Title": "प्रमाण का स्तर लिखा जाता है।",
+    "s3Body": "रजिस्ट्री में {claims} दावे हैं। स्वयं-रिपोर्ट को स्रोत कोड में सत्यापित या मापे गए के बराबर नहीं माना जाता; हर दावे के साथ उसके प्रमाण का प्रकार है।",
+    "s4Title": "ऐसा काम जिसे आप पढ़ सकें।",
+    "s4Body": "प्रयोगशाला के अभिलेख और नोट्स यहीं से सीधे उपलब्ध हैं।",
+    "linkLab": "प्रयोगशाला",
+    "linkTransparency": "पारदर्शिता"
   },
   "home": {
-    "navLabel": "Home page sections",
+    "navLabel": "मुखपृष्ठ के खंड",
     "scene1": {
-      "label": "Identity",
-      "title": "We build technology to make life more possible, not more complicated.",
-      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
-      "ctaProducts": "Explore the products",
-      "ctaHow": "See how we work",
-      "ctaLabel": "Main paths",
-      "signalsLabel": "From intent to result: three examples",
-      "signalsNote": "These are example scenarios, not real product output or measurements.",
-      "example": "Example",
-      "intentLabel": "Intent",
-      "resultLabel": "Result",
+      "label": "पहचान",
+      "title": "हम ऐसी तकनीक बनाते हैं जो जीवन को अधिक संभव बनाए, अधिक उलझा हुआ नहीं।",
+      "message": "Yula Lab एक स्वतंत्र उत्पाद और इंजीनियरिंग प्रयोगशाला है, जिसका ध्यान निजी जीवन, डिजिटल काम और संगीत सीखने में ठोस नतीजों पर है।",
+      "ctaProducts": "उत्पाद देखें",
+      "ctaHow": "हमारा काम करने का तरीका देखें",
+      "ctaLabel": "मुख्य रास्ते",
+      "signalsLabel": "इरादे से नतीजे तक: तीन उदाहरण",
+      "signalsNote": "ये उदाहरण परिदृश्य हैं, उत्पाद के असली आउटपुट या माप नहीं।",
+      "example": "उदाहरण",
+      "intentLabel": "इरादा",
+      "resultLabel": "नतीजा",
       "signals": {
         "s1": {
           "product": "Braavolabs",
-          "intent": "Describe a task.",
-          "result": "A chat and coding agent takes it on; you see the cost of every run."
+          "intent": "कोई काम बताइए।",
+          "result": "एक चैट और कोडिंग एजेंट उसे संभालता है; आप हर रन की लागत देखते हैं।"
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Keep your health, money and assets in one place.",
-          "result": "Five life areas in one app; records stay on your device, no account needed."
+          "intent": "अपनी सेहत, पैसा और संपत्ति एक जगह रखिए।",
+          "result": "एक ऐप में जीवन के पाँच क्षेत्र; रिकॉर्ड आपके डिवाइस पर रहते हैं, खाते की ज़रूरत नहीं।"
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Start guitar from the first sound.",
-          "result": "Progress step by step with measured practice, and train your ear with drills."
+          "intent": "पहली आवाज़ से गिटार शुरू कीजिए।",
+          "result": "मापे गए अभ्यास के साथ कदम-दर-कदम आगे बढ़ें, और अभ्यासों से अपने कान को प्रशिक्षित करें।"
         }
       }
     },
     "scene2": {
-      "label": "Difference",
-      "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
-      "listLabel": "Common pattern versus our approach, three comparisons",
-      "patternLabel": "Common pattern",
-      "approachLabel": "Our approach",
-      "tagCapability": "Current capability",
-      "tagVision": "Our vision",
-      "sourceLabel": "Source: {product} product record ({status})",
-      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "label": "फ़र्क",
+      "title": "कम झंझट, ज़्यादा नतीजे।",
+      "message": "ज़्यादा स्क्रीन, साइन-इन और मॉडल के विकल्पों की जगह हम इरादे से नतीजे तक का सबसे छोटा रास्ता चाहते हैं।",
+      "listLabel": "आम तरीका बनाम हमारा तरीका, तीन तुलनाएँ",
+      "patternLabel": "आम तरीका",
+      "approachLabel": "हमारा तरीका",
+      "tagCapability": "मौजूदा क्षमता",
+      "tagVision": "हमारी दृष्टि",
+      "sourceLabel": "स्रोत: {product} का उत्पाद रिकॉर्ड ({status})",
+      "note": "“मौजूदा क्षमता” का मतलब है कि उत्पाद रिकॉर्ड में यह लिखा है; यह स्वतंत्र सत्यापन या माप नहीं है। “हमारी दृष्टि” वह दिशा है जिधर हम काम कर रहे हैं, ऐसा कुछ नहीं जो उत्पाद आज करते हैं।",
       "pairs": {
         "p1": {
-          "pattern": "More screens, sign-ins and model choices",
-          "approach": "One app, no account needed",
-          "detail": "LifeOS: five life areas in one place, offline-first."
+          "pattern": "ज़्यादा स्क्रीन, साइन-इन और मॉडल के विकल्प",
+          "approach": "एक ऐप, खाते की ज़रूरत नहीं",
+          "detail": "LifeOS: जीवन के पाँच क्षेत्र एक जगह, ऑफ़लाइन-प्रथम।"
         },
         "p2": {
-          "pattern": "False certainty",
-          "approach": "Say where an answer comes from and how unsure it is",
-          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+          "pattern": "झूठा आत्मविश्वास",
+          "approach": "बताएँ कि जवाब कहाँ से आया और कितना अनिश्चित है",
+          "detail": "लक्ष्य है हर नतीजे के साथ स्रोत और अनिश्चितता दिखाना। हम इसे अभी उत्पाद की क्षमता नहीं बताते।"
         },
         "p3": {
-          "pattern": "Endless notifications",
-          "approach": "Step in at a meaningful time",
-          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+          "pattern": "अंतहीन नोटिफ़िकेशन",
+          "approach": "सार्थक समय पर दखल दें",
+          "detail": "लक्ष्य है कम और बेहतर समय पर प्रॉम्प्ट। हम इसे अभी उत्पाद की क्षमता नहीं बताते।"
         }
       }
     },
     "scene3": {
-      "label": "Products",
-      "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
-      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
-      "demoHeading": "Demo slot",
+      "label": "उत्पाद",
+      "title": "तीन सिस्टम जिन्हें हम प्राथमिकता देते हैं।",
+      "message": "Braavolabs, LifeOS और Ostinato: काम, जीवन और संगीत के लिए, हर एक किसी एक मानवीय नतीजे पर केंद्रित।",
+      "listLabel": "तीन प्रमुख उत्पाद, हर एक में एक मानवीय नतीजा, एक डेमो स्लॉट, उसकी प्रमाण-स्थिति और उत्पाद का लिंक",
+      "demoHeading": "डेमो स्लॉट",
       "demo": {
-        "real": "real product test",
-        "example": "example / simulation",
-        "soon": "not here yet"
+        "real": "असली उत्पाद का परीक्षण",
+        "example": "उदाहरण / सिमुलेशन",
+        "soon": "अभी यहाँ नहीं"
       },
-      "proofHeading": "Evidence status",
+      "proofHeading": "प्रमाण की स्थिति",
       "proof": {
-        "verified": "Verified claims (window open): {count}",
-        "lapsed": "Verification window closed on {date}; not shown as verified.",
-        "none": "No verified claim yet."
+        "verified": "सत्यापित दावे (अवधि खुली): {count}",
+        "lapsed": "सत्यापन की अवधि {date} को बंद हुई; सत्यापित के रूप में नहीं दिखाया गया।",
+        "none": "अभी कोई सत्यापित दावा नहीं।"
       },
-      "go": "Go to {name}",
-      "allProducts": "All products"
+      "go": "{name} पर जाएँ",
+      "allProducts": "सभी उत्पाद"
     },
     "scene4": {
-      "label": "Engineering",
-      "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
-      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
-      "currentLabel": "Stated in the product record",
-      "plannedLabel": "Planned",
-      "tagCapability": "Current capability",
-      "tagPlanned": "Planned",
-      "tagNone": "No record",
-      "noRecord": "No product record line backs this principle yet.",
-      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
-      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
-      "linksLabel": "Related pages",
-      "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with Yula Lab",
-      "linkTransparency": "Transparency",
+      "label": "इंजीनियरिंग",
+      "title": "स्वतंत्र उत्पाद। साझा इंजीनियरिंग सिद्धांत।",
+      "message": "पहले स्थानीय डेटा, हर काम के लिए अनुमति और प्रमाण, समझ में आने वाला इंटरफ़ेस: उत्पाद अलग हैं, सिद्धांत साझा हैं।",
+      "listLabel": "चार साझा इंजीनियरिंग सिद्धांत, हर एक के साथ वह जो उत्पाद रिकॉर्ड आज बताता है और जो योजना में है",
+      "currentLabel": "उत्पाद रिकॉर्ड में लिखा",
+      "plannedLabel": "योजना में",
+      "tagCapability": "मौजूदा क्षमता",
+      "tagPlanned": "योजना में",
+      "tagNone": "कोई रिकॉर्ड नहीं",
+      "noRecord": "उत्पाद रिकॉर्ड की कोई पंक्ति अभी इस सिद्धांत का समर्थन नहीं करती।",
+      "sourceLabel": "स्रोत: {product} का उत्पाद रिकॉर्ड, “{feature}”; उत्पाद की स्थिति: {status}",
+      "note": "“मौजूदा क्षमता” का मतलब है कि उस उत्पाद के लिए उत्पाद रिकॉर्ड में यह लिखा है; यह स्वतंत्र सत्यापन या माप नहीं है। उत्पाद की स्थिति iOS के लिए है; Android बंद परीक्षण में है। “योजना में” एक दिशा है, ऐसा कुछ नहीं जो उत्पाद आज करते हैं। उत्पाद अलग ही रहते हैं: न कोई साझा मॉडल है, न साझा डेटाबेस।",
+      "linksLabel": "संबंधित पेज",
+      "linkOperatingSystem": "यह प्रयोगशाला कैसे काम करती है",
+      "linkStudio": "स्टूडियो: Yula Lab के साथ बनाइए",
+      "linkTransparency": "पारदर्शिता",
       "principles": {
         "p1": {
-          "name": "Local-first data",
-          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+          "name": "पहले स्थानीय डेटा",
+          "planned": "यही सिद्धांत बाकी उत्पादों में लागू करना, जैसे-जैसे वे जारी हों। हम इसे अभी उनकी क्षमता नहीं बताते।"
         },
         "p2": {
-          "name": "Permission and proof for spending steps",
-          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+          "name": "खर्च वाले चरणों के लिए अनुमति और प्रमाण",
+          "planned": "उत्पादों में अनुमति-और-प्रमाण की एक जैसी भाषा का लक्ष्य। आज इसके लिए कोई साझा घटक या सिस्टम नहीं है।"
         },
         "p3": {
-          "name": "On-device processing",
-          "planned": "Open new signals only after they are tested on real devices."
+          "name": "डिवाइस पर प्रोसेसिंग",
+          "planned": "नए संकेत तभी खोलना जब वे असली डिवाइसों पर परखे जा चुके हों।"
         },
         "p4": {
-          "name": "An understandable interface",
-          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+          "name": "समझ में आने वाला इंटरफ़ेस",
+          "planned": "साफ़ बताना कि स्क्रीन क्या करती है और क्या नहीं। किसी उत्पाद रिकॉर्ड में अभी यह नहीं लिखा; यह एक दिशा है।"
         }
       }
     },
     "scene5": {
-      "label": "Lab",
-      "title": "A living lab.",
-      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
-      "listLabel": "Lab records: notes and a design decision",
-      "kindNote": "Lab note",
-      "kindDecision": "Design decision",
+      "label": "प्रयोगशाला",
+      "title": "एक जीती-जागती प्रयोगशाला।",
+      "message": "हम अपने नोट्स और डिज़ाइन निर्णय दर्ज करते हैं; हर रिकॉर्ड में भरे जा सकने वाले टेम्पलेट फ़ील्ड दिखते हैं, और खाली फ़ील्ड खुलकर बताए जाते हैं।",
+      "listLabel": "प्रयोगशाला के रिकॉर्ड: नोट्स और एक डिज़ाइन निर्णय",
+      "kindNote": "प्रयोगशाला नोट",
+      "kindDecision": "डिज़ाइन निर्णय",
       "fields": {
-        "question": "Question",
-        "hypothesis": "Hypothesis",
-        "did": "What we did",
-        "learned": "What we learned",
-        "next": "Next test"
+        "question": "सवाल",
+        "hypothesis": "परिकल्पना",
+        "did": "हमने क्या किया",
+        "learned": "हमने क्या सीखा",
+        "next": "अगला परीक्षण"
       },
-      "empty": "not written yet",
-      "sourceLabel": "Source",
-      "noteId": "note: {slug}",
-      "onlyTr": "No translation ({part}): written in Turkish only.",
-      "onlyEn": "No translation ({part}): written in English only.",
-      "allNotes": "All lab notes",
-      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "empty": "अभी लिखा नहीं गया",
+      "sourceLabel": "स्रोत",
+      "noteId": "नोट: {slug}",
+      "onlyTr": "अनुवाद नहीं ({part}): केवल तुर्की में लिखा गया।",
+      "onlyEn": "अनुवाद नहीं ({part}): केवल अंग्रेज़ी में लिखा गया।",
+      "allNotes": "प्रयोगशाला के सभी नोट्स",
+      "note": "यह खंड केवल रिपॉज़िटरी में लिखे नोट्स और दस्तावेज़ दिखाता है। खाली फ़ील्ड का मतलब है कि वह अभी लिखा नहीं गया; उसे भरने के लिए हम कुछ गढ़ते नहीं। जो दस्तावेज़ प्रस्ताव है, उस पर वैसा ही लेबल होता है।",
       "decision": {
-        "title": "Should the 3D scene stay on by default on the home page?",
-        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
-        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
-        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
-        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
-        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
-        "sourceNote": "a document in the repository, no separate page on the site",
-        "sourceLang": "The source document is written in Turkish."
+        "title": "क्या मुखपृष्ठ पर 3D दृश्य डिफ़ॉल्ट रूप से चालू रहना चाहिए?",
+        "question": "क्या मुखपृष्ठ की 3D यात्रा सभी के लिए डिफ़ॉल्ट रूप से चालू रहे, या मोबाइल पर स्थिर दृश्य से शुरू हो?",
+        "did": "तीन विकल्प लिखे गए: सुरक्षित मौजूदा सेटअप जस का तस रखना, मोबाइल पर डिफ़ॉल्ट रूप से स्थिर, या केवल डेस्कटॉप पर डिफ़ॉल्ट रूप से 3D। स्थानीय प्रोडक्शन बिल्ड पर Lighthouse भी चलाया गया; तालिका स्रोत दस्तावेज़ में है।",
+        "learned": "दस्तावेज़ के अनुसार, 03a2 से पहले स्थानीय मोबाइल नतीजा लाइव मान से नीचे था और लिखित स्वीकृति-शर्त पूरी नहीं हुई। 03a2 के बाद स्थानीय मोबाइल नतीजा अस्थिर रहा (मशीन व्यस्त थी); डेस्कटॉप पर असर अज्ञात है। लाइव या असली डिवाइस पर कुछ आज़माया नहीं गया।",
+        "next": "दस्तावेज़ का सुझाया अगला कदम: शांत मशीन पर एक और रन। दस्तावेज़ मोबाइल लोड समय के स्रोत पर अलग काम का भी प्रस्ताव देता है।",
+        "status": "स्थिति: स्वीकृत, 2026-11-08, Project orchestration; क्रियान्वयन WEB-P0-03a2।",
+        "sourceNote": "रिपॉज़िटरी में एक दस्तावेज़, साइट पर कोई अलग पेज नहीं",
+        "sourceLang": "स्रोत दस्तावेज़ तुर्की में लिखा है।"
       },
-      "partTitle": "title",
-      "partBody": "text"
+      "partTitle": "शीर्षक",
+      "partBody": "पाठ"
     },
     "scene6": {
-      "label": "Trust",
-      "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
-      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
-      "sourceLabel": "Source",
-      "srcRecord": "product record",
-      "srcRecords": "product records",
-      "srcPrivacy": "{product} privacy policy",
-      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "label": "भरोसा",
+      "title": "भरोसा उत्पाद-दर-उत्पाद दिखाया जाता है।",
+      "message": "हम हर उत्पाद और सुविधा के लिए डेटा सुरक्षा, नियंत्रण और मंज़ूरी, मापने योग्य नतीजे और पारदर्शी उत्पाद-चरण को प्रमाण की स्थिति के साथ बताते हैं।",
+      "listLabel": "भरोसा, चार पंक्तियाँ: डेटा सुरक्षा, नियंत्रण और मंज़ूरी, मापने योग्य नतीजा, पारदर्शी उत्पाद-चरण",
+      "sourceLabel": "स्रोत",
+      "srcRecord": "उत्पाद रिकॉर्ड",
+      "srcRecords": "उत्पाद रिकॉर्ड",
+      "srcPrivacy": "{product} की गोपनीयता नीति",
+      "note": "यह खंड वही दोहराता है जो उत्पाद रिकॉर्ड और गोपनीयता नीतियाँ उत्पाद-दर-उत्पाद कहती हैं। यह ऑडिट, प्रमाणन या माप नहीं है। जहाँ कोई रिकॉर्ड चुप है, हम खाली जगह भरने के बजाय यही बताते हैं।",
       "rows": {
         "protection": {
-          "title": "Data protection",
-          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "title": "डेटा सुरक्षा",
+          "lead": "डेटा कहाँ जाता है, यह उत्पाद और सुविधा पर निर्भर है, इसलिए हर पंक्ति एक उत्पाद का नाम लेती है।",
           "lines": {
-            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
-            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
-            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+            "lifeos": "रिकॉर्ड आपके डिवाइस पर रहते हैं और खाते की ज़रूरत नहीं; कुछ सुविधाओं के लिए App Store सदस्यता चाहिए। आपकी अनुमति वाला स्वास्थ्य डेटा Apple Health या Health Connect से पढ़ा जाता है और डिवाइस पर प्रोसेस होता है; वह सर्वर पर नहीं भेजा जाता। खाते, खरीद और क्रैश-रिपोर्ट का डेटा अन्य रास्तों से जाता है, जिन्हें गोपनीयता नीति सूचीबद्ध करती है।",
+            "braavolabs": "Braavolabs मोबाइल ऐप में डेटा सर्वर पर संभाला जाता है: खाते का विवरण, वर्कफ़्लो, रन के नतीजे और मंज़ूरी के निर्णय आपके वर्कस्पेस में रखे जाते हैं, और AI अनुरोध उस मॉडल प्रदाता को जाते हैं जिसका नाम गोपनीयता नीति में है। उत्पाद रिकॉर्ड आपके कंप्यूटर पर चलने वाले एजेंटों का भी वर्णन करता है; यह गोपनीयता नीति केवल मोबाइल ऐप पर लागू है, इसलिए उन एजेंटों के लिए यहाँ कोई डेटा प्रवाह नहीं बताया गया।",
+            "ostinato": "जल्द आ रहा है। पहले रिलीज़ में गिटार कोर्स में माइक्रोफ़ोन वैकल्पिक है। गोपनीयता पेज के अनुसार, ऑडियो केवल डिवाइस की मेमोरी में प्रोसेस होता है, और कोई कच्ची ऑडियो फ़ाइल रिकॉर्ड या सर्वर पर अपलोड नहीं होती।",
+            "others": "जारी नहीं हुए हैं, और उनके रिकॉर्ड कोई डेटा प्रवाह नहीं बताते, इसलिए यहाँ कोई नहीं बताया गया। Motion का गोपनीयता पेज पूरे परिवार को कवर करता है।"
           }
         },
         "control": {
-          "title": "Control and approval",
-          "lead": "What the records say about who decides.",
+          "title": "नियंत्रण और मंज़ूरी",
+          "lead": "फ़ैसला कौन करता है, इस बारे में रिकॉर्ड क्या कहते हैं।",
           "lines": {
-            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+            "braavolabs": "पैसा खर्च करने वाले चरण स्पष्ट मानवीय मंज़ूरी का इंतज़ार करते हैं, और हर चरण ऑडिट ट्रेल में दिखता है। भूमिकाएँ, अनुमतियाँ और सख़्त बजट सीमाएँ।",
+            "lifeos": "स्वास्थ्य डेटा केवल आपकी अनुमति से पढ़ा जाता है। ऑनलाइन AI वैकल्पिक है: जब वह ऐप में दिया जाए और आप उसे इस्तेमाल करना चुनें, तो स्क्रीन पर दिखा वह पाठ जिसे आप मंज़ूर करते हैं, प्रोसेसिंग के लिए भेजा जाता है, जैसा गोपनीयता नीति बताती है।"
           }
         },
         "result": {
-          "title": "Measurable result",
-          "body": "No outcome measurements are published yet.",
-          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+          "title": "मापने योग्य नतीजा",
+          "body": "अभी नतीजों के कोई माप प्रकाशित नहीं हैं।",
+          "detail": "उत्पाद रिकॉर्ड में सुविधाओं की गिनती और विवरण हैं, नतीजे नहीं, और उनके पीछे के कुछ सार्वजनिक-रजिस्ट्री दावों की अवधि खत्म हो चुकी है। इसलिए यह पेज कोई आँकड़ा नहीं दिखाता।"
         },
         "stage": {
-          "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record.",
-          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+          "title": "पारदर्शी उत्पाद-चरण",
+          "lead": "हर उत्पाद का चरण उसके उत्पाद रिकॉर्ड से पढ़ा जाता है।",
+          "note": "LifeOS: “उपलब्ध” iOS पर लागू है; उत्पाद रिकॉर्ड के एक नोट के अनुसार Android बंद परीक्षण में है। किसी अन्य उत्पाद के स्टोर कवरेज के लिए उसका उत्पाद पेज देखें।"
         }
       }
     },
     "scene7": {
-      "label": "Start",
-      "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business.",
-      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "label": "शुरुआत",
+      "title": "आइए अगला कदम साथ उठाएँ।",
+      "message": "उत्पाद देखें, या बात करें कि आपके व्यवसाय पर हम साथ कैसे काम कर सकते हैं।",
+      "groupsLabel": "शुरू करने के तीन तरीके: व्यक्तियों के लिए, व्यवसायों के लिए, इंजीनियरों के लिए",
       "paths": {
         "individual": {
-          "title": "For individuals",
+          "title": "व्यक्तियों के लिए",
           "products": {
-            "label": "Browse the products",
-            "hint": "Each product has its own page."
+            "label": "उत्पाद देखें",
+            "hint": "हर उत्पाद का अपना पेज है।"
           }
         },
         "business": {
-          "title": "For businesses",
+          "title": "व्यवसायों के लिए",
           "consulting": {
-            "label": "See how we can work together",
-            "hint": "AI consulting services and a contact address."
+            "label": "देखें कि हम साथ कैसे काम कर सकते हैं",
+            "hint": "AI परामर्श सेवाएँ और संपर्क का पता।"
           }
         },
         "engineer": {
-          "title": "For engineers",
+          "title": "इंजीनियरों के लिए",
           "notes": {
-            "label": "Read the change notes",
-            "hint": "Short records of what changed."
+            "label": "बदलाव के नोट्स पढ़ें",
+            "hint": "क्या बदला, इसके छोटे अभिलेख।"
           },
           "approach": {
-            "label": "Read how we work",
-            "hint": "Evidence levels, product states and claim policy."
+            "label": "पढ़ें कि हम कैसे काम करते हैं",
+            "hint": "प्रमाण के स्तर, उत्पादों की अवस्थाएँ और दावों की नीति।"
           },
           "contact": {
-            "label": "Get in touch with the team",
-            "hint": "General address for support, technical questions and press."
+            "label": "टीम से संपर्क करें",
+            "hint": "सहायता, तकनीकी सवालों और प्रेस के लिए सामान्य पता।"
           }
         }
       }
     },
     "doors": {
-      "label": "What brings you here?",
+      "label": "आप यहाँ किस लिए आए हैं?",
       "products": {
-        "title": "Explore the products",
-        "audience": "For people who want to try and use the apps.",
-        "products": "Browse the products"
+        "title": "उत्पाद देखें",
+        "audience": "उन लोगों के लिए जो ऐप आज़माना और इस्तेमाल करना चाहते हैं।",
+        "products": "उत्पाद देखें"
       },
       "work": {
-        "title": "AI for my work",
-        "audience": "For teams that want to put AI to work in their business.",
-        "consulting": "See AI consulting"
+        "title": "मेरे काम के लिए AI",
+        "audience": "उन टीमों के लिए जो अपने व्यवसाय में AI को काम पर लगाना चाहती हैं।",
+        "consulting": "AI परामर्श देखें"
       },
       "partners": {
-        "title": "Collaboration and company",
-        "audience": "For partners, investors and anyone who wants to know the company.",
-        "contact": "See ways to get in touch"
+        "title": "सहयोग और कंपनी",
+        "audience": "साझेदारों, निवेशकों और कंपनी को जानने के इच्छुक सभी लोगों के लिए।",
+        "contact": "संपर्क के तरीके देखें"
       },
       "inspect": {
-        "title": "Inspect",
-        "audience": "For people who want to check how we work and what we claim.",
-        "lab": "Visit the lab",
-        "transparency": "Read the transparency records"
+        "title": "जाँचें",
+        "audience": "उन लोगों के लिए जो जाँचना चाहते हैं कि हम कैसे काम करते हैं और क्या दावा करते हैं।",
+        "lab": "प्रयोगशाला देखें",
+        "transparency": "पारदर्शिता के अभिलेख पढ़ें"
       }
     }
   },
   "start": {
-    "metaTitle": "Doors",
-    "lede": "Pick one of four paths; each opens a real page on this site.",
-    "forLabel": "Who it is for",
-    "note": "Your choice is not stored; this page records nothing."
+    "metaTitle": "द्वार",
+    "lede": "चार रास्तों में से एक चुनें; हर एक इसी साइट पर एक असली पेज खोलता है।",
+    "forLabel": "किसके लिए",
+    "note": "आपका चुनाव सहेजा नहीं जाता; यह पेज कुछ दर्ज नहीं करता।"
   },
   "ostinatoDemo": {
-    "kicker": "Rhythm feel try-out",
-    "title": "Tap along with a beat.",
-    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
-    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
-    "start": "Start the beat",
-    "tapButton": "Tap here on the beat",
-    "tapHint": "Space, Enter, click or touch all work.",
-    "countIn": "Listen first. Taps count after the lead-in.",
-    "running": "The beat is playing. Tap along.",
-    "perfect": "Perfect",
-    "good": "Good",
-    "miss": "Missed",
-    "early": "{ms} ms early",
-    "late": "{ms} ms late",
-    "last": "Last tap",
-    "accuracy": "Timing accuracy: {pct}%",
-    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
-    "resultHeading": "Round result",
-    "announceDone": "Round finished. {summary}. {accuracy}.",
-    "restart": "Try again",
-    "micLabel": "Also listen with the microphone (optional)",
-    "micOn": "Microphone is on. Clap or tap a surface.",
-    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+    "kicker": "लय के एहसास का अभ्यास",
+    "title": "बीट के साथ ताल दीजिए।",
+    "intro": "शुरू दबाइए, बीट सुनिए, फिर Space, Enter, क्लिक या स्पर्श से ताल दीजिए। हर ताल पर टाइमिंग का निशान मिलता है, और अंत में आपको कुल नतीजा दिखता है।",
+    "note": "इस पेज पर एक छोटा अभ्यास। यह ऐप नहीं है और किसी चीज़ का माप भी नहीं। कुछ भी आपके ब्राउज़र से बाहर नहीं जाता और कुछ सहेजा नहीं जाता।",
+    "start": "बीट शुरू करें",
+    "tapButton": "बीट पर यहाँ टैप करें",
+    "tapHint": "Space, Enter, क्लिक या स्पर्श, सब चलते हैं।",
+    "countIn": "पहले सुनिए। शुरुआती गिनती के बाद के टैप गिने जाते हैं।",
+    "running": "बीट बज रही है। साथ में टैप कीजिए।",
+    "perfect": "बिल्कुल सटीक",
+    "good": "अच्छा",
+    "miss": "चूका",
+    "early": "{ms} ms जल्दी",
+    "late": "{ms} ms देर से",
+    "last": "आखिरी टैप",
+    "accuracy": "टाइमिंग की सटीकता: {pct}%",
+    "summary": "बिल्कुल सटीक: {perfect}, अच्छा: {good}, चूका: {miss}",
+    "resultHeading": "राउंड का नतीजा",
+    "announceDone": "राउंड पूरा हुआ। {summary}। {accuracy}।",
+    "restart": "फिर कोशिश करें",
+    "micLabel": "माइक्रोफ़ोन से भी सुनें (वैकल्पिक)",
+    "micOn": "माइक्रोफ़ोन चालू है। ताली बजाइए या किसी सतह पर थपथपाइए।",
+    "micNote": "माइक्रोफ़ोन कभी ज़रूरी नहीं है। आवाज़ आपके डिवाइस पर रहती है; न रिकॉर्ड होती है, न कहीं भेजी जाती है। हेडफ़ोन बीट को माइक्रोफ़ोन से दूर रखते हैं।"
   },
   "lifeosDemo": {
-    "kicker": "Synthetic decision and reminder try-out",
-    "title": "Pick a decision, preview its reminder.",
-    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
-    "badge": "Synthetic example",
-    "cardsLegend": "Example decision card",
-    "card1": "Moving date",
-    "card2": "Wardrobe colour choice",
-    "card3": "Book club day",
-    "customLabel": "Or name your own example card (optional)",
-    "customHint": "Do not type anything real. An example name is enough.",
-    "whenLegend": "When should the reminder arrive?",
-    "whenDay": "Tomorrow morning",
-    "whenWeek": "One week from now, in the morning",
-    "preview": "Reminder time: {when}",
-    "setButton": "Set the reminder (simulation)",
-    "doneHeading": "Reminder set (simulation)",
-    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
-    "announceDone": "Reminder set, simulation. {title}: {when}.",
-    "restart": "Try again"
+    "kicker": "कृत्रिम निर्णय और रिमाइंडर का अभ्यास",
+    "title": "कोई निर्णय चुनिए, उसका रिमाइंडर देखिए।",
+    "intro": "कोई उदाहरण निर्णय कार्ड चुनिए या अपना उदाहरण नाम दीजिए। देखिए कि रिमाइंडर कब आएगा, फिर उसे सेट हुआ देखिए।",
+    "note": "एक छोटा अभ्यास, ऐप खुद नहीं। निर्णय कार्ड गढ़े हुए हैं। कोई असली रिमाइंडर सेट नहीं होता, और यह अभ्यास कोई डेटा न सहेजता है, न भेजता है।",
+    "badge": "कृत्रिम उदाहरण",
+    "cardsLegend": "उदाहरण निर्णय कार्ड",
+    "card1": "घर बदलने की तारीख",
+    "card2": "अलमारी के रंग का चुनाव",
+    "card3": "बुक क्लब का दिन",
+    "customLabel": "या अपना उदाहरण कार्ड नाम दें (वैकल्पिक)",
+    "customHint": "कुछ असली न लिखें। उदाहरण का नाम काफ़ी है।",
+    "whenLegend": "रिमाइंडर कब आए?",
+    "whenDay": "कल सुबह",
+    "whenWeek": "एक हफ़्ते बाद, सुबह",
+    "preview": "रिमाइंडर का समय: {when}",
+    "setButton": "रिमाइंडर सेट करें (सिमुलेशन)",
+    "doneHeading": "रिमाइंडर सेट हुआ (सिमुलेशन)",
+    "doneBody": "“{title}” का रिमाइंडर: {when}। असल में कुछ सेट नहीं हुआ।",
+    "announceDone": "रिमाइंडर सेट हुआ, सिमुलेशन। {title}: {when}।",
+    "restart": "फिर कोशिश करें"
   }
 }

@@ -1,6 +1,7 @@
 import type { getTranslations } from "next-intl/server";
 import { localePath } from "@/i18n/locales";
 import { notes } from "@/data/notes";
+import { recordLangAttrs } from "./record-lang";
 import { LAB_FIELDS, pickNoteText, type LabField, type NoteLang } from "./scene5-lab";
 
 type Translate = Awaited<ReturnType<typeof getTranslations>>;
@@ -20,9 +21,11 @@ const DECISION = {
 
 function Fields({
   t,
+  locale,
   written,
 }: {
   t: Translate;
+  locale: string;
   written: Partial<Record<LabField, { text: string; lang?: NoteLang }>>;
 }) {
   return (
@@ -36,7 +39,7 @@ function Fields({
             </dt>
             <dd
               data-scene5-empty={value ? undefined : "true"}
-              lang={value?.lang}
+              {...recordLangAttrs(value?.lang, locale)}
               className={value ? "text-base text-ink-50" : "text-base italic text-ink-300"}
             >
               {value ? value.text : t("scene5.empty")}
@@ -82,7 +85,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
           <h3 className="mt-3 font-display text-xl font-semibold text-ink-50">
             {t("scene5.decision.title")}
           </h3>
-          <Fields t={t} written={decisionWritten} />
+          <Fields t={t} locale={locale} written={decisionWritten} />
           <p data-scene5-status="accepted" className="mt-4 text-sm text-ink-200">
             {t("scene5.decision.status")}
           </p>
@@ -129,7 +132,7 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
                 {title.written ? (
                   <a
                     href={`${localePath(locale, "/notes")}#${note.slug}`}
-                    lang={title.lang === want ? undefined : title.lang}
+                    {...recordLangAttrs(title.lang, locale)}
                     data-scene5-note-link={note.slug}
                     className="focusable underline underline-offset-4 hover:text-ink-200"
                   >
@@ -148,7 +151,8 @@ export function Scene5Lab({ t, locale }: { t: Translate; locale: string }) {
               ))}
               <Fields
                 t={t}
-                written={body.written ? { did: { text: body.text, lang: body.lang === want ? undefined : body.lang } } : {}}
+                locale={locale}
+                written={body.written ? { did: { text: body.text, lang: body.lang } } : {}}
               />
               <p
                 data-scene5-source={note.slug}

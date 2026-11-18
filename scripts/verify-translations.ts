@@ -83,5 +83,30 @@ for (const locale of secondary) {
     if (typeof translated !== "string" || !translated.trim() || JSON.stringify(placeholders(key)) !== JSON.stringify(placeholders(translated))) issues.push(`${locale}: missing content/placeholder ${JSON.stringify(key)} in ${path.relative(root, file)}`);
   }
 }
+// EN-fallback gate (WEB-10c-AI): a secondary-locale value identical to its English source is an untranslated fallback
+// unless it is technical (no letters, URL, path, locale tag) or listed in scripts/translation-same-as-en.json
+// (deliberately kept proper nouns / loanwords). Stale allowlist entries are rejected so the list cannot drift.
+type SameAsEn = Record<string, { messages?: string[]; content?: string[] }>;
+const allowlistPath = path.join(root, "scripts", "translation-same-as-en.json");
+const sameAsEn: SameAsEn = fs.existsSync(allowlistPath) ? JSON.parse(fs.readFileSync(allowlistPath, "utf8")) : {};
+const isTechnicalValue = (value: string) =>
+  technical.has(value) || value === "EN · TR" || value === "." || !/[A-Za-z]/.test(value.replace(/\{[^{}]+\}/g, ""))
+  || value.startsWith("/") || value.startsWith("{ORIGIN}") || /^(?:https?:|mailto:)/.test(value);
+for (const locale of Object.keys(sameAsEn)) if (!secondary.includes(locale as (typeof secondary)[number])) issues.push(`${locale}: allowlist names an unsupported or source locale`);
+for (const locale of secondary) {
+  const actualMessages = leaves(read(`${locale}.json`));
+  const actualContent = read(`content-${locale}.json`) as Record<string, string>;
+  const allowedMessages = new Set(sameAsEn[locale]?.messages ?? []);
+  const allowedContent = new Set(sameAsEn[locale]?.content ?? []);
+  for (const [key, value] of Object.entries(source)) {
+    if (!value.trim() || isTechnicalValue(value)) continue;
+    if (actualMessages[key] === value && !allowedMessages.has(key)) issues.push(`${locale}: ${key} is an untranslated English fallback`);
+  }
+  for (const [key, translated] of Object.entries(actualContent)) {
+    if (translated === key && !isTechnicalValue(key) && !allowedContent.has(key)) issues.push(`${locale}: content ${JSON.stringify(key.slice(0, 60))} is an untranslated English fallback`);
+  }
+  for (const key of allowedMessages) if (source[key] === undefined || actualMessages[key] !== source[key]) issues.push(`${locale}: stale same-as-English allowlist entry ${key}`);
+  for (const key of allowedContent) if (actualContent[key] !== key) issues.push(`${locale}: stale same-as-English content allowlist entry ${JSON.stringify(key.slice(0, 60))}`);
+}
 console.log(JSON.stringify({ locales: SUPPORTED_LOCALES, messageLeaves: Object.keys(source).length, requiredSourcePhrases: required.size, scope: "catalogue shape, placeholders, source coverage and runtime Intl availability; not translation quality or browser acceptance", intakeLocales: ["tr", "en"], issues }, null, 2));
 if (issues.length) process.exitCode = 1;

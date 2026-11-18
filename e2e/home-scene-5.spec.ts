@@ -161,19 +161,23 @@ test.describe("scene 5 in English", () => {
   });
 });
 
-test.describe("scene 5 in /ar (RTL page, English fallback block)", () => {
+test.describe("scene 5 in /ar (RTL page, translated block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy, no Arabic letters in the block, no overflow", async ({ page }) => {
+  test("shows translated Arabic copy, no English-fallback marker, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
     const scene = page.locator("#scene-5-lab");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-scene5-entry]")).toHaveCount(4);
     await expect(scene.locator('[data-scene5-entry="site-motion"]')).toContainText("Gave the showcase some life");
-    await expect(scene.locator('[data-scene5-entry="site-motion"] dt').first()).toHaveText(/question/i);
+    // The note title is a record written in English; it keeps its own lang mark inside the Arabic block.
+    await expect(scene.locator('[data-scene5-note-link="site-motion"]')).toHaveAttribute("lang", "en");
+    await expect(scene.locator('[data-scene5-note-link="site-motion"]')).toHaveAttribute("dir", "ltr");
+    await expect(scene.locator('[data-scene5-entry="site-motion"] dt').first()).toHaveText("السؤال");
     const block = await page.locator("[data-home-scenes]").evaluate((el) => (el as HTMLElement).innerText);
-    expect(block).not.toMatch(/[؀-ۿ]/);
+    expect(block).toMatch(/[؀-ۿ]/);
+    await expect(page.locator('[data-home-scenes] > [lang="en"]')).toHaveCount(0);
     const href = (await scene.locator('[data-scene5-note-link="site-motion"]').getAttribute("href")) ?? "";
     expect(href).toBe("/ar/notes#site-motion");
     expect((await page.request.get(href.split("#")[0])).status()).toBe(200);

@@ -22,8 +22,8 @@
     "approach": "Pendekatan kami",
     "collaboration": "Kolaborasi",
     "mainNavigation": "Navigasi utama",
-    "doors": "Doors",
-    "doorsPanel": "Starting doors"
+    "doors": "Pintu",
+    "doorsPanel": "Pintu awal"
   },
   "footer": {
     "tagline": "Laboratorium produk independen yang menggunakan AI pada tempat dan waktu yang tepat, tanpa membesar-besarkannya.",
@@ -46,7 +46,7 @@
     "navOperatingSystem": "Cara kami bekerja",
     "navStudio": "Studio",
     "navConsulting": "Konsultasi AI",
-    "navWhyYula": "Why YULA"
+    "navWhyYula": "Mengapa YULA"
   },
   "common": {
     "explore": "Jelajahi",
@@ -172,22 +172,22 @@
     "researchHeading": "Dalam penelitian",
     "researchNote": "Belum dirilis: tidak ada halaman toko, tautan unduhan, atau angka terverifikasi. Produk ini dipisahkan di bawah karena menyamakannya dengan produk yang sudah dirilis akan memberi kesan kematangan yang belum tercapai.",
     "researchToggle": "Tampilkan produk penelitian ({count})",
-    "featuredHeading": "Featured products",
-    "portfolioHeading": "Portfolio",
-    "filterLabel": "Filter by status",
-    "filterAll": "All",
-    "showing": "Showing {count} products",
-    "summary": "{live} live · {beta} beta · {soon} coming soon",
-    "noMatch": "No product matches this filter.",
-    "panelHeading": "Selected product",
-    "panelHint": "Select a product to see its details here.",
-    "accessHeading": "Access",
-    "openFull": "Open the full page",
-    "closePanel": "Close panel",
-    "preview": "Preview",
-    "previewLabel": "Preview: {name}",
-    "panelStatusLink": "Status and sources",
-    "panelScreenEmpty": "There is no screenshot for this product yet."
+    "featuredHeading": "Produk unggulan",
+    "portfolioHeading": "Portofolio",
+    "filterLabel": "Saring menurut status",
+    "filterAll": "Semua",
+    "showing": "Menampilkan {count} produk",
+    "summary": "{live} tersedia · {beta} beta · {soon} segera hadir",
+    "noMatch": "Tidak ada produk yang cocok dengan penyaring ini.",
+    "panelHeading": "Produk terpilih",
+    "panelHint": "Pilih sebuah produk untuk melihat detailnya di sini.",
+    "accessHeading": "Akses",
+    "openFull": "Buka halaman lengkap",
+    "closePanel": "Tutup panel",
+    "preview": "Pratinjau",
+    "previewLabel": "Pratinjau: {name}",
+    "panelStatusLink": "Status dan sumber",
+    "panelScreenEmpty": "Belum ada tangkapan layar untuk produk ini."
   },
   "showcase": {
     "back": "Proyek",
@@ -278,19 +278,19 @@
     "studioLink": "Pengajuan Studio",
     "studioTitle": "Ingin membahas suatu pekerjaan?",
     "intakeLanguageNotice": "Formulir daring belum tersedia dalam bahasa ini. Anda dapat mengirim email ke alamat di bawah; bahasa antarmuka tidak menjanjikan bahasa atau waktu balasan.",
-    "pathsTitle": "Who is this for?",
-    "pathsUserLabel": "Product user",
-    "pathsUserBody": "Product support and account questions go to the support address.",
-    "pathsUserLink": "Support",
-    "pathsCorpLabel": "Business",
-    "pathsCorpBody": "AI work for your company. Business address:",
-    "pathsCorpLink": "Discuss your project",
-    "pathsPartnerLabel": "Partners and investors",
-    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
-    "pathsDevLabel": "Developers and researchers",
-    "pathsDevBody": "Working notes and open records.",
-    "pathsDevLab": "Lab",
-    "pathsDevTransparency": "Transparency"
+    "pathsTitle": "Untuk siapa halaman ini?",
+    "pathsUserLabel": "Pengguna produk",
+    "pathsUserBody": "Pertanyaan dukungan produk dan akun dikirim ke alamat dukungan.",
+    "pathsUserLink": "Bantuan",
+    "pathsCorpLabel": "Bisnis",
+    "pathsCorpBody": "Pekerjaan AI untuk perusahaan Anda. Alamat bisnis:",
+    "pathsCorpLink": "Diskusikan proyek Anda",
+    "pathsPartnerLabel": "Mitra dan investor",
+    "pathsPartnerBody": "Tulis kepada kami untuk pembicaraan kemitraan dan investasi.",
+    "pathsDevLabel": "Pengembang dan peneliti",
+    "pathsDevBody": "Catatan kerja dan rekaman terbuka.",
+    "pathsDevLab": "Laboratorium",
+    "pathsDevTransparency": "Transparansi"
   },
   "notFound": {
     "title": "Halaman tidak ditemukan.",
@@ -300,12 +300,12 @@
     "eyebrow": "Catatan",
     "title": "Yang kami lakukan, saat itu terjadi.",
     "intro": "Transparansi juga berlaku di sini—catatan singkat dan jujur tentang perubahan, perbaikan, dan hal yang mulai berjalan pada produk kami.",
-    "articleEyebrow": "Article",
-    "readArticle": "Read the article",
-    "sourcesHeading": "Sources",
-    "verifiedOn": "verified {date}",
-    "seeTransparency": "Transparency page",
-    "backToNotes": "All notes"
+    "articleEyebrow": "Artikel",
+    "readArticle": "Baca artikelnya",
+    "sourcesHeading": "Sumber",
+    "verifiedOn": "diverifikasi {date}",
+    "seeTransparency": "Halaman transparansi",
+    "backToNotes": "Semua catatan"
   },
   "links": {
     "web": "Situs web",
@@ -520,11 +520,11 @@
       "pitch1Body": "Nyalakan mikrofon lalu bermainlah; Ostinato menandai setiap nada sebagai benar, nada lain, atau tidak terdengar. Saat tidak yakin, Ostinato tidak menebak. Audio diproses di perangkat Anda dan tidak pernah diunggah.",
       "pitch2Title": "Latihan terukur, bukan pengulangan acak.",
       "pitch2Body": "Ikuti tab yang berjalan bersama metronom. Atur tempo dari 40% hingga 120%, ulangi birama yang sulit dalam loop, atau biarkan aplikasi menunggu Anda. Setiap pelajaran yang Anda lewati membuka pelajaran berikutnya.",
-      "pitch3Title": "Guitar and ear training: 283 lessons, voice and piano coming soon.",
-      "pitch3Body": "The guitar course comes with 235 lessons across four levels and ear training with 48 lessons across two; voice and piano follow in turn. A setup wizard measures your room and latency, the built-in tuner gets your strings ready, and a weekly goal and streak keep you playing.",
+      "pitch3Title": "Gitar dan latihan telinga: 283 pelajaran, vokal dan piano segera hadir.",
+      "pitch3Body": "Kursus gitar hadir dengan 235 pelajaran dalam empat level dan latihan telinga dengan 48 pelajaran dalam dua level; vokal dan piano menyusul bergiliran. Panduan penyiapan mengukur ruangan dan latensi Anda, tuner bawaan menyiapkan senar Anda, dan target mingguan serta rentetan hari menjaga Anda terus bermain.",
       "s1Kicker": "01 — Di aplikasi",
-      "a1Title": "Guitar and ear training come first.",
-      "a1Body": "Guitar runs from your first sound to advanced: 235 lessons across four levels. Ear training has 48 lessons: on-screen drills, clapping with the click and part-by-part tests. Voice and piano are coming soon.",
+      "a1Title": "Gitar dan latihan telinga lebih dulu.",
+      "a1Body": "Gitar berjalan dari bunyi pertama Anda hingga tingkat lanjut: 235 pelajaran dalam empat level. Latihan telinga memiliki 48 pelajaran: latihan di layar, bertepuk tangan mengikuti klik, dan tes per bagian. Vokal dan piano segera hadir.",
       "a2Title": "Level 1 setiap kursus gratis.",
       "a2Body": "Gitar level 1 (40 pelajaran) dan latihan pendengaran level 1 (25 pelajaran) gratis dan dapat digunakan tanpa akun. Level berikutnya terbuka dengan keanggotaan Ostinato.",
       "s2Kicker": "02 — Akses",
@@ -583,69 +583,69 @@
     "statNeedsReverification": "perlu verifikasi ulang",
     "availabilityUnverified": "Status publikasi perlu diverifikasi ulang",
     "availabilityCheckedAt": "Pemeriksaan publikasi terakhir: {date}. Anda dapat membuka tautan untuk memeriksa status terkini.",
-    "accessHeading": "Access",
-    "screenHeading": "Screens and demo",
-    "screenEmpty": "There is no screenshot for this product yet.",
-    "trustHeading": "Privacy and trust",
-    "trustPrivacy": "Privacy policy for this product",
-    "statusHeading": "Release status",
-    "statusLink": "Status and sources",
-    "demoLabel": "Example simulation"
+    "accessHeading": "Akses",
+    "screenHeading": "Layar dan demo",
+    "screenEmpty": "Belum ada tangkapan layar untuk produk ini.",
+    "trustHeading": "Privasi dan kepercayaan",
+    "trustPrivacy": "Kebijakan privasi untuk produk ini",
+    "statusHeading": "Status rilis",
+    "statusLink": "Status dan sumber",
+    "demoLabel": "Simulasi contoh"
   },
   "braavolabsDemo": {
-    "kicker": "Sample plan card",
-    "title": "Describe a job. See its plan, approvals and result in one place.",
-    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
-    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
-    "pickerLabel": "Pick a sample intent",
-    "announce": "Plan card shown",
+    "kicker": "Kartu rencana contoh",
+    "title": "Jelaskan sebuah pekerjaan. Lihat rencana, persetujuan, dan hasilnya di satu tempat.",
+    "intro": "Pilih satu dari tiga maksud contoh. Kartu ini menunjukkan seperti apa rencana bisa terlihat. Semua yang ada di sini adalah teks tetap di halaman ini; tidak ada yang keluar dari peramban Anda.",
+    "disclaimer": "Ini adalah konsep produk interaktif / contoh rencana; tidak ada pekerjaan nyata yang dijalankan.",
+    "pickerLabel": "Pilih maksud contoh",
+    "announce": "Kartu rencana ditampilkan",
     "labels": {
-      "intent": "Sample intent",
-      "example": "Example card",
-      "note": "Example / concept: no real job is executed.",
-      "steps": "Example steps",
-      "approvals": "Approval points",
-      "risk": "Example risk level",
-      "output": "Expected output"
+      "intent": "Maksud contoh",
+      "example": "Kartu contoh",
+      "note": "Contoh / konsep: tidak ada pekerjaan nyata yang dijalankan.",
+      "steps": "Langkah contoh",
+      "approvals": "Titik persetujuan",
+      "risk": "Tingkat risiko contoh",
+      "output": "Hasil yang diharapkan"
     },
     "risk": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi"
     },
     "intents": {
       "content": {
-        "label": "Content",
-        "prompt": "“Prepare a week of posts for our launch.”",
-        "s1": "Read the brief and list the post ideas.",
-        "s2": "Draft each post in your tone.",
-        "s3": "Collect the drafts for your review.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you read the drafts and decide.",
-        "riskNote": "The output is a draft you review.",
-        "output": "A set of draft posts, ready for your review."
+        "label": "Konten",
+        "prompt": "“Siapkan postingan satu minggu untuk peluncuran kami.”",
+        "s1": "Baca brief dan daftar ide postingan.",
+        "s2": "Tulis setiap postingan dengan gaya Anda.",
+        "s3": "Kumpulkan draf untuk Anda tinjau.",
+        "a1": "Langkah yang mengeluarkan uang menunggu persetujuan Anda.",
+        "a2": "Contoh: Anda membaca draf lalu memutuskan.",
+        "riskNote": "Hasilnya berupa draf yang Anda tinjau.",
+        "output": "Sekumpulan draf postingan, siap Anda tinjau."
       },
       "report": {
-        "label": "Report",
-        "prompt": "“Summarise last month's support requests.”",
-        "s1": "Gather the material you point to.",
-        "s2": "Group the findings by theme.",
-        "s3": "Write a short summary.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you choose which material is used.",
-        "riskNote": "It reads your own material, so you decide what it may read.",
-        "output": "A short report draft with the points that need a decision."
+        "label": "Laporan",
+        "prompt": "“Rangkum permintaan dukungan bulan lalu.”",
+        "s1": "Kumpulkan bahan yang Anda tunjuk.",
+        "s2": "Kelompokkan temuan menurut tema.",
+        "s3": "Tulis ringkasan singkat.",
+        "a1": "Langkah yang mengeluarkan uang menunggu persetujuan Anda.",
+        "a2": "Contoh: Anda memilih bahan yang dipakai.",
+        "riskNote": "Ia membaca bahan milik Anda sendiri, jadi Anda yang menentukan apa yang boleh dibacanya.",
+        "output": "Draf laporan singkat berisi poin-poin yang perlu diputuskan."
       },
       "software": {
-        "label": "Software",
-        "prompt": "“Fix the sign-in bug in our app.”",
-        "s1": "Read the code and find the likely cause.",
-        "s2": "Propose a change and a test for it.",
-        "s3": "Present the proposed change.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you review each proposed change.",
-        "riskNote": "It touches the code behind your product, so each change waits for you.",
-        "output": "A proposed code change with its test, for you to review."
+        "label": "Perangkat lunak",
+        "prompt": "“Perbaiki bug masuk di aplikasi kami.”",
+        "s1": "Baca kode dan temukan kemungkinan penyebabnya.",
+        "s2": "Usulkan perubahan beserta tesnya.",
+        "s3": "Sajikan perubahan yang diusulkan.",
+        "a1": "Langkah yang mengeluarkan uang menunggu persetujuan Anda.",
+        "a2": "Contoh: Anda meninjau setiap perubahan yang diusulkan.",
+        "riskNote": "Ia menyentuh kode di balik produk Anda, jadi setiap perubahan menunggu Anda.",
+        "output": "Usulan perubahan kode beserta tesnya, untuk Anda tinjau."
       }
     }
   },
@@ -752,9 +752,9 @@
       "support": "Bantuan",
       "rights": "Seluruh hak dilindungi."
     },
-    "open3d": "Open the 3D experience",
-    "open3dOpened": "3D experience opened",
-    "open3dFailed": "Could not open 3D; showing the linear view.",
+    "open3d": "Buka pengalaman 3D",
+    "open3dOpened": "Pengalaman 3D dibuka",
+    "open3dFailed": "Tidak dapat membuka 3D; menampilkan tampilan linear.",
     "fallback": {
       "label": "Tampilan linear",
       "reason": "Saat animasi atau lapisan 3D tidak tersedia, seluruh produk, bukti, dan tautan tetap tersedia dalam tampilan ini."
@@ -786,7 +786,7 @@
       "wallService": "Layanan",
       "reset": "Atur ulang"
     },
-    "loaderSkip": "Skip intro"
+    "loaderSkip": "Lewati intro"
   },
   "studio": {
     "applyIntro": "Kami tidak meminta angka anggaran yang tepat atau nama pengambil keputusan—rentang anggaran dan peran sudah cukup.",
@@ -944,333 +944,333 @@
     "limits": "Kami tidak menjanjikan kenaikan pendapatan, keluaran model yang sempurna, atau tanggal rilis sebelum penjajakan. Akses dan penerapan ke produksi memerlukan kesepakatan terpisah.",
     "contactTitle": "Ceritakan apa yang ingin Anda tingkatkan.",
     "contactBody": "Mulailah dari alur kerja, masalah, dan jadwal Anda. Jangan mengirim kata sandi, kunci API, atau data rahasia pelanggan. Tautan email membuka aplikasi email Anda; halaman ini tidak mengirimkan apa pun.",
-    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
+    "contactBodyForm": "Mulailah dari alur kerja, masalah, dan jadwal Anda. Jangan mengirim kata sandi, kunci API, atau data rahasia pelanggan. Anda dapat memakai formulir di bawah atau tautan email; tautan email membuka aplikasi email Anda.",
     "cta": "Diskusikan proyek Anda",
     "subject": "Pertanyaan konsultasi AI",
     "terms": "Ketersediaan, harga, dan cakupan dikonfirmasi melalui pembahasan.",
     "nav": "Konsultasi AI"
   },
   "whyYula": {
-    "eyebrow": "Why YULA",
-    "title": "Why YULA",
-    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
-    "sourcesHeading": "Sources",
-    "s1Title": "Evidence comes before the claim.",
-    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
-    "s2Title": "Portfolio status is read from the registry.",
-    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
-    "s3Title": "The level of evidence is written out.",
-    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
-    "s4Title": "Work you can read.",
-    "s4Body": "The lab's records and notes are reachable directly from here.",
-    "linkLab": "Lab",
-    "linkTransparency": "Transparency"
+    "eyebrow": "Mengapa YULA",
+    "title": "Mengapa YULA",
+    "intro": "Cara kerja laboratorium, cukup singkat untuk dicek terhadap catatannya. Angkanya diturunkan dari registri, sehingga tidak bisa usang terpisah darinya.",
+    "sourcesHeading": "Sumber",
+    "s1Title": "Bukti didahulukan sebelum klaim.",
+    "s1Body": "Klaim produk di situs berada dalam registri bersama sumber, cakupan, dan tanggal verifikasinya. Klaim yang kedaluwarsa tidak disembunyikan; ia ditampilkan dan ditandai sebagai kedaluwarsa.",
+    "s2Title": "Status portofolio dibaca dari registri.",
+    "s2Body": "Registri memuat {records} produk; sebarannya menurut tahap siklus hidup ada di bawah. Angkanya diturunkan, bukan diketik.",
+    "s3Title": "Tingkat bukti dituliskan.",
+    "s3Body": "Registri memuat {claims} klaim. Yang dilaporkan sendiri tidak diperlakukan sama dengan yang diverifikasi di kode sumber atau yang diukur; setiap klaim membawa jenis buktinya.",
+    "s4Title": "Pekerjaan yang bisa Anda baca.",
+    "s4Body": "Catatan dan rekaman laboratorium dapat dijangkau langsung dari sini.",
+    "linkLab": "Laboratorium",
+    "linkTransparency": "Transparansi"
   },
   "home": {
-    "navLabel": "Home page sections",
+    "navLabel": "Bagian halaman beranda",
     "scene1": {
-      "label": "Identity",
-      "title": "We build technology to make life more possible, not more complicated.",
-      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
-      "ctaProducts": "Explore the products",
-      "ctaHow": "See how we work",
-      "ctaLabel": "Main paths",
-      "signalsLabel": "From intent to result: three examples",
-      "signalsNote": "These are example scenarios, not real product output or measurements.",
-      "example": "Example",
-      "intentLabel": "Intent",
-      "resultLabel": "Result",
+      "label": "Identitas",
+      "title": "Kami membangun teknologi agar hidup lebih mungkin dijalani, bukan lebih rumit.",
+      "message": "Yula Lab adalah laboratorium produk dan rekayasa independen yang berfokus pada hasil nyata dalam kehidupan pribadi, pekerjaan digital, dan belajar musik.",
+      "ctaProducts": "Jelajahi produk",
+      "ctaHow": "Lihat cara kami bekerja",
+      "ctaLabel": "Jalur utama",
+      "signalsLabel": "Dari maksud ke hasil: tiga contoh",
+      "signalsNote": "Ini adalah skenario contoh, bukan keluaran atau pengukuran produk yang sebenarnya.",
+      "example": "Contoh",
+      "intentLabel": "Maksud",
+      "resultLabel": "Hasil",
       "signals": {
         "s1": {
           "product": "Braavolabs",
-          "intent": "Describe a task.",
-          "result": "A chat and coding agent takes it on; you see the cost of every run."
+          "intent": "Jelaskan sebuah tugas.",
+          "result": "Agen obrolan dan pemrograman mengerjakannya; Anda melihat biaya setiap proses."
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Keep your health, money and assets in one place.",
-          "result": "Five life areas in one app; records stay on your device, no account needed."
+          "intent": "Simpan kesehatan, uang, dan aset Anda di satu tempat.",
+          "result": "Lima bidang kehidupan dalam satu aplikasi; catatan tetap di perangkat Anda, tanpa perlu akun."
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Start guitar from the first sound.",
-          "result": "Progress step by step with measured practice, and train your ear with drills."
+          "intent": "Mulai bermain gitar dari bunyi pertama.",
+          "result": "Maju selangkah demi selangkah dengan latihan terukur, dan asah telinga Anda dengan latihan."
         }
       }
     },
     "scene2": {
-      "label": "Difference",
-      "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
-      "listLabel": "Common pattern versus our approach, three comparisons",
-      "patternLabel": "Common pattern",
-      "approachLabel": "Our approach",
-      "tagCapability": "Current capability",
-      "tagVision": "Our vision",
-      "sourceLabel": "Source: {product} product record ({status})",
-      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "label": "Perbedaan",
+      "title": "Lebih sedikit hambatan, lebih banyak hasil.",
+      "message": "Alih-alih lebih banyak layar, proses masuk, dan pilihan model, kami mengupayakan jalur terpendek dari maksud ke hasil.",
+      "listLabel": "Pola umum versus pendekatan kami, tiga perbandingan",
+      "patternLabel": "Pola umum",
+      "approachLabel": "Pendekatan kami",
+      "tagCapability": "Kemampuan saat ini",
+      "tagVision": "Visi kami",
+      "sourceLabel": "Sumber: catatan produk {product} ({status})",
+      "note": "“Kemampuan saat ini” berarti catatan produk menyatakannya; itu bukan verifikasi independen atau pengukuran. “Visi kami” adalah arah yang sedang kami tuju, bukan sesuatu yang dilakukan produk saat ini.",
       "pairs": {
         "p1": {
-          "pattern": "More screens, sign-ins and model choices",
-          "approach": "One app, no account needed",
-          "detail": "LifeOS: five life areas in one place, offline-first."
+          "pattern": "Lebih banyak layar, proses masuk, dan pilihan model",
+          "approach": "Satu aplikasi, tanpa perlu akun",
+          "detail": "LifeOS: lima bidang kehidupan di satu tempat, mengutamakan luring."
         },
         "p2": {
-          "pattern": "False certainty",
-          "approach": "Say where an answer comes from and how unsure it is",
-          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+          "pattern": "Kepastian palsu",
+          "approach": "Katakan dari mana jawaban berasal dan seberapa tidak pasti jawaban itu",
+          "detail": "Tujuannya menampilkan sumber dan ketidakpastian pada setiap hasil. Kami belum mengklaim ini sebagai kemampuan produk."
         },
         "p3": {
-          "pattern": "Endless notifications",
-          "approach": "Step in at a meaningful time",
-          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+          "pattern": "Notifikasi tanpa henti",
+          "approach": "Hadir pada saat yang bermakna",
+          "detail": "Tujuannya adalah pengingat yang lebih sedikit dan lebih tepat waktu. Kami belum mengklaim ini sebagai kemampuan produk."
         }
       }
     },
     "scene3": {
-      "label": "Products",
-      "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
-      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
-      "demoHeading": "Demo slot",
+      "label": "Produk",
+      "title": "Tiga sistem yang kami prioritaskan.",
+      "message": "Braavolabs, LifeOS, dan Ostinato: untuk pekerjaan, kehidupan, dan musik, masing-masing berfokus pada satu hasil bagi manusia.",
+      "listLabel": "Tiga produk andalan, masing-masing dengan satu hasil bagi manusia, slot demo, status buktinya, dan tautan ke produk",
+      "demoHeading": "Slot demo",
       "demo": {
-        "real": "real product test",
-        "example": "example / simulation",
-        "soon": "not here yet"
+        "real": "uji produk nyata",
+        "example": "contoh / simulasi",
+        "soon": "belum ada di sini"
       },
-      "proofHeading": "Evidence status",
+      "proofHeading": "Status bukti",
       "proof": {
-        "verified": "Verified claims (window open): {count}",
-        "lapsed": "Verification window closed on {date}; not shown as verified.",
-        "none": "No verified claim yet."
+        "verified": "Klaim terverifikasi (jendela terbuka): {count}",
+        "lapsed": "Jendela verifikasi ditutup pada {date}; tidak ditampilkan sebagai terverifikasi.",
+        "none": "Belum ada klaim terverifikasi."
       },
-      "go": "Go to {name}",
-      "allProducts": "All products"
+      "go": "Buka {name}",
+      "allProducts": "Semua produk"
     },
     "scene4": {
-      "label": "Engineering",
-      "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
-      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
-      "currentLabel": "Stated in the product record",
-      "plannedLabel": "Planned",
-      "tagCapability": "Current capability",
-      "tagPlanned": "Planned",
-      "tagNone": "No record",
-      "noRecord": "No product record line backs this principle yet.",
-      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
-      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
-      "linksLabel": "Related pages",
-      "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with Yula Lab",
-      "linkTransparency": "Transparency",
+      "label": "Rekayasa",
+      "title": "Produk independen. Prinsip rekayasa bersama.",
+      "message": "Data lokal lebih dulu, izin dan bukti per tugas, antarmuka yang mudah dipahami: produknya terpisah, prinsipnya bersama.",
+      "listLabel": "Empat prinsip rekayasa bersama, masing-masing dengan apa yang dinyatakan catatan produk saat ini dan apa yang direncanakan",
+      "currentLabel": "Dinyatakan dalam catatan produk",
+      "plannedLabel": "Direncanakan",
+      "tagCapability": "Kemampuan saat ini",
+      "tagPlanned": "Direncanakan",
+      "tagNone": "Tanpa catatan",
+      "noRecord": "Belum ada baris catatan produk yang mendukung prinsip ini.",
+      "sourceLabel": "Sumber: catatan produk {product}, “{feature}”; status produk: {status}",
+      "note": "“Kemampuan saat ini” berarti catatan produk menyatakannya untuk produk tersebut; itu bukan verifikasi independen atau pengukuran. Status produk merujuk pada iOS; Android sedang dalam uji tertutup. “Direncanakan” adalah arah, bukan sesuatu yang dilakukan produk saat ini. Produknya tetap terpisah: tidak ada model bersama dan tidak ada basis data bersama.",
+      "linksLabel": "Halaman terkait",
+      "linkOperatingSystem": "Cara laboratorium ini bekerja",
+      "linkStudio": "Studio: membangun bersama Yula Lab",
+      "linkTransparency": "Transparansi",
       "principles": {
         "p1": {
-          "name": "Local-first data",
-          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+          "name": "Data lokal lebih dulu",
+          "planned": "Menerapkan prinsip yang sama pada produk lain saat produk itu dirilis. Kami belum mengklaimnya sebagai kemampuan mereka."
         },
         "p2": {
-          "name": "Permission and proof for spending steps",
-          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+          "name": "Izin dan bukti untuk langkah yang mengeluarkan uang",
+          "planned": "Mengupayakan bahasa izin dan bukti yang serupa di seluruh produk. Saat ini tidak ada komponen atau sistem bersama untuk itu."
         },
         "p3": {
-          "name": "On-device processing",
-          "planned": "Open new signals only after they are tested on real devices."
+          "name": "Pemrosesan di perangkat",
+          "planned": "Membuka sinyal baru hanya setelah diuji pada perangkat nyata."
         },
         "p4": {
-          "name": "An understandable interface",
-          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+          "name": "Antarmuka yang mudah dipahami",
+          "planned": "Menyatakan dengan jelas apa yang dilakukan sebuah layar dan apa yang tidak. Belum ada catatan produk yang menyatakannya; ini adalah arah."
         }
       }
     },
     "scene5": {
-      "label": "Lab",
-      "title": "A living lab.",
-      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
-      "listLabel": "Lab records: notes and a design decision",
-      "kindNote": "Lab note",
-      "kindDecision": "Design decision",
+      "label": "Laboratorium",
+      "title": "Laboratorium yang hidup.",
+      "message": "Kami mencatat catatan dan keputusan desain kami; setiap rekaman menampilkan bidang templat yang dapat diisi, dan bidang kosong dinyatakan secara terbuka.",
+      "listLabel": "Rekaman laboratorium: catatan dan sebuah keputusan desain",
+      "kindNote": "Catatan lab",
+      "kindDecision": "Keputusan desain",
       "fields": {
-        "question": "Question",
-        "hypothesis": "Hypothesis",
-        "did": "What we did",
-        "learned": "What we learned",
-        "next": "Next test"
+        "question": "Pertanyaan",
+        "hypothesis": "Hipotesis",
+        "did": "Yang kami lakukan",
+        "learned": "Yang kami pelajari",
+        "next": "Uji berikutnya"
       },
-      "empty": "not written yet",
-      "sourceLabel": "Source",
-      "noteId": "note: {slug}",
-      "onlyTr": "No translation ({part}): written in Turkish only.",
-      "onlyEn": "No translation ({part}): written in English only.",
-      "allNotes": "All lab notes",
-      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "empty": "belum ditulis",
+      "sourceLabel": "Sumber",
+      "noteId": "catatan: {slug}",
+      "onlyTr": "Tanpa terjemahan ({part}): hanya ditulis dalam bahasa Turki.",
+      "onlyEn": "Tanpa terjemahan ({part}): hanya ditulis dalam bahasa Inggris.",
+      "allNotes": "Semua catatan lab",
+      "note": "Bagian ini hanya menampilkan catatan dan dokumen yang ditulis di repositori. Bidang kosong berarti belum ditulis; kami tidak mengarang apa pun untuk mengisinya. Dokumen yang berupa usulan diberi label sebagai usulan.",
       "decision": {
-        "title": "Should the 3D scene stay on by default on the home page?",
-        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
-        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
-        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
-        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
-        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
-        "sourceNote": "a document in the repository, no separate page on the site",
-        "sourceLang": "The source document is written in Turkish."
+        "title": "Haruskah adegan 3D tetap menyala secara bawaan di beranda?",
+        "question": "Haruskah perjalanan 3D di beranda tetap menyala secara bawaan untuk semua orang, atau haruskah seluler dimulai secara statis?",
+        "did": "Tiga opsi dituliskan: mempertahankan penyiapan berpengaman apa adanya, statis secara bawaan di seluler, atau 3D secara bawaan hanya di desktop. Satu uji Lighthouse juga dijalankan pada build produksi lokal; tabelnya ada di dokumen sumber.",
+        "learned": "Menurut dokumen, hasil seluler lokal berada di bawah nilai langsung sebelum 03a2 dan penerimaan tertulis tidak terpenuhi. Setelah 03a2, hasil seluler lokal berfluktuasi (mesin sedang sibuk); dampaknya pada desktop belum diketahui. Tidak ada yang dicoba secara langsung maupun di perangkat nyata.",
+        "next": "Langkah berikutnya yang disarankan dokumen: satu uji lagi pada mesin yang tenang. Dokumen juga mengusulkan pekerjaan terpisah tentang sumber waktu muat di seluler.",
+        "status": "Status: diterima, 2026-11-08, Project orchestration; implementasi WEB-P0-03a2.",
+        "sourceNote": "dokumen di repositori, tanpa halaman terpisah di situs",
+        "sourceLang": "Dokumen sumber ditulis dalam bahasa Turki."
       },
-      "partTitle": "title",
-      "partBody": "text"
+      "partTitle": "judul",
+      "partBody": "teks"
     },
     "scene6": {
-      "label": "Trust",
-      "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
-      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
-      "sourceLabel": "Source",
-      "srcRecord": "product record",
-      "srcRecords": "product records",
-      "srcPrivacy": "{product} privacy policy",
-      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "label": "Kepercayaan",
+      "title": "Kepercayaan ditunjukkan produk demi produk.",
+      "message": "Kami membahas perlindungan data, kendali dan persetujuan, hasil yang terukur, dan tahap produk yang transparan per produk dan per fitur, beserta status buktinya.",
+      "listLabel": "Kepercayaan, empat baris: perlindungan data, kendali dan persetujuan, hasil terukur, tahap produk yang transparan",
+      "sourceLabel": "Sumber",
+      "srcRecord": "catatan produk",
+      "srcRecords": "catatan produk",
+      "srcPrivacy": "kebijakan privasi {product}",
+      "note": "Bagian ini mengulang apa yang dikatakan catatan produk dan kebijakan privasi, produk demi produk. Ini bukan audit, sertifikasi, atau pengukuran. Jika sebuah catatan tidak menyebutkan sesuatu, kami menyatakannya alih-alih mengisi celah itu.",
       "rows": {
         "protection": {
-          "title": "Data protection",
-          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "title": "Perlindungan data",
+          "lead": "Ke mana data pergi bergantung pada produk dan fiturnya, jadi setiap baris menyebut satu produk.",
           "lines": {
-            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
-            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
-            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+            "lifeos": "Catatan tetap di perangkat Anda dan tidak perlu akun; beberapa fitur memerlukan langganan App Store. Data kesehatan yang Anda izinkan dibaca dari Apple Health atau Health Connect dan diproses di perangkat; data itu tidak dikirim ke server. Data akun, pembelian, dan laporan kerusakan mengikuti jalur lain, yang tercantum dalam kebijakan privasi.",
+            "braavolabs": "Di aplikasi seluler Braavolabs, data ditangani di server: detail akun, alur kerja, hasil proses, dan keputusan persetujuan disimpan di ruang kerja Anda, dan permintaan AI dikirim ke penyedia model yang disebut dalam kebijakan privasi. Catatan produk juga menjelaskan agen yang berjalan di komputer Anda; kebijakan privasi ini hanya mencakup aplikasi seluler, sehingga tidak ada alur data yang dijelaskan di sini untuk agen tersebut.",
+            "ostinato": "Segera hadir. Pada rilis pertama, mikrofon di kursus gitar bersifat opsional. Menurut halaman privasi, audio hanya diproses di memori perangkat, dan tidak ada berkas audio mentah yang direkam atau diunggah ke server.",
+            "others": "Belum dirilis, dan catatannya tidak menjelaskan alur data apa pun, jadi tidak ada yang dijelaskan di sini. Halaman privasi Motion mencakup seluruh keluarga produk ini."
           }
         },
         "control": {
-          "title": "Control and approval",
-          "lead": "What the records say about who decides.",
+          "title": "Kendali dan persetujuan",
+          "lead": "Apa yang dikatakan catatan tentang siapa yang memutuskan.",
           "lines": {
-            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+            "braavolabs": "Langkah yang mengeluarkan uang menunggu persetujuan manusia yang eksplisit, dan setiap langkah muncul dalam jejak audit. Peran, izin, dan batas anggaran yang ketat.",
+            "lifeos": "Data kesehatan hanya dibaca dengan izin Anda. AI daring bersifat opsional: ketika ditawarkan di aplikasi dan Anda memilih menggunakannya, teks yang tampil di layar dan Anda setujui dikirim untuk diproses, seperti dijelaskan kebijakan privasi."
           }
         },
         "result": {
-          "title": "Measurable result",
-          "body": "No outcome measurements are published yet.",
-          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+          "title": "Hasil terukur",
+          "body": "Belum ada pengukuran hasil yang dipublikasikan.",
+          "detail": "Catatan produk berisi jumlah dan deskripsi fitur, bukan hasil, dan beberapa klaim registri publik yang mendasarinya telah kedaluwarsa. Karena itu halaman ini tidak menampilkan angka."
         },
         "stage": {
-          "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record.",
-          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+          "title": "Tahap produk yang transparan",
+          "lead": "Tahap setiap produk dibaca dari catatan produknya.",
+          "note": "LifeOS: “Tersedia” berlaku untuk iOS; menurut catatan di catatan produk, Android sedang dalam uji tertutup. Untuk cakupan toko aplikasi produk lain, lihat halaman produknya."
         }
       }
     },
     "scene7": {
-      "label": "Start",
-      "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business.",
-      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "label": "Mulai",
+      "title": "Mari melangkah bersama.",
+      "message": "Jelajahi produk, atau mari bicarakan bagaimana kita bisa bekerja sama untuk bisnis Anda.",
+      "groupsLabel": "Tiga cara memulai: untuk individu, untuk bisnis, untuk insinyur",
       "paths": {
         "individual": {
-          "title": "For individuals",
+          "title": "Untuk individu",
           "products": {
-            "label": "Browse the products",
-            "hint": "Each product has its own page."
+            "label": "Telusuri produk",
+            "hint": "Setiap produk memiliki halamannya sendiri."
           }
         },
         "business": {
-          "title": "For businesses",
+          "title": "Untuk bisnis",
           "consulting": {
-            "label": "See how we can work together",
-            "hint": "AI consulting services and a contact address."
+            "label": "Lihat bagaimana kita bisa bekerja sama",
+            "hint": "Layanan konsultasi AI dan alamat kontak."
           }
         },
         "engineer": {
-          "title": "For engineers",
+          "title": "Untuk insinyur",
           "notes": {
-            "label": "Read the change notes",
-            "hint": "Short records of what changed."
+            "label": "Baca catatan perubahan",
+            "hint": "Rekaman singkat tentang apa yang berubah."
           },
           "approach": {
-            "label": "Read how we work",
-            "hint": "Evidence levels, product states and claim policy."
+            "label": "Baca cara kami bekerja",
+            "hint": "Tingkat bukti, status produk, dan kebijakan klaim."
           },
           "contact": {
-            "label": "Get in touch with the team",
-            "hint": "General address for support, technical questions and press."
+            "label": "Hubungi tim",
+            "hint": "Alamat umum untuk dukungan, pertanyaan teknis, dan pers."
           }
         }
       }
     },
     "doors": {
-      "label": "What brings you here?",
+      "label": "Apa yang membawa Anda ke sini?",
       "products": {
-        "title": "Explore the products",
-        "audience": "For people who want to try and use the apps.",
-        "products": "Browse the products"
+        "title": "Jelajahi produk",
+        "audience": "Untuk mereka yang ingin mencoba dan memakai aplikasinya.",
+        "products": "Telusuri produk"
       },
       "work": {
-        "title": "AI for my work",
-        "audience": "For teams that want to put AI to work in their business.",
-        "consulting": "See AI consulting"
+        "title": "AI untuk pekerjaan saya",
+        "audience": "Untuk tim yang ingin memanfaatkan AI dalam bisnis mereka.",
+        "consulting": "Lihat konsultasi AI"
       },
       "partners": {
-        "title": "Collaboration and company",
-        "audience": "For partners, investors and anyone who wants to know the company.",
-        "contact": "See ways to get in touch"
+        "title": "Kolaborasi dan perusahaan",
+        "audience": "Untuk mitra, investor, dan siapa pun yang ingin mengenal perusahaan ini.",
+        "contact": "Lihat cara menghubungi kami"
       },
       "inspect": {
-        "title": "Inspect",
-        "audience": "For people who want to check how we work and what we claim.",
-        "lab": "Visit the lab",
-        "transparency": "Read the transparency records"
+        "title": "Periksa",
+        "audience": "Untuk mereka yang ingin memeriksa cara kerja kami dan apa yang kami klaim.",
+        "lab": "Kunjungi laboratorium",
+        "transparency": "Baca catatan transparansi"
       }
     }
   },
   "start": {
-    "metaTitle": "Doors",
-    "lede": "Pick one of four paths; each opens a real page on this site.",
-    "forLabel": "Who it is for",
-    "note": "Your choice is not stored; this page records nothing."
+    "metaTitle": "Pintu",
+    "lede": "Pilih satu dari empat jalur; masing-masing membuka halaman nyata di situs ini.",
+    "forLabel": "Untuk siapa",
+    "note": "Pilihan Anda tidak disimpan; halaman ini tidak mencatat apa pun."
   },
   "ostinatoDemo": {
-    "kicker": "Rhythm feel try-out",
-    "title": "Tap along with a beat.",
-    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
-    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
-    "start": "Start the beat",
-    "tapButton": "Tap here on the beat",
-    "tapHint": "Space, Enter, click or touch all work.",
-    "countIn": "Listen first. Taps count after the lead-in.",
-    "running": "The beat is playing. Tap along.",
-    "perfect": "Perfect",
-    "good": "Good",
-    "miss": "Missed",
-    "early": "{ms} ms early",
-    "late": "{ms} ms late",
-    "last": "Last tap",
-    "accuracy": "Timing accuracy: {pct}%",
-    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
-    "resultHeading": "Round result",
-    "announceDone": "Round finished. {summary}. {accuracy}.",
-    "restart": "Try again",
-    "micLabel": "Also listen with the microphone (optional)",
-    "micOn": "Microphone is on. Clap or tap a surface.",
-    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+    "kicker": "Uji rasa irama",
+    "title": "Ketuk mengikuti ketukan.",
+    "intro": "Tekan mulai, dengarkan ketukannya, lalu ketuk dengan Spasi, Enter, klik, atau sentuhan. Setiap ketukan mendapat tanda waktu, dan Anda melihat total di akhir.",
+    "note": "Uji coba kecil di halaman ini. Ini bukan aplikasinya dan bukan pengukuran apa pun. Tidak ada yang keluar dari peramban Anda dan tidak ada yang disimpan.",
+    "start": "Mulai ketukan",
+    "tapButton": "Ketuk di sini tepat pada ketukan",
+    "tapHint": "Spasi, Enter, klik, atau sentuhan semuanya bisa.",
+    "countIn": "Dengarkan dulu. Ketukan dihitung setelah pembuka.",
+    "running": "Ketukan sedang diputar. Ketuk mengikutinya.",
+    "perfect": "Sempurna",
+    "good": "Bagus",
+    "miss": "Meleset",
+    "early": "{ms} md lebih awal",
+    "late": "{ms} md terlambat",
+    "last": "Ketukan terakhir",
+    "accuracy": "Ketepatan waktu: {pct}%",
+    "summary": "Sempurna: {perfect}, Bagus: {good}, Meleset: {miss}",
+    "resultHeading": "Hasil ronde",
+    "announceDone": "Ronde selesai. {summary}. {accuracy}.",
+    "restart": "Coba lagi",
+    "micLabel": "Dengarkan juga dengan mikrofon (opsional)",
+    "micOn": "Mikrofon menyala. Bertepuklah atau ketuk sebuah permukaan.",
+    "micNote": "Mikrofon tidak pernah wajib. Suara tetap di perangkat Anda; tidak direkam dan tidak dikirim ke mana pun. Headphone menjaga ketukan agar tidak masuk ke mikrofon."
   },
   "lifeosDemo": {
-    "kicker": "Synthetic decision and reminder try-out",
-    "title": "Pick a decision, preview its reminder.",
-    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
-    "badge": "Synthetic example",
-    "cardsLegend": "Example decision card",
-    "card1": "Moving date",
-    "card2": "Wardrobe colour choice",
-    "card3": "Book club day",
-    "customLabel": "Or name your own example card (optional)",
-    "customHint": "Do not type anything real. An example name is enough.",
-    "whenLegend": "When should the reminder arrive?",
-    "whenDay": "Tomorrow morning",
-    "whenWeek": "One week from now, in the morning",
-    "preview": "Reminder time: {when}",
-    "setButton": "Set the reminder (simulation)",
-    "doneHeading": "Reminder set (simulation)",
-    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
-    "announceDone": "Reminder set, simulation. {title}: {when}.",
-    "restart": "Try again"
+    "kicker": "Uji coba keputusan dan pengingat sintetis",
+    "title": "Pilih sebuah keputusan, pratinjau pengingatnya.",
+    "intro": "Pilih kartu keputusan contoh atau beri nama contoh Anda sendiri. Pratinjau kapan pengingat akan tiba, lalu lihat pengingat itu setelah diatur.",
+    "note": "Uji coba kecil, bukan aplikasinya sendiri. Kartu keputusannya rekaan. Tidak ada pengingat nyata yang diatur, dan uji coba ini tidak menyimpan atau mengirim data.",
+    "badge": "Contoh sintetis",
+    "cardsLegend": "Kartu keputusan contoh",
+    "card1": "Tanggal pindahan",
+    "card2": "Pilihan warna lemari pakaian",
+    "card3": "Hari klub buku",
+    "customLabel": "Atau beri nama kartu contoh Anda sendiri (opsional)",
+    "customHint": "Jangan mengetik hal yang nyata. Nama contoh saja sudah cukup.",
+    "whenLegend": "Kapan pengingat harus tiba?",
+    "whenDay": "Besok pagi",
+    "whenWeek": "Satu minggu dari sekarang, pada pagi hari",
+    "preview": "Waktu pengingat: {when}",
+    "setButton": "Atur pengingat (simulasi)",
+    "doneHeading": "Pengingat diatur (simulasi)",
+    "doneBody": "Pengingat untuk “{title}”: {when}. Tidak ada yang benar-benar diatur.",
+    "announceDone": "Pengingat diatur, simulasi. {title}: {when}.",
+    "restart": "Coba lagi"
   }
 }

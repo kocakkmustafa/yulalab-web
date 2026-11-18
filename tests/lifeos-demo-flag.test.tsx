@@ -60,12 +60,13 @@ describe("LIFEOS_DEMO_ENABLED flag (WEB-P1-01)", () => {
     }
   });
 
-  it("other locales show the English copy marked lang=en dir=ltr", () => {
+  it("other locales show the translated copy marked with their own lang, not en/ltr", () => {
     vi.stubEnv("LIFEOS_DEMO_ENABLED", "1");
     const out = html("lifeos", "de");
     expect(out).toMatch(/<section[^>]*data-testid="lifeos-decision-demo"[^>]*>/);
     const tag = out.match(/<section[^>]*data-testid="lifeos-decision-demo"[^>]*>/)![0];
-    expect(tag).toContain('lang="en"');
-    expect(tag).toContain('dir="ltr"');
+    expect(tag).toContain('lang="de"');
+    expect(tag).not.toContain('lang="en"');
+    expect(tag).not.toContain('dir="ltr"');
   });
 });

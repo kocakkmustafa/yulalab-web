@@ -7,6 +7,7 @@ import en from "../messages/en.json";
 import tr from "../messages/tr.json";
 import { SUPPORTED_LOCALES } from "../src/i18n/locales";
 import { PLAN_INTENTS, PLAN_RISK, buildPlanCard } from "../src/components/projects/braavolabs-plan-demo-data";
+import { mayEqualEn } from "./helpers/same-as-en";
 import { PlanCardView } from "../src/components/projects/PlanCardView";
 
 type Cat = Record<string, unknown>;
@@ -69,12 +70,24 @@ describe("Braavolabs plan card (WEB-P0-05)", () => {
     expect(html).not.toMatch(/progress|spinner|animate-|aria-busy/i);
   });
 
-  it("uses the English catalogue for the other twelve locales", () => {
+  it("translates the plan card for the other twelve locales (same keys and placeholders, differs from English unless allowlisted)", () => {
     const rest = SUPPORTED_LOCALES.filter((l) => l !== "tr" && l !== "en");
     expect(rest).toHaveLength(12);
     for (const l of rest) {
       const cat = JSON.parse(fs.readFileSync(path.join(process.cwd(), "messages", l + ".json"), "utf8"));
-      expect(cat.braavolabsDemo, l).toEqual(en.braavolabsDemo);
+      const flat = (v: unknown, p = ""): [string, string][] =>
+        typeof v === "string" ? [[p, v]] : Object.entries(v as Cat).flatMap(([k, x]) => flat(x, p ? p + "." + k : k));
+      const src = flat(en.braavolabsDemo, "braavolabsDemo");
+      const got = new Map(flat(cat.braavolabsDemo, "braavolabsDemo"));
+      expect([...got.keys()].sort(), l).toEqual(src.map(([k]) => k).sort());
+      const tokens = (s: string) => (s.match(/\{[^{}]+\}|\d+/g) ?? []).sort();
+      for (const [k, enVal] of src) {
+        const v = got.get(k)!;
+        expect(v.trim(), l + " " + k).not.toBe("");
+        // Placeholders and numbers in the source must survive (a translation may add digits for number words).
+        for (const t of tokens(enVal)) expect(v, l + " " + k).toContain(t);
+        if (!mayEqualEn(l, k)) expect(v, l + " " + k).not.toBe(enVal);
+      }
     }
   });
 });

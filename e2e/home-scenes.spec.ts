@@ -89,18 +89,32 @@ for (const view of VIEWS) {
   });
 }
 
-test.describe("honest language fallback", () => {
+test.describe("translated scene block", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("/ar scene text is English with its own lang and ltr direction", async ({ page }) => {
+  test("/ar scene text is translated Arabic in an rtl page, with no English-fallback wrapper", async ({ page }) => {
     await page.goto("/ar");
     const block = page.locator("[data-home-scenes]");
-    await expect(block).toHaveAttribute("lang", "en");
-    await expect(block).toHaveAttribute("dir", "ltr");
+    await expect(block).not.toHaveAttribute("lang", "en");
+    await expect(block).not.toHaveAttribute("dir", "ltr");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("#scene-1-identity h2")).toHaveText(/Yula Lab|technology/i);
+    await expect(page.locator("#scene-1-identity h2")).toHaveText(/[؀-ۿ]/);
+    await expect(page.locator("#scene-1-identity h2")).toHaveText("نبني تقنية تجعل الحياة أكثر إمكانًا لا أكثر تعقيدًا.");
   });
 
+});
+
+test.describe("translated scene block (ltr locale)", () => {
+  test.use({ viewport: { width: 390, height: 844 }, locale: "de" });
+
+  test("/de scene block carries no English-fallback wrapper and stays ltr", async ({ page }) => {
+    await page.goto("/de");
+    const block = page.locator("[data-home-scenes]");
+    await expect(block).not.toHaveAttribute("lang", "en");
+    await expect(block.locator('#scene-1-identity [lang="en"]')).toHaveCount(0);
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+    await expect(page.locator("html")).toHaveAttribute("lang", "de");
+  });
 });
 
 test.describe("tr scene block", () => {

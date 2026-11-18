@@ -227,18 +227,18 @@ test.describe("scene 7 in English", () => {
   });
 });
 
-test.describe("scene 7 in /ar (RTL page, English fallback block)", () => {
+test.describe("scene 7 in /ar (RTL page, translated block)", () => {
   test.use({ viewport: { width: 390, height: 844 }, locale: "ar" });
 
-  test("keeps ltr English copy with lang en, no Arabic letters, no overflow", async ({ page }) => {
+  test("shows translated Arabic copy with no English-fallback marker, no overflow", async ({ page }) => {
     await page.goto("/ar");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("lang", "en");
-    await expect(page.locator("[data-home-scenes]")).toHaveAttribute("dir", "ltr");
+    await expect(page.locator("[data-home-scenes]")).not.toHaveAttribute("lang", "en");
+    await expect(page.locator('#scene-7-start [lang="en"]')).toHaveCount(0);
     const scene = page.locator("#scene-7-start");
     await scene.scrollIntoViewIfNeeded();
     await expect(scene.locator("[data-home-door]")).toHaveCount(4);
-    expect(await bodyText(page)).not.toMatch(/[؀-ۿ]/);
+    expect(await bodyText(page)).toMatch(/[؀-ۿ]/);
     expect(await horizontalOverflow(page)).toBeLessThanOrEqual(0);
     const hrefs = await scene.locator("a[data-home-door-link]").evaluateAll((els) => els.map((e) => e.getAttribute("href")));
     expect(hrefs).toEqual(LINKS.map((c) => `/ar${c.href}`));

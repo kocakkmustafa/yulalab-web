@@ -22,8 +22,8 @@
     "approach": "Nasze podejście",
     "collaboration": "Współpraca",
     "mainNavigation": "Nawigacja główna",
-    "doors": "Doors",
-    "doorsPanel": "Starting doors"
+    "doors": "Wejścia",
+    "doorsPanel": "Wejścia startowe"
   },
   "footer": {
     "tagline": "Niezależne laboratorium produktów, które korzysta z AI we właściwym miejscu i czasie, bez wyolbrzymiania jej możliwości.",
@@ -46,7 +46,7 @@
     "navOperatingSystem": "Jak pracujemy",
     "navStudio": "Studio",
     "navConsulting": "Doradztwo AI",
-    "navWhyYula": "Why YULA"
+    "navWhyYula": "Dlaczego YULA"
   },
   "common": {
     "explore": "Poznaj",
@@ -172,22 +172,22 @@
     "researchHeading": "W fazie badań",
     "researchNote": "Jeszcze niewydane: bez stron w sklepach, linków pobierania i zweryfikowanych liczb. Pokazujemy je osobno, aby nie nadawać im takiej samej wagi jak produktom wydanym.",
     "researchToggle": "Pokaż produkty w fazie badań ({count})",
-    "featuredHeading": "Featured products",
+    "featuredHeading": "Polecane produkty",
     "portfolioHeading": "Portfolio",
-    "filterLabel": "Filter by status",
-    "filterAll": "All",
-    "showing": "Showing {count} products",
-    "summary": "{live} live · {beta} beta · {soon} coming soon",
-    "noMatch": "No product matches this filter.",
-    "panelHeading": "Selected product",
-    "panelHint": "Select a product to see its details here.",
-    "accessHeading": "Access",
-    "openFull": "Open the full page",
-    "closePanel": "Close panel",
-    "preview": "Preview",
-    "previewLabel": "Preview: {name}",
-    "panelStatusLink": "Status and sources",
-    "panelScreenEmpty": "There is no screenshot for this product yet."
+    "filterLabel": "Filtruj według statusu",
+    "filterAll": "Wszystkie",
+    "showing": "Wyświetlane produkty: {count}",
+    "summary": "Dostępne: {live} · Wersja beta: {beta} · Wkrótce: {soon}",
+    "noMatch": "Żaden produkt nie pasuje do tego filtra.",
+    "panelHeading": "Wybrany produkt",
+    "panelHint": "Wybierz produkt, aby zobaczyć tutaj jego szczegóły.",
+    "accessHeading": "Dostęp",
+    "openFull": "Otwórz pełną stronę",
+    "closePanel": "Zamknij panel",
+    "preview": "Podgląd",
+    "previewLabel": "Podgląd: {name}",
+    "panelStatusLink": "Status i źródła",
+    "panelScreenEmpty": "Dla tego produktu nie ma jeszcze zrzutu ekranu."
   },
   "showcase": {
     "back": "Projekty",
@@ -278,19 +278,19 @@
     "studioLink": "Zgłoszenie do studia",
     "studioTitle": "Piszesz w sprawie projektu?",
     "intakeLanguageNotice": "Formularz online nie jest jeszcze dostępny w tym języku. Możesz napisać na poniższy adres e-mail; język interfejsu nie stanowi obietnicy języka odpowiedzi ani terminu dostarczenia.",
-    "pathsTitle": "Who is this for?",
-    "pathsUserLabel": "Product user",
-    "pathsUserBody": "Product support and account questions go to the support address.",
-    "pathsUserLink": "Support",
-    "pathsCorpLabel": "Business",
-    "pathsCorpBody": "AI work for your company. Business address:",
-    "pathsCorpLink": "Discuss your project",
-    "pathsPartnerLabel": "Partners and investors",
-    "pathsPartnerBody": "Write to us for partnership and investment conversations.",
-    "pathsDevLabel": "Developers and researchers",
-    "pathsDevBody": "Working notes and open records.",
-    "pathsDevLab": "Lab",
-    "pathsDevTransparency": "Transparency"
+    "pathsTitle": "Dla kogo to jest?",
+    "pathsUserLabel": "Użytkownicy produktów",
+    "pathsUserBody": "Pomoc w sprawie produktów i pytania o konto kieruj na adres pomocy.",
+    "pathsUserLink": "Pomoc",
+    "pathsCorpLabel": "Firmy",
+    "pathsCorpBody": "AI dla Twojej firmy. Adres dla firm:",
+    "pathsCorpLink": "Omów swój projekt",
+    "pathsPartnerLabel": "Partnerzy i inwestorzy",
+    "pathsPartnerBody": "Napisz do nas w sprawie partnerstwa i inwestycji.",
+    "pathsDevLabel": "Programiści i badacze",
+    "pathsDevBody": "Notatki robocze i otwarte zapisy.",
+    "pathsDevLab": "Laboratorium",
+    "pathsDevTransparency": "Przejrzystość"
   },
   "notFound": {
     "title": "Nie znaleziono strony.",
@@ -300,12 +300,12 @@
     "eyebrow": "Notatki",
     "title": "Co zrobiliśmy — na bieżąco.",
     "intro": "Tu również dbamy o przejrzystość: krótkie, szczere notatki o zmianach, poprawkach i nowościach w naszych produktach.",
-    "articleEyebrow": "Article",
-    "readArticle": "Read the article",
-    "sourcesHeading": "Sources",
-    "verifiedOn": "verified {date}",
-    "seeTransparency": "Transparency page",
-    "backToNotes": "All notes"
+    "articleEyebrow": "Artykuł",
+    "readArticle": "Przeczytaj artykuł",
+    "sourcesHeading": "Źródła",
+    "verifiedOn": "zweryfikowano {date}",
+    "seeTransparency": "Strona o przejrzystości",
+    "backToNotes": "Wszystkie notatki"
   },
   "links": {
     "web": "Strona internetowa",
@@ -520,11 +520,11 @@
       "pitch1Body": "Włącz mikrofon i graj; Ostinato oznacza każdą nutę jako poprawną, inną nutę albo niesłyszaną. Gdy nie ma pewności, nie zgaduje. Dźwięk jest przetwarzany na Twoim urządzeniu i nigdy nie jest wysyłany.",
       "pitch2Title": "Ćwiczenie z planem, nie przypadkowe powtórki.",
       "pitch2Body": "Śledź przewijaną tabulaturę z metronomem. Ustaw tempo w zakresie od 40% do 120%, zapętl trudne takty albo pozwól aplikacji na Ciebie poczekać. Każda zaliczona lekcja odblokowuje następną.",
-      "pitch3Title": "Guitar and ear training: 283 lessons, voice and piano coming soon.",
-      "pitch3Body": "The guitar course comes with 235 lessons across four levels and ear training with 48 lessons across two; voice and piano follow in turn. A setup wizard measures your room and latency, the built-in tuner gets your strings ready, and a weekly goal and streak keep you playing.",
+      "pitch3Title": "Gitara i trening słuchu: 283 lekcje, śpiew i fortepian wkrótce.",
+      "pitch3Body": "Kurs gitary obejmuje 235 lekcji na czterech poziomach, a trening słuchu 48 lekcji na dwóch; śpiew i fortepian pojawią się po kolei. Kreator konfiguracji mierzy pomieszczenie i opóźnienie, wbudowany stroik przygotowuje struny, a tygodniowy cel i seria dni pomagają Ci ćwiczyć.",
       "s1Kicker": "01 — W aplikacji",
-      "a1Title": "Guitar and ear training come first.",
-      "a1Body": "Guitar runs from your first sound to advanced: 235 lessons across four levels. Ear training has 48 lessons: on-screen drills, clapping with the click and part-by-part tests. Voice and piano are coming soon.",
+      "a1Title": "Najpierw gitara i trening słuchu.",
+      "a1Body": "Gitara prowadzi od pierwszego dźwięku do poziomu zaawansowanego: 235 lekcji na czterech poziomach. Trening słuchu ma 48 lekcji: ćwiczenia na ekranie, klaskanie w rytm metronomu i testy część po części. Śpiew i fortepian są wkrótce.",
       "a2Title": "Poziom 1 każdego kursu jest bezpłatny.",
       "a2Body": "Poziom 1 gitary (40 lekcji) i poziom 1 kształcenia słuchu (25 lekcji) są bezpłatne i działają bez konta. Kolejne poziomy odblokowuje członkostwo Ostinato.",
       "s2Kicker": "02 — Dostęp",
@@ -583,69 +583,69 @@
     "statNeedsReverification": "wymaga ponownej weryfikacji",
     "availabilityUnverified": "Status publikacji wymaga ponownej weryfikacji",
     "availabilityCheckedAt": "Ostatnia weryfikacja publikacji: {date}. Otwórz odnośnik, aby sprawdzić obecny stan.",
-    "accessHeading": "Access",
-    "screenHeading": "Screens and demo",
-    "screenEmpty": "There is no screenshot for this product yet.",
-    "trustHeading": "Privacy and trust",
-    "trustPrivacy": "Privacy policy for this product",
-    "statusHeading": "Release status",
-    "statusLink": "Status and sources",
-    "demoLabel": "Example simulation"
+    "accessHeading": "Dostęp",
+    "screenHeading": "Ekrany i demo",
+    "screenEmpty": "Dla tego produktu nie ma jeszcze zrzutu ekranu.",
+    "trustHeading": "Prywatność i zaufanie",
+    "trustPrivacy": "Polityka prywatności tego produktu",
+    "statusHeading": "Stan wydania",
+    "statusLink": "Status i źródła",
+    "demoLabel": "Przykładowa symulacja"
   },
   "braavolabsDemo": {
-    "kicker": "Sample plan card",
-    "title": "Describe a job. See its plan, approvals and result in one place.",
-    "intro": "Pick one of three sample intents. The card shows what a plan could look like. Everything here is fixed text in this page; nothing leaves your browser.",
-    "disclaimer": "This is an interactive product concept / plan example; no real job is executed.",
-    "pickerLabel": "Pick a sample intent",
-    "announce": "Plan card shown",
+    "kicker": "Przykładowa karta planu",
+    "title": "Opisz zadanie. Zobacz jego plan, zatwierdzenia i wynik w jednym miejscu.",
+    "intro": "Wybierz jeden z trzech przykładowych zamiarów. Karta pokazuje, jak mógłby wyglądać plan. Wszystko tutaj to stały tekst na tej stronie; nic nie opuszcza Twojej przeglądarki.",
+    "disclaimer": "To interaktywna koncepcja produktu / przykład planu; żadne prawdziwe zadanie nie jest wykonywane.",
+    "pickerLabel": "Wybierz przykładowy zamiar",
+    "announce": "Pokazano kartę planu",
     "labels": {
-      "intent": "Sample intent",
-      "example": "Example card",
-      "note": "Example / concept: no real job is executed.",
-      "steps": "Example steps",
-      "approvals": "Approval points",
-      "risk": "Example risk level",
-      "output": "Expected output"
+      "intent": "Przykładowy zamiar",
+      "example": "Przykładowa karta",
+      "note": "Przykład / koncepcja: żadne prawdziwe zadanie nie jest wykonywane.",
+      "steps": "Przykładowe kroki",
+      "approvals": "Punkty zatwierdzenia",
+      "risk": "Przykładowy poziom ryzyka",
+      "output": "Oczekiwany wynik"
     },
     "risk": {
-      "low": "Low",
-      "medium": "Medium",
-      "high": "High"
+      "low": "Niski",
+      "medium": "Średni",
+      "high": "Wysoki"
     },
     "intents": {
       "content": {
-        "label": "Content",
-        "prompt": "“Prepare a week of posts for our launch.”",
-        "s1": "Read the brief and list the post ideas.",
-        "s2": "Draft each post in your tone.",
-        "s3": "Collect the drafts for your review.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you read the drafts and decide.",
-        "riskNote": "The output is a draft you review.",
-        "output": "A set of draft posts, ready for your review."
+        "label": "Treści",
+        "prompt": "„Przygotuj tydzień postów na naszą premierę.”",
+        "s1": "Przeczytać brief i wypisać pomysły na posty.",
+        "s2": "Napisać każdy post w Twoim tonie.",
+        "s3": "Zebrać szkice do Twojej oceny.",
+        "a1": "Krok, który wiąże się z wydatkiem, czeka na Twoje zatwierdzenie.",
+        "a2": "Przykład: czytasz szkice i decydujesz.",
+        "riskNote": "Wynikiem jest szkic, który oceniasz.",
+        "output": "Zestaw szkiców postów, gotowy do Twojej oceny."
       },
       "report": {
-        "label": "Report",
-        "prompt": "“Summarise last month's support requests.”",
-        "s1": "Gather the material you point to.",
-        "s2": "Group the findings by theme.",
-        "s3": "Write a short summary.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you choose which material is used.",
-        "riskNote": "It reads your own material, so you decide what it may read.",
-        "output": "A short report draft with the points that need a decision."
+        "label": "Raport",
+        "prompt": "„Podsumuj zgłoszenia do pomocy z zeszłego miesiąca.”",
+        "s1": "Zebrać materiały, które wskażesz.",
+        "s2": "Pogrupować ustalenia według tematów.",
+        "s3": "Napisać krótkie podsumowanie.",
+        "a1": "Krok, który wiąże się z wydatkiem, czeka na Twoje zatwierdzenie.",
+        "a2": "Przykład: wybierasz, których materiałów użyć.",
+        "riskNote": "Czyta Twoje własne materiały, więc to Ty decydujesz, co wolno mu czytać.",
+        "output": "Krótki szkic raportu z punktami wymagającymi decyzji."
       },
       "software": {
-        "label": "Software",
-        "prompt": "“Fix the sign-in bug in our app.”",
-        "s1": "Read the code and find the likely cause.",
-        "s2": "Propose a change and a test for it.",
-        "s3": "Present the proposed change.",
-        "a1": "A step that spends money waits for your approval.",
-        "a2": "Example: you review each proposed change.",
-        "riskNote": "It touches the code behind your product, so each change waits for you.",
-        "output": "A proposed code change with its test, for you to review."
+        "label": "Oprogramowanie",
+        "prompt": "„Napraw błąd logowania w naszej aplikacji.”",
+        "s1": "Przeczytać kod i znaleźć prawdopodobną przyczynę.",
+        "s2": "Zaproponować zmianę i test do niej.",
+        "s3": "Przedstawić proponowaną zmianę.",
+        "a1": "Krok, który wiąże się z wydatkiem, czeka na Twoje zatwierdzenie.",
+        "a2": "Przykład: oceniasz każdą proponowaną zmianę.",
+        "riskNote": "Dotyka kodu stojącego za Twoim produktem, więc każda zmiana czeka na Ciebie.",
+        "output": "Proponowana zmiana w kodzie wraz z testem, do Twojej oceny."
       }
     }
   },
@@ -752,9 +752,9 @@
       "support": "Pomoc",
       "rights": "Wszelkie prawa zastrzeżone."
     },
-    "open3d": "Open the 3D experience",
-    "open3dOpened": "3D experience opened",
-    "open3dFailed": "Could not open 3D; showing the linear view.",
+    "open3d": "Otwórz doświadczenie 3D",
+    "open3dOpened": "Otwarto doświadczenie 3D",
+    "open3dFailed": "Nie udało się otworzyć 3D; pokazuję widok liniowy.",
     "fallback": {
       "label": "Widok liniowy",
       "reason": "Gdy animacja lub warstwa 3D są niedostępne, ten widok nadal zawiera te same produkty, dowody i odnośniki."
@@ -786,7 +786,7 @@
       "wallService": "Usługa",
       "reset": "Resetuj"
     },
-    "loaderSkip": "Skip intro"
+    "loaderSkip": "Pomiń intro"
   },
   "studio": {
     "applyIntro": "Nie prosimy o dokładną kwotę budżetu ani nazwisko decydenta — wystarczy przedział i rola.",
@@ -944,333 +944,333 @@
     "limits": "Przed rozpoznaniem nie obiecujemy wzrostu przychodów, idealnych wyników modelu ani daty wydania. Dostęp do środowiska produkcyjnego i wdrożenie wymagają osobnej umowy.",
     "contactTitle": "Powiedz, co chcesz usprawnić.",
     "contactBody": "Zacznij od procesu, problemu i harmonogramu. Nie przesyłaj haseł, kluczy API ani poufnych danych klientów. Odnośnik otwiera aplikację pocztową; ta strona niczego nie wysyła.",
-    "contactBodyForm": "Start with your workflow, the problem and your timeline. Do not send passwords, API keys or confidential customer data. You can use the form below or the email link; the email link opens your mail app.",
+    "contactBodyForm": "Zacznij od procesu, problemu i harmonogramu. Nie przesyłaj haseł, kluczy API ani poufnych danych klientów. Możesz skorzystać z formularza poniżej lub z odnośnika e-mail; odnośnik e-mail otwiera Twoją aplikację pocztową.",
     "cta": "Porozmawiajmy o projekcie",
     "subject": "Zapytanie o doradztwo AI",
     "terms": "Dostępność, ceny i zakres potwierdzamy w rozmowie.",
     "nav": "Doradztwo AI"
   },
   "whyYula": {
-    "eyebrow": "Why YULA",
-    "title": "Why YULA",
-    "intro": "How the lab works, short enough to check against the records. The numbers are derived from the registry, so they cannot go stale independently of it.",
-    "sourcesHeading": "Sources",
-    "s1Title": "Evidence comes before the claim.",
-    "s1Body": "A product claim on the site sits in the registry with its source, scope and verification date. A claim that expires is not hidden; it is shown and marked as expired.",
-    "s2Title": "Portfolio status is read from the registry.",
-    "s2Body": "The registry holds {records} products; their spread across lifecycle states is below. The numbers are derived, not typed.",
-    "s3Title": "The level of evidence is written out.",
-    "s3Body": "The registry holds {claims} claims. Self-reported is not treated as the same thing as verified in source code or measured; every claim carries its evidence kind.",
-    "s4Title": "Work you can read.",
-    "s4Body": "The lab's records and notes are reachable directly from here.",
-    "linkLab": "Lab",
-    "linkTransparency": "Transparency"
+    "eyebrow": "Dlaczego YULA",
+    "title": "Dlaczego YULA",
+    "intro": "Jak działa laboratorium, na tyle krótko, by dało się to sprawdzić w zapisach. Liczby są wyprowadzane z rejestru, więc nie mogą się zdezaktualizować niezależnie od niego.",
+    "sourcesHeading": "Źródła",
+    "s1Title": "Dowody są przed twierdzeniem.",
+    "s1Body": "Twierdzenie o produkcie na stronie znajduje się w rejestrze wraz ze źródłem, zakresem i datą weryfikacji. Twierdzenie, które wygasa, nie jest ukrywane; jest pokazane i oznaczone jako wygasłe.",
+    "s2Title": "Status portfolio odczytujemy z rejestru.",
+    "s2Body": "Rejestr zawiera produkty ({records}); ich rozkład według etapów cyklu życia jest poniżej. Liczby są wyprowadzane, a nie wpisywane ręcznie.",
+    "s3Title": "Poziom dowodów jest zapisany wprost.",
+    "s3Body": "Rejestr zawiera twierdzenia ({claims}). Zgłoszone przez nas samych nie jest traktowane tak samo jak zweryfikowane w kodzie źródłowym lub zmierzone; każde twierdzenie ma swój rodzaj dowodu.",
+    "s4Title": "Praca, którą możesz przeczytać.",
+    "s4Body": "Zapisy i notatki laboratorium są dostępne bezpośrednio stąd.",
+    "linkLab": "Laboratorium",
+    "linkTransparency": "Przejrzystość"
   },
   "home": {
-    "navLabel": "Home page sections",
+    "navLabel": "Sekcje strony głównej",
     "scene1": {
-      "label": "Identity",
-      "title": "We build technology to make life more possible, not more complicated.",
-      "message": "Yula Lab is an independent product and engineering lab focused on real results in personal life, digital work and learning music.",
-      "ctaProducts": "Explore the products",
-      "ctaHow": "See how we work",
-      "ctaLabel": "Main paths",
-      "signalsLabel": "From intent to result: three examples",
-      "signalsNote": "These are example scenarios, not real product output or measurements.",
-      "example": "Example",
-      "intentLabel": "Intent",
-      "resultLabel": "Result",
+      "label": "Tożsamość",
+      "title": "Tworzymy technologię, która ma sprawiać, że życie jest bardziej możliwe, a nie bardziej skomplikowane.",
+      "message": "Yula Lab to niezależne laboratorium produktów i inżynierii, nastawione na realne rezultaty w życiu osobistym, pracy cyfrowej i nauce muzyki.",
+      "ctaProducts": "Poznaj produkty",
+      "ctaHow": "Zobacz, jak pracujemy",
+      "ctaLabel": "Główne ścieżki",
+      "signalsLabel": "Od zamiaru do wyniku: trzy przykłady",
+      "signalsNote": "To przykładowe scenariusze, a nie rzeczywiste wyniki produktów ani pomiary.",
+      "example": "Przykład",
+      "intentLabel": "Zamiar",
+      "resultLabel": "Wynik",
       "signals": {
         "s1": {
           "product": "Braavolabs",
-          "intent": "Describe a task.",
-          "result": "A chat and coding agent takes it on; you see the cost of every run."
+          "intent": "Opisz zadanie.",
+          "result": "Zajmuje się nim agent czatu i programowania; widzisz koszt każdego uruchomienia."
         },
         "s2": {
           "product": "LifeOS",
-          "intent": "Keep your health, money and assets in one place.",
-          "result": "Five life areas in one app; records stay on your device, no account needed."
+          "intent": "Trzymaj zdrowie, pieniądze i majątek w jednym miejscu.",
+          "result": "Pięć obszarów życia w jednej aplikacji; zapisy zostają na Twoim urządzeniu, konto nie jest potrzebne."
         },
         "s3": {
           "product": "Ostinato",
-          "intent": "Start guitar from the first sound.",
-          "result": "Progress step by step with measured practice, and train your ear with drills."
+          "intent": "Zacznij grać na gitarze od pierwszego dźwięku.",
+          "result": "Postępuj krok po kroku dzięki mierzonym ćwiczeniom i trenuj słuch ćwiczeniami."
         }
       }
     },
     "scene2": {
-      "label": "Difference",
-      "title": "Less friction, more results.",
-      "message": "Instead of more screens, sign-ins and model choices, we aim for the shortest path from intent to outcome.",
-      "listLabel": "Common pattern versus our approach, three comparisons",
-      "patternLabel": "Common pattern",
-      "approachLabel": "Our approach",
-      "tagCapability": "Current capability",
-      "tagVision": "Our vision",
-      "sourceLabel": "Source: {product} product record ({status})",
-      "note": "\"Current capability\" means the product record states it; it is not an independent verification or a measurement. \"Our vision\" is a direction we are working toward, not something the products do today.",
+      "label": "Różnica",
+      "title": "Mniej tarcia, więcej wyników.",
+      "message": "Zamiast kolejnych ekranów, logowań i wyborów modelu dążymy do najkrótszej drogi od zamiaru do rezultatu.",
+      "listLabel": "Typowy schemat i nasze podejście, trzy porównania",
+      "patternLabel": "Typowy schemat",
+      "approachLabel": "Nasze podejście",
+      "tagCapability": "Obecna możliwość",
+      "tagVision": "Nasza wizja",
+      "sourceLabel": "Źródło: zapis produktu {product} ({status})",
+      "note": "„Obecna możliwość” oznacza, że stwierdza to zapis produktu; nie jest to niezależna weryfikacja ani pomiar. „Nasza wizja” to kierunek, do którego dążymy, a nie coś, co produkty robią dziś.",
       "pairs": {
         "p1": {
-          "pattern": "More screens, sign-ins and model choices",
-          "approach": "One app, no account needed",
-          "detail": "LifeOS: five life areas in one place, offline-first."
+          "pattern": "Więcej ekranów, logowań i wyborów modelu",
+          "approach": "Jedna aplikacja, konto nie jest potrzebne",
+          "detail": "LifeOS: pięć obszarów życia w jednym miejscu, najpierw offline."
         },
         "p2": {
-          "pattern": "False certainty",
-          "approach": "Say where an answer comes from and how unsure it is",
-          "detail": "The goal is to show the source and the uncertainty with every result. We do not claim this as a product capability yet."
+          "pattern": "Fałszywa pewność",
+          "approach": "Powiedzieć, skąd pochodzi odpowiedź i na ile jest niepewna",
+          "detail": "Celem jest pokazywanie źródła i niepewności przy każdym wyniku. Nie twierdzimy jeszcze, że produkt to potrafi."
         },
         "p3": {
-          "pattern": "Endless notifications",
-          "approach": "Step in at a meaningful time",
-          "detail": "The goal is fewer, better-timed prompts. We do not claim this as a product capability yet."
+          "pattern": "Niekończące się powiadomienia",
+          "approach": "Wkroczyć w sensownym momencie",
+          "detail": "Celem jest mniej powiadomień, lepiej dobranych w czasie. Nie twierdzimy jeszcze, że produkt to potrafi."
         }
       }
     },
     "scene3": {
-      "label": "Products",
-      "title": "Three systems we prioritise.",
-      "message": "Braavolabs, LifeOS and Ostinato: for work, life and music, each focused on a single human outcome.",
-      "listLabel": "Three flagship products, each with one human outcome, a demo slot, its evidence status and a link to the product",
-      "demoHeading": "Demo slot",
+      "label": "Produkty",
+      "title": "Trzy systemy, którym dajemy priorytet.",
+      "message": "Braavolabs, LifeOS i Ostinato: do pracy, życia i muzyki, każdy skupiony na jednym ludzkim rezultacie.",
+      "listLabel": "Trzy flagowe produkty, każdy z jednym ludzkim rezultatem, miejscem na demo, statusem dowodów i odnośnikiem do produktu",
+      "demoHeading": "Miejsce na demo",
       "demo": {
-        "real": "real product test",
-        "example": "example / simulation",
-        "soon": "not here yet"
+        "real": "prawdziwy test produktu",
+        "example": "przykład / symulacja",
+        "soon": "jeszcze go tu nie ma"
       },
-      "proofHeading": "Evidence status",
+      "proofHeading": "Status dowodów",
       "proof": {
-        "verified": "Verified claims (window open): {count}",
-        "lapsed": "Verification window closed on {date}; not shown as verified.",
-        "none": "No verified claim yet."
+        "verified": "Zweryfikowane twierdzenia (okno otwarte): {count}",
+        "lapsed": "Okno weryfikacji zamknięto {date}; nie jest pokazywane jako zweryfikowane.",
+        "none": "Brak jeszcze zweryfikowanego twierdzenia."
       },
-      "go": "Go to {name}",
-      "allProducts": "All products"
+      "go": "Przejdź do: {name}",
+      "allProducts": "Wszystkie produkty"
     },
     "scene4": {
-      "label": "Engineering",
-      "title": "Independent products. Shared engineering principles.",
-      "message": "Local-first data, per-task permission and proof, an understandable interface: the products are separate, the principles are shared.",
-      "listLabel": "Four shared engineering principles, each with what the product record states today and what is planned",
-      "currentLabel": "Stated in the product record",
-      "plannedLabel": "Planned",
-      "tagCapability": "Current capability",
-      "tagPlanned": "Planned",
-      "tagNone": "No record",
-      "noRecord": "No product record line backs this principle yet.",
-      "sourceLabel": "Source: {product} product record, “{feature}”; product status: {status}",
-      "note": "“Current capability” means the product record states it for that product; it is not an independent verification or a measurement. Product status refers to iOS; Android is in closed testing. “Planned” is a direction, not something the products do today. The products stay separate: there is no shared model and no shared database.",
-      "linksLabel": "Related pages",
-      "linkOperatingSystem": "How this lab works",
-      "linkStudio": "Studio: build with Yula Lab",
-      "linkTransparency": "Transparency",
+      "label": "Inżynieria",
+      "title": "Niezależne produkty. Wspólne zasady inżynierii.",
+      "message": "Dane najpierw lokalnie, zgoda na każde zadanie i dowód, zrozumiały interfejs: produkty są osobne, zasady wspólne.",
+      "listLabel": "Cztery wspólne zasady inżynierii, każda z tym, co zapis produktu stwierdza dziś, i z tym, co planowane",
+      "currentLabel": "Stwierdzone w zapisie produktu",
+      "plannedLabel": "Planowane",
+      "tagCapability": "Obecna możliwość",
+      "tagPlanned": "Planowane",
+      "tagNone": "Brak zapisu",
+      "noRecord": "Żaden wiersz zapisu produktu nie potwierdza jeszcze tej zasady.",
+      "sourceLabel": "Źródło: zapis produktu {product}, „{feature}”; status produktu: {status}",
+      "note": "„Obecna możliwość” oznacza, że zapis produktu stwierdza to dla danego produktu; nie jest to niezależna weryfikacja ani pomiar. Status produktu dotyczy iOS; Android jest w testach zamkniętych. „Planowane” to kierunek, a nie coś, co produkty robią dziś. Produkty pozostają osobne: nie ma wspólnego modelu ani wspólnej bazy danych.",
+      "linksLabel": "Powiązane strony",
+      "linkOperatingSystem": "Jak działa to laboratorium",
+      "linkStudio": "Studio: twórz z Yula Lab",
+      "linkTransparency": "Przejrzystość",
       "principles": {
         "p1": {
-          "name": "Local-first data",
-          "planned": "Apply the same principle in the other products as they ship. We do not claim it as a capability of theirs yet."
+          "name": "Dane najpierw lokalnie",
+          "planned": "Zastosować tę samą zasadę w pozostałych produktach, w miarę jak będą wydawane. Nie twierdzimy jeszcze, że to ich możliwość."
         },
         "p2": {
-          "name": "Permission and proof for spending steps",
-          "planned": "Aim for a similar permission-and-proof language across products. There is no shared component or system for it today."
+          "name": "Zgoda i dowód dla kroków wiążących się z wydatkami",
+          "planned": "Dążyć do podobnego języka zgody i dowodu we wszystkich produktach. Dziś nie ma do tego wspólnego komponentu ani systemu."
         },
         "p3": {
-          "name": "On-device processing",
-          "planned": "Open new signals only after they are tested on real devices."
+          "name": "Przetwarzanie na urządzeniu",
+          "planned": "Otwierać nowe sygnały dopiero po przetestowaniu ich na prawdziwych urządzeniach."
         },
         "p4": {
-          "name": "An understandable interface",
-          "planned": "Say plainly what a screen does and what it does not. No product record states this yet; it is a direction."
+          "name": "Zrozumiały interfejs",
+          "planned": "Mówić jasno, co ekran robi, a czego nie robi. Żaden zapis produktu jeszcze tego nie stwierdza; to kierunek."
         }
       }
     },
     "scene5": {
-      "label": "Lab",
-      "title": "A living lab.",
-      "message": "We record our notes and design decisions; each record shows the template fields that can be filled, and empty fields are stated openly.",
-      "listLabel": "Lab records: notes and a design decision",
-      "kindNote": "Lab note",
-      "kindDecision": "Design decision",
+      "label": "Laboratorium",
+      "title": "Żywe laboratorium.",
+      "message": "Zapisujemy nasze notatki i decyzje projektowe; każdy zapis pokazuje pola szablonu, które można wypełnić, a puste pola są wskazane otwarcie.",
+      "listLabel": "Zapisy laboratorium: notatki i decyzja projektowa",
+      "kindNote": "Notatka laboratoryjna",
+      "kindDecision": "Decyzja projektowa",
       "fields": {
-        "question": "Question",
-        "hypothesis": "Hypothesis",
-        "did": "What we did",
-        "learned": "What we learned",
-        "next": "Next test"
+        "question": "Pytanie",
+        "hypothesis": "Hipoteza",
+        "did": "Co zrobiliśmy",
+        "learned": "Czego się nauczyliśmy",
+        "next": "Następny test"
       },
-      "empty": "not written yet",
-      "sourceLabel": "Source",
-      "noteId": "note: {slug}",
-      "onlyTr": "No translation ({part}): written in Turkish only.",
-      "onlyEn": "No translation ({part}): written in English only.",
-      "allNotes": "All lab notes",
-      "note": "This section shows only notes and documents written in the repository. An empty field means it has not been written yet; we do not make anything up to fill it. A document that is a proposal is labelled as one.",
+      "empty": "jeszcze nie napisano",
+      "sourceLabel": "Źródło",
+      "noteId": "notatka: {slug}",
+      "onlyTr": "Brak tłumaczenia ({part}): napisano tylko po turecku.",
+      "onlyEn": "Brak tłumaczenia ({part}): napisano tylko po angielsku.",
+      "allNotes": "Wszystkie notatki laboratorium",
+      "note": "Ta sekcja pokazuje wyłącznie notatki i dokumenty napisane w repozytorium. Puste pole oznacza, że jeszcze go nie napisano; niczego nie zmyślamy, żeby je wypełnić. Dokument, który jest propozycją, jest oznaczony jako propozycja.",
       "decision": {
-        "title": "Should the 3D scene stay on by default on the home page?",
-        "question": "Should the 3D journey on the home page stay on by default for everyone, or should mobile start static?",
-        "did": "Three options were written down: keep the guarded setup as it is, static by default on mobile, or 3D by default on desktop only. A Lighthouse run was also made on a local production build; the table is in the source document.",
-        "learned": "According to the document, the local mobile result was below the live value before 03a2 and the written acceptance was not met. After 03a2 the local mobile result was noisy (the machine was busy); the effect on desktop is unknown. Nothing was tried live or on a real device.",
-        "next": "The next step the document suggests: another run on a quiet machine. The document also proposes a separate piece of work on the source of mobile load time.",
-        "status": "Status: accepted, 2026-11-08, Project orchestration; implementation WEB-P0-03a2.",
-        "sourceNote": "a document in the repository, no separate page on the site",
-        "sourceLang": "The source document is written in Turkish."
+        "title": "Czy scena 3D na stronie głównej ma być domyślnie włączona?",
+        "question": "Czy podróż 3D na stronie głównej ma być domyślnie włączona dla wszystkich, czy na urządzeniach mobilnych ma startować statyczna?",
+        "did": "Spisano trzy opcje: zostawić zabezpieczoną konfigurację bez zmian, domyślnie statyczna na urządzeniach mobilnych albo domyślnie 3D tylko na komputerze. Wykonano też pomiar Lighthouse na lokalnej kompilacji produkcyjnej; tabela jest w dokumencie źródłowym.",
+        "learned": "Według dokumentu lokalny wynik mobilny był przed 03a2 poniżej wartości na żywo, a zapisane kryterium akceptacji nie zostało spełnione. Po 03a2 lokalny wynik mobilny był niestabilny (maszyna była zajęta); wpływ na komputerze jest nieznany. Niczego nie sprawdzano na żywo ani na prawdziwym urządzeniu.",
+        "next": "Następny krok zasugerowany w dokumencie: kolejny pomiar na wolnej maszynie. Dokument proponuje też osobną pracę nad źródłem czasu ładowania na urządzeniach mobilnych.",
+        "status": "Status: zaakceptowano, 2026-11-08, Project orchestration; wdrożenie WEB-P0-03a2.",
+        "sourceNote": "dokument w repozytorium, bez osobnej strony w serwisie",
+        "sourceLang": "Dokument źródłowy jest napisany po turecku."
       },
-      "partTitle": "title",
-      "partBody": "text"
+      "partTitle": "tytuł",
+      "partBody": "tekst"
     },
     "scene6": {
-      "label": "Trust",
-      "title": "Trust is shown product by product.",
-      "message": "We address data protection, control and approval, measurable results and transparent product stage per product and feature, with the state of the evidence.",
-      "listLabel": "Trust, four rows: data protection, control and approval, measurable result, transparent product stage",
-      "sourceLabel": "Source",
-      "srcRecord": "product record",
-      "srcRecords": "product records",
-      "srcPrivacy": "{product} privacy policy",
-      "note": "This section repeats what the product records and the privacy policies say, product by product. It is not an audit, a certification or a measurement. Where a record is silent, we say so instead of filling the gap.",
+      "label": "Zaufanie",
+      "title": "Zaufanie pokazujemy produkt po produkcie.",
+      "message": "Ochronę danych, kontrolę i zatwierdzanie, mierzalne wyniki oraz przejrzysty etap produktu omawiamy dla każdego produktu i funkcji, wraz ze stanem dowodów.",
+      "listLabel": "Zaufanie, cztery wiersze: ochrona danych, kontrola i zatwierdzanie, mierzalny wynik, przejrzysty etap produktu",
+      "sourceLabel": "Źródło",
+      "srcRecord": "zapis produktu",
+      "srcRecords": "zapisy produktów",
+      "srcPrivacy": "polityka prywatności {product}",
+      "note": "Ta sekcja powtarza to, co mówią zapisy produktów i polityki prywatności, produkt po produkcie. Nie jest to audyt, certyfikacja ani pomiar. Tam, gdzie zapis milczy, mówimy o tym zamiast wypełniać lukę.",
       "rows": {
         "protection": {
-          "title": "Data protection",
-          "lead": "Where data goes depends on the product and the feature, so each line names one product.",
+          "title": "Ochrona danych",
+          "lead": "To, dokąd trafiają dane, zależy od produktu i funkcji, więc każdy wiersz wymienia jeden produkt.",
           "lines": {
-            "lifeos": "Records stay on your device and no account is needed; some features need an App Store subscription. Health data you allow is read from Apple Health or Health Connect and processed on the device; it is not sent to a server. Account, purchase and crash-report data follow other paths, which the privacy policy lists.",
-            "braavolabs": "In the Braavolabs mobile app, data is handled on servers: account details, workflows, run results and approval decisions are kept in your workspace, and AI requests go to a model provider that the privacy policy names. The product record also describes agents running on your computer; this privacy policy covers the mobile app only, so no data flow is described here for those agents.",
-            "ostinato": "Coming soon. In the first release, the microphone in the guitar course is optional. According to the privacy page, audio is processed only in device memory, and no raw audio file is recorded or uploaded to a server.",
-            "others": "Not released, and their records describe no data flow, so none is described here. The Motion privacy page covers the family."
+            "lifeos": "Zapisy zostają na Twoim urządzeniu i konto nie jest potrzebne; niektóre funkcje wymagają subskrypcji w App Store. Dane o zdrowiu, na które zezwolisz, są odczytywane z Apple Health lub Health Connect i przetwarzane na urządzeniu; nie są wysyłane na serwer. Dane konta, zakupów i raportów o awariach idą innymi ścieżkami, które wymienia polityka prywatności.",
+            "braavolabs": "W aplikacji mobilnej Braavolabs dane są przetwarzane na serwerach: dane konta, przepływy pracy, wyniki uruchomień i decyzje o zatwierdzeniu są przechowywane w Twojej przestrzeni roboczej, a zapytania AI trafiają do dostawcy modelu wskazanego w polityce prywatności. Zapis produktu opisuje też agentów działających na Twoim komputerze; ta polityka prywatności dotyczy tylko aplikacji mobilnej, więc nie opisano tu przepływu danych dla tych agentów.",
+            "ostinato": "Wkrótce. W pierwszym wydaniu mikrofon w kursie gitary jest opcjonalny. Według strony o prywatności dźwięk jest przetwarzany wyłącznie w pamięci urządzenia i żaden surowy plik audio nie jest nagrywany ani wysyłany na serwer.",
+            "others": "Niewydane, a ich zapisy nie opisują żadnego przepływu danych, więc żadnego tu nie opisujemy. Strona o prywatności Motion obejmuje całą rodzinę."
           }
         },
         "control": {
-          "title": "Control and approval",
-          "lead": "What the records say about who decides.",
+          "title": "Kontrola i zatwierdzanie",
+          "lead": "Co zapisy mówią o tym, kto decyduje.",
           "lines": {
-            "braavolabs": "Steps that spend money wait for an explicit human approval, and every step shows in the audit trail. Roles, permissions and hard budget stops.",
-            "lifeos": "Health data is read only with your permission. Online AI is optional: when it is offered in the app and you choose to use it, the text shown on screen that you approve is sent for processing, as the privacy policy describes."
+            "braavolabs": "Kroki wiążące się z wydatkami czekają na wyraźne zatwierdzenie przez człowieka, a każdy krok jest widoczny w ścieżce audytu. Role, uprawnienia i twarde limity budżetu.",
+            "lifeos": "Dane o zdrowiu są odczytywane tylko za Twoją zgodą. AI online jest opcjonalne: gdy aplikacja je oferuje i zdecydujesz się z niego skorzystać, zatwierdzony przez Ciebie tekst widoczny na ekranie jest wysyłany do przetworzenia, jak opisuje polityka prywatności."
           }
         },
         "result": {
-          "title": "Measurable result",
-          "body": "No outcome measurements are published yet.",
-          "detail": "Product records hold feature counts and descriptions, not results, and some public-registry claims behind them have expired. So this page shows no figures."
+          "title": "Mierzalny wynik",
+          "body": "Nie opublikowano jeszcze pomiarów wyników.",
+          "detail": "Zapisy produktów zawierają liczby i opisy funkcji, a nie wyniki, a niektóre twierdzenia w rejestrze publicznym, na których się opierają, wygasły. Dlatego ta strona nie pokazuje żadnych liczb."
         },
         "stage": {
-          "title": "Transparent product stage",
-          "lead": "The stage of each product is read from its product record.",
-          "note": "LifeOS: \"Live\" applies to iOS; according to a note in the product record, Android is in closed testing. For the store coverage of any other product, see its product page."
+          "title": "Przejrzysty etap produktu",
+          "lead": "Etap każdego produktu odczytujemy z jego zapisu produktu.",
+          "note": "LifeOS: „Dostępny” dotyczy iOS; według notatki w zapisie produktu Android jest w testach zamkniętych. Zasięg w sklepach innych produktów znajdziesz na ich stronach."
         }
       }
     },
     "scene7": {
       "label": "Start",
-      "title": "Let's take the next step together.",
-      "message": "Explore the products, or let's talk about how we could work together on your business.",
-      "groupsLabel": "Three ways to start: for individuals, for businesses, for engineers",
+      "title": "Zróbmy razem następny krok.",
+      "message": "Poznaj produkty albo porozmawiajmy o tym, jak moglibyśmy współpracować nad Twoją firmą.",
+      "groupsLabel": "Trzy sposoby na start: dla osób prywatnych, dla firm, dla inżynierów",
       "paths": {
         "individual": {
-          "title": "For individuals",
+          "title": "Dla osób prywatnych",
           "products": {
-            "label": "Browse the products",
-            "hint": "Each product has its own page."
+            "label": "Przeglądaj produkty",
+            "hint": "Każdy produkt ma własną stronę."
           }
         },
         "business": {
-          "title": "For businesses",
+          "title": "Dla firm",
           "consulting": {
-            "label": "See how we can work together",
-            "hint": "AI consulting services and a contact address."
+            "label": "Zobacz, jak możemy współpracować",
+            "hint": "Usługi doradztwa AI i adres kontaktowy."
           }
         },
         "engineer": {
-          "title": "For engineers",
+          "title": "Dla inżynierów",
           "notes": {
-            "label": "Read the change notes",
-            "hint": "Short records of what changed."
+            "label": "Czytaj notatki o zmianach",
+            "hint": "Krótkie zapisy tego, co się zmieniło."
           },
           "approach": {
-            "label": "Read how we work",
-            "hint": "Evidence levels, product states and claim policy."
+            "label": "Przeczytaj, jak pracujemy",
+            "hint": "Poziomy dowodów, stany produktów i zasady dotyczące twierdzeń."
           },
           "contact": {
-            "label": "Get in touch with the team",
-            "hint": "General address for support, technical questions and press."
+            "label": "Skontaktuj się z zespołem",
+            "hint": "Ogólny adres w sprawie pomocy, pytań technicznych i prasy."
           }
         }
       }
     },
     "doors": {
-      "label": "What brings you here?",
+      "label": "Co Cię tu sprowadza?",
       "products": {
-        "title": "Explore the products",
-        "audience": "For people who want to try and use the apps.",
-        "products": "Browse the products"
+        "title": "Poznaj produkty",
+        "audience": "Dla osób, które chcą wypróbować i używać aplikacji.",
+        "products": "Przeglądaj produkty"
       },
       "work": {
-        "title": "AI for my work",
-        "audience": "For teams that want to put AI to work in their business.",
-        "consulting": "See AI consulting"
+        "title": "AI do mojej pracy",
+        "audience": "Dla zespołów, które chcą wykorzystać AI w swojej firmie.",
+        "consulting": "Zobacz doradztwo AI"
       },
       "partners": {
-        "title": "Collaboration and company",
-        "audience": "For partners, investors and anyone who wants to know the company.",
-        "contact": "See ways to get in touch"
+        "title": "Współpraca i firma",
+        "audience": "Dla partnerów, inwestorów i każdego, kto chce poznać firmę.",
+        "contact": "Zobacz, jak się z nami skontaktować"
       },
       "inspect": {
-        "title": "Inspect",
-        "audience": "For people who want to check how we work and what we claim.",
-        "lab": "Visit the lab",
-        "transparency": "Read the transparency records"
+        "title": "Sprawdź",
+        "audience": "Dla osób, które chcą sprawdzić, jak pracujemy i co twierdzimy.",
+        "lab": "Odwiedź laboratorium",
+        "transparency": "Przeczytaj zapisy o przejrzystości"
       }
     }
   },
   "start": {
-    "metaTitle": "Doors",
-    "lede": "Pick one of four paths; each opens a real page on this site.",
-    "forLabel": "Who it is for",
-    "note": "Your choice is not stored; this page records nothing."
+    "metaTitle": "Wejścia",
+    "lede": "Wybierz jedną z czterech ścieżek; każda otwiera prawdziwą stronę w tym serwisie.",
+    "forLabel": "Dla kogo",
+    "note": "Twój wybór nie jest zapisywany; ta strona niczego nie rejestruje."
   },
   "ostinatoDemo": {
-    "kicker": "Rhythm feel try-out",
-    "title": "Tap along with a beat.",
-    "intro": "Press start, listen to the beat, then tap with Space, Enter, a click or a touch. Each tap gets a timing mark, and you see a total at the end.",
-    "note": "A small try-out on this page. It is not the app and not a measurement of anything. Nothing leaves your browser and nothing is stored.",
-    "start": "Start the beat",
-    "tapButton": "Tap here on the beat",
-    "tapHint": "Space, Enter, click or touch all work.",
-    "countIn": "Listen first. Taps count after the lead-in.",
-    "running": "The beat is playing. Tap along.",
-    "perfect": "Perfect",
-    "good": "Good",
-    "miss": "Missed",
-    "early": "{ms} ms early",
-    "late": "{ms} ms late",
-    "last": "Last tap",
-    "accuracy": "Timing accuracy: {pct}%",
-    "summary": "Perfect: {perfect}, Good: {good}, Missed: {miss}",
-    "resultHeading": "Round result",
-    "announceDone": "Round finished. {summary}. {accuracy}.",
-    "restart": "Try again",
-    "micLabel": "Also listen with the microphone (optional)",
-    "micOn": "Microphone is on. Clap or tap a surface.",
-    "micNote": "The microphone is never required. Sound stays on your device; it is not recorded and not sent anywhere. Headphones keep the beat out of the microphone."
+    "kicker": "Próba wyczucia rytmu",
+    "title": "Wystukuj rytm razem z metrum.",
+    "intro": "Naciśnij start, posłuchaj rytmu, a potem stukaj spacją, Enterem, kliknięciem lub dotknięciem. Każde stuknięcie dostaje ocenę wyczucia czasu, a na końcu widzisz sumę.",
+    "note": "Mała próba na tej stronie. To nie jest aplikacja ani pomiar czegokolwiek. Nic nie opuszcza Twojej przeglądarki i nic nie jest zapisywane.",
+    "start": "Uruchom rytm",
+    "tapButton": "Stuknij tutaj w rytm",
+    "tapHint": "Działa spacja, Enter, kliknięcie lub dotknięcie.",
+    "countIn": "Najpierw posłuchaj. Stuknięcia liczą się po wstępie.",
+    "running": "Rytm gra. Stukaj razem z nim.",
+    "perfect": "Idealnie",
+    "good": "Dobrze",
+    "miss": "Pudło",
+    "early": "{ms} ms za wcześnie",
+    "late": "{ms} ms za późno",
+    "last": "Ostatnie stuknięcie",
+    "accuracy": "Dokładność rytmu: {pct}%",
+    "summary": "Idealnie: {perfect}, Dobrze: {good}, Pudła: {miss}",
+    "resultHeading": "Wynik rundy",
+    "announceDone": "Runda zakończona. {summary}. {accuracy}.",
+    "restart": "Spróbuj ponownie",
+    "micLabel": "Słuchaj też mikrofonem (opcjonalnie)",
+    "micOn": "Mikrofon jest włączony. Klaśnij albo stuknij w powierzchnię.",
+    "micNote": "Mikrofon nigdy nie jest wymagany. Dźwięk zostaje na Twoim urządzeniu; nie jest nagrywany ani nigdzie wysyłany. Słuchawki chronią rytm przed mikrofonem."
   },
   "lifeosDemo": {
-    "kicker": "Synthetic decision and reminder try-out",
-    "title": "Pick a decision, preview its reminder.",
-    "intro": "Choose an example decision card or name your own example. Preview when the reminder would arrive, then see it as set.",
-    "note": "A small try-out, not the app itself. The decision cards are made up. No real reminder is set, and this try-out saves and sends no data.",
-    "badge": "Synthetic example",
-    "cardsLegend": "Example decision card",
-    "card1": "Moving date",
-    "card2": "Wardrobe colour choice",
-    "card3": "Book club day",
-    "customLabel": "Or name your own example card (optional)",
-    "customHint": "Do not type anything real. An example name is enough.",
-    "whenLegend": "When should the reminder arrive?",
-    "whenDay": "Tomorrow morning",
-    "whenWeek": "One week from now, in the morning",
-    "preview": "Reminder time: {when}",
-    "setButton": "Set the reminder (simulation)",
-    "doneHeading": "Reminder set (simulation)",
-    "doneBody": "Reminder for “{title}”: {when}. Nothing was actually set.",
-    "announceDone": "Reminder set, simulation. {title}: {when}.",
-    "restart": "Try again"
+    "kicker": "Syntetyczna próba decyzji i przypomnienia",
+    "title": "Wybierz decyzję, zobacz podgląd przypomnienia.",
+    "intro": "Wybierz przykładową kartę decyzji albo nazwij własny przykład. Zobacz podgląd, kiedy przyszłoby przypomnienie, a potem zobacz je jako ustawione.",
+    "note": "Mała próba, a nie sama aplikacja. Karty decyzji są zmyślone. Żadne prawdziwe przypomnienie nie jest ustawiane, a ta próba nie zapisuje ani nie wysyła danych.",
+    "badge": "Przykład syntetyczny",
+    "cardsLegend": "Przykładowa karta decyzji",
+    "card1": "Termin przeprowadzki",
+    "card2": "Wybór koloru szafy",
+    "card3": "Dzień klubu książki",
+    "customLabel": "Albo nazwij własną przykładową kartę (opcjonalnie)",
+    "customHint": "Nie wpisuj niczego prawdziwego. Wystarczy przykładowa nazwa.",
+    "whenLegend": "Kiedy ma przyjść przypomnienie?",
+    "whenDay": "Jutro rano",
+    "whenWeek": "Za tydzień, rano",
+    "preview": "Czas przypomnienia: {when}",
+    "setButton": "Ustaw przypomnienie (symulacja)",
+    "doneHeading": "Przypomnienie ustawione (symulacja)",
+    "doneBody": "Przypomnienie dla „{title}”: {when}. Nic nie zostało naprawdę ustawione.",
+    "announceDone": "Przypomnienie ustawione, symulacja. {title}: {when}.",
+    "restart": "Spróbuj ponownie"
   }
 }

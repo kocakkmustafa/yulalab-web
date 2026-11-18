@@ -4,8 +4,8 @@ import { useLocale, useTranslations } from "next-intl";
 /**
  * WEB-P1-02, server side. Rendered by ProductPage only when
  * OSTINATO_DEMO_ENABLED=1. The interactive part is a dynamic import, so with
- * the flag off nothing here reaches the page's JS. Copy exists in tr and en;
- * the other twelve locales show the English copy honestly marked lang="en".
+ * the flag off nothing here reaches the page's JS. Copy is translated for
+ * all fourteen locales; the section carries the page locale as its lang.
  */
 const OstinatoRhythmDemo = dynamic(() => import("@/components/projects/OstinatoRhythmDemo"));
 
@@ -19,15 +19,13 @@ export type OstinatoDemoText = Record<(typeof OSTINATO_DEMO_TEXT_KEYS)[number], 
 export function OstinatoDemoArea() {
   const t = useTranslations("ostinatoDemo");
   const locale = useLocale();
-  const native = locale === "tr" || locale === "en";
   const text = Object.fromEntries(OSTINATO_DEMO_TEXT_KEYS.map((k) => [k, t.raw(k) as string])) as OstinatoDemoText;
   return (
     <section
       className="pb-24"
       aria-labelledby="ostinato-demo-heading"
       data-testid="ostinato-rhythm-demo"
-      lang={locale === "tr" ? "tr" : "en"}
-      dir={native ? undefined : "ltr"}
+      lang={locale}
     >
       <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300 mb-4">{text.kicker}</p>
       <h2

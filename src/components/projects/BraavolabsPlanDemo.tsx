@@ -6,15 +6,12 @@ import { PLAN_INTENTS, buildPlanCard, type PlanLabels } from "@/components/proje
 /**
  * WEB-P0-05. Server component: heading, disclaimer and (without JS) the static
  * summary of all three sample cards live in server HTML; only the selection is
- * a client island. Catalogue text exists in tr and en; the other twelve
- * locales show the English catalogue honestly marked `lang="en"` (and
- * `dir="ltr"`), never an invented translation.
+ * a client island. Catalogue text is translated for all fourteen
+ * locales; the section carries the page locale as its lang.
  */
 export function BraavolabsPlanDemo() {
   const t = useTranslations("braavolabsDemo");
   const locale = useLocale();
-  const native = locale === "tr" || locale === "en";
-  const lang = locale === "tr" ? "tr" : "en";
   const text = (key: string) => t(key as never) as string;
   const cards = PLAN_INTENTS.map((i) => buildPlanCard(i, text));
   const labels: PlanLabels = {
@@ -32,8 +29,7 @@ export function BraavolabsPlanDemo() {
       className="pb-24"
       aria-labelledby="braavolabs-demo-heading"
       data-testid="braavolabs-plan-demo"
-      lang={lang}
-      dir={native ? undefined : "ltr"}
+      lang={locale}
     >
       <p className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-300 mb-4">{text("kicker")}</p>
       <h2

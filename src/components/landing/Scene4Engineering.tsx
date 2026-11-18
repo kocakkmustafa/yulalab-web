@@ -1,4 +1,5 @@
 import type { getTranslations } from "next-intl/server";
+import { recordLangAttrs } from "./record-lang";
 import { localePath } from "@/i18n/locales";
 import { braavolabs } from "@/data/projects/braavolabs";
 import { lifeos } from "@/data/projects/lifeos";
@@ -94,16 +95,22 @@ export function Scene4Engineering({
                 </div>
                 {source ? (
                   <>
-                    <p className="mt-3 text-base text-ink-50">{source.feature.description[lang]}</p>
+                    <p className="mt-3 text-base text-ink-50" {...recordLangAttrs(lang, locale)}>
+                      {source.feature.description[lang]}
+                    </p>
                     <p
                       data-scene4-source={`projects/${source.record.slug}`}
                       className="mt-3 font-mono text-[10px] tracking-widest uppercase text-ink-300"
                     >
-                      {t("scene4.sourceLabel", {
-                        product: source.record.name,
-                        feature: source.feature.title[lang],
-                        status: ts(STATUS_KEY[source.record.status as keyof typeof STATUS_KEY]),
-                      })}
+                      <MarkedPart
+                        text={t("scene4.sourceLabel", {
+                          product: source.record.name,
+                          feature: source.feature.title[lang],
+                          status: ts(STATUS_KEY[source.record.status as keyof typeof STATUS_KEY]),
+                        })}
+                        part={source.feature.title[lang]}
+                        attrs={recordLangAttrs(lang, locale)}
+                      />
                     </p>
                   </>
                 ) : (
@@ -168,5 +175,18 @@ export function Scene4Engineering({
         </ul>
       </div>
     </div>
+  );
+}
+
+/** Renders `text`, wrapping the record-language `part` in its own lang/dir span. */
+function MarkedPart({ text, part, attrs }: { text: string; part: string; attrs: { lang?: string; dir?: "ltr" } }) {
+  const at = attrs.lang ? text.indexOf(part) : -1;
+  if (at < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, at)}
+      <span {...attrs}>{part}</span>
+      {text.slice(at + part.length)}
+    </>
   );
 }
