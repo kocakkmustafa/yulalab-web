@@ -964,9 +964,9 @@
     {
       "path": "scripts/verify-translations.ts",
       "publishedSha256": null,
-      "candidateSha256": "217153913dcde8677308c7eee81424eaf45fd1991d688ba3d05aca39544c86e2",
+      "candidateSha256": "f1e393000d88fa890b5658b60213c949d832cbccd680b8b193beb12ad0665f37",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. WEB-10c-AI: 12 dil ceviri"
+      "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. WEB-10c-AI: 12 dil ceviri WEB-10c-AI: allowlist bayat kayit duzeltmesi"
     },
     {
       "path": "src/data/privacy-copy.ts",
