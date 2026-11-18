@@ -1119,3 +1119,29 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
     background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
   }
 }
+
+/* W1D Z1: ic sayfa zemini (koyu tema). Referans olcumu: kenar #010206, orta lacivert-mor
+   isima, alt bolumde petrol/lacivert. Zemin <html> uzerinde, belge boyuna gore:
+   ust / orta / alt 900px'lik isik karolari + 180px artili, 36px ince izgara.
+   Sahne bu rotalarda gorunmez (visibility), ana sayfa (deneyim koku) etkilenmez. */
+:root[data-theme="dark"] {
+  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+}
+:root[data-theme="dark"]:not(:has([data-yula-experience="true"])) {
+  background-color: #010206;
+  background-image:
+    var(--yula-plus-img),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    radial-gradient(ellipse 880px 520px at 1000px 470px, rgba(27,23,70,.9) 0, rgba(22,18,58,.75) 30%, rgba(12,10,36,.45) 58%, transparent 100%),
+    radial-gradient(ellipse 800px 520px at 900px 470px, rgba(14,36,46,.95) 0, rgba(6,22,34,.65) 45%, transparent 100%),
+    radial-gradient(ellipse 800px 470px at 760px 450px, rgba(3,26,40,.95) 0, rgba(4,22,48,.8) 40%, rgba(3,12,44,.5) 70%, transparent 100%);
+  background-size: 180px 180px, 36px 36px, 36px 36px, 100% 900px, 100% 900px, 100% 900px;
+  background-position: 0 90px, 0 0, 0 0, 0 0, 0 50%, 0 100%;
+  background-repeat: repeat, repeat, repeat, no-repeat, no-repeat, no-repeat;
+  background-attachment: scroll;
+}
+:root[data-theme="dark"]:not(:has([data-yula-experience="true"])) body { background: transparent; }
+:root[data-theme="dark"] .scene-host:is([data-scene-tone="page"], [data-scene-tone="quiet"]) { visibility: hidden; }
+:root[data-theme="dark"] [data-site-footer="true"] { background: transparent; }
+:root[data-theme="dark"] .glass { background: rgb(255 255 255 / .025); }
