@@ -75,7 +75,7 @@ export const GROUND_SETS = {
   proof: { edge: "#020608", mid: "#0c3446", peak: "#4acdff", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
   night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
   closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
-  light: { edge: "#c8d1d4", mid: "#e4eef1", peak: "#e4eef1", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
+  light: { edge: "#ccd6d9", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
 } as const satisfies Record<string, GroundSet>;
 
 export type GroundWeights = { hero: number; portfolio: number; proof: number; night: number; closing: number; light: number };
