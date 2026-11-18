@@ -116,11 +116,20 @@ export type StageWordFrame = {
  * mode renders the exact same word at the exact same place.
  */
 export function stageWordFrame(frame: TimelineFrame): StageWordFrame | null {
+  // W1D-D H1-a: the giant PROJECTS word rises behind the glass Y while the wordmark is gone, then hands
+  // over to the portfolio word without a dip.
+  if (frame.stage === "hero") {
+    const local = Math.min(1, Math.max(0, frame.progress / STAGES.hero[1]));
+    const rise = smoothstep((local - 0.3) / 0.4);
+    if (rise <= 0.001) return null;
+    return { label: "works", opacity: rise, shift: 0.1 };
+  }
   const span = STAGE_WORD_SPAN[frame.stage];
   if (!span) return null;
   const local = Math.min(1, Math.max(0, frame.stageProgress / span.until));
   const envelope = span.until >= 1 ? 1 : 1 - smoothstep((local - 0.55) / 0.45);
-  const opacity = Math.min(1, Math.max(0, frame.overlay[frame.stage])) * envelope;
+  const stageFade = frame.stage === "portfolio" ? 1 : Math.min(1, Math.max(0, frame.overlay[frame.stage]));
+  const opacity = stageFade * envelope;
   if (opacity <= 0.001) return null;
-  return { label: span.label, opacity, shift: 0.5 - local };
+  return { label: span.label, opacity, shift: frame.stage === "portfolio" ? 0.1 - local * 0.9 : 0.5 - local };
 }

@@ -456,13 +456,11 @@ export function evaluateTimeline(
       themeMix,
       bladeProgress: whiteRise,
       roomOpacity: lerp(1, 0.62, themeMix),
+      // W1D-D H1-a: the wordmark dissolves first (hero 0.005..0.04), the room behind the cards is the giant
+      // PROJECTS word, not a faded YULA; the wordmark only returns as the pale closing mark.
       wordmarkOpacity:
         p < STAGES.proof[0]
-          ? lerp(
-            1,
-            0.28,
-            smoothstep(segmentProgress(p, STAGES.portfolio[0], STAGES.portfolio[1])),
-          )
+          ? 1 - smoothstep(segmentProgress(p, 0.005, 0.04))
           : 0.18 * (1 - themeMix),
       proofMorph,
       closingDraw,

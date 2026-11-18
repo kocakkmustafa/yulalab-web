@@ -283,7 +283,11 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
   // the Y takes the same horizontal squeeze while it stands in for the first letter.
   const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
-  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier, slotPose.scale, slotMix);
+  // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
+  // back to the portfolio hand-off scale.
+  const heroGrow = 1 + 0.4 * smoothstep(segmentProgress(frame.progress, 0.034, 0.06))
+    * (1 - smoothstep(segmentProgress(frame.progress, 0.06, 0.085)));
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
   const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
