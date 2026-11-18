@@ -175,7 +175,7 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
   const page = await context.newPage();
   await page.goto("/en/transparency");
   await expect(page.getByRole("heading", { name: "Claims and sources", level: 2 })).toBeVisible();
-  const unresolved = await page.locator(".reveal,.word").evaluateAll((elements) =>
+  const unresolved = await page.locator(".reveal,.word,[data-reveal],.page-enter").evaluateAll((elements) =>
     elements.filter((element) => {
       const style = getComputedStyle(element);
       return style.opacity !== "1" || style.transform !== "none" ||
@@ -183,6 +183,10 @@ test("respects prefers-reduced-motion", async ({ browser }) => {
     }).length,
   );
   expect(unresolved, "reveals must resolve immediately, including offscreen ancestors").toBe(0);
+  expect(
+    await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length),
+    "no running animation under reduced motion",
+  ).toBe(0);
   await context.close();
 });
 
