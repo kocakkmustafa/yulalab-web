@@ -116,7 +116,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "messages/pt-BR.json": "e1cfd3199bacdd807779eb7d445bb6fed682b03db020afdeb5bc1630e6734310",
     "messages/tr.json": "99d15253ab078672af2ea3ca7db1abefe3f9fd2c2431f4cd91e388b82cc54103",
     "messages/zh-Hans.json": "912526af06456d0c8ab221d857304c0ce255efd7421e6fb621ab316b50691920",
-    "next.config.mjs": "73365bc728c08151b8b36e76ad99515d30d511ea3533fe1838d44449ef455814",
+    "next.config.mjs": "746ed043a2c90d25adbdd4f5c51c6e344cfcde28379bc2ce42cc4cc970aa6383",
     "scripts/verify-translations.ts": "f1e393000d88fa890b5658b60213c949d832cbccd680b8b193beb12ad0665f37",
     "src/app/[locale]/data-request/verify/route.ts": "7bac2c97d53e909d73cc1edd7ac6971ed61cd82b2ed08a0b491941f69fe5b324",
     "src/app/[locale]/layout.tsx": "d159532459458e7084556f1530592aa36702199bc4e9348e2fdd67c2193e0c84",

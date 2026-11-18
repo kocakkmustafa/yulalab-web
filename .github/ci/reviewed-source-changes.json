@@ -76,8 +76,8 @@
       "path": "netlify.toml",
       "publishedSha256": "ad306e4e273440ccd8c81daf3919e39e829e4840e57be7b4f12bc151a1659ddd",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
-      "candidateSha256": "f6ecac6e06578340161d6e92756093fc7fdd3a2ffe1ec399122d752f75ef2455",
-      "reason": "Select the current Node 26.9.0 build toolchain; Functions runtime is explicitly selected by the CLI process and checked separately in generated artifacts. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence."
+      "candidateSha256": "0c7b337442ce7ac150d57dbe1713c1389dac3c3d26ce59c7b76634fe04755058",
+      "reason": "Select the current Node 26.9.0 build toolchain; Functions runtime is explicitly selected by the CLI process and checked separately in generated artifacts. Candidate-only CLI removal and provider-lifecycle artifact proof; independent review and execution remain pending. Candidate-only supported Tailwind4 source migration and CLI removal; retain legacy UI reset/colors/spacing/gradients and existing lint/tests/security headers/API/ISR behavior. Preserve artifact proof through the provider lifecycle. New native/build/browser/provider verification and complete braces remediation remain pending; this is not publication evidence. WEB-P2-01b: lab bayraklari acik"
     },
     {
       "path": "public/portfolio-registry.json",
@@ -201,8 +201,8 @@
     {
       "path": "next.config.mjs",
       "publishedSha256": "c86affd49cc3f2242c94ecdbfabaae7eb7f05f58e2f609dc026fc54d5d0df823",
-      "candidateSha256": "73365bc728c08151b8b36e76ad99515d30d511ea3533fe1838d44449ef455814",
-      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS. EK-6 (2026-10-27): CSP lists first-party sources only; unused Vercel, Google Fonts, burunfark.com frame and https: image sources removed",
+      "candidateSha256": "746ed043a2c90d25adbdd4f5c51c6e344cfcde28379bc2ce42cc4cc970aa6383",
+      "reason": "Remove duplicate Links config redirect so middleware owns a fixed, query-free destination consistently across Next and Netlify routing order. 2026-10-20 approved theme and 14-language candidate: complete model source-to-target reviews, local synthetic tests and Next build evidence in workspace/implementation-01-2026-10-19/theme-14-acceptance. Browser theme/14-language acceptance remains open after user interruption; no native-speaker, real-device, provider, live DB/mail, security scan or publication acceptance. YUL-04 Motion parental-consent capability page (/[locale]/motion/consent): nonce CSP with connect-src limited to the configured Motion Core function, no-store, no-referrer, noindex; middleware canonicalization and config-header exclusion mirror data-request/verify. Core endpoint unset (unavailable state) until Ekip-2 publishes it with CORS. EK-6 (2026-10-27): CSP lists first-party sources only; unused Vercel, Google Fonts, burunfark.com frame and https: image sources removed WEB-P2-01b: lab bayraklari acik",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE"
     },
     {
