@@ -6,6 +6,13 @@
   NODE_VERSION = "26.9.0"
   PNPM_VERSION = "10.33.0"
 
+# WEB-P2-01b: Lab demo flags are open only in the Netlify production build
+# (not secrets). next.config.mjs inlines them at build, so ISR re-renders at
+# runtime keep them without a runtime env var. Other contexts and CI stay closed.
+[context.production.environment]
+  LIFEOS_DEMO_ENABLED = "1"
+  OSTINATO_DEMO_ENABLED = "1"
+
 [[plugins]]
   package = "./.github/netlify/artifact-proof"
 
