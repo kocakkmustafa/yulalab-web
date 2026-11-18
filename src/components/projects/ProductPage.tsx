@@ -1,3 +1,4 @@
+import { DesignPreviewSection } from "@/components/projects/DesignPreviewSection";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
@@ -352,6 +353,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                   {t("screenEmpty")}
                 </p>
               )}
+              <DesignPreviewSection slug={project.slug} locale={locale} />
               {project.slug === "braavolabs" ? (
                 <div id="dene" data-testid="demo-area">
                   <p

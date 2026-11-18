@@ -104,6 +104,114 @@ export const developmentPreviews: Partial<Record<string, readonly DevelopmentPre
   ]
 };
 
+/** Approved English design previews (founder decision 2026-11-18). These are
+ * design boards, NOT screenshots of a built app: they carry no sourceBuild,
+ * never enter the publication registry and are never `kind: "product"`.
+ */
+export type DesignPreview = {
+  path: string;
+  alt: { tr: string; en: string };
+  boardFile: string;
+  designDirection: { tr: string; en: string };
+  designedAt: string;
+  captureKind: "design";
+};
+
+export const designPreviews: Record<string, readonly DesignPreview[]> = {
+  "lifeos": [
+    {
+      path: "/projects/lifeos/design-preview-01-onboarding.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: \"Your life, in one place\" karşılama ekranı ve Get started düğmesi.", en: "LifeOS design preview: welcome screen, \"Your life, in one place\", with a Get started button." },
+      boardFile: "Giris2.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/lifeos/design-preview-02-today.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: günlük hedefler, rutinler ve görevlerle Bugün ekranı.", en: "LifeOS design preview: Today screen with daily goals, routines and tasks." },
+      boardFile: "Main.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/lifeos/design-preview-03-finance.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: aylık toplamı dolar cinsinden gösteren Finans hareket listesi.", en: "LifeOS design preview: Finance transactions list with monthly total in dollars." },
+      boardFile: "Finans1.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/lifeos/design-preview-04-focus.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: tamamlanan tur ve odak süresiyle koyu odak zamanlayıcısı.", en: "LifeOS design preview: dark focus timer with rounds completed and focus time." },
+      boardFile: "Egitim3.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/lifeos/design-preview-05-health-score.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: bileşenleri ve bir içgörüyle 78 puanlık koyu Sağlık skoru.", en: "LifeOS design preview: dark Health score of 78 with components and an insight." },
+      boardFile: "Saglik1.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/lifeos/design-preview-06-habits.png",
+      alt: { tr: "LifeOS tasarım önizlemesi: alışkanlık başına 14 günlük seri noktalarıyla Alışkanlıklar ekranı.", en: "LifeOS design preview: Habits screen with 14-day streak dots per habit." },
+      boardFile: "Yasam2.dc.html",
+      designDirection: { tr: "Gümüş Erik", en: "Silver Plum" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+  ],
+  "braavolabs": [
+    {
+      path: "/projects/braavolabs/design-preview-01-approval-queue.png",
+      alt: { tr: "Braavolabs tasarım önizlemesi: solda sohbetle bir bülten gönderiminin onay ayrıntıları.", en: "Design preview: approval details for a newsletter send, with a chat on the left." },
+      boardFile: "DOnay.dc.html",
+      designDirection: { tr: "Ilık Grafit", en: "Warm Graphite" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/braavolabs/design-preview-02-activity-audit.png",
+      alt: { tr: "Braavolabs tasarım önizlemesi: görev akışı ve denetim ayrıntılarıyla şirket etkinlik listesi.", en: "Design preview: company activity list with a task flow and audit details." },
+      boardFile: "DEtkinlik.dc.html",
+      designDirection: { tr: "Ilık Grafit", en: "Warm Graphite" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/braavolabs/design-preview-03-notifications-error.png",
+      alt: { tr: "Braavolabs tasarım önizlemesi: Şu an paneli, onay bildirimi ve bağlayıcı hata kartı.", en: "Design preview: Now panel, approval toast and a connector error card." },
+      boardFile: "DBildirim.dc.html",
+      designDirection: { tr: "Ilık Grafit", en: "Warm Graphite" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/braavolabs/design-preview-04-settings-budget.png",
+      alt: { tr: "Braavolabs tasarım önizlemesi: ajan başına harcama ve limitlerle bütçe ayarları.", en: "Design preview: budget settings with per-agent spend and limits." },
+      boardFile: "DAyarButce.dc.html",
+      designDirection: { tr: "Ilık Grafit", en: "Warm Graphite" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+    {
+      path: "/projects/braavolabs/design-preview-05-settings-approval-rules.png",
+      alt: { tr: "Braavolabs tasarım önizlemesi: onay kuralları ve acil durdurma ayarları.", en: "Design preview: approval rules and emergency stop settings." },
+      boardFile: "DAyarKural.dc.html",
+      designDirection: { tr: "Ilık Grafit", en: "Warm Graphite" },
+      designedAt: "2026-11-18",
+      captureKind: "design",
+    },
+  ],
+};
+
 export const approvedIdentityPaths = [
   "/projects/gravita/icon.png",
   "/projects/lissom/icon.png",
@@ -114,8 +222,6 @@ export const approvedIdentityPaths = [
 
 export const showcaseImagePaths = [
   ...approvedIdentityPaths,
-  "/projects/braavolabs/screenshot-audit-trail.png",
-  "/projects/braavolabs/screenshot-builder.png",
   ...approvedIdentityPaths.map((path) => path.replace("/icon.png", "/preview-native-20261016.png")),
   "/projects/lifeos/preview-onboarding-20261016.png",
 ];

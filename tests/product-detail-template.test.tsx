@@ -104,7 +104,9 @@ describe.each(["tr", "en"] as const)("%s product detail template (WEB-UX-05c)", 
     expect(screen.getByTestId("screen-empty").textContent).toBe(messages.product.screenEmpty);
     cleanup();
     renderPage("braavolabs", locale);
-    expect(screen.queryByTestId("screen-empty")).toBeNull();
+    // Y2 removed (2026-11-18): Braavolabs also has no real screenshot; the design previews do not count as one.
+    expect(screen.getByTestId("screen-empty").textContent).toBe(messages.product.screenEmpty);
+    expect(document.querySelector('[data-design-previews="braavolabs"]')).toBeTruthy();
   });
 
   it("hides the vision item when the product has no registered roadmap material", () => {

@@ -40,9 +40,9 @@ REVIEWED_VISUAL_ADDITIONS = {
     "public/projects/ostinato/preview-written-lesson-20261016.png": "745e683b1b490258e99a1fb8a798e198e4b05c17e11386eb42743b259168e377",
     "src/components/experience/presentation-canvas.ts": "263df36aca5b6dc08d02e09208d6c37e53d58669301890c67ae6aa187ace4110",
     "src/components/experience/storyboard.ts": "91865ba673e2dc3500792e3ce06fa58261bbf747e8c9b368308efb6eebf4c193",
-    "src/components/experience/useShowcaseTextures.ts": "565148572a7b0fae3d9dedfbbad0353c508923a0c429ffde3909a65904654345",
+    "src/components/experience/useShowcaseTextures.ts": "b9cda4bfabda08c0a93fe5d201fe63a7e8ef917c3ef5f26046e58d3b3755303a",
     "src/components/projects/DevelopmentPreviewSection.tsx": "bcf341219391618be4da8cc01dd45a91c594424344a9ca6f3c1347c1be047dae",
-    "src/data/product-presentations.ts": "e787eb3d025ea2a0f5c7ae6cf4e9e2231526408a47166e2f2915ebb2ce72f62c"
+    "src/data/product-presentations.ts": "3afc2bee62a05257c3b9eae622d090ebb9b9b1d430f46ff62cd895995041819c"
 }
 # END APPROVED VISUAL ADDITIONS
 # 2026-10-20 user-approved A3 source/test/message candidate snapshot.
@@ -53,12 +53,12 @@ REVIEWED_VISUAL_ADDITIONS = {
 # This helper has no self hash in the candidate set.
 REVIEWED_A3_SOURCE_HASHES = {
     "messages/ar.json": "88fa1d0058c32c874272100c5fbfca9d0575f0701223033ea7bb3aee327b889c",
-    "messages/content-ar.json": "1f9ab41a0e02e90478611d96db8245757279102552bc1b4738f3d7a9b7c718f5",
-    "messages/content-de.json": "ad79853b3dcad72167bd5bf5b75538eb4fa6c582659ab28e8e3cb563a5ab6608",
-    "messages/content-es-419.json": "5032b9b482e7867de129182afe04df648d42d7454dfec5fbd0703e99c76a4b94",
-    "messages/content-fr.json": "faff029a438863c9fa7d604ddb6f943fcca99f5d1e59c0df7aa2facf8a4fb654",
-    "messages/content-ja.json": "e734040acb2b9655ab42e792bbb869bd7079a7e4614f5e2d882e01cc9a3b5e9d",
-    "messages/content-pt-BR.json": "4c7a21a5a909fd67e0d80454ebab914e64695ba2bf1b2ed064a43d8cbd755d28",
+    "messages/content-ar.json": "dac755001196708e9902fe4ab71aaeeb3f13a1b6ef0d58f2c67bcef4a20d81e5",
+    "messages/content-de.json": "058046cf45859259d4b4700ed5f3e868c5fb01c924368afb0244cc4b48e4d15e",
+    "messages/content-es-419.json": "3fb6b357c7d3d7f8d8c7393e583321fc75729d2a5d66e79e5cef2b1458fb78eb",
+    "messages/content-fr.json": "b4369c923d98f464f6b0d75ca5bd552c73a44bfdac56dd5c217e5ea9b6b74116",
+    "messages/content-ja.json": "6de1d70f148a8a44071243eb57dca0a22a779ee76d007895b7753d44489db4ae",
+    "messages/content-pt-BR.json": "fd8af9afcdf3df10d98325b22a1e516b79ff59d4b1d76e23f339a77b1c96534e",
     "messages/de.json": "ab710825cc2190e47cefc080edd7a09327aac3eddfc115f3cb5c4e31f83fe774",
     "messages/es-419.json": "2c6f33373c90378b12076ba6b878d9215ff080a5617c413ae1862303ddb34ad7",
     "messages/fr.json": "cd76d43acbaf85b548c3d843fa781c63ce43841ac5fb9a0a8dfb239246ac2524",
@@ -80,7 +80,7 @@ REVIEWED_A3_SOURCE_HASHES = {
     "tests/mail-budget.test.ts": "bef4a1f7a86c28c4ce048e7b4dd14cd6594793a82de0454e20aefa444074f5a8",
     "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
     "src/components/projects/DevelopmentPreviewSection.tsx": "bcf341219391618be4da8cc01dd45a91c594424344a9ca6f3c1347c1be047dae",
-    "src/data/product-presentations.ts": "e787eb3d025ea2a0f5c7ae6cf4e9e2231526408a47166e2f2915ebb2ce72f62c",
+    "src/data/product-presentations.ts": "3afc2bee62a05257c3b9eae622d090ebb9b9b1d430f46ff62cd895995041819c",
     "tests/structured-data-honesty.test.tsx": "61a277923bddb9504a3c481e6a19488107cb92726327bb71d1bdd53b06050840"
 }
 # BEGIN REVIEWED THEME14 SOURCE HASHES
@@ -91,18 +91,18 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "DEFTER.md": "f4243948026cc152cec4619d4a78c9f80f9491a9b7eb68982d5f20f159d6f289",
     "README.md": "21989e53150b598c65c8477d9c7a5906d20ee17022d7ec6d0d3a24cd052f17dd",
     "messages/ar.json": "88fa1d0058c32c874272100c5fbfca9d0575f0701223033ea7bb3aee327b889c",
-    "messages/content-ar.json": "1f9ab41a0e02e90478611d96db8245757279102552bc1b4738f3d7a9b7c718f5",
-    "messages/content-de.json": "ad79853b3dcad72167bd5bf5b75538eb4fa6c582659ab28e8e3cb563a5ab6608",
-    "messages/content-es-419.json": "5032b9b482e7867de129182afe04df648d42d7454dfec5fbd0703e99c76a4b94",
-    "messages/content-fr.json": "faff029a438863c9fa7d604ddb6f943fcca99f5d1e59c0df7aa2facf8a4fb654",
-    "messages/content-hi.json": "9f8ae0b03756d44ea0ced86d3f6143f7a4ed82c64f3525cdc60392c11d497594",
-    "messages/content-id.json": "641d3747f6f338172fd051bbc407cfdb0cf62bd0b7c99fe4392bffd99ce5fe23",
-    "messages/content-it.json": "6f650af8669e9f52693be0baff03cf153c0e6f36e53f0fb282f41d01d52377fa",
-    "messages/content-ja.json": "e734040acb2b9655ab42e792bbb869bd7079a7e4614f5e2d882e01cc9a3b5e9d",
-    "messages/content-ko.json": "5a743cf1d17c3373af0c0d5a834ac1601755a4cf6985733e17c81a6931e39890",
-    "messages/content-pl.json": "db15f8e83b58ebb553d4feed39140602fbe58600a53b5cf843beb10218b88663",
-    "messages/content-pt-BR.json": "4c7a21a5a909fd67e0d80454ebab914e64695ba2bf1b2ed064a43d8cbd755d28",
-    "messages/content-zh-Hans.json": "88d20a0192b7718c6910135baaf8d74a97fb4efd62c6d7640a0b99191a122631",
+    "messages/content-ar.json": "dac755001196708e9902fe4ab71aaeeb3f13a1b6ef0d58f2c67bcef4a20d81e5",
+    "messages/content-de.json": "058046cf45859259d4b4700ed5f3e868c5fb01c924368afb0244cc4b48e4d15e",
+    "messages/content-es-419.json": "3fb6b357c7d3d7f8d8c7393e583321fc75729d2a5d66e79e5cef2b1458fb78eb",
+    "messages/content-fr.json": "b4369c923d98f464f6b0d75ca5bd552c73a44bfdac56dd5c217e5ea9b6b74116",
+    "messages/content-hi.json": "516c0c7e11b17cfc2be6de6ca651060ea97e766dcbd8355d56c6a341552ae6a5",
+    "messages/content-id.json": "e97a7e55528d49b272a700da62651d9b5e882e63235417a83b944eda681cd915",
+    "messages/content-it.json": "c94193e87940ad1f332a2b41ba81139a3a2b60618da7b66d09c64e0df1cb815e",
+    "messages/content-ja.json": "6de1d70f148a8a44071243eb57dca0a22a779ee76d007895b7753d44489db4ae",
+    "messages/content-ko.json": "8bfb56f5371cec4514a8312794fb6908704b73090881a07dfc8b82c0c9d85f19",
+    "messages/content-pl.json": "50e05e877c41e22ed531ee7b051dae2b6777e6b042df6788072c95af4282360d",
+    "messages/content-pt-BR.json": "fd8af9afcdf3df10d98325b22a1e516b79ff59d4b1d76e23f339a77b1c96534e",
+    "messages/content-zh-Hans.json": "24dd3a6c8b2957a507eae98684e7a2c02c3e865394b771cd2be7207ac848f3f8",
     "messages/de.json": "ab710825cc2190e47cefc080edd7a09327aac3eddfc115f3cb5c4e31f83fe774",
     "messages/en.json": "da105eb1102388316def0ecad350aa50d4692f0bb93b2e3782a8cc960f819b39",
     "messages/es-419.json": "2c6f33373c90378b12076ba6b878d9215ff080a5617c413ae1862303ddb34ad7",

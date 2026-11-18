@@ -798,5 +798,22 @@
   "Guitar comes with 235 lessons and ear training with 48, 283 lessons in total; voice and piano are coming soon. Guitar level 1 (40 lessons) and ear training level 1 (25 lessons) are free, with no account. The rest opens with an Ostinato membership through the App Store and Google Play.": "기타는 235개 레슨, 청음 훈련은 48개 레슨으로 총 283개 레슨이며, 보컬과 피아노는 곧 출시돼요. 기타 레벨 1(40개 레슨)과 청음 훈련 레벨 1(25개 레슨)은 무료이며 계정이 필요 없어요. 나머지는 App Store와 Google Play의 Ostinato 멤버십으로 열려요.",
   "For the scope and limits of case studies, see": "사례 연구의 범위와 한계는 다음을 참고하세요:",
   "the Transparency page.": "투명성 페이지.",
-  "When measurement is enabled, the funnel record also includes these events: home page view, and contact form start (first focus on the form) and submission. These events only report that the action happened; nothing you type into a form enters an event. Measurement runs on all 14 language versions of the site, and the recorded language is one of those 14. This funnel record is separate from the page-view measurement mentioned above; it sets no cookies, calls no external service, and records are written to our own database.": "측정이 켜져 있으면 퍼널 기록에는 다음 이벤트도 포함돼요: 홈 페이지 조회, 문의 양식 시작(양식에 처음 포커스), 제출. 이 이벤트는 해당 행동이 일어났다는 사실만 알리며, 양식에 입력한 내용은 이벤트에 들어가지 않아요. 측정은 사이트의 14개 언어 버전 모두에서 실행되며, 기록되는 언어는 그 14개 중 하나예요. 이 퍼널 기록은 위에서 언급한 페이지 조회 측정과 별개이며, 쿠키를 설정하지 않고, 외부 서비스를 호출하지 않으며, 기록은 우리 자체 데이터베이스에 저장돼요."
+  "When measurement is enabled, the funnel record also includes these events: home page view, and contact form start (first focus on the form) and submission. These events only report that the action happened; nothing you type into a form enters an event. Measurement runs on all 14 language versions of the site, and the recorded language is one of those 14. This funnel record is separate from the page-view measurement mentioned above; it sets no cookies, calls no external service, and records are written to our own database.": "측정이 켜져 있으면 퍼널 기록에는 다음 이벤트도 포함돼요: 홈 페이지 조회, 문의 양식 시작(양식에 처음 포커스), 제출. 이 이벤트는 해당 행동이 일어났다는 사실만 알리며, 양식에 입력한 내용은 이벤트에 들어가지 않아요. 측정은 사이트의 14개 언어 버전 모두에서 실행되며, 기록되는 언어는 그 14개 중 하나예요. 이 퍼널 기록은 위에서 언급한 페이지 조회 측정과 별개이며, 쿠키를 설정하지 않고, 외부 서비스를 호출하지 않으며, 기록은 우리 자체 데이터베이스에 저장돼요.",
+  "Design preview": "디자인 미리보기",
+  "These images are English design previews of the app interface. They are not a capture of a published version, and not evidence of sales readiness or results.": "이 이미지는 앱 인터페이스의 영어 디자인 미리보기입니다. 출시된 버전의 캡처가 아니며, 판매 준비 상태나 결과의 증거도 아닙니다.",
+  "Design direction": "디자인 방향",
+  "Board file": "보드 파일",
+  "Warm Graphite": "웜 그래파이트",
+  "Silver Plum": "실버 플럼",
+  "LifeOS design preview: welcome screen, \"Your life, in one place\", with a Get started button.": "LifeOS 디자인 미리보기: \"Your life, in one place\" 문구와 \"Get started\" 버튼이 있는 환영 화면.",
+  "LifeOS design preview: Today screen with daily goals, routines and tasks.": "LifeOS 디자인 미리보기: 일일 목표, 루틴, 할 일이 있는 오늘 화면.",
+  "LifeOS design preview: Finance transactions list with monthly total in dollars.": "LifeOS 디자인 미리보기: 월 합계를 달러로 보여 주는 재무 거래 목록.",
+  "LifeOS design preview: dark focus timer with rounds completed and focus time.": "LifeOS 디자인 미리보기: 완료한 라운드와 집중 시간이 있는 어두운 집중 타이머.",
+  "LifeOS design preview: dark Health score of 78 with components and an insight.": "LifeOS 디자인 미리보기: 구성 요소와 인사이트가 있는 78점의 어두운 건강 점수.",
+  "LifeOS design preview: Habits screen with 14-day streak dots per habit.": "LifeOS 디자인 미리보기: 습관별 14일 연속 기록 점이 있는 습관 화면.",
+  "Design preview: approval details for a newsletter send, with a chat on the left.": "디자인 미리보기: 왼쪽에 채팅이 있는 뉴스레터 발송 승인 상세.",
+  "Design preview: company activity list with a task flow and audit details.": "디자인 미리보기: 작업 흐름과 감사 상세가 있는 회사 활동 목록.",
+  "Design preview: Now panel, approval toast and a connector error card.": "디자인 미리보기: 지금 패널, 승인 알림, 커넥터 오류 카드.",
+  "Design preview: budget settings with per-agent spend and limits.": "디자인 미리보기: 에이전트별 지출과 한도가 있는 예산 설정.",
+  "Design preview: approval rules and emergency stop settings.": "디자인 미리보기: 승인 규칙과 긴급 중지 설정."
 }

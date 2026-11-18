@@ -39,22 +39,7 @@ export const publicRegistry: ProductPublicRecord[] = [
       },
     ],
     primaryCta: { labelTr: "Braavolabs'ı incele", labelEn: "Explore Braavolabs", url: "/projects/braavolabs" },
-    screenshots: [
-      {
-        path: "/projects/braavolabs/screenshot-audit-trail.png",
-        sourceBuild: "braavolabs/platform@cc3fc09cb663 (main, yerel derleme, demo veri)",
-        capturedAt: "2026-11-18",
-        altTr: "Braavolabs Çalıştırma Detayı ekranı: beş adımlı bir denetim izi; her adımın durumu, araç çağrısı sayısı ve maliyeti ile yanda çalıştırma metadatası (demo veri).",
-        altEn: "Braavolabs Run Detail screen: a five-step audit trail showing each step's status, tool-call count and cost, with run metadata beside it (demo data).",
-      },
-      {
-        path: "/projects/braavolabs/screenshot-builder.png",
-        sourceBuild: "braavolabs/platform@cc3fc09cb663 (main, yerel derleme, demo veri)",
-        capturedAt: "2026-11-18",
-        altTr: "Braavolabs AI Şirketi Oluştur ekranı: fikrin yazıldığı açıklama kutusu (örnek metin: Instagram ve TikTok için içerik üreten ve zamanlayan bir ajans) ve Devam düğmesi.",
-        altEn: "Braavolabs Create AI Company screen: the description box where the idea is typed (sample text: an agency that produces and schedules content for Instagram and TikTok) and a Continue button.",
-      },
-    ],
+    screenshots: [],
     claims: [
       {
         id: "braavolabs-primitive-count",
