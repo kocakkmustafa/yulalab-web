@@ -125,7 +125,7 @@ export function Header() {
         }
         style={{ transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <Link
             href="/"
             className="flex shrink-0 whitespace-nowrap items-center gap-2.5 group focusable"
@@ -137,7 +137,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-6 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
+          <nav className="hidden xl:flex items-center gap-6 xl:absolute xl:left-1/2 xl:-translate-x-1/2 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             {HEADER_NAV.map((n) => {
               const isActive = isActiveHref(n.href, stripped);
               return (
@@ -190,6 +190,9 @@ export function Header() {
                 </ul>
               ) : null}
             </div>
+          </nav>
+
+          <div className="hidden xl:flex items-center gap-6 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             <LocaleSwitcher compact />
             <ThemeControl compact />
             <Link
@@ -200,7 +203,7 @@ export function Header() {
               <SlotLabel>{t(HEADER_CTA.key)}</SlotLabel>
               <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
             </Link>
-          </nav>
+          </div>
 
           <button
             ref={menuButton}
