@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Color, Fog } from "three";
 import { CameraRig } from "./CameraRig";
+import { MouseFluid } from "./MouseFluid";
 import { GridRoom, type WallTitles } from "./GridRoom";
 import { LightformerEnvironment } from "./LightformerEnvironment";
 import { PortfolioField } from "./PortfolioField";
@@ -61,6 +62,10 @@ function WorldTheme({ frame }: { frame: TimelineFrame }) {
 
 const VALUES_ROOM_START = 0.84;
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+}
+
 export function ExperienceWorld({
   displayTheme = "dark",
   glyphRotation,
@@ -82,6 +87,7 @@ export function ExperienceWorld({
     <>
       <WorldTheme frame={frame} />
       <CameraRig mode={mode} progress={progress} />
+      <MouseFluid active={mode === "desktop" && tier !== "low" && progress < 0.1 && !prefersReducedMotion()} />
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight

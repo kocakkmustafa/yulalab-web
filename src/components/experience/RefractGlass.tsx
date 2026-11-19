@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
+import { FLUID_PARAMS, fluidShared } from "./MouseFluid";
 import {
   type BufferGeometry,
   FramebufferTexture,
@@ -49,6 +50,8 @@ const FRAGMENT = /* glsl */ `
   uniform vec2 uResolution;
   uniform float uOpacity;
   uniform float uTime;
+  uniform sampler2D uFluid;
+  uniform float uFluidMix;
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
   varying vec3 vLocal;
@@ -84,11 +87,14 @@ const FRAGMENT = /* glsl */ `
     vec2 uv = gl_FragCoord.xy / uResolution;
 
     // Bend the background by the surface normal, a little more for every colour channel.
-    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7);
+    // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
+    vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_PARAMS.displayScale.toFixed(6)} * uFluidMix;
+    float flowAmount = length(flow);
+    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 1.2;
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
+      float slide = (1.0 + flowAmount * 5.0) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
       vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.3;
       vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
       vec3 sampleColor;
@@ -136,6 +142,8 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
         uResolution: { value: new Vector2(1, 1) },
         uOpacity: { value: 1 },
         uTime: { value: 0 },
+        uFluid: { value: null },
+        uFluidMix: { value: 0 },
       },
       transparent: true,
       toneMapped: false,
@@ -164,6 +172,8 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
       }
       material.uniforms.uResolution.value.set(width, height);
       material.uniforms.uTime.value = performance.now() / 1000;
+      material.uniforms.uFluid.value = fluidShared.texture;
+      material.uniforms.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
       renderer.copyFramebufferToTexture(current);
     };
     return () => {

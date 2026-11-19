@@ -19,6 +19,7 @@ import {
 } from "three";
 import type { QualityTier, TimelineFrame } from "./types";
 import { CARD_DEPTH_STEP, segmentProgress, smoothstep, STAGES } from "./timeline";
+import { FLUID_PARAMS, fluidShared } from "./MouseFluid";
 import { GROUND_SETS, resolveGroundWeights, resolveWallTint, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR, type GroundSet } from "./theme";
 import { glyphViewportPose, viewportMobileMix } from "./layout";
 
@@ -36,14 +37,16 @@ export type GridRoomProps = {
 
 /** Tile light: share of the flat room glow kept, floor and gain of the tile colour over the glow. */
 const MOSAIC = { flat: 0.45, swing: 0.55, base: 0.012, gain: 0.2 } as const;
+const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicAspect; uniform float uMosaicTime;
+  uniform sampler2D uFluid; uniform float uFluidMix;
   float mosaicHash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
   // Quad-tree tile mosaic of our own: every cell may split into four (up to four levels), big and small
   // square tiles side by side, each tile slowly changing between purple, ice blue and brick (linear RGB).
-  vec4 mosaicTiles(vec2 p, float t) {
+  vec4 mosaicTiles(vec2 p, float t, float shift) {
     float scale = 3.0;
     vec2 cell = floor(p * scale);
     float level = 0.0;
@@ -58,7 +61,7 @@ const GROUND_GLSL = /* glsl */ `
     float phase = t * 0.16 + mosaicHash(id + 3.7) * 6.0;
     float k = floor(phase);
     float f = smoothstep(0.7, 1.0, fract(phase));
-    float pick = mix(mosaicHash(id + k), mosaicHash(id + k + 1.0), f);
+    float pick = fract(mix(mosaicHash(id + k), mosaicHash(id + k + 1.0), f) + shift);
     vec3 purple = vec3(0.035, 0.005, 0.98);
     vec3 ice = vec3(0.44, 0.85, 1.0);
     vec3 brick = vec3(0.98, 0.115, 0.004);
@@ -79,7 +82,9 @@ const GROUND_GLSL = /* glsl */ `
     vec3 steady = edge + (mid - edge) * wide + (peak - mid) * narrow * wide;
     if (uMosaic < 0.001) return steady;
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
-    vec4 mosaic = mosaicTiles((uv - 0.5) * vec2(uMosaicAspect, 1.0), uMosaicTime);
+    // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.
+    vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY};
+    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix);
     vec3 tiles = mosaic.rgb * 0.5;
     vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3;
     return mix(steady, tiled, uMosaic);
@@ -419,6 +424,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uGCenterL: { value: new Vector4() }, uGSpreadL: { value: new Vector4(1, 1, 1, 1) },
           uGroundMix: { value: 0 }, uGroundLight: { value: 0 }, uAspect: { value: new Vector2(1, 1) },
           uMosaic: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 },
+          uFluid: { value: null }, uFluidMix: { value: 0 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -443,6 +449,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         uGEdgeL: shared.uGEdgeL, uGMidL: shared.uGMidL, uGPeakL: shared.uGPeakL, uGCenterL: shared.uGCenterL, uGSpreadL: shared.uGSpreadL,
         uGroundMix: shared.uGroundMix, uGroundLight: shared.uGroundLight, uBackgroundColor: shared.uBackgroundColor,
         uMosaic: shared.uMosaic, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime,
+        uFluid: shared.uFluid, uFluidMix: shared.uFluidMix,
       },
       vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }",
       fragmentShader: BACKDROP_FRAGMENT_SHADER,
@@ -498,6 +505,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     u.uMosaic.value = darkSum > 0.0001 ? gw.hero / darkSum : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
     u.uMosaicTime.value = state.clock.elapsedTime;
+    u.uFluid.value = fluidShared.texture;
+    u.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
     const groundTotal = Math.min(1, darkSum + gw.light);
     u.uGroundMix.value = groundTotal;
     u.uGroundLight.value = groundTotal > 0.0001 ? gw.light / groundTotal : 0;
