@@ -37,9 +37,11 @@ export type GridRoomProps = {
 
 /** Tile light: share of the flat room glow kept, floor and gain of the tile colour over the glow. */
 const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.15 } as const;
+/** Share of the tile mosaic kept (in grey) over the portfolio ground. */
+const PORTFOLIO_MOSAIC = 0.25;
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
-  uniform float uMosaic; uniform float uMosaicAspect; uniform float uMosaicTime;
+  uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime;
   uniform sampler2D uFluid; uniform float uFluidMix;
   float mosaicHash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -90,7 +92,10 @@ const GROUND_GLSL = /* glsl */ `
     flow /= 1.0 + length(flow);
     vec3 litTone;
     vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix, litTone);
-    float stir = length(flow) * uFluidMix;
+    // In the portfolio the tiles stay, but in greys (the reference works ground is black/grey).
+    litTone = mix(litTone, vec3(dot(litTone, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
+    mosaic.rgb = mix(mosaic.rgb, vec3(dot(mosaic.rgb, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
+    float stir = length(flow) * uFluidMix * (1.0 - uMosaicGrey);
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec3 tiles = mosaic.rgb * 0.5;
     vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
@@ -431,7 +436,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uGEdgeL: { value: new Color() }, uGMidL: { value: new Color() }, uGPeakL: { value: new Color() },
           uGCenterL: { value: new Vector4() }, uGSpreadL: { value: new Vector4(1, 1, 1, 1) },
           uGroundMix: { value: 0 }, uGroundLight: { value: 0 }, uAspect: { value: new Vector2(1, 1) },
-          uMosaic: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 },
+          uMosaic: { value: 0 }, uMosaicGrey: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 },
           uFluid: { value: null }, uFluidMix: { value: 0 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
@@ -456,7 +461,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         uGEdge: shared.uGEdge, uGMid: shared.uGMid, uGPeak: shared.uGPeak, uGCenter: shared.uGCenter, uGSpread: shared.uGSpread,
         uGEdgeL: shared.uGEdgeL, uGMidL: shared.uGMidL, uGPeakL: shared.uGPeakL, uGCenterL: shared.uGCenterL, uGSpreadL: shared.uGSpreadL,
         uGroundMix: shared.uGroundMix, uGroundLight: shared.uGroundLight, uBackgroundColor: shared.uBackgroundColor,
-        uMosaic: shared.uMosaic, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime,
+        uMosaic: shared.uMosaic, uMosaicGrey: shared.uMosaicGrey, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime,
         uFluid: shared.uFluid, uFluidMix: shared.uFluidMix,
       },
       vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }",
@@ -510,7 +515,9 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
       blendGround(u.uGEdge.value, u.uGMid.value, u.uGPeak.value, u.uGCenter.value, u.uGSpread.value, GROUND_DARK_ENTRIES.map(([key, set]) => [gw[key], set]), darkSum);
     }
     blendGround(u.uGEdgeL.value, u.uGMidL.value, u.uGPeakL.value, u.uGCenterL.value, u.uGSpreadL.value, [[1, GROUND_SETS.light]], 1);
-    u.uMosaic.value = darkSum > 0.0001 ? gw.hero / darkSum : 0;
+    const mosaicShare = gw.hero + gw.portfolio * PORTFOLIO_MOSAIC;
+    u.uMosaic.value = darkSum > 0.0001 ? mosaicShare / darkSum : 0;
+    u.uMosaicGrey.value = mosaicShare > 0.0001 ? gw.portfolio * PORTFOLIO_MOSAIC / mosaicShare : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
     u.uMosaicTime.value = state.clock.elapsedTime;
     u.uFluid.value = fluidShared.texture;
