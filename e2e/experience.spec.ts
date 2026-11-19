@@ -364,7 +364,9 @@ test("adjacent semantic stages hand off through one neutral boundary frame", asy
 
   const firstProduct = page.locator('[class*="productPanel"]').first();
   await expect(firstProduct).toHaveCSS("visibility", "visible");
-  expect(Number(await firstProduct.evaluate((element) => getComputedStyle(element).opacity))).toBe(0);
+  // W1D-D: the first card dwells centred from the stage start, so its caption is already resolved; the stage
+  // itself is still fully transparent (checked above), which is what keeps the boundary neutral.
+  expect(Number(await firstProduct.evaluate((element) => getComputedStyle(element).opacity))).toBe(1);
 });
 
 const SEMANTIC_STAGE_BOUNDARIES = [
