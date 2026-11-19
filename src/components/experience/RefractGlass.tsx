@@ -34,7 +34,9 @@ export const GLASS_PARAMS = {
 const VERTEX = /* glsl */ `
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
+  varying vec3 vLocal;
   void main() {
+    vLocal = position;
     vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
     vViewPosition = viewPosition.xyz;
     vViewNormal = normalize(normalMatrix * normal);
@@ -49,6 +51,7 @@ const FRAGMENT = /* glsl */ `
   uniform float uTime;
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
+  varying vec3 vLocal;
 
   const float REFRACT_POWER = ${GLASS_PARAMS.refractPower.toFixed(3)};
   const float ROUGHNESS = ${GLASS_PARAMS.roughness.toFixed(3)};
@@ -73,6 +76,10 @@ const FRAGMENT = /* glsl */ `
   void main() {
     vec3 normal = normalize(vViewNormal);
     if (!gl_FrontFacing) normal = -normal;
+    // Hand-polished slab: a slow swell over the flat faces (the reference letter is faceted), so the
+    // background bends across the whole letter and not only at the bevels.
+    vec2 swell = vec2(sin(vLocal.x * 5.0 + vLocal.y * 2.3 + uTime * 0.3), sin(vLocal.y * 4.6 - vLocal.x * 3.1 - uTime * 0.25));
+    normal = normalize(normal + vec3(swell * 0.55, 0.0));
     vec3 viewDir = normalize(-vViewPosition);
     vec2 uv = gl_FragCoord.xy / uResolution;
 
@@ -97,7 +104,13 @@ const FRAGMENT = /* glsl */ `
     vec3 reflected = studio(reflect(-viewDir, normal));
     vec3 lightDir = normalize(vec3(-1.0, 0.8, 1.0));
     float spec = ggx(clamp(dot(normal, normalize(lightDir + viewDir)), 0.0, 1.0), 0.003 + ROUGHNESS * 0.4);
-    c += mix(c, reflected, fresnel * 0.9) * (1.0 - fresnel);
+    // The letter is clear glass: what shows is the bent background. The Fresnel term and a thin spectral
+    // rim ride on top at the grazing edges only (the first version added the background to itself, which
+    // read as an opaque lilac solid).
+    c = mix(c, reflected, fresnel * 0.9);
+    float rim = pow(1.0 - nv, 2.6);
+    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
+    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.75;
     c += vec3(spec) * 0.04;
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     gl_FragColor = vec4(min(c, vec3(1.0)), uOpacity);
@@ -150,6 +163,7 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
         material.uniforms.uBackground.value = current;
       }
       material.uniforms.uResolution.value.set(width, height);
+      material.uniforms.uTime.value = performance.now() / 1000;
       renderer.copyFramebufferToTexture(current);
     };
     return () => {
