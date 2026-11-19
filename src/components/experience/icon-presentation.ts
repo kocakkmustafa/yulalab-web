@@ -3,6 +3,30 @@ import { canvasTexture, type PresentationImage } from "./presentation-canvas";
 
 /** Per-product overrides: a body colour that keeps the glyph readable, and the key-out range. */
 const BODY_OVERRIDE: Record<string, string> = { jablab: "#FF8A3B" };
+/** Braavolabs: a 256 px render of a grey metal figure on a navy, vignetted disc. Its ground is blue or near black,
+ * the figure is neutral grey, so it is keyed by chroma (not by distance to the corner) and cropped to the figure. */
+const CHROMA_KEYED = new Set(["braavolabs"]);
+const FIGURE_BOX = { x0: 150, x1: 640, y0: 100, y1: 584 } as const;
+
+/** Separable square max (grow) or min (shrink) filter over a binary mask. */
+function morph(mask: Uint8Array, size: number, radius: number, grow: boolean): Uint8Array {
+  const pass = (source: Uint8Array, horizontal: boolean) => {
+    const out = new Uint8Array(size * size);
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      let value = grow ? 0 : 1;
+      for (let k = -radius; k <= radius; k++) {
+        const xx = horizontal ? x + k : x;
+        const yy = horizontal ? y : y + k;
+        const v = xx < 0 || yy < 0 || xx >= size || yy >= size ? (grow ? 0 : 1) : source[yy * size + xx];
+        if (grow ? v : !v) { value = grow ? 1 : 0; break; }
+      }
+      out[y * size + x] = value;
+    }
+    return out;
+  };
+  return pass(pass(mask, true), false);
+}
+
 const MASK_RANGE: Record<string, [number, number]> = { braavolabs: [0.24, 0.4] };
 
 function hexToHsl(hex: string): [number, number, number] {
@@ -78,7 +102,10 @@ export function makeBrightIconPresentation(product: ExperienceProduct, icon: Pre
         for (let p = 0; p < SIZE * SIZE; p++) {
           const i = p * 4;
           const d = Math.hypot(px[i] - ref[0], px[i + 1] - ref[1], px[i + 2] - ref[2]) / 441;
-          near[p] = smooth(lo, hi, d * 2.2) < 0.5 ? 1 : 0;
+          if (CHROMA_KEYED.has(product.slug)) {
+            const blue = px[i + 2] > px[i] + 10 && px[i + 2] > px[i + 1] + 5;
+            near[p] = blue || Math.max(px[i], px[i + 1], px[i + 2]) < 9 ? 1 : 0;
+          } else near[p] = smooth(lo, hi, d * 2.2) < 0.5 ? 1 : 0;
         }
         const ground = new Uint8Array(SIZE * SIZE);
         const stack: number[] = [];
@@ -105,6 +132,14 @@ export function makeBrightIconPresentation(product: ExperienceProduct, icon: Pre
             for (const q of around) if (q >= 0 && !ground[q] && !seen[q]) { seen[q] = 1; island.push(q); }
           }
           if (island.length < 4000) for (const p of island) ground[p] = 1;
+        }
+        if (CHROMA_KEYED.has(product.slug)) {
+          // Close pin holes in the figure, then keep only the figure's own box (no disc rim, no rock).
+          const figure = morph(morph(Uint8Array.from(ground, (g) => 1 - g), SIZE, 6, true), SIZE, 6, false);
+          for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+            const inside = x >= FIGURE_BOX.x0 && x <= FIGURE_BOX.x1 && y >= FIGURE_BOX.y0 && y <= FIGURE_BOX.y1;
+            ground[y * SIZE + x] = figure[y * SIZE + x] && inside ? 0 : 1;
+          }
         }
         let mask = Float32Array.from(ground, (g) => 1 - g);
         for (let pass = 0; pass < 2; pass++) {
