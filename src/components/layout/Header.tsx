@@ -137,7 +137,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-6 xl:absolute xl:left-1/2 xl:-translate-x-1/2 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
+          <nav className="hidden xl:flex min-w-0 flex-1 items-center justify-center gap-6 whitespace-nowrap px-4 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             {HEADER_NAV.map((n) => {
               const isActive = isActiveHref(n.href, stripped);
               return (
@@ -192,7 +192,7 @@ export function Header() {
             </div>
           </nav>
 
-          <div className="hidden xl:flex items-center gap-6 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
+          <div className="hidden xl:flex shrink-0 items-center gap-6 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             <LocaleSwitcher compact />
             <ThemeControl compact />
             <Link
