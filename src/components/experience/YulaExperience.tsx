@@ -47,10 +47,35 @@ type WebGLState = "checking" | "available" | "unavailable";
 
 const LINEAR_SCROLL_KEY = "yula.linear-scroll.v1";
 
+// A soft navigation fires popstate only on history traversal (Back/Forward); a fresh link or the site logo never does.
+// Remember that, so a saved linear position is restored for Back only and never on an ordinary visit.
+let traversalPending = false;
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => {
+    traversalPending = true;
+  });
+}
+
+function isHistoryTraversal(): boolean {
+  if (traversalPending) return true;
+  try {
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    return nav?.type === "back_forward";
+  } catch {
+    return false;
+  }
+}
+
 // Scroll position of the linear document, kept per URL for Back (the browser restores before it is shown).
+// Consumed on read, and only honoured when this visit is a history traversal.
 function readLinearScroll(): number {
   try {
-    const saved = JSON.parse(window.sessionStorage.getItem(LINEAR_SCROLL_KEY) ?? "null") as { href: string; y: number } | null;
+    const raw = window.sessionStorage.getItem(LINEAR_SCROLL_KEY);
+    window.sessionStorage.removeItem(LINEAR_SCROLL_KEY);
+    const traversal = isHistoryTraversal();
+    traversalPending = false;
+    if (!traversal) return 0;
+    const saved = JSON.parse(raw ?? "null") as { href: string; y: number } | null;
     return saved && saved.href === window.location.href && Number.isFinite(saved.y) ? saved.y : 0;
   } catch {
     return 0;
