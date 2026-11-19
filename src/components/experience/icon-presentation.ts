@@ -95,67 +95,76 @@ export function makeBrightIconPresentation(product: ExperienceProduct, icon: Pre
           (ch) => (corner(0, ch) + corner(SIZE - 1, ch) + corner(SIZE * (SIZE - 1), ch) + corner(last, ch)) / 4,
         );
         const [lo, hi] = MASK_RANGE[product.slug] ?? [0.14, 0.3];
-        // W1D-F H1-e: the ground is removed by a flood fill from the border (a connected region of
-        // ground-like pixels), not by a global colour threshold: dark spots inside the artwork stay
-        // solid instead of speckling. The mask edge is feathered with a small box blur.
-        const near = new Uint8Array(SIZE * SIZE);
-        for (let p = 0; p < SIZE * SIZE; p++) {
-          const i = p * 4;
-          const d = Math.hypot(px[i] - ref[0], px[i + 1] - ref[1], px[i + 2] - ref[2]) / 441;
-          if (CHROMA_KEYED.has(product.slug)) {
-            const blue = px[i + 2] > px[i] + 10 && px[i + 2] > px[i + 1] + 5;
-            near[p] = blue || Math.max(px[i], px[i + 1], px[i + 2]) < 9 ? 1 : 0;
-          } else near[p] = smooth(lo, hi, d * 2.2) < 0.5 ? 1 : 0;
-        }
-        const ground = new Uint8Array(SIZE * SIZE);
-        const stack: number[] = [];
-        const push = (p: number) => { if (near[p] && !ground[p]) { ground[p] = 1; stack.push(p); } };
-        for (let k = 0; k < SIZE; k++) { push(k); push((SIZE - 1) * SIZE + k); push(k * SIZE); push(k * SIZE + SIZE - 1); }
-        while (stack.length) {
-          const p = stack.pop() as number;
-          const x = p % SIZE;
-          if (x > 0) push(p - 1);
-          if (x < SIZE - 1) push(p + 1);
-          if (p >= SIZE) push(p - SIZE);
-          if (p < SIZE * (SIZE - 1)) push(p + SIZE);
-        }
-        // Small detached islands (dust of the ground texture) are ground too.
-        const seen = new Uint8Array(SIZE * SIZE);
-        for (let start = 0; start < SIZE * SIZE; start++) {
-          if (ground[start] || seen[start]) continue;
-          const island = [start];
-          seen[start] = 1;
-          for (let k = 0; k < island.length; k++) {
-            const p = island[k];
-            const x = p % SIZE;
-            const around = [x > 0 ? p - 1 : -1, x < SIZE - 1 ? p + 1 : -1, p >= SIZE ? p - SIZE : -1, p < SIZE * (SIZE - 1) ? p + SIZE : -1];
-            for (const q of around) if (q >= 0 && !ground[q] && !seen[q]) { seen[q] = 1; island.push(q); }
-          }
-          if (island.length < 4000) for (const p of island) ground[p] = 1;
-        }
         if (CHROMA_KEYED.has(product.slug)) {
-          // Close pin holes in the figure, then keep only the figure's own box (no disc rim, no rock).
-          const figure = morph(morph(Uint8Array.from(ground, (g) => 1 - g), SIZE, 6, true), SIZE, 6, false);
-          for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
-            const inside = x >= FIGURE_BOX.x0 && x <= FIGURE_BOX.x1 && y >= FIGURE_BOX.y0 && y <= FIGURE_BOX.y1;
-            ground[y * SIZE + x] = figure[y * SIZE + x] && inside ? 0 : 1;
+          // Only the vignetted Braavolabs render needs a connectivity key; the figure's inner spaces are never removed.
+          // W1D-F H1-e: the ground is removed by a flood fill from the border (a connected region of
+          // ground-like pixels), not by a global colour threshold: dark spots inside the artwork stay
+          // solid instead of speckling. The mask edge is feathered with a small box blur.
+          const near = new Uint8Array(SIZE * SIZE);
+          for (let p = 0; p < SIZE * SIZE; p++) {
+            const i = p * 4;
+            const d = Math.hypot(px[i] - ref[0], px[i + 1] - ref[1], px[i + 2] - ref[2]) / 441;
+            if (CHROMA_KEYED.has(product.slug)) {
+              const blue = px[i + 2] > px[i] + 10 && px[i + 2] > px[i + 1] + 5;
+              near[p] = blue || Math.max(px[i], px[i + 1], px[i + 2]) < 9 ? 1 : 0;
+            } else near[p] = smooth(lo, hi, d * 2.2) < 0.5 ? 1 : 0;
           }
-        }
-        let mask = Float32Array.from(ground, (g) => 1 - g);
-        for (let pass = 0; pass < 2; pass++) {
-          const next = new Float32Array(SIZE * SIZE);
-          for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
-            let sum = 0; let n = 0;
-            for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
-              const xx = x + dx; const yy = y + dy;
-              if (xx < 0 || yy < 0 || xx >= SIZE || yy >= SIZE) continue;
-              sum += mask[yy * SIZE + xx]; n++;
+          const ground = new Uint8Array(SIZE * SIZE);
+          const stack: number[] = [];
+          const push = (p: number) => { if (near[p] && !ground[p]) { ground[p] = 1; stack.push(p); } };
+          for (let k = 0; k < SIZE; k++) { push(k); push((SIZE - 1) * SIZE + k); push(k * SIZE); push(k * SIZE + SIZE - 1); }
+          while (stack.length) {
+            const p = stack.pop() as number;
+            const x = p % SIZE;
+            if (x > 0) push(p - 1);
+            if (x < SIZE - 1) push(p + 1);
+            if (p >= SIZE) push(p - SIZE);
+            if (p < SIZE * (SIZE - 1)) push(p + SIZE);
+          }
+          // Small detached islands (dust of the ground texture) are ground too.
+          const seen = new Uint8Array(SIZE * SIZE);
+          for (let start = 0; start < SIZE * SIZE; start++) {
+            if (ground[start] || seen[start]) continue;
+            const island = [start];
+            seen[start] = 1;
+            for (let k = 0; k < island.length; k++) {
+              const p = island[k];
+              const x = p % SIZE;
+              const around = [x > 0 ? p - 1 : -1, x < SIZE - 1 ? p + 1 : -1, p >= SIZE ? p - SIZE : -1, p < SIZE * (SIZE - 1) ? p + SIZE : -1];
+              for (const q of around) if (q >= 0 && !ground[q] && !seen[q]) { seen[q] = 1; island.push(q); }
             }
-            next[y * SIZE + x] = sum / n;
+            if (island.length < 4000) for (const p of island) ground[p] = 1;
           }
-          mask = next;
+          if (CHROMA_KEYED.has(product.slug)) {
+            // Close pin holes in the figure, then keep only the figure's own box (no disc rim, no rock).
+            const figure = morph(morph(Uint8Array.from(ground, (g) => 1 - g), SIZE, 6, true), SIZE, 6, false);
+            for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+              const inside = x >= FIGURE_BOX.x0 && x <= FIGURE_BOX.x1 && y >= FIGURE_BOX.y0 && y <= FIGURE_BOX.y1;
+              ground[y * SIZE + x] = figure[y * SIZE + x] && inside ? 0 : 1;
+            }
+          }
+          let mask = Float32Array.from(ground, (g) => 1 - g);
+          for (let pass = 0; pass < 2; pass++) {
+            const next = new Float32Array(SIZE * SIZE);
+            for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+              let sum = 0; let n = 0;
+              for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
+                const xx = x + dx; const yy = y + dy;
+                if (xx < 0 || yy < 0 || xx >= SIZE || yy >= SIZE) continue;
+                sum += mask[yy * SIZE + xx]; n++;
+              }
+              next[y * SIZE + x] = sum / n;
+            }
+            mask = next;
+          }
+          for (let p = 0; p < SIZE * SIZE; p++) px[p * 4 + 3] = Math.round(px[p * 4 + 3] * mask[p]);
+        } else {
+          // Flat-ground icons: the ground colour is keyed out everywhere (inner counters of the glyph show the brand body).
+          for (let i = 0; i < px.length; i += 4) {
+            const d = Math.hypot(px[i] - ref[0], px[i + 1] - ref[1], px[i + 2] - ref[2]) / 441;
+            px[i + 3] = Math.round(px[i + 3] * smooth(lo, hi, d * 2.2));
+          }
         }
-        for (let p = 0; p < SIZE * SIZE; p++) px[p * 4 + 3] = Math.round(px[p * 4 + 3] * mask[p]);
         lc.putImageData(data, 0, 0);
         c.drawImage(layer, 0, 0);
       }
