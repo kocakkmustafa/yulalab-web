@@ -36,7 +36,7 @@ export type GridRoomProps = {
 };
 
 /** Tile light: share of the flat room glow kept, floor and gain of the tile colour over the glow. */
-const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.22 } as const;
+const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.15 } as const;
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicAspect; uniform float uMosaicTime;
@@ -87,6 +87,7 @@ const GROUND_GLSL = /* glsl */ `
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
     // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY};
+    flow /= 1.0 + length(flow);
     vec3 litTone;
     vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix, litTone);
     float stir = length(flow) * uFluidMix;

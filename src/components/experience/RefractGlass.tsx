@@ -89,7 +89,9 @@ const FRAGMENT = /* glsl */ `
     // Bend the background by the surface normal, a little more for every colour channel.
     // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_PARAMS.displayScale.toFixed(6)} * uFluidMix;
+    flow /= 1.0 + length(flow);
     float flowAmount = length(flow);
+    vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 1.2;
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
@@ -114,6 +116,7 @@ const FRAGMENT = /* glsl */ `
     // rim ride on top at the grazing edges only (the first version added the background to itself, which
     // read as an opaque lilac solid).
     c = mix(c, reflected, fresnel * 0.9);
+    c += flowTint * flowAmount * 1.1;
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.75;

@@ -29,10 +29,10 @@ export const FLUID_PARAMS = {
   curl: 0.02,
   dissipation: 0.99,
   pressure: 0.8,
-  splatRadius: 0.012,
-  splatForce: 5200,
+  splatRadius: 0.02,
+  splatForce: 32000,
   /** Velocity (texels per second) that reads as 1.0 in the ground and glass shaders. */
-  displayScale: 1 / 420,
+  displayScale: 1 / 700,
 } as const;
 
 /** Shared read side: the newest velocity texture and how strongly it should show (0 when idle or unsupported). */
