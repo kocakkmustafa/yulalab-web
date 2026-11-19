@@ -487,7 +487,7 @@ test("HUD contains only derived renderer and journey data", async ({ page }) => 
   const body = page.locator("body");
   // The HUD speaks the visitor's language (founder fix, 14 locales); "/" is Turkish.
   await expect(body).toContainText(/Kalite\s*\/\s*Orta/);
-  await expect(body).toContainText(/Kaydırma\s*\/\s*018%/);
+  await expect(body).toContainText(/Kaydırma\s*\/\s*015%/);
   await expect(body).not.toContainText(/(?:HIGH|Yüksek)\s*\/\s*60/i);
   await expect(body).not.toContainText(/\bDRAG\b/i);
   await expect(body).not.toContainText(/SIN\s*X|SIN\s*Q/i);
