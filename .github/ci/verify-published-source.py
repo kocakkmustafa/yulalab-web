@@ -127,7 +127,7 @@ REVIEWED_THEME14_SOURCE_HASHES = {
     "src/components/experience/Experience.module.css": "f18520c9eae9845184eb4a2a50814d7998c4bccd8467d2a71c0862281817f7eb",
     "src/components/experience/ExperienceCanvas.tsx": "04eca23c83748f72d21e93deb7f7dfa81a7bca9e3b91a7f7c31fc8c640ccb0c6",
     "src/components/experience/ExperienceOverlay.tsx": "db08d543dc75dfbbb48d75e02f83f29e530e022efc4dc524eba5f336b05534bf",
-    "src/components/experience/ExperienceWorld.tsx": "32b9b0c5a6c586710392dcf3e706b5e172c2d1496ed056fc468600b08ad9e355",
+    "src/components/experience/ExperienceWorld.tsx": "27e83f4d249da0f28af032ff1aa00f34a059421e7907a33e1b2ad699857b3ece",
     "src/components/experience/YulaExperience.tsx": "171f4f6c4f8741c3475053aaaa077b2bd05327e15fff14d7856eed9313135865",
     "src/components/experience/theme.ts": "c4c599ca877d69783efd42722c71174f9c8117495abe34d4882c5f7d190905c5",
     "src/components/layout/Header.tsx": "9ff6f02fd2785ffcdfb1fe08bf2912625b535fc76b2b392e9e2a57244b11b8b9",
