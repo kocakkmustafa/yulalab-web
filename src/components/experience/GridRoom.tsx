@@ -36,7 +36,7 @@ export type GridRoomProps = {
 };
 
 /** Tile light: share of the flat room glow kept, floor and gain of the tile colour over the glow. */
-const MOSAIC = { flat: 0.45, swing: 0.55, base: 0.012, gain: 0.2 } as const;
+const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.22 } as const;
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicAspect; uniform float uMosaicTime;
@@ -46,7 +46,7 @@ const GROUND_GLSL = /* glsl */ `
   }
   // Quad-tree tile mosaic of our own: every cell may split into four (up to four levels), big and small
   // square tiles side by side, each tile slowly changing between purple, ice blue and brick (linear RGB).
-  vec4 mosaicTiles(vec2 p, float t, float shift) {
+  vec4 mosaicTiles(vec2 p, float t, float shift, out vec3 litTone) {
     float scale = 3.0;
     vec2 cell = floor(p * scale);
     float level = 0.0;
@@ -65,13 +65,16 @@ const GROUND_GLSL = /* glsl */ `
     vec3 purple = vec3(0.035, 0.005, 0.98);
     vec3 ice = vec3(0.44, 0.85, 1.0);
     vec3 brick = vec3(0.98, 0.115, 0.004);
-    vec3 tone = mix(purple, ice, smoothstep(0.74, 0.88, pick) * 0.7);
-    tone = mix(tone, brick, smoothstep(0.9, 0.97, pick) * 0.7);
+    vec3 tone = mix(purple, ice, smoothstep(0.6, 0.72, pick));
+    tone = mix(tone, brick, smoothstep(0.82, 0.92, pick));
     float lum = mosaicHash(id + k * 1.31 + 9.1);
     lum = mix(lum, mosaicHash(id + (k + 1.0) * 1.31 + 9.1), f);
     vec2 local = fract(p * scale);
     float edge = min(min(local.x, 1.0 - local.x), min(local.y, 1.0 - local.y));
     float seam = smoothstep(0.0, 0.045, edge);
+    // About a third of the tiles are lit in their own colour wherever they are on the screen; the rest
+    // stay dark, so the dark-pixel level of the ground (the measured value) does not move.
+    litTone = tone * smoothstep(0.7, 0.86, lum) * (0.55 + 0.45 * lum) * seam;
     return vec4(tone * (0.12 + 0.88 * lum * lum) * seam, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
   vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
@@ -84,9 +87,13 @@ const GROUND_GLSL = /* glsl */ `
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
     // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY};
-    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix);
+    vec3 litTone;
+    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix, litTone);
+    float stir = length(flow) * uFluidMix;
+    vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec3 tiles = mosaic.rgb * 0.5;
-    vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3;
+    vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
+      + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + stirTint * stir * ${MOSAIC.flow.toFixed(3)} * (0.35 + 0.65 * glow);
     return mix(steady, tiled, uMosaic);
   }
 `;
