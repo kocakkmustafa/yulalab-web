@@ -1161,7 +1161,7 @@ html.dark .home-closing-ground {
 }
 
 /* W1D I1-a: altbilgi YULA wordmark'i saf beyaz (koyu tema). */
-:root:not([data-theme="light"]) .footer-wordmark { color: #ffffff; }
+:root:is(.dark, [data-theme="dark"]) .footer-wordmark { color: #ffffff; }
 
 /* W1D K7: ana sayfada gercek altbilgi kartlarin ve sahne bloklarinin sonrasinda, sabit 3D katmanin
    ustunde ve opak zeminde kapanir (tek logo: [Y]ULA). */

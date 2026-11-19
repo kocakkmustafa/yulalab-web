@@ -33,7 +33,7 @@ export function FooterWordmark() {
       ref={ref}
       aria-hidden="true"
       data-footer-wordmark={state}
-      className="footer-wordmark overflow-hidden px-2 text-white select-none"
+      className="footer-wordmark overflow-hidden px-2 text-ink-50 select-none"
       dir="ltr"
     >
       <svg viewBox="0 0 1000 250" className="block w-full h-auto translate-y-[9%]" preserveAspectRatio="xMidYMax meet">
