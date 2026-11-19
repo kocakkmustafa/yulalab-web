@@ -235,8 +235,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // Hand the portal to the readable SERVICE media, then keep the emblem
   // retired through the closing wordmark/contact.
   const closingHandoff = 1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.58));
+  // W1D-F H1-e: once the first portfolio card arrives the glass Y leaves the stage (it would sit over the
+  // product icon); it returns shortly before the proof stage, where the glyph is part of the story again.
+  const portfolioHide = smoothstep(segmentProgress(frame.progress, 0.062, 0.088))
+    * (1 - smoothstep(segmentProgress(frame.progress, 0.47, 0.505)));
   const closingVisibility = closingHandoff
-    * (1 - frame.world.serviceIn) * readingVisibility;
+    * (1 - frame.world.serviceIn) * readingVisibility * (1 - portfolioHide);
   const bodyColor = useMemo(
     () => new Color("#ffffff").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],
