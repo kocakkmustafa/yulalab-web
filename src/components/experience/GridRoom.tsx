@@ -85,6 +85,9 @@ const GROUND_GLSL = /* glsl */ `
     vec2 e = uv - centre.zw;
     float narrow = exp(-(e.x * e.x / spread.z + e.y * e.y / spread.w));
     vec3 steady = edge + (mid - edge) * wide + (peak - mid) * narrow * wide;
+    // W7 F1/F7: the mouse flow lights every ground, not only the hero mosaic.
+    vec2 flowAll = texture2D(uFluid, uv).xy * uFluidMix;
+    steady += vec3(0.8, 0.85, 1.0) * length(flowAll) * 0.1;
     if (uMosaic < 0.001) return steady;
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
     // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.

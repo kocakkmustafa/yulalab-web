@@ -90,7 +90,7 @@ const VORTICITY = /* glsl */ `${HEAD}
     force *= uCurlStrength * C;
     force.y *= -1.0;
     vec2 velocity = texture2D(uVelocity, vUv).xy + force * uDt;
-    gl_FragColor = vec4(clamp(velocity, -1000.0, 1000.0), 0.0, 1.0);
+    gl_FragColor = vec4(clamp(velocity, -4.0, 4.0), 0.0, 1.0);
   }
 `;
 
@@ -214,7 +214,7 @@ export class FluidSim {
     p.vorticity.uniforms.uVelocity.value = this.velocity.read.texture;
     p.vorticity.uniforms.uCurl.value = this.curl.texture;
     // The reference curl value (0.02) is in its own units; this scale keeps the swirl visible at our force.
-    p.vorticity.uniforms.uCurlStrength.value = FLUID_PARAMS.curl * 30;
+    p.vorticity.uniforms.uCurlStrength.value = FLUID_PARAMS.curl;
     p.vorticity.uniforms.uDt.value = dt * 60;
     this.pass(renderer, p.vorticity, this.velocity.write);
     this.velocity.swap();
@@ -315,7 +315,7 @@ export function MouseFluid({ active }: { active: boolean }) {
     const vy = pointerState.y - pointerState.cy;
     pointerState.cx += vx * follow;
     pointerState.cy += vy * follow;
-    const power = (v: number) => Math.sign(v) * Math.pow(Math.abs(v), 1.6);
+    const power = (v: number) => Math.sign(v) * Math.pow(Math.abs(v * 100), 1.6);
     pointerState.ax = Math.max(-1, Math.min(1, (pointerState.ax + power(vx)) * 0.5));
     pointerState.ay = Math.max(-1, Math.min(1, (pointerState.ay + power(vy)) * 0.5));
     const speed = Math.hypot(pointerState.ax, pointerState.ay);

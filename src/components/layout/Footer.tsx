@@ -46,7 +46,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                     target="_blank"
                     rel="noreferrer"
                     aria-label={SOCIAL_LABEL[key]}
-                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ink-300 hover:text-ink-50 transition-colors focusable"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-ink-300 transition-opacity hover:opacity-70 focusable"
                   >
                     <Icon size={16} />
                   </a>
@@ -89,7 +89,7 @@ export function Footer({ studioEnabled }: { studioEnabled: boolean }) {
                 <li key={p.slug}>
                   <Link
                     href={`/projects/${p.slug}`}
-                    className="link-wipe focusable hover:text-ink-50"
+                    className="link-wipe focusable"
                   >
                     {p.name}
                   </Link>
