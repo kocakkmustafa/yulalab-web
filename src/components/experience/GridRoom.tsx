@@ -158,6 +158,7 @@ const GROUND_GLSL = /* glsl */ `
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
+    cornerFall = mix(cornerFall, 1.0, step(0.5, groundPat)); // Z07 corners apply to the dark and blue patterns only
     tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
