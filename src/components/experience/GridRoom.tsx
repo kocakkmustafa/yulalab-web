@@ -191,7 +191,7 @@ const GROUND_GLSL = /* glsl */ `
       + (texture2D(tex, clamp(tuv + vec2(b, 0.0), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(b, 0.0), 0.0, 1.0)).rgb
       + texture2D(tex, clamp(tuv + vec2(0.0, b), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(0.0, b), 0.0, 1.0)).rgb) * 0.16;
     float luma = dot(c, vec3(0.3, 0.5, 0.2));
-    c = clamp(mix(vec3(luma), c, 1.1), 0.0, 1.0); // W7 Z09 t2: luma mix, saturation about 0.32 (the reference's, not HSV x2)
+    c = clamp(mix(vec3(luma), c, 0.6), 0.0, 1.0); // W7 Z09 t3: luma mix 0.6, saturation about 0.32 (the reference's, not HSV x2)
     float v = length(tuv - 0.5) * 2.0;
     return c * (1.0 - clamp(v * vig * 0.5, 0.0, 1.0));
   }
@@ -200,7 +200,8 @@ const GROUND_GLSL = /* glsl */ `
     vec3 next = worksTile(uWorksTexA, tuv, mix(1.9, 0.1, uWorksAnim));
     vec3 prev = worksTile(uWorksTexB, tuv, 0.1);
     // W7 Z09 t2: the card stays the star: a dim, very blurred patch with a strong screen vignette (corners black).
-    return mix(prev, next, uWorksAnim) * 0.30 * smoothstep(0.55, 0.05, length(uv - 0.5));
+    float vig = smoothstep(0.55, 0.05, length(uv - 0.5));
+    return mix(prev, next, uWorksAnim) * 0.30 * vig * vig; // W7 Z09 t3: squared vignette, black floor and corners
   }
   vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
     vec3 base = groundColorBase(uv, edge, mid, peak, centre, spread);
