@@ -123,7 +123,8 @@ const FRAGMENT = /* glsl */ `
     c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
     c += vec3(spec) * 0.04;
     c *= ${GLASS_PARAMS.output.toFixed(1)};
-    gl_FragColor = vec4(min(c, vec3(1.0)), uOpacity);
+    // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.
+    gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));
   }
 `;
 
