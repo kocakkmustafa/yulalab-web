@@ -32,7 +32,7 @@ export const FLUID_PARAMS = {
   splatRadius: 0.02,
   splatForce: 32000,
   /** Velocity (texels per second) that reads as 1.0 in the ground and glass shaders. */
-  displayScale: 1,
+  displayScale: 4, // W7 C tur 3: x4 power (peak was 5.4 grey, reference 45-67)
 } as const;
 
 /** Shared read side: the newest velocity texture and how strongly it should show (0 when idle or unsupported). */
@@ -327,7 +327,7 @@ export function MouseFluid({ active }: { active: boolean }) {
         y: pointerState.cy,
         vx: Math.max(-2, Math.min(2, pointerState.ax * 30)),
         vy: Math.max(-2, Math.min(2, pointerState.ay * 30)) * aspect,
-        radius: 0.01 + 0.1 * Math.min(0.5, eased),
+        radius: (0.01 + 0.1 * Math.min(0.5, eased)) * 1.85, // W7 F4: FWHM 31 -> about 57 px
       };
     }
     pointerState.moved = false;
