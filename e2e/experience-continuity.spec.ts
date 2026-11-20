@@ -6,6 +6,8 @@ test.use({ hasTouch: true });
 
 const ROOT = '[data-yula-experience="true"]';
 const PRODUCTS = ["braavolabs", "lifeos", "gravita", "lissom", "jablab", "ostinato", "choreia"];
+// Timeline progress at the centre of the gravita card (the third of seven cards between 0.085 and 0.505), in every mode.
+const GRAVITA_CENTRE = 0.085 + (2.5 / PRODUCTS.length) * (0.505 - 0.085);
 
 test.beforeEach(async ({ page }) => {
   await page.route("**/*", route => ["localhost", "127.0.0.1"].includes(new URL(route.request().url()).hostname)
@@ -32,7 +34,7 @@ async function scrollTimeline(page: Page, progress: number) {
     scrollTo({ top, behavior: "instant" });
     await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     return Math.abs(scrollY - top) <= 2;
-  }, scrollProgressForTimeline(progress))).toBe(true);
+  }, scrollProgressForTimeline(progress, (page.viewportSize()?.width ?? 1440) < 768 ? "mobile" : "desktop"))).toBe(true); // W7 Z04: phones follow the mobile scroll budget
 }
 
 for (const locale of ["tr", "en"] as const) {
@@ -40,13 +42,13 @@ for (const locale of ["tr", "en"] as const) {
     test.setTimeout(120_000);
     await page.setViewportSize({ width: 390, height: 667 });
     for (const [progress, target] of [
-      [0, "experience-hero"], [0.26875, "experience-product-gravita"],
+      [0, "experience-hero"], [GRAVITA_CENTRE, "experience-product-gravita"],
       [0.72, "experience-manifesto"], [0.8, "experience-vision"],
       [0.9, "experience-values"], [0.98, "experience-closing"],
     ] as const) {
       const root = await openJourney(page, locale === "en" ? "/en" : "/");
       await scrollTimeline(page, progress);
-      if (progress === 0.26875) await expect(root).toHaveAttribute("data-active-product", "gravita");
+      if (progress === GRAVITA_CENTRE) await expect(root).toHaveAttribute("data-active-product", "gravita");
       else await expect(root).toHaveAttribute("data-stage", target.replace("experience-", "").replace("manifesto", "mission"));
       await page.getByRole("button", { name: /^2D/ }).focus();
       await page.keyboard.press("Enter");

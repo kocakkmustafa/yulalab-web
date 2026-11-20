@@ -479,7 +479,8 @@ test("proof exposes provenance and freshness fields", async ({ page }) => {
 });
 
 test("white crossing is a continuous timeline value", async ({ page }) => {
-  const root = await openCapture(page, 0.63);
+  // The white rise runs from 0.525 to 0.584 (smoothstep); 0.63 is already fully white, so sample the middle of the rise.
+  const root = await openCapture(page, 0.555);
   const value = Number(await root.getAttribute("data-white-mix"));
   expect(value).toBeGreaterThan(0.05);
   expect(value).toBeLessThan(0.95);
