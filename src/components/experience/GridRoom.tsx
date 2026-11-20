@@ -186,12 +186,12 @@ const GROUND_GLSL = /* glsl */ `
   // W7 Z09 (founder decision "a"): in the works section the selected card's picture is tiled over the screen,
   // blurred (0.03), colour saturation x2, with a tile vignette that opens from 1.9 to 0.1 while the card changes.
   vec3 worksTile(sampler2D tex, vec2 tuv, float vig) {
-    float b = 0.03;
+    float b = 0.06; // the picture itself is already a 24 px patch; these taps blur it further
     vec3 c = texture2D(tex, tuv).rgb * 0.36
       + (texture2D(tex, clamp(tuv + vec2(b, 0.0), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(b, 0.0), 0.0, 1.0)).rgb
       + texture2D(tex, clamp(tuv + vec2(0.0, b), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(0.0, b), 0.0, 1.0)).rgb) * 0.16;
     float luma = dot(c, vec3(0.3, 0.5, 0.2));
-    c = clamp(mix(vec3(luma), c, 2.0), 0.0, 1.0);
+    c = clamp(mix(vec3(luma), c, 1.1), 0.0, 1.0); // W7 Z09 t2: luma mix, saturation about 0.32 (the reference's, not HSV x2)
     float v = length(tuv - 0.5) * 2.0;
     return c * (1.0 - clamp(v * vig * 0.5, 0.0, 1.0));
   }
@@ -199,7 +199,8 @@ const GROUND_GLSL = /* glsl */ `
     vec2 tuv = fract((uv - 0.5) * vec2(uMosaicAspect, 1.0) * 2.4 + 0.5);
     vec3 next = worksTile(uWorksTexA, tuv, mix(1.9, 0.1, uWorksAnim));
     vec3 prev = worksTile(uWorksTexB, tuv, 0.1);
-    return mix(prev, next, uWorksAnim) * 0.4;
+    // W7 Z09 t2: the card stays the star: a dim, very blurred patch with a strong screen vignette (corners black).
+    return mix(prev, next, uWorksAnim) * 0.30 * smoothstep(0.55, 0.05, length(uv - 0.5));
   }
   vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
     vec3 base = groundColorBase(uv, edge, mid, peak, centre, spread);
@@ -633,7 +634,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       );
   }, [wordFlow]);
 
-  const worksState = useRef({ idx: -1, prev: -1, t0: -10 });
+  const worksState = useRef({ idx: -1, prev: -1, t0: -10, lastFloat: 0, dir: 0 });
 
   useFrame((state) => {
     wordFlow.uFluid.value = fluidShared.texture;
@@ -683,8 +684,12 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
     // W7 Z09: the selected works card (productFloat rounds to its index) picks the ground picture; a change blends the
     // old picture into the new one over 2 s on the reference curve cubic-bezier(.01, .68, .19, 1).
     const cards = worksTextures ?? [];
-    const selected = cards.length ? Math.min(cards.length - 1, Math.max(0, Math.round(frame.productFloat))) : -1;
     const ws = worksState.current;
+    const floatDelta = frame.productFloat - ws.lastFloat;
+    if (Math.abs(floatDelta) > 1e-4) ws.dir = Math.sign(floatDelta);
+    ws.lastFloat = frame.productFloat;
+    // The card swap reads halfway between two cards; the 2 s blend should be centred on it, so it starts a little earlier.
+    const selected = cards.length ? Math.min(cards.length - 1, Math.max(0, Math.round(frame.productFloat + ws.dir * 0.25))) : -1;
     const now = state.clock.elapsedTime;
     if (selected >= 0 && ws.idx < 0) { ws.idx = selected; ws.prev = selected; ws.t0 = -10; }
     else if (selected >= 0 && selected !== ws.idx) { ws.prev = ws.idx; ws.idx = selected; ws.t0 = now; }

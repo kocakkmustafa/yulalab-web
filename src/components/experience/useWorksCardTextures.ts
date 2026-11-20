@@ -11,17 +11,32 @@ export function worksCardPath(product: ExperienceProduct): string | undefined {
   return product.screenshots[0]?.path ?? product.icon;
 }
 
-const SIZE = 256;
+// W7 Z09 t2: the ground only shows a very blurred colour patch, never the picture itself: the card picture is cut to a square and
+// stepped down to a 24 px canvas (half resolution each step, like the reference's half-resolution gaussian); the bilinear lookup
+// and the shader taps blur it further.
+const SIZE = 24;
 
 function cardTexture(image: HTMLImageElement): Texture | null {
-  const canvas = document.createElement("canvas");
-  canvas.width = SIZE;
-  canvas.height = SIZE;
-  const context = canvas.getContext("2d");
-  if (!context || image.width <= 0 || image.height <= 0) return null;
-  // Centre crop to a square: the ground tiles it, so a card's own aspect does not matter.
+  if (image.width <= 0 || image.height <= 0) return null;
   const side = Math.min(image.width, image.height);
-  context.drawImage(image, (image.width - side) / 2, (image.height - side) / 2, side, side, 0, 0, SIZE, SIZE);
+  let source: CanvasImageSource = image;
+  let sx = (image.width - side) / 2;
+  let sy = (image.height - side) / 2;
+  let sSize = side;
+  for (const size of [128, 64, 32, SIZE]) {
+    const step = document.createElement("canvas");
+    step.width = size;
+    step.height = size;
+    const stepContext = step.getContext("2d");
+    if (!stepContext) return null;
+    stepContext.imageSmoothingQuality = "high";
+    stepContext.drawImage(source, sx, sy, sSize, sSize, 0, 0, size, size);
+    source = step;
+    sx = 0;
+    sy = 0;
+    sSize = size;
+  }
+  const canvas = source as HTMLCanvasElement;
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
   texture.generateMipmaps = false;
