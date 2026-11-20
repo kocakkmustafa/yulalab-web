@@ -39,15 +39,31 @@ export type GridRoomProps = {
 const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.15 } as const;
 /** Share of the tile mosaic kept (in grey) over the portfolio ground. */
 const PORTFOLIO_MOSAIC = 0.25;
+const KV_FADE = [0, 0.3, 3][Math.floor(Math.random() * 3)];
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
-  uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime;
+  uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime; uniform float uKvFade;
   uniform sampler2D uFluid; uniform float uFluidMix;
   float mosaicHash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
   // W7 Z06 (founder decision "a"): the opening ground cycles three patterns (blue, black and white, purple-ice-orange),
   // equal odds, never the same twice in a row, a new one about every 1.5 s (reference: every 1 to 2 s).
+  // Pattern changes come at random intervals of 1 to 2 s: blocks of 6 s hold four segments whose lengths are
+  // hash weights in [1,2], normalised to the block. Returns the global segment id and the fraction inside it.
+  vec2 patternSegment(float t) {
+    float block = floor(t / 6.0);
+    float local = t - block * 6.0;
+    vec4 w = 1.0 + vec4(mosaicHash(vec2(block, 41.0)), mosaicHash(vec2(block, 43.0)), mosaicHash(vec2(block, 47.0)), mosaicHash(vec2(block, 53.0)));
+    w *= 6.0 / (w.x + w.y + w.z + w.w);
+    float j = 0.0;
+    float start = 0.0;
+    float len = w.x;
+    if (local >= w.x) { j = 1.0; start = w.x; len = w.y; }
+    if (local >= w.x + w.y) { j = 2.0; start = w.x + w.y; len = w.z; }
+    if (local >= w.x + w.y + w.z) { j = 3.0; start = w.x + w.y + w.z; len = w.w; }
+    return vec2(block * 4.0 + j, (local - start) / len);
+  }
   float groundPattern(float slot) {
     float cur = floor(mosaicHash(vec2(slot, 7.0)) * 3.0);
     float prev = floor(mosaicHash(vec2(slot - 1.0, 7.0)) * 3.0);
@@ -67,7 +83,12 @@ const GROUND_GLSL = /* glsl */ `
         else open = false;
       }
     }
-    vec2 id = cell + level * 131.0;
+    // W7 Z06: brief uv shifts (blue every 0.2 to 0.7 s, the other patterns every 0.1 to 5.1 s) and black-outs (every 1 s).
+    float segPat = groundPattern(patternSegment(t).x);
+    float shiftEvery = segPat < 0.5 ? 0.2 + 0.5 * mosaicHash(vec2(floor(t), 5.0)) : 0.1 + 5.0 * mosaicHash(vec2(floor(t), 6.0));
+    float shiftIdx = floor(t / shiftEvery);
+    vec2 uvJump = (vec2(mosaicHash(vec2(shiftIdx, 8.0)), mosaicHash(vec2(shiftIdx, 9.0))) - 0.5) * 0.02 * step(fract(t / shiftEvery), 0.2);
+    vec2 id = cell + level * 131.0 + floor(uvJump * scale * 8.0);
     float phase = t * 0.67 + mosaicHash(id + 3.7) * 6.0;
     float k = floor(phase);
     float f = smoothstep(0.7, 1.0, fract(phase));
@@ -77,8 +98,8 @@ const GROUND_GLSL = /* glsl */ `
     vec3 brick = vec3(0.98, 0.115, 0.004);
     vec3 tone = mix(purple, ice, smoothstep(0.6, 0.72, pick));
     tone = mix(tone, brick, smoothstep(0.82, 0.92, pick));
-    float slotT = t / 1.5;
-    float pat = groundPattern(floor(slotT));
+    vec2 seg = patternSegment(t);
+    float pat = groundPattern(seg.x);
     float tileLum = mosaicHash(id + k * 1.31 + 9.1);
     vec3 blue = vec3(0.3, 0.4, 0.6) * 2.0 * (0.5 + 0.5 * tileLum);
     // Z06 tur 2: diagonal stripes across the screen (reference stripe geometry), not per tile squares.
@@ -87,9 +108,11 @@ const GROUND_GLSL = /* glsl */ `
     float pick3 = floor(fract(mosaicHash(id + k * 2.17 + 4.3)) * 3.0);
     vec3 tone3 = pick3 < 0.5 ? purple : (pick3 < 1.5 ? ice : brick);
     vec3 patTone = pat < 0.5 ? blue : (pat < 1.5 ? blackWhite : tone3);
-    float prevPat = groundPattern(floor(slotT) - 1.0);
+    float prevPat = groundPattern(seg.x - 1.0);
     vec3 prevTone = prevPat < 0.5 ? blue : (prevPat < 1.5 ? blackWhite : tone3);
-    tone = mix(prevTone, patTone, smoothstep(0.0, 0.12, fract(slotT)));
+    tone = mix(prevTone, patTone, smoothstep(0.0, 0.12, seg.y));
+    float blackOut = segPat > 0.5 ? 0.5 * mosaicHash(vec2(floor(t), 11.0)) * step(fract(t), 0.12) : 0.0;
+    tone *= 1.0 - blackOut;
     float lum = mosaicHash(id + k * 1.31 + 9.1);
     lum = mix(lum, mosaicHash(id + (k + 1.0) * 1.31 + 9.1), f);
     vec2 local = fract(p * scale);
@@ -123,7 +146,7 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiles = mosaic.rgb * 0.5 * (1.0 + length(flow) * 0.8 * uFluidMix);
     tiles *= smoothstep(0.55, 0.05, length(uv - 0.5));
     // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
-    float groundPat = groundPattern(floor(uMosaicTime / 1.5));
+    float groundPat = groundPattern(patternSegment(uMosaicTime).x);
     float steadyWeight = groundPat < 0.5 ? 0.5 : (groundPat < 1.5 ? 0.17 : 1.0);
     vec3 steadyUsed = groundPat > 0.5 && groundPat < 1.5 ? mix(steady, vec3(dot(steady, vec3(0.3, 0.5, 0.2))), 0.9) : steady;
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 2.6
@@ -132,6 +155,7 @@ const GROUND_GLSL = /* glsl */ `
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
+    tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
 `;
@@ -475,7 +499,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uGEdgeL: { value: new Color() }, uGMidL: { value: new Color() }, uGPeakL: { value: new Color() },
           uGCenterL: { value: new Vector4() }, uGSpreadL: { value: new Vector4(1, 1, 1, 1) },
           uGroundMix: { value: 0 }, uGroundLight: { value: 0 }, uAspect: { value: new Vector2(1, 1) },
-          uMosaic: { value: 0 }, uMosaicGrey: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 },
+          uMosaic: { value: 0 }, uMosaicGrey: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 }, uKvFade: { value: 1 },
           uFluid: { value: null }, uFluidMix: { value: 0 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
@@ -500,7 +524,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         uGEdge: shared.uGEdge, uGMid: shared.uGMid, uGPeak: shared.uGPeak, uGCenter: shared.uGCenter, uGSpread: shared.uGSpread,
         uGEdgeL: shared.uGEdgeL, uGMidL: shared.uGMidL, uGPeakL: shared.uGPeakL, uGCenterL: shared.uGCenterL, uGSpreadL: shared.uGSpreadL,
         uGroundMix: shared.uGroundMix, uGroundLight: shared.uGroundLight, uBackgroundColor: shared.uBackgroundColor,
-        uMosaic: shared.uMosaic, uMosaicGrey: shared.uMosaicGrey, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime,
+        uMosaic: shared.uMosaic, uMosaicGrey: shared.uMosaicGrey, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime, uKvFade: shared.uKvFade,
         uFluid: shared.uFluid, uFluidMix: shared.uFluidMix,
       },
       vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }",
@@ -582,6 +606,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     u.uMosaicGrey.value = mosaicShare > 0.0001 ? gw.portfolio * PORTFOLIO_MOSAIC / mosaicShare : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
     u.uMosaicTime.value = state.clock.elapsedTime;
+    // W7 Z06 kv fade: the opening ground comes in over 0, 0.3 or 3 s (one of three, drawn once per visit).
+    u.uKvFade.value = KV_FADE <= 0 ? 1 : Math.min(1, state.clock.elapsedTime / KV_FADE);
     u.uFluid.value = fluidShared.texture;
     u.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
     const groundTotal = Math.min(1, darkSum + gw.light);
