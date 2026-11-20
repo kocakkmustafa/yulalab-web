@@ -86,8 +86,9 @@ export function resolveGroundWeights(progress: number, themeMix: number): Ground
   return {
     // W1D-F H1-f: the purple opening ground hands over to the grey/black portfolio ground as the first card arrives
     // (card at 0.085), not slowly after it.
-    hero: (1 - ss(0.04, 0.078)) * dark,
-    portfolio: ss(0.04, 0.078) * (1 - ss(0.46, 0.52)) * dark,
+    // W7 Z19 (founder decision "a"): no scroll-bound purple to grey hand-over; the opening ground runs until works_intro.
+    hero: (1 - ss(0.078, 0.092)) * dark,
+    portfolio: ss(0.078, 0.092) * (1 - ss(0.46, 0.52)) * dark,
     proof: ss(0.82, 0.84) * (1 - ss(0.88, 0.93)) * dark,
     night: ss(0.57, 0.62) * (1 - ss(0.69, 0.74)) * dark,
     closing: ss(0.90, 0.935) * dark,
