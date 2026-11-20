@@ -3034,3 +3034,116 @@
 @media (max-width: 767px) {
   .manifestoStage:not(.visionStage) h2 { font-size: 18px; max-width: 28ch; }
 }
+
+/* W6 K6: full-screen LifeOS section after the values (reference `stellla`). 1440x900 anchors:
+   title x 11.5vw, baseline ~54vh; body 15px; frame 63px in, 28px plus marks. */
+.stellaStage {
+  inset: 0;
+  z-index: 3;
+  overflow: hidden;
+  background: #050408;
+}
+.stellaImage { position: absolute; inset: 0; }
+.stellaImage img { object-fit: cover; object-position: 78% 18%; }
+.stellaVeil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 40%), rgba(0, 0, 0, 0.35);
+}
+.stellaFrame {
+  position: absolute;
+  inset: 63px;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+.stellaFrame i {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) center / 100% 1px no-repeat,
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)) center / 1px 100% no-repeat;
+}
+.stellaFrame i:nth-child(1) { top: -14px; left: -14px; }
+.stellaFrame i:nth-child(2) { top: -14px; right: -14px; }
+.stellaFrame i:nth-child(3) { bottom: -14px; left: -14px; }
+.stellaFrame i:nth-child(4) { bottom: -14px; right: -14px; }
+.stellaCopy {
+  position: absolute;
+  z-index: 1;
+  left: 11.5vw;
+  top: 36vh;
+  max-width: min(640px, 76vw);
+  color: #fff;
+}
+.stellaTitle {
+  margin: 0;
+  font-family: var(--font-grotesk), "Hanken Grotesk", system-ui, sans-serif;
+  font-size: clamp(56px, 12.5vw, 210px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.stellaLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.18em;
+  color: inherit;
+  text-decoration: none;
+  pointer-events: auto;
+}
+.stellaArrow {
+  display: inline-grid;
+  place-items: center;
+  width: 0.5em;
+  height: 0.5em;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  font-size: 0.32em;
+  font-weight: 300;
+}
+.stellaCta {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.stellaBody {
+  margin: 20px 0 0;
+  max-width: 640px;
+  font-size: 15px;
+  line-height: 29px;
+  color: #fff;
+}
+.stellaNote {
+  position: absolute;
+  z-index: 1;
+  right: 8vw;
+  bottom: 12vh;
+  max-width: 213px;
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 15px;
+  color: rgba(255, 255, 255, 0.6);
+}
+@media (max-width: 760px) {
+  .stellaFrame { inset: 20px; }
+  .stellaFrame i { width: 20px; height: 20px; }
+  .stellaFrame i:nth-child(1) { top: -10px; left: -10px; }
+  .stellaFrame i:nth-child(2) { top: -10px; right: -10px; }
+  .stellaFrame i:nth-child(3) { bottom: -10px; left: -10px; }
+  .stellaFrame i:nth-child(4) { bottom: -10px; right: -10px; }
+  .stellaCopy { left: 20px; top: 34vh; max-width: calc(100vw - 40px); }
+  .stellaTitle { font-size: 64px; }
+  .stellaBody { font-size: 14px; line-height: 24px; }
+  .stellaNote { right: 20px; bottom: 36px; font-size: 11px; max-width: 60vw; }
+}
+
+/* W6 K6: the same section in the linear (no-3D) reading flow: a normal block, one screen tall. */
+.staticStella {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #050408;
+}

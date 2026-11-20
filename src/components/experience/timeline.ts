@@ -16,7 +16,9 @@ export const STAGES = {
   crossing: [0.575, 0.69],
   mission: [0.69, 0.765],
   vision: [0.765, 0.835],
-  values: [0.835, 0.955],
+  // W6 K6: the full-screen LifeOS section takes the last 0.04 of the former values range.
+  values: [0.835, 0.915],
+  stella: [0.915, 0.955],
   closing: [0.955, 1],
 } as const satisfies Record<ExperienceStage, readonly [number, number]>;
 
