@@ -5,6 +5,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useMemo } from "react";
 import { Color, Fog } from "three";
 import { CameraRig } from "./CameraRig";
+import { MouseFluid } from "./MouseFluid";
 import { GridRoom, type WallTitles } from "./GridRoom";
 import { LightformerEnvironment } from "./LightformerEnvironment";
 import { PortfolioField } from "./PortfolioField";
@@ -17,7 +18,6 @@ import type {
   TimelineFrame,
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
-import { HoloRibbon } from "./HoloRibbon";
 import { VisionServicePortal } from "./VisionServicePortal";
 import { useShowcaseTextures } from "./useShowcaseTextures";
 import { applyExperienceTheme, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
@@ -60,6 +60,12 @@ function WorldTheme({ frame }: { frame: TimelineFrame }) {
   return <fog attach="fog" args={[WORLD_DARK_COLOR, 12, 58]} />;
 }
 
+const VALUES_ROOM_START = 0.84;
+
+function prefersReducedMotion(): boolean {
+  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true;
+}
+
 export function ExperienceWorld({
   displayTheme = "dark",
   glyphRotation,
@@ -81,6 +87,7 @@ export function ExperienceWorld({
     <>
       <WorldTheme frame={frame} />
       <CameraRig mode={mode} progress={progress} />
+      <MouseFluid active={mode === "desktop" && tier !== "low" && progress < 0.1 && !prefersReducedMotion()} />
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight
@@ -135,7 +142,10 @@ export function ExperienceWorld({
       </LightformerEnvironment>
 
       <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} wallTitles={wallTitles} />
-      <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
+      {/* W1D K5: the values room is flat ground light; the glyph and the opaque service panels are gone from there. */}
+      {frame.progress < VALUES_ROOM_START ? (
+        <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />
+      ) : null}
       <PortfolioField
         frame={frame}
         mode={mode}
@@ -143,8 +153,9 @@ export function ExperienceWorld({
         products={products}
         tier={tier}
       />
-      <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
-      <HoloRibbon frame={frame} tier={tier} />
+      {frame.progress < VALUES_ROOM_START ? (
+        <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
+      ) : null}
     </>
   );
 }

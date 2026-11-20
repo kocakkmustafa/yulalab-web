@@ -45,6 +45,53 @@ type YulaExperienceProps = {
 
 type WebGLState = "checking" | "available" | "unavailable";
 
+const LINEAR_SCROLL_KEY = "yula.linear-scroll.v1";
+
+// A soft navigation fires popstate only on history traversal (Back/Forward); a fresh link or the site logo never does.
+// Remember that, so a saved linear position is restored for Back only and never on an ordinary visit.
+let traversalPending = false;
+if (typeof window !== "undefined") {
+  window.addEventListener("popstate", () => {
+    traversalPending = true;
+  });
+}
+
+function isHistoryTraversal(): boolean {
+  if (traversalPending) return true;
+  try {
+    const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
+    return nav?.type === "back_forward";
+  } catch {
+    return false;
+  }
+}
+
+// Scroll position of the linear document, kept per URL for Back (the browser restores before it is shown).
+// Consumed on read, and only honoured when this visit is a history traversal.
+function readLinearScroll(): number {
+  try {
+    const raw = window.sessionStorage.getItem(LINEAR_SCROLL_KEY);
+    window.sessionStorage.removeItem(LINEAR_SCROLL_KEY);
+    const traversal = isHistoryTraversal();
+    traversalPending = false;
+    if (!traversal) return 0;
+    const saved = JSON.parse(raw ?? "null") as { href: string; y: number } | null;
+    return saved && saved.href === window.location.href && Number.isFinite(saved.y) ? saved.y : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeLinearScroll(y: number, href: string): void {
+  try {
+    window.sessionStorage.setItem(LINEAR_SCROLL_KEY, JSON.stringify({ href, y }));
+  } catch {
+    // Blocked storage only loses the restored position.
+  }
+}
+
+const MOBILE_SCENE_QUERY = "(max-width: 767px)";
+const PHONE_SCENE_DELAY_MS = 2_500;
 const LOADER_DRAW_DURATION_MS = 3_600;
 const LOADER_EXIT_DURATION_MS = 900;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
@@ -271,7 +318,21 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       setSceneRequested(true);
       return;
     }
-    return scheduleAfterLoad(() => setSceneRequested(true));
+    // Phones fetch and compile three.js only after the first content has been painted and the page has
+    // settled (founder K8: 3D stays on by default on phones; the loader card covers the wait).
+    let timer: number | null = null;
+    const cancel = scheduleAfterLoad(() => {
+      const phone = window.matchMedia(MOBILE_SCENE_QUERY).matches;
+      if (!phone) {
+        setSceneRequested(true);
+        return;
+      }
+      timer = window.setTimeout(() => setSceneRequested(true), PHONE_SCENE_DELAY_MS);
+    });
+    return () => {
+      cancel();
+      if (timer !== null) window.clearTimeout(timer);
+    };
   }, [capture.enabled, loaderVisible, mobileStatic, mounted, sceneRequested, webgl]);
 
   useEffect(() => {
@@ -279,6 +340,30 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       const controller = audio.current;
       audio.current = null;
       if (controller) void controller.dispose();
+    };
+  }, []);
+
+  useEffect(() => {
+    // Remember where the linear document was scrolled to: a soft navigation away (a product link)
+    // unmounts the journey with the DOM already gone and without a pagehide, so track it while it is shown.
+    const href = window.location.href;
+    let y = 0;
+    const track = () => {
+      // Navigation resets the scroll before the unmount: ignore events once the URL has moved on.
+      if (window.location.href !== href) return;
+      const linear = document.querySelector<HTMLElement>("[data-yula-static]");
+      if (linear && linear.style.display !== "none") y = window.scrollY;
+    };
+    const save = () => {
+      if (y > 0) writeLinearScroll(y, href);
+    };
+    window.addEventListener("scroll", track, { passive: true });
+    // A plain link leaves with a real page load: only pagehide runs then.
+    window.addEventListener("pagehide", save);
+    return () => {
+      window.removeEventListener("scroll", track);
+      window.removeEventListener("pagehide", save);
+      save();
     };
   }, []);
 
@@ -292,6 +377,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     const previousOverscroll = root.style.overscrollBehavior;
     const previousRestoration = window.history.scrollRestoration;
     const resetOpeningScroll = () => window.scrollTo(0, 0);
+    // Where the browser restored the page before the opening pinned it (Back navigation).
+    const restoredScroll = Math.max(window.scrollY, readLinearScroll());
 
     window.history.scrollRestoration = "manual";
     root.style.overflow = "hidden";
@@ -312,6 +399,25 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       const target = sceneId ? document.getElementById(sceneId) : null;
       if (target) {
         requestAnimationFrame(() => target.scrollIntoView({ block: "start", behavior: "instant" }));
+        return;
+      }
+      // W1D K8: without WebGL the phone lands on the linear document once the card leaves; honour an
+      // `#experience-*` deep link into it, or the position the browser restored on Back.
+      const linearMatch = /^#experience-[a-z0-9-]+$/.exec(window.location.hash);
+      const linearTarget = linearMatch
+        ? document.querySelector<HTMLElement>(`[data-yula-static] ${linearMatch[0]}`)
+        : null;
+      if (linearTarget) {
+        requestAnimationFrame(() => linearTarget.scrollIntoView({ block: "start", behavior: "instant" }));
+      } else if (restoredScroll > 0 && document.querySelector("[data-yula-static]")) {
+        // The linear document is only just shown: keep asking until it is tall enough to reach the spot.
+        let tries = 0;
+        const restore = () => {
+          window.scrollTo(0, restoredScroll);
+          tries += 1;
+          if (Math.abs(window.scrollY - restoredScroll) > 2 && tries < 40) requestAnimationFrame(restore);
+        };
+        requestAnimationFrame(restore);
       }
     };
   }, [capture.enabled, loaderVisible, mobileStatic, mounted]);

@@ -93,7 +93,7 @@ test.describe("desktop header (1440)", () => {
     test(`links the four entries in order, ${scheme}`, async ({ page }) => {
       await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
       await page.goto("/contact");
-      const links = page.locator("header nav a");
+      const links = page.locator("header nav a, header [data-header-cta]");
       await expect(links).toHaveCount(5);
       const hrefs = await links.evaluateAll((nodes) => nodes.map((n) => n.getAttribute("href")));
       expect(hrefs).toEqual(["/projects", "/notes", "/manifesto", "/consulting", "/projects"]);

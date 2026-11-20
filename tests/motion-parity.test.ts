@@ -77,6 +77,7 @@ describe("motion parity CSS", () => {
 describe("journey stage word and vision ribbon", () => {
   it("shows the stage word only where the stage leaves room for it", () => {
     expect(stageWordFrame(evaluateTimeline(0.02, "desktop"))).toBeNull();
+    expect(stageWordFrame(evaluateTimeline(0.075, "desktop"))?.label).toBe("works");
     expect(stageWordFrame(evaluateTimeline(0.125, "desktop"))?.label).toBe("works");
     expect(stageWordFrame(evaluateTimeline(0.3, "desktop"))).toBeNull();
     expect(stageWordFrame(evaluateTimeline(0.8, "mobile"))?.label).toBe("vision");

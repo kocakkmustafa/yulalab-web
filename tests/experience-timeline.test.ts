@@ -19,6 +19,7 @@ import {
 import {
   CAMERA_TRACKS,
   CROSSING_BLADE,
+  OVERLAY_BANDS,
   STAGES,
   evaluateTimeline,
   glyphDepthExtent,
@@ -112,8 +113,8 @@ describe("reference-faithful experience timeline", () => {
   });
 
   it("hands full-screen overlay ownership across an empty boundary frame", () => {
-    const orderedStages = Object.entries(STAGES) as [
-      keyof typeof STAGES,
+    const orderedStages = Object.entries(OVERLAY_BANDS) as [
+      keyof typeof OVERLAY_BANDS,
       readonly [number, number],
     ][];
 
@@ -627,5 +628,22 @@ describe("real-media framing", () => {
     const pxWidth = (Math.max(...points.map(p => p.x)) - Math.min(...points.map(p => p.x))) / 2 * width;
     expect(pxWidth).toBeGreaterThanOrEqual(140);
     expect(Math.max(...points.map(p => p.y))).toBeLessThan(0.85);
+  });
+});
+
+describe("W1D-D portfolio dwell", () => {
+  it("holds whole card numbers and stays monotonic between them", async () => {
+    const { dwellFloat } = await import("@/components/experience/timeline");
+    for (const whole of [0, 1, 3, 6]) {
+      expect(dwellFloat(whole)).toBeCloseTo(whole, 9);
+      expect(dwellFloat(whole + 0.2)).toBeCloseTo(whole, 9);
+    }
+    expect(dwellFloat(2.5)).toBeCloseTo(2.5, 9);
+    let previous = -1;
+    for (let value = 0; value <= 6; value += 0.01) {
+      const next = dwellFloat(value);
+      expect(next).toBeGreaterThanOrEqual(previous - 1e-9);
+      previous = next;
+    }
   });
 });

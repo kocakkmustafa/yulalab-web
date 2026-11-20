@@ -124,7 +124,10 @@ export function detectExperienceCapabilities(): ExperienceCapabilities {
   const saveData = (navigator as NavigatorWithDeviceMemory).connection?.saveData === true;
   const constrainedDisplay = dpr > 3 || renderedPixelArea > 8_000_000;
 
-  if (constrainedHardware || constrainedDisplay || saveData) {
+  // W1D K8: phones open the 3D journey by default, at the light tier.
+  const phone = width > 0 && width <= 767;
+
+  if (constrainedHardware || constrainedDisplay || saveData || phone) {
     return { available: true, software: false, tier: "low" };
   }
 

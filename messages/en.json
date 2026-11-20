@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "MISSION",
-      "title": "Ship few products, and measure what they claim."
+      "title": "We make few products and live with them for a long time. Your data stays on your device, and every claim has an open source.",
+      "sub": "Few products, built to last. Your data stays on your device."
     },
     "vision": {
       "kicker": "VISION",

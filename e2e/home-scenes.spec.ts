@@ -29,6 +29,7 @@ async function sceneHeadings(page: Page) {
 
 for (const view of VIEWS) {
   test.describe(`home scenes (${view.name})`, () => {
+    // W1D K7 (founder: "Kartlar kalsin"): the seven scene blocks stay visible in the 3D journey too.
     test.use({ viewport: view.viewport, locale: view.locale });
 
     test("seven anchors are visible and reachable by keyboard", async ({ page }) => {

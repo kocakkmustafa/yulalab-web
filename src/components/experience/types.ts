@@ -163,7 +163,7 @@ export type ExperienceCopy = {
     freshnessPending: string;
     refreshDue: string;
   };
-  mission: { kicker: string; title: string; body: string };
+  mission: { kicker: string; title: string; body: string; sub: string };
   vision: { kicker: string; title: string; body: string };
   values: {
     kicker: string;

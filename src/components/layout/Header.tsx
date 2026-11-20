@@ -125,7 +125,7 @@ export function Header() {
         }
         style={{ transitionTimingFunction: "cubic-bezier(0.25, 0.46, 0.45, 0.94)" }}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
+        <div className="relative max-w-7xl mx-auto px-6 lg:px-10 h-16 flex items-center justify-between">
           <Link
             href="/"
             className="flex shrink-0 whitespace-nowrap items-center gap-2.5 group focusable"
@@ -137,7 +137,7 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden xl:flex items-center gap-6 font-mono text-[14px] uppercase tracking-[1.4px] text-ink-200">
+          <nav className="hidden xl:flex min-w-0 flex-1 items-center justify-center gap-6 whitespace-nowrap px-4 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             {HEADER_NAV.map((n) => {
               const isActive = isActiveHref(n.href, stripped);
               return (
@@ -147,7 +147,7 @@ export function Header() {
                   aria-current={isActive ? "page" : undefined}
                   className={
                     "link-wipe focusable transition-colors " +
-                    (isActive ? "text-ink-50" : "text-ink-300 hover:text-ink-50")
+                    "text-ink-50"
                   }
                 >
                   {t(n.key)}
@@ -162,7 +162,7 @@ export function Header() {
                 aria-expanded={doorsOpen}
                 aria-controls="site-doors-panel"
                 data-site-doors-trigger="true"
-                className="focusable inline-flex min-h-[44px] items-center text-ink-300 hover:text-ink-50 transition-colors"
+                className="focusable inline-flex min-h-[44px] items-center text-ink-50"
               >
                 {t("doors")}
               </button>
@@ -190,17 +190,20 @@ export function Header() {
                 </ul>
               ) : null}
             </div>
+          </nav>
+
+          <div className="hidden xl:flex shrink-0 items-center gap-6 font-mono text-[14px] font-normal normal-case tracking-[0.1em] text-ink-50">
             <LocaleSwitcher compact />
             <ThemeControl compact />
             <Link
               href={HEADER_CTA.href}
               data-header-cta="true"
-              className="header-cta ml-1 group inline-flex h-10 min-w-[154px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/50 px-5 text-[14px] uppercase tracking-[1.4px] text-ink-50 hover:border-ink-50 hover:bg-ink-50 hover:text-ink-900 transition-colors duration-300 focusable"
+              className="header-cta ml-1 group inline-flex h-10 min-w-[154px] items-center justify-center gap-1.5 whitespace-nowrap rounded-full border border-white/50 px-5 text-[14px] normal-case tracking-[0.1em] text-ink-50 hover:border-ink-50 hover:bg-ink-50 hover:text-ink-900 transition-colors duration-300 focusable"
             >
               <SlotLabel>{t(HEADER_CTA.key)}</SlotLabel>
               <ArrowUpRight size={14} strokeWidth={2} className="arrow-nudge" />
             </Link>
-          </nav>
+          </div>
 
           <button
             ref={menuButton}

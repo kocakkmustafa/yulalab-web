@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "Misyon",
-      "title": "Az sayıda ürünü, iddiasını ölçerek yayına almak."
+      "title": "Az ürün yapıyoruz ve onlarla uzun süre yaşıyoruz. Verin cihazında kalır, her iddiamızın kaynağı açıktır.",
+      "sub": "Az ürün, kalıcı olsun diye yapıldı. Verin cihazında kalır."
     },
     "vision": {
       "kicker": "Vizyon",

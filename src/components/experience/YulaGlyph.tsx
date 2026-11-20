@@ -1,6 +1,5 @@
 "use client";
 
-import { MeshTransmissionMaterial } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -21,7 +20,10 @@ import {
 } from "three";
 import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
 import { composeGlyphRotation } from "./instruments";
-import { glyphViewportPose } from "./layout";
+import { RefractGlass } from "./RefractGlass";
+import { holoRibbonState } from "./HoloRibbon";
+import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
+import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 export type YulaGlyphProps = {
@@ -119,6 +121,36 @@ const PORTAL_FRAGMENT_SHADER = `
   }
 `;
 
+const VISION_LIGHT_FRAGMENT_SHADER = `
+  uniform float uOpacity;
+  uniform float uPhase;
+  varying vec3 vLocalPosition;
+
+  vec3 spectrum(float t) {
+    return 0.5 + 0.5 * cos(6.28318 * (t + vec3(0.0, 0.33, 0.67)));
+  }
+  float grain(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
+
+  void main() {
+    // The light lives on the glyph's own surface, so the Y is the mask: a
+    // diagonal band in glyph space that never leaves the letter.
+    float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
+    float center = (uPhase - 0.5) * 1.5;
+    float across = (axis - center) / 0.3;
+    float band = smoothstep(1.0, 0.55, abs(across));
+    float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
+    vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
+    colour -= grain(gl_FragCoord.xy) * 0.08;
+    gl_FragColor = vec4(colour, band * uOpacity);
+  }
+`;
+
+function lerp(a: number, b: number, t: number): number {
+  return a + (b - a) * t;
+}
+
 function makeYShape(): Shape {
   const shape = new Shape();
   shape.moveTo(-0.95, 0.9);
@@ -203,8 +235,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // Hand the portal to the readable SERVICE media, then keep the emblem
   // retired through the closing wordmark/contact.
   const closingHandoff = 1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.58));
+  // W1D-F H1-e: once the first portfolio card arrives the glass Y leaves the stage (it would sit over the
+  // product icon); it returns shortly before the proof stage, where the glyph is part of the story again.
+  const portfolioHide = smoothstep(segmentProgress(frame.progress, 0.062, 0.088))
+    * (1 - smoothstep(segmentProgress(frame.progress, 0.47, 0.505)));
   const closingVisibility = closingHandoff
-    * (1 - frame.world.serviceIn) * readingVisibility;
+    * (1 - frame.world.serviceIn) * readingVisibility * (1 - portfolioHide);
   const bodyColor = useMemo(
     () => new Color("#ffffff").lerp(new Color("#f8f7f2"), whiteMix),
     [whiteMix],
@@ -215,8 +251,6 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // the existing medium/high material.
   const fallbackOpacity = bodyOpacity * (tier === "low" ? 1 - frame.glyph.glassMix * 0.7 : 1);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
-  const transmission =
-    tier === "high" ? 0.96 * frame.glyph.glassMix : tier === "medium" ? 0.94 * frame.glyph.glassMix : 0;
   const fringeOpacity =
     frame.glyph.glassMix * (tier === "low" ? 0.006 : 0.004) * closingVisibility;
   const outlineOpacity = (0.025 + Math.max(whiteMix, frame.world.whiteMix) * 0.625) * closingVisibility;
@@ -225,14 +259,38 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width / Math.max(1, viewportSize.height),
     viewportSize.width,
   );
+  // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
+  const slotMix = heroSlotMix(frame.progress);
+  const slotPose = useMemo(() => {
+    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
+    const [cx, cy, cz] = frame.camera.position;
+    // The slot is a point on the wordmark plane; the glass Y sits on the camera ray through it, at its own depth.
+    const t = (cz - frame.glyph.position[2]) / (cz - HERO_PLANE_Z);
+    const planeX = heroSlot.x * planeWidth;
+    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
+    return {
+      x: cx + (planeX - cx) * t,
+      y: cy + (planeY - cy) * t,
+      scale: (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * t) / 1.8,
+    };
+  }, [frame.camera.position, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
   const position = useMemo(
     () => [
-      frame.glyph.position[0] + viewportPose.offset[0],
-      frame.glyph.position[1] + viewportPose.offset[1],
+      lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], slotPose.y, slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset],
+    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
   );
+  // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
+  // the Y takes the same horizontal squeeze while it stands in for the first letter.
+  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
+  // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
+  // back to the portfolio hand-off scale.
+  const heroGrow = 1 + 0.4 * smoothstep(segmentProgress(frame.progress, 0.034, 0.06))
+    * (1 - smoothstep(segmentProgress(frame.progress, 0.06, 0.085)));
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
+  const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -242,6 +300,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     }),
     [],
   );
+  const visionLightUniforms = useMemo(() => ({ uOpacity: { value: 0 }, uPhase: { value: 0 } }), []);
+  const visionLightMaterial = useRef<ShaderMaterial>(null);
   const portalUniforms = useMemo(
     () => ({
       uPortalTexture: { value: null },
@@ -267,6 +327,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       causticMaterial.current.uniforms.uPortal.value = frame.world.visionPortal;
     }
 
+    if (visionLightMaterial.current) {
+      const ribbon = holoRibbonState(frame);
+      visionLightMaterial.current.uniforms.uOpacity.value = ribbon.opacity * 0.9;
+      visionLightMaterial.current.uniforms.uPhase.value = Math.min(1, Math.max(0, ribbon.sweep));
+    }
+
     if (portalMaterial.current) {
       renderer.getDrawingBufferSize(drawingBufferSize);
       portalMaterial.current.uniforms.uPortalTexture.value = portalTexture;
@@ -282,7 +348,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       ref={glyphGroup}
       position={position}
       rotation={rotation}
-      scale={frame.glyph.scale * viewportPose.scaleMultiplier}
+      scale={glyphScaleXYZ}
       visible={closingVisibility > 0.001}
     >
       <mesh
@@ -312,36 +378,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       </mesh>
 
       {tier !== "low" ? (
-        <mesh castShadow geometry={geometry} receiveShadow>
-          <MeshTransmissionMaterial
-            anisotropicBlur={tier === "high" ? 0.006 : 0.02}
-            attenuationColor="#ffffff"
-            bumpMap={chromeBump}
-            bumpScale={0.012}
-            attenuationDistance={8}
-            backsideResolution={1}
-            chromaticAberration={tier === "high" ? 0.5 : 0.32}
-            clearcoat={1}
-            clearcoatRoughness={tier === "high" ? 0.04 : 0.08}
-            color={bodyColor}
-            depthWrite={bodyOpacity > 0.55}
-            distortion={0.05}
-            distortionScale={0.34}
-            envMapIntensity={tier === "high" ? 1.8 : 1.5}
-            ior={1.35}
-            metalness={0.04}
-            opacity={bodyOpacity}
-            roughness={tier === "high" ? 0.03 : 0.06}
-            samples={tier === "high" ? 3 : 2}
-            temporalDistortion={0}
-            thickness={tier === "high" ? 0.55 : 0.45}
-            transmission={transmission}
-            transmissionSampler
-            resolution={1}
-            transparent
-            visible={glassVisible}
-          />
-        </mesh>
+        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
       ) : null}
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
@@ -381,6 +418,19 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
           toneMapped={false}
           transparent
           uniforms={causticUniforms}
+          vertexShader={CAUSTIC_VERTEX_SHADER}
+        />
+      </mesh>
+
+      <mesh geometry={geometry} position={[0, 0, 0.03]} renderOrder={4} scale={0.96}>
+        <shaderMaterial
+          ref={visionLightMaterial}
+          depthTest={false}
+          depthWrite={false}
+          fragmentShader={VISION_LIGHT_FRAGMENT_SHADER}
+          toneMapped={false}
+          transparent
+          uniforms={visionLightUniforms}
           vertexShader={CAUSTIC_VERTEX_SHADER}
         />
       </mesh>

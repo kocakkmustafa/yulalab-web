@@ -723,7 +723,8 @@
     },
     "mission": {
       "kicker": "MISIÓN",
-      "title": "Publicar pocos productos y medir lo que afirman hacer."
+      "title": "Hacemos pocos productos y convivimos con ellos mucho tiempo. Tus datos se quedan en tu dispositivo y la fuente de cada afirmación es abierta.",
+      "sub": "Pocos productos, hechos para durar. Tus datos se quedan en tu dispositivo."
     },
     "vision": {
       "kicker": "VISIÓN",

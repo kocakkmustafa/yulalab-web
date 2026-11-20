@@ -222,6 +222,7 @@ export default async function LandingPage({
       kicker: t("mission.kicker"),
       title: t("mission.title"),
       body: localized(company.mission, locale),
+      sub: t("mission.sub"),
     },
     vision: {
       kicker: t("vision.kicker"),

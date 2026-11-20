@@ -172,10 +172,11 @@ html.lenis body {
    experience root is present. `:has()` is evaluated during the first style
    pass, so there is no client-side double-header flash. */
 body:has([data-yula-experience="true"]) [data-site-header="true"],
-body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"],
-body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+body:has([data-yula-experience="true"]) [data-site-mobile-drawer="true"] {
   display: none;
 }
+/* W1D K7 (founder: "Kartlar kalsin"): the real footer closes the home page after the cards and the
+   scene blocks, in the 3D flow as well. */
 
 /* `viewport-fit=cover` lets the immersive canvas paint behind a notch. Keep
    the shared site chrome and every non-experience route inside the same safe
@@ -1039,8 +1040,10 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
 }
 .footer-wordmark[data-footer-wordmark="ready"] text {
   stroke-dashoffset: 2000;
+  fill-opacity: 0;
   transition: none;
 }
+.footer-wordmark text { transition: stroke-dashoffset 2800ms cubic-bezier(0.65, 0, 0.35, 1), fill-opacity 1400ms 900ms cubic-bezier(0.65, 0, 0.35, 1); }
 
 /* WEB-P0-03b: scene 1 signal arrow. One slow pulse; static under reduced motion
    (rule lives in the last reduced-motion block below, which motion-parity reads). */
@@ -1119,3 +1122,61 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
     background: color-mix(in srgb, var(--accent, rgb(var(--yula-ink-850))) 11%, rgb(var(--yula-ink-850)));
   }
 }
+
+/* W1D Z1: ic sayfa zemini (koyu tema). Referans olcumu: kenar #010206, orta lacivert-mor
+   isima, alt bolumde petrol/lacivert. Zemin <html> uzerinde, belge boyuna gore:
+   ust / orta / alt 900px'lik isik karolari + 180px artili, 36px ince izgara.
+   Sahne bu rotalarda gorunmez (visibility), ana sayfa (deneyim koku) etkilenmez. */
+:root[data-theme="dark"] {
+  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+}
+:root[data-theme="dark"]:not(:has([data-yula-experience="true"])) {
+  background-color: #010206;
+  background-image:
+    var(--yula-plus-img),
+    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
+    radial-gradient(ellipse 660px 440px at 940px 460px, rgba(28,24,70,.95) 0, rgba(21,18,56,.7) 34%, rgba(11,10,34,.38) 64%, transparent 100%),
+    radial-gradient(ellipse 800px 520px at 900px 470px, rgba(14,36,46,.95) 0, rgba(6,22,34,.65) 45%, transparent 100%),
+    radial-gradient(ellipse 800px 470px at 760px 450px, rgba(3,26,40,.95) 0, rgba(4,22,48,.8) 40%, rgba(3,12,44,.5) 70%, transparent 100%);
+  background-size: 180px 180px, 36px 36px, 36px 36px, 100% 900px, 100% 900px, 100% 900px;
+  background-position: 0 90px, 0 0, 0 0, 0 0, 0 50%, 0 100%;
+  background-repeat: repeat, repeat, repeat, no-repeat, no-repeat, no-repeat;
+  background-attachment: scroll;
+}
+:root[data-theme="dark"]:not(:has([data-yula-experience="true"])) body { background: transparent; }
+:root[data-theme="dark"] .scene-host:is([data-scene-tone="page"], [data-scene-tone="quiet"]) { visibility: hidden; }
+:root[data-theme="dark"] [data-site-footer="true"] { background: transparent; }
+:root[data-theme="dark"] .glass { background: rgb(255 255 255 / .025); }
+
+/* W1D K9: dogrusal (statik) ana sayfa akisinda kapanis blogu artik sayfa ortasinda altbilgi
+   gibi durmaz (bolum olarak kalir); gercek site altbilgisi ana sayfa sahneleri blogunun
+   sonunda, sayfanin en altinda gorunur. 3D akista altbilgi gizli kalir. */
+body:has([data-experience-static="true"]) [data-site-footer="true"] { display: block; }
+
+/* W1D K6/K7: ana sayfa kapanis bolumu zemini (koyu temada siyah-lacivert isik, ekrana sabit). */
+html.dark .home-closing-ground {
+  background-image: radial-gradient(ellipse 42% 60% at 50% 52%, #021736 0%, #030917 55%, #000307 100%);
+  background-attachment: fixed;
+}
+
+/* W1D I1-a: altbilgi YULA wordmark'i saf beyaz (koyu tema). */
+:root:is(.dark, [data-theme="dark"]) .footer-wordmark { color: #ffffff; }
+
+/* W1D K7: ana sayfada gercek altbilgi kartlarin ve sahne bloklarinin sonrasinda, sabit 3D katmanin
+   ustunde ve opak zeminde kapanir (tek logo: [Y]ULA). */
+body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  background-color: rgb(var(--yula-page-rgb));
+}
+html.dark body:has([data-yula-experience="true"]) [data-site-footer="true"] {
+  background-image: radial-gradient(ellipse 42% 60% at 50% 52%, #021736 0%, #030917 55%, #000307 100%);
+  background-attachment: fixed;
+}
+
+/* W1D: the home page has no shared fixed header (the journey owns its overlay header); its anchors are
+   exact timeline positions, so hash jumps land on them without the shared header offset (the linear
+   document keeps it: its sticky header sits above the focus target). */
+html:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) { scroll-padding-top: 0; }

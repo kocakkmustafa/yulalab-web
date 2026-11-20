@@ -38,6 +38,19 @@ export const CROSSING_BLADE = {
 const GLYPH_LOCAL_HALF_EXTENTS: Vec3 = [1.05, 1, 0.24];
 const GLYPH_CARD_CLEARANCE = 0.16;
 
+/** Progress where the manifesto copy starts to appear (inside the crossing stage). */
+export const MISSION_COPY_START = 0.635;
+
+/**
+ * Where each stage's overlay may be visible. Equal to STAGES except W1D K3-a: the manifesto copy is on
+ * screen through the whole white room, so the (empty) crossing overlay hands over to it earlier.
+ */
+export const OVERLAY_BANDS = {
+  ...STAGES,
+  crossing: [STAGES.crossing[0], MISSION_COPY_START],
+  mission: [MISSION_COPY_START, STAGES.mission[1]],
+} as const satisfies Record<ExperienceStage, readonly [number, number]>;
+
 const STAGE_ORDER = Object.keys(STAGES) as ExperienceStage[];
 
 export const CAMERA_TRACKS: Record<ExperienceMode, readonly CameraKey[]> = {
@@ -281,6 +294,20 @@ function slotFrame(progress: number, range: readonly [number, number], count: nu
   };
 }
 
+/**
+ * W1D-D: the reference snaps its works to one card at a time (snapTo 1/(n-1)). Without a snap, cards
+ * dwell here instead: about 70% of every slot holds a card centred, the hand-off to the next one
+ * runs inside the remaining 30%. Whole numbers stay fixed points, so the slot index is unchanged.
+ */
+export const PORTFOLIO_DWELL = 0.36;
+
+export function dwellFloat(float: number): number {
+  const base = Math.floor(float + 1e-9);
+  const t = float - base;
+  const eased = smootherstep((t - PORTFOLIO_DWELL) / (1 - 2 * PORTFOLIO_DWELL));
+  return base + eased;
+}
+
 /** Conservative world-space Z extent of the bevelled Y, including fringe shells. */
 export function glyphDepthExtent(rotation: Vec3, scale: number): number {
   const [x, y, z] = rotation;
@@ -394,14 +421,14 @@ export function evaluateTimeline(
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
   const overlay = Object.fromEntries(
-    STAGE_ORDER.map((name) => [name, bandOpacity(p, STAGES[name][0], STAGES[name][1])]),
+    STAGE_ORDER.map((name) => [name, bandOpacity(p, OVERLAY_BANDS[name][0], OVERLAY_BANDS[name][1])]),
   ) as Record<ExperienceStage, number>;
 
   return {
     progress: p,
     stage,
     stageProgress: segmentProgress(p, stageStart, stageEnd),
-    productFloat: product.float,
+    productFloat: dwellFloat(product.float),
     productIndex: product.index,
     productProgress: product.progress,
     proofFloat: proof.float,
@@ -429,13 +456,11 @@ export function evaluateTimeline(
       themeMix,
       bladeProgress: whiteRise,
       roomOpacity: lerp(1, 0.62, themeMix),
+      // W1D-D H1-a: the wordmark dissolves first (hero 0.005..0.04), the room behind the cards is the giant
+      // PROJECTS word, not a faded YULA; the wordmark only returns as the pale closing mark.
       wordmarkOpacity:
         p < STAGES.proof[0]
-          ? lerp(
-            1,
-            0.28,
-            smoothstep(segmentProgress(p, STAGES.portfolio[0], STAGES.portfolio[1])),
-          )
+          ? 1 - smoothstep(segmentProgress(p, 0.005, 0.04))
           : 0.18 * (1 - themeMix),
       proofMorph,
       closingDraw,

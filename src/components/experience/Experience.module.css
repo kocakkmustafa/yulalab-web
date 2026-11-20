@@ -1561,26 +1561,6 @@
     calc(clamp(28px, 6vw, 110px) + var(--safe-left));
 }
 
-.closingWordmark {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  color: var(--experience-fg);
-  font-family: var(--font-display), Manrope, sans-serif;
-  font-size: clamp(170px, 31vw, 540px);
-  font-weight: 700;
-  letter-spacing: -0.09em;
-  line-height: 0.72;
-  white-space: nowrap;
-  opacity: calc(var(--closing-draw) * 0.96);
-  text-shadow: 0 0 80px color-mix(in srgb, var(--experience-fg) 8%, transparent);
-  transform: translate(-50%, -58%) scale(calc(0.93 + var(--closing-draw) * 0.07));
-}
-
-.closingWordmark span {
-  color: inherit;
-}
-
 .closingContent {
   position: relative;
   z-index: 1;
@@ -1716,22 +1696,12 @@
 }
 
 @media (min-width: 768px) and (max-width: 900px) and (max-height: 1050px) {
-  .closingWordmark {
-    top: 44%;
-  }
 }
 
 @media (min-width: 901px) and (max-height: 820px) {
-  .closingWordmark {
-    top: 41%;
-  }
 }
 
 @media (min-width: 901px) and (max-height: 640px) {
-  .closingWordmark {
-    top: 22%;
-    font-size: clamp(170px, 23vw, 280px);
-  }
 }
 
 /* Static/reduced experience -------------------------------------------- */
@@ -2333,11 +2303,6 @@
     font-size: clamp(45px, 13vw, 65px);
   }
 
-  .closingWordmark {
-    top: 28%;
-    font-size: 38vw;
-  }
-
   .closingBody {
     margin-top: 18px;
     font-size: 12px;
@@ -2454,11 +2419,6 @@
   .closingContent h2 {
     font-size: clamp(36px, 10vw, 42px);
     line-height: 0.98;
-  }
-
-  .closingWordmark {
-    top: 17%;
-    font-size: 34vw;
   }
 
   .closingPitch .kicker {
@@ -2637,14 +2597,6 @@
   -webkit-backdrop-filter: blur(4px);
 }
 .valuePanel h3 { font-size: clamp(32px, 3.2vw, 52px); letter-spacing: -.025em; }
-.closingWordmark {
-  top: 40%;
-  width: clamp(180px, 25vw, 300px);
-  font-size: initial;
-  line-height: 0;
-  text-shadow: none;
-}
-.closingWordmark svg { display: block; width: 100%; height: auto; }
 .closingContent { background: linear-gradient(0deg, rgba(0,0,0,.95), transparent); }
 @media (min-width: 768px) and (max-width: 1120px) {
   .experienceBrand { font-size: 24px; }
@@ -2689,13 +2641,11 @@
   .manifestoStage h2 { max-width: 25ch; font-size: 24px; line-height: 1.75; }
   .manifestoStage > p:last-child { max-width: 36ch; font-size: 11px; }
   .valuePanel { padding: 22px 4px 0; }
-  .closingWordmark { top: 24%; width: min(46vw, 180px); }
   .closingContent h2 { font-size: clamp(26px, 8vw, 36px); }
 }
 @media (max-height: 640px) and (min-width: 901px) {
   .experienceHeader { height: 88px; }
   .heroCopy { bottom: 28px; }
-  .closingWordmark { top: 21%; width: 150px; }
 }
 
 /* Theme surfaces share the prepaint CSS tokens with the demand-rendered world.
@@ -2822,26 +2772,46 @@
   to { opacity: 1; translate: 0 0; }
 }
 
-/* Phones: under the header, over the glyph, so the hero copy and its
-   actions at the bottom of the screen stay uncovered. */
+/* Phones (W1D M1): a thin full-width band along the bottom edge, like the reference sound bar,
+   so it never sits on top of the content. */
 @media (max-width: 767px) {
   .soundPrompt {
-    top: calc(76px + var(--safe-top));
-    bottom: auto;
-    width: calc(100vw - 32px);
-    flex-wrap: wrap;
-    gap: 6px 10px;
-    border-radius: 16px;
-    padding: 10px 12px;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: none;
+    flex-wrap: nowrap;
+    gap: 8px;
+    border-radius: 0;
+    border-inline: 0;
+    border-bottom: 0;
+    padding: 4px 10px calc(4px + var(--safe-bottom)) 14px;
     font-size: 11px;
+    transform: none;
+  }
+
+  [dir="rtl"] .soundPrompt {
+    transform: none;
+    left: 0;
+    right: 0;
+    padding: 4px 14px calc(4px + var(--safe-bottom)) 10px;
   }
 
   .soundPrompt p {
-    flex: 1 1 calc(100% - 20px);
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 10.5px;
+    line-height: 1.25;
   }
 
   .soundPrompt button {
     min-height: 32px;
+  }
+
+  .soundPromptOn {
+    padding: 0 12px;
   }
 }
 
@@ -3025,4 +2995,42 @@
 /* Reduced motion never offers the journey: the static path is the contract. */
 @media (prefers-reduced-motion: reduce), (max-width: 767px) and (max-height: 600px) {
   .journey[data-mobile-static-default] .open3d { display: none; }
+}
+
+/* W1D K4: VISION dis cizgi yazisi sol ustte sabit (referans konum/boyut), ifade iki satira iner. */
+.stageWord[data-stage-word="vision"] {
+  top: clamp(110px, 17vh, 170px);
+  left: clamp(28px, 10vw, 150px);
+  transform: none;
+}
+.stageWord[data-stage-word="vision"] span {
+  font-size: clamp(64px, 8.6vw, 124px);
+  letter-spacing: -0.05em;
+  -webkit-text-stroke: 1px rgb(21 17 25 / 0.82);
+}
+.visionStage h2 {
+  max-width: 34ch;
+  font-size: clamp(20px, 1.9vw, 28px);
+  line-height: 1.75;
+}
+@media (max-width: 767px) {
+  .stageWord[data-stage-word="vision"] span { font-size: 22vw; }
+  .visionStage h2 { font-size: 20px; }
+}
+
+/* W1D K3: sirket manifestosu sol ortada, siyah zeminli satir vurgusu, altinda kucuk EN satir. */
+.manifestoStage:not(.visionStage) h2 {
+  max-width: 34ch;
+  font-size: clamp(20px, 1.9vw, 28px);
+  line-height: 1.75;
+}
+.manifestoStage:not(.visionStage) > p:last-child {
+  max-width: 46ch;
+  margin-top: 22px;
+  font-size: 12px;
+  line-height: 1.6;
+  letter-spacing: .02em;
+}
+@media (max-width: 767px) {
+  .manifestoStage:not(.visionStage) h2 { font-size: 18px; max-width: 28ch; }
 }

@@ -56,3 +56,41 @@ export function resolveWallTint(progress: number): [number, number, number] {
     return base + (WALL_TINTS.night[channel] - base) * night;
   }) as [number, number, number];
 }
+
+/**
+ * Screen-space room light. Each set is a wide glow plus a narrow peak around
+ * a centre (uv, origin bottom left) falling off to a dark edge; colours are
+ * sRGB hex, spreads are squared-uv variances. Values come from the measured
+ * ground light of the reference scenes (cell colours of the 4x3 grid).
+ */
+export type GroundSet = {
+  edge: string; mid: string; peak: string;
+  centre: [number, number, number, number];
+  spread: [number, number, number, number];
+};
+
+export const GROUND_SETS = {
+  hero: { edge: "#02010b", mid: "#130940", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
+  portfolio: { edge: "#050505", mid: "#c8c0d0", peak: "#c8c0d0", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
+  proof: { edge: "#020608", mid: "#0c3446", peak: "#4acdff", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
+  night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  light: { edge: "#ccd6d9", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
+} as const satisfies Record<string, GroundSet>;
+
+export type GroundWeights = { hero: number; portfolio: number; proof: number; night: number; closing: number; light: number };
+
+export function resolveGroundWeights(progress: number, themeMix: number): GroundWeights {
+  const ss = (a: number, b: number) => smoothstep(segmentProgress(progress, a, b));
+  const dark = 1 - themeMix;
+  return {
+    // W1D-F H1-f: the purple opening ground hands over to the grey/black portfolio ground as the first card arrives
+    // (card at 0.085), not slowly after it.
+    hero: (1 - ss(0.04, 0.078)) * dark,
+    portfolio: ss(0.04, 0.078) * (1 - ss(0.46, 0.52)) * dark,
+    proof: ss(0.82, 0.84) * (1 - ss(0.88, 0.93)) * dark,
+    night: ss(0.57, 0.62) * (1 - ss(0.69, 0.74)) * dark,
+    closing: ss(0.93, 0.97) * dark,
+    light: themeMix,
+  };
+}

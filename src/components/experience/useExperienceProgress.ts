@@ -60,8 +60,20 @@ export function parseCaptureParams(search: string): CaptureParams {
   };
 }
 
+/**
+ * Scroll distance the journey itself owns. W1D K7: the cards, the seven scene blocks and the footer follow
+ * the journey in the document, so its timeline ends where the journey ends (not at the document end).
+ */
+function journeyScrollRange(): number {
+  const root = document.querySelector<HTMLElement>('[data-yula-experience="true"]');
+  const documentRange = document.documentElement.scrollHeight - window.innerHeight;
+  if (!root) return documentRange;
+  const journeyBottom = root.getBoundingClientRect().bottom + window.scrollY;
+  return Math.min(documentRange, journeyBottom - window.innerHeight);
+}
+
 function readDocumentProgress(): number {
-  const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
+  const scrollRange = journeyScrollRange();
   if (!Number.isFinite(scrollRange) || scrollRange <= 0) return 0;
   return timelineProgressForScroll(window.scrollY / scrollRange);
 }
@@ -156,7 +168,7 @@ export function useExperienceProgress(enabled: boolean, restoreDocumentPosition 
     };
 
     const wake = () => {
-      setScrollRange(Math.max(0, document.documentElement.scrollHeight - window.innerHeight));
+      setScrollRange(Math.max(0, journeyScrollRange()));
       target = readDocumentProgress();
       if (animationFrame !== 0) return;
       previousTimestamp = null;

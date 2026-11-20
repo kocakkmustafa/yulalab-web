@@ -20,6 +20,7 @@ import styles from "./Experience.module.css";
 import { scrollProgressForTimeline } from "./storyboard";
 import { ThemeControl } from "@/components/theme/ThemeControl";
 import { StageWord } from "./StageWord";
+import { resolveExperiencePalette } from "./theme";
 import { ExperienceInstruments } from "./ExperienceInstruments";
 
 type ExperienceOverlayProps = {
@@ -62,10 +63,13 @@ function stageStyle(opacity: number): StageStyle {
 }
 
 function overlayStyle(whiteMix: number): OverlayStyle {
+  // W1D S1: on the light vision/mission rooms the whole chrome (logo, menu,
+  // controls, captions) switches to #000; the dark rooms keep the theme's white.
+  const lightRoom = resolveExperiencePalette(whiteMix).surface === "light";
   return {
-    "--experience-fg": "var(--yula-exp-fg)",
-    "--experience-muted": "var(--yula-exp-muted)",
-    "--experience-line": "var(--yula-exp-line)",
+    "--experience-fg": lightRoom ? "#000000" : "var(--yula-exp-fg)",
+    "--experience-muted": lightRoom ? "rgb(0 0 0 / .72)" : "var(--yula-exp-muted)",
+    "--experience-line": lightRoom ? "rgb(0 0 0 / .45)" : "var(--yula-exp-line)",
     "--white-mix": whiteMix,
   };
 }
@@ -103,6 +107,13 @@ function exclusivePanelFocus(
   const exit = Math.min(1, Math.max(0, (1 - slotProgress) / edge));
   const focus = Math.min(enter, exit);
   return focus * focus * (3 - 2 * focus);
+}
+
+/** Opacity of a portfolio caption: 1 while its card dwells centred, 0 half a card away. */
+function portfolioCaptionFocus(index: number, activeIndex: number, distance: number): number {
+  if (index !== activeIndex) return 0;
+  const x = Math.min(1, Math.max(0, (0.5 - Math.abs(distance)) / 0.34));
+  return x * x * (3 - 2 * x);
 }
 
 /** Europe/Istanbul is the registry's documented freshness boundary. */
@@ -480,7 +491,9 @@ export function ExperienceOverlay({
     "crossing",
     frame.overlay.crossing,
   );
-  const missionActive = stageSemanticActive(frame, "mission", frame.overlay.mission);
+  // W1D K3-a: the copy fades in during the crossing stage already.
+  const missionActive =
+    (stageIs(frame, "mission") || stageIs(frame, "crossing")) && frame.overlay.mission > SEMANTIC_VISIBILITY_THRESHOLD;
   const visionActive = stageSemanticActive(frame, "vision", frame.overlay.vision);
   const valuesActive = stageSemanticActive(frame, "values", frame.overlay.values);
   const today = useExperienceSiteDate();
@@ -498,7 +511,7 @@ export function ExperienceOverlay({
     : proofScaled - proofProductIndex;
 
   return (
-    <div className={styles.overlay} style={overlayStyle(frame.world.themeMix)}>
+    <div className={styles.overlay} style={overlayStyle(Math.max(frame.world.themeMix, frame.world.whiteMix))}>
       <ExperienceHeader
         copy={copy}
         soundEnabled={soundEnabled}
@@ -574,10 +587,12 @@ export function ExperienceOverlay({
         </div>
 
         {products.map((product, index) => {
-          const panelOpacity = exclusivePanelFocus(
+          // W1D-D: caption and icon share one envelope. The caption is sharp for as long as its icon dwells
+          // centred (distance on the dwelled float), and hands over to the next one while the cards travel.
+          const panelOpacity = portfolioCaptionFocus(
             index,
             frame.productIndex,
-            frame.productProgress,
+            index - frame.productFloat,
           );
           const active =
             stageIs(frame, "portfolio") &&
@@ -585,7 +600,7 @@ export function ExperienceOverlay({
             panelOpacity > SEMANTIC_VISIBILITY_THRESHOLD;
           const distance = index - frame.productFloat;
           // The caption resolves out of blur as its work reaches the front.
-          const captionBlur = Math.min(1, Math.abs(distance) * 1.6);
+          const captionBlur = Math.min(1, Math.max(0, Math.abs(distance) - 0.08) * 2.4);
           const panelStyle: PanelStyle = {
             "--panel-opacity": panelOpacity,
             "--panel-offset": Math.max(-1, Math.min(1, distance)),
@@ -716,7 +731,7 @@ export function ExperienceOverlay({
       >
         <p className={styles.kicker}>{copy.mission.kicker}</p>
         <h2 id="experience-mission-title"><span>{copy.mission.title}</span></h2>
-        <p>{copy.mission.body}</p>
+        <p>{copy.mission.sub}</p>
       </section>
 
       <section
@@ -795,11 +810,6 @@ export function ExperienceOverlay({
         inert={!closingInteractive}
         aria-labelledby="experience-closing-title"
       >
-        <div className={styles.closingWordmark} aria-hidden="true">
-          <svg viewBox="-1.1 -1.1 2.2 2.2" fill="currentColor">
-            <path transform="scale(1 -1)" d="M-.95 .9H-.43L0 .27 .43 .9H.95L.27-.08V-.9H-.27V-.08Z" />
-          </svg>
-        </div>
         <ExperienceClosingContent copy={copy} headingId="experience-closing-title" />
       </section>
       <DevelopmentPreviewDialog product={previewProduct} ui={copy.ui} onClose={closePreview} />
