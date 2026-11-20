@@ -105,7 +105,7 @@ const GROUND_GLSL = /* glsl */ `
       + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
     float cornerFall = smoothstep(0.78, 0.22, length(uv - 0.5));
-    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uHeroMix);
+    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
 `;
 
@@ -146,8 +146,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   ${GROUND_GLSL}
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
-    float major = gridLine(vUv, vec2(36.5, 25.0));
-    vec2 tile = vUv * vec2(36.5, 25.0);
+    float major = gridLine(vUv, vec2(48.2, 33.0));
+    vec2 tile = vUv * vec2(48.2, 33.0);
     vec2 cell = floor(tile);
     vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
@@ -207,7 +207,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     color = mix(color, vec3(0.12), fine * 0.10);
     color *= 1.0 - major * 0.65;
     // W7 Z12: the plus lattice is its own coarser grid (about 92 x 182 px).
-    vec2 crossPoint = abs(fract(vUv * vec2(23.0, 4.5)) - 0.5);
+    vec2 crossPoint = abs(fract(vUv * vec2(41.8, 9.4)) - 0.5);
     float cross = max(step(crossPoint.x, 0.005) * step(crossPoint.y, 0.035), step(crossPoint.y, 0.005) * step(crossPoint.x, 0.035));
     color += vec3(cross * 0.10);
     // Divide interpolated clip coordinates in the fragment, so the reading
