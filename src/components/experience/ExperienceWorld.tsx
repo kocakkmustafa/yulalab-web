@@ -18,6 +18,7 @@ import type {
   TimelineFrame,
 } from "./types";
 import { ValueDioramas } from "./ValueDioramas";
+import { ValuesScreen } from "./ValuesScreen";
 import { VisionServicePortal } from "./VisionServicePortal";
 import { useShowcaseTextures } from "./useShowcaseTextures";
 import { applyExperienceTheme, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
@@ -153,6 +154,7 @@ export function ExperienceWorld({
         products={products}
         tier={tier}
       />
+      {frame.progress >= 0.835 && frame.progress < 0.92 ? <ValuesScreen frame={frame} mode={mode} /> : null}
       {frame.progress < VALUES_ROOM_START ? (
         <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
       ) : null}
