@@ -104,7 +104,7 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
       + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
-    float cornerFall = smoothstep(0.78, 0.22, length(uv - 0.5));
+    float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
 `;
@@ -146,8 +146,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   ${GROUND_GLSL}
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
-    float major = gridLine(vUv, vec2(48.2, 33.0));
-    vec2 tile = vUv * vec2(48.2, 33.0);
+    float major = gridLine(vUv, vec2(23.0, 33.0));
+    vec2 tile = vUv * vec2(23.0, 33.0);
     vec2 cell = floor(tile);
     vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
@@ -207,7 +207,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     color = mix(color, vec3(0.12), fine * 0.10);
     color *= 1.0 - major * 0.65;
     // W7 Z12: the plus lattice is its own coarser grid (about 92 x 182 px).
-    vec2 crossPoint = abs(fract(vUv * vec2(41.8, 9.4)) - 0.5);
+    vec2 crossPoint = abs(fract(vUv * vec2(67.0, 19.7)) - 0.5);
     float cross = max(step(crossPoint.x, 0.005) * step(crossPoint.y, 0.035), step(crossPoint.y, 0.005) * step(crossPoint.x, 0.035));
     color += vec3(cross * 0.10);
     // Divide interpolated clip coordinates in the fragment, so the reading
@@ -259,8 +259,8 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     vec3 color = groundColor(vUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL) + vec3(paper * 0.004);
     color = mix(color, vec3(0.32), grid * 0.078 + major * 0.025 + cross * 0.22);
     // W7 Z01-b: the leading edge of the wipe is white (L >= 200) from the start.
-    float lead = smoothstep(edge - 0.035, edge - 0.004, vUv.y);
-    color = mix(color, vec3(0.68), lead * 0.9);
+    float lead = smoothstep(edge - 0.09, edge - 0.004, vUv.y);
+    color = mix(color, vec3(0.72), lead);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
