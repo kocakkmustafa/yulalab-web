@@ -47,7 +47,8 @@ const BG_FREEZE: number | null = (() => {
   const raw = new URLSearchParams(window.location.search).get("bgFreeze");
   if (raw === null) return null;
   const value = Number(raw);
-  return Number.isFinite(value) && value > 1 ? value : 3;
+  // 3.5, not 3: at a whole second the 0.12 s black-out window is open and would dim the frozen frame for good.
+  return Number.isFinite(value) && value > 1 ? value : 3.5;
 })();
 const KV_FADE = [0, 0.3, 3][Math.floor(Math.random() * 3)];
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
@@ -166,14 +167,15 @@ const GROUND_GLSL = /* glsl */ `
     float groundPat = groundPattern(patternSegment(uMosaicTime).x);
     // W7 Z06 t4: the stripe and the p3 patterns spread wide over the screen (reference: bright edges).
     // W7 Z06 t5: all three patterns fall off radially from behind the logo (centre x1, corners about x0.05).
-    tiles *= mix(1.0, 0.05, smoothstep(0.0, 0.55, length((uv - vec2(0.45, 0.45)) * vec2(uMosaicAspect, 1.0))));
+    // W7 Z06 t6: the p3 gradient keeps x0.35 at the screen edges (its orange sits on one side); the corners still fall through cornerFall.
+    tiles *= mix(1.0, groundPat > 1.5 ? 0.35 : 0.05, smoothstep(0.0, 0.55, length((uv - vec2(0.45, 0.45)) * vec2(uMosaicAspect, 1.0))));
     // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
     float steadyWeight = groundPat < 0.5 ? 0.0 : (groundPat < 1.5 ? 0.35 : 0.4);
     vec3 steadyUsed = groundPat > 0.5 && groundPat < 1.5 ? mix(steady, vec3(dot(steady, vec3(0.3, 0.5, 0.2))), 0.9) : steady;
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles
       + litTone * (${MOSAIC.lit.toFixed(3)} * (groundPat > 1.5 ? 1.0 : 0.65)) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
-    float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
+    float cornerFall = smoothstep(0.56, 0.20, length(uv - 0.5)); // W7 A1T8 Z07: 0.66 to 0.56, no blue-green remnant in the corner
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
@@ -325,7 +327,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
     vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
     // W7 C tur 5 V3: the room surfaces read the mouse flow like the hero ground does.
-    base += vec3(0.8, 0.85, 1.0) * (1.0 - exp(-length(texture2D(uFluid, screenUv).xy * uFluidMix) * 0.10)); // W7 C6: x0.10 (was 1.08) with a soft limit, no saturated white strip
+    base += vec3(0.8, 0.85, 1.0) * (1.0 - exp(-length(texture2D(uFluid, screenUv).xy * uFluidMix) * 0.04)); // W7 C7: x0.04 (C6 0.10, was 1.08) with a soft limit, no saturated white strip
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
@@ -363,7 +365,7 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     // W7 Z01-b: the leading edge of the wipe is white (L >= 200) from the start.
     float lead = smoothstep(edge - 0.09, edge - 0.004, vUv.y);
     // W7 Z01-b (tur 5): the fill is the light-section colour from the first row, not grey until full coverage.
-    color = mix(color, vec3(0.72), lead);
+    color = mix(color, vec3(0.66), lead);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
