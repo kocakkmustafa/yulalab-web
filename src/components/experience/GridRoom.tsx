@@ -252,7 +252,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
     vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
     // W7 C tur 5 V3: the room surfaces read the mouse flow like the hero ground does.
-    base += vec3(0.8, 0.85, 1.0) * length(texture2D(uFluid, screenUv).xy * uFluidMix) * 2.4;
+    base += vec3(0.8, 0.85, 1.0) * length(texture2D(uFluid, screenUv).xy * uFluidMix) * 1.08;
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
@@ -543,7 +543,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
       .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform sampler2D uTrace; uniform float uFluidMix; uniform vec2 uFlowRes;")
       .replace(
         "#include <map_fragment>",
-        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 flowShift = (texture2D(uFluid, flowUv).xy * 0.045 + texture2D(uTrace, flowUv).xy * 0.012) * uFluidMix;\n    vec4 sampledDiffuseColor = texture2D(map, vMapUv - flowShift);\n    diffuseColor *= sampledDiffuseColor;",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // Fine, grainy bend: cells of 3 px break the shift up, the largest shift stays small, and R and B part by a few px.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 3.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    if (shiftLen > 0.03) flowShift *= 0.03 / shiftLen;\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float split = min(shiftLen * 8.0, 1.0) * 0.003;\n    vec2 wUv = vMapUv - flowShift;\n    float aR = texture2D(map, wUv - flowDir * split).a;\n    float aG = texture2D(map, wUv).a;\n    float aB = texture2D(map, wUv + flowDir * split).a;\n    float aMax = max(aR, max(aG, aB));\n    vec4 sampledDiffuseColor = vec4(vec3(aR, aG, aB) / max(aMax, 1e-3), aMax);\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
 
