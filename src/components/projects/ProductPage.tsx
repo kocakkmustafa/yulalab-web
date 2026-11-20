@@ -161,12 +161,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             the value on mobile), (2) real use, (3) capabilities, then
             (4)–(7) as disclosures on mobile. Nothing here is new content:
             existing sections are re-ordered; gaps are written out. */}
-        <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-14" data-testid="product-detail">
+        <div className="flex flex-col" data-testid="product-detail">
           {/* (1) value proposition — founder direction 2026-11-02: a short
               promotional read of the finished product, every sentence backed
               by what the product's main branch ships today */}
           {p.pitchTitle ? (
-            <section className="pb-24 lg:col-start-1" aria-labelledby="product-pitch-heading" data-testid="product-pitch" data-item="1">
+            <section className="pb-24" aria-labelledby="product-pitch-heading" data-testid="product-pitch" data-item="1">
               <Reveal>
                 <h2
                   id="product-pitch-heading"
@@ -197,7 +197,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             aria-labelledby="product-access-heading"
             data-testid="product-access"
             data-item="8"
-            className="pb-12 lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:self-start lg:pb-24"
+            className="pb-12 lg:max-w-[560px] lg:pb-24"
           >
             <Reveal>
               <div className="glass p-7 lg:p-8">
@@ -342,7 +342,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
           {/* (4) real screen / demo — the demo is only ever an example
               simulation; with neither, the empty state says so */}
-          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:col-span-2 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="ekran" alwaysOpen title={t("screenHeading")} className="pb-12 lg:pb-24">
             <div data-item="4">
               {productShots.length ? (
                 <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0 mb-12">
@@ -396,7 +396,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </ResponsiveDetails>
 
           {/* (5) privacy and trust: the product's own policy, then the FAQ */}
-          <ResponsiveDetails id="gizlilik" title={t("trustHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="gizlilik" title={t("trustHeading")} className="pb-12 lg:pb-24">
             <div data-item="5">
               {record?.privacyUrl ? (
                 <p className="mb-10 text-[15px]">
@@ -411,7 +411,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
           {/* (6) release status: the registry-backed pill and the deep link
               to that product's record on /transparency (#<slug>) */}
-          <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:pb-24">
             <div data-item="6" className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-12 lg:pb-0">
               <StatusPill status={project.status} slug={project.slug} />
               <Link href={`/transparency#${project.slug}`} prefetch={false} className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">

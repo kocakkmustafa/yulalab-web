@@ -5,15 +5,16 @@
  * with every `src/app/[locale]/**` page so no route silently becomes
  * unreachable. Rationale: docs/yula-execution/header-footer-routes.md.
  */
-export type HeaderKey = "products" | "lab" | "approach" | "collaboration";
-export type HeaderHref = "/projects" | "/notes" | "/manifesto" | "/consulting";
+export type HeaderKey = "consulting" | "projects" | "manifesto" | "transparency";
+export type HeaderHref = "/projects" | "/manifesto" | "/consulting" | "/transparency";
 
 /** Desktop order follows the ticket; `primary` entries are the three prominent mobile entries. */
 export const HEADER_NAV: ReadonlyArray<{ key: HeaderKey; href: HeaderHref; primary: boolean }> = [
-  { key: "products", href: "/projects", primary: true },
-  { key: "lab", href: "/notes", primary: true },
-  { key: "approach", href: "/manifesto", primary: false },
-  { key: "collaboration", href: "/consulting", primary: true },
+  // W3-2: the same four entries as the home page menu (ExperienceOverlay), so every page carries one menu.
+  { key: "consulting", href: "/consulting", primary: true },
+  { key: "projects", href: "/projects", primary: true },
+  { key: "manifesto", href: "/manifesto", primary: true },
+  { key: "transparency", href: "/transparency", primary: false },
 ];
 
 /** Secondary mobile-only entries (smaller type, below the three primary ones). */

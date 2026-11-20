@@ -82,11 +82,11 @@ describe("header and footer route table", () => {
     for (const href of linked) expect(routes, href).toContain(href === "/" ? "/" : href);
   });
 
-  it("exposes the three primary entries and the ticket mapping", () => {
+  it("exposes the home menu entries (W3-2: one menu on every page)", () => {
     expect(HEADER_NAV.map((n) => [n.key, n.href])).toEqual([
-      ["products", "/projects"], ["lab", "/notes"], ["approach", "/manifesto"], ["collaboration", "/consulting"],
+      ["consulting", "/consulting"], ["projects", "/projects"], ["manifesto", "/manifesto"], ["transparency", "/transparency"],
     ]);
-    expect(HEADER_NAV.filter((n) => n.primary).map((n) => n.key)).toEqual(["products", "lab", "collaboration"]);
+    expect(HEADER_NAV.filter((n) => n.primary).map((n) => n.key)).toEqual(["consulting", "projects", "manifesto"]);
   });
 
   it("links the Lab from the footer with the translated header label", () => {
