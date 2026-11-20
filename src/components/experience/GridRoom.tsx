@@ -89,7 +89,7 @@ const GROUND_GLSL = /* glsl */ `
     float shiftIdx = floor(t / shiftEvery);
     vec2 uvJump = (vec2(mosaicHash(vec2(shiftIdx, 8.0)), mosaicHash(vec2(shiftIdx, 9.0))) - 0.5) * 0.02 * step(fract(t / shiftEvery), 0.2);
     vec2 id = cell + level * 131.0 + floor(uvJump * scale * 8.0);
-    float phase = t * 0.67 + mosaicHash(id + 3.7) * 6.0;
+    float phase = t * 0.95 + mosaicHash(id + 3.7) * 6.0;
     float k = floor(phase);
     float f = smoothstep(0.7, 1.0, fract(phase));
     float pick = fract(mix(mosaicHash(id + k), mosaicHash(id + k + 1.0), f) + shift);
@@ -101,7 +101,7 @@ const GROUND_GLSL = /* glsl */ `
     vec2 seg = patternSegment(t);
     float pat = groundPattern(seg.x);
     float tileLum = mosaicHash(id + k * 1.31 + 9.1);
-    vec3 blue = vec3(0.3, 0.4, 0.6) * 2.0 * (0.5 + 0.5 * tileLum);
+    vec3 blue = vec3(0.3, 0.4, 0.6) * 2.0 * (0.8 + 0.2 * tileLum);
     // Z06 tur 2: diagonal stripes across the screen (reference stripe geometry), not per tile squares.
     vec3 blackWhite = vec3(step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37)));
     // p3 picks purple, ice blue or orange per tile with equal odds.
@@ -120,7 +120,9 @@ const GROUND_GLSL = /* glsl */ `
     float seam = smoothstep(0.0, 0.045, edge);
     // About a third of the tiles are lit in their own colour wherever they are on the screen; the rest
     // stay dark, so the dark-pixel level of the ground (the measured value) does not move.
-    litTone = tone * smoothstep(0.7, 0.86, lum) * (0.55 + 0.45 * lum) * seam;
+    float litA = pat > 1.5 ? 0.5 : 0.7;
+    float litB = pat > 1.5 ? 0.7 : 0.86;
+    litTone = tone * smoothstep(litA, litB, lum) * (0.55 + 0.45 * lum) * seam;
     return vec4(tone * (0.12 + 0.88 * lum * lum) * seam, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
   vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
@@ -144,13 +146,14 @@ const GROUND_GLSL = /* glsl */ `
     float stir = length(flow) * uFluidMix * (1.0 - uMosaicGrey);
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec3 tiles = mosaic.rgb * 0.5 * (1.0 + length(flow) * 0.8 * uFluidMix);
-    tiles *= smoothstep(0.55, 0.05, length(uv - 0.5));
-    // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
     float groundPat = groundPattern(patternSegment(uMosaicTime).x);
-    float steadyWeight = groundPat < 0.5 ? 0.5 : (groundPat < 1.5 ? 0.17 : 1.0);
+    // W7 Z06 t4: the stripe and the p3 patterns spread wide over the screen (reference: bright edges).
+    tiles *= groundPat > 0.5 ? smoothstep(0.95, 0.30, length(uv - 0.5)) : smoothstep(0.55, 0.05, length(uv - 0.5));
+    // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
+    float steadyWeight = groundPat < 0.5 ? 0.3 : (groundPat < 1.5 ? 0.35 : 1.0);
     vec3 steadyUsed = groundPat > 0.5 && groundPat < 1.5 ? mix(steady, vec3(dot(steady, vec3(0.3, 0.5, 0.2))), 0.9) : steady;
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 2.6
-      + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + vec3(0.0);
+      + litTone * (${MOSAIC.lit.toFixed(3)} * (groundPat > 1.5 ? 1.0 : 0.65)) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
