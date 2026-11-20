@@ -203,7 +203,10 @@ const GROUND_GLSL = /* glsl */ `
     vec3 prev = worksTile(uWorksTexB, tuv, 0.1);
     // W7 Z09 t2: the card stays the star: a dim, very blurred patch with a strong screen vignette (corners black).
     float vig = smoothstep(0.55, 0.05, length(uv - 0.5));
-    return mix(prev, next, uWorksAnim) * 0.30 * vig * vig; // W7 Z09 t3: squared vignette, black floor and corners
+    vec3 c = mix(prev, next, uWorksAnim) * 0.32 * vig * vig; // W7 Z09 t3: squared vignette; gain 0.32 (t4: 0.30 plus the floor cut below)
+    c = max(c - 0.03, 0.0); // W7 Z09 t4: a fixed black floor, independent of the vignette
+    float outLuma = dot(c, vec3(0.3, 0.5, 0.2));
+    return mix(vec3(outLuma), c, 0.55); // W7 Z09 t4: saturation about 0.32, applied to the final light
   }
   vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
     vec3 base = groundColorBase(uv, edge, mid, peak, centre, spread);
