@@ -96,7 +96,7 @@ const FRAGMENT = /* glsl */ `
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
       float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.03; // W7 BT3-3: tight jitter (was 0.3, about 20 px blur) so grid lines survive inside the letter
+      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.02; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
       vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
       vec3 sampleColor;
       sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[0].toFixed(1)}, 0.0, 1.0)).r;
