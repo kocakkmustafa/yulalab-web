@@ -75,7 +75,9 @@ function journeyScrollRange(): number {
 function readDocumentProgress(): number {
   const scrollRange = journeyScrollRange();
   if (!Number.isFinite(scrollRange) || scrollRange <= 0) return 0;
-  return timelineProgressForScroll(window.scrollY / scrollRange);
+  // W7 Z04: phones follow the mobile scroll budget (same breakpoint as the scene host).
+  const mode = typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop";
+  return timelineProgressForScroll(window.scrollY / scrollRange, mode);
 }
 
 type DampedValue = { position: number; velocity: number };
