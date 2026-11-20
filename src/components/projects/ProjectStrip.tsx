@@ -20,16 +20,17 @@ export function ProjectStrip({
   label: string;
 }) {
   return (
-    <nav aria-label={label} data-testid="project-strip" className="-mx-6 lg:-mx-10">
+    <nav aria-label={label} data-testid="project-strip">
       <ul
         role="list"
-        className="m-0 flex list-none snap-x snap-mandatory gap-5 overflow-x-auto px-6 pb-4 lg:gap-7 lg:px-10"
-        style={{ scrollbarWidth: "none" }}
+        className="m-0 flex list-none gap-5 overflow-x-auto pb-4 lg:gap-7"
+        // The list bleeds to both viewport edges while its first card stays on the content edge: negative margin and equal padding.
+        style={{ scrollbarWidth: "none", marginInline: "calc(50% - 50vw)", paddingInline: "calc(50vw - 50%)" }}
       >
         {projects.map((o) => {
           const current = o.slug === currentSlug;
           return (
-            <li key={o.slug} className="shrink-0 snap-start">
+            <li key={o.slug} className="shrink-0">
               <Link
                 href={`/projects/${o.slug}`}
                 aria-current={current ? "page" : undefined}

@@ -22,7 +22,7 @@ export function DesignPreviewSection({ slug, locale }: { slug: string; locale: L
           "These images are English design previews of the app interface. They are not a capture of a published version, and not evidence of sales readiness or results.",
         )}
       </p>
-      <ul role="list" className={`m-0 grid list-none gap-4 p-0 ${portrait ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
+      <ul role="list" className={`m-0 grid list-none gap-4 p-0 ${portrait ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
         {previews.map((preview) => {
           const size = IMAGE_DIMENSIONS[preview.path];
           return (

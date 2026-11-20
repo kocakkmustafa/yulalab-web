@@ -14,7 +14,6 @@ import { lifeosDemoEnabled } from "@/server/lifeos-demo-surface";
 import { ProjectStrip } from "@/components/projects/ProjectStrip";
 import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
-import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -94,7 +93,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
   return (
     <div
-      className="page-enter relative min-h-screen"
+      className="page-enter relative min-h-screen overflow-x-clip"
       {...(themed ? { "data-brand-var": "true" } : {})}
       style={{ ...(themed ? brandInk(project.brand) : {}), ["--accent" as string]: accent }}
     >
@@ -125,8 +124,15 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
         </div>
 
         {/* hero */}
-        <header className="pt-16 pb-16">
-          {project.visuals.icon ? <div className="mb-8"><ProjectMonogram project={project} size={96} radius={20} /></div> : null}
+        <header className="relative pt-16 pb-16">
+          {/* LK1: faint oversized brand word behind the article head, after the reference's pale title text */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -top-4 start-0 select-none whitespace-nowrap font-grotesk text-[clamp(96px,17vw,260px)] font-bold leading-none tracking-tightest text-white/[0.05]"
+            data-testid="product-brand-word"
+          >
+            {project.name}
+          </span>
           <Reveal className="flex items-center gap-3 mb-8">
             <span
               aria-hidden
@@ -139,7 +145,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <StatusPill status={project.status} slug={project.slug} />
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="font-display font-light text-[clamp(40px,6.6vw,100px)] leading-[0.98] tracking-tightest mb-6">
+            <h1 className="relative font-grotesk font-bold text-[clamp(44px,6.6vw,100px)] leading-[0.98] tracking-tightest mb-6">
               {project.name}
             </h1>
           </Reveal>
@@ -191,7 +197,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             aria-labelledby="product-access-heading"
             data-testid="product-access"
             data-item="8"
-            className="pb-12 lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:self-start lg:pb-24"
+            className="pb-12 lg:col-start-2 lg:row-start-1 lg:row-span-3 lg:self-start lg:pb-24"
           >
             <Reveal>
               <div className="glass p-7 lg:p-8">
@@ -336,7 +342,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
           {/* (4) real screen / demo — the demo is only ever an example
               simulation; with neither, the empty state says so */}
-          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:col-span-2 lg:col-start-1 lg:pb-24">
             <div data-item="4">
               {productShots.length ? (
                 <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0 mb-12">
