@@ -11,6 +11,7 @@ import { OstinatoDemoArea } from "@/components/projects/OstinatoDemoArea";
 import { ostinatoDemoEnabled } from "@/server/ostinato-demo-surface";
 import { LifeosDemoArea } from "@/components/projects/LifeosDemoArea";
 import { lifeosDemoEnabled } from "@/server/lifeos-demo-surface";
+import { ProjectStrip } from "@/components/projects/ProjectStrip";
 import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
@@ -116,6 +117,11 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           <span className="font-mono text-[10.5px] tracking-[0.16em] uppercase">
             {project.name}
           </span>
+        </div>
+
+        {/* LK0 — horizontal project strip, after the reference "Works" rail */}
+        <div className="pt-12">
+          <ProjectStrip projects={projects} currentSlug={project.slug} label={t("back")} />
         </div>
 
         {/* hero */}
@@ -345,11 +351,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                     );
                   })}
                 </ul>
-              ) : (
-                <p data-testid="screen-empty" className="mb-12 max-w-[60ch] text-[15px] leading-[1.7] text-ink-300">
-                  {t("screenEmpty")}
-                </p>
-              )}
+              ) : null /* L4: no "no screenshot yet" line; design previews follow */}
               <DesignPreviewSection slug={project.slug} locale={locale} />
               {project.slug === "braavolabs" ? (
                 <div id="dene" data-testid="demo-area">
