@@ -197,5 +197,5 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
   material.uniforms.uOpacity.value = opacity;
   material.depthWrite = opacity > 0.55;
 
-  return <mesh ref={mesh} geometry={geometry} material={material} visible={visible} />;
+  return <mesh ref={mesh} geometry={geometry} material={material} visible={visible} frustumCulled={false} />;
 }

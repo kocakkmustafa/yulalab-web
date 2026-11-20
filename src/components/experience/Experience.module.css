@@ -3281,3 +3281,15 @@
     color: #fff;
   }
 }
+
+/* W7 F12 (fix): the dimming rule for nav and trust links must not override the pill hover. */
+@media (hover: hover) {
+  .trustLinks a.productLink:hover,
+  .experienceNavigation a.productLink:hover,
+  .productLink:hover {
+    opacity: 1;
+  }
+  .productLink:hover span {
+    transform: none;
+  }
+}

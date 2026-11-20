@@ -285,17 +285,36 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const slotMix = heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
     const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
-    const [cx, cy, cz] = frame.camera.position;
-    // The slot is a point on the wordmark plane; the glass Y sits on the camera ray through it, at its own depth.
-    const t = (cz - frame.glyph.position[2]) / (cz - HERO_PLANE_Z);
+    // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
+    // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
     const planeX = heroSlot.x * planeWidth;
     const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
-    return {
-      x: cx + (planeX - cx) * t,
-      y: cy + (planeY - cy) * t,
-      scale: (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * t) / 1.8,
+    const gz = frame.glyph.position[2];
+    const basis = (pos: readonly number[], target: readonly number[]) => {
+      const f = new Vector3(target[0] - pos[0], target[1] - pos[1], target[2] - pos[2]).normalize();
+      const r = new Vector3().crossVectors(f, new Vector3(0, 1, 0)).normalize();
+      const u = new Vector3().crossVectors(r, f).normalize();
+      return { f, r, u };
     };
-  }, [frame.camera.position, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+    const heroPos = [0, 0.25, 11.5] as const;
+    const hb = basis(heroPos, [0, 0.1, 0]);
+    const d = new Vector3(planeX - heroPos[0], planeY - heroPos[1], HERO_PLANE_Z - heroPos[2]);
+    const dr = d.dot(hb.r);
+    const du = d.dot(hb.u);
+    const df = d.dot(hb.f);
+    const heroS = (gz - heroPos[2]) / d.z;
+    const heroDepth = heroS * df;
+    const heroScale = (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
+    const cb = basis(frame.camera.position, frame.camera.target);
+    const dir = new Vector3().addScaledVector(cb.r, dr).addScaledVector(cb.u, du).addScaledVector(cb.f, df);
+    const cpz = frame.camera.position[2];
+    const sCur = Math.abs(dir.z) > 1e-4 ? (gz - cpz) / dir.z : heroS;
+    return {
+      x: frame.camera.position[0] + dir.x * sCur,
+      y: frame.camera.position[1] + dir.y * sCur,
+      scale: heroScale * ((sCur * df) / heroDepth),
+    };
+  }, [frame.camera.position, frame.camera.target, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
   const position = useMemo(
     () => [
       lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
