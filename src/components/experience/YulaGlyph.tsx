@@ -258,8 +258,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const closingHandoff = 1 - smoothstep(segmentProgress(frame.world.closingDraw, 0, 0.58));
   // W1D-F H1-e: once the first portfolio card arrives the glass Y leaves the stage (it would sit over the
   // product icon); it returns shortly before the proof stage, where the glyph is part of the story again.
-  const portfolioHide = smoothstep(segmentProgress(frame.progress, 0.062, 0.088))
-    * (1 - smoothstep(segmentProgress(frame.progress, 0.47, 0.505)));
+  // W7 CY6 (founder decision "a"): the Y stays visible behind the portfolio cards (cards draw in front).
+  const portfolioHide = 0;
   const closingVisibility = closingHandoff
     * (1 - frame.world.serviceIn) * readingVisibility * (1 - portfolioHide);
   const bodyColor = useMemo(
@@ -309,8 +309,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
-  const heroGrow = 1 + 0.4 * smoothstep(segmentProgress(frame.progress, 0.034, 0.06))
-    * (1 - smoothstep(segmentProgress(frame.progress, 0.06, 0.085)));
+  // W7 CY5: no growth in the middle of the screen (founder decision "a").
+  const heroGrow = 1;
   const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
   const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(

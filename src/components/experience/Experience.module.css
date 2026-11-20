@@ -3250,3 +3250,34 @@
 @media (max-width: 760px) {
   .stellaVeil { background: linear-gradient(0deg, rgba(0, 0, 0, 0.25) 0%, rgba(0, 0, 0, 0) 40%), rgba(0, 0, 0, 0.42); }
 }
+
+/* W7 F12 (founder decision "a", 21 Nov): the CTA is a pill; on hover the fill turns solid in 0.3 s. */
+.productLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 10px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 999px;
+  background-color: transparent;
+  transition: background-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), border-color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), color 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.productLink::after {
+  display: none;
+}
+:global(:root[data-theme="light"]) .productLink {
+  border-color: rgba(0, 0, 0, 0.5);
+}
+@media (hover: hover) {
+  .productLink:hover {
+    border-color: #fff;
+    background-color: #fff;
+    color: #000;
+    opacity: 1;
+  }
+  :global(:root[data-theme="light"]) .productLink:hover {
+    border-color: #000;
+    background-color: #000;
+    color: #fff;
+  }
+}
