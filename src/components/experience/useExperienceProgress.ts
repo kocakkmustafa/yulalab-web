@@ -85,7 +85,7 @@ function criticallyDampedStep(
   target: number,
   deltaSeconds: number,
 ): DampedValue {
-  const angularFrequency = 12;
+  const angularFrequency = 24;
   const displacement = current.position - target;
   const decay = Math.exp(-angularFrequency * deltaSeconds);
   const carry = (current.velocity + angularFrequency * displacement) * deltaSeconds;

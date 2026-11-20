@@ -98,6 +98,7 @@ const GROUND_GLSL = /* glsl */ `
     float stir = length(flow) * uFluidMix * (1.0 - uMosaicGrey);
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec3 tiles = mosaic.rgb * 0.5;
+    tiles *= smoothstep(0.55, 0.05, length(uv - 0.5));
     vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
       + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + stirTint * stir * ${MOSAIC.flow.toFixed(3)} * (0.35 + 0.65 * glow);
     return mix(steady, tiled, uMosaic);
@@ -126,7 +127,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   uniform vec3 uGEdge; uniform vec3 uGMid; uniform vec3 uGPeak; uniform vec4 uGCenter; uniform vec4 uGSpread; uniform vec3 uGEdgeL; uniform vec3 uGMidL; uniform vec3 uGPeakL; uniform vec4 uGCenterL; uniform vec4 uGSpreadL; uniform float uGroundMix; uniform float uGroundLight; uniform vec2 uAspect;
   uniform float uTime; uniform sampler2D uProjectionA; uniform sampler2D uProjectionB;
   uniform sampler2D uWorksTitle; uniform sampler2D uServiceTitle;
-  uniform float uProjectionMix; uniform float uProjectionBlend;
+  uniform float uProjectionMix; uniform float uProjectionBlend; uniform float uServiceTitleMix;
   varying vec2 vUv; varying float vViewDepth; varying float vFacing; varying vec4 vClipPosition;
   float gridLine(vec2 uv, vec2 density) {
     vec2 coordinate = uv * density;
@@ -141,8 +142,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   ${GROUND_GLSL}
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
-    float major = gridLine(vUv, vec2(16.0, 8.0));
-    vec2 tile = vUv * vec2(16.0, 8.0);
+    float major = gridLine(vUv, vec2(27.0, 14.0));
+    vec2 tile = vUv * vec2(27.0, 14.0);
     vec2 cell = floor(tile);
     vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
@@ -190,7 +191,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec2 titleUv = (wallUv - vec2(0.26, 0.40)) * vec2(2.4, 5.0);
     float works = titleMask(uWorksTitle, titleUv);
     float service = titleMask(uServiceTitle, titleUv);
-    float wallTitle = mix(works * uGalleryMix, service, uProjectionMix);
+    float wallTitle = mix(works * uGalleryMix, service, uServiceTitleMix);
     color += vec3(0.21) * wallTitle * joint * (0.55 + envelope * 0.45) * (1.0 - uProjectionMix * 0.65);
 
     // Borrow only broad color from the owned media. The foreground keeps the
@@ -203,7 +204,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     color *= 1.0 - major * 0.65;
     vec2 crossPoint = abs(fract(tile) - 0.5);
     float cross = max(step(crossPoint.x, 0.005) * step(crossPoint.y, 0.035), step(crossPoint.y, 0.005) * step(crossPoint.x, 0.035));
-    color += vec3(cross * 0.04);
+    color += vec3(cross * 0.10);
     // Divide interpolated clip coordinates in the fragment, so the reading
     // column matches in both full-size and scaled transmission render targets.
     vec2 screenUv = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
@@ -221,7 +222,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
-    vec3 lines = vec3(fine * 0.012 + major * 0.02 + cross * 0.06);
+    vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12);
     vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
     gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>
@@ -251,7 +252,7 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     float vignette = smoothstep(0.1, 1.25, length(roomPoint));
     float paper = fract(sin(dot(floor(pixel), vec2(12.9898, 78.233))) * 43758.5453) - 0.5;
     vec3 color = groundColor(vUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL) + vec3(paper * 0.004);
-    color = mix(color, vec3(0.32), grid * 0.065 + major * 0.025 + cross * 0.22);
+    color = mix(color, vec3(0.32), grid * 0.078 + major * 0.025 + cross * 0.22);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
@@ -441,7 +442,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
-          uProjectionMix: { value: 0 }, uProjectionBlend: { value: 0 },
+          uProjectionMix: { value: 0 }, uProjectionBlend: { value: 0 }, uServiceTitleMix: { value: 0 },
         },
         vertexShader: ROOM_VERTEX_SHADER,
         fragmentShader: ROOM_FRAGMENT_SHADER,
@@ -505,6 +506,9 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uProjectionB.value = mediaTextures?.[Math.min(mediaIndex + 1, (mediaTextures?.length ?? 1) - 1)] ?? null;
     // W6 K5 (Tasarim E3/E4): the Values room is flat ground light; no generic media projection and no wall title on it.
     gridMaterial.uniforms.uProjectionMix.value = 0;
+    // W7 Z13: the SERVICE wall title lives only through the dark-return window (0.788 to 0.816), never in the values room.
+    gridMaterial.uniforms.uServiceTitleMix.value =
+      smoothstep(segmentProgress(frame.progress, 0.788, 0.795)) * (1 - smoothstep(segmentProgress(frame.progress, 0.808, 0.816)));
     gridMaterial.uniforms.uProjectionBlend.value = smoothstep(mediaFloat - mediaIndex);
     bladeMaterial.uniforms.uRise.value = frame.world.bladeProgress;
     bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.788, 0.81));
