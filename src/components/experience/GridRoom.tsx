@@ -2,7 +2,7 @@
 
 import { heroSlot } from "./hero-slot";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import {
   BackSide,
   BufferAttribute,
@@ -31,6 +31,8 @@ export type GridRoomProps = {
   frame: TimelineFrame;
   tier: QualityTier;
   mediaTextures?: readonly Texture[];
+  /** W7 Z09: one small picture per works card (null while loading); the selected card's picture paints the works ground. */
+  worksTextures?: readonly (Texture | null)[];
   /** Wall titles in the visitor's language, already upper-cased. */
   wallTitles?: WallTitles;
 };
@@ -44,6 +46,7 @@ const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime; uniform float uKvFade;
   uniform sampler2D uFluid; uniform float uFluidMix;
+  uniform sampler2D uWorksTexA; uniform sampler2D uWorksTexB; uniform float uWorksMix; uniform float uWorksAnim;
   float mosaicHash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
@@ -126,7 +129,7 @@ const GROUND_GLSL = /* glsl */ `
     litTone = vec3(0.0);
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
-  vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
+  vec3 groundColorBase(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
     vec2 d = uv - centre.xy;
     float wide = exp(-(d.x * d.x / spread.x + d.y * d.y / spread.y));
     vec2 e = uv - centre.zw;
@@ -165,6 +168,29 @@ const GROUND_GLSL = /* glsl */ `
     cornerFall = mix(cornerFall, 1.0, step(0.5, groundPat)); // Z07 corners apply to the dark and blue patterns only
     tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
+  }
+
+  // W7 Z09 (founder decision "a"): in the works section the selected card's picture is tiled over the screen,
+  // blurred (0.03), colour saturation x2, with a tile vignette that opens from 1.9 to 0.1 while the card changes.
+  vec3 worksTile(sampler2D tex, vec2 tuv, float vig) {
+    float b = 0.03;
+    vec3 c = texture2D(tex, tuv).rgb * 0.36
+      + (texture2D(tex, clamp(tuv + vec2(b, 0.0), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(b, 0.0), 0.0, 1.0)).rgb
+      + texture2D(tex, clamp(tuv + vec2(0.0, b), 0.0, 1.0)).rgb + texture2D(tex, clamp(tuv - vec2(0.0, b), 0.0, 1.0)).rgb) * 0.16;
+    float luma = dot(c, vec3(0.3, 0.5, 0.2));
+    c = clamp(mix(vec3(luma), c, 2.0), 0.0, 1.0);
+    float v = length(tuv - 0.5) * 2.0;
+    return c * (1.0 - clamp(v * vig * 0.5, 0.0, 1.0));
+  }
+  vec3 worksField(vec2 uv) {
+    vec2 tuv = fract((uv - 0.5) * vec2(uMosaicAspect, 1.0) * 2.4 + 0.5);
+    vec3 next = worksTile(uWorksTexA, tuv, mix(1.9, 0.1, uWorksAnim));
+    vec3 prev = worksTile(uWorksTexB, tuv, 0.1);
+    return mix(prev, next, uWorksAnim) * 0.4;
+  }
+  vec3 groundColor(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
+    vec3 base = groundColorBase(uv, edge, mid, peak, centre, spread);
+    return uWorksMix > 0.001 ? mix(base, worksField(uv), uWorksMix) : base;
   }
 `;
 
@@ -479,7 +505,20 @@ function blendGround(
   }
 }
 
-export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL_TITLES }: GridRoomProps) {
+/** cubic-bezier(.01, .68, .19, 1) (the reference's works block curve), solved by bisection on x. */
+function worksEase(x: number): number {
+  const [x1, y1, x2, y2] = [0.01, 0.68, 0.19, 1];
+  const bez = (a: number, b: number, c: number, t: number) => 3 * a * (1 - t) * (1 - t) * t + 3 * b * (1 - t) * t * t + t * t * t * c;
+  let lo = 0;
+  let hi = 1;
+  for (let i = 0; i < 24; i += 1) {
+    const mid = (lo + hi) / 2;
+    if (bez(x1, x2, 1, mid) < x) lo = mid; else hi = mid;
+  }
+  return bez(y1, y2, 1, (lo + hi) / 2);
+}
+
+export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles = ENGLISH_WALL_TITLES }: GridRoomProps) {
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
@@ -509,6 +548,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           uGroundMix: { value: 0 }, uGroundLight: { value: 0 }, uAspect: { value: new Vector2(1, 1) },
           uMosaic: { value: 0 }, uMosaicGrey: { value: 0 }, uMosaicAspect: { value: 1 }, uMosaicTime: { value: 0 }, uKvFade: { value: 1 },
           uFluid: { value: null }, uFluidMix: { value: 0 },
+          uWorksTexA: { value: null }, uWorksTexB: { value: null }, uWorksMix: { value: 0 }, uWorksAnim: { value: 1 },
           uGalleryMix: { value: 0 }, uTime: { value: 0 },
           uProjectionA: { value: null }, uProjectionB: { value: null },
           uWorksTitle: { value: worksWordmark }, uServiceTitle: { value: serviceWordmark },
@@ -534,6 +574,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         uGroundMix: shared.uGroundMix, uGroundLight: shared.uGroundLight, uBackgroundColor: shared.uBackgroundColor,
         uMosaic: shared.uMosaic, uMosaicGrey: shared.uMosaicGrey, uMosaicAspect: shared.uMosaicAspect, uMosaicTime: shared.uMosaicTime, uKvFade: shared.uKvFade,
         uFluid: shared.uFluid, uFluidMix: shared.uFluidMix,
+        uWorksTexA: shared.uWorksTexA, uWorksTexB: shared.uWorksTexB, uWorksMix: shared.uWorksMix, uWorksAnim: shared.uWorksAnim,
       },
       vertexShader: "varying vec2 vUv; void main() { vUv = uv; gl_Position = vec4(position.xy, 1.0, 1.0); }",
       fragmentShader: BACKDROP_FRAGMENT_SHADER,
@@ -578,6 +619,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
         "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // Fine, grainy bend: cells of 3 px break the shift up, the largest shift stays small, and R and B part by a few px.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 3.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    if (shiftLen > 0.03) flowShift *= 0.03 / shiftLen;\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float split = min(shiftLen * 8.0, 1.0) * 0.003;\n    vec2 wUv = vMapUv - flowShift;\n    float aR = texture2D(map, wUv - flowDir * split).a;\n    float aG = texture2D(map, wUv).a;\n    float aB = texture2D(map, wUv + flowDir * split).a;\n    float aMax = max(aR, max(aG, aB));\n    vec4 sampledDiffuseColor = vec4(vec3(aR, aG, aB) / max(aMax, 1e-3), aMax);\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
+
+  const worksState = useRef({ idx: -1, prev: -1, t0: -10 });
 
   useFrame((state) => {
     wordFlow.uFluid.value = fluidShared.texture;
@@ -624,6 +667,21 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uWhiteMix.value = frame.world.themeMix;
     gridMaterial.uniforms.uBackgroundColor.value.copy(roomColors.dark).lerp(roomColors.light, frame.world.themeMix);
     gridMaterial.uniforms.uGalleryMix.value = frame.world.worksBackdropMix;
+    // W7 Z09: the selected works card (productFloat rounds to its index) picks the ground picture; a change blends the
+    // old picture into the new one over 2 s on the reference curve cubic-bezier(.01, .68, .19, 1).
+    const cards = worksTextures ?? [];
+    const selected = cards.length ? Math.min(cards.length - 1, Math.max(0, Math.round(frame.productFloat))) : -1;
+    const ws = worksState.current;
+    const now = state.clock.elapsedTime;
+    if (selected >= 0 && ws.idx < 0) { ws.idx = selected; ws.prev = selected; ws.t0 = -10; }
+    else if (selected >= 0 && selected !== ws.idx) { ws.prev = ws.idx; ws.idx = selected; ws.t0 = now; }
+    const worksProgress = Math.min(1, Math.max(0, (now - ws.t0) / 2));
+    const texNext = ws.idx >= 0 ? cards[ws.idx] ?? null : null;
+    u.uWorksTexA.value = texNext;
+    u.uWorksTexB.value = (ws.prev >= 0 ? cards[ws.prev] ?? null : null) ?? texNext;
+    u.uWorksAnim.value = worksEase(worksProgress);
+    u.uWorksMix.value = texNext ? frame.world.worksBackdropMix : 0;
+    if (worksProgress < 1 && u.uWorksMix.value > 0.001) state.invalidate();
     // Let the physical white blade soften the room before the global theme settles.
     gridMaterial.uniforms.uOpacity.value = frame.world.roomOpacity
       * (1 - frame.world.worksBackdropMix * 0.2) * (1 - frame.world.whiteMix * 0.38)
