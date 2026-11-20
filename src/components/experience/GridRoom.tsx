@@ -41,6 +41,14 @@ export type GridRoomProps = {
 const MOSAIC = { flat: 0.3, swing: 0.45, base: 0.012, gain: 0.2, lit: 0.08, flow: 0.15 } as const;
 /** Share of the tile mosaic kept (in grey) over the portfolio ground. */
 const PORTFOLIO_MOSAIC = 0.25;
+/** W7 C6 measuring aid: `?bgFreeze=1` (or a time in seconds) stops the opening ground's pattern cycle. */
+const BG_FREEZE: number | null = (() => {
+  if (typeof window === "undefined") return null;
+  const raw = new URLSearchParams(window.location.search).get("bgFreeze");
+  if (raw === null) return null;
+  const value = Number(raw);
+  return Number.isFinite(value) && value > 1 ? value : 3;
+})();
 const KV_FADE = [0, 0.3, 3][Math.floor(Math.random() * 3)];
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
@@ -77,7 +85,7 @@ const GROUND_GLSL = /* glsl */ `
   // p2: high contrast diagonal stripes (white about #d9d9d9, black below #101010); p3: a wide gradient
   // purple, ice blue, orange (#350FFD, #B2EDFF, #FD5F0C) that drifts slowly.
   vec3 patternLight(float pat, vec2 suv, vec2 p, float t) {
-    if (pat < 0.5) return vec3(0.3, 0.4, 0.6) * 2.0;
+    if (pat < 0.5) return pow(vec3(0.3, 0.4, 0.6) * 2.0, vec3(2.2)); // W7 Z06 t5: the reference value is a display colour, no grey mix
     if (pat < 1.5) {
       float band = step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37));
       return vec3(mix(0.004, 0.7, band));
@@ -91,6 +99,11 @@ const GROUND_GLSL = /* glsl */ `
   }
   // Quad-tree tile mosaic of our own: every cell may split into four (up to four levels), big and small
   // square tiles side by side, each tile slowly changing between purple, ice blue and brick (linear RGB).
+  // W7 Z06 t5: the black-out dims all the light of the ground, not only the tile layer (every 1 s, 0.12 s long).
+  float groundBlackOut(float t) {
+    float segPat = groundPattern(patternSegment(t).x);
+    return segPat > 0.5 ? (0.6 + 0.4 * mosaicHash(vec2(floor(t), 11.0))) * step(fract(t), 0.12) : 0.0;
+  }
   vec4 mosaicTiles(vec2 p, float t, float shift, vec2 suv, out vec3 litTone) {
     float scale = 3.0;
     vec2 cell = floor(p * scale);
@@ -115,8 +128,6 @@ const GROUND_GLSL = /* glsl */ `
     float pat = groundPattern(seg.x);
     float prevPat = groundPattern(seg.x - 1.0);
     vec3 tone = mix(patternLight(prevPat, suv, p, t), patternLight(pat, suv, p, t), smoothstep(0.0, 0.12, seg.y));
-    float blackOut = segPat > 0.5 ? (0.6 + 0.4 * mosaicHash(vec2(floor(t), 11.0))) * step(fract(t), 0.12) : 0.0; // W7 Z06 t4: deeper, so the 0.12 s dip shows in samples
-    tone *= 1.0 - blackOut;
     float lum = mosaicHash(id + k * 1.31 + 9.1);
     lum = mix(lum, mosaicHash(id + (k + 1.0) * 1.31 + 9.1), f);
     vec2 local = fract(p * scale);
@@ -125,7 +136,7 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z06 t4: the colour is a screen-space light field (patternLight); a tile only moves its brightness by about
     // +-20 % and keeps a thin grid line. The stripes ignore the tiles. No tile is lit in a colour of its own.
     float stripeOnly = step(0.5, pat) * step(pat, 1.5);
-    float tileGain = mix((1.0 + 0.4 * (lum - 0.5)) * seam, 1.0, stripeOnly);
+    float tileGain = mix((1.0 + 0.18 * (lum - 0.5)) * (1.0 + 0.05 * (1.0 - seam)), 1.0, stripeOnly); // W7 Z06 t5: +-9 % brightness, grid line +5 %
     litTone = vec3(0.0);
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
@@ -154,7 +165,8 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiles = mosaic.rgb * tileGate * (1.0 + length(flow) * 0.8 * uFluidMix);
     float groundPat = groundPattern(patternSegment(uMosaicTime).x);
     // W7 Z06 t4: the stripe and the p3 patterns spread wide over the screen (reference: bright edges).
-    tiles *= groundPat > 0.5 ? smoothstep(0.95, 0.30, length(uv - 0.5)) : smoothstep(0.55, 0.05, length(uv - 0.5));
+    // W7 Z06 t5: all three patterns fall off radially from behind the logo (centre x1, corners about x0.05).
+    tiles *= mix(1.0, 0.05, smoothstep(0.0, 0.55, length((uv - vec2(0.45, 0.45)) * vec2(uMosaicAspect, 1.0))));
     // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
     float steadyWeight = groundPat < 0.5 ? 0.0 : (groundPat < 1.5 ? 0.35 : 0.4);
     vec3 steadyUsed = groundPat > 0.5 && groundPat < 1.5 ? mix(steady, vec3(dot(steady, vec3(0.3, 0.5, 0.2))), 0.9) : steady;
@@ -166,6 +178,7 @@ const GROUND_GLSL = /* glsl */ `
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     cornerFall = mix(cornerFall, 1.0, step(0.5, groundPat)); // Z07 corners apply to the dark and blue patterns only
+    tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
@@ -310,7 +323,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
     vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
     // W7 C tur 5 V3: the room surfaces read the mouse flow like the hero ground does.
-    base += vec3(0.8, 0.85, 1.0) * length(texture2D(uFluid, screenUv).xy * uFluidMix) * 1.08;
+    base += vec3(0.8, 0.85, 1.0) * (1.0 - exp(-length(texture2D(uFluid, screenUv).xy * uFluidMix) * 0.10)); // W7 C6: x0.10 (was 1.08) with a soft limit, no saturated white strip
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
@@ -616,7 +629,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform sampler2D uTrace; uniform float uFluidMix; uniform vec2 uFlowRes;")
       .replace(
         "#include <map_fragment>",
-        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // Fine, grainy bend: cells of 3 px break the shift up, the largest shift stays small, and R and B part by a few px.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 3.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    if (shiftLen > 0.03) flowShift *= 0.03 / shiftLen;\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float split = min(shiftLen * 8.0, 1.0) * 0.003;\n    vec2 wUv = vMapUv - flowShift;\n    float aR = texture2D(map, wUv - flowDir * split).a;\n    float aG = texture2D(map, wUv).a;\n    float aB = texture2D(map, wUv + flowDir * split).a;\n    float aMax = max(aR, max(aG, aB));\n    vec4 sampledDiffuseColor = vec4(vec3(aR, aG, aB) / max(aMax, 1e-3), aMax);\n    diffuseColor *= sampledDiffuseColor;",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // W7 C6: fine, grainy bend (2 px cells) with a dead zone: slow residual flow leaves the letters clean, only a real sweep bends them (shift = k * max(0, |v| - v0), peak capped at 0.022 uv). No R/B split on the letters.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 2.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float eff = min(max(0.0, shiftLen - 0.06) * 1.3, 0.022);\n    flowShift = flowDir * eff;\n    vec2 wUv = vMapUv - flowShift;\n    vec4 sampledDiffuseColor = vec4(1.0, 1.0, 1.0, texture2D(map, wUv).a);\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
 
@@ -656,7 +669,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
     u.uMosaic.value = darkSum > 0.0001 ? mosaicShare / darkSum : 0;
     u.uMosaicGrey.value = mosaicShare > 0.0001 ? gw.portfolio * PORTFOLIO_MOSAIC / mosaicShare : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
-    u.uMosaicTime.value = state.clock.elapsedTime;
+    u.uMosaicTime.value = BG_FREEZE === null ? state.clock.elapsedTime : BG_FREEZE; // W7 C6: ?bgFreeze=<s> holds the opening pattern cycle for measuring
     // W7 Z06 kv fade: the opening ground comes in over 0, 0.3 or 3 s (one of three, drawn once per visit).
     u.uKvFade.value = KV_FADE <= 0 ? 1 : Math.min(1, state.clock.elapsedTime / KV_FADE);
     u.uFluid.value = fluidShared.texture;

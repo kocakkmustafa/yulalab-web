@@ -418,6 +418,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.euler.set(rotation[0], rotation[1], rotation[2]);
     r.base.setFromEuler(r.euler);
     if (glyphGroup.current) glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+    // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
+    const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;
+    if (rigLog && glyphGroup.current) {
+      const q = glyphGroup.current.quaternion;
+      rigLog.push([time, window.scrollY, frame.progress, r.wrP, r.rf, r.s, Math.atan2(2 * (q.w * q.y + q.x * q.z), 1 - 2 * (q.y * q.y + q.x * q.x))]);
+    }
     chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
