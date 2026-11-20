@@ -313,15 +313,19 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const heroDepth = heroS * df;
     const heroScale = (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
     const cb = basis(frame.camera.position, frame.camera.target);
-    const dir = new Vector3().addScaledVector(cb.r, dr).addScaledVector(cb.u, du).addScaledVector(cb.f, df);
+    // W7 CY5 (BT t2): the screen position is fov dependent (the camera narrows 39 to 35), so the lateral parts and the
+    // size carry tan(fov / 2) / tan(heroFov / 2) to keep the same screen spot and height.
+    const heroFov = lerp(39, 52, viewportMobileMix(viewportSize.width));
+    const fovK = Math.tan((frame.camera.fov * Math.PI) / 360) / Math.tan((heroFov * Math.PI) / 360);
+    const dir = new Vector3().addScaledVector(cb.r, dr * fovK).addScaledVector(cb.u, du * fovK).addScaledVector(cb.f, df);
     const cpz = frame.camera.position[2];
     const sCur = Math.abs(dir.z) > 1e-4 ? (gz - cpz) / dir.z : heroS;
     return {
       x: frame.camera.position[0] + dir.x * sCur,
       y: frame.camera.position[1] + dir.y * sCur,
-      scale: heroScale * ((sCur * df) / heroDepth),
+      scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
-  }, [frame.camera.position, frame.camera.target, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
   const position = useMemo(
     () => [
       lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
