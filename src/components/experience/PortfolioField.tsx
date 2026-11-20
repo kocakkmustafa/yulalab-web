@@ -9,6 +9,7 @@ import {
   LinearMipmapLinearFilter,
   PlaneGeometry,
   SRGBColorSpace,
+  type Group,
   Texture,
   TextureLoader,
 } from "three";
@@ -91,6 +92,7 @@ function useCardTexture(
   onSettled: (path: string) => void,
 ): LoadedTexture {
   const maxAnisotropy = useThree((state) => state.gl.capabilities.getMaxAnisotropy());
+  const gl = useThree((state) => state.gl);
   const [state, setState] = useState<LoadedTexture>({
     texture: null,
     aspect: DEFAULT_ASPECT,
@@ -160,7 +162,9 @@ function useCardTexture(
       tier === "high" ? 8 : tier === "medium" ? 4 : 2,
     );
     state.texture.needsUpdate = true;
-  }, [maxAnisotropy, state.texture, tier]);
+    // W7 BT10: upload to the GPU now (idle, as the picture arrives) instead of during the first frame that draws the card.
+    gl.initTexture(state.texture);
+  }, [gl, maxAnisotropy, state.texture, tier]);
 
   // Effects run after React has committed the loaded/fallback material. The
   // Canvas lifecycle then waits one additional rendered frame before capture.
@@ -695,6 +699,10 @@ export function PortfolioField({
   onAssetsSettled,
 }: PortfolioFieldProps) {
   const viewport = useThree((state) => state.size);
+  const gl = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+  const camera = useThree((state) => state.camera);
+  const fieldGroup = useRef<Group>(null);
   const composition = portfolioViewportComposition(
     interpolateViewportCamera(frame.progress, viewport.width, mode),
     viewport.width,
@@ -724,6 +732,36 @@ export function PortfolioField({
     ),
     [fieldOpacity, frame.productFloat, frame.world.proofMorph, products],
   );
+  // W7 BT10: the first two cards (what the works entrance shows) load their pictures at idle time in the key visual, and
+  // their materials are compiled once the pictures are in, so the entrance does not stall on decode, upload or compile.
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const hasIdle = "requestIdleCallback" in window;
+    const idle = hasIdle
+      ? (callback: () => void) => window.requestIdleCallback(callback, { timeout: 4000 })
+      : (callback: () => void) => window.setTimeout(callback, 1500);
+    const cancel = hasIdle ? window.cancelIdleCallback.bind(window) : window.clearTimeout.bind(window);
+    const handle = idle(() => {
+      setRichMediaProducts((current) => {
+        const warm = [0, 1].filter((index) => index < Math.min(products.length, SCENE_PRODUCT_COUNT));
+        return warm.every((index) => current.has(index)) ? current : new Set([...current, ...warm]);
+      });
+    });
+    return () => cancel(handle);
+  }, [products.length]);
+  const warmCompiled = useRef(false);
+  useEffect(() => {
+    if (warmCompiled.current || !richMediaProducts.has(0)) return undefined;
+    const timer = window.setTimeout(() => {
+      const group = fieldGroup.current;
+      if (!group || warmCompiled.current) return;
+      warmCompiled.current = true;
+      const wasVisible = group.visible;
+      group.visible = true; // compile() only walks visible objects
+      try { gl.compile(scene, camera); } finally { group.visible = wasVisible; }
+    }, 1800);
+    return () => window.clearTimeout(timer);
+  }, [camera, gl, richMediaProducts, scene]);
   const requestedMediaProducts = useMemo(
     () => new Set([...richMediaProducts, ...eligibleMediaProducts]),
     [eligibleMediaProducts, richMediaProducts],
@@ -781,7 +819,7 @@ export function PortfolioField({
   }, [assetPaths]);
 
   return (
-    <group visible={fieldOpacity > 0.001}>
+    <group ref={fieldGroup} visible={fieldOpacity > 0.001}>
       {products.slice(0, SCENE_PRODUCT_COUNT).map((product, index) => {
         const mediaComposition = product.developmentPreviews?.length
           ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * CARD_DEPTH_STEP)
