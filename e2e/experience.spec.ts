@@ -378,7 +378,10 @@ const SEMANTIC_STAGE_BOUNDARIES = [
   ["vision", "incoming", 0.765],
   ["vision", "outgoing", 0.835],
   ["values", "incoming", 0.835],
-  ["values", "outgoing", 0.955],
+  // W6 K6: the full-screen LifeOS section follows the values (0.915 to 0.955).
+  ["values", "outgoing", 0.915],
+  ["stella", "incoming", 0.915],
+  ["stella", "outgoing", 0.955],
 ] as const;
 
 for (const [stageName, edge, progress] of SEMANTIC_STAGE_BOUNDARIES) {
@@ -421,7 +424,7 @@ test("product descriptions have one exclusive owner at focus-slot boundaries", a
 });
 
 test("service descriptions have one exclusive owner at focus-slot boundaries", async ({ page }) => {
-  const valueBoundary = 0.835 + (1 / 4) * (0.955 - 0.835);
+  const valueBoundary = 0.835 + (1 / 4) * (0.915 - 0.835);
   await openCapture(page, valueBoundary);
   const panels = page.locator('article[class*="valuePanel"]');
   const valueOpacities = await panels.evaluateAll((elements) =>
