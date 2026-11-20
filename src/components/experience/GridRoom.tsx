@@ -177,7 +177,7 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
-    cornerFall = mix(cornerFall, 1.0, step(0.5, groundPat)); // Z07 corners apply to the dark and blue patterns only
+    // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
@@ -361,7 +361,7 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     // W7 Z01-b: the leading edge of the wipe is white (L >= 200) from the start.
     float lead = smoothstep(edge - 0.09, edge - 0.004, vUv.y);
     // W7 Z01-b (tur 5): the fill is the light-section colour from the first row, not grey until full coverage.
-    color = mix(color, vec3(0.80), lead);
+    color = mix(color, vec3(0.72), lead);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
   }
