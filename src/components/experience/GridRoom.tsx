@@ -89,18 +89,17 @@ const GROUND_GLSL = /* glsl */ `
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
     // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY};
-    flow /= 1.0 + length(flow);
     vec3 litTone;
-    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.22 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.9 * uFluidMix, litTone);
+    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.01 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.45 * uFluidMix, litTone);
     // In the portfolio the tiles stay, but in greys (the reference works ground is black/grey).
     litTone = mix(litTone, vec3(dot(litTone, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
     mosaic.rgb = mix(mosaic.rgb, vec3(dot(mosaic.rgb, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
     float stir = length(flow) * uFluidMix * (1.0 - uMosaicGrey);
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
-    vec3 tiles = mosaic.rgb * 0.5;
+    vec3 tiles = mosaic.rgb * 0.5 * (1.0 + length(flow) * 0.8 * uFluidMix);
     tiles *= smoothstep(0.55, 0.05, length(uv - 0.5));
     vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
-      + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + stirTint * stir * ${MOSAIC.flow.toFixed(3)} * (0.35 + 0.65 * glow);
+      + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + vec3(0.0);
     return mix(steady, tiled, uMosaic);
   }
 `;

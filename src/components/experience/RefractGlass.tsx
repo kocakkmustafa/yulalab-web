@@ -89,14 +89,13 @@ const FRAGMENT = /* glsl */ `
     // Bend the background by the surface normal, a little more for every colour channel.
     // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_PARAMS.displayScale.toFixed(6)} * uFluidMix;
-    flow /= 1.0 + length(flow);
     float flowAmount = length(flow);
     vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
-    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 1.2;
+    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.06;
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = (1.0 + flowAmount * 5.0) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
+      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
       vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.3;
       vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
       vec3 sampleColor;
@@ -116,7 +115,8 @@ const FRAGMENT = /* glsl */ `
     // rim ride on top at the grazing edges only (the first version added the background to itself, which
     // read as an opaque lilac solid).
     c = mix(c, reflected, fresnel * 0.9);
-    c += flowTint * flowAmount * 1.1;
+    // W7 CY15: the flow no longer tints the glass.
+    c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.

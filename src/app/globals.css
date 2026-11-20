@@ -391,9 +391,10 @@ html[data-scene="live"] body {
   transform-origin: left center;
   transition: transform 350ms var(--ease-soft);
 }
-.link-wipe:hover::after {
-  transform: scaleX(1);
-}
+/* W7 F11: footer links dim instead of drawing a rule. */
+.link-wipe::after { display: none; }
+.link-wipe { transition: opacity 300ms ease; }
+.link-wipe:hover { opacity: 0.7; }
 
 /* card hover */
 .card-hover {

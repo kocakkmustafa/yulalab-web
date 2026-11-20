@@ -88,7 +88,7 @@ export function ExperienceWorld({
     <>
       <WorldTheme frame={frame} />
       <CameraRig mode={mode} progress={progress} />
-      <MouseFluid active={mode === "desktop" && tier !== "low" && progress < 0.1 && !prefersReducedMotion()} />
+      <MouseFluid active={mode === "desktop" && tier !== "low" && !prefersReducedMotion()} />
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight

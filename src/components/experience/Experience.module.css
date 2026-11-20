@@ -394,8 +394,8 @@
 .experienceNavigation a,
 .trustLinks a {
   padding-bottom: 3px;
-  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px;
-  transition: opacity 300ms ease, background-size 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* W7 F11: links only dim on hover (1 to 0.7 in 300 ms); no underline sweep. */
+  transition: opacity 300ms ease;
 }
 
 [dir="rtl"] .experienceNavigation a,
@@ -459,7 +459,6 @@
   .experienceNavigation a:hover,
   .trustLinks a:hover {
     opacity: 0.7;
-    background-size: 100% 1px;
   }
 
   .linearButton:hover,
