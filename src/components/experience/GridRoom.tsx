@@ -81,10 +81,14 @@ const GROUND_GLSL = /* glsl */ `
     float pat = groundPattern(floor(slotT));
     float tileLum = mosaicHash(id + k * 1.31 + 9.1);
     vec3 blue = vec3(0.3, 0.4, 0.6) * 2.0 * (0.5 + 0.5 * tileLum);
-    vec3 blackWhite = vec3(step(0.5, fract(tileLum * 9.0)));
-    vec3 patTone = pat < 0.5 ? blue : (pat < 1.5 ? blackWhite : tone);
+    // Z06 tur 2: diagonal stripes across the screen (reference stripe geometry), not per tile squares.
+    vec3 blackWhite = vec3(step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37)));
+    // p3 picks purple, ice blue or orange per tile with equal odds.
+    float pick3 = floor(fract(mosaicHash(id + k * 2.17 + 4.3)) * 3.0);
+    vec3 tone3 = pick3 < 0.5 ? purple : (pick3 < 1.5 ? ice : brick);
+    vec3 patTone = pat < 0.5 ? blue : (pat < 1.5 ? blackWhite : tone3);
     float prevPat = groundPattern(floor(slotT) - 1.0);
-    vec3 prevTone = prevPat < 0.5 ? blue : (prevPat < 1.5 ? blackWhite : tone);
+    vec3 prevTone = prevPat < 0.5 ? blue : (prevPat < 1.5 ? blackWhite : tone3);
     tone = mix(prevTone, patTone, smoothstep(0.0, 0.12, fract(slotT)));
     float lum = mosaicHash(id + k * 1.31 + 9.1);
     lum = mix(lum, mosaicHash(id + (k + 1.0) * 1.31 + 9.1), f);
@@ -118,7 +122,11 @@ const GROUND_GLSL = /* glsl */ `
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec3 tiles = mosaic.rgb * 0.5 * (1.0 + length(flow) * 0.8 * uFluidMix);
     tiles *= smoothstep(0.55, 0.05, length(uv - 0.5));
-    vec3 tiled = steady * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 1.3
+    // Z06 tur 2: the steady purple glow steps back under the blue and stripe patterns (reference: neutral grey).
+    float groundPat = groundPattern(floor(uMosaicTime / 1.5));
+    float steadyWeight = groundPat < 0.5 ? 0.5 : (groundPat < 1.5 ? 0.17 : 1.0);
+    vec3 steadyUsed = groundPat > 0.5 && groundPat < 1.5 ? mix(steady, vec3(dot(steady, vec3(0.3, 0.5, 0.2))), 0.9) : steady;
+    vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 2.6
       + litTone * (${MOSAIC.lit.toFixed(3)} * 0.65) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
