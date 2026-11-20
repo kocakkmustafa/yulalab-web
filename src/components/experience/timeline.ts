@@ -240,7 +240,7 @@ const GLYPH_POSITION: readonly VecKey[] = [
 ];
 
 const GLYPH_ROTATION: readonly VecKey[] = [
-  { progress: 0, value: [-0.08, -0.15, 0.02] },
+  { progress: 0, value: [0, 0, 0] },
   { progress: 0.505, value: [0.05, 0.5, -0.03] },
   { progress: 0.575, value: [0.15, 1.15, 0.02] },
   { progress: 0.69, value: [0.02, 0.35, 0] },

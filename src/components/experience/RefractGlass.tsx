@@ -119,7 +119,8 @@ const FRAGMENT = /* glsl */ `
     c += flowTint * flowAmount * 1.1;
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
-    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.75;
+    // W7 CY7: no spectrum band on the glass rim.
+    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
     c += vec3(spec) * 0.04;
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     gl_FragColor = vec4(min(c, vec3(1.0)), uOpacity);

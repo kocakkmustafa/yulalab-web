@@ -85,8 +85,9 @@ const CAUSTIC_FRAGMENT_SHADER = `
     float portal = smoothstep(0.92 - uPortal, 1.04 - uPortal, portalAxis + portalNoise) * uPortal;
     color = mix(color, mix(cyan, magenta, chroma), portal * 0.72);
 
-    float energy = 0.022 + diagonal * 0.16 + sweep * 0.09 + facet * 0.06 + rim * 0.035 + portal * 0.16;
-    energy += uHeroMix * (0.05 + sweep * 0.1 + rim * 0.07);
+    // W7 CY8: the four white glints (diagonal, sweep, facet, rim) are gone; only the VISION band is left.
+    float energy = portal * 0.16;
+    
     gl_FragColor = vec4(color * (1.1 + diagonal * 1.6), energy * uGlassMix);
   }
 `;
@@ -170,6 +171,17 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const viewportSize = useThree((state) => state.size);
   const renderer = useThree((state) => state.gl);
   const glyphGroup = useRef<Group>(null);
+  // W7 CY1 / F9: pointer tilt (reference): velocity of the eased pointer pushes pitch/yaw, then decays. Desktop only.
+  const tilt = useRef({ tx: 0, ty: 0, cx: 0, cy: 0, ex: 0, ey: 0 });
+  useEffect(() => {
+    if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches) return undefined;
+    const onMove = (event: MouseEvent) => {
+      tilt.current.tx = (event.clientX / Math.max(1, window.innerWidth)) * 2 - 1;
+      tilt.current.ty = -((event.clientY / Math.max(1, window.innerHeight)) * 2 - 1);
+    };
+    window.addEventListener("mousemove", onMove, { passive: true });
+    return () => window.removeEventListener("mousemove", onMove);
+  }, []);
   const causticMaterial = useRef<ShaderMaterial | null>(null);
   const portalMaterial = useRef<ShaderMaterial | null>(null);
   const geometry = useMemo(() => {
@@ -314,9 +326,22 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   );
   const drawingBufferSize = useMemo(() => new Vector2(), []);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     const time = state.clock.elapsedTime;
-    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + Math.sin(time * 0.26) * 0.012 * frame.overlay.hero, rotation[1] + Math.sin(time * 0.2) * 0.035 * frame.overlay.hero, rotation[2]);
+    const dt = Math.min(delta || 1 / 60, 0.1);
+    const t = tilt.current;
+    const follow = Math.min(1, dt * 10);
+    const vx = t.tx - t.cx;
+    const vy = t.ty - t.cy;
+    t.cx += vx * follow;
+    t.cy += vy * follow;
+    const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5) * dt * 60;
+    t.ex += vx * reach;
+    t.ey -= vy * reach;
+    t.ex *= 1 - dt;
+    t.ey *= 1 - dt;
+    // W7 CY2: no idle sway; the only motion on the hero Y is the pointer tilt.
+    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + t.ey, rotation[1] + t.ex, rotation[2]);
     chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
