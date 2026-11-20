@@ -46,6 +46,14 @@ const GROUND_GLSL = /* glsl */ `
   float mosaicHash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
   }
+  // W7 Z06 (founder decision "a"): the opening ground cycles three patterns (blue, black and white, purple-ice-orange),
+  // equal odds, never the same twice in a row, a new one about every 1.5 s (reference: every 1 to 2 s).
+  float groundPattern(float slot) {
+    float cur = floor(mosaicHash(vec2(slot, 7.0)) * 3.0);
+    float prev = floor(mosaicHash(vec2(slot - 1.0, 7.0)) * 3.0);
+    if (slot > 0.5 && cur == prev) cur = mod(cur + 1.0 + floor(mosaicHash(vec2(slot, 19.0)) * 2.0), 3.0);
+    return min(cur, 2.0);
+  }
   // Quad-tree tile mosaic of our own: every cell may split into four (up to four levels), big and small
   // square tiles side by side, each tile slowly changing between purple, ice blue and brick (linear RGB).
   vec4 mosaicTiles(vec2 p, float t, float shift, out vec3 litTone) {
@@ -60,7 +68,7 @@ const GROUND_GLSL = /* glsl */ `
       }
     }
     vec2 id = cell + level * 131.0;
-    float phase = t * 0.16 + mosaicHash(id + 3.7) * 6.0;
+    float phase = t * 0.67 + mosaicHash(id + 3.7) * 6.0;
     float k = floor(phase);
     float f = smoothstep(0.7, 1.0, fract(phase));
     float pick = fract(mix(mosaicHash(id + k), mosaicHash(id + k + 1.0), f) + shift);
@@ -69,6 +77,15 @@ const GROUND_GLSL = /* glsl */ `
     vec3 brick = vec3(0.98, 0.115, 0.004);
     vec3 tone = mix(purple, ice, smoothstep(0.6, 0.72, pick));
     tone = mix(tone, brick, smoothstep(0.82, 0.92, pick));
+    float slotT = t / 1.5;
+    float pat = groundPattern(floor(slotT));
+    float tileLum = mosaicHash(id + k * 1.31 + 9.1);
+    vec3 blue = vec3(0.3, 0.4, 0.6) * 2.0 * (0.5 + 0.5 * tileLum);
+    vec3 blackWhite = vec3(step(0.5, fract(tileLum * 9.0)));
+    vec3 patTone = pat < 0.5 ? blue : (pat < 1.5 ? blackWhite : tone);
+    float prevPat = groundPattern(floor(slotT) - 1.0);
+    vec3 prevTone = prevPat < 0.5 ? blue : (prevPat < 1.5 ? blackWhite : tone);
+    tone = mix(prevTone, patTone, smoothstep(0.0, 0.12, fract(slotT)));
     float lum = mosaicHash(id + k * 1.31 + 9.1);
     lum = mix(lum, mosaicHash(id + (k + 1.0) * 1.31 + 9.1), f);
     vec2 local = fract(p * scale);
