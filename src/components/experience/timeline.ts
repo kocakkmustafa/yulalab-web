@@ -242,10 +242,13 @@ const GLYPH_POSITION: readonly VecKey[] = [
 
 const GLYPH_ROTATION: readonly VecKey[] = [
   { progress: 0, value: [0, 0, 0] },
-  // W7 BT8: through the works section the reference base yaw stays 0 (the turn lives in q); the K5/K6 keys from the
-  // works_outro boundary on are unchanged.
-  { progress: 0.503, value: [0.05, 0, -0.03] },
-  { progress: 0.505, value: [0.05, 0.5, -0.03] },
+  // W7 BT8/BT9: through the works section the reference base yaw stays 0 (the turn lives in q). The K5/K6 turn to the
+  // proof pose eases in over 0.503 to 0.52 (smoothstep knots, no jump); from 0.52 on the keys follow the old curve.
+  { progress: 0.503, value: [0.05, 0.0, -0.03] },
+  { progress: 0.50725, value: [0.0554, 0.0999, -0.0273] },
+  { progress: 0.5115, value: [0.0607, 0.3196, -0.0246] },
+  { progress: 0.51575, value: [0.0661, 0.5394, -0.022] },
+  { progress: 0.52, value: [0.0714, 0.6393, -0.0193] },
   { progress: 0.575, value: [0.15, 1.15, 0.02] },
   { progress: 0.69, value: [0.02, 0.35, 0] },
   { progress: 0.765, value: [0.03, 0.12, 0] },
