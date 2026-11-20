@@ -395,8 +395,8 @@ export function evaluateTimeline(
   const product = slotFrame(p, STAGES.portfolio, SCENE_PRODUCT_COUNT);
   const proof = slotFrame(p, STAGES.proof, SCENE_PRODUCT_COUNT);
   const value = slotFrame(p, STAGES.values, 4);
-  const whiteRise = smoothstep(segmentProgress(p, STAGES.crossing[0], STAGES.crossing[1]));
-  const darkReturn = smoothstep(segmentProgress(p, 0.825, 0.855));
+  const whiteRise = smoothstep(segmentProgress(p, 0.525, 0.584));
+  const darkReturn = smoothstep(segmentProgress(p, 0.788, 0.81));
   const whiteMix = whiteRise * (1 - darkReturn);
   // The physical blade enters before the whole environment changes. This
   // preserves a dark upper chamber at mid-crossing, then makes the white

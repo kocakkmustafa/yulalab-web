@@ -507,7 +507,7 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uProjectionMix.value = 0;
     gridMaterial.uniforms.uProjectionBlend.value = smoothstep(mediaFloat - mediaIndex);
     bladeMaterial.uniforms.uRise.value = frame.world.bladeProgress;
-    bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.815, 0.835));
+    bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.788, 0.81));
     bladeMaterial.uniforms.uViewport.value.set(viewport.width, viewport.height);
     const gw = resolveGroundWeights(frame.progress, frame.world.themeMix);
     const darkSum = gw.hero + gw.portfolio + gw.proof + gw.night + gw.closing;

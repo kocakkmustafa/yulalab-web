@@ -42,7 +42,7 @@ export function resolveExperiencePalette(themeMix: number): ExperiencePalette {
 // than with white light, so the contrast switch above still holds.
 export const WALL_TINTS = {
   neutral: [1, 1, 1],
-  petrol: [0.2, 0.92, 1],
+  petrol: [1, 1, 1],
   night: [0.24, 0.42, 1],
 } as const satisfies Record<string, readonly [number, number, number]>;
 
@@ -71,8 +71,8 @@ export type GroundSet = {
 
 export const GROUND_SETS = {
   hero: { edge: "#02010b", mid: "#130940", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
-  portfolio: { edge: "#050505", mid: "#c8c0d0", peak: "#c8c0d0", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
-  proof: { edge: "#020608", mid: "#0c3446", peak: "#4acdff", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
+  portfolio: { edge: "#030203", mid: "#0a080b", peak: "#0d0a10", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
+  proof: { edge: "#020202", mid: "#090908", peak: "#0f100c", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
   night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
   closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
   light: { edge: "#ccd6d9", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
