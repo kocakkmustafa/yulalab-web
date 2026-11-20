@@ -1158,7 +1158,7 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
 }
 :root[data-theme="dark"]:not(:has([data-yula-experience="true"])) body { background: transparent; }
 :root[data-theme="dark"] .scene-host:is([data-scene-tone="page"], [data-scene-tone="quiet"]) { visibility: hidden; }
-:root[data-theme="dark"] [data-site-footer="true"] { background: transparent; }
+:root[data-theme="dark"] [data-site-footer="true"] { background: rgb(0 0 0 / .22); } /* W7 Y12 */
 :root[data-theme="dark"] .glass { background: rgb(255 255 255 / .025); }
 
 /* W1D K9: dogrusal (statik) ana sayfa akisinda kapanis blogu artik sayfa ortasinda altbilgi
