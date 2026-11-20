@@ -139,7 +139,7 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
     // diagonal band in glyph space that never leaves the letter.
     float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
     float center = (uPhase - 0.5) * 1.5;
-    float across = (axis - center) / 0.195;
+    float across = (axis - center) / 0.15;
     float band = smoothstep(1.0, 0.55, abs(across));
     float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
     vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
@@ -339,19 +339,24 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const vy = t.ty - t.cy;
     t.cx += vx * follow;
     t.cy += vy * follow;
-    const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5) * dt * 60;
-    t.ex += vx * reach * 2.8;
-    t.ey -= vy * reach * 7.1;
-    t.ex *= 1 - dt;
-    t.ey *= 1 - dt;
+    const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 0.7) * dt * 60;
+    t.ex += vx * reach * 3.1;
+    t.ey -= vy * reach * 6.3;
+    // W7 CY1: slow decay (reference 4.9 to 2.1 degrees).
+    t.ex *= 1 - dt * 0.45;
+    t.ey *= 1 - dt * 0.45;
     const sp = spin.current;
     const scrollNow = typeof window === "undefined" ? 0 : window.scrollY;
     const scrolled = sp.lastScroll < 0 ? 0 : scrollNow - sp.lastScroll;
     sp.lastScroll = scrollNow;
-    const worksRotate = smoothstep(segmentProgress(frame.progress, 0.085, 0.1)) * (1 - smoothstep(segmentProgress(frame.progress, 0.46, 0.52)));
-    sp.value -= Math.max(-30, Math.min(30, scrolled)) * 0.001;
-    sp.value -= dt * 0.5 * worksRotate;
-    sp.value *= 1 - Math.min(1, dt * (worksRotate > 0.01 ? 0.1 * (1 - 0.8 * worksRotate) : 2));
+    // The first 250 px do not turn the Y; the turn ramps in by 500 px.
+    const spinGate = smoothstep(segmentProgress(scrollNow, 250, 500));
+    sp.value -= Math.max(-30, Math.min(30, scrolled)) * 0.001 * spinGate;
+    // At rest the angle settles onto the nearest full turn by the short way (about 2.4 s).
+    if (Math.abs(scrolled) < 0.5) {
+      const target = Math.round(sp.value / (Math.PI * 2)) * Math.PI * 2;
+      sp.value += (target - sp.value) * (1 - Math.exp(-dt * 1.4));
+    }
     // W7 CY2: no idle sway; the motion on the Y is the pointer tilt and the scroll spin.
     if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + t.ey, rotation[1] + t.ex + sp.value, rotation[2]);
     chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);

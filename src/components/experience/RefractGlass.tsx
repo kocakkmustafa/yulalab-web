@@ -122,6 +122,8 @@ const FRAGMENT = /* glsl */ `
     // W7 CY7: no spectrum band on the glass rim.
     c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
     c += vec3(spec) * 0.0;
+    // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
+    c = c * 1.5 + vec3(0.06);
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.
     gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));
