@@ -22,6 +22,7 @@ import { ThemeControl } from "@/components/theme/ThemeControl";
 import { StageWord } from "./StageWord";
 import { resolveExperiencePalette } from "./theme";
 import { ExperienceInstruments } from "./ExperienceInstruments";
+import { StellaContent } from "./StellaContent";
 
 type ExperienceOverlayProps = {
   copy: ExperienceCopy;
@@ -496,6 +497,8 @@ export function ExperienceOverlay({
     (stageIs(frame, "mission") || stageIs(frame, "crossing")) && frame.overlay.mission > SEMANTIC_VISIBILITY_THRESHOLD;
   const visionActive = stageSemanticActive(frame, "vision", frame.overlay.vision);
   const valuesActive = stageSemanticActive(frame, "values", frame.overlay.values);
+  const stellaActive = stageSemanticActive(frame, "stella", frame.overlay.stella);
+  const stellaProduct = products.find((product) => product.slug === "lifeos") ?? null;
   const today = useExperienceSiteDate();
   const proofProducts = products.filter((product) => product.claims.length > 0);
   const proofScaled = Math.min(
@@ -795,6 +798,20 @@ export function ExperienceOverlay({
           })}
         </div>
       </section>
+
+      {stellaProduct ? (
+        <section
+          className={`${styles.stage} ${styles.stellaStage}`}
+          data-active={stellaActive ? "true" : "false"}
+          data-experience-stage="stella"
+          style={stageStyle(frame.overlay.stella)}
+          aria-hidden={!stellaActive}
+          inert={!stellaActive}
+          aria-labelledby="experience-stella-title"
+        >
+          <StellaContent product={stellaProduct} headingId="experience-stella-title" />
+        </section>
+      ) : null}
 
       <section
         className={`${styles.stage} ${styles.closingStage}`}

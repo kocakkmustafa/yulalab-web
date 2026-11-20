@@ -84,6 +84,7 @@ export const RULER_STAGES: readonly { stage: ExperienceStage; label: keyof Exper
   { stage: "mission", label: "mission" },
   { stage: "vision", label: "vision" },
   { stage: "values", label: "values" },
+  { stage: "stella", label: "product" },
   { stage: "closing", label: "contact" },
 ];
 

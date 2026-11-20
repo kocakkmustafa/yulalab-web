@@ -14,7 +14,8 @@ type StageWordStyle = CSSProperties & { "--stage-word-opacity": number; "--stage
  */
 export function StageWord({ frame, copy }: { frame: TimelineFrame; copy: ExperienceInstrumentCopy }) {
   const word = stageWordFrame(frame);
-  if (!word) return null;
+  // W6 K5 (Tasarim E4): the Values stage shows no giant outlined word; the slanted screen carries the scene.
+  if (!word || word.label === "values") return null;
   const style: StageWordStyle = {
     "--stage-word-opacity": word.opacity,
     "--stage-word-shift": word.shift,

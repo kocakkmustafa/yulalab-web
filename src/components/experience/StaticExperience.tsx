@@ -14,6 +14,7 @@ import {
   useExperienceSiteDate,
 } from "./ExperienceOverlay";
 import styles from "./Experience.module.css";
+import { StellaContent } from "./StellaContent";
 
 type StaticExperienceProps = {
   copy: ExperienceCopy;
@@ -194,6 +195,15 @@ export function StaticExperience({
           ))}
         </div>
       </section>
+
+      {products.find((product) => product.slug === "lifeos") ? (
+        <section id="experience-stella" tabIndex={-1} aria-labelledby="static-experience-stella-title" className={styles.staticStella}>
+          <StellaContent
+            product={products.find((product) => product.slug === "lifeos") as ExperienceProduct}
+            headingId="static-experience-stella-title"
+          />
+        </section>
+      ) : null}
 
       <section id="experience-closing" tabIndex={-1} aria-labelledby="static-experience-closing-title" className={styles.staticClosing}>
         <ExperienceClosingContent copy={copy} headingId="static-experience-closing-title" />
