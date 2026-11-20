@@ -20,13 +20,20 @@ import {
   Vector2,
   Vector3,
 } from "three";
-import { glyphReadingVisibility, smoothstep, segmentProgress } from "./timeline";
+import { glyphReadingVisibility, smoothstep, segmentProgress, STAGES } from "./timeline";
+import { timelineProgressForScroll } from "./storyboard";
 import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
 import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
+
+// W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
+// desktop scroll budget (about 21750 px of travel, works_outro 7400 px): the turn starts about 131 px in and runs
+// on the weaker works return force from about 1190 px.
+const WORKS_INTRO_START = timelineProgressForScroll(131 / 21750);
+const WORKS_MAIN_START = timelineProgressForScroll(1189 / 21750);
 
 export type YulaGlyphProps = {
   frame: TimelineFrame;
@@ -181,7 +188,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const spin = useRef({ y: 0, lastScroll: -1, value: 0 });
   // W7 BT5: reference rotation model. Quaternion q, angular velocity e (Euler x,y), smoothed pointer
   // velocity v and smoothed scroll velocity s; second order, so the settle lag and the return arc come from it.
-  const rig = useRef({ q: new Quaternion(), e: new Euler(0, 0, 0), euler: new Euler(), base: new Quaternion(), step: new Quaternion(), identity: new Quaternion(), px: 0, py: 0, vx: 0, vy: 0, s: 0, wrP: 0, scrollE: new Euler(), scrollQ: new Quaternion(), init: false });
+  const rig = useRef({ q: new Quaternion(), e: new Euler(0, 0, 0), euler: new Euler(), base: new Quaternion(), step: new Quaternion(), identity: new Quaternion(), px: 0, py: 0, vx: 0, vy: 0, s: 0, wrP: 0, rf: 2, scrollE: new Euler(), scrollQ: new Quaternion(), init: false });
   useEffect(() => {
     if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches) return undefined;
     const onMove = (event: MouseEvent) => {
@@ -368,11 +375,17 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.px = t.tx;
     r.py = t.ty;
     const m = 0.0595 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5); // BT6: the reference applies the hover velocity per event
-    // W7 BT6 worksRotate: 0 in the key visual, eases to 1 over 1 s (sigmoid 6) when the works section is entered.
-    // Tied to the works stage bounds (storyboard works_intro to works_outro), not to a pixel offset.
-    r.wrP = Math.min(1, Math.max(0, r.wrP + (frame.world.worksBackdropMix > 0.001 ? dt : -dt)));
+    // W7 BT8 worksRotate: 0 in the key visual, eases to 1 over 1 s (sigmoid 6) while the works section is on screen.
+    // Tied to the works stage bounds (works_intro = WORKS_INTRO_START, works_outro = STAGES.portfolio end), not to the
+    // backdrop mix: the reference starts the turn 114 px into the page and ends it at the portfolio / proof hand-off.
+    const inWorks = frame.progress >= WORKS_INTRO_START && frame.progress < STAGES.portfolio[1];
+    r.wrP = Math.min(1, Math.max(0, r.wrP + (inWorks ? dt : -dt)));
     const sigmoid = (x: number) => 1 / (1 + Math.exp(-6 * (x * 2 - 1)));
     const worksRotate = r.wrP <= 0 ? 0 : (sigmoid(r.wrP) - sigmoid(0)) / (sigmoid(1) - sigmoid(0));
+    // BT8: the reference's returnToOriginForce follows the stage (key visual / after works 2, works_intro 0.4, works 0.1);
+    // it eases between those values over about 1 s like wr, so the turn can run on instead of locking at an equilibrium.
+    const returnForce = frame.progress >= STAGES.portfolio[1] ? 2 : frame.progress >= WORKS_MAIN_START ? 0.1 : inWorks ? 0.4 : 2;
+    r.rf += Math.max(-1.9 * dt, Math.min(1.9 * dt, returnForce - r.rf));
     r.e.x -= r.vy * m * (1 - worksRotate * 0.7);
     r.e.y += r.vx * m;
     // 4: scroll velocity (px per 60 Hz frame, scaled to the reference's units) adds to the yaw velocity.
@@ -394,7 +407,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.e.y *= damp;
     r.step.setFromEuler(r.e);
     r.q.premultiply(r.step);
-    r.q.slerp(r.identity, Math.min(1, dt * 2 * (1 - worksRotate * 0.8)));
+    r.q.slerp(r.identity, Math.min(1, dt * r.rf * (1 - worksRotate * 0.8)));
     // BT6: demand rendering must keep drawing until q is back on the identity and the motion has died.
     if (r.q.angleTo(r.identity) > 0.0017 || Math.abs(r.e.x) + Math.abs(r.e.y) > 1e-5 || Math.abs(r.s) > 0.05) invalidate();
     // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
