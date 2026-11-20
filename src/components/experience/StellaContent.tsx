@@ -28,6 +28,18 @@ export function StellaContent({ product, headingId }: { product: ExperienceProdu
           </Link>
         </h2>
         <p className={styles.stellaBody}>{product.short}</p>
+        {product.storeLinks && product.storeLinks.length > 0 ? (
+          <ul className={styles.stellaStores}>
+            {product.storeLinks.map((store) => (
+              <li key={store.kind}>
+                <a href={store.href} target="_blank" rel="noopener noreferrer" className={styles.stellaStore}>
+                  <span aria-hidden="true">{store.kind === "appstore" ? "" : "▶"}</span>
+                  <span>{store.name}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
       <p className={styles.stellaNote}>{product.tagline}</p>
     </>

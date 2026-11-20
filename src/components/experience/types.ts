@@ -96,6 +96,8 @@ export type ExperienceProduct = {
   tagline: string;
   short: string;
   href: string;
+  /** Public store listings (App Store / Google Play) for the full-screen product section; empty while coming soon. */
+  storeLinks?: { kind: "appstore" | "playstore"; name: string; href: string }[];
   ctaLabel: string;
   lifecycleLabel: string;
   colors: {

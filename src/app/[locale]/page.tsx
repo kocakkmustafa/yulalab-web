@@ -13,6 +13,7 @@ import { company } from "@/data/company";
 import { projects } from "@/data/projects";
 import { publicRegistry } from "@/data/public-registry";
 import { toExperienceClaims } from "@/lib/experience-claims";
+import { storeLinksOf } from "@/lib/store-slots";
 import { PRODUCT_ORDER, SCENE_PRODUCT_ORDER } from "@/lib/product-index";
 import type { Locale, ProductLifecycle } from "@/lib/types";
 
@@ -120,6 +121,11 @@ export default async function LandingPage({
       tagline: localized(project.tagline, locale),
       short: localized(project.short, locale),
       href: localizeInternalRoute(record.primaryCta.url, locale),
+      storeLinks: storeLinksOf(project).map((link) => ({
+        kind: link.kind,
+        name: link.kind === "appstore" ? "App Store" : "Google Play",
+        href: link.href,
+      })),
       ctaLabel: t("portfolio.liveAction"),
       lifecycleLabel: lifecycleLabels[record.lifecycle],
       colors: {
