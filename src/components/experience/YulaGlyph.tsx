@@ -8,12 +8,14 @@ import {
   Color,
   type Group,
   DataTexture,
+  Euler,
   ExtrudeGeometry,
   LinearFilter,
   RepeatWrapping,
   RGBAFormat,
   ShaderMaterial,
   Shape,
+  Quaternion,
   Texture,
   Vector2,
   Vector3,
@@ -139,7 +141,7 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
     // diagonal band in glyph space that never leaves the letter.
     float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
     float center = (uPhase - 0.5) * 1.5;
-    float across = (axis - center) / (0.15 * mix(1.0, 0.8, smoothstep(0.5, 0.8, uPhase))); // W7 CY16: thinner in the second half
+    float across = (axis - center) / (0.15 * mix(0.97, 0.82, smoothstep(0.15, 0.7, uPhase))); // W7 CY16: thinner in the second half
     float band = smoothstep(1.0, 0.55, abs(across));
     float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
     vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
@@ -176,6 +178,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // W7 CY4: scroll-velocity spin (reference): rotY -= clamp(scroll px per frame, 30) * 0.001, plus a slow drift
   // once the works section opens; it relaxes back at 2 /s in the opening and 0.1 /s once works rotates.
   const spin = useRef({ y: 0, lastScroll: -1, value: 0 });
+  // W7 BT5: reference rotation model. Quaternion q, angular velocity e (Euler x,y), smoothed pointer
+  // velocity v and smoothed scroll velocity s; second order, so the settle lag and the return arc come from it.
+  const rig = useRef({ q: new Quaternion(), e: new Euler(0, 0, 0), euler: new Euler(), base: new Quaternion(), step: new Quaternion(), identity: new Quaternion(), px: 0, py: 0, vx: 0, vy: 0, s: 0, init: false });
   useEffect(() => {
     if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches) return undefined;
     const onMove = (event: MouseEvent) => {
@@ -334,34 +339,37 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const time = state.clock.elapsedTime;
     const dt = Math.min(delta || 1 / 60, 0.1);
     const t = tilt.current;
+    const r = rig.current;
+    if (!r.init) { r.px = t.tx; r.py = t.ty; r.init = true; }
+    // 1-3: smoothed pointer velocity drives the angular velocity, strongest near the screen centre.
     const follow = Math.min(1, dt * 10);
-    const vx = t.tx - t.cx;
-    const vy = t.ty - t.cy;
-    // W7 CY1: slower follow so the settle phase lags (yaw x0.275, pitch x0.504; BT4 phase, then gain).
-    t.cx += vx * follow * 0.275;
-    t.cy += vy * follow * 0.504;
-    const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 0.7) * dt * 60;
-    t.ex += vx * reach * 1.58;
-    t.ey -= vy * reach * 4.47;
-    // W7 CY1: slow decay (reference 4.9 to 2.1 degrees).
-    t.ex *= 1 - dt * 0.45;
-    t.ey *= 1 - dt * 0.45;
-    const sp = spin.current;
+    r.vx += (t.tx - r.px - r.vx) * follow;
+    r.vy += (t.ty - r.py - r.vy) * follow;
+    r.px = t.tx;
+    r.py = t.ty;
+    const m = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5);
+    const worksRotate = 0;
+    r.e.x -= r.vy * m * (1 - worksRotate * 0.7);
+    r.e.y += r.vx * m;
+    // 4: scroll velocity (px per 60 Hz frame, scaled to the reference's units) adds to the yaw velocity.
     const scrollNow = typeof window === "undefined" ? 0 : window.scrollY;
+    const sp = spin.current;
     const scrolled = sp.lastScroll < 0 ? 0 : scrollNow - sp.lastScroll;
     sp.lastScroll = scrollNow;
-    // The first 250 px do not turn the Y; the turn ramps in by 500 px.
-    // segmentProgress clamps to 0-1, so the px range is normalised first (W7 CY4 gate fix).
-    const spinGate = smoothstep(Math.min(1, Math.max(0, (scrollNow - 100) / 400)));
-    // W7 CY4: below 50 px/s the velocity term is zero (smooth-scroll inertia kept it turning after a stop).
-    const scrollSpeed = Math.abs(scrolled) / dt;
-    const drive = scrollSpeed < 50 ? 0 : scrolled;
-    sp.value -= Math.max(-30, Math.min(30, drive)) * 0.001 * spinGate;
-    // The pull back to the nearest full turn (short way) runs every frame; gentler while scrolling.
-    const target = Math.round(sp.value / (Math.PI * 2)) * Math.PI * 2;
-    sp.value += (target - sp.value) * (1 - Math.exp(-dt * (scrollSpeed < 50 ? 1.4 : 0.35)));
-    // W7 CY2: no idle sway; the motion on the Y is the pointer tilt and the scroll spin.
-    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + t.ey, rotation[1] + t.ex + sp.value, rotation[2]);
+    const lenisVelocity = (scrolled * (1 / 60)) / dt * 0.04;
+    r.s += (Math.max(-30, Math.min(30, lenisVelocity)) - r.s) * 0.5;
+    r.e.y -= dt * 0.5 * worksRotate + r.s * 0.001;
+    // 5-7: damp the velocity, integrate it into q, and pull q back to identity by the short way.
+    const damp = 1 - dt;
+    r.e.x *= damp;
+    r.e.y *= damp;
+    r.step.setFromEuler(r.e);
+    r.q.premultiply(r.step);
+    r.q.slerp(r.identity, Math.min(1, dt * 2 * (1 - worksRotate * 0.8)));
+    // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
+    r.euler.set(rotation[0], rotation[1], rotation[2]);
+    r.base.setFromEuler(r.euler);
+    if (glyphGroup.current) glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
     chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;
