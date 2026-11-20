@@ -3098,9 +3098,9 @@
   height: 0.5em;
   border: 1px solid rgba(255, 255, 255, 0.7);
   border-radius: 50%;
-  font-size: 0.32em;
   font-weight: 300;
 }
+.stellaArrow > span { font-size: 0.32em; line-height: 1; }
 .stellaCta {
   position: absolute;
   width: 1px;

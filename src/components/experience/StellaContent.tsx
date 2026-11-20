@@ -23,7 +23,7 @@ export function StellaContent({ product, headingId }: { product: ExperienceProdu
         <h2 id={headingId} className={styles.stellaTitle}>
           <Link href={product.href} className={styles.stellaLink}>
             <span>{product.name}</span>
-            <span className={styles.stellaArrow} aria-hidden="true">↗</span>
+            <span className={styles.stellaArrow} aria-hidden="true"><span>↗</span></span>
             <span className={styles.stellaCta}>{product.ctaLabel}</span>
           </Link>
         </h2>
