@@ -8,7 +8,7 @@ import { useEffect } from "react";
 // the instant restorations/anchor jumps elsewhere still land on real pixels.
 // Touch input keeps the platform's own momentum (syncTouch stays off), and
 // the caller disables this for reduced motion, capture and the static view.
-export const SMOOTH_SCROLL_LERP = 0.09;
+export const SMOOTH_SCROLL_LERP = 0.1;
 
 export function useSmoothScroll(enabled: boolean): void {
   useEffect(() => {
@@ -17,7 +17,7 @@ export function useSmoothScroll(enabled: boolean): void {
     const lenis = new Lenis({
       lerp: SMOOTH_SCROLL_LERP,
       smoothWheel: true,
-      wheelMultiplier: 0.9,
+      wheelMultiplier: 1,
       anchors: true,
       autoRaf: true,
     });
