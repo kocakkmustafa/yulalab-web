@@ -389,7 +389,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     // BT8: the reference's returnToOriginForce follows the stage (key visual / after works 2, works_intro 0.4, works 0.1);
     // it eases between those values over about 1 s like wr, so the turn can run on instead of locking at an equilibrium.
     const returnForce = frame.progress >= STAGES.portfolio[1] ? 2 : frame.progress >= WORKS_MAIN_START ? 0.1 : inWorks ? 0.4 : 2;
-    r.rf += Math.max(-1.9 * dt, Math.min(1.9 * dt, returnForce - r.rf));
+    // BT9: eases over about a quarter second (not the 1 s of wr): at 1600 px/s the works stage is entered within 0.1 s, and a
+    // slow ease left the strong key-visual pull on for the first 1500 px (yaw speed half of the reference).
+    r.rf += Math.max(-8 * dt, Math.min(8 * dt, returnForce - r.rf));
     r.e.x -= r.vy * m * (1 - worksRotate * 0.7);
     r.e.y += r.vx * m;
     // 4: scroll velocity (px per 60 Hz frame, scaled to the reference's units) adds to the yaw velocity.
