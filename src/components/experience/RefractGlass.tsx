@@ -88,7 +88,7 @@ const FRAGMENT = /* glsl */ `
 
     // Bend the background by the surface normal, a little more for every colour channel.
     // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
-    vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale / 4).toFixed(6)} * uFluidMix;
+    vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale / 2).toFixed(6)} * uFluidMix;
     float flowAmount = length(flow);
     vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.06;

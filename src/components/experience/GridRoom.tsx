@@ -506,7 +506,24 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
   const radialSegments = tier === "high" ? 112 : tier === "medium" ? 72 : 40;
   const heightSegments = tier === "low" ? 12 : 24;
 
+  // W7 C Yol A: the mouse flow also bends the wordmark (the reference trail bends the title and the Y).
+  const wordFlow = useMemo(() => ({ uFluid: { value: null as Texture | null }, uFluidMix: { value: 0 }, uFlowRes: { value: new Vector2(1, 1) } }), []);
+  const patchWordmark = useMemo(() => (shader: { uniforms: Record<string, unknown>; fragmentShader: string }) => {
+    shader.uniforms.uFluid = wordFlow.uFluid;
+    shader.uniforms.uFluidMix = wordFlow.uFluidMix;
+    shader.uniforms.uFlowRes = wordFlow.uFlowRes;
+    shader.fragmentShader = shader.fragmentShader
+      .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform float uFluidMix; uniform vec2 uFlowRes;")
+      .replace(
+        "#include <map_fragment>",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 flowShift = texture2D(uFluid, flowUv).xy * uFluidMix * 0.03;\n    vec4 sampledDiffuseColor = texture2D(map, vMapUv - flowShift);\n    diffuseColor *= sampledDiffuseColor;",
+      );
+  }, [wordFlow]);
+
   useFrame((state) => {
+    wordFlow.uFluid.value = fluidShared.texture;
+    wordFlow.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
+    state.gl.getDrawingBufferSize(wordFlow.uFlowRes.value);
     const mediaFloat = frame.valueFloat / 3 * Math.max(0, (mediaTextures?.length ?? 0) - 1);
     const mediaIndex = Math.floor(mediaFloat);
     gridMaterial.uniforms.uTime.value = state.clock.elapsedTime;
@@ -594,6 +611,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
           depthWrite
           alphaHash
           map={yulaWordmark}
+          onBeforeCompile={patchWordmark}
+          customProgramCacheKey={() => "wordmark-flow"}
           opacity={frame.world.wordmarkOpacity * (1 - frame.world.worksBackdropMix)}
           toneMapped={false}
         />
