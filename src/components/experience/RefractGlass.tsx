@@ -82,7 +82,7 @@ const FRAGMENT = /* glsl */ `
     // Hand-polished slab: a slow swell over the flat faces (the reference letter is faceted), so the
     // background bends across the whole letter and not only at the bevels.
     vec2 swell = vec2(sin(vLocal.x * 5.0 + vLocal.y * 2.3 + uTime * 0.3), sin(vLocal.y * 4.6 - vLocal.x * 3.1 - uTime * 0.25));
-    normal = normalize(normal + vec3(swell * 0.55, 0.0));
+    normal = normalize(normal + vec3(swell * 0.0, 0.0));
     vec3 viewDir = normalize(-vViewPosition);
     vec2 uv = gl_FragCoord.xy / uResolution;
 
@@ -121,7 +121,7 @@ const FRAGMENT = /* glsl */ `
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
     c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
-    c += vec3(spec) * 0.04;
+    c += vec3(spec) * 0.0;
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.
     gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));

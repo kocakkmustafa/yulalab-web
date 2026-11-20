@@ -656,7 +656,7 @@ html[dir="rtl"] :is(a[href^="mailto:"], a[href^="tel:"], code, time) { unicode-b
   --yula-page-rgb: 0 0 0;
   --yula-accent: #d7ff00;
   --yula-grid-line: rgba(255,255,255,.035);
-  --yula-grid-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-9 0h18M0 -9v18M171 0h18M180 -9v18M-9 180h18M0 171v18M171 180h18M180 171v18' stroke='%23fff' stroke-opacity='.24' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
+  --yula-grid-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E"),
     linear-gradient(90deg, var(--yula-grid-line) 1px, transparent 1px),
     linear-gradient(0deg, var(--yula-grid-line) 1px, transparent 1px);
   --yula-brand-text-mix: 100%;
@@ -1129,7 +1129,8 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
    ust / orta / alt 900px'lik isik karolari + 180px artili, 36px ince izgara.
    Sahne bu rotalarda gorunmez (visibility), ana sayfa (deneyim koku) etkilenmez. */
 :root[data-theme="dark"] {
-  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-9 0h18M0 -9v18M171 0h18M180 -9v18M-9 180h18M0 171v18M171 180h18M180 171v18' stroke='%23fff' stroke-opacity='.24' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  --yula-plus-img-mobile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='105' height='105'%3E%3Cpath d='M-9 0h18M0 -9v18M96 0h18M105 -9v18M-9 105h18M0 96v18M96 105h18M105 96v18' stroke='%23fff' stroke-opacity='.24' stroke-width='1' fill='none'/%3E%3C/svg%3E");
 }
 /* W7 A2 (Y1-Y9): one fixed glow layer, no purple, finer grid, bigger fainter plus marks (Tasarim zemin-ic/BULGU.md). */
 :root[data-theme="dark"]:not(:has([data-yula-experience="true"])) {

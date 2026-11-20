@@ -139,7 +139,7 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
     // diagonal band in glyph space that never leaves the letter.
     float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
     float center = (uPhase - 0.5) * 1.5;
-    float across = (axis - center) / 0.15;
+    float across = (axis - center) / 0.195;
     float band = smoothstep(1.0, 0.55, abs(across));
     float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
     vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
@@ -173,6 +173,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const glyphGroup = useRef<Group>(null);
   // W7 CY1 / F9: pointer tilt (reference): velocity of the eased pointer pushes pitch/yaw, then decays. Desktop only.
   const tilt = useRef({ tx: 0, ty: 0, cx: 0, cy: 0, ex: 0, ey: 0 });
+  // W7 CY4: scroll-velocity spin (reference): rotY -= clamp(scroll px per frame, 30) * 0.001, plus a slow drift
+  // once the works section opens; it relaxes back at 2 /s in the opening and 0.1 /s once works rotates.
+  const spin = useRef({ y: 0, lastScroll: -1, value: 0 });
   useEffect(() => {
     if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches) return undefined;
     const onMove = (event: MouseEvent) => {
@@ -261,7 +264,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // The constrained tier uses alpha, not an extra transmission render pass.
   // This is a light transparent approximation; physical refraction stays in
   // the existing medium/high material.
-  const fallbackOpacity = bodyOpacity * (tier === "low" ? 1 - frame.glyph.glassMix * 0.7 : 1);
+  // W7 CY9: the glass shows the bent background copy, so the opaque fallback body steps aside as the glass comes in.
+  const fallbackOpacity = bodyOpacity * (1 - frame.glyph.glassMix);
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const fringeOpacity =
     frame.glyph.glassMix * (tier === "low" ? 0.006 : 0.004) * closingVisibility;
@@ -336,12 +340,20 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     t.cx += vx * follow;
     t.cy += vy * follow;
     const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5) * dt * 60;
-    t.ex += vx * reach;
-    t.ey -= vy * reach;
+    t.ex += vx * reach * 2.8;
+    t.ey -= vy * reach * 7.1;
     t.ex *= 1 - dt;
     t.ey *= 1 - dt;
-    // W7 CY2: no idle sway; the only motion on the hero Y is the pointer tilt.
-    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + t.ey, rotation[1] + t.ex, rotation[2]);
+    const sp = spin.current;
+    const scrollNow = typeof window === "undefined" ? 0 : window.scrollY;
+    const scrolled = sp.lastScroll < 0 ? 0 : scrollNow - sp.lastScroll;
+    sp.lastScroll = scrollNow;
+    const worksRotate = smoothstep(segmentProgress(frame.progress, 0.085, 0.1)) * (1 - smoothstep(segmentProgress(frame.progress, 0.46, 0.52)));
+    sp.value -= Math.max(-30, Math.min(30, scrolled)) * 0.001;
+    sp.value -= dt * 0.5 * worksRotate;
+    sp.value *= 1 - Math.min(1, dt * (worksRotate > 0.01 ? 0.1 * (1 - 0.8 * worksRotate) : 2));
+    // W7 CY2: no idle sway; the motion on the Y is the pointer tilt and the scroll spin.
+    if (glyphGroup.current) glyphGroup.current.rotation.set(rotation[0] + t.ey, rotation[1] + t.ex + sp.value, rotation[2]);
     chromeBump.offset.set(Math.sin(time * 0.17) * 0.08, time * 0.012);
     if (causticMaterial.current) {
       causticMaterial.current.uniforms.uTime.value = frame.progress * 18 + time * 0.72;

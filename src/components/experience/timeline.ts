@@ -419,7 +419,8 @@ export function evaluateTimeline(
   // The reference's emblem turns with the first scroll. One full turn over
   // the hero ends on the starting orientation, so the portfolio hand-off is
   // unchanged; depth clearance keeps using the unspun pose.
-  const heroSpin = p < STAGES.hero[1] ? Math.PI * 2 * smoothstep(segmentProgress(p, 0, STAGES.hero[1])) : 0;
+  // W7 CY4: the turn now follows scroll velocity inside YulaGlyph (reference model), no position-based spin here.
+  const heroSpin = 0;
   const glyphRotation: Vec3 = [baseGlyphRotation[0], baseGlyphRotation[1] + heroSpin, baseGlyphRotation[2]];
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 
