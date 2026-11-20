@@ -1290,9 +1290,9 @@
     calc(42px + var(--safe-bottom)) calc(clamp(26px, 5vw, 86px) + var(--safe-left));
   background: linear-gradient(
     90deg,
-    rgb(var(--yula-exp-rgb) / .9) 0%,
-    rgb(var(--yula-exp-rgb) / .7) 46%,
-    rgb(var(--yula-exp-rgb) / .5) 100%
+    rgb(var(--yula-exp-rgb) / calc(.9 * (1 - var(--white-mix, 0)))) 0%,
+    rgb(var(--yula-exp-rgb) / calc(.7 * (1 - var(--white-mix, 0)))) 46%,
+    rgb(var(--yula-exp-rgb) / calc(.5 * (1 - var(--white-mix, 0)))) 100%
   );
 }
 

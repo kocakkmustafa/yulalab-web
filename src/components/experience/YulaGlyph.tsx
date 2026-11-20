@@ -350,8 +350,10 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.py = t.ty;
     const m = 0.0595 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5); // BT6: the reference applies the hover velocity per event
     // W7 BT6 worksRotate: 0 in the key visual, eases to 1 over 1 s (sigmoid 6) when the works section is entered.
-    r.wrP = Math.min(1, Math.max(0, r.wrP + (frame.world.worksBackdropMix > 0.5 ? dt : -dt)));
-    const worksRotate = 1 / (1 + Math.exp(-6 * (r.wrP * 2 - 1)));
+    // Tied to the works stage bounds (storyboard works_intro to works_outro), not to a pixel offset.
+    r.wrP = Math.min(1, Math.max(0, r.wrP + (frame.world.worksBackdropMix > 0.001 ? dt : -dt)));
+    const sigmoid = (x: number) => 1 / (1 + Math.exp(-6 * (x * 2 - 1)));
+    const worksRotate = r.wrP <= 0 ? 0 : (sigmoid(r.wrP) - sigmoid(0)) / (sigmoid(1) - sigmoid(0));
     r.e.x -= r.vy * m * (1 - worksRotate * 0.7);
     r.e.y += r.vx * m;
     // 4: scroll velocity (px per 60 Hz frame, scaled to the reference's units) adds to the yaw velocity.
@@ -362,8 +364,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     // BT6: the scroll turn is applied to q directly (scale 1.0, smoothing min(1, 5 dt)); it stays out of e.
     const lenisVelocity = (scrolled * (1 / 60)) / dt;
     r.s += (Math.max(-30, Math.min(30, lenisVelocity)) - r.s) * Math.min(1, dt * 5);
-    r.e.y -= dt * 0.5 * worksRotate;
-    r.scrollE.set(0, -r.s * 0.001, 0);
+    if (Math.abs(r.s) < 0.02) r.s = 0;
+    // The constant works turn (0.5 rad/s) goes straight to q like the scroll term; in e it piled up.
+    r.scrollE.set(0, -r.s * 0.001 - dt * 0.5 * worksRotate, 0);
     r.scrollQ.setFromEuler(r.scrollE);
     r.q.premultiply(r.scrollQ);
     // 5-7: damp the velocity, integrate it into q, and pull q back to identity by the short way.

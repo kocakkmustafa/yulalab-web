@@ -123,7 +123,7 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
-    cornerFall *= mix(1.0, 0.5, smoothstep(0.6, 0.95, uv.x));
+    cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
 `;
@@ -165,8 +165,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   ${GROUND_GLSL}
   void main() {
     float fine = gridLine(vUv, vec2(128.0, 64.0));
-    float major = gridLine(vUv, vec2(48.2, 59.5));
-    vec2 tile = vUv * vec2(48.2, 59.5);
+    float major = gridLine(vUv, vec2(48.2, 107.0));
+    vec2 tile = vUv * vec2(48.2, 107.0);
     vec2 cell = floor(tile);
     vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
@@ -282,7 +282,6 @@ const WHITE_RISE_FRAGMENT = /* glsl */ `
     // W7 Z01-b: the leading edge of the wipe is white (L >= 200) from the start.
     float lead = smoothstep(edge - 0.09, edge - 0.004, vUv.y);
     // W7 Z01-b (tur 5): the fill is the light-section colour from the first row, not grey until full coverage.
-    color = mix(color, vec3(0.686, 0.753, 0.783), 0.9);
     color = mix(color, vec3(0.80), lead);
     gl_FragColor = vec4(color, mask * uOpacity);
     #include <colorspace_fragment>
