@@ -3179,14 +3179,14 @@
 .valuesStage .valuesHeading .kicker {
   position: absolute;
   right: 5vw;
-  top: calc(27.2vh - 8px);
+  top: calc(27.2vh - 76px);
   margin: 0;
   text-align: right;
 }
 .valuesStage .valuesHeading h2 {
   position: absolute;
   left: 64.5vw;
-  top: calc(41.9vh - 24px);
+  top: calc(41.9vh - 92px);
   width: 30.5vw;
   max-width: none;
   margin: 0;
@@ -3209,7 +3209,7 @@
   position: absolute;
   left: 64.5vw;
   right: auto;
-  top: 48.9vh;
+  top: calc(48.9vh - 68px);
   bottom: auto;
   width: 29.5vw;
   min-height: 0;
@@ -3236,9 +3236,9 @@
 .valuesStage .valuePanel h3::after { content: " "; }
 .valuesStage .valuePanel p { display: inline; margin: 0; font: inherit; color: rgba(255, 255, 255, 0.92); }
 @media (max-width: 900px) {
-  .valuesStage .valuesHeading .kicker { right: 16px; top: calc(21.9vh - 8px); }
-  .valuesStage .valuesHeading h2 { left: 16px; width: calc(100vw - 32px); top: calc(78vh - 16px); font-size: 30px; }
-  .valuesStage .valuePanels { left: 16px; width: calc(100vw - 32px); top: calc(78vh + 30px); }
+  .valuesStage .valuesHeading .kicker { right: 16px; top: calc(21.9vh - 82px); }
+  .valuesStage .valuesHeading h2 { left: 16px; width: calc(100vw - 32px); top: calc(78vh - 80px); font-size: 30px; }
+  .valuesStage .valuePanels { left: 16px; width: calc(100vw - 32px); top: calc(78vh - 34px); }
   .valuesStage .valuePanel { font-size: 12.5px; line-height: 19px; }
   .valuesStage .valuesHeading .previewNote { left: 16px; width: calc(100vw - 32px); top: auto; bottom: calc(14px + var(--safe-bottom)); font-size: 11px; line-height: 14px; }
 }

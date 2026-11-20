@@ -503,7 +503,8 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
     gridMaterial.uniforms.uWallTint.value.fromArray(resolveWallTint(frame.progress));
     gridMaterial.uniforms.uProjectionA.value = mediaTextures?.[mediaIndex] ?? null;
     gridMaterial.uniforms.uProjectionB.value = mediaTextures?.[Math.min(mediaIndex + 1, (mediaTextures?.length ?? 1) - 1)] ?? null;
-    gridMaterial.uniforms.uProjectionMix.value = mediaTextures?.length ? frame.world.serviceIn * (1 - frame.world.serviceOut) * 0.82 : 0;
+    // W6 K5 (Tasarim E3/E4): the Values room is flat ground light; no generic media projection and no wall title on it.
+    gridMaterial.uniforms.uProjectionMix.value = 0;
     gridMaterial.uniforms.uProjectionBlend.value = smoothstep(mediaFloat - mediaIndex);
     bladeMaterial.uniforms.uRise.value = frame.world.bladeProgress;
     bladeMaterial.uniforms.uOpacity.value = 1 - smoothstep(segmentProgress(frame.progress, 0.815, 0.835));
