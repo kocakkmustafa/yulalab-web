@@ -337,8 +337,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const follow = Math.min(1, dt * 10);
     const vx = t.tx - t.cx;
     const vy = t.ty - t.cy;
-    t.cx += vx * follow;
-    t.cy += vy * follow;
+    // W7 CY1: slower follow so the settle phase lags (yaw x0.55, pitch x0.72).
+    t.cx += vx * follow * 0.55;
+    t.cy += vy * follow * 0.72;
     const reach = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 0.7) * dt * 60;
     t.ex += vx * reach * 3.1;
     t.ey -= vy * reach * 6.3;
@@ -350,7 +351,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const scrolled = sp.lastScroll < 0 ? 0 : scrollNow - sp.lastScroll;
     sp.lastScroll = scrollNow;
     // The first 250 px do not turn the Y; the turn ramps in by 500 px.
-    const spinGate = smoothstep(segmentProgress(scrollNow, 250, 500));
+    // segmentProgress clamps to 0-1, so the px range is normalised first (W7 CY4 gate fix).
+    const spinGate = smoothstep(Math.min(1, Math.max(0, (scrollNow - 250) / 250)));
     sp.value -= Math.max(-30, Math.min(30, scrolled)) * 0.001 * spinGate;
     // At rest the angle settles onto the nearest full turn by the short way (about 2.4 s).
     if (Math.abs(scrolled) < 0.5) {
