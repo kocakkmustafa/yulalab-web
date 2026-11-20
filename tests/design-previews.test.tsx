@@ -86,7 +86,7 @@ describe("DesignPreviewSection", () => {
   it.each([
     ["tr", "Tasarım önizlemesi", "ekran görüntüsü", "Tasarım yönü"],
     ["en", "Design preview", "not a capture of a published version", "Design direction"],
-  ] as const)("%s shows label, disclaimer and per-figure provenance", (locale, label, disclaimer, dir) => {
+  ] as const)("%s shows label, disclaimer and a per-figure description (no internal board file)", (locale, label, disclaimer, dir) => {
     for (const slug of ["lifeos", "braavolabs"]) {
       const { container, unmount } = render(<DesignPreviewSection slug={slug} locale={locale} />);
       const section = container.querySelector(`[data-design-previews="${slug}"]`)!;
@@ -95,9 +95,9 @@ describe("DesignPreviewSection", () => {
       const figures = section.querySelectorAll("figure");
       expect(figures).toHaveLength(designPreviews[slug].length);
       figures.forEach((figure, i) => {
-        expect(figure.textContent).toContain(designPreviews[slug][i].boardFile);
-        expect(figure.textContent).toContain(dir);
-        expect(figure.textContent).toContain("2026-11-18");
+        expect(figure.textContent).not.toContain(designPreviews[slug][i].boardFile);
+        expect(figure.textContent).not.toContain(dir);
+        expect(figure.querySelector("figcaption")?.textContent?.length ?? 0).toBeGreaterThan(20);
         const img = figure.querySelector("img")!;
         expect(img.getAttribute("loading")).toBe("lazy");
         expect(img.getAttribute("decoding")).toBe("async");

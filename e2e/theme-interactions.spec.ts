@@ -39,7 +39,7 @@ for (const locale of ["tr", "en"] as const) {
       expect(await page.locator(".page-enter").first().evaluate((el) => getComputedStyle(el).animationName)).toBe("none");
       expect(await page.evaluate(() => document.getAnimations().filter((a) => a.playState === "running").length)).toBe(0);
       expect(await page.evaluate(() => document.documentElement.classList.contains("lenis"))).toBe(false);
-      await page.locator("[data-site-header] nav a[href]").nth(1).click();
+      await page.locator("[data-site-header] nav a[href]").nth(2).click();
       await page.waitForURL((u) => !u.pathname.endsWith("/projects"));
       await expect(page.locator("main h1").first()).toBeVisible();
       // Exit fade is skipped under reduced motion: the new page shows at once.
@@ -85,7 +85,7 @@ for (const locale of ["tr", "en"] as const) {
 
     test("client navigation moves focus to main and lands on the new page", async ({ page }) => {
       await page.goto(`${base}/projects`);
-      await page.locator("[data-site-header] nav a[href]").nth(1).click();
+      await page.locator("[data-site-header] nav a[href]").nth(2).click();
       await expect(page.locator("main#main-content")).toBeFocused({ timeout: 8000 });
     });
 

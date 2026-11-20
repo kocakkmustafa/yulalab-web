@@ -31,7 +31,7 @@ export function ProductFeatures({ slug, locale }: { slug: string; locale: Locale
                   {localized(feature.roadmap ? SHOWCASE_LABELS.roadmap : SHOWCASE_LABELS.soon, locale)}
                 </p>
               ) : null}
-              <h3 className="font-display font-light text-[clamp(20px,1.8vw,26px)] leading-[1.2] tracking-tight mb-3 text-pretty">
+              <h3 className="font-grotesk font-semibold text-[clamp(20px,1.8vw,26px)] leading-[1.2] tracking-tight mb-3 text-pretty">
                 {localized(feature.title, locale)}
               </h3>
               <p className="text-[14.5px] leading-[1.7] text-ink-300 text-pretty">
@@ -103,7 +103,7 @@ export function ProductCompany({ slug, locale }: { slug: string; locale: Locale 
     <section className="pb-24" aria-labelledby="product-company-heading">
       <Reveal>
         <div className="mb-6 flex flex-wrap items-center gap-3">
-          <h2 id="product-company-heading" className="font-display font-light text-[clamp(28px,3.2vw,44px)] tracking-tight">
+          <h2 id="product-company-heading" className="font-grotesk font-semibold text-[clamp(28px,3.2vw,44px)] tracking-tight">
             {localized(company.title, locale)}
           </h2>
           {company.roadmap ? (
@@ -191,7 +191,7 @@ export function ProductPrice({
             ...(price.yearly ? [[price.yearly, SHOWCASE_LABELS.perYear] as const] : []),
           ] as const).map(([amount, period]) => (
             <p key={period.en} className="flex items-baseline gap-3">
-              <span className="font-display font-light text-[clamp(32px,4vw,56px)] tracking-tight text-ink-50" dir="ltr">
+              <span className="font-grotesk font-semibold text-[clamp(32px,4vw,56px)] tracking-tight text-ink-50" dir="ltr">
                 {formatPrice(amount, locale)}
               </span>
               <span className="font-mono text-[11px] tracking-[0.16em] uppercase text-ink-300">

@@ -9,9 +9,9 @@ test.beforeEach(async ({ page }) => {
 });
 
 const LOCALES = [
-  { code: "tr", prefix: "", menu: "Menü", close: "Kapat", primary: ["Ürünler", "Laboratuvar", "İş Birliği"] },
-  { code: "en", prefix: "/en", menu: "Menu", close: "Close", primary: ["Products", "Lab", "Collaboration"] },
-  { code: "ar", prefix: "/ar", menu: "القائمة", close: "إغلاق", primary: ["المنتجات", "المختبر", "التعاون"] },
+  { code: "tr", prefix: "", menu: "Menü", close: "Kapat", primary: ["AI danışmanlığı", "Projeler", "Manifesto"] },
+  { code: "en", prefix: "/en", menu: "Menu", close: "Close", primary: ["AI consulting", "Projects", "Manifesto"] },
+  { code: "ar", prefix: "/ar", menu: "القائمة", close: "إغلاق", primary: ["استشارات الذكاء الاصطناعي", "المشاريع", "بيان المبادئ"] },
 ] as const;
 
 const overflow = (page: Page) =>
@@ -96,7 +96,7 @@ test.describe("desktop header (1440)", () => {
       const links = page.locator("header nav a, header [data-header-cta]");
       await expect(links).toHaveCount(5);
       const hrefs = await links.evaluateAll((nodes) => nodes.map((n) => n.getAttribute("href")));
-      expect(hrefs).toEqual(["/projects", "/notes", "/manifesto", "/consulting", "/projects"]);
+      expect(hrefs).toEqual(["/consulting", "/projects", "/manifesto", "/transparency", "/projects"]);
       await links.first().focus();
       await expect(links.first()).toBeFocused();
       expect(await page.locator("header [data-ticker], header marquee").count()).toBe(0);
