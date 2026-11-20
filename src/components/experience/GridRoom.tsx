@@ -226,6 +226,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float fade = (1.0 - smoothstep(60.0, 110.0, vViewDepth)) * smoothstep(0.0, 0.03, vUv.y) * (1.0 - smoothstep(0.97, 1.0, vUv.y));
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
     vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
+    // W7 C tur 5 V3: the room surfaces read the mouse flow like the hero ground does.
+    base += vec3(0.8, 0.85, 1.0) * length(texture2D(uFluid, screenUv).xy * uFluidMix) * 2.4;
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
@@ -507,21 +509,23 @@ export function GridRoom({ frame, tier, mediaTextures, wallTitles = ENGLISH_WALL
   const heightSegments = tier === "low" ? 12 : 24;
 
   // W7 C Yol A: the mouse flow also bends the wordmark (the reference trail bends the title and the Y).
-  const wordFlow = useMemo(() => ({ uFluid: { value: null as Texture | null }, uFluidMix: { value: 0 }, uFlowRes: { value: new Vector2(1, 1) } }), []);
+  const wordFlow = useMemo(() => ({ uFluid: { value: null as Texture | null }, uTrace: { value: null as Texture | null }, uFluidMix: { value: 0 }, uFlowRes: { value: new Vector2(1, 1) } }), []);
   const patchWordmark = useMemo(() => (shader: { uniforms: Record<string, unknown>; fragmentShader: string }) => {
     shader.uniforms.uFluid = wordFlow.uFluid;
+    shader.uniforms.uTrace = wordFlow.uTrace;
     shader.uniforms.uFluidMix = wordFlow.uFluidMix;
     shader.uniforms.uFlowRes = wordFlow.uFlowRes;
     shader.fragmentShader = shader.fragmentShader
-      .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform float uFluidMix; uniform vec2 uFlowRes;")
+      .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform sampler2D uTrace; uniform float uFluidMix; uniform vec2 uFlowRes;")
       .replace(
         "#include <map_fragment>",
-        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 flowShift = texture2D(uFluid, flowUv).xy * uFluidMix * 0.03;\n    vec4 sampledDiffuseColor = texture2D(map, vMapUv - flowShift);\n    diffuseColor *= sampledDiffuseColor;",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 flowShift = (texture2D(uFluid, flowUv).xy * 0.045 + texture2D(uTrace, flowUv).xy * 0.012) * uFluidMix;\n    vec4 sampledDiffuseColor = texture2D(map, vMapUv - flowShift);\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
 
   useFrame((state) => {
     wordFlow.uFluid.value = fluidShared.texture;
+    wordFlow.uTrace.value = fluidShared.trace ?? fluidShared.texture;
     wordFlow.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
     state.gl.getDrawingBufferSize(wordFlow.uFlowRes.value);
     const mediaFloat = frame.valueFloat / 3 * Math.max(0, (mediaTextures?.length ?? 0) - 1);

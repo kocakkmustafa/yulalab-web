@@ -36,7 +36,7 @@ export const FLUID_PARAMS = {
 } as const;
 
 /** Shared read side: the newest velocity texture and how strongly it should show (0 when idle or unsupported). */
-export const fluidShared: { texture: Texture | null; mix: number } = { texture: null, mix: 0 };
+export const fluidShared: { texture: Texture | null; trace: Texture | null; mix: number } = { texture: null, trace: null, mix: 0 };
 
 const FULLSCREEN_VERTEX = /* glsl */ `
   varying vec2 vUv;
@@ -55,6 +55,15 @@ const SPLAT = /* glsl */ `${HEAD}
     vec2 d = vUv - uPoint; d.x *= uAspect;
     float g = smoothstep(uRadius, 0.0, length(d));
     gl_FragColor = vec4(texture2D(uTarget, vUv).xy + uForce * g, 0.0, 1.0);
+  }
+`;
+
+const TRACE = /* glsl */ `${HEAD}
+  uniform sampler2D uTrace; uniform sampler2D uVelocity; uniform float uDecay;
+  void main() {
+    // Low-pass copy of the velocity: decays slowly (half life about 3 s) and is clamped, W7 C tur 5.
+    vec2 t = texture2D(uTrace, vUv).xy * uDecay + texture2D(uVelocity, vUv).xy * 0.04;
+    gl_FragColor = vec4(clamp(t, -3.0, 3.0), 0.0, 1.0);
   }
 `;
 
@@ -153,9 +162,10 @@ export class FluidSim {
   private readonly quad: Mesh;
   private readonly velocity: Pair;
   private readonly pressure: Pair;
+  private readonly trace: Pair;
   private readonly curl: WebGLRenderTarget;
   private readonly divergence: WebGLRenderTarget;
-  private readonly programs: Record<"splat" | "advect" | "curl" | "vorticity" | "divergence" | "pressure" | "gradient", ShaderMaterial>;
+  private readonly programs: Record<"splat" | "trace" | "advect" | "curl" | "vorticity" | "divergence" | "pressure" | "gradient", ShaderMaterial>;
 
   constructor(aspect = 1) {
     const width = FLUID_PARAMS.grid;
@@ -165,6 +175,7 @@ export class FluidSim {
       new ShaderMaterial({ vertexShader: FULLSCREEN_VERTEX, fragmentShader, uniforms: { uTexel: { value: texel }, ...uniforms }, depthTest: false, depthWrite: false });
     this.programs = {
       splat: make(SPLAT, { uTarget: { value: null }, uPoint: { value: new Vector2() }, uForce: { value: new Vector2() }, uAspect: { value: 1 }, uRadius: { value: FLUID_PARAMS.splatRadius } }),
+      trace: make(TRACE, { uTrace: { value: null }, uVelocity: { value: null }, uDecay: { value: 1 } }),
       advect: make(ADVECT, { uVelocity: { value: null }, uDt: { value: 0 }, uDissipation: { value: 1 } }),
       curl: make(CURL, { uVelocity: { value: null } }),
       vorticity: make(VORTICITY, { uVelocity: { value: null }, uCurl: { value: null }, uCurlStrength: { value: 0 }, uDt: { value: 0 } }),
@@ -177,11 +188,14 @@ export class FluidSim {
     this.scene.add(this.quad);
     this.velocity = new Pair(width, height);
     this.pressure = new Pair(width, height);
+    this.trace = new Pair(width, height);
     this.curl = makeTarget(width, height);
     this.divergence = makeTarget(width, height);
   }
 
   get texture(): Texture { return this.velocity.read.texture; }
+  /** Slowly fading, accumulated copy of the flow: the wordmark keeps bending long after the swirl itself has died. */
+  get traceTexture(): Texture { return this.trace.read.texture; }
 
   private pass(renderer: WebGLRenderer, program: ShaderMaterial, target: WebGLRenderTarget) {
     this.quad.material = program;
@@ -242,13 +256,19 @@ export class FluidSim {
     this.pass(renderer, p.advect, this.velocity.write);
     this.velocity.swap();
 
+    p.trace.uniforms.uTrace.value = this.trace.read.texture;
+    p.trace.uniforms.uVelocity.value = this.velocity.read.texture;
+    p.trace.uniforms.uDecay.value = Math.pow(0.9965, dt * 60);
+    this.pass(renderer, p.trace, this.trace.write);
+    this.trace.swap();
+
     renderer.setRenderTarget(previousTarget);
     renderer.autoClear = previousAutoClear;
     renderer.shadowMap.autoUpdate = previousShadow;
   }
 
   dispose() {
-    this.velocity.dispose(); this.pressure.dispose(); this.curl.dispose(); this.divergence.dispose();
+    this.velocity.dispose(); this.pressure.dispose(); this.trace.dispose(); this.curl.dispose(); this.divergence.dispose();
     this.quad.geometry.dispose();
     Object.values(this.programs).forEach((program) => program.dispose());
   }
@@ -295,6 +315,7 @@ export function MouseFluid({ active }: { active: boolean }) {
     sim.current?.dispose();
     sim.current = null;
     fluidShared.texture = null;
+    fluidShared.trace = null;
     fluidShared.mix = 0;
   }, []);
 
@@ -327,12 +348,13 @@ export function MouseFluid({ active }: { active: boolean }) {
         y: pointerState.cy,
         vx: Math.max(-2, Math.min(2, pointerState.ax * 30)),
         vy: Math.max(-2, Math.min(2, pointerState.ay * 30)) * aspect,
-        radius: (0.01 + 0.1 * Math.min(0.5, eased)) * 1.85, // W7 F4: FWHM 31 -> about 57 px
+        radius: (0.01 + 0.1 * Math.min(0.5, eased)) * 1.85 * 0.85, // W7 F4 (C tur 5: x0.85): FWHM 31 -> about 57 px
       };
     }
     pointerState.moved = false;
     sim.current.step(state.gl, dt, aspect, splat);
     fluidShared.texture = sim.current.texture;
+    fluidShared.trace = sim.current.traceTexture;
     fluidShared.mix = 1;
     // Keep drawing until the swirl has died down after the last movement.
     if (performance.now() / 1000 - pointerState.lastMove < 4) invalidate();
