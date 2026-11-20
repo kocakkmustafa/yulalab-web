@@ -11,9 +11,9 @@ import { OstinatoDemoArea } from "@/components/projects/OstinatoDemoArea";
 import { ostinatoDemoEnabled } from "@/server/ostinato-demo-surface";
 import { LifeosDemoArea } from "@/components/projects/LifeosDemoArea";
 import { lifeosDemoEnabled } from "@/server/lifeos-demo-surface";
+import { ProjectStrip } from "@/components/projects/ProjectStrip";
 import { ResponsiveDetails } from "@/components/projects/ResponsiveDetails";
 import { StatusPill } from "@/components/common/StatusPill";
-import { ProjectMonogram } from "@/components/common/ProjectMonogram";
 import { TrackView } from "@/components/common/TrackView";
 import { Reveal } from "@/components/common/Reveal";
 import { GlassSheen } from "@/components/common/GlassSheen";
@@ -93,7 +93,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
   return (
     <div
-      className="page-enter relative min-h-screen"
+      className="page-enter relative min-h-screen overflow-x-clip"
       {...(themed ? { "data-brand-var": "true" } : {})}
       style={{ ...(themed ? brandInk(project.brand) : {}), ["--accent" as string]: accent }}
     >
@@ -118,9 +118,21 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </span>
         </div>
 
+        {/* LK0 — horizontal project strip, after the reference "Works" rail */}
+        <div className="pt-12">
+          <ProjectStrip projects={projects} currentSlug={project.slug} label={t("back")} />
+        </div>
+
         {/* hero */}
-        <header className="pt-16 pb-16">
-          {project.visuals.icon ? <div className="mb-8"><ProjectMonogram project={project} size={96} radius={20} /></div> : null}
+        <header className="relative pt-16 pb-16">
+          {/* LK1: faint oversized brand word behind the article head, after the reference's pale title text */}
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -top-4 start-0 select-none whitespace-nowrap font-grotesk text-[clamp(96px,17vw,260px)] font-bold leading-none tracking-tightest text-white/[0.05]"
+            data-testid="product-brand-word"
+          >
+            {project.name}
+          </span>
           <Reveal className="flex items-center gap-3 mb-8">
             <span
               aria-hidden
@@ -133,7 +145,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             <StatusPill status={project.status} slug={project.slug} />
           </Reveal>
           <Reveal delay={80}>
-            <h1 className="font-display font-light text-[clamp(40px,6.6vw,100px)] leading-[0.98] tracking-tightest mb-6">
+            <h1 className="relative font-grotesk font-bold text-[clamp(44px,6.6vw,100px)] leading-[0.98] tracking-tightest mb-6">
               {project.name}
             </h1>
           </Reveal>
@@ -149,16 +161,16 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             the value on mobile), (2) real use, (3) capabilities, then
             (4)–(7) as disclosures on mobile. Nothing here is new content:
             existing sections are re-ordered; gaps are written out. */}
-        <div className="flex flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-x-14" data-testid="product-detail">
+        <div className="flex flex-col" data-testid="product-detail">
           {/* (1) value proposition — founder direction 2026-11-02: a short
               promotional read of the finished product, every sentence backed
               by what the product's main branch ships today */}
           {p.pitchTitle ? (
-            <section className="pb-24 lg:col-start-1" aria-labelledby="product-pitch-heading" data-testid="product-pitch" data-item="1">
+            <section className="pb-24" aria-labelledby="product-pitch-heading" data-testid="product-pitch" data-item="1">
               <Reveal>
                 <h2
                   id="product-pitch-heading"
-                  className="font-display font-light text-[clamp(28px,3.6vw,52px)] leading-[1.08] tracking-tight max-w-[24ch] mb-12 text-pretty"
+                  className="font-grotesk font-semibold text-[clamp(28px,3.6vw,52px)] leading-[1.08] tracking-tight max-w-[24ch] mb-12 text-pretty"
                 >
                   {p.pitchTitle}
                 </h2>
@@ -185,14 +197,14 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             aria-labelledby="product-access-heading"
             data-testid="product-access"
             data-item="8"
-            className="pb-12 lg:col-start-2 lg:row-start-1 lg:row-span-6 lg:self-start lg:pb-24"
+            className="pb-12 lg:max-w-[560px] lg:pb-24"
           >
             <Reveal>
               <div className="glass p-7 lg:p-8">
                 <p className={`${KICKER} mb-5`}>{t("accessHeading")}</p>
                 <h2
                   id="product-access-heading"
-                  className="font-display font-light text-[clamp(22px,2.2vw,30px)] leading-[1.15] tracking-tight mb-3 text-pretty"
+                  className="font-grotesk font-semibold text-[clamp(22px,2.2vw,30px)] leading-[1.15] tracking-tight mb-3 text-pretty"
                 >
                   {p.ctaTitle}
                 </h2>
@@ -281,7 +293,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                 {(["a1", "a2"] as const).map((k, i) => (
                   <Reveal key={k} delay={i * 90}>
-                    <h2 className="font-display font-light text-[clamp(24px,2.8vw,40px)] leading-[1.16] tracking-tight max-w-[22ch] mb-4 text-pretty">
+                    <h2 className="font-grotesk font-semibold text-[clamp(24px,2.8vw,40px)] leading-[1.16] tracking-tight max-w-[22ch] mb-4 text-pretty">
                       {p[`${k}Title`]}
                     </h2>
                     <p className="max-w-[46ch] text-[15.5px] leading-[1.75] text-ink-300 text-pretty">
@@ -328,9 +340,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             />
           </div>
 
+          {/* W3-6: the design previews are always visible (also on mobile); only the product shots and the demo fold. */}
+          <div className="pb-12 lg:pb-24"><DesignPreviewSection slug={project.slug} locale={locale} /></div>
+
           {/* (4) real screen / demo — the demo is only ever an example
               simulation; with neither, the empty state says so */}
-          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:pb-24">
             <div data-item="4">
               {productShots.length ? (
                 <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0 mb-12">
@@ -345,12 +360,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                     );
                   })}
                 </ul>
-              ) : (
-                <p data-testid="screen-empty" className="mb-12 max-w-[60ch] text-[15px] leading-[1.7] text-ink-300">
-                  {t("screenEmpty")}
-                </p>
-              )}
-              <DesignPreviewSection slug={project.slug} locale={locale} />
+              ) : null /* L4: no "no screenshot yet" line; design previews follow */}
               {project.slug === "braavolabs" ? (
                 <div id="dene" data-testid="demo-area">
                   <p
@@ -388,7 +398,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
           </ResponsiveDetails>
 
           {/* (5) privacy and trust: the product's own policy, then the FAQ */}
-          <ResponsiveDetails id="gizlilik" title={t("trustHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="gizlilik" title={t("trustHeading")} className="pb-12 lg:pb-24">
             <div data-item="5">
               {record?.privacyUrl ? (
                 <p className="mb-10 text-[15px]">
@@ -403,7 +413,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
 
           {/* (6) release status: the registry-backed pill and the deep link
               to that product's record on /transparency (#<slug>) */}
-          <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:col-start-1 lg:pb-24">
+          <ResponsiveDetails id="durum" title={t("statusHeading")} className="pb-12 lg:pb-24">
             <div data-item="6" className="flex flex-wrap items-center gap-x-6 gap-y-3 pb-12 lg:pb-0">
               <StatusPill status={project.status} slug={project.slug} />
               <Link href={`/transparency#${project.slug}`} prefetch={false} className="text-[15px] underline underline-offset-4 hover:text-ink-50 focusable" data-testid="status-link">
@@ -437,7 +447,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               <span className="block font-mono text-[10px] tracking-[0.18em] uppercase text-ink-400 mb-3">
                 {i === 0 ? t("otherNext") : t("otherAlso")}
               </span>
-              <span className="font-display font-light text-[clamp(20px,2vw,28px)] tracking-tight">
+              <span className="font-grotesk font-semibold text-[clamp(20px,2vw,28px)] tracking-tight">
                 {o.name} →
               </span>
             </Link>

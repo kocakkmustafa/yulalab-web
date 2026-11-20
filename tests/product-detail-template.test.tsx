@@ -99,14 +99,21 @@ describe.each(["tr", "en"] as const)("%s product detail template (WEB-UX-05c)", 
     }
   });
 
-  it("writes the empty screen state when the catalogue has no product screenshot", () => {
+  it("does not write a 'no screenshot' line (L4) and keeps the design previews", () => {
     renderPage("lifeos", locale);
-    expect(screen.getByTestId("screen-empty").textContent).toBe(messages.product.screenEmpty);
+    expect(screen.queryByTestId("screen-empty")).toBeNull();
     cleanup();
     renderPage("braavolabs", locale);
-    // Y2 removed (2026-11-18): Braavolabs also has no real screenshot; the design previews do not count as one.
-    expect(screen.getByTestId("screen-empty").textContent).toBe(messages.product.screenEmpty);
+    expect(screen.queryByTestId("screen-empty")).toBeNull();
     expect(document.querySelector('[data-design-previews="braavolabs"]')).toBeTruthy();
+  });
+
+  it("draws the LK0 project strip with every product, the current one marked, and no Burun Farkı (L6)", () => {
+    renderPage("lifeos", locale);
+    const cards = Array.from(document.querySelectorAll("[data-strip-card]")).map((el) => el.getAttribute("data-strip-card"));
+    expect(cards).toEqual(projects.map((p) => p.slug));
+    expect(cards).not.toContain("burunfarki");
+    expect(document.querySelector('[data-strip-card="lifeos"]')?.getAttribute("aria-current")).toBe("page");
   });
 
   it("hides the vision item when the product has no registered roadmap material", () => {

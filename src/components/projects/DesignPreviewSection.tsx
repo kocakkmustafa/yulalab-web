@@ -22,12 +22,12 @@ export function DesignPreviewSection({ slug, locale }: { slug: string; locale: L
           "These images are English design previews of the app interface. They are not a capture of a published version, and not evidence of sales readiness or results.",
         )}
       </p>
-      <ul role="list" className={`m-0 grid list-none gap-4 p-0 ${portrait ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-1 md:grid-cols-2"}`}>
+      <ul role="list" className={`-mx-6 m-0 grid list-none gap-4 p-0 sm:mx-0 ${portrait ? "grid-cols-1 sm:grid-cols-2" : "grid-cols-1"}`}>
         {previews.map((preview) => {
           const size = IMAGE_DIMENSIONS[preview.path];
           return (
             <li key={preview.path}>
-              <figure className="m-0 rounded-xl border border-white/10 bg-black/20 p-3">
+              <figure className="m-0 border-y border-white/10 bg-black/20 py-3 sm:rounded-xl sm:border sm:p-3">
                 <img
                   src={preview.path}
                   alt={localized(preview.alt, locale)}
@@ -35,14 +35,10 @@ export function DesignPreviewSection({ slug, locale }: { slug: string; locale: L
                   height={size?.height}
                   loading="lazy"
                   decoding="async"
-                  className="block h-auto w-full rounded-lg"
+                  className="block h-auto w-full sm:rounded-lg"
                   style={size ? { aspectRatio: `${size.width} / ${size.height}` } : undefined}
                 />
-                <figcaption className="mt-3 text-xs leading-[1.6] text-ink-300">
-                  <p className="font-mono">{text(locale, "Tasarım yönü", "Design direction")}: {localized(preview.designDirection, locale)}</p>
-                  <p className="font-mono break-all">{text(locale, "Pano dosyası", "Board file")}: {preview.boardFile}</p>
-                  <time className="font-mono" dateTime={preview.designedAt}>{preview.designedAt}</time>
-                </figcaption>
+                <figcaption className="mt-3 px-6 text-[13px] leading-[1.6] text-ink-300 sm:px-0">{localized(preview.alt, locale)}</figcaption>
               </figure>
             </li>
           );
