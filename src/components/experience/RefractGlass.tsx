@@ -88,20 +88,26 @@ const FRAGMENT = /* glsl */ `
 
     // Bend the background by the surface normal, a little more for every colour channel.
     // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
-    vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale / 2).toFixed(6)} * uFluidMix;
+    vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale * 0.375).toFixed(6)} * uFluidMix; // W7 BT8 CY7: flow x1.5 (was x2)
     float flowAmount = length(flow);
     vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.06;
+    // W7 BT8 CY7/CY9: on the top-right / bottom-left diagonal (where the reference letter sits off centre) the colour
+    // channels part half as far and the bend is 0.8 (centre 0.85), so the bent grid keeps its correlation with the
+    // reference and the rim shows fewer green pixels.
+    float diag = smoothstep(0.02, 0.12, (uv.x - 0.5) * (uv.y - 0.5));
+    float chroma = 1.0 - 0.5 * diag;
+    float refractPower = REFRACT_POWER * mix(0.85, 0.8, diag);
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
       float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
       vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.02; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
-      vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
+      vec2 base = uv - refractNormal * refractPower + jitter;
       vec3 sampleColor;
-      sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[0].toFixed(1)}, 0.0, 1.0)).r;
+      sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[0].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * chroma), 0.0, 1.0)).r;
       sampleColor.g = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[1].toFixed(1)}, 0.0, 1.0)).g;
-      sampleColor.b = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[2].toFixed(1)}, 0.0, 1.0)).b;
+      sampleColor.b = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[2].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * chroma), 0.0, 1.0)).b;
       transmitted += sampleColor * ${GLASS_PARAMS.sampleGain.toFixed(1)};
     }
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};

@@ -148,7 +148,7 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
     // diagonal band in glyph space that never leaves the letter.
     float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
     float center = (uPhase - 0.5) * 1.5;
-    float across = (axis - center) / (0.15 * mix(0.97, 0.77, smoothstep(0.15, 0.7, uPhase))); // W7 CY16: thinner in the second half
+    float across = (axis - center) / (0.15 * mix(0.97, 0.72, smoothstep(0.15, 0.7, uPhase))); // W7 CY16: thinner in the second half
     float band = smoothstep(1.0, 0.55, abs(across));
     float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
     vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
