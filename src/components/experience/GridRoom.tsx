@@ -158,6 +158,7 @@ const GROUND_GLSL = /* glsl */ `
     float cornerFall = smoothstep(0.66, 0.20, length(uv - 0.5));
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
+    cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     cornerFall = mix(cornerFall, 1.0, step(0.5, groundPat)); // Z07 corners apply to the dark and blue patterns only
     tiled = mix(steady * 0.3, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
@@ -200,7 +201,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   }
   ${GROUND_GLSL}
   void main() {
-    float fine = gridLine(vUv, vec2(128.0, 64.0));
+    float fine = gridLine(vUv, vec2(128.0, 107.0));
     float major = gridLine(vUv, vec2(48.2, 107.0));
     vec2 tile = vUv * vec2(48.2, 107.0);
     vec2 cell = floor(tile);
