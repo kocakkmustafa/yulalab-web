@@ -41,7 +41,8 @@ const GLYPH_LOCAL_HALF_EXTENTS: Vec3 = [1.05, 1, 0.24];
 const GLYPH_CARD_CLEARANCE = 0.16;
 
 /** Progress where the manifesto copy starts to appear (inside the crossing stage). */
-export const MISSION_COPY_START = 0.635;
+// W7 Z02 (Tasarim): 0.58, the proof band is untouched (it ends at 0.575).
+export const MISSION_COPY_START = 0.58;
 
 /**
  * Where each stage's overlay may be visible. Equal to STAGES except W1D K3-a: the manifesto copy is on

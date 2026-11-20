@@ -25,6 +25,8 @@ export const STORYBOARD_MOBILE = [
   { scene: "crossing", scroll: 0.4715, timeline: 0.575 },
   { scene: "mission", scroll: 0.5058, timeline: 0.69 },
   { scene: "vision", scroll: 0.5549, timeline: 0.765 },
+  // W7 Z04: the dark return (timeline ~0.799) lands ~700 px earlier on a phone.
+  { scene: "dark-return", scroll: 0.5825, timeline: 0.799 },
   { scene: "values", scroll: 0.696, timeline: 0.835 },
   { scene: "closing", scroll: 0.946, timeline: 0.955 },
   { scene: "end", scroll: 1, timeline: 1 },

@@ -373,7 +373,7 @@ const SEMANTIC_STAGE_BOUNDARIES = [
   ["proof", "incoming", 0.505],
   ["proof", "outgoing", 0.575],
   // W1D K3-a: the manifesto copy starts inside the crossing stage (MISSION_COPY_START).
-  ["mission", "incoming", 0.635],
+  ["mission", "incoming", 0.58],
   ["mission", "outgoing", 0.765],
   ["vision", "incoming", 0.765],
   ["vision", "outgoing", 0.835],

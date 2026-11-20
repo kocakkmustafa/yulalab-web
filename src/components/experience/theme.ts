@@ -2,7 +2,7 @@ import type { TimelineFrame } from "./types";
 import type { ResolvedTheme } from "@/lib/theme";
 import { segmentProgress, smoothstep } from "./timeline";
 
-export const WORLD_DARK_COLOR = "#030303";
+export const WORLD_DARK_COLOR = "#000000";
 export const WORLD_LIGHT_COLOR = "#e6eef0";
 
 /** Keep narrative geometry/timing intact while honoring the chosen surface. */
@@ -72,10 +72,10 @@ export type GroundSet = {
 export const GROUND_SETS = {
   hero: { edge: "#02010b", mid: "#130940", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
   portfolio: { edge: "#030203", mid: "#0a080b", peak: "#0d0a10", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
-  proof: { edge: "#020202", mid: "#090908", peak: "#0f100c", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
+  proof: { edge: "#050505", mid: "#121310", peak: "#181a14", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
   night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
-  closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
-  light: { edge: "#c4ced1", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.216, 0.25, 0.2, 0.3] },
+  closing: { edge: "#000000", mid: "#000203", peak: "#010305", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  light: { edge: "#c8d1d4", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.39, 0.45, 0.2, 0.3] },
 } as const satisfies Record<string, GroundSet>;
 
 export type GroundWeights = { hero: number; portfolio: number; proof: number; night: number; closing: number; light: number };
