@@ -124,6 +124,7 @@ const FRAGMENT = /* glsl */ `
     c += vec3(spec) * 0.0;
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
     c = c * 1.5 + vec3(0.06);
+    c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.
     gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));

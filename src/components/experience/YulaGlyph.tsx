@@ -141,7 +141,7 @@ const VISION_LIGHT_FRAGMENT_SHADER = `
     // diagonal band in glyph space that never leaves the letter.
     float axis = vLocalPosition.x * 0.8 + vLocalPosition.y * 0.6;
     float center = (uPhase - 0.5) * 1.5;
-    float across = (axis - center) / (0.15 * mix(0.97, 0.82, smoothstep(0.15, 0.7, uPhase))); // W7 CY16: thinner in the second half
+    float across = (axis - center) / (0.15 * mix(0.97, 0.77, smoothstep(0.15, 0.7, uPhase))); // W7 CY16: thinner in the second half
     float band = smoothstep(1.0, 0.55, abs(across));
     float t = across * 0.5 + 0.5 + vLocalPosition.y * 0.35;
     vec3 colour = mix(spectrum(t), vec3(1.0), 0.22);
@@ -172,6 +172,7 @@ function makeYShape(): Shape {
 export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotation = [0, 0, 0] }: YulaGlyphProps) {
   const viewportSize = useThree((state) => state.size);
   const renderer = useThree((state) => state.gl);
+  const invalidate = useThree((state) => state.invalidate);
   const glyphGroup = useRef<Group>(null);
   // W7 CY1 / F9: pointer tilt (reference): velocity of the eased pointer pushes pitch/yaw, then decays. Desktop only.
   const tilt = useRef({ tx: 0, ty: 0, cx: 0, cy: 0, ex: 0, ey: 0 });
@@ -180,7 +181,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const spin = useRef({ y: 0, lastScroll: -1, value: 0 });
   // W7 BT5: reference rotation model. Quaternion q, angular velocity e (Euler x,y), smoothed pointer
   // velocity v and smoothed scroll velocity s; second order, so the settle lag and the return arc come from it.
-  const rig = useRef({ q: new Quaternion(), e: new Euler(0, 0, 0), euler: new Euler(), base: new Quaternion(), step: new Quaternion(), identity: new Quaternion(), px: 0, py: 0, vx: 0, vy: 0, s: 0, init: false });
+  const rig = useRef({ q: new Quaternion(), e: new Euler(0, 0, 0), euler: new Euler(), base: new Quaternion(), step: new Quaternion(), identity: new Quaternion(), px: 0, py: 0, vx: 0, vy: 0, s: 0, wrP: 0, scrollE: new Euler(), scrollQ: new Quaternion(), init: false });
   useEffect(() => {
     if (typeof window.matchMedia === "function" && window.matchMedia("(max-width: 767px)").matches) return undefined;
     const onMove = (event: MouseEvent) => {
@@ -347,8 +348,10 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.vy += (t.ty - r.py - r.vy) * follow;
     r.px = t.tx;
     r.py = t.ty;
-    const m = 0.01 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5);
-    const worksRotate = 0;
+    const m = 0.0595 * Math.max(0, 1 - Math.hypot(t.tx, t.ty) * 1.5); // BT6: the reference applies the hover velocity per event
+    // W7 BT6 worksRotate: 0 in the key visual, eases to 1 over 1 s (sigmoid 6) when the works section is entered.
+    r.wrP = Math.min(1, Math.max(0, r.wrP + (frame.world.worksBackdropMix > 0.5 ? dt : -dt)));
+    const worksRotate = 1 / (1 + Math.exp(-6 * (r.wrP * 2 - 1)));
     r.e.x -= r.vy * m * (1 - worksRotate * 0.7);
     r.e.y += r.vx * m;
     // 4: scroll velocity (px per 60 Hz frame, scaled to the reference's units) adds to the yaw velocity.
@@ -356,9 +359,13 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const sp = spin.current;
     const scrolled = sp.lastScroll < 0 ? 0 : scrollNow - sp.lastScroll;
     sp.lastScroll = scrollNow;
-    const lenisVelocity = (scrolled * (1 / 60)) / dt * 0.04;
-    r.s += (Math.max(-30, Math.min(30, lenisVelocity)) - r.s) * 0.5;
-    r.e.y -= dt * 0.5 * worksRotate + r.s * 0.001;
+    // BT6: the scroll turn is applied to q directly (scale 1.0, smoothing min(1, 5 dt)); it stays out of e.
+    const lenisVelocity = (scrolled * (1 / 60)) / dt;
+    r.s += (Math.max(-30, Math.min(30, lenisVelocity)) - r.s) * Math.min(1, dt * 5);
+    r.e.y -= dt * 0.5 * worksRotate;
+    r.scrollE.set(0, -r.s * 0.001, 0);
+    r.scrollQ.setFromEuler(r.scrollE);
+    r.q.premultiply(r.scrollQ);
     // 5-7: damp the velocity, integrate it into q, and pull q back to identity by the short way.
     const damp = 1 - dt;
     r.e.x *= damp;
@@ -366,6 +373,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.step.setFromEuler(r.e);
     r.q.premultiply(r.step);
     r.q.slerp(r.identity, Math.min(1, dt * 2 * (1 - worksRotate * 0.8)));
+    // BT6: demand rendering must keep drawing until q is back on the identity and the motion has died.
+    if (r.q.angleTo(r.identity) > 0.0017 || Math.abs(r.e.x) + Math.abs(r.e.y) > 1e-5 || Math.abs(r.s) > 0.05) invalidate();
     // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
     r.euler.set(rotation[0], rotation[1], rotation[2]);
     r.base.setFromEuler(r.euler);
