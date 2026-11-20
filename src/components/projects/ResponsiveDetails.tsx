@@ -30,14 +30,11 @@ export function ResponsiveDetails({
   title,
   children,
   className = "",
-  alwaysOpen = false,
 }: {
   id: string;
   title: string;
   children: ReactNode;
   className?: string;
-  /** W3-6: the section never folds, also on mobile (screens must be visible). */
-  alwaysOpen?: boolean;
 }) {
   const wide = useSyncExternalStore(
     subscribe,
@@ -67,20 +64,20 @@ export function ResponsiveDetails({
       ref={ref}
       id={id}
       data-testid={`pd-${id}`}
-      open={alwaysOpen || wide || pickedOpen}
+      open={wide || pickedOpen}
       onToggle={(e) => {
-        if (!wide && !alwaysOpen) setPickedOpen(e.currentTarget.open);
+        if (!wide) setPickedOpen(e.currentTarget.open);
       }}
       className={`group ${className}`}
     >
       <summary
         onClick={(e) => {
-          if (wide || alwaysOpen) e.preventDefault();
+          if (wide) e.preventDefault();
         }}
-        className={"flex cursor-pointer list-none items-baseline justify-between gap-5 pb-6 focusable lg:cursor-default" + (alwaysOpen ? " cursor-default" : "")}
+        className="flex cursor-pointer list-none items-baseline justify-between gap-5 pb-6 focusable lg:cursor-default"
       >
         <h2 className="font-mono text-[11px] tracking-[0.22em] uppercase text-ink-400">{title}</h2>
-        <span aria-hidden className={"font-mono text-ink-400 transition-transform group-open:rotate-45 lg:hidden" + (alwaysOpen ? " hidden" : "")}>
+        <span aria-hidden className="font-mono text-ink-400 transition-transform group-open:rotate-45 lg:hidden">
           +
         </span>
       </summary>

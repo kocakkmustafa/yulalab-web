@@ -340,9 +340,12 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
             />
           </div>
 
+          {/* W3-6: the design previews are always visible (also on mobile); only the product shots and the demo fold. */}
+          <div className="pb-12 lg:pb-24"><DesignPreviewSection slug={project.slug} locale={locale} /></div>
+
           {/* (4) real screen / demo — the demo is only ever an example
               simulation; with neither, the empty state says so */}
-          <ResponsiveDetails id="ekran" alwaysOpen title={t("screenHeading")} className="pb-12 lg:pb-24">
+          <ResponsiveDetails id="ekran" title={t("screenHeading")} className="pb-12 lg:pb-24">
             <div data-item="4">
               {productShots.length ? (
                 <ul role="list" className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0 mb-12">
@@ -358,7 +361,6 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                   })}
                 </ul>
               ) : null /* L4: no "no screenshot yet" line; design previews follow */}
-              <DesignPreviewSection slug={project.slug} locale={locale} />
               {project.slug === "braavolabs" ? (
                 <div id="dene" data-testid="demo-area">
                   <p
