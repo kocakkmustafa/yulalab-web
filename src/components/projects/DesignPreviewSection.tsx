@@ -39,6 +39,7 @@ export function DesignPreviewSection({ slug, locale }: { slug: string; locale: L
                   style={size ? { aspectRatio: `${size.width} / ${size.height}` } : undefined}
                 />
                 <figcaption className="mt-3 text-xs leading-[1.6] text-ink-300">
+                  <p className="mb-2 text-[13px]">{localized(preview.alt, locale)}</p>
                   <p className="font-mono">{text(locale, "Tasarım yönü", "Design direction")}: {localized(preview.designDirection, locale)}</p>
                   <p className="font-mono break-all">{text(locale, "Pano dosyası", "Board file")}: {preview.boardFile}</p>
                   <time className="font-mono" dateTime={preview.designedAt}>{preview.designedAt}</time>

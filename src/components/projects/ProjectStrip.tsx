@@ -1,11 +1,10 @@
 import { Link } from "@/i18n/navigation";
 import { ProjectMonogram } from "@/components/common/ProjectMonogram";
-import { StatusPill } from "@/components/common/StatusPill";
 import type { ProjectConfig } from "@/lib/types";
 
 /**
  * LK0 — the horizontal project strip at the top of a product page, drawn after
- * the reference site's "Works" rail: a row of cards (icon, name, status) the
+ * the reference site's "Works" rail: a row of cards (icon, name) the
  * visitor scrolls sideways; a card opens that project's page. The current
  * project is marked with aria-current and a ring, never removed, so the strip
  * keeps one order on every page.
@@ -45,9 +44,6 @@ export function ProjectStrip({
                   <ProjectMonogram project={o} size={136} radius={18} />
                 </span>
                 <span className="mt-3 block font-mono text-[12px] tracking-[0.08em] text-ink-50">{o.name}</span>
-                <span className="mt-1.5 block">
-                  <StatusPill status={o.status} slug={o.slug} />
-                </span>
               </Link>
             </li>
           );

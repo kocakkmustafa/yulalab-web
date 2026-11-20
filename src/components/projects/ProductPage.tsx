@@ -170,7 +170,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               <Reveal>
                 <h2
                   id="product-pitch-heading"
-                  className="font-display font-light text-[clamp(28px,3.6vw,52px)] leading-[1.08] tracking-tight max-w-[24ch] mb-12 text-pretty"
+                  className="font-grotesk font-semibold text-[clamp(28px,3.6vw,52px)] leading-[1.08] tracking-tight max-w-[24ch] mb-12 text-pretty"
                 >
                   {p.pitchTitle}
                 </h2>
@@ -204,7 +204,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
                 <p className={`${KICKER} mb-5`}>{t("accessHeading")}</p>
                 <h2
                   id="product-access-heading"
-                  className="font-display font-light text-[clamp(22px,2.2vw,30px)] leading-[1.15] tracking-tight mb-3 text-pretty"
+                  className="font-grotesk font-semibold text-[clamp(22px,2.2vw,30px)] leading-[1.15] tracking-tight mb-3 text-pretty"
                 >
                   {p.ctaTitle}
                 </h2>
@@ -293,7 +293,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
                 {(["a1", "a2"] as const).map((k, i) => (
                   <Reveal key={k} delay={i * 90}>
-                    <h2 className="font-display font-light text-[clamp(24px,2.8vw,40px)] leading-[1.16] tracking-tight max-w-[22ch] mb-4 text-pretty">
+                    <h2 className="font-grotesk font-semibold text-[clamp(24px,2.8vw,40px)] leading-[1.16] tracking-tight max-w-[22ch] mb-4 text-pretty">
                       {p[`${k}Title`]}
                     </h2>
                     <p className="max-w-[46ch] text-[15.5px] leading-[1.75] text-ink-300 text-pretty">
@@ -445,7 +445,7 @@ export function ProductPage({ project }: { project: ProjectConfig }) {
               <span className="block font-mono text-[10px] tracking-[0.18em] uppercase text-ink-400 mb-3">
                 {i === 0 ? t("otherNext") : t("otherAlso")}
               </span>
-              <span className="font-display font-light text-[clamp(20px,2vw,28px)] tracking-tight">
+              <span className="font-grotesk font-semibold text-[clamp(20px,2vw,28px)] tracking-tight">
                 {o.name} →
               </span>
             </Link>
