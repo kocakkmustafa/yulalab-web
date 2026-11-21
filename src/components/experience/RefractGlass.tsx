@@ -56,10 +56,13 @@ export const sceneBackgroundShared: {
   texture: null,
 };
 
-function easeOutCubic(value: number): number {
+function openingCurve(value: number): number {
   const x = Math.min(1, Math.max(0, value));
   const inv = 1 - x;
-  return 1 - inv * inv * inv;
+  const cubic = 1 - inv * inv * inv;
+  const s = (t: number) => 1 / (1 + Math.exp(-6 * (t * 2 - 1)));
+  const sig = (s(x) - s(0)) / (s(1) - s(0));
+  return cubic * 0.45 + sig * 0.55;
 }
 
 function smoothstep01(value: number): number {
@@ -112,7 +115,7 @@ export function OpeningDirector({ sceneOpened = true }: { sceneOpened?: boolean 
     openingShared.rawTime = Math.min(OPENING_DURATION_SECONDS, openingShared.rawTime + dt);
     const linear = openingShared.rawTime / OPENING_DURATION_SECONDS;
     openingShared.progress = linear;
-    openingShared.eased = easeOutCubic(linear);
+    openingShared.eased = openingCurve(linear);
     // W8 T5: the glass Y fades in over 1.0 s during the opening instead of waiting pre-baked behind the loader.
     openingShared.glyphOpacity = smoothstep01((openingShared.rawTime - 0.08) / 1.0);
     if (linear < 1) {
@@ -239,13 +242,13 @@ const IRIS_FRAGMENT = /* glsl */ `
     } else {
       uvShift.x /= uAspect;
     }
-    vec2 lensUv = (vUv - 0.5) * (0.72 + 0.28 * uLoaded) + 0.5 - ring * uvShift * 0.11;
-    vec3 lensCol = texture2D(uBackground, clamp(lensUv, 0.002, 0.998)).rgb;
-    // Slight chromatic dispersion along the opening glass wave, matching the prism language.
-    lensCol.r = texture2D(uBackground, clamp(lensUv - ring * uvShift * 0.012, 0.002, 0.998)).r;
-    lensCol.b = texture2D(uBackground, clamp(lensUv + ring * uvShift * 0.014, 0.002, 0.998)).b;
-    vec3 col = lensCol * innerMask;
-    float alpha = clamp((1.0 - innerMask) + ring * 0.92 * (1.0 - smoothstep(0.88, 1.0, uLoaded)), 0.0, 1.0);
+    vec2 lensUv = (vUv - 0.5) * (0.66 + 0.34 * uLoaded) + 0.5 - ring * uvShift * 0.095;
+    vec3 lensCol = texture2D(uBackground, clamp(lensUv, 0.01, 0.99)).rgb;
+    lensCol.r = texture2D(uBackground, clamp(lensUv - ring * uvShift * 0.008, 0.01, 0.99)).r;
+    lensCol.b = texture2D(uBackground, clamp(lensUv + ring * uvShift * 0.010, 0.01, 0.99)).b;
+    float edgeFade = smoothstep(0.0, 0.55, r);
+    vec3 col = lensCol * edgeFade;
+    float alpha = clamp((1.0 - edgeFade) + ring * 0.85 * edgeFade * (1.0 - smoothstep(0.86, 1.0, uLoaded)), 0.0, 1.0);
     gl_FragColor = vec4(col, alpha);
   }
 `;
@@ -354,35 +357,42 @@ const FRAGMENT = /* glsl */ `
     return a2 / (3.14159265 * d * d);
   }
 
-  // Crisp architectural studio cubemap proxy: bright overhead/diagonal light strips over deep violet-black room.
+  // Crisp architectural studio cubemap proxy: bright overhead/diagonal light strips + architectural grid mullions
+  // (stands in for reference /envmap/*.png studio reflections so crystal facets carry crisp internal detail).
   vec3 studioEnv(vec3 r) {
-    float up = smoothstep(-0.35, 0.85, r.y);
-    vec3 base = mix(vec3(0.015, 0.012, 0.045), vec3(0.32, 0.30, 0.48), up);
+    float up = smoothstep(-0.4, 0.85, r.y);
+    vec3 base = mix(vec3(0.04, 0.035, 0.11), vec3(0.42, 0.39, 0.68), up);
+    vec2 envUv = vec2(atan(r.x, r.z) * 1.91, r.y * 2.6);
+    vec2 g = abs(fract(envUv * 4.5) - 0.5) / max(fwidth(envUv * 4.5), vec2(0.015));
+    float mullion = 1.0 - clamp(min(g.x, g.y), 0.0, 1.0);
+    float panelBox = smoothstep(-0.15, 0.35, sin(envUv.x * 3.14159) * cos(envUv.y * 2.4));
     float stripA = pow(max(dot(r, normalize(vec3(-0.52, 0.62, 0.58))), 0.0), 22.0);
     float stripB = pow(max(dot(r, normalize(vec3(0.64, 0.42, 0.64))), 0.0), 26.0);
-    float violetRim = pow(max(dot(r, normalize(vec3(0.75, -0.18, 0.52))), 0.0), 7.0);
-    return base + vec3(1.45) * stripA + vec3(1.15, 1.18, 1.35) * stripB + vec3(0.42, 0.24, 0.95) * violetRim;
+    float violetRim = pow(max(dot(r, normalize(vec3(0.75, -0.18, 0.52))), 0.0), 6.0);
+    return base * (0.75 + 0.55 * panelBox)
+      + vec3(0.42, 0.38, 0.78) * mullion * 0.55
+      + vec3(1.55) * stripA
+      + vec3(1.25, 1.28, 1.45) * stripB
+      + vec3(0.48, 0.28, 1.0) * violetRim;
   }
 
-  // Distance-signed prismatic crown across the three strokes of the Y so flat extrusion caps act like
-  // a cut triangular prism (like Alche_A), bending and dispersing the grid/wordmark across the whole letter.
+  // Smooth prismatic crown across the three strokes of the Y so flat extrusion caps bend and disperse
+  // the grid/wordmark like a cut triangular prism without discontinuous derivative jumps.
   vec2 yPrismCrown(vec2 p) {
-    // Stem spine: x = 0, y in [-0.9, 0.05]
     vec2 stemGrad = vec2(clamp(p.x / 0.27, -1.0, 1.0), 0.0);
     float stemWeight = 1.0 - smoothstep(-0.02, 0.16, p.y);
-    // Left arm spine: from (0, 0.09) to (-0.69, 0.90), normal = normalize(vec2(0.81, 0.69))
     vec2 nL = normalize(vec2(0.81, 0.69));
     float dL = dot(p - vec2(0.0, 0.09), nL);
-    // Right arm spine: from (0, 0.09) to (0.69, 0.90), normal = normalize(vec2(-0.81, 0.69))
     vec2 nR = normalize(vec2(-0.81, 0.69));
     float dR = dot(p - vec2(0.0, 0.09), nR);
-    vec2 armNormal = p.x < 0.0 ? nL * clamp(dL / 0.22, -1.0, 1.0) : nR * clamp(dR / 0.22, -1.0, 1.0);
+    float side = smoothstep(-0.04, 0.04, p.x);
+    vec2 armNormal = mix(nL * clamp(dL / 0.24, -1.0, 1.0), nR * clamp(dR / 0.24, -1.0, 1.0), side);
     float armWeight = smoothstep(-0.04, 0.16, p.y);
     vec2 crown = mix(stemGrad, armNormal, armWeight);
-    // Crisp stepped facet ridge down the spine of each stroke
-    float spineSign = sign(p.x < 0.0 && p.y > 0.04 ? dL : (p.x >= 0.0 && p.y > 0.04 ? dR : p.x));
-    vec2 ridgeDir = mix(vec2(1.0, 0.0), p.x < 0.0 ? nL : nR, armWeight);
-    return crown * 0.24 + ridgeDir * spineSign * 0.14 * (0.6 + 0.4 * stemWeight + 0.4 * armWeight);
+    float signedDist = mix(p.x / 0.27, mix(dL / 0.24, dR / 0.24, side), armWeight);
+    float smoothSign = clamp(signedDist * 5.0, -1.0, 1.0);
+    vec2 ridgeDir = mix(vec2(1.0, 0.0), mix(nL, nR, side), armWeight);
+    return crown * 0.30 + ridgeDir * smoothSign * 0.16;
   }
 
   void main() {
@@ -429,10 +439,27 @@ const FRAGMENT = /* glsl */ `
     }
     vec3 c = refractCol / ${GLASS_PARAMS.samples.toFixed(1)};
 
-    // Subtle crisp internal refraction lattice accent so facet boundaries read like real cut glass even over dark regions.
-    float facetCrease = exp(-abs(vLocal.x) * 28.0) * (1.0 - smoothstep(-0.02, 0.14, vLocal.y))
-      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(0.81, 0.69)))) * 28.0) * step(vLocal.x, 0.02) * smoothstep(0.0, 0.12, vLocal.y)
-      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(-0.81, 0.69)))) * 28.0) * step(-0.02, vLocal.x) * smoothstep(0.0, 0.12, vLocal.y);
+    // Crisp refracted room lattice & emitter dots seen through the crystal lens (derivatives taken from
+    // continuous screen uv so prism facet ridges stay completely free of moire).
+    vec2 refrUv = uv - refractNormal * REFRACT_POWER * 1.15;
+    vec2 baseCellFw = max(fwidth(uv * vec2(48.0, 30.0)), vec2(0.002));
+    vec2 cellCoord = refrUv * vec2(48.0, 30.0);
+    vec2 cellDist = abs(fract(cellCoord) - 0.5) / baseCellFw;
+    float refrGrid = 1.0 - clamp(min(cellDist.x, cellDist.y), 0.0, 1.0);
+    vec2 baseSubFw = max(fwidth(uv * vec2(192.0, 120.0)), vec2(0.008));
+    vec2 subCoord = refrUv * vec2(192.0, 120.0);
+    vec2 subDist = abs(fract(subCoord) - 0.5) / baseSubFw;
+    float refrSub = 1.0 - clamp(min(subDist.x, subDist.y), 0.0, 1.0);
+    vec2 dotLocal = fract(refrUv * vec2(384.0, 240.0)) - 0.5;
+    float emitterDot = 1.0 - smoothstep(0.22, 0.44, length(dotLocal));
+    float panelPatch = smoothstep(0.25, 0.85, valueNoise(floor(cellCoord * 0.35) + 3.1));
+    c += vec3(0.22, 0.18, 0.52) * panelPatch * (0.35 + 0.65 * emitterDot) * 0.55;
+    c += vec3(0.52, 0.48, 0.86) * (refrGrid * 0.62 + refrSub * 0.26) * (1.0 - surfRoughness * 3.0);
+
+    // Subtle crisp white-violet prism apex highlight (no neon green stripe).
+    float facetCrease = exp(-abs(vLocal.x) * 38.0) * (1.0 - smoothstep(-0.02, 0.14, vLocal.y))
+      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(0.81, 0.69)))) * 38.0) * step(vLocal.x, 0.02) * smoothstep(0.0, 0.12, vLocal.y)
+      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(-0.81, 0.69)))) * 38.0) * step(-0.02, vLocal.x) * smoothstep(0.0, 0.12, vLocal.y);
 
     // REA section 3 lighting: GGX specular + Fresnel studio reflection + bevel dispersion rim (W8 C3, C4, c).
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
@@ -442,18 +469,21 @@ const FRAGMENT = /* glsl */ `
     vec3 L1 = normalize(vec3(-1.0, 0.8, 1.0));
     vec3 L2 = normalize(vec3(0.85, 0.55, 0.9));
     float spec1 = ggx(clamp(dot(normal, normalize(L1 + viewDir)), 0.0, 1.0), 0.035 + surfRoughness * 0.4);
-    float spec2 = ggx(clamp(dot(geomNormal, normalize(L2 + viewDir)), 0.0, 1.0), 0.055 + surfRoughness * 0.35);
-    c += vec3(min(spec1, 2.4)) + vec3(min(spec2, 1.4)) * 0.45;
+    float spec2 = ggx(clamp(dot(geomNormal, normalize(L2 + viewDir)), 0.0, 1.0), 0.045 + surfRoughness * 0.35);
+    c += vec3(min(spec1, 2.4)) + vec3(min(spec2, 1.8)) * 0.65;
 
     vec3 reflected = studioEnv(reflect(-viewDir, normal));
     c += mix(c, reflected, F * 0.9) * (1.0 - F);
 
-    // Prismatic bevel rim: thin crisp white edge + rainbow dispersion band on the bevels (6-10 px on desktop).
-    float bevel = smoothstep(0.18, 0.78, 1.0 - geomNv);
-    float edgeLine = pow(1.0 - geomNv, 3.2);
-    float phase = bevel * 1.45 + geomNormal.x * 0.48 - geomNormal.y * 0.32;
+    // Prismatic bevel rim: crisp brilliant white outer edge + rainbow dispersion band along the bevel.
+    float bevel = smoothstep(0.22, 0.75, 1.0 - geomNv);
+    float innerBevel = bevel * smoothstep(0.96, 0.46, 1.0 - geomNv);
+    float edgeLine = pow(1.0 - geomNv, 2.6);
+    float phase = bevel * 2.6 + geomNormal.x * 1.2 - geomNormal.y * 0.9 + vLocal.y * 0.7;
     vec3 rainbow = 0.5 + 0.5 * cos(6.2831853 * (phase + vec3(0.0, 0.33, 0.67)));
-    c += rainbow * bevel * 0.46 + vec3(1.0) * edgeLine * 0.68 + vec3(0.82, 0.86, 1.0) * facetCrease * 0.18;
+    c += rainbow * innerBevel * 0.56
+      + vec3(0.96, 0.97, 1.0) * edgeLine * 1.18
+      + vec3(0.86, 0.84, 1.0) * facetCrease * 0.34;
 
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     gl_FragColor = vec4(min(c, vec3(1.0)), clamp(uOpacity, 0.0, 1.0));

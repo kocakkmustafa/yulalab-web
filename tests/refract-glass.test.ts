@@ -31,8 +31,8 @@ describe("W1D-D / W8 glass material (REA section 3)", () => {
   it("fits mobile wordmark edge-to-edge without squeezing desktop", () => {
     expect(heroWordmarkPlaneScale(1440, 900, 0)).toBe(1);
     const mobileScale = heroWordmarkPlaneScale(390, 844, 1);
-    expect(mobileScale).toBeGreaterThan(0.45);
-    expect(mobileScale).toBeLessThan(0.55);
+    expect(mobileScale).toBeGreaterThan(0.5);
+    expect(mobileScale).toBeLessThan(0.62);
   });
 
   it("resolves loader characters at 40 ms per character after a 300 ms delay", () => {

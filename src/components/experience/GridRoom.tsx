@@ -90,17 +90,17 @@ const GROUND_GLSL = /* glsl */ `
   // W8 B1/B3 (REA section 1): p1 deep indigo-blue mosaic; p2 crisp architectural dark-graphite bands
   // without washing out the white wordmark; p3 #350FFD violet-blue field with localized #B2EDFF / #FD5F0C patches.
   vec3 patternLight(float pat, vec2 suv, vec2 p, float t) {
-    if (pat < 0.5) return vec3(0.024, 0.018, 0.125);
+    if (pat < 0.5) return vec3(0.052, 0.036, 0.24);
     if (pat < 1.5) {
       float band = step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37));
-      return vec3(mix(0.002, 0.105, band));
+      return vec3(mix(0.002, 0.115, band));
     }
     vec2 np = suv * 2.2 + vec2(sin(t * 0.17), cos(t * 0.13)) * 0.35;
     float nw = smoothstep(0.56, 0.94, mosaicHash(floor(np * 3.0) + 1.7) * 0.65 + 0.35 * sin(np.x * 2.7 + np.y * 2.1 + t * 0.25));
     float ny = smoothstep(0.66, 0.98, mosaicHash(floor(np * 2.5) + 5.3) * 0.65 + 0.35 * cos(np.x * 2.3 - np.y * 2.9 - t * 0.21));
-    vec3 baseViolet = vec3(0.028, 0.006, 0.25);
-    vec3 ice = vec3(0.22, 0.52, 0.68);
-    vec3 orange = vec3(0.38, 0.052, 0.004);
+    vec3 baseViolet = vec3(0.042, 0.012, 0.30);
+    vec3 ice = vec3(0.24, 0.54, 0.72);
+    vec3 orange = vec3(0.42, 0.058, 0.006);
     vec3 c3 = mix(baseViolet, ice, nw * 0.45);
     return mix(c3, orange, ny * 0.42);
   }
@@ -192,10 +192,10 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles
       + litTone * (${MOSAIC.lit.toFixed(3)} * (groundPat > 1.5 ? 1.0 : 0.65)) * (1.0 + stir * 3.0);
     // W8 B3: keep mobile portrait ground moody like the reference SP layout (cell average <= 25, corners <= 10).
-    float mobileCalm = mix(1.0, 0.36, clamp((1.0 - uMosaicAspect) * 1.6, 0.0, 1.0) * (1.0 - uMosaicGrey));
+    float mobileCalm = mix(1.0, 0.28, clamp((1.0 - uMosaicAspect) * 1.6, 0.0, 1.0) * (1.0 - uMosaicGrey));
     tiled *= mobileCalm;
-    float cornerFall = smoothstep(0.50, 0.06, length(uv - 0.5));
-    cornerFall *= mix(1.0, 0.55, smoothstep(0.55, 0.95, uv.x));
+    float cornerFall = smoothstep(0.47, 0.06, length(uv - 0.5));
+    cornerFall *= mix(1.0, 0.45, smoothstep(0.52, 0.92, uv.x));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.22 * mobileCalm, tiled, uKvFade);
     return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
@@ -356,8 +356,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // W8 B2/B3/B6: REA section 2 grid alpha ~0.10 in sRGB (~0.0065-0.0085 linear) with corner vignette so corners <= 6 luma.
-    float lineVig = mix(1.0, smoothstep(0.60, 0.14, length(screenUv - 0.5)), uHeroMix);
-    vec3 lines = vec3(fine * 0.0045 + major * 0.0085 + cross * 0.026) * lineVig;
+    float lineVig = mix(1.0, smoothstep(0.52, 0.12, length(screenUv - 0.5)), uHeroMix);
+    vec3 lines = vec3(fine * 0.0048 + major * 0.0090 + cross * 0.026) * lineVig;
     vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
     gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>
@@ -853,7 +853,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
           depthTest
           depthWrite={false}
           map={yulaHalo}
-          opacity={wordmarkAlpha * 0.14}
+          opacity={wordmarkAlpha * 0.09}
           toneMapped={false}
           transparent
         />

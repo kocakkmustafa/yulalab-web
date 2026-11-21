@@ -41,8 +41,8 @@ export function ExperienceLoader({ lines, tagline, progress, onSkip }: Experienc
   const clamped = frame.progress;
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
   const elapsedMs = clamped <= 0.9
-    ? (clamped / 0.9) * 3_600
-    : 3_600 + ((clamped - 0.9) / 0.1) * 800;
+    ? (clamped / 0.9) * 3_200
+    : 3_200 + ((clamped - 0.9) / 0.1) * 750;
   const displayLine = tagline ?? lines[lines.length - 1] ?? lines[0] ?? "";
   const chars = resolveLoaderChars(displayLine, elapsedMs);
 

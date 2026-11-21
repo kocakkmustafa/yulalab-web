@@ -62,5 +62,6 @@ export function heroWordmarkPlaneScale(
   const fov = 39 + (52 - 39) * mobileMix;
   const dist = camZ - HERO_PLANE_Z;
   const frustumWidth = 2 * dist * Math.tan((fov * Math.PI) / 360) * aspect;
-  return Math.min(1, (frustumWidth * 1.02) / 14.2);
+  // "YULA" glyphs span ~81% of the 2:1 texture width; x1.16 brings the rendered letters to ~94% of mobile width (~366 CSS px).
+  return Math.min(1, (frustumWidth * 1.16) / 14.2);
 }
