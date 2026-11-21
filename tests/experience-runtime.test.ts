@@ -239,7 +239,7 @@ afterEach(() => {
 describe("experience quality policy", () => {
   it("contains only mutable Canvas settings and only downgrades", () => {
     expect(QUALITY).toEqual({
-      high: { dpr: [1, 1.5], shadows: false },
+      high: { dpr: [1, 1.5], shadows: "basic" },
       medium: { dpr: [1, 1.5], shadows: false },
       low: { dpr: [1, 1.5], shadows: false },
     });
@@ -330,7 +330,8 @@ describe("experience Canvas runtime contract", () => {
       shadows: QUALITY.high.shadows,
     });
     const immutableGl = experienceCanvasHarness.canvasProps?.gl;
-    expect(immutableGl).toMatchObject({ antialias: true });
+    // A single-sample default framebuffer can be scaled into the glass copy.
+    expect(immutableGl).toMatchObject({ antialias: false });
     expect(experienceCanvasHarness.performanceProps).toMatchObject({
       iterations: 8,
       ms: 250,

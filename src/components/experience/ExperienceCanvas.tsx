@@ -42,7 +42,7 @@ export type ExperienceCanvasProps = {
 // DPR/shadows without remounting the Canvas and reloading portfolio textures.
 const IMMUTABLE_GL_OPTIONS = {
   alpha: false,
-  antialias: true,
+  antialias: false,
   logarithmicDepthBuffer: false,
   powerPreference: "high-performance" as const,
   outputColorSpace: SRGBColorSpace,

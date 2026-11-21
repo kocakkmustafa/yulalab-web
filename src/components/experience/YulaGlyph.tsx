@@ -26,7 +26,7 @@ import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
-import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
+import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot, heroWordmarkWidth } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 // W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
@@ -290,8 +290,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   );
   // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
   const slotMix = heroSlotMix(frame.progress);
+  const opening = useRef({ sawLoader: false, started: 0 });
   const slotPose = useMemo(() => {
-    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.32);
+    const planeWidth = heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
     // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
     const planeX = heroSlot.x * planeWidth;
@@ -325,7 +326,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       y: frame.camera.position[1] + dir.y * sCur,
       scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
-  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width, viewportSize.height]);
   const referenceCamera = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("cam") === "ref";
   const position = useMemo(
     () => [
@@ -337,7 +338,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   );
   // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
   // the Y takes the same horizontal squeeze while it stands in for the first letter.
-  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.32)) / 10.4);
+  const slotSqueeze = Math.min(1, heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height)) / 10.4);
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
@@ -420,7 +421,16 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
     r.euler.set(rotation[0], rotation[1], rotation[2]);
     r.base.setFromEuler(r.euler);
-    if (glyphGroup.current) glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+    if (glyphGroup.current) {
+      glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+      const card = document.querySelector('[data-yula-experience]');
+      if (card?.getAttribute("data-loader-visible") === "true") opening.current.sawLoader = true;
+      if (opening.current.sawLoader && card?.getAttribute("data-loader-visible") === "false" && !opening.current.started) opening.current.started = performance.now();
+      const t = opening.current.started ? Math.min(1, (performance.now() - opening.current.started) / 1000) : 1;
+      const grow = 1 + (1 - t * t * (3 - 2 * t)) * 0.3 * slotMix;
+      glyphGroup.current.scale.set(glyphScaleXYZ[0] * grow, glyphScaleXYZ[1] * grow, glyphScaleXYZ[2] * grow);
+      if (t < 1) invalidate();
+    }
     // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
     const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;
     if (rigLog && glyphGroup.current) {

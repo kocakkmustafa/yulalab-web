@@ -4,12 +4,11 @@ import { useEffect, useMemo, useRef } from "react";
 import { FLUID_PARAMS, fluidShared } from "./MouseFluid";
 import {
   type BufferGeometry,
-  FramebufferTexture,
   LinearFilter,
   type Mesh,
-  RGBAFormat,
   ShaderMaterial,
   Vector2,
+  WebGLRenderTarget,
   type WebGLRenderer,
 } from "three";
 
@@ -122,8 +121,10 @@ const FRAGMENT = /* glsl */ `
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
-    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.35;
-    c += vec3(spec);
+    c += spectrum * pow(rim, 0.6) * 1.15;
+    c += vec3(min(spec, 1.5));
+    // A restrained violet transmission makes the clear face legible even over dark tiles.
+    c += vec3(0.055, 0.025, 0.13) * (1.0 - rim);
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
@@ -141,7 +142,7 @@ export type RefractGlassProps = {
 
 export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) {
   const mesh = useRef<Mesh>(null);
-  const texture = useRef<FramebufferTexture | null>(null);
+  const texture = useRef<WebGLRenderTarget | null>(null);
   const size = useMemo(() => new Vector2(), []);
   const material = useMemo(
     () => new ShaderMaterial({
@@ -167,24 +168,30 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
     target.onBeforeRender = (renderer: WebGLRenderer) => {
       // Only the main framebuffer can be copied; offscreen passes (portal) draw without refraction.
       if (renderer.getRenderTarget() !== null) return;
+      const gl = renderer.getContext();
+      if (!("blitFramebuffer" in gl)) return;
       renderer.getDrawingBufferSize(size);
       const width = Math.max(1, Math.floor(size.x));
       const height = Math.max(1, Math.floor(size.y));
       let current = texture.current;
-      if (!current || current.image.width !== width || current.image.height !== height) {
-        current?.dispose();
-        current = new FramebufferTexture(width, height);
-        current.format = RGBAFormat;
-        current.minFilter = LinearFilter;
-        current.magFilter = LinearFilter;
+      if (!current) {
+        current = new WebGLRenderTarget(512, 512, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
         texture.current = current;
-        material.uniforms.uBackground.value = current;
+        material.uniforms.uBackground.value = current.texture;
       }
       material.uniforms.uResolution.value.set(width, height);
       material.uniforms.uTime.value = performance.now() / 1000;
       material.uniforms.uFluid.value = fluidShared.texture;
       material.uniforms.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
-      renderer.copyFramebufferToTexture(current);
+      // WebGL2 resolves and scales the already drawn scene into a fixed-size
+      // texture; restore the default framebuffer before three continues drawing.
+      renderer.setRenderTarget(current);
+      const destination = gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING) as WebGLFramebuffer | null;
+      renderer.setRenderTarget(null);
+      gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, destination);
+      gl.blitFramebuffer(0, 0, width, height, 0, 0, 512, 512, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+      gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
     };
     return () => {
       target.onBeforeRender = () => {};

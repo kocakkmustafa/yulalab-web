@@ -1,6 +1,6 @@
 "use client";
 
-import { heroSlot } from "./hero-slot";
+import { heroSlot, heroWordmarkWidth } from "./hero-slot";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -88,7 +88,7 @@ const GROUND_GLSL = /* glsl */ `
   // p2: high contrast diagonal stripes (white about #d9d9d9, black below #101010); p3: a wide gradient
   // purple, ice blue, orange (#350FFD, #B2EDFF, #FD5F0C) that drifts slowly.
   vec3 patternLight(float pat, vec2 suv, vec2 p, float t) {
-    if (pat < 0.5) return pow(vec3(0.3, 0.4, 0.6) * 2.0, vec3(2.2)); // W7 Z06 t5: the reference value is a display colour, no grey mix
+    if (pat < 0.5) return pow(vec3(0.34, 0.29, 0.57) * 2.0, vec3(2.2));
     if (pat < 1.5) {
       float band = step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37));
       return vec3(mix(0.004, 0.7, band));
@@ -139,7 +139,7 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z06 t4: the colour is a screen-space light field (patternLight); a tile only moves its brightness by about
     // +-20 % and keeps a thin grid line. The stripes ignore the tiles. No tile is lit in a colour of its own.
     float stripeOnly = step(0.5, pat) * step(pat, 1.5);
-    float tileGain = mix((1.0 + 0.18 * (lum - 0.5)) * (1.0 + 0.05 * (1.0 - seam)), 1.0, stripeOnly); // W7 Z06 t5: +-9 % brightness, grid line +5 %
+    float tileGain = mix((0.35 + 1.3 * lum) * mix(0.72, 1.0, seam), 1.0, stripeOnly);
     litTone = vec3(0.0);
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
@@ -338,6 +338,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     // Divide interpolated clip coordinates in the fragment, so the reading
     // column matches in both full-size and scaled transmission render targets.
     vec2 screenUv = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
+    float edgeShade = smoothstep(0.72, 0.25, length((screenUv - 0.5) * 1.414));
+    color *= mix(1.0, edgeShade, uHeroMix);
     float readingColumn = smoothstep(0.53, 0.66, screenUv.x) * (1.0 - smoothstep(0.94, 1.0, screenUv.x));
     float readingHeight = smoothstep(0.10, 0.22, screenUv.y) * (1.0 - smoothstep(0.86, 0.96, screenUv.y));
     color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(max(uGalleryMix, uProjectionMix), uHeroMix * 0.75) * 0.8;
@@ -564,7 +566,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
-  const wordmarkWidth = 14.2 * (1 - viewportMobileMix(viewportWidth) * 0.32);
+  const wordmarkWidth = heroWordmarkWidth(viewportMobileMix(viewportWidth), viewport.width / Math.max(1, viewport.height));
   const roomColors = useMemo(() => ({
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
@@ -698,7 +700,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
     u.uMosaic.value = darkSum > 0.0001 ? mosaicShare / darkSum : 0;
     u.uMosaicGrey.value = mosaicShare > 0.0001 ? gw.portfolio * PORTFOLIO_MOSAIC / mosaicShare : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
-    u.uMosaicTime.value = BG_FREEZE === null ? state.clock.elapsedTime : BG_FREEZE; // W7 C6: ?bgFreeze=<s> holds the opening pattern cycle for measuring
+    u.uMosaicTime.value = BG_FREEZE === null ? Math.max(0.01, state.clock.elapsedTime - 10) : BG_FREEZE;
     // W7 Z06 kv fade: the opening ground comes in over 0, 0.3 or 3 s (one of three, drawn once per visit).
     u.uKvFade.value = KV_FADE <= 0 ? 1 : Math.min(1, state.clock.elapsedTime / KV_FADE);
     u.uFluid.value = fluidShared.texture;
@@ -774,7 +776,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
-          depthWrite
+          depthWrite={false}
           transparent
           map={yulaWordmark}
           onBeforeCompile={patchWordmark}

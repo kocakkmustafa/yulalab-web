@@ -13,7 +13,7 @@ export type QualitySettings = {
 export const QUALITY: Record<QualityTier, QualitySettings> = {
   high: {
     dpr: [1, 1.5],
-    shadows: false,
+    shadows: "basic",
   },
   medium: {
     dpr: [1, 1.5],

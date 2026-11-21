@@ -3298,10 +3298,25 @@
 .loader { background: #000; transform: none; }
 .loader::before, .loader::after { display: none; }
 .loaderField { opacity: 1; transform: none; }
+.loaderAxes { stroke: rgba(220, 215, 235, .45); }
+.loaderGlyphWire { opacity: var(--loader-flat); stroke: rgba(230, 225, 245, .72); }
+.loaderBlueprint { width: min(100%, 720px); }
 .loaderGlyphDepth, .loaderGlyphGlass, .loaderTicks { display: none; }
 .loaderReadout { position: absolute; left: 50%; top: 72%; bottom: auto; width: max-content; max-width: 80%; transform: translateX(-50%); color: #aaa; font: 10px monospace; text-align: center; }
 .loaderSkip { position: absolute; right: 24px; bottom: 20px; z-index: 4; min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #aaa; font: 11px monospace; cursor: pointer; }
 .loaderSkip:focus-visible { outline: 1px solid white; outline-offset: 2px; }
 .viewportReveal { animation: opening-reveal 3s cubic-bezier(.65,0,.35,1) both; }
 @keyframes opening-reveal { from { clip-path: circle(0% at 50% 50%); transform: scale(1.08); } to { clip-path: circle(75% at 50% 50%); transform: scale(1); } }
+.viewportReveal .heroCopy > * { animation: opening-copy 600ms ease-out both; }
+.viewportReveal .heroCopy > :nth-child(2) { animation-delay: 150ms; }
+.viewportReveal .heroCopy > :nth-child(3) { animation-delay: 300ms; }
+.viewportReveal .heroCopy > :nth-child(4) { animation-delay: 450ms; }
+.viewportReveal .heroCopy > :nth-child(5) { animation-delay: 600ms; }
+@keyframes opening-copy { from { opacity: 0; translate: 0 8px; } to { opacity: 1; translate: 0 0; } }
+@media (max-width: 767px) {
+  .heroCopy { bottom: calc(78px + var(--safe-bottom)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .viewportReveal, .viewportReveal .heroCopy > * { animation: none; }
+}
 @media (prefers-reduced-motion: reduce) { .viewportReveal { animation: none; } }

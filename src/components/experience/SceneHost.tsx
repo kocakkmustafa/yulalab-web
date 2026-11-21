@@ -31,6 +31,7 @@ import {
   type SceneTone,
 } from "./scene-route";
 import type { ExperienceMode, ExperienceProduct, QualityTier, Vec3 } from "./types";
+import styles from "./Experience.module.css";
 
 // three.js stays out of every route's first-load bundle; it is fetched only
 // when a journey or a content-page backdrop actually asks for the renderer.
@@ -54,6 +55,7 @@ export type SceneJourney = {
   requested: boolean;
   /** False while the journey shows its linear (2D) document. */
   visible: boolean;
+  opening?: boolean;
   progress: number;
   glyphRotation: Vec3;
   products: ExperienceProduct[];
@@ -350,7 +352,7 @@ export function SceneHost({ children }: { children: ReactNode }) {
           data-scene-progress={progress.toFixed(3)}
           aria-hidden="true"
         >
-          <div className="scene-host-canvas">
+          <div className={`scene-host-canvas ${journey?.opening ? styles.viewportReveal : ""}`}>
             <ExperienceErrorBoundary fallback={null} onError={handleFailure}>
               <ExperienceCanvas
                 ambient={tone === "journey" && !hidden}

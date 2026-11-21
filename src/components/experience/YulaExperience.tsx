@@ -715,6 +715,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     // Before mount the server's linear document is shown, but nothing has
     // chosen it yet: keep a scene that is already live instead of dropping it.
     visible: !mounted || !useStatic,
+    opening: !loaderVisible && !capture.enabled,
     progress: renderedProgress,
     glyphRotation,
     products,
@@ -726,7 +727,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     onTierChange: handleTierChange,
   }), [
     glyphRotation, handleCanvasFailure, handleCanvasReady, handleTierChange, mode,
-    mounted, products, renderedProgress, sceneRequested, sceneSession, theme.ready, tier,
+    mounted, products, renderedProgress, sceneRequested, sceneSession, theme.ready, tier, loaderVisible, capture.enabled,
     useStatic, wallTitles, webgl,
   ]);
   useSceneJourney(sceneJourney);

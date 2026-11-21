@@ -16,4 +16,12 @@ export type HeroSlot = {
 export const HERO_PLANE_HEIGHT = 5.2;
 export const HERO_PLANE_Z = -1.25;
 
+/** Shared by the texture and its glass initial so the complete word fits phones. */
+export function heroWordmarkWidth(mobileMix: number, aspect: number): number {
+  // Mobile camera: 52 degree vertical FOV, 13.8 camera Z, -1.25 plane Z.
+  const visibleWidth = 2 * (13.8 - HERO_PLANE_Z) * Math.tan(26 * Math.PI / 180) * Math.max(0, aspect);
+  const mobileWidth = Math.min(14.2, visibleWidth * 0.96);
+  return 14.2 * (1 - mobileMix) + mobileWidth * mobileMix;
+}
+
 export const heroSlot: HeroSlot = { x: -0.31, y: 0.02, cap: 0.47 };
