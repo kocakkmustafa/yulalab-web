@@ -758,7 +758,8 @@ export function PortfolioField({
   // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
   // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
   // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
-  // The first step is not before 3 s so the opening keeps its frames. The materials are compiled ONCE, asynchronously,
+  // The first step is not before 1.8 s after mount (the 13 programs need about a second to link, and must be done before the
+  // works entrance at ~900 px; BT12 measured that with 3 s the entrance still waited on them). The materials are compiled ONCE, asynchronously,
   // after the first two cards are in (the later cards use the same programs).
   const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
   const lastScrollAt = useRef(0);
@@ -797,7 +798,7 @@ export function PortfolioField({
       setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
       if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 700);
     };
-    schedule(() => loadCard(0), 3000);
+    schedule(() => loadCard(0), 1800);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
@@ -806,7 +807,7 @@ export function PortfolioField({
   }, [cardCount]);
   const compiled = useRef(false);
   // W7 BT12: one loaded card is enough (every card uses the same programs), and the wait for its picture is short now that the
-  // cover is a static image: compiling starts about 0.8 s after the first card, so it is done before the works entrance.
+  // cover is a static image: compiling starts about 0.5 s after the first card, so it is done before the works entrance.
   const firstCardLoaded = richMediaProducts.has(0);
   useEffect(() => {
     if (compiled.current || !firstCardLoaded) return undefined;
@@ -821,7 +822,7 @@ export function PortfolioField({
       group.visible = true; // compile() only walks visible objects; the walk is synchronous, the program build is not
       try { void gl.compileAsync(scene, camera); } finally { group.visible = wasVisible; }
     };
-    timer = window.setTimeout(attempt, 800);
+    timer = window.setTimeout(attempt, 500);
     return () => { cancelled = true; window.clearTimeout(timer); };
   }, [camera, firstCardLoaded, gl, scene]);
   const requestedMediaProducts = useMemo(
