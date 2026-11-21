@@ -97,8 +97,12 @@ const FRAGMENT = /* glsl */ `
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.02; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
+      // W8 Q5: no per-pixel random. The eight taps are a fixed Vogel disc one and a half pixels wide and the channel slide is
+      // a constant per tap, so the sum is a clean box filter (the old hash jitter left horizontal dotted noise inside the letter).
+      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + fract(fi * 0.618034) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
+      float vr = sqrt((fi + 0.5) / ${GLASS_PARAMS.samples.toFixed(1)}) * 1.5;
+      float va = fi * 2.399963;
+      vec2 jitter = vec2(cos(va), sin(va)) * vr / uResolution;
       vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
       vec3 sampleColor;
       sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[0].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).r;
@@ -121,11 +125,13 @@ const FRAGMENT = /* glsl */ `
     c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
-    // W7 CY7: no spectrum band on the glass rim.
-    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
-    c += vec3(spec) * 0.0;
-    // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
-    c = c * 1.5 + vec3(0.06);
+    // W8 C3 (reopens W7 CY7 on purpose, REA section 3): a rainbow band toward the rim and a thin bright white edge line.
+    float edgeLine = smoothstep(0.62, 0.9, 1.0 - nv);
+    c += spectrum * rim * 0.75;
+    c += vec3(1.0) * edgeLine * 0.55;
+    // GGX highlight (REA section 3), clamped so the tiny alpha cannot blow out a pixel.
+    c += vec3(min(spec, 8.0)) * 0.08;
+    // W8 C4: the glass stays clear. The CY9/CY11 lift (c * 1.5 + 0.06) that made it milky is gone; output x1.2 only.
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.

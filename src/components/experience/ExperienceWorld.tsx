@@ -2,14 +2,14 @@
 
 import { Lightformer } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { Color, Fog } from "three";
 import { CameraRig } from "./CameraRig";
 import { MouseFluid } from "./MouseFluid";
 import { GridRoom, type WallTitles } from "./GridRoom";
 import { LightformerEnvironment } from "./LightformerEnvironment";
 import { PortfolioField } from "./PortfolioField";
-import { evaluateTimeline } from "./timeline";
+import { evaluateTimeline, STAGES } from "./timeline";
 import type {
   ExperienceMode,
   ExperienceProduct,
@@ -85,6 +85,15 @@ export function ExperienceWorld({
   const environmentResolution = tier === "high" ? 256 : tier === "medium" ? 128 : 64;
   const mediaTextures = useShowcaseTextures(products[0]?.href.startsWith("/en/") ?? false, progress >= 0.705, 1024);
   const worksTextures = useWorksCardTextures(products, progress < 0.52);
+
+  // W8 Q7: the hero draws no shadow map (the reference has none). autoUpdate keeps the shader paths unchanged, so leaving the hero
+  // does not recompile every lit material; it only starts the shadow pass again.
+  const glRenderer = useThree((state) => state.gl);
+  const inHero = progress < STAGES.hero[1];
+  useEffect(() => {
+    glRenderer.shadowMap.autoUpdate = !inHero;
+    glRenderer.shadowMap.needsUpdate = !inHero;
+  }, [glRenderer, inHero]);
 
   return (
     <>

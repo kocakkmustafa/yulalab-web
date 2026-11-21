@@ -19,8 +19,9 @@ export const QUALITY: Record<QualityTier, QualitySettings> = {
     dpr: [1, 1.5],
     shadows: false,
   },
+  // W8 Q1: the light tier (phones, constrained hardware) renders at up to 1.5x like the reference (min(1.5, dpr)); it was 1.0x.
   low: {
-    dpr: 1,
+    dpr: [1, 1.5],
     shadows: false,
   },
 };

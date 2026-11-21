@@ -12,7 +12,7 @@ import {
 import { homeSceneIdFromHash } from "@/components/landing/home-scenes";
 import { createAmbientAudio, type AmbientAudioController } from "./audio";
 import { ExperienceLoader } from "./ExperienceLoader";
-import { resolveVisibleFrameDelta, scheduleAfterLoad } from "./loader";
+import { resolveLoaderOpen, resolveVisibleFrameDelta, scheduleAfterLoad } from "./loader";
 import { ExperienceOverlay } from "./ExperienceOverlay";
 import { detectExperienceCapabilities } from "./quality";
 import { MOBILE_STATIC_DEFAULT, MOBILE_STATIC_QUERY } from "./mobile-default";
@@ -91,9 +91,9 @@ function writeLinearScroll(y: number, href: string): void {
 }
 
 const MOBILE_SCENE_QUERY = "(max-width: 767px)";
-const PHONE_SCENE_DELAY_MS = 2_500;
+const PHONE_SCENE_DELAY_MS = 600;
 const LOADER_DRAW_DURATION_MS = 3_600;
-const LOADER_EXIT_DURATION_MS = 900;
+const LOADER_EXIT_DURATION_MS = 3_000;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
 const LOADER_HOLD_PROGRESS = 0.9;
 const TIER_ORDER: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
@@ -799,6 +799,8 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
             className={styles.viewport}
             aria-hidden={loaderVisible || undefined}
             inert={loaderVisible}
+            // W8 T4: while the opening card is up the scene waits slightly closer and settles as the card opens (camera approach).
+            style={loaderVisible ? { transform: `scale(${(1 + 0.08 * (1 - resolveLoaderOpen(loaderProgress))).toFixed(4)})` } : undefined}
           >
             <ExperienceOverlay
               copy={copy}

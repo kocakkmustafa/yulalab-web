@@ -50,6 +50,16 @@ export function resolveLoaderFrame(value: number): LoaderFrame {
 }
 
 /**
+ * W8 T4: how far the live scene has opened, 0..1, on a sigmoid(6) curve over the exit share (the last ten percent) of the
+ * loader progress. Drives both the circular opening of the loader card and the scene's small approach (scale).
+ */
+export function resolveLoaderOpen(value: number): number {
+  const x = clamp01((clamp01(value) - 0.9) / 0.1);
+  const s = (v: number) => 1 / (1 + Math.exp(-6 * (v * 2 - 1)));
+  return (s(x) - s(0)) / (s(1) - s(0));
+}
+
+/**
  * Browser RAF pauses or throttles in a background tab. Clamp the first frame
  * after resuming and ignore frames that are still hidden so background time
  * can never consume the WebGL readiness timeout.

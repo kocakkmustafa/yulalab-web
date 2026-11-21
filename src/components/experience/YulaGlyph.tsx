@@ -26,7 +26,7 @@ import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
-import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
+import { HERO_GLASS_MODE, HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 // W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
@@ -289,7 +289,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width,
   );
   // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
-  const slotMix = heroSlotMix(frame.progress);
+  const slotMix = HERO_GLASS_MODE === "ref" ? 0 : heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
     const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
@@ -464,7 +464,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         castShadow={tier !== "low"}
         geometry={geometry}
         receiveShadow
-        visible={tier === "low" || !glassVisible}
+        visible={!glassVisible}
       >
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
@@ -486,9 +486,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         />
       </mesh>
 
-      {tier !== "low" ? (
-        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
-      ) : null}
+      {/* W8 C7: the light tier (every phone) draws the refraction glass too; it left the slot empty because only the opaque body fades out. */}
+      <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
         <lineBasicMaterial

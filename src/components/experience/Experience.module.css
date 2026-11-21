@@ -58,47 +58,24 @@
 
 .loader {
   --loader-progress: 0;
-  --loader-reveal: 0;
-  --loader-flat: 0;
-  --loader-depth: 0;
-  --loader-flash: 0;
+  --loader-line: 0;
+  --loader-iris: -8;
   --loader-exit: 0;
   position: fixed;
   z-index: 100;
   inset: 0;
   display: grid;
   place-items: center;
-  opacity: calc(1 - var(--loader-exit));
-  color: #f8f5ff;
-  background:
-    radial-gradient(circle at 50% 46%, rgba(119, 72, 185, 0.14), transparent 34%),
-    #07050a;
-  transform: scale(calc(1 + var(--loader-exit) * 0.025));
+  color: #f4f4f6;
+  /* W8: the reference's opening card is pure black. The scene opens through a circle (sigmoid, 3 s) instead of a cross-fade. */
+  background: #000;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--loader-iris) * 1%), #000 calc(var(--loader-iris) * 1% + 7%));
+  mask-image: radial-gradient(circle at 50% 50%, transparent calc(var(--loader-iris) * 1%), #000 calc(var(--loader-iris) * 1% + 7%));
 }
 
 .loader::before,
 .loader::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-}
-
-.loader::before {
-  top: calc(22px + var(--safe-top));
-  right: calc(22px + var(--safe-right));
-  bottom: calc(22px + var(--safe-bottom));
-  left: calc(22px + var(--safe-left));
-  border: 1px solid rgba(223, 210, 247, 0.12);
-}
-
-.loader::after {
-  inset: 0;
-  opacity: 0.2;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at 40% 50%, black, transparent 68%);
+  content: none;
 }
 
 .loaderBurst {
@@ -164,8 +141,57 @@
 
 .loaderBlueprint {
   width: min(100%, 520px);
-  max-height: 64vh;
+  height: 2px;
   overflow: visible;
+}
+
+.loaderBlueprint path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--loader-line));
+}
+
+.loaderType {
+  display: block;
+  margin: 18px 0 0;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: pre;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.loaderType span {
+  opacity: 0;
+}
+
+.loaderType span[data-on="true"] {
+  opacity: 1;
+}
+
+.loaderSkip {
+  position: absolute;
+  z-index: 5;
+  right: calc(28px + var(--safe-right));
+  bottom: calc(24px + var(--safe-bottom));
+  min-height: 44px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.loaderSkip:hover,
+.loaderSkip:focus-visible {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .loaderAxes,
@@ -2651,7 +2677,7 @@
    Product media and identity colors keep their original pixels. */
 .journey, .staticJourney, .viewport { color: var(--yula-exp-fg); background: var(--yula-exp-bg); }
 .staticExperience { --experience-fg: var(--yula-exp-fg); --experience-muted: var(--yula-exp-muted); --experience-line: var(--yula-exp-line); background: radial-gradient(circle at 72% 4%, rgba(108,62,163,.12), transparent 30%), var(--yula-exp-bg); }
-.loader { color: var(--yula-exp-fg); background: radial-gradient(circle at 50% 46%, rgba(119,72,185,.14), transparent 34%), var(--yula-exp-bg); }
+.loader { color: #f4f4f6; background: #000; }
 .loaderCorner, .loaderReadout li { color: var(--yula-exp-muted); }
 .loaderPercent, .loaderReadout li[data-active="true"] { color: var(--yula-exp-fg); }
 .loader::before { border-color: color-mix(in srgb, var(--yula-exp-line) 35%, transparent); }
@@ -3292,4 +3318,21 @@
   .productLink:hover span {
     transform: none;
   }
+}
+
+/* W8 T6: the hero copy comes in one line after another once the opening card has opened (0.15 s apart, 0.6 s fade, 8 px rise). */
+@keyframes w8HeroRise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+.heroCopy > * {
+  animation: w8HeroRise 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.heroCopy > :nth-child(1) { animation-delay: 60ms; }
+.heroCopy > :nth-child(2) { animation-delay: 210ms; }
+.heroCopy > :nth-child(3) { animation-delay: 360ms; }
+.heroCopy > :nth-child(4) { animation-delay: 510ms; }
+.heroCopy > :nth-child(5) { animation-delay: 660ms; }
+@media (prefers-reduced-motion: reduce) {
+  .heroCopy > * { animation: none; }
 }

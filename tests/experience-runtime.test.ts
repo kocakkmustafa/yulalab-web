@@ -241,7 +241,7 @@ describe("experience quality policy", () => {
     expect(QUALITY).toEqual({
       high: { dpr: [1, 1.75], shadows: "basic" },
       medium: { dpr: [1, 1.5], shadows: false },
-      low: { dpr: 1, shadows: false },
+      low: { dpr: [1, 1.5], shadows: false }, // W8 Q1
     });
     expect(Object.keys(QUALITY.high).sort()).toEqual(["dpr", "shadows"]);
 

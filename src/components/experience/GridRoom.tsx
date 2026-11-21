@@ -10,6 +10,7 @@ import {
   CanvasTexture,
   Color,
   LinearFilter,
+  LinearMipmapLinearFilter,
   ShaderMaterial,
   SRGBColorSpace,
   Vector3,
@@ -50,7 +51,8 @@ const BG_FREEZE: number | null = (() => {
   // 3.5, not 3: at a whole second the 0.12 s black-out window is open and would dim the frozen frame for good.
   return Number.isFinite(value) && value > 1 ? value : 3.5;
 })();
-const KV_FADE = [0, 0.3, 3][Math.floor(Math.random() * 3)];
+/** W8 B4: the opening ground always comes in over 3 s (it was a random 0, 0.3 or 3 s per visit), to match the black loader's exit. */
+const KV_FADE = 3;
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime; uniform float uKvFade;
@@ -77,8 +79,10 @@ const GROUND_GLSL = /* glsl */ `
     return vec2(block * 4.0 + j, (local - start) / len);
   }
   float groundPattern(float slot) {
+    // W8 B4: the first segment of every visit is the deep blue pattern (it was a random draw).
+    if (slot < 0.5) return 0.0;
     float cur = floor(mosaicHash(vec2(slot, 7.0)) * 3.0);
-    float prev = floor(mosaicHash(vec2(slot - 1.0, 7.0)) * 3.0);
+    float prev = slot < 1.5 ? 0.0 : floor(mosaicHash(vec2(slot - 1.0, 7.0)) * 3.0);
     if (slot > 0.5 && cur == prev) cur = mod(cur + 1.0 + floor(mosaicHash(vec2(slot, 19.0)) * 2.0), 3.0);
     return min(cur, 2.0);
   }
@@ -185,11 +189,15 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles
       + litTone * (${MOSAIC.lit.toFixed(3)} * (groundPat > 1.5 ? 1.0 : 0.65)) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
-    float cornerFall = smoothstep(0.56, 0.20, length(uv - 0.5)); // W7 A1T8 Z07: 0.66 to 0.56, no blue-green remnant in the corner
+    float cornerFall = smoothstep(0.54, 0.20, length(uv - 0.5)); // W7 A1T8 Z07: 0.66 to 0.56, no blue-green remnant in the corner
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
+    // W8 B2/B3: portrait screens (phones) get a deeper edge fall and a darker field (reference mobile cells average 5,6,18; corners 5 to 11).
+    float portrait = smoothstep(1.0, 0.6, uMosaicAspect);
+    cornerFall = pow(cornerFall, 1.0 + 0.9 * portrait);
+    tiled *= mix(1.0, 0.45, portrait);
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
@@ -405,18 +413,24 @@ const BACKDROP_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
+/**
+ * W8 Q4: wordmark canvas scale. The plane shows the word at about 2520 device px on desktop; 2048 px across keeps the
+ * magnification at or under 1.25x (it was 2.4x at 1024), and mipmaps plus anisotropy keep the phone's 3x reduction clean.
+ */
+const WORDMARK_SCALE = 2;
+
 function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasTexture {
   const canvas = document.createElement("canvas");
-  canvas.width = 1024;
-  canvas.height = 512;
+  canvas.width = 1024 * WORDMARK_SCALE;
+  canvas.height = 512 * WORDMARK_SCALE;
   const context = canvas.getContext("2d");
 
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "#ffffff";
-    context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
+    context.font = `600 ${340 * WORDMARK_SCALE}px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
     context.textBaseline = "middle";
-    const centreY = canvas.height / 2 + 12;
+    const centreY = canvas.height / 2 + 12 * WORDMARK_SCALE;
     const maxWidth = canvas.width * 0.92;
     if (skipFirstLetter) {
       // Same layout as the whole word, but the first letter is left empty for the glass Y.
@@ -441,9 +455,10 @@ function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasText
 
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  texture.generateMipmaps = false;
-  texture.minFilter = LinearFilter;
+  texture.generateMipmaps = true;
+  texture.minFilter = LinearMipmapLinearFilter;
   texture.magFilter = LinearFilter;
+  texture.anisotropy = 8;
   texture.needsUpdate = true;
   return texture;
 }
@@ -770,7 +785,10 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
           depthWrite
-          alphaHash
+          // W8 Q3: a plain blended edge replaces alphaHash (its dither made straight edges wander by 3.7 px). Texels below 2%
+          // are dropped so the transparent rectangle of the plane never writes depth over the ground.
+          transparent
+          alphaTest={0.02}
           map={yulaWordmark}
           onBeforeCompile={patchWordmark}
           customProgramCacheKey={() => "wordmark-flow"}
