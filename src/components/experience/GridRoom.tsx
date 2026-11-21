@@ -142,9 +142,13 @@ const GROUND_GLSL = /* glsl */ `
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
   vec3 groundColorBase(vec2 uv, vec3 edge, vec3 mid, vec3 peak, vec4 centre, vec4 spread) {
-    vec2 d = uv - centre.xy;
+    // W7 C9: the flow bend is taken first, so the room grounds (they return early below) bend like the hero does.
+    vec2 bendTop = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY} * 0.02 * uFluidMix;
+    float bendTopLen = length(bendTop);
+    if (bendTopLen > 0.025) bendTop *= 0.025 / bendTopLen;
+    vec2 d = uv - bendTop - centre.xy;
     float wide = exp(-(d.x * d.x / spread.x + d.y * d.y / spread.y));
-    vec2 e = uv - centre.zw;
+    vec2 e = uv - bendTop - centre.zw;
     float narrow = exp(-(e.x * e.x / spread.z + e.y * e.y / spread.w));
     vec3 steady = edge + (mid - edge) * wide + (peak - mid) * narrow * wide;
     // W7 F1/F7: the mouse flow lights every ground, not only the hero mosaic.
@@ -188,9 +192,8 @@ const GROUND_GLSL = /* glsl */ `
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
-    // W7 A1T9 Z07: the p3 halo falls into the corner as well (extra falloff only in the outer zone, so its orange stays).
-    float cornerP3 = mix(1.0, smoothstep(0.62, 0.40, length(uv - 0.5)), step(1.5, groundPat));
-    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall * cornerP3, uMosaic);
+    // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
+    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
   }
 
   // W7 Z09 (founder decision "a"): in the works section the selected card's picture is tiled over the screen,
@@ -258,9 +261,15 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
   }
   ${GROUND_GLSL}
   void main() {
-    float fine = gridLine(vUv, vec2(128.0, 107.0));
-    float major = gridLine(vUv, vec2(48.2, 107.0));
-    vec2 tile = vUv * vec2(48.2, 107.0);
+    // W7 C9: the room grid curls with the mouse trail (a fraction of a cell), like the reference's warped grid.
+    vec2 gridScreen = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
+    vec2 gridBend = texture2D(uFluid, gridScreen).xy * ${FLUID_DISPLAY} * 0.02 * uFluidMix;
+    float gridBendLen = length(gridBend);
+    if (gridBendLen > 0.025) gridBend *= 0.025 / gridBendLen;
+    vec2 bUv = vUv - gridBend * 0.35;
+    float fine = gridLine(bUv, vec2(128.0, 107.0));
+    float major = gridLine(bUv, vec2(48.2, 107.0));
+    vec2 tile = bUv * vec2(48.2, 107.0);
     vec2 cell = floor(tile);
     vec2 local = fract(tile);
     float cellTone = fract(sin(dot(cell, vec2(17.13, 71.7))) * 43758.5453);
