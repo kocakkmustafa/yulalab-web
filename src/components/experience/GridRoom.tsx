@@ -149,13 +149,19 @@ const GROUND_GLSL = /* glsl */ `
     vec3 steady = edge + (mid - edge) * wide + (peak - mid) * narrow * wide;
     // W7 F1/F7: the mouse flow lights every ground, not only the hero mosaic.
     vec2 flowAll = texture2D(uFluid, uv).xy * uFluidMix;
-    steady += vec3(0.8, 0.85, 1.0) * length(flowAll) * 0.4; // W7 C tur 3: x4 with the display scale
+    steady += vec3(0.8, 0.85, 1.0) * length(flowAll) * 0.08; // W7 C8: the flow bends the ground instead of lighting it; the added light is 20 % of the C tur 3 value
     if (uMosaic < 0.001) return steady;
     float glow = clamp(wide * 0.8 + narrow * wide * 0.6, 0.0, 1.0);
     // Mouse fluid: the tiles drift with the flow and their colours slide along the palette where it moves.
     vec2 flow = texture2D(uFluid, uv).xy * ${FLUID_DISPLAY};
     vec3 litTone;
-    vec4 mosaic = mosaicTiles((uv - 0.5 - flow * 0.01 * uFluidMix) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.45 * uFluidMix, uv, litTone);
+    // W7 C8: the reference trail BENDS the ground (stripes curl along the trail, the grid warps): the flow velocity is a UV
+    // shift of the whole pattern (about 10 to 30 px, capped), no white glow band.
+    vec2 bend = flow * 0.02 * uFluidMix;
+    float bendLen = length(bend);
+    if (bendLen > 0.025) bend *= 0.025 / bendLen;
+    vec2 buv = uv - bend;
+    vec4 mosaic = mosaicTiles((buv - 0.5) * vec2(uMosaicAspect, 1.0), uMosaicTime, (flow.x + flow.y * 0.6) * 0.45 * uFluidMix, buv, litTone);
     // In the portfolio the tiles stay, but in greys (the reference works ground is black/grey).
     litTone = mix(litTone, vec3(dot(litTone, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
     mosaic.rgb = mix(mosaic.rgb, vec3(dot(mosaic.rgb, vec3(0.3, 0.5, 0.2))), uMosaicGrey);
@@ -163,7 +169,7 @@ const GROUND_GLSL = /* glsl */ `
     vec3 stirTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     // W7 Z06 t4: the opening is a light field (the portfolio grey mosaic keeps the old dim tile gate).
     float tileGate = mix(0.5 * (${MOSAIC.base.toFixed(3)} + ${MOSAIC.gain.toFixed(3)} * glow * glow) * 2.6, 0.62, 1.0 - uMosaicGrey);
-    vec3 tiles = mosaic.rgb * tileGate * (1.0 + length(flow) * 0.8 * uFluidMix);
+    vec3 tiles = mosaic.rgb * tileGate * (1.0 + length(flow) * 0.16 * uFluidMix); // W7 C8: flow light x0.2
     float groundPat = groundPattern(patternSegment(uMosaicTime).x);
     // W7 Z06 t4: the stripe and the p3 patterns spread wide over the screen (reference: bright edges).
     // W7 Z06 t5: all three patterns fall off radially from behind the logo (centre x1, corners about x0.05).
@@ -182,7 +188,9 @@ const GROUND_GLSL = /* glsl */ `
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
-    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall, uMosaic);
+    // W7 A1T9 Z07: the p3 halo falls into the corner as well (extra falloff only in the outer zone, so its orange stays).
+    float cornerP3 = mix(1.0, smoothstep(0.62, 0.40, length(uv - 0.5)), step(1.5, groundPat));
+    return mix(steady, tiled, uMosaic) * mix(1.0, cornerFall * cornerP3, uMosaic);
   }
 
   // W7 Z09 (founder decision "a"): in the works section the selected card's picture is tiled over the screen,
@@ -330,7 +338,7 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float alpha = (0.65 + fine * 0.16 + major * 0.12) * fade * uOpacity;
     vec3 base = mix(uBackgroundColor, color, clamp(alpha, 0.0, 1.0));
     // W7 C tur 5 V3: the room surfaces read the mouse flow like the hero ground does.
-    base += vec3(0.8, 0.85, 1.0) * (1.0 - exp(-length(texture2D(uFluid, screenUv).xy * uFluidMix) * 0.04)); // W7 C7: x0.04 (C6 0.10, was 1.08) with a soft limit, no saturated white strip
+    // W7 C8: the room no longer adds light from the flow (it was the saturated white strip); the ground bends instead.
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
