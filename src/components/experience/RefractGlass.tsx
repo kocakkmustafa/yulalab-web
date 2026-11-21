@@ -98,7 +98,7 @@ const FRAGMENT = /* glsl */ `
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
       float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.02; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
+      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) / uResolution * 0.75; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
       vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
       vec3 sampleColor;
       sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[0].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).r;
@@ -122,10 +122,10 @@ const FRAGMENT = /* glsl */ `
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
-    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
-    c += vec3(spec) * 0.0;
+    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.35;
+    c += vec3(spec);
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
-    c = c * 1.5 + vec3(0.06);
+
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.

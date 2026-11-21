@@ -91,7 +91,7 @@ function writeLinearScroll(y: number, href: string): void {
 }
 
 const MOBILE_SCENE_QUERY = "(max-width: 767px)";
-const PHONE_SCENE_DELAY_MS = 2_500;
+const PHONE_SCENE_DELAY_MS = 0;
 const LOADER_DRAW_DURATION_MS = 3_600;
 const LOADER_EXIT_DURATION_MS = 900;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
@@ -796,7 +796,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
           <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(missionCenter, mobile ? "mobile" : "desktop") }} />
 
           <div
-            className={styles.viewport}
+            className={`${styles.viewport} ${!loaderVisible && !capture.enabled ? styles.viewportReveal : ""}`}
             aria-hidden={loaderVisible || undefined}
             inert={loaderVisible}
           >

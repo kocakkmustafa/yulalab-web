@@ -94,7 +94,7 @@ export function ExperienceWorld({
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight
-        castShadow={tier !== "low"}
+        castShadow={tier !== "low" && progress >= 0.065}
         color={frame.world.themeMix > 0.5 ? "#fffaf0" : "#ffffff"}
         intensity={2.2}
         position={[6, 9, 8]}

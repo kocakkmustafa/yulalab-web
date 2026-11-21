@@ -41,10 +41,10 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
   }, [onSkip]);
   const frame = resolveLoaderFrame(progress);
   const clamped = frame.progress;
-  const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
+  const activeLine = 0;
   // The active readout line decodes from its own glyphs as the card runs; the
   // stand-ins are a pure function of progress, so capture frames are exact.
-  const lineProgress = clamped * lines.length - activeLine;
+  const lineProgress = Math.max(0, (clamped * 3600 - 300) / Math.max(1, lines[0].length * 40));
   const decodeTick = Math.floor(clamped * 240);
   const style: LoaderStyle = {
     "--loader-progress": clamped,
@@ -62,11 +62,6 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
       data-yula-loader="true"
       data-loader-progress={clamped.toFixed(3)}
     >
-      <div className={styles.loaderBurst} aria-hidden="true">
-        <i />
-        <i />
-        <span />
-      </div>
       <div className={styles.loaderField} aria-hidden="true">
         <svg className={styles.loaderBlueprint} viewBox="0 0 1000 700">
           <g className={styles.loaderAxes}>
@@ -96,8 +91,6 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
             })}
           </g>
         </svg>
-        <span className={styles.loaderCorner}>YL / SYS / 001</span>
-        <span className={styles.loaderPercent}>{Math.round(clamped * 100).toString().padStart(3, "0")}</span>
       </div>
 
       <div
@@ -107,24 +100,14 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
         aria-atomic="true"
       >
         <span className={styles.srOnly}>{lines[activeLine]}</span>
-        <ol aria-hidden="true">
-          {lines.map((line, index) => (
-            <li key={line} data-active={index === activeLine ? "true" : "false"}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {index === activeLine ? scrambleFrame(line, lineProgress * 1.8, decodeTick) : line}
-            </li>
-          ))}
-        </ol>
-        <div className={styles.loaderTrack} aria-hidden="true">
-          <span />
-        </div>
+        <span aria-hidden="true">{scrambleFrame(lines[0], lineProgress, decodeTick)}</span>
       </div>
       {onSkip ? (
         <button
           type="button"
           onClick={onSkip}
           data-yula-loader-skip="true"
-          className="focusable absolute bottom-[calc(40px+var(--safe-bottom))] right-[calc(40px+var(--safe-right))] z-10 min-h-[44px] rounded-full border border-white/40 px-5 text-sm font-medium text-white/90 hover:border-white hover:text-white"
+          className={styles.loaderSkip}
         >
           {t("loaderSkip")}
         </button>

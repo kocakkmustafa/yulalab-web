@@ -3293,3 +3293,15 @@
     transform: none;
   }
 }
+
+/* W8: a quiet black construction drawing, followed by a circular reveal. */
+.loader { background: #000; transform: none; }
+.loader::before, .loader::after { display: none; }
+.loaderField { opacity: 1; transform: none; }
+.loaderGlyphDepth, .loaderGlyphGlass, .loaderTicks { display: none; }
+.loaderReadout { position: absolute; left: 50%; top: 72%; bottom: auto; width: max-content; max-width: 80%; transform: translateX(-50%); color: #aaa; font: 10px monospace; text-align: center; }
+.loaderSkip { position: absolute; right: 24px; bottom: 20px; z-index: 4; min-height: 44px; padding: 0 8px; border: 0; background: transparent; color: #aaa; font: 11px monospace; cursor: pointer; }
+.loaderSkip:focus-visible { outline: 1px solid white; outline-offset: 2px; }
+.viewportReveal { animation: opening-reveal 3s cubic-bezier(.65,0,.35,1) both; }
+@keyframes opening-reveal { from { clip-path: circle(0% at 50% 50%); transform: scale(1.08); } to { clip-path: circle(75% at 50% 50%); transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .viewportReveal { animation: none; } }

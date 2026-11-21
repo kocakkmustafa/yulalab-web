@@ -291,7 +291,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
   const slotMix = heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
-    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
+    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.32);
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
     // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
     const planeX = heroSlot.x * planeWidth;
@@ -326,23 +326,24 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
   }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+  const referenceCamera = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("cam") === "ref";
   const position = useMemo(
     () => [
-      lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
-      lerp(frame.glyph.position[1] + viewportPose.offset[1], slotPose.y, slotMix),
+      lerp(frame.glyph.position[0] + viewportPose.offset[0], referenceCamera ? 0 : slotPose.x, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], referenceCamera ? 0.1 : slotPose.y, slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
+    [frame.glyph.position, viewportPose.offset, slotPose, slotMix, referenceCamera],
   );
   // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
   // the Y takes the same horizontal squeeze while it stands in for the first letter.
-  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
+  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.32)) / 10.4);
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
-  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
-  const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * (referenceCamera ? 2.3 : 1), slotMix);
+  const glyphScaleXYZ = [glyphScale * lerp(1, referenceCamera ? 1 : slotSqueeze, slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -464,7 +465,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         castShadow={tier !== "low"}
         geometry={geometry}
         receiveShadow
-        visible={tier === "low" || !glassVisible}
+        visible={!glassVisible}
       >
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
@@ -486,9 +487,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         />
       </mesh>
 
-      {tier !== "low" ? (
-        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
-      ) : null}
+      <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
         <lineBasicMaterial

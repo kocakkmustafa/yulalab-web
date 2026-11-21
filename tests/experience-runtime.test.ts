@@ -239,9 +239,9 @@ afterEach(() => {
 describe("experience quality policy", () => {
   it("contains only mutable Canvas settings and only downgrades", () => {
     expect(QUALITY).toEqual({
-      high: { dpr: [1, 1.75], shadows: "basic" },
+      high: { dpr: [1, 1.5], shadows: false },
       medium: { dpr: [1, 1.5], shadows: false },
-      low: { dpr: 1, shadows: false },
+      low: { dpr: [1, 1.5], shadows: false },
     });
     expect(Object.keys(QUALITY.high).sort()).toEqual(["dpr", "shadows"]);
 
