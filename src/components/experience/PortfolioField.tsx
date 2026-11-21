@@ -552,23 +552,46 @@ function ResearchWireframe({
   );
 }
 
-function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
+type IdentityProps = {
   product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
-}) {
-  const icon = useCardTexture(product.icon, tier, onAssetSettled);
-  const cover = useMemo(() => makeBrightIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
-  useEffect(() => () => cover.dispose(), [cover]);
+};
 
+function IdentityPlane({ product, opacity, map }: { product: ExperienceProduct; opacity: number; map: Texture | null }) {
   // The approved app icon stands alone as a large rounded square: no backing
   // box, no frame, so the room light reads around it.
   return (
     <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
-      <mesh>
-        <planeGeometry args={[2.6, 2.6]} />
-        <meshBasicMaterial map={cover} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
-      </mesh>
+      {map && (
+        <mesh>
+          <planeGeometry args={[2.6, 2.6]} />
+          <meshBasicMaterial map={map} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
+        </mesh>
+      )}
     </group>
   );
+}
+
+/**
+ * W7 BT12: the bright icon cover is a static, lossless image rendered once by scripts/render-icon-covers.mts from the very
+ * same makeBrightIconPresentation pipeline (pixel-identical when uploaded to WebGL). The pipeline took 280–430 ms of main
+ * thread at run time; this costs one image decode. If the file is missing the run-time pipeline below is the fallback.
+ */
+function IdentityPresentation({ product, opacity, tier, onAssetSettled }: IdentityProps) {
+  const cover = useCardTexture(`/projects/${product.slug}/icon-cover-768.webp`, tier, noopSettled);
+  useEffect(() => {
+    if (cover.status === "loaded" && product.icon) onAssetSettled(product.icon);
+  }, [cover.status, onAssetSettled, product.icon]);
+  if (cover.failed) return <RuntimeIdentityPresentation product={product} opacity={opacity} tier={tier} onAssetSettled={onAssetSettled} />;
+  return <IdentityPlane product={product} opacity={opacity} map={cover.texture} />;
+}
+
+const noopSettled = () => undefined;
+
+function RuntimeIdentityPresentation({ product, opacity, tier, onAssetSettled }: IdentityProps) {
+  const icon = useCardTexture(product.icon, tier, onAssetSettled);
+  const cover = useMemo(() => makeBrightIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
+  useEffect(() => () => cover.dispose(), [cover]);
+  return <IdentityPlane product={product} opacity={opacity} map={cover} />;
 }
 
 function ProductCard({
