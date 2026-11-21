@@ -544,7 +544,7 @@ export function ExperienceOverlay({
           <p className={styles.kicker}>{copy.hero.eyebrow}</p>
           <h1>{copy.hero.title}</h1>
           <p className={styles.heroLede}>{copy.hero.lede}</p>
-          <Link href="/consulting" className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></Link>
+          <Link href="/consulting" data-pill="" className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></Link>
           <p className={styles.heroNotice}>{copy.hero.notice}</p>
         </div>
         <NextLink
@@ -646,7 +646,7 @@ export function ExperienceOverlay({
                   if (event.button === 1) track({ event: "product_primary_cta", product: product.slug });
                 }}
                 tabIndex={active ? 0 : -1}
-                className={styles.productLink}
+                data-pill="" className={styles.productLink}
               >
                 {product.ctaLabel}
                 <span aria-hidden="true">↗</span>

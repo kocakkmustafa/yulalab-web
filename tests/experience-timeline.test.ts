@@ -525,16 +525,16 @@ describe("reference-faithful experience timeline", () => {
   it("crosses from dark to white monotonically, then returns to dark for values", () => {
     let previous = 0;
     for (let step = 0; step <= 100; step += 1) {
-      const progress = STAGES.crossing[0] +
-        (step / 100) * (STAGES.crossing[1] - STAGES.crossing[0]);
+      // W7 Z01: the white wipe now runs 0.525 to 0.584 (reference mission_in timing).
+      const progress = 0.525 + (step / 100) * (0.584 - 0.525);
       const whiteMix = evaluateTimeline(progress, "desktop").world.whiteMix;
       expect(whiteMix).toBeGreaterThanOrEqual(previous);
       previous = whiteMix;
     }
     expect(previous).toBe(1);
     expect(evaluateTimeline(0.72, "desktop").world.themeMix).toBe(1);
-    expect(evaluateTimeline(0.805, "desktop").world.themeMix).toBe(1);
-    expect(evaluateTimeline(0.855, "desktop").world.themeMix).toBe(0);
+    expect(evaluateTimeline(0.78, "desktop").world.themeMix).toBe(1);
+    expect(evaluateTimeline(0.82, "desktop").world.themeMix).toBe(0);
     expect(evaluateTimeline(0.98, "desktop").world.themeMix).toBe(0);
   });
 });

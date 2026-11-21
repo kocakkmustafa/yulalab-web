@@ -2,7 +2,7 @@ import type { TimelineFrame } from "./types";
 import type { ResolvedTheme } from "@/lib/theme";
 import { segmentProgress, smoothstep } from "./timeline";
 
-export const WORLD_DARK_COLOR = "#030303";
+export const WORLD_DARK_COLOR = "#000000";
 export const WORLD_LIGHT_COLOR = "#e6eef0";
 
 /** Keep narrative geometry/timing intact while honoring the chosen surface. */
@@ -42,7 +42,7 @@ export function resolveExperiencePalette(themeMix: number): ExperiencePalette {
 // than with white light, so the contrast switch above still holds.
 export const WALL_TINTS = {
   neutral: [1, 1, 1],
-  petrol: [0.2, 0.92, 1],
+  petrol: [1, 1, 1],
   night: [0.24, 0.42, 1],
 } as const satisfies Record<string, readonly [number, number, number]>;
 
@@ -71,11 +71,11 @@ export type GroundSet = {
 
 export const GROUND_SETS = {
   hero: { edge: "#02010b", mid: "#130940", peak: "#7a4cd0", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.08, 0.075, 0.05, 0.05] },
-  portfolio: { edge: "#050505", mid: "#c8c0d0", peak: "#c8c0d0", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
-  proof: { edge: "#020608", mid: "#0c3446", peak: "#4acdff", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
+  portfolio: { edge: "#030203", mid: "#0a080b", peak: "#0d0a10", centre: [0.5, 0.55, 0.5, 0.55], spread: [0.05, 0.06, 0.05, 0.06] },
+  proof: { edge: "#050505", mid: "#121310", peak: "#181a14", centre: [0.24, 0.5, 0.36, 0.5], spread: [0.16, 0.45, 0.034, 0.03] },
   night: { edge: "#000104", mid: "#031030", peak: "#041a3c", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
-  closing: { edge: "#000001", mid: "#030917", peak: "#021736", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
-  light: { edge: "#ccd6d9", mid: "#eaf4f7", peak: "#eaf4f7", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.14, 0.25, 0.2, 0.3] },
+  closing: { edge: "#000000", mid: "#000203", peak: "#010305", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.12, 0.3, 0.06, 0.15] },
+  light: { edge: "#abb4b7", mid: "#e2ecef", peak: "#e2ecef", centre: [0.5, 0.5, 0.5, 0.5], spread: [0.67, 0.76, 0.2, 0.3] }, // W7 A1T7 Z15: back to the accepted deviation (one parameter cannot hold corner and radius)
 } as const satisfies Record<string, GroundSet>;
 
 export type GroundWeights = { hero: number; portfolio: number; proof: number; night: number; closing: number; light: number };
@@ -86,11 +86,12 @@ export function resolveGroundWeights(progress: number, themeMix: number): Ground
   return {
     // W1D-F H1-f: the purple opening ground hands over to the grey/black portfolio ground as the first card arrives
     // (card at 0.085), not slowly after it.
-    hero: (1 - ss(0.04, 0.078)) * dark,
-    portfolio: ss(0.04, 0.078) * (1 - ss(0.46, 0.52)) * dark,
+    // W7 Z19 (founder decision "a"): no scroll-bound purple to grey hand-over; the opening ground runs until works_intro.
+    hero: (1 - ss(0.078, 0.092)) * dark,
+    portfolio: ss(0.078, 0.092) * (1 - ss(0.46, 0.52)) * dark,
     proof: ss(0.82, 0.84) * (1 - ss(0.88, 0.93)) * dark,
     night: ss(0.57, 0.62) * (1 - ss(0.69, 0.74)) * dark,
-    closing: ss(0.93, 0.97) * dark,
+    closing: ss(0.90, 0.935) * dark,
     light: themeMix,
   };
 }

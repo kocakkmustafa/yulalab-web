@@ -215,5 +215,7 @@ export function developmentViewportComposition(camera: CameraPose, width: number
  */
 export function heroSlotMix(progress: number): number {
   // W1D-D H1-a: the Y leaves the slot only after the wordmark has dissolved (0.04), then travels to the centre.
-  return 1 - smoothstep((clamp01(progress) - 0.034) / 0.03);
+  // W7 CY5 (founder decision "a", 21 Nov): the Y stays in its slot while scrolling, with no travel to the centre; it
+  // is released only where the portfolio hands the glyph back to the proof stage (0.47 to 0.505).
+  return 1 - smoothstep((clamp01(progress) - 0.47) / 0.035);
 }

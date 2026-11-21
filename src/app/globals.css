@@ -391,9 +391,10 @@ html[data-scene="live"] body {
   transform-origin: left center;
   transition: transform 350ms var(--ease-soft);
 }
-.link-wipe:hover::after {
-  transform: scaleX(1);
-}
+/* W7 F11: footer links dim instead of drawing a rule. */
+.link-wipe::after { display: none; }
+.link-wipe { transition: opacity 300ms ease; }
+.link-wipe:hover { opacity: 0.7; }
 
 /* card hover */
 .card-hover {
@@ -1128,25 +1129,36 @@ main :is(h2, h3, p, li, a, dt, dd) { overflow-wrap: break-word; }
    ust / orta / alt 900px'lik isik karolari + 180px artili, 36px ince izgara.
    Sahne bu rotalarda gorunmez (visibility), ana sayfa (deneyim koku) etkilenmez. */
 :root[data-theme="dark"] {
-  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-5 0h10M0 -5v10M175 0h10M180 -5v10M-5 180h10M0 175v10M175 180h10M180 175v10' stroke='%23fff' stroke-opacity='.4' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  --yula-plus-img: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cpath d='M-9 0h18M0 -9v18M171 0h18M180 -9v18M-9 180h18M0 171v18M171 180h18M180 171v18' stroke='%23fff' stroke-opacity='.24' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  --yula-plus-img-mobile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='105' height='105'%3E%3Cpath d='M-9 0h18M0 -9v18M96 0h18M105 -9v18M-9 105h18M0 96v18M96 105h18M105 96v18' stroke='%23fff' stroke-opacity='.24' stroke-width='1' fill='none'/%3E%3C/svg%3E");
 }
+/* W7 A2 (Y1-Y9): one fixed glow layer, no purple, finer grid, bigger fainter plus marks (Tasarim zemin-ic/BULGU.md). */
 :root[data-theme="dark"]:not(:has([data-yula-experience="true"])) {
-  background-color: #010206;
+  background-color: #000000;
   background-image:
     var(--yula-plus-img),
-    linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(255,255,255,.035) 1px, transparent 1px),
-    radial-gradient(ellipse 660px 440px at 940px 460px, rgba(28,24,70,.95) 0, rgba(21,18,56,.7) 34%, rgba(11,10,34,.38) 64%, transparent 100%),
-    radial-gradient(ellipse 800px 520px at 900px 470px, rgba(14,36,46,.95) 0, rgba(6,22,34,.65) 45%, transparent 100%),
-    radial-gradient(ellipse 800px 470px at 760px 450px, rgba(3,26,40,.95) 0, rgba(4,22,48,.8) 40%, rgba(3,12,44,.5) 70%, transparent 100%);
-  background-size: 180px 180px, 36px 36px, 36px 36px, 100% 900px, 100% 900px, 100% 900px;
-  background-position: 0 90px, 0 0, 0 0, 0 0, 0 50%, 0 100%;
-  background-repeat: repeat, repeat, repeat, no-repeat, no-repeat, no-repeat;
-  background-attachment: scroll;
+    linear-gradient(90deg, rgba(255,255,255,.013) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255,255,255,.013) 1px, transparent 1px),
+    radial-gradient(ellipse 1449px 1029px at 73.3% 49.7%, rgb(9 24 45 / 1) 0, rgb(9 24 45 / .88) 16.7%, rgb(9 24 45 / .61) 33.3%, rgb(9 24 45 / .32) 50%, rgb(9 24 45 / .14) 66.7%, rgb(9 24 45 / .04) 83.3%, transparent 100%);
+  background-size: 180px 180px, 45px 45px, 45px 45px, 100vw 100vh;
+  background-position: 0 90px, 0 0, 0 0, 73.3% 49.7%;
+  background-repeat: repeat, repeat, repeat, no-repeat;
+  background-attachment: fixed;
+}
+@media (max-width: 767px) {
+  :root[data-theme="dark"]:not(:has([data-yula-experience="true"])) {
+    background-image:
+      var(--yula-plus-img-mobile),
+      linear-gradient(90deg, rgba(255,255,255,.013) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(255,255,255,.013) 1px, transparent 1px),
+      radial-gradient(ellipse 402px 903px at 72.3% 48.9%, rgb(6 29 42 / 1) 0, rgb(6 29 42 / .88) 16.7%, rgb(6 29 42 / .61) 33.3%, rgb(6 29 42 / .32) 50%, rgb(6 29 42 / .14) 66.7%, rgb(6 29 42 / .04) 83.3%, transparent 100%);
+    background-size: 105px 105px, 66px 66px, 66px 66px, 100vw 100vh;
+    background-position: 89px 0, 0 0, 0 0, 72.3% 48.9%;
+  }
 }
 :root[data-theme="dark"]:not(:has([data-yula-experience="true"])) body { background: transparent; }
 :root[data-theme="dark"] .scene-host:is([data-scene-tone="page"], [data-scene-tone="quiet"]) { visibility: hidden; }
-:root[data-theme="dark"] [data-site-footer="true"] { background: transparent; }
+:root[data-theme="dark"] [data-site-footer="true"] { background: rgb(0 0 0 / .22); } /* W7 Y12 */
 :root[data-theme="dark"] .glass { background: rgb(255 255 255 / .025); }
 
 /* W1D K9: dogrusal (statik) ana sayfa akisinda kapanis blogu artik sayfa ortasinda altbilgi
@@ -1180,3 +1192,7 @@ html.dark body:has([data-yula-experience="true"]) [data-site-footer="true"] {
    exact timeline positions, so hash jumps land on them without the shared header offset (the linear
    document keeps it: its sticky header sits above the focus target). */
 html:has([data-yula-experience="true"]):not(:has([data-experience-static="true"])) { scroll-padding-top: 0; }
+
+/* W7 A2 (Y6, Y10): the inner-page ground is the single fixed glow above; ambient blobs and the second plus lattice go. */
+.ambient { background: none; }
+.ambient::after { display: none; }
