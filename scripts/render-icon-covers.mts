@@ -7,6 +7,7 @@
  *
  * Kullanım (önce `next start` ile çalışan bir derleme gerekir; `cwebp` kurulu olmalı):
  *   npx tsx scripts/render-icon-covers.mts http://localhost:3000
+ * `cwebp` (libwebp) is not an npm dependency: macOS `brew install webp`, Debian/Ubuntu `apt install webp`.
  * Çıktı: public/projects/<slug>/icon-cover-768.webp (kayıpsız). Her dosya, çalışma zamanı canvas'ı ile WebGL
  * yüklemesinde kanal başına en çok 1 farkla eşleşmiyorsa betik hata verir.
  * icon.png, ürün rengi ya da icon-presentation.ts değişirse yeniden üret (çalışma zamanı hattı yedek olarak kalır).
@@ -31,7 +32,11 @@ const work = mkdtempSync(path.join(tmpdir(), "icon-covers-"));
 const bundle = path.join(work, "entry.js");
 execFileSync("npx", ["esbuild", path.join(root, "scripts/lib/icon-cover-entry.ts"), "--bundle", "--format=iife", `--outfile=${bundle}`, "--log-level=error"], { cwd: root, stdio: "inherit" });
 
-const browser = await chromium.launch({ channel: "chrome", args: ["--use-angle=metal", "--enable-gpu"] });
+// macOS: the installed Chrome on Metal (the same GPU path visitors get). Elsewhere: Playwright's own Chromium on
+// SwiftShader, so the script also runs on Linux/CI; the per-channel WebGL upload check below still guards the result.
+const browser = process.platform === "darwin"
+  ? await chromium.launch({ channel: "chrome", args: ["--use-angle=metal", "--enable-gpu"] })
+  : await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"] });
 const page = await (await browser.newContext({ viewport: { width: 1440, height: 900 } })).newPage();
 await page.goto(`${base}/robots.txt`);
 await page.addScriptTag({ content: readFileSync(bundle, "utf8") });

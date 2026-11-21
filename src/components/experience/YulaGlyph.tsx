@@ -278,7 +278,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // This is a light transparent approximation; physical refraction stays in
   // the existing medium/high material.
   // W7 CY9: the glass shows the bent background copy, so the opaque fallback body steps aside as the glass comes in.
-  const fallbackOpacity = bodyOpacity * (1 - frame.glyph.glassMix);
+  // The light tier mounts no RefractGlass, so its body never steps aside (a zero fallback left phones with only the outline).
+  const fallbackOpacity = bodyOpacity * (1 - (tier === "low" ? 0 : frame.glyph.glassMix));
   const glassVisible = frame.glyph.glassMix > 0.015 && closingVisibility > 0.01;
   const fringeOpacity =
     frame.glyph.glassMix * (tier === "low" ? 0.006 : 0.004) * closingVisibility;
