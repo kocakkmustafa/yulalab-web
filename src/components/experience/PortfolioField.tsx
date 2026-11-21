@@ -732,47 +732,73 @@ export function PortfolioField({
     ),
     [fieldOpacity, frame.productFloat, frame.world.proofMorph, products],
   );
-  // W7 BT10/BT11: the cards load their pictures one by one at idle time (each in its own idle slot, the first not before
-  // 3 s so the opening keeps its frames), the GPU upload runs as each picture arrives (initTexture), and the materials are
-  // compiled after the last one, so no card stalls the works entrance or the way past it.
+  // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
+  // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
+  // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
+  // The first step is not before 3 s so the opening keeps its frames. The materials are compiled ONCE, asynchronously,
+  // after the first two cards are in (the later cards use the same programs).
   const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
+  const lastScrollAt = useRef(0);
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const mark = () => { lastScrollAt.current = performance.now(); };
+    window.addEventListener("scroll", mark, { passive: true });
+    window.addEventListener("wheel", mark, { passive: true });
+    window.addEventListener("touchmove", mark, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", mark);
+      window.removeEventListener("wheel", mark);
+      window.removeEventListener("touchmove", mark);
+    };
+  }, []);
   useEffect(() => {
     if (typeof window === "undefined" || cardCount === 0) return undefined;
     const hasIdle = "requestIdleCallback" in window;
     let cancelled = false;
-    let handle = 0;
-    let kind: "timeout" | "idle" = "timeout";
-    const schedule = (callback: () => void, delay: number) => {
-      handle = window.setTimeout(() => {
+    let timer = 0;
+    let idleHandle = 0;
+    const schedule = (step: () => void, delay: number) => {
+      timer = window.setTimeout(() => {
         if (cancelled) return;
-        if (hasIdle) { kind = "idle"; handle = window.requestIdleCallback(callback, { timeout: 3000 }); } else callback();
+        const run = (deadline?: IdleDeadline) => {
+          if (cancelled) return;
+          const scrolling = performance.now() - lastScrollAt.current < 150;
+          const tight = deadline ? deadline.timeRemaining() < 8 && !deadline.didTimeout : false;
+          if (scrolling || tight) { schedule(step, 200); return; }
+          step();
+        };
+        if (hasIdle) idleHandle = window.requestIdleCallback(run, { timeout: 3000 }); else run();
       }, delay);
-      kind = "timeout";
     };
     const loadCard = (index: number) => {
-      if (cancelled) return;
       setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
-      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 450);
+      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 700);
     };
     schedule(() => loadCard(0), 3000);
     return () => {
       cancelled = true;
-      if (kind === "idle" && hasIdle) window.cancelIdleCallback(handle); else window.clearTimeout(handle);
+      window.clearTimeout(timer);
+      if (hasIdle) window.cancelIdleCallback(idleHandle);
     };
   }, [cardCount]);
-  const compiledCards = useRef(0);
+  const compiled = useRef(false);
+  const firstTwoLoaded = richMediaProducts.has(0) && (cardCount < 2 || richMediaProducts.has(1));
   useEffect(() => {
-    if (richMediaProducts.size <= compiledCards.current) return undefined;
-    const timer = window.setTimeout(() => {
+    if (compiled.current || !firstTwoLoaded) return undefined;
+    let timer = 0;
+    let cancelled = false;
+    const attempt = () => {
       const group = fieldGroup.current;
-      if (!group) return;
-      compiledCards.current = richMediaProducts.size;
+      if (cancelled || !group || compiled.current) return;
+      if (performance.now() - lastScrollAt.current < 150) { timer = window.setTimeout(attempt, 250); return; }
+      compiled.current = true;
       const wasVisible = group.visible;
-      group.visible = true; // compile() only walks visible objects
-      try { gl.compile(scene, camera); } finally { group.visible = wasVisible; }
-    }, 1500);
-    return () => window.clearTimeout(timer);
-  }, [camera, gl, richMediaProducts, scene]);
+      group.visible = true; // compile() only walks visible objects; the walk is synchronous, the program build is not
+      try { void gl.compileAsync(scene, camera); } finally { group.visible = wasVisible; }
+    };
+    timer = window.setTimeout(attempt, 1500);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [camera, firstTwoLoaded, gl, scene]);
   const requestedMediaProducts = useMemo(
     () => new Set([...richMediaProducts, ...eligibleMediaProducts]),
     [eligibleMediaProducts, richMediaProducts],
