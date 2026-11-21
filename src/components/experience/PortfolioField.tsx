@@ -791,7 +791,7 @@ export function PortfolioField({
           if (scrolling || tight) { schedule(step, 200); return; }
           step();
         };
-        if (hasIdle) idleHandle = window.requestIdleCallback(run, { timeout: 3000 }); else run();
+        if (hasIdle) idleHandle = window.requestIdleCallback(run, { timeout: 400 }); else run();
       }, delay);
     };
     const loadCard = (index: number) => {
