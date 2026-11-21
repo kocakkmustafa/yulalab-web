@@ -1,24 +1,28 @@
 "use client";
 
+import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { FLUID_PARAMS, fluidShared } from "./MouseFluid";
 import {
   type BufferGeometry,
-  FramebufferTexture,
+  Color,
   LinearFilter,
   type Mesh,
+  type Object3D,
   RGBAFormat,
   ShaderMaterial,
+  SRGBColorSpace,
+  type Texture,
+  UnsignedByteType,
   Vector2,
-  type WebGLRenderer,
+  WebGLRenderTarget,
 } from "three";
 
 /**
- * W1D-D H1-c: the glass Y as a refraction shader of our own, with the measured values of the reference
- * (REA section 3): refract power 0.1, per-channel slide x1 / x2 / x4 (0.005 + random * 0.007), eight jittered
- * taps at 0.9, roughness 0.1, Fresnel f0 0.1, output x1.2. The background is the frame drawn so far, copied
- * right before the Y is drawn (a framebuffer copy), so the grid and the purple light bend through the letter.
- * Written from the parameter table, no code taken from the reference.
+ * W1D-D / W8: glass Y refraction shader using REA section 3 values:
+ * refract power 0.1, per-channel slide x1 / x2 / x4 (0.005 + random * 0.007),
+ * eight taps at 0.9, roughness 0.1, Fresnel f0 0.1, GGX specular, output x1.2,
+ * sampling a shared 512x512 background target instead of a full-res MSAA copy.
  */
 export const GLASS_PARAMS = {
   refractPower: 0.1,
@@ -30,7 +34,269 @@ export const GLASS_PARAMS = {
   roughness: 0.1,
   f0: 0.1,
   output: 1.2,
+  backdropSize: 512,
 } as const;
+
+export const OPENING_DURATION_SECONDS = 3.0;
+
+/**
+ * Shared non-reactive opening state driven in useFrame so the 3.0 s opening
+ * runs at 60 fps without triggering React tree re-renders.
+ */
+export const openingShared = {
+  rawTime: OPENING_DURATION_SECONDS,
+  progress: 1,
+  eased: 1,
+  glyphOpacity: 1,
+};
+
+export const sceneBackgroundShared: {
+  texture: Texture | null;
+} = {
+  texture: null,
+};
+
+function easeOutCubic(value: number): number {
+  const x = Math.min(1, Math.max(0, value));
+  const inv = 1 - x;
+  return 1 - inv * inv * inv;
+}
+
+function smoothstep01(value: number): number {
+  const x = Math.min(1, Math.max(0, value));
+  return x * x * (3 - 2 * x);
+}
+
+export function OpeningDirector({ sceneOpened = true }: { sceneOpened?: boolean }) {
+  const invalidate = useThree((state) => state.invalidate);
+  const wasOpenedOnMount = useRef(sceneOpened);
+  const activeOpening = useRef(!sceneOpened);
+
+  useEffect(() => {
+    if (!sceneOpened) {
+      wasOpenedOnMount.current = false;
+      activeOpening.current = true;
+      openingShared.rawTime = 0;
+      openingShared.progress = 0;
+      openingShared.eased = 0;
+      openingShared.glyphOpacity = 0;
+      invalidate();
+      return;
+    }
+    if (wasOpenedOnMount.current && !activeOpening.current) {
+      openingShared.rawTime = OPENING_DURATION_SECONDS;
+      openingShared.progress = 1;
+      openingShared.eased = 1;
+      openingShared.glyphOpacity = 1;
+      return;
+    }
+    invalidate();
+  }, [invalidate, sceneOpened]);
+
+  useFrame((_state, delta) => {
+    if (!sceneOpened) {
+      openingShared.rawTime = 0;
+      openingShared.progress = 0;
+      openingShared.eased = 0;
+      openingShared.glyphOpacity = 0;
+      return;
+    }
+    if (!activeOpening.current) {
+      openingShared.rawTime = OPENING_DURATION_SECONDS;
+      openingShared.progress = 1;
+      openingShared.eased = 1;
+      openingShared.glyphOpacity = 1;
+      return;
+    }
+    const dt = Math.min(1 / 20, Math.max(0, delta));
+    openingShared.rawTime = Math.min(OPENING_DURATION_SECONDS, openingShared.rawTime + dt);
+    const linear = openingShared.rawTime / OPENING_DURATION_SECONDS;
+    openingShared.progress = linear;
+    openingShared.eased = easeOutCubic(linear);
+    // W8 T5: the glass Y fades in over 1.0 s during the opening instead of waiting pre-baked behind the loader.
+    openingShared.glyphOpacity = smoothstep01((openingShared.rawTime - 0.08) / 1.0);
+    if (linear < 1) {
+      invalidate();
+    } else {
+      activeOpening.current = false;
+      openingShared.eased = 1;
+      openingShared.glyphOpacity = 1;
+    }
+  }, -60);
+
+  return null;
+}
+
+export function SceneBackgroundPass({ active }: { active: boolean }) {
+  const renderer = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+  const camera = useThree((state) => state.camera);
+  const savedClearColor = useMemo(() => new Color(), []);
+  const hiddenScratch = useRef<Object3D[]>([]);
+
+  const target = useMemo(() => {
+    const rt = new WebGLRenderTarget(GLASS_PARAMS.backdropSize, GLASS_PARAMS.backdropSize, {
+      depthBuffer: true,
+      stencilBuffer: false,
+      samples: 0,
+      format: RGBAFormat,
+      type: UnsignedByteType,
+      minFilter: LinearFilter,
+      magFilter: LinearFilter,
+    });
+    rt.texture.colorSpace = SRGBColorSpace;
+    rt.texture.generateMipmaps = false;
+    return rt;
+  }, []);
+
+  useEffect(() => {
+    sceneBackgroundShared.texture = target.texture;
+    return () => {
+      if (sceneBackgroundShared.texture === target.texture) {
+        sceneBackgroundShared.texture = null;
+      }
+      target.dispose();
+    };
+  }, [target]);
+
+  useFrame(() => {
+    if (!active && openingShared.eased >= 0.999) return;
+
+    const hidden = hiddenScratch.current;
+    hidden.length = 0;
+    scene.traverse((obj) => {
+      if (obj.userData?.skipRefractCapture && obj.visible) {
+        obj.visible = false;
+        hidden.push(obj);
+      }
+    });
+
+    const prevTarget = renderer.getRenderTarget();
+    const prevAutoClear = renderer.autoClear;
+    const prevShadow = renderer.shadowMap.enabled;
+    const prevXr = renderer.xr.enabled;
+    const prevAlpha = renderer.getClearAlpha();
+    renderer.getClearColor(savedClearColor);
+
+    try {
+      renderer.xr.enabled = false;
+      renderer.shadowMap.enabled = false;
+      renderer.autoClear = true;
+      renderer.setRenderTarget(target);
+      renderer.clear(true, true, false);
+      renderer.render(scene, camera);
+    } finally {
+      for (let i = 0; i < hidden.length; i += 1) {
+        hidden[i].visible = true;
+      }
+      hidden.length = 0;
+      renderer.setRenderTarget(prevTarget);
+      renderer.setClearColor(savedClearColor, prevAlpha);
+      renderer.autoClear = prevAutoClear;
+      renderer.shadowMap.enabled = prevShadow;
+      renderer.xr.enabled = prevXr;
+    }
+  }, -20);
+
+  return null;
+}
+
+const IRIS_VERTEX = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = vec4(position.xy, -0.999, 1.0);
+  }
+`;
+
+const IRIS_FRAGMENT = /* glsl */ `
+  precision highp float;
+  uniform sampler2D uBackground;
+  uniform float uLoaded;
+  uniform float uAspect;
+  varying vec2 vUv;
+
+  void main() {
+    if (uLoaded >= 0.999) {
+      discard;
+    }
+    vec2 cuv = vUv - 0.5;
+    vec2 acuv = cuv;
+    if (uAspect > 1.0) {
+      acuv.y /= uAspect;
+    } else {
+      acuv.x *= uAspect;
+    }
+    float dist = length(acuv);
+    // W8 T4: reference circular opening wave + spherical lens bend along the expanding rim.
+    float r = smoothstep(0.0, 0.2 + uLoaded * 0.7, -dist + uLoaded * 1.4);
+    float innerMask = smoothstep(0.0, 0.5, r);
+    float ring = sin(r * 3.14159265);
+    vec2 dir = dist > 1e-4 ? acuv / dist : vec2(0.0);
+    vec2 uvShift = dir;
+    if (uAspect > 1.0) {
+      uvShift.y *= uAspect;
+    } else {
+      uvShift.x /= uAspect;
+    }
+    vec2 lensUv = (vUv - 0.5) * (0.72 + 0.28 * uLoaded) + 0.5 - ring * uvShift * 0.11;
+    vec3 lensCol = texture2D(uBackground, clamp(lensUv, 0.002, 0.998)).rgb;
+    // Slight chromatic dispersion along the opening glass wave, matching the prism language.
+    lensCol.r = texture2D(uBackground, clamp(lensUv - ring * uvShift * 0.012, 0.002, 0.998)).r;
+    lensCol.b = texture2D(uBackground, clamp(lensUv + ring * uvShift * 0.014, 0.002, 0.998)).b;
+    vec3 col = lensCol * innerMask;
+    float alpha = clamp((1.0 - innerMask) + ring * 0.92 * (1.0 - smoothstep(0.88, 1.0, uLoaded)), 0.0, 1.0);
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+export function OpeningIris() {
+  const mesh = useRef<Mesh>(null);
+  const size = useThree((state) => state.size);
+  const material = useMemo(
+    () =>
+      new ShaderMaterial({
+        vertexShader: IRIS_VERTEX,
+        fragmentShader: IRIS_FRAGMENT,
+        uniforms: {
+          uBackground: { value: null },
+          uLoaded: { value: 1 },
+          uAspect: { value: 1 },
+        },
+        transparent: true,
+        depthTest: false,
+        depthWrite: false,
+        toneMapped: false,
+      }),
+    [],
+  );
+
+  useEffect(() => () => material.dispose(), [material]);
+
+  useFrame(() => {
+    const m = mesh.current;
+    if (!m) return;
+    const active = openingShared.eased < 0.999;
+    m.visible = active;
+    if (!active) return;
+    material.uniforms.uBackground.value = sceneBackgroundShared.texture;
+    material.uniforms.uLoaded.value = openingShared.eased;
+    material.uniforms.uAspect.value = size.width / Math.max(1, size.height);
+  }, -10);
+
+  return (
+    <mesh
+      ref={mesh}
+      frustumCulled={false}
+      material={material}
+      renderOrder={999}
+      userData={{ skipRefractCapture: true }}
+      visible={false}
+    >
+      <planeGeometry args={[2, 2]} />
+    </mesh>
+  );
+}
 
 const VERTEX = /* glsl */ `
   varying vec3 vViewNormal;
@@ -46,6 +312,7 @@ const VERTEX = /* glsl */ `
 `;
 
 const FRAGMENT = /* glsl */ `
+  precision highp float;
   uniform sampler2D uBackground;
   uniform vec2 uResolution;
   uniform float uOpacity;
@@ -60,76 +327,136 @@ const FRAGMENT = /* glsl */ `
   const float ROUGHNESS = ${GLASS_PARAMS.roughness.toFixed(3)};
   const float F0 = ${GLASS_PARAMS.f0.toFixed(3)};
 
-  float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  // Precision-safe sin-less hash bounded on a 256x256 lattice: eliminates Metal scanline banding (W8 Q5).
+  float hash12(vec2 p) {
+    vec3 p3 = fract(vec3(mod(p, 256.0).xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
   }
-  float ggx(float nh, float a) {
+
+  float valueNoise(vec2 p) {
+    vec2 i = floor(p);
+    vec2 f = fract(p);
+    vec2 u = f * f * (3.0 - 2.0 * f);
+    return mix(
+      mix(hash12(i), hash12(i + vec2(1.0, 0.0)), u.x),
+      mix(hash12(i + vec2(0.0, 1.0)), hash12(i + vec2(1.0, 1.0)), u.x),
+      u.y
+    );
+  }
+
+  // REA section 3 GGX distribution (a2 = roughness^4).
+  float ggx(float dNH, float roughness) {
+    if (dNH <= 0.0) return 0.0;
+    float a = roughness * roughness;
     float a2 = a * a;
-    float d = nh * nh * (a2 - 1.0) + 1.0;
+    float d = dNH * dNH * (a2 - 1.0) + 1.0;
     return a2 / (3.14159265 * d * d);
   }
-  vec3 studio(vec3 r) {
-    float up = smoothstep(-0.2, 0.9, r.y);
-    vec3 c = mix(vec3(0.02, 0.02, 0.05), vec3(0.55, 0.55, 0.62), up);
-    c += vec3(1.1) * pow(max(dot(r, normalize(vec3(-0.45, 0.6, 0.65))), 0.0), 18.0);
-    c += vec3(0.5, 0.35, 1.0) * pow(max(dot(r, normalize(vec3(0.8, -0.1, 0.4))), 0.0), 6.0) * 0.6;
-    return c;
+
+  // Crisp architectural studio cubemap proxy: bright overhead/diagonal light strips over deep violet-black room.
+  vec3 studioEnv(vec3 r) {
+    float up = smoothstep(-0.35, 0.85, r.y);
+    vec3 base = mix(vec3(0.015, 0.012, 0.045), vec3(0.32, 0.30, 0.48), up);
+    float stripA = pow(max(dot(r, normalize(vec3(-0.52, 0.62, 0.58))), 0.0), 22.0);
+    float stripB = pow(max(dot(r, normalize(vec3(0.64, 0.42, 0.64))), 0.0), 26.0);
+    float violetRim = pow(max(dot(r, normalize(vec3(0.75, -0.18, 0.52))), 0.0), 7.0);
+    return base + vec3(1.45) * stripA + vec3(1.15, 1.18, 1.35) * stripB + vec3(0.42, 0.24, 0.95) * violetRim;
+  }
+
+  // Distance-signed prismatic crown across the three strokes of the Y so flat extrusion caps act like
+  // a cut triangular prism (like Alche_A), bending and dispersing the grid/wordmark across the whole letter.
+  vec2 yPrismCrown(vec2 p) {
+    // Stem spine: x = 0, y in [-0.9, 0.05]
+    vec2 stemGrad = vec2(clamp(p.x / 0.27, -1.0, 1.0), 0.0);
+    float stemWeight = 1.0 - smoothstep(-0.02, 0.16, p.y);
+    // Left arm spine: from (0, 0.09) to (-0.69, 0.90), normal = normalize(vec2(0.81, 0.69))
+    vec2 nL = normalize(vec2(0.81, 0.69));
+    float dL = dot(p - vec2(0.0, 0.09), nL);
+    // Right arm spine: from (0, 0.09) to (0.69, 0.90), normal = normalize(vec2(-0.81, 0.69))
+    vec2 nR = normalize(vec2(-0.81, 0.69));
+    float dR = dot(p - vec2(0.0, 0.09), nR);
+    vec2 armNormal = p.x < 0.0 ? nL * clamp(dL / 0.22, -1.0, 1.0) : nR * clamp(dR / 0.22, -1.0, 1.0);
+    float armWeight = smoothstep(-0.04, 0.16, p.y);
+    vec2 crown = mix(stemGrad, armNormal, armWeight);
+    // Crisp stepped facet ridge down the spine of each stroke
+    float spineSign = sign(p.x < 0.0 && p.y > 0.04 ? dL : (p.x >= 0.0 && p.y > 0.04 ? dR : p.x));
+    vec2 ridgeDir = mix(vec2(1.0, 0.0), p.x < 0.0 ? nL : nR, armWeight);
+    return crown * 0.24 + ridgeDir * spineSign * 0.14 * (0.6 + 0.4 * stemWeight + 0.4 * armWeight);
   }
 
   void main() {
-    vec3 normal = normalize(vViewNormal);
-    if (!gl_FrontFacing) normal = -normal;
-    // Hand-polished slab: a slow swell over the flat faces (the reference letter is faceted), so the
-    // background bends across the whole letter and not only at the bevels.
-    vec2 swell = vec2(sin(vLocal.x * 5.0 + vLocal.y * 2.3 + uTime * 0.3), sin(vLocal.y * 4.6 - vLocal.x * 3.1 - uTime * 0.25));
-    normal = normalize(normal + vec3(swell * 0.0, 0.0));
-    vec3 viewDir = normalize(-vViewPosition);
-    vec2 uv = gl_FragCoord.xy / uResolution;
+    vec3 geomNormal = normalize(vViewNormal);
+    if (!gl_FrontFacing) geomNormal = -geomNormal;
 
-    // Bend the background by the surface normal, a little more for every colour channel.
-    // Mouse fluid: the flow under the letter pushes the bent background and spreads the colour channels.
+    // Apply prismatic crystal facets on the flat extrusion faces while keeping bevel normals crisp.
+    float flatCap = smoothstep(0.65, 0.96, abs(geomNormal.z));
+    vec2 crownXY = yPrismCrown(vLocal.xy);
+    // REA section 3: noiseScale = 9, roughness = smoothstep(0.3, 0.8, noise2) * uRoughness (0.1).
+    vec2 nUv = vLocal.xy * 4.5 + 2.5;
+    float n1 = valueNoise(nUv);
+    float n2 = valueNoise(vLocal.xy * 9.0 + (n1 - 0.5) * 2.0);
+    float surfRoughness = smoothstep(0.3, 0.8, n2) * ROUGHNESS;
+
+    vec3 normal = normalize(geomNormal + vec3(crownXY * flatCap, 0.0));
+    vec3 viewDir = normalize(-vViewPosition);
+    vec2 uv = gl_FragCoord.xy / max(uResolution, vec2(1.0));
+
     vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale / 2).toFixed(6)} * uFluidMix;
     float flowAmount = length(flow);
-    vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
-    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.06;
-    // W7 BT9 CY7: the colour channels part only toward the rim (grazing normals); flat faces and the body stay one colour.
-    float rimSplit = smoothstep(0.2, 0.6, 1.0 - clamp(dot(normal, viewDir), 0.0, 1.0));
-    vec3 transmitted = vec3(0.0);
+    vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.05;
+
+    // 8 stratified Golden-angle samples anchored cleanly to pixel coordinates (no scanline banding).
+    vec2 pix = floor(gl_FragCoord.xy);
+    float baseRand = hash12(pix);
+    vec3 refractCol = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) * ROUGHNESS * 0.02; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
-      vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
-      vec3 sampleColor;
-      sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[0].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).r;
-      sampleColor.g = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[1].toFixed(1)}, 0.0, 1.0)).g;
-      sampleColor.b = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[2].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).b;
-      transmitted += sampleColor * ${GLASS_PARAMS.sampleGain.toFixed(1)};
+      float angle = (fi * 2.39996323) + baseRand * 6.2831853;
+      float radius = sqrt((fi + 0.5) / ${GLASS_PARAMS.samples.toFixed(1)});
+      vec2 roughnessDir = vec2(cos(angle), sin(angle)) * radius * surfRoughness * 0.14;
+      float slide = (1.0 + min(flowAmount, 1.0) * 0.4) * ${GLASS_PARAMS.slideBase.toFixed(3)}
+        + hash12(pix + vec2(fi * 17.0, fi * 31.0)) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
+      vec2 uvR = clamp(uv + roughnessDir - refractNormal * (REFRACT_POWER + slide * ${GLASS_PARAMS.slide[0].toFixed(1)}), 0.002, 0.998);
+      vec2 uvG = clamp(uv + roughnessDir - refractNormal * (REFRACT_POWER + slide * ${GLASS_PARAMS.slide[1].toFixed(1)}), 0.002, 0.998);
+      vec2 uvB = clamp(uv + roughnessDir - refractNormal * (REFRACT_POWER + slide * ${GLASS_PARAMS.slide[2].toFixed(1)}), 0.002, 0.998);
+      vec3 bg = vec3(
+        texture2D(uBackground, uvR).r,
+        texture2D(uBackground, uvG).g,
+        texture2D(uBackground, uvB).b
+      );
+      refractCol += bg * ${GLASS_PARAMS.sampleGain.toFixed(1)};
     }
-    vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
+    vec3 c = refractCol / ${GLASS_PARAMS.samples.toFixed(1)};
 
+    // Subtle crisp internal refraction lattice accent so facet boundaries read like real cut glass even over dark regions.
+    float facetCrease = exp(-abs(vLocal.x) * 28.0) * (1.0 - smoothstep(-0.02, 0.14, vLocal.y))
+      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(0.81, 0.69)))) * 28.0) * step(vLocal.x, 0.02) * smoothstep(0.0, 0.12, vLocal.y)
+      + exp(-abs(dot(vLocal.xy - vec2(0.0, 0.09), normalize(vec2(-0.81, 0.69)))) * 28.0) * step(-0.02, vLocal.x) * smoothstep(0.0, 0.12, vLocal.y);
+
+    // REA section 3 lighting: GGX specular + Fresnel studio reflection + bevel dispersion rim (W8 C3, C4, c).
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
-    float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
-    vec3 reflected = studio(reflect(-viewDir, normal));
-    vec3 lightDir = normalize(vec3(-1.0, 0.8, 1.0));
-    float spec = ggx(clamp(dot(normal, normalize(lightDir + viewDir)), 0.0, 1.0), 0.003 + ROUGHNESS * 0.4);
-    // The letter is clear glass: what shows is the bent background. The Fresnel term and a thin spectral
-    // rim ride on top at the grazing edges only (the first version added the background to itself, which
-    // read as an opaque lilac solid).
-    c = mix(c, reflected, fresnel * 0.9);
-    // W7 CY15: the flow no longer tints the glass.
-    c += flowTint * flowAmount * 0.0;
-    float rim = pow(1.0 - nv, 2.6);
-    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
-    // W7 CY7: no spectrum band on the glass rim.
-    c += mix(vec3(1.0), spectrum, 0.55) * rim * 0.0;
-    c += vec3(spec) * 0.0;
-    // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
-    c = c * 1.5 + vec3(0.06);
-    c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
+    float geomNv = clamp(dot(geomNormal, viewDir), 0.0, 1.0);
+    float F = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
+
+    vec3 L1 = normalize(vec3(-1.0, 0.8, 1.0));
+    vec3 L2 = normalize(vec3(0.85, 0.55, 0.9));
+    float spec1 = ggx(clamp(dot(normal, normalize(L1 + viewDir)), 0.0, 1.0), 0.035 + surfRoughness * 0.4);
+    float spec2 = ggx(clamp(dot(geomNormal, normalize(L2 + viewDir)), 0.0, 1.0), 0.055 + surfRoughness * 0.35);
+    c += vec3(min(spec1, 2.4)) + vec3(min(spec2, 1.4)) * 0.45;
+
+    vec3 reflected = studioEnv(reflect(-viewDir, normal));
+    c += mix(c, reflected, F * 0.9) * (1.0 - F);
+
+    // Prismatic bevel rim: thin crisp white edge + rainbow dispersion band on the bevels (6-10 px on desktop).
+    float bevel = smoothstep(0.18, 0.78, 1.0 - geomNv);
+    float edgeLine = pow(1.0 - geomNv, 3.2);
+    float phase = bevel * 1.45 + geomNormal.x * 0.48 - geomNormal.y * 0.32;
+    vec3 rainbow = 0.5 + 0.5 * cos(6.2831853 * (phase + vec3(0.0, 0.33, 0.67)));
+    c += rainbow * bevel * 0.46 + vec3(1.0) * edgeLine * 0.68 + vec3(0.82, 0.86, 1.0) * facetCrease * 0.18;
+
     c *= ${GLASS_PARAMS.output.toFixed(1)};
-    // W7 CY9: the glass is opaque (milky) as soon as it is on; uOpacity only fades it in and out.
-    gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));
+    gl_FragColor = vec4(min(c, vec3(1.0)), clamp(uOpacity, 0.0, 1.0));
   }
 `;
 
@@ -137,64 +464,58 @@ export type RefractGlassProps = {
   geometry: BufferGeometry;
   opacity: number;
   visible: boolean;
+  inHero?: boolean;
 };
 
-export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) {
+export function RefractGlass({ geometry, opacity, visible, inHero = false }: RefractGlassProps) {
   const mesh = useRef<Mesh>(null);
-  const texture = useRef<FramebufferTexture | null>(null);
-  const size = useMemo(() => new Vector2(), []);
+  const propsRef = useRef({ opacity, inHero });
+  propsRef.current = { opacity, inHero };
+  const drawingSize = useMemo(() => new Vector2(1, 1), []);
   const material = useMemo(
-    () => new ShaderMaterial({
-      vertexShader: VERTEX,
-      fragmentShader: FRAGMENT,
-      uniforms: {
-        uBackground: { value: null },
-        uResolution: { value: new Vector2(1, 1) },
-        uOpacity: { value: 1 },
-        uTime: { value: 0 },
-        uFluid: { value: null },
-        uFluidMix: { value: 0 },
-      },
-      transparent: true,
-      toneMapped: false,
-    }),
+    () =>
+      new ShaderMaterial({
+        vertexShader: VERTEX,
+        fragmentShader: FRAGMENT,
+        uniforms: {
+          uBackground: { value: null },
+          uResolution: { value: new Vector2(1, 1) },
+          uOpacity: { value: 1 },
+          uTime: { value: 0 },
+          uFluid: { value: null },
+          uFluidMix: { value: 0 },
+        },
+        transparent: true,
+        toneMapped: false,
+      }),
     [],
   );
 
   useEffect(() => {
     const target = mesh.current;
     if (!target) return;
-    target.onBeforeRender = (renderer: WebGLRenderer) => {
-      // Only the main framebuffer can be copied; offscreen passes (portal) draw without refraction.
-      if (renderer.getRenderTarget() !== null) return;
-      renderer.getDrawingBufferSize(size);
-      const width = Math.max(1, Math.floor(size.x));
-      const height = Math.max(1, Math.floor(size.y));
-      let current = texture.current;
-      if (!current || current.image.width !== width || current.image.height !== height) {
-        current?.dispose();
-        current = new FramebufferTexture(width, height);
-        current.format = RGBAFormat;
-        current.minFilter = LinearFilter;
-        current.magFilter = LinearFilter;
-        texture.current = current;
-        material.uniforms.uBackground.value = current;
-      }
-      material.uniforms.uResolution.value.set(width, height);
+    target.onBeforeRender = (renderer) => {
+      renderer.getDrawingBufferSize(drawingSize);
+      const { opacity: baseOpacity, inHero: heroStage } = propsRef.current;
+      const entrance = heroStage ? openingShared.glyphOpacity : 1;
+      material.uniforms.uOpacity.value = baseOpacity * entrance;
+      material.uniforms.uBackground.value = sceneBackgroundShared.texture;
+      material.uniforms.uResolution.value.set(Math.max(1, drawingSize.x), Math.max(1, drawingSize.y));
       material.uniforms.uTime.value = performance.now() / 1000;
       material.uniforms.uFluid.value = fluidShared.texture;
       material.uniforms.uFluidMix.value = fluidShared.texture ? fluidShared.mix : 0;
-      renderer.copyFramebufferToTexture(current);
     };
     return () => {
       target.onBeforeRender = () => {};
     };
-  }, [material, size]);
+  }, [drawingSize, material]);
 
-  useEffect(() => () => {
-    texture.current?.dispose();
-    material.dispose();
-  }, [material]);
+  useEffect(
+    () => () => {
+      material.dispose();
+    },
+    [material],
+  );
 
   material.uniforms.uOpacity.value = opacity;
   material.depthWrite = opacity > 0.55;

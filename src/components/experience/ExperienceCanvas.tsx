@@ -30,6 +30,7 @@ export type ExperienceCanvasProps = {
   onReady: () => void;
   onContextLost: () => void;
   wallTitles?: WallTitles;
+  sceneOpened?: boolean;
   /**
    * Content pages hold the scene as a still backdrop: after the warmup and
    * any camera travel (driven by `progress`), no ambient frames are drawn.
@@ -161,6 +162,7 @@ export function ExperienceCanvas({
   onReady,
   onContextLost,
   wallTitles,
+  sceneOpened = true,
 }: ExperienceCanvasProps) {
   const quality = QUALITY[tier];
   const assetKey = products
@@ -210,7 +212,7 @@ export function ExperienceCanvas({
         gl.shadowMap.type = PCFShadowMap;
         gl.transmissionResolutionScale = TRANSMISSION_RESOLUTION_SCALE[tier];
       }}
-      shadows={quality.shadows}
+      shadows={progress >= 0.085 ? quality.shadows : false}
       style={{ width: "100%", height: "100%", pointerEvents: "none" }}
     >
       <PerformanceMonitor
@@ -241,6 +243,7 @@ export function ExperienceCanvas({
           wallTitles={wallTitles}
           progress={progress}
           tier={tier}
+          sceneOpened={sceneOpened}
         />
       </PerformanceMonitor>
     </Canvas>

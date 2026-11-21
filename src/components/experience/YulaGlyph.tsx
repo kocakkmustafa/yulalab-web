@@ -23,10 +23,10 @@ import {
 import { glyphReadingVisibility, smoothstep, segmentProgress, STAGES } from "./timeline";
 import { timelineProgressForScroll } from "./storyboard";
 import { composeGlyphRotation } from "./instruments";
-import { RefractGlass } from "./RefractGlass";
+import { openingShared, RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
-import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
+import { HERO_CAM_CONFIG, HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot, heroWordmarkPlaneScale, resolveHeroCamMode } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 // W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
@@ -288,34 +288,55 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width / Math.max(1, viewportSize.height),
     viewportSize.width,
   );
-  // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
+  // W1D / W8 (a): in default `slot` mode the glass Y stands in for the first letter of `[Y]ULA`;
+  // with `?cam=ref` it sits centred at ~66% viewport height like the reference `Alche_A`.
+  const camMode = useMemo(() => resolveHeroCamMode(), []);
   const slotMix = heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
-    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
-    // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
-    // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
-    const planeX = heroSlot.x * planeWidth;
-    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
+    const mobileMix = viewportMobileMix(viewportSize.width);
+    const aspect = Math.max(0.3, viewportSize.width / Math.max(1, viewportSize.height));
     const gz = frame.glyph.position[2];
+
+    if (camMode === "ref") {
+      const refY = lerp(HERO_CAM_CONFIG.ref.desktopOffsetY, HERO_CAM_CONFIG.ref.mobileOffsetY, mobileMix);
+      const dist = Math.max(1, Math.hypot(
+        frame.camera.position[0],
+        frame.camera.position[1] - refY,
+        frame.camera.position[2] - gz,
+      ));
+      const frustumH = 2 * dist * Math.tan((frame.camera.fov * Math.PI) / 360);
+      const byHeight = (HERO_CAM_CONFIG.ref.viewportHeightRatio * frustumH) / 1.8;
+      const byWidth = (0.94 * frustumH * aspect) / 1.9;
+      return {
+        x: 0,
+        y: refY,
+        scale: Math.min(byHeight, byWidth),
+      };
+    }
+
+    const planeScale = heroWordmarkPlaneScale(viewportSize.width, viewportSize.height, mobileMix);
+    const planeWidth = 14.2 * planeScale;
+    const planeHeight = HERO_PLANE_HEIGHT * planeScale;
+    const planeX = heroSlot.x * planeWidth;
+    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * planeHeight;
     const basis = (pos: readonly number[], target: readonly number[]) => {
       const f = new Vector3(target[0] - pos[0], target[1] - pos[1], target[2] - pos[2]).normalize();
       const r = new Vector3().crossVectors(f, new Vector3(0, 1, 0)).normalize();
       const u = new Vector3().crossVectors(r, f).normalize();
       return { f, r, u };
     };
-    const heroPos = [0, 0.25, 11.5] as const;
-    const hb = basis(heroPos, [0, 0.1, 0]);
+    const heroPos = [0, lerp(0.25, 0.65, mobileMix), lerp(11.5, 13.8, mobileMix)] as const;
+    const heroTarget = [0, lerp(0.1, 0.25, mobileMix), 0] as const;
+    const hb = basis(heroPos, heroTarget);
     const d = new Vector3(planeX - heroPos[0], planeY - heroPos[1], HERO_PLANE_Z - heroPos[2]);
     const dr = d.dot(hb.r);
     const du = d.dot(hb.u);
     const df = d.dot(hb.f);
     const heroS = (gz - heroPos[2]) / d.z;
     const heroDepth = heroS * df;
-    const heroScale = (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
+    const heroScale = (HERO_CAM_CONFIG.slot.capScale * heroSlot.cap * planeHeight * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
     const cb = basis(frame.camera.position, frame.camera.target);
-    // W7 CY5 (BT t2): the screen position is fov dependent (the camera narrows 39 to 35), so the lateral parts and the
-    // size carry tan(fov / 2) / tan(heroFov / 2) to keep the same screen spot and height.
-    const heroFov = lerp(39, 52, viewportMobileMix(viewportSize.width));
+    const heroFov = lerp(39, 52, mobileMix);
     const fovK = Math.tan((frame.camera.fov * Math.PI) / 360) / Math.tan((heroFov * Math.PI) / 360);
     const dir = new Vector3().addScaledVector(cb.r, dr * fovK).addScaledVector(cb.u, du * fovK).addScaledVector(cb.f, df);
     const cpz = frame.camera.position[2];
@@ -325,7 +346,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       y: frame.camera.position[1] + dir.y * sCur,
       scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
-  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+  }, [camMode, frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.height, viewportSize.width]);
   const position = useMemo(
     () => [
       lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
@@ -334,15 +355,10 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     ] as const,
     [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
   );
-  // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
-  // the Y takes the same horizontal squeeze while it stands in for the first letter.
-  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
-  // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
-  // back to the portfolio hand-off scale.
-  // W7 CY5: no growth in the middle of the screen (founder decision "a").
+  // W8 C8: wordmark plane scales uniformly on narrow viewports, so the Y keeps true 1:1 proportions (no horizontal squeeze).
   const heroGrow = 1;
   const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
-  const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
+  const glyphScaleXYZ = [glyphScale, glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -419,7 +435,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
     r.euler.set(rotation[0], rotation[1], rotation[2]);
     r.base.setFromEuler(r.euler);
-    if (glyphGroup.current) glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+    if (glyphGroup.current) {
+      glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+      // W8 T5: subtle depth settle as the hero opens from close-up into its resting plane.
+      const openZ = frame.progress < 0.085 ? (1 - openingShared.eased) * 0.55 : 0;
+      glyphGroup.current.position.set(position[0], position[1], position[2] + openZ);
+    }
     // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
     const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;
     if (rigLog && glyphGroup.current) {
@@ -458,13 +479,14 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       position={position}
       rotation={rotation}
       scale={glyphScaleXYZ}
+      userData={{ skipRefractCapture: true }}
       visible={closingVisibility > 0.001}
     >
       <mesh
-        castShadow={tier !== "low"}
+        castShadow={tier !== "low" && frame.progress >= 0.085}
         geometry={geometry}
         receiveShadow
-        visible={tier === "low" || !glassVisible}
+        visible={!glassVisible}
       >
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
@@ -486,9 +508,13 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         />
       </mesh>
 
-      {tier !== "low" ? (
-        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
-      ) : null}
+      {/* W8 C7: RefractGlass uses a lightweight 512x512 background pass, so mobile (`low` tier) renders real glass too. */}
+      <RefractGlass
+        geometry={geometry}
+        inHero={frame.progress < 0.085}
+        opacity={bodyOpacity * frame.glyph.glassMix}
+        visible={glassVisible}
+      />
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
         <lineBasicMaterial

@@ -61,7 +61,6 @@
   --loader-reveal: 0;
   --loader-flat: 0;
   --loader-depth: 0;
-  --loader-flash: 0;
   --loader-exit: 0;
   position: fixed;
   z-index: 100;
@@ -69,97 +68,45 @@
   display: grid;
   place-items: center;
   opacity: calc(1 - var(--loader-exit));
-  color: #f8f5ff;
-  background:
-    radial-gradient(circle at 50% 46%, rgba(119, 72, 185, 0.14), transparent 34%),
-    #07050a;
-  transform: scale(calc(1 + var(--loader-exit) * 0.025));
+  color: #ffffff;
+  background: #000000;
 }
 
-.loader::before,
-.loader::after {
-  content: "";
+.loaderBackdropLines {
   position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
-.loader::before {
-  top: calc(22px + var(--safe-top));
-  right: calc(22px + var(--safe-right));
-  bottom: calc(22px + var(--safe-bottom));
-  left: calc(22px + var(--safe-left));
-  border: 1px solid rgba(223, 210, 247, 0.12);
+.loaderDraftRays,
+.loaderDraftRules {
+  fill: none;
+  stroke-width: 1;
 }
 
-.loader::after {
-  inset: 0;
-  opacity: 0.2;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-  mask-image: radial-gradient(circle at 40% 50%, black, transparent 68%);
+.loaderDraftRays {
+  stroke: rgba(255, 255, 255, 0.22);
 }
 
-.loaderBurst {
-  position: absolute;
-  z-index: 2;
-  inset: -18%;
-  display: grid;
-  place-items: center;
-  overflow: hidden;
-  opacity: var(--loader-flash);
-  pointer-events: none;
-  transform: scale(calc(0.86 + var(--loader-flash) * 0.2));
+.loaderDraftRays path,
+.loaderDraftRules path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--loader-flat));
 }
 
-.loaderBurst::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(circle at center, #fff 0 8%, rgba(255, 255, 255, 0.96) 13%, rgba(229, 222, 255, 0.72) 27%, transparent 58%),
-    conic-gradient(from 30deg at center, rgba(57, 230, 255, 0.4), rgba(255, 255, 255, 0.92), rgba(255, 67, 200, 0.42), rgba(255, 255, 255, 0.86), rgba(57, 230, 255, 0.4));
-  filter: blur(calc(8px + var(--loader-flash) * 14px));
-}
-
-.loaderBurst i,
-.loaderBurst span {
-  position: absolute;
-  width: min(72vw, 760px);
-  aspect-ratio: 1;
-  border: 1px solid rgba(255, 255, 255, 0.76);
-  border-radius: 50%;
-  box-shadow:
-    0 0 36px rgba(255, 255, 255, 0.72),
-    inset 0 0 54px rgba(167, 122, 219, 0.4);
-}
-
-.loaderBurst i:first-child {
-  border-color: rgba(57, 230, 255, 0.8);
-  transform: translateX(-2.4%) scale(calc(0.42 + var(--loader-flash) * 0.58));
-}
-
-.loaderBurst i:nth-child(2) {
-  border-color: rgba(255, 67, 200, 0.76);
-  transform: translateX(2.4%) scale(calc(0.5 + var(--loader-flash) * 0.5));
-}
-
-.loaderBurst span {
-  border-width: 2px;
-  transform: scale(calc(0.24 + var(--loader-flash) * 0.76));
+.loaderDraftRules {
+  opacity: calc(0.18 + var(--loader-flat) * 0.24);
 }
 
 .loaderField {
   position: relative;
-  z-index: 3;
+  z-index: 2;
   display: grid;
   place-items: center;
   width: min(58vw, 620px);
   min-width: 0;
-  opacity: calc(1 - var(--loader-flash) * 0.72);
-  perspective: 1100px;
-  transform: scale(calc(1 + var(--loader-flash) * 0.16));
 }
 
 .loaderBlueprint {
@@ -168,130 +115,112 @@
   overflow: visible;
 }
 
-.loaderAxes,
-.loaderTicks {
+.loaderCircles {
   fill: none;
-  stroke: rgba(216, 202, 241, 0.28);
+  stroke: rgba(255, 255, 255, 0.2);
   stroke-width: 1;
-}
-
-.loaderAxes path,
-.loaderAxes circle {
-  stroke-dasharray: 1;
-  stroke-dashoffset: calc(1 - var(--loader-flat));
-}
-
-.loaderTicks {
-  opacity: calc(0.15 + var(--loader-progress) * 0.6);
-}
-
-.loaderGlyphWire {
-  fill: rgba(142, 102, 203, 0.04);
-  stroke: rgba(236, 224, 255, 0.78);
-  stroke-width: 2;
-  stroke-linejoin: round;
-  opacity: calc(var(--loader-flat) * (1 - var(--loader-reveal) * 0.7));
-}
-
-.loaderGlyphDepth {
-  fill: rgba(57, 230, 255, calc(var(--loader-depth) * 0.055));
-  stroke: rgba(255, 67, 200, calc(var(--loader-depth) * 0.45));
-  stroke-width: 6;
-  stroke-linejoin: round;
+  stroke-dasharray: 2 3.5;
   opacity: var(--loader-depth);
-  transform: translate(calc(var(--loader-depth) * 13px), calc(var(--loader-depth) * 9px));
-  filter: blur(calc(var(--loader-depth) * 1px));
 }
 
-.loaderGlyphGlass {
-  fill: rgba(181, 132, 246, calc(var(--loader-reveal) * 0.2));
-  stroke: rgba(251, 246, 255, var(--loader-reveal));
-  stroke-width: 2.5;
-  filter: drop-shadow(0 24px 40px rgba(108, 57, 183, calc(var(--loader-reveal) * 0.52)));
+.loaderGlyphOutline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.88);
+  stroke-width: 1.25;
+  stroke-linejoin: miter;
   opacity: var(--loader-reveal);
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: rotateY(calc(var(--loader-depth) * -12deg)) rotateX(calc(var(--loader-depth) * 5deg));
 }
 
-.loaderCorner,
-.loaderPercent {
-  position: absolute;
-  z-index: 1;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  color: rgba(227, 217, 243, 0.58);
+.loaderGlyphOutline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: calc(1 - var(--loader-reveal));
 }
 
-.loaderCorner {
-  left: 42px;
-  bottom: 38px;
-}
-
-.loaderPercent {
-  top: 38px;
-  right: 30px;
-  font-size: 13px;
-  color: #faf7ff;
+.loaderGlyphOutline path:last-child {
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 1;
 }
 
 .loaderReadout {
   position: absolute;
-  z-index: 1;
-  right: calc(clamp(30px, 4vw, 64px) + var(--safe-right));
-  bottom: calc(clamp(30px, 4vw, 58px) + var(--safe-bottom));
-  left: calc(clamp(30px, 4vw, 64px) + var(--safe-left));
-  display: grid;
-  grid-template-columns: minmax(220px, 360px) minmax(180px, 1fr);
-  align-items: end;
-  gap: clamp(30px, 6vw, 100px);
-  opacity: min(
-    calc(1 - var(--loader-flash) * 0.96),
-    calc(1 - var(--loader-exit))
-  );
+  z-index: 3;
+  right: calc(24px + var(--safe-right));
+  left: calc(24px + var(--safe-left));
+  top: 71.5%;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  opacity: calc(1 - var(--loader-exit));
 }
 
-.loaderReadout ol {
-  display: grid;
-  gap: 14px;
-  padding: 0;
+.loaderLine {
   margin: 0;
-  list-style: none;
-}
-
-.loaderReadout li {
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  align-items: baseline;
-  gap: 12px;
-  color: rgba(224, 216, 237, 0.62);
+  color: #ffffff;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
+  font-weight: 400;
   line-height: 1.5;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-align: center;
+  white-space: pre-wrap;
 }
 
-.loaderReadout li[data-active="true"] {
-  color: #f7f3ff;
+.loaderSkip {
+  position: absolute;
+  z-index: 10;
+  right: calc(clamp(20px, 2.8vw, 40px) + var(--safe-right));
+  bottom: calc(clamp(16px, 2.4vh, 32px) + var(--safe-bottom));
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.34);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: color 240ms ease;
 }
 
-.loaderReadout li span {
-  color: #a77adb;
+.loaderSkip:hover,
+.loaderSkip:focus-visible {
+  color: rgba(255, 255, 255, 0.9);
 }
 
-.loaderTrack {
-  height: 1px;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.12);
+/* W8 T6: staggered hero DOM copy entrance after loader release (0.15s step, 0.6s opacity + 8px slide). */
+.journey[data-opening-stage="loading"] .heroCopy > *,
+.journey[data-opening-stage="loading"] .scrollCue {
+  opacity: 0;
+  transform: translate3d(0, 8px, 0);
 }
 
-.loaderTrack span {
-  display: block;
-  width: calc(var(--loader-progress) * 100%);
-  height: 100%;
-  background: linear-gradient(90deg, #70479f, #e7d2ff, #7fd8dc);
+.journey[data-opening-stage="entering"] .heroCopy > *,
+.journey[data-opening-stage="entering"] .scrollCue {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.journey[data-opening-stage="entering"] .heroCopy > *:nth-child(1) { transition-delay: 250ms; }
+.journey[data-opening-stage="entering"] .heroCopy > *:nth-child(2) { transition-delay: 400ms; }
+.journey[data-opening-stage="entering"] .heroCopy > *:nth-child(3) { transition-delay: 550ms; }
+.journey[data-opening-stage="entering"] .heroCopy > *:nth-child(4) { transition-delay: 700ms; }
+.journey[data-opening-stage="entering"] .heroCopy > *:nth-child(5) { transition-delay: 850ms; }
+.journey[data-opening-stage="entering"] .scrollCue { transition-delay: 1000ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .journey[data-opening-stage] .heroCopy > *,
+  .journey[data-opening-stage] .scrollCue {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }
 
 /* Fixed semantic overlay ------------------------------------------------ */
@@ -2651,13 +2580,8 @@
    Product media and identity colors keep their original pixels. */
 .journey, .staticJourney, .viewport { color: var(--yula-exp-fg); background: var(--yula-exp-bg); }
 .staticExperience { --experience-fg: var(--yula-exp-fg); --experience-muted: var(--yula-exp-muted); --experience-line: var(--yula-exp-line); background: radial-gradient(circle at 72% 4%, rgba(108,62,163,.12), transparent 30%), var(--yula-exp-bg); }
-.loader { color: var(--yula-exp-fg); background: radial-gradient(circle at 50% 46%, rgba(119,72,185,.14), transparent 34%), var(--yula-exp-bg); }
-.loaderCorner, .loaderReadout li { color: var(--yula-exp-muted); }
-.loaderPercent, .loaderReadout li[data-active="true"] { color: var(--yula-exp-fg); }
-.loader::before { border-color: color-mix(in srgb, var(--yula-exp-line) 35%, transparent); }
-.loaderAxes, .loaderTicks { stroke: color-mix(in srgb, var(--yula-exp-line) 50%, transparent); }
-.loaderGlyphWire, .loaderGlyphGlass { stroke: var(--yula-exp-fg); }
-.loaderReadout li span, .lifecycleRow strong, .noPublicBuild { color: var(--yula-exp-accent); }
+.loader { color: #ffffff; background: #000000; }
+.lifecycleRow strong, .noPublicBuild { color: var(--yula-exp-accent); }
 .glyphControl, .previewNote { color: var(--yula-exp-muted); }
 .previewExpand:hover { color: var(--yula-exp-fg); }
 .freshnessState { color: var(--yula-success); }

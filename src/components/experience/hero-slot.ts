@@ -17,3 +17,50 @@ export const HERO_PLANE_HEIGHT = 5.2;
 export const HERO_PLANE_Z = -1.25;
 
 export const heroSlot: HeroSlot = { x: -0.31, y: 0.02, cap: 0.47 };
+
+export type HeroCamMode = "slot" | "ref";
+
+/**
+ * W8 (a): single source of truth for the hero glass Y placement and size.
+ * Default `slot` preserves W7 CY5 (single initial in the wordmark slot);
+ * `?cam=ref` switches to the reference centre-stage composition (~66% viewport height).
+ */
+export const HERO_CAM_CONFIG = {
+  slot: {
+    skipFirstLetter: true,
+    capScale: 0.95,
+  },
+  ref: {
+    skipFirstLetter: false,
+    viewportHeightRatio: 0.66,
+    desktopOffsetY: -0.18,
+    mobileOffsetY: 0.12,
+  },
+} as const;
+
+export function resolveHeroCamMode(search?: string): HeroCamMode {
+  const raw = search ?? (typeof window !== "undefined" ? window.location.search : "");
+  if (!raw) return "slot";
+  try {
+    return new URLSearchParams(raw).get("cam") === "ref" ? "ref" : "slot";
+  } catch {
+    return "slot";
+  }
+}
+
+/**
+ * W8 C8: uniform wordmark plane scale so narrow/mobile viewports fit edge-to-edge (~94% viewport width)
+ * without horizontally squeezing the glyphs or the glass Y.
+ */
+export function heroWordmarkPlaneScale(
+  viewportWidth: number,
+  viewportHeight: number,
+  mobileMix: number,
+): number {
+  const aspect = Math.max(0.3, viewportWidth / Math.max(1, viewportHeight));
+  const camZ = 11.5 + (13.8 - 11.5) * mobileMix;
+  const fov = 39 + (52 - 39) * mobileMix;
+  const dist = camZ - HERO_PLANE_Z;
+  const frustumWidth = 2 * dist * Math.tan((fov * Math.PI) / 360) * aspect;
+  return Math.min(1, (frustumWidth * 1.02) / 14.2);
+}

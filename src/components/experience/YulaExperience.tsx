@@ -91,9 +91,9 @@ function writeLinearScroll(y: number, href: string): void {
 }
 
 const MOBILE_SCENE_QUERY = "(max-width: 767px)";
-const PHONE_SCENE_DELAY_MS = 2_500;
+const PHONE_SCENE_DELAY_MS = 0;
 const LOADER_DRAW_DURATION_MS = 3_600;
-const LOADER_EXIT_DURATION_MS = 900;
+const LOADER_EXIT_DURATION_MS = 800;
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
 const LOADER_HOLD_PROGRESS = 0.9;
 const TIER_ORDER: Record<QualityTier, number> = { high: 0, medium: 1, low: 2 };
@@ -322,8 +322,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     // settled (founder K8: 3D stays on by default on phones; the loader card covers the wait).
     let timer: number | null = null;
     const cancel = scheduleAfterLoad(() => {
-      const phone = window.matchMedia(MOBILE_SCENE_QUERY).matches;
-      if (!phone) {
+      if (PHONE_SCENE_DELAY_MS <= 0 || !window.matchMedia(MOBILE_SCENE_QUERY).matches) {
         setSceneRequested(true);
         return;
       }
@@ -709,12 +708,20 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
   // The renderer itself lives in the locale layout (SceneHost) so it survives
   // route changes; the journey only tells it what to show.
   const sceneSession = useId();
+  const sceneOpened = capture.enabled ? !capture.loader : !loaderVisible;
+  const openingStage =
+    !mounted || capture.enabled || journeyReturn.current !== null || useStatic
+      ? "settled"
+      : loaderVisible
+        ? "loading"
+        : "entering";
   const sceneJourney = useMemo<SceneJourney>(() => ({
     session: sceneSession,
     requested: webgl === "available" && theme.ready && sceneRequested,
     // Before mount the server's linear document is shown, but nothing has
     // chosen it yet: keep a scene that is already live instead of dropping it.
     visible: !mounted || !useStatic,
+    sceneOpened,
     progress: renderedProgress,
     glyphRotation,
     products,
@@ -726,7 +733,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
     onTierChange: handleTierChange,
   }), [
     glyphRotation, handleCanvasFailure, handleCanvasReady, handleTierChange, mode,
-    mounted, products, renderedProgress, sceneRequested, sceneSession, theme.ready, tier,
+    mounted, products, renderedProgress, sceneOpened, sceneRequested, sceneSession, theme.ready, tier,
     useStatic, wallTitles, webgl,
   ]);
   useSceneJourney(sceneJourney);
@@ -746,6 +753,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       data-white-mix={frame.world.whiteMix.toFixed(3)}
       data-tier={tier}
       data-loader-visible={loaderVisible ? "true" : "false"}
+      data-opening-stage={openingStage}
       data-experience-fallback={fallbackActive ? "true" : undefined}
       data-mobile-static-default={MOBILE_STATIC_DEFAULT ? "true" : undefined}
       data-mobile-3d={mobile3d ? "true" : undefined}
@@ -840,6 +848,7 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       {loaderVisible && !(mounted && mobileStatic) ? (
         <ExperienceLoader
           lines={copy.loader}
+          tagline={copy.hero.title}
           progress={loaderProgress}
           onSkip={mounted && !capture.enabled ? skipLoader : undefined}
         />

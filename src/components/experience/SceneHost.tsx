@@ -54,6 +54,8 @@ export type SceneJourney = {
   requested: boolean;
   /** False while the journey shows its linear (2D) document. */
   visible: boolean;
+  /** True once the opening loader releases the hero into its 3.0 s circular opening. */
+  sceneOpened?: boolean;
   progress: number;
   glyphRotation: Vec3;
   products: ExperienceProduct[];
@@ -361,6 +363,7 @@ export function SceneHost({ children }: { children: ReactNode }) {
                 progress={progress}
                 mode={mode}
                 tier={tier}
+                sceneOpened={journey ? (journey.sceneOpened ?? true) : true}
                 onTierChange={handleTierChange}
                 onReady={handleReady}
                 onContextLost={handleFailure}

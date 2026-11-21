@@ -4,6 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { PerspectiveCamera, Vector3 } from "three";
 import { interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
+import { openingShared } from "./RefractGlass";
 import type { ExperienceMode } from "./types";
 
 export type CameraRigProps = {
@@ -40,12 +41,23 @@ export function CameraRig({ progress, mode }: CameraRigProps) {
     state.offsetY += (state.y * 0.5 * weight - state.offsetY) * ease;
     if (Math.abs(state.x * 0.5 * weight - state.offsetX) + Math.abs(state.y * 0.5 * weight - state.offsetY) > 0.002) invalidate();
 
-    camera.position.set(pose.position[0] + state.offsetX, pose.position[1] + state.offsetY, pose.position[2]);
+    const openEase = progress < 0.085 ? openingShared.eased : 1;
+    const zApproach = (1 - openEase) * 0.9;
+    camera.position.set(
+      pose.position[0] + state.offsetX,
+      pose.position[1] + state.offsetY,
+      pose.position[2] - zApproach,
+    );
     target.set(...pose.target);
     camera.lookAt(target);
 
-    if (camera instanceof PerspectiveCamera && camera.fov !== pose.fov) {
-      camera.fov = pose.fov;
+    const zoomScale = 0.58 + 0.42 * openEase;
+    const effectiveFov = openEase >= 0.9999
+      ? pose.fov
+      : (Math.atan(Math.tan((pose.fov * Math.PI) / 360) * zoomScale) * 360) / Math.PI;
+
+    if (camera instanceof PerspectiveCamera && Math.abs(camera.fov - effectiveFov) > 1e-4) {
+      camera.fov = effectiveFov;
       camera.updateProjectionMatrix();
     }
   }, -50);
