@@ -758,10 +758,9 @@ export function PortfolioField({
   // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
   // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
   // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
-  // BT13: the first step comes 1 s after mount and the cards follow 250 ms apart (a card is one small image decode and upload now,
-  // so all seven are in long before the works entrance and the proof stage, where every card becomes eligible at once). The
-  // compile then lands at ~2.8 s while the opening card still covers the canvas. The materials are compiled ONCE, asynchronously,
-  // after the first card is in (the later cards use the same programs).
+  // BT13: the first step comes 0.3 s after mount and the cards follow 100 ms apart (a card is one small image decode and upload
+  // now, so all seven are in long before the works entrance and the proof stage, where every card becomes eligible at once).
+  // The materials are compiled ONCE, asynchronously, after the last card is in (see below).
   const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
   const lastScrollAt = useRef(0);
   useEffect(() => {
@@ -797,9 +796,9 @@ export function PortfolioField({
     };
     const loadCard = (index: number) => {
       setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
-      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 250);
+      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 100);
     };
-    schedule(() => loadCard(0), 1000);
+    schedule(() => loadCard(0), 300);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
@@ -807,21 +806,13 @@ export function PortfolioField({
     };
   }, [cardCount]);
   const compiled = useRef(false);
-  const compiledAll = useRef(false);
-  // W7 BT12/BT13: one loaded card is enough for the first pass (every card uses the same programs), and the wait for its picture is
-  // short now that the cover is a static image: compiling starts about 0.5 s after the first card, while the opening card still
-  // covers the canvas. While the programs build, the other cards swap their fallback for the picture and release materials, which
-  // makes three's compileAsync reject ("isReady" of undefined); the rejection is swallowed and a second, cheap pass (the programs
-  // are cached) runs once every card is in.
-  const compileField = useCallback((group: Group) => {
-    const wasVisible = group.visible;
-    group.visible = true; // compile() only walks visible objects; the walk is synchronous, the program build is not
-    try { gl.compileAsync(scene, camera).catch(() => undefined); } catch { /* the programs then build on first use */ } finally { group.visible = wasVisible; }
-  }, [camera, gl, scene]);
-  const firstCardLoaded = richMediaProducts.has(0);
+  // W7 BT13: the programs are built ONCE, after every card's picture is in. While programs build, a card that swaps its
+  // fallback for the picture releases materials, and three's compileAsync then throws inside its own timer ("isReady" of
+  // undefined, uncatchable), so compiling must not overlap the swaps. The cards load 100 ms apart right after the field mounts
+  // (a card is one small decode and upload now), which lets the compile run at ~2.5 s, while the opening card still covers the canvas.
   const allCardsLoaded = cardCount > 0 && richMediaProducts.size >= cardCount;
   useEffect(() => {
-    if (compiled.current || !firstCardLoaded) return undefined;
+    if (compiled.current || !allCardsLoaded) return undefined;
     let timer = 0;
     let cancelled = false;
     const attempt = () => {
@@ -829,25 +820,13 @@ export function PortfolioField({
       if (cancelled || !group || compiled.current) return;
       if (performance.now() - lastScrollAt.current < 150) { timer = window.setTimeout(attempt, 250); return; }
       compiled.current = true;
-      compileField(group);
+      const wasVisible = group.visible;
+      group.visible = true; // compile() only walks visible objects; the walk is synchronous, the program build is not
+      try { gl.compileAsync(scene, camera).catch(() => undefined); } catch { /* the programs then build on first use */ } finally { group.visible = wasVisible; }
     };
-    timer = window.setTimeout(attempt, 500);
+    timer = window.setTimeout(attempt, 300);
     return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [compileField, firstCardLoaded]);
-  useEffect(() => {
-    if (compiledAll.current || !allCardsLoaded) return undefined;
-    let timer = 0;
-    let cancelled = false;
-    const attempt = () => {
-      const group = fieldGroup.current;
-      if (cancelled || !group || compiledAll.current) return;
-      if (performance.now() - lastScrollAt.current < 150) { timer = window.setTimeout(attempt, 250); return; }
-      compiledAll.current = true;
-      compileField(group);
-    };
-    timer = window.setTimeout(attempt, 800);
-    return () => { cancelled = true; window.clearTimeout(timer); };
-  }, [allCardsLoaded, compileField]);
+  }, [allCardsLoaded, camera, gl, scene]);
   const requestedMediaProducts = useMemo(
     () => new Set([...richMediaProducts, ...eligibleMediaProducts]),
     [eligibleMediaProducts, richMediaProducts],
