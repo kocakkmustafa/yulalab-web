@@ -158,7 +158,7 @@ test("English touch scrolling survives compact layouts", { tag: "@hardware-webgl
   await swipe(370, 590, 220);
   await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(100);
   const documentTouchY = await page.evaluate(() => scrollY);
-  await scrollTimeline(page, 0.26875);
+  await scrollTimeline(page, GRAVITA_CENTRE);
   await expect(root).toHaveAttribute("data-active-product", "gravita");
   // The home journey no longer opens development captures (founder decision
   // 2026-10-31; page.tsx passes `developmentPreviews: []`), so there is no
