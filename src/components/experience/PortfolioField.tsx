@@ -758,9 +758,10 @@ export function PortfolioField({
   // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
   // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
   // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
-  // The first step is not before 1.8 s after mount (the 13 programs need about a second to link, and must be done before the
-  // works entrance at ~900 px; BT12 measured that with 3 s the entrance still waited on them). The materials are compiled ONCE, asynchronously,
-  // after the first two cards are in (the later cards use the same programs).
+  // BT13: the first step comes 1 s after mount and the cards follow 250 ms apart (a card is one small image decode and upload now,
+  // so all seven are in long before the works entrance and the proof stage, where every card becomes eligible at once). The
+  // compile then lands at ~2.8 s while the opening card still covers the canvas. The materials are compiled ONCE, asynchronously,
+  // after the first card is in (the later cards use the same programs).
   const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
   const lastScrollAt = useRef(0);
   useEffect(() => {
@@ -796,9 +797,9 @@ export function PortfolioField({
     };
     const loadCard = (index: number) => {
       setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
-      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 700);
+      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 250);
     };
-    schedule(() => loadCard(0), 1800);
+    schedule(() => loadCard(0), 1000);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
