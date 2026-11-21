@@ -732,34 +732,45 @@ export function PortfolioField({
     ),
     [fieldOpacity, frame.productFloat, frame.world.proofMorph, products],
   );
-  // W7 BT10: the first two cards (what the works entrance shows) load their pictures at idle time in the key visual, and
-  // their materials are compiled once the pictures are in, so the entrance does not stall on decode, upload or compile.
+  // W7 BT10/BT11: the cards load their pictures one by one at idle time (each in its own idle slot, the first not before
+  // 3 s so the opening keeps its frames), the GPU upload runs as each picture arrives (initTexture), and the materials are
+  // compiled after the last one, so no card stalls the works entrance or the way past it.
+  const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
   useEffect(() => {
-    if (typeof window === "undefined") return undefined;
+    if (typeof window === "undefined" || cardCount === 0) return undefined;
     const hasIdle = "requestIdleCallback" in window;
-    const idle = hasIdle
-      ? (callback: () => void) => window.requestIdleCallback(callback, { timeout: 4000 })
-      : (callback: () => void) => window.setTimeout(callback, 1500);
-    const cancel = hasIdle ? window.cancelIdleCallback.bind(window) : window.clearTimeout.bind(window);
-    const handle = idle(() => {
-      setRichMediaProducts((current) => {
-        const warm = [0, 1].filter((index) => index < Math.min(products.length, SCENE_PRODUCT_COUNT));
-        return warm.every((index) => current.has(index)) ? current : new Set([...current, ...warm]);
-      });
-    });
-    return () => cancel(handle);
-  }, [products.length]);
-  const warmCompiled = useRef(false);
+    let cancelled = false;
+    let handle = 0;
+    let kind: "timeout" | "idle" = "timeout";
+    const schedule = (callback: () => void, delay: number) => {
+      handle = window.setTimeout(() => {
+        if (cancelled) return;
+        if (hasIdle) { kind = "idle"; handle = window.requestIdleCallback(callback, { timeout: 3000 }); } else callback();
+      }, delay);
+      kind = "timeout";
+    };
+    const loadCard = (index: number) => {
+      if (cancelled) return;
+      setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
+      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 450);
+    };
+    schedule(() => loadCard(0), 3000);
+    return () => {
+      cancelled = true;
+      if (kind === "idle" && hasIdle) window.cancelIdleCallback(handle); else window.clearTimeout(handle);
+    };
+  }, [cardCount]);
+  const compiledCards = useRef(0);
   useEffect(() => {
-    if (warmCompiled.current || !richMediaProducts.has(0)) return undefined;
+    if (richMediaProducts.size <= compiledCards.current) return undefined;
     const timer = window.setTimeout(() => {
       const group = fieldGroup.current;
-      if (!group || warmCompiled.current) return;
-      warmCompiled.current = true;
+      if (!group) return;
+      compiledCards.current = richMediaProducts.size;
       const wasVisible = group.visible;
       group.visible = true; // compile() only walks visible objects
       try { gl.compile(scene, camera); } finally { group.visible = wasVisible; }
-    }, 1800);
+    }, 1500);
     return () => window.clearTimeout(timer);
   }, [camera, gl, richMediaProducts, scene]);
   const requestedMediaProducts = useMemo(
