@@ -758,7 +758,7 @@ export function PortfolioField({
   // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
   // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
   // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
-  // BT13: the first step comes 0.3 s after mount and the cards follow 100 ms apart (a card is one small image decode and upload
+  // BT13: the first step comes 0.9 s after mount (the hero must not request portfolio images in its first second: e2e "hero defers portfolio screenshot requests") and the cards follow 100 ms apart (a card is one small image decode and upload
   // now, so all seven are in long before the works entrance and the proof stage, where every card becomes eligible at once).
   // The materials are compiled ONCE, asynchronously, after the last card is in (see below).
   const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
@@ -798,7 +798,7 @@ export function PortfolioField({
       setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
       if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 100);
     };
-    schedule(() => loadCard(0), 300);
+    schedule(() => loadCard(0), 900);
     return () => {
       cancelled = true;
       window.clearTimeout(timer);
