@@ -9,6 +9,7 @@ import {
   LinearMipmapLinearFilter,
   PlaneGeometry,
   SRGBColorSpace,
+  type Group,
   Texture,
   TextureLoader,
 } from "three";
@@ -91,6 +92,7 @@ function useCardTexture(
   onSettled: (path: string) => void,
 ): LoadedTexture {
   const maxAnisotropy = useThree((state) => state.gl.capabilities.getMaxAnisotropy());
+  const gl = useThree((state) => state.gl);
   const [state, setState] = useState<LoadedTexture>({
     texture: null,
     aspect: DEFAULT_ASPECT,
@@ -160,7 +162,9 @@ function useCardTexture(
       tier === "high" ? 8 : tier === "medium" ? 4 : 2,
     );
     state.texture.needsUpdate = true;
-  }, [maxAnisotropy, state.texture, tier]);
+    // W7 BT10: upload to the GPU now (idle, as the picture arrives) instead of during the first frame that draws the card.
+    gl.initTexture(state.texture);
+  }, [gl, maxAnisotropy, state.texture, tier]);
 
   // Effects run after React has committed the loaded/fallback material. The
   // Canvas lifecycle then waits one additional rendered frame before capture.
@@ -548,23 +552,46 @@ function ResearchWireframe({
   );
 }
 
-function IdentityPresentation({ product, opacity, tier, onAssetSettled }: {
+type IdentityProps = {
   product: ExperienceProduct; opacity: number; tier: QualityTier; onAssetSettled: (path: string) => void;
-}) {
-  const icon = useCardTexture(product.icon, tier, onAssetSettled);
-  const cover = useMemo(() => makeBrightIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
-  useEffect(() => () => cover.dispose(), [cover]);
+};
 
+function IdentityPlane({ product, opacity, map }: { product: ExperienceProduct; opacity: number; map: Texture | null }) {
   // The approved app icon stands alone as a large rounded square: no backing
   // box, no frame, so the room light reads around it.
   return (
     <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
-      <mesh>
-        <planeGeometry args={[2.6, 2.6]} />
-        <meshBasicMaterial map={cover} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
-      </mesh>
+      {map && (
+        <mesh>
+          <planeGeometry args={[2.6, 2.6]} />
+          <meshBasicMaterial map={map} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
+        </mesh>
+      )}
     </group>
   );
+}
+
+/**
+ * W7 BT12: the bright icon cover is a static, lossless image rendered once by scripts/render-icon-covers.mts from the very
+ * same makeBrightIconPresentation pipeline (pixel-identical when uploaded to WebGL). The pipeline took 280–430 ms of main
+ * thread at run time; this costs one image decode. If the file is missing the run-time pipeline below is the fallback.
+ */
+function IdentityPresentation({ product, opacity, tier, onAssetSettled }: IdentityProps) {
+  const cover = useCardTexture(`/projects/${product.slug}/icon-cover-768.webp`, tier, noopSettled);
+  useEffect(() => {
+    if (cover.status === "loaded" && product.icon) onAssetSettled(product.icon);
+  }, [cover.status, onAssetSettled, product.icon]);
+  if (cover.failed) return <RuntimeIdentityPresentation product={product} opacity={opacity} tier={tier} onAssetSettled={onAssetSettled} />;
+  return <IdentityPlane product={product} opacity={opacity} map={cover.texture} />;
+}
+
+const noopSettled = () => undefined;
+
+function RuntimeIdentityPresentation({ product, opacity, tier, onAssetSettled }: IdentityProps) {
+  const icon = useCardTexture(product.icon, tier, onAssetSettled);
+  const cover = useMemo(() => makeBrightIconPresentation(product, icon.texture?.image as PresentationImage | undefined), [product, icon.texture]);
+  useEffect(() => () => cover.dispose(), [cover]);
+  return <IdentityPlane product={product} opacity={opacity} map={cover} />;
 }
 
 function ProductCard({
@@ -695,6 +722,10 @@ export function PortfolioField({
   onAssetsSettled,
 }: PortfolioFieldProps) {
   const viewport = useThree((state) => state.size);
+  const gl = useThree((state) => state.gl);
+  const scene = useThree((state) => state.scene);
+  const camera = useThree((state) => state.camera);
+  const fieldGroup = useRef<Group>(null);
   const composition = portfolioViewportComposition(
     interpolateViewportCamera(frame.progress, viewport.width, mode),
     viewport.width,
@@ -724,6 +755,78 @@ export function PortfolioField({
     ),
     [fieldOpacity, frame.productFloat, frame.world.proofMorph, products],
   );
+  // W7 BT10/BT11/BT12: the cards load their pictures one by one, card 0 and 1 first (what the works entrance shows), then
+  // the rest. Each step waits for an idle slot with more than 8 ms left, does at most one card, and backs off while the
+  // visitor scrolls (a scroll or wheel in the last 150 ms), so the preload never lands in the same frames as the journey.
+  // BT13: the first step comes 0.9 s after mount (the hero must not request portfolio images in its first second: e2e "hero defers portfolio screenshot requests") and the cards follow 100 ms apart (a card is one small image decode and upload
+  // now, so all seven are in long before the works entrance and the proof stage, where every card becomes eligible at once).
+  // The materials are compiled ONCE, asynchronously, after the last card is in (see below).
+  const cardCount = Math.min(products.length, SCENE_PRODUCT_COUNT);
+  const lastScrollAt = useRef(0);
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    const mark = () => { lastScrollAt.current = performance.now(); };
+    window.addEventListener("scroll", mark, { passive: true });
+    window.addEventListener("wheel", mark, { passive: true });
+    window.addEventListener("touchmove", mark, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", mark);
+      window.removeEventListener("wheel", mark);
+      window.removeEventListener("touchmove", mark);
+    };
+  }, []);
+  useEffect(() => {
+    if (typeof window === "undefined" || cardCount === 0) return undefined;
+    const hasIdle = "requestIdleCallback" in window;
+    let cancelled = false;
+    let timer = 0;
+    let idleHandle = 0;
+    const schedule = (step: () => void, delay: number) => {
+      timer = window.setTimeout(() => {
+        if (cancelled) return;
+        const run = (deadline?: IdleDeadline) => {
+          if (cancelled) return;
+          const scrolling = performance.now() - lastScrollAt.current < 150;
+          const tight = deadline ? deadline.timeRemaining() < 8 && !deadline.didTimeout : false;
+          if (scrolling || tight) { schedule(step, 200); return; }
+          step();
+        };
+        if (hasIdle) idleHandle = window.requestIdleCallback(run, { timeout: 400 }); else run();
+      }, delay);
+    };
+    const loadCard = (index: number) => {
+      setRichMediaProducts((current) => (current.has(index) ? current : new Set([...current, index])));
+      if (index + 1 < cardCount) schedule(() => loadCard(index + 1), 100);
+    };
+    schedule(() => loadCard(0), 900);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+      if (hasIdle) window.cancelIdleCallback(idleHandle);
+    };
+  }, [cardCount]);
+  const compiled = useRef(false);
+  // W7 BT13: the programs are built ONCE, after every card's picture is in. While programs build, a card that swaps its
+  // fallback for the picture releases materials, and three's compileAsync then throws inside its own timer ("isReady" of
+  // undefined, uncatchable), so compiling must not overlap the swaps. The cards load 100 ms apart right after the field mounts
+  // (a card is one small decode and upload now), which lets the compile run at ~2.5 s, while the opening card still covers the canvas.
+  const allCardsLoaded = cardCount > 0 && richMediaProducts.size >= cardCount;
+  useEffect(() => {
+    if (compiled.current || !allCardsLoaded) return undefined;
+    let timer = 0;
+    let cancelled = false;
+    const attempt = () => {
+      const group = fieldGroup.current;
+      if (cancelled || !group || compiled.current) return;
+      if (performance.now() - lastScrollAt.current < 150) { timer = window.setTimeout(attempt, 250); return; }
+      compiled.current = true;
+      const wasVisible = group.visible;
+      group.visible = true; // compile() only walks visible objects; the walk is synchronous, the program build is not
+      try { gl.compileAsync(scene, camera).catch(() => undefined); } catch { /* the programs then build on first use */ } finally { group.visible = wasVisible; }
+    };
+    timer = window.setTimeout(attempt, 300);
+    return () => { cancelled = true; window.clearTimeout(timer); };
+  }, [allCardsLoaded, camera, gl, scene]);
   const requestedMediaProducts = useMemo(
     () => new Set([...richMediaProducts, ...eligibleMediaProducts]),
     [eligibleMediaProducts, richMediaProducts],
@@ -781,7 +884,7 @@ export function PortfolioField({
   }, [assetPaths]);
 
   return (
-    <group visible={fieldOpacity > 0.001}>
+    <group ref={fieldGroup} visible={fieldOpacity > 0.001}>
       {products.slice(0, SCENE_PRODUCT_COUNT).map((product, index) => {
         const mediaComposition = product.developmentPreviews?.length
           ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * CARD_DEPTH_STEP)

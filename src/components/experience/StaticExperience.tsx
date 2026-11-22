@@ -50,12 +50,12 @@ export function StaticExperience({
         <p className={styles.kicker}>{copy.hero.eyebrow}</p>
         <h1>{copy.hero.title}</h1>
         <p className={styles.staticLede}>{copy.hero.lede}</p>
-        <a href={localePath(copy.locale, "/consulting")} className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></a>
+        <a href={localePath(copy.locale, "/consulting")} data-pill="" className={styles.productLink}>{copy.navigation.consulting} <span aria-hidden="true">↗</span></a>
         <p className={styles.staticNotice}>{copy.hero.notice}</p>
         <TrackedLink
           href="#experience-portfolio"
           event="home_primary_cta"
-          className={styles.productLink}
+          data-pill="" className={styles.productLink}
         >
           {copy.hero.scroll}
           <span aria-hidden="true">↘</span>
@@ -145,7 +145,7 @@ export function StaticExperience({
                 href={product.href}
                 event="product_primary_cta"
                 product={product.slug}
-                className={styles.productLink}
+                data-pill="" className={styles.productLink}
               >
                 {product.ctaLabel}
                 <span aria-hidden="true">↗</span>

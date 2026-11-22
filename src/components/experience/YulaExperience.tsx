@@ -791,9 +791,9 @@ export function YulaExperience({ products, copy }: YulaExperienceProps) {
       ) : (
         <>
           <span id="experience-hero" className={styles.scrollAnchor} style={{ top: 0 }} />
-          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * scrollProgressForTimeline(firstProductCenter) }} />
-          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(firstProofCenter) }} />
-          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(missionCenter) }} />
+          <span id="experience-portfolio" className={styles.scrollAnchor} style={{ top: capture.enabled ? "8.5%" : scrollRange * scrollProgressForTimeline(firstProductCenter, mobile ? "mobile" : "desktop") }} />
+          <span id="experience-proof" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(firstProofCenter, mobile ? "mobile" : "desktop") }} />
+          <span id="experience-manifesto" className={styles.scrollAnchor} style={{ top: scrollRange * scrollProgressForTimeline(missionCenter, mobile ? "mobile" : "desktop") }} />
 
           <div
             className={styles.viewport}

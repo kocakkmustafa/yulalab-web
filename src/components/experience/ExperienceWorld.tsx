@@ -21,6 +21,7 @@ import { ValueDioramas } from "./ValueDioramas";
 import { ValuesScreen } from "./ValuesScreen";
 import { VisionServicePortal } from "./VisionServicePortal";
 import { useShowcaseTextures } from "./useShowcaseTextures";
+import { useWorksCardTextures } from "./useWorksCardTextures";
 import { applyExperienceTheme, WORLD_DARK_COLOR, WORLD_LIGHT_COLOR } from "./theme";
 import type { ResolvedTheme } from "@/lib/theme";
 
@@ -83,12 +84,13 @@ export function ExperienceWorld({
   );
   const environmentResolution = tier === "high" ? 256 : tier === "medium" ? 128 : 64;
   const mediaTextures = useShowcaseTextures(products[0]?.href.startsWith("/en/") ?? false, progress >= 0.705, 1024);
+  const worksTextures = useWorksCardTextures(products, progress < 0.52);
 
   return (
     <>
       <WorldTheme frame={frame} />
       <CameraRig mode={mode} progress={progress} />
-      <MouseFluid active={mode === "desktop" && tier !== "low" && progress < 0.1 && !prefersReducedMotion()} />
+      <MouseFluid active={mode === "desktop" && tier !== "low" && !prefersReducedMotion()} />
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight
@@ -142,7 +144,7 @@ export function ExperienceWorld({
         />
       </LightformerEnvironment>
 
-      <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} wallTitles={wallTitles} />
+      <GridRoom frame={frame} tier={tier} mediaTextures={mediaTextures} worksTextures={worksTextures} wallTitles={wallTitles} />
       {/* W1D K5: the values room is flat ground light; the glyph and the opaque service panels are gone from there. */}
       {frame.progress < VALUES_ROOM_START ? (
         <VisionServicePortal frame={frame} tier={tier} glyphRotation={glyphRotation} mediaTextures={mediaTextures} />

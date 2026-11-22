@@ -41,7 +41,8 @@ const GLYPH_LOCAL_HALF_EXTENTS: Vec3 = [1.05, 1, 0.24];
 const GLYPH_CARD_CLEARANCE = 0.16;
 
 /** Progress where the manifesto copy starts to appear (inside the crossing stage). */
-export const MISSION_COPY_START = 0.635;
+// W7 Z02 (Tasarim): 0.58, the proof band is untouched (it ends at 0.575).
+export const MISSION_COPY_START = 0.58;
 
 /**
  * Where each stage's overlay may be visible. Equal to STAGES except W1D K3-a: the manifesto copy is on
@@ -240,8 +241,14 @@ const GLYPH_POSITION: readonly VecKey[] = [
 ];
 
 const GLYPH_ROTATION: readonly VecKey[] = [
-  { progress: 0, value: [-0.08, -0.15, 0.02] },
-  { progress: 0.505, value: [0.05, 0.5, -0.03] },
+  { progress: 0, value: [0, 0, 0] },
+  // W7 BT8/BT9/BT11: through the works section the reference base yaw stays 0 (the turn lives in q). The K5/K6 turn to the
+  // proof pose eases in over 0.500 to 0.535 (smoothstep knots, no jump, at most 5 degrees a frame at 1600 px/s); from 0.535 on the keys follow the old curve.
+  { progress: 0.5, value: [0.05, 0.0, -0.03] },
+  { progress: 0.50875, value: [0.0607, 0.1217, -0.0246] },
+  { progress: 0.5175, value: [0.0714, 0.3893, -0.0193] },
+  { progress: 0.52625, value: [0.0821, 0.6569, -0.0139] },
+  { progress: 0.535, value: [0.0929, 0.7786, -0.0086] },
   { progress: 0.575, value: [0.15, 1.15, 0.02] },
   { progress: 0.69, value: [0.02, 0.35, 0] },
   { progress: 0.765, value: [0.03, 0.12, 0] },
@@ -395,8 +402,8 @@ export function evaluateTimeline(
   const product = slotFrame(p, STAGES.portfolio, SCENE_PRODUCT_COUNT);
   const proof = slotFrame(p, STAGES.proof, SCENE_PRODUCT_COUNT);
   const value = slotFrame(p, STAGES.values, 4);
-  const whiteRise = smoothstep(segmentProgress(p, STAGES.crossing[0], STAGES.crossing[1]));
-  const darkReturn = smoothstep(segmentProgress(p, 0.825, 0.855));
+  const whiteRise = smoothstep(segmentProgress(p, 0.525, 0.584));
+  const darkReturn = smoothstep(segmentProgress(p, 0.788, 0.81));
   const whiteMix = whiteRise * (1 - darkReturn);
   // The physical blade enters before the whole environment changes. This
   // preserves a dark upper chamber at mid-crossing, then makes the white
@@ -418,7 +425,8 @@ export function evaluateTimeline(
   // The reference's emblem turns with the first scroll. One full turn over
   // the hero ends on the starting orientation, so the portfolio hand-off is
   // unchanged; depth clearance keeps using the unspun pose.
-  const heroSpin = p < STAGES.hero[1] ? Math.PI * 2 * smoothstep(segmentProgress(p, 0, STAGES.hero[1])) : 0;
+  // W7 CY4: the turn now follows scroll velocity inside YulaGlyph (reference model), no position-based spin here.
+  const heroSpin = 0;
   const glyphRotation: Vec3 = [baseGlyphRotation[0], baseGlyphRotation[1] + heroSpin, baseGlyphRotation[2]];
   const glyphScale = sampleNumber(GLYPH_SCALE, p);
 

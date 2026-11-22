@@ -6,7 +6,8 @@ const KEY = "yula.appearance.v1";
 const ROUTE = "/consulting";
 // W1D Z1: in the dark theme the inner-page ground is painted on <html> (colour + grid image) and the body is
 // transparent over it; the light theme keeps its solid body colour.
-const BG = { light: "rgb(246, 245, 240)", dark: "rgb(1, 2, 6)" } as const;
+// W7 A2/Y1: the dark ground base is pure black now (was #010206; the reference's inner-page edge measured 0,0,0).
+const BG = { light: "rgb(246, 245, 240)", dark: "rgb(0, 0, 0)" } as const;
 
 const control = (page: Page) => page.getByRole("combobox", { name: /Görünüm|Appearance/ }).first();
 const theme = (page: Page) => page.evaluate(() => document.documentElement.dataset.theme);

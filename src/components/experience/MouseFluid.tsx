@@ -28,15 +28,15 @@ export const FLUID_PARAMS = {
   iterations: 4,
   curl: 0.02,
   dissipation: 0.99,
-  pressure: 0.8,
+  pressure: 0,
   splatRadius: 0.02,
   splatForce: 32000,
   /** Velocity (texels per second) that reads as 1.0 in the ground and glass shaders. */
-  displayScale: 1 / 700,
+  displayScale: 4, // W7 C tur 3: x4 power (peak was 5.4 grey, reference 45-67)
 } as const;
 
 /** Shared read side: the newest velocity texture and how strongly it should show (0 when idle or unsupported). */
-export const fluidShared: { texture: Texture | null; mix: number } = { texture: null, mix: 0 };
+export const fluidShared: { texture: Texture | null; trace: Texture | null; mix: number } = { texture: null, trace: null, mix: 0 };
 
 const FULLSCREEN_VERTEX = /* glsl */ `
   varying vec2 vUv;
@@ -51,9 +51,19 @@ const HEAD = /* glsl */ `
 const SPLAT = /* glsl */ `${HEAD}
   uniform sampler2D uTarget; uniform vec2 uPoint; uniform vec2 uForce; uniform float uAspect; uniform float uRadius;
   void main() {
+    // W7 F4: reference brush, w = smoothstep(0.01 + 0.1 * min(0.5, pv), 0.0, |d|); radius 0.01-0.06 of the height.
     vec2 d = vUv - uPoint; d.x *= uAspect;
-    float g = exp(-dot(d, d) / uRadius);
+    float g = smoothstep(uRadius, 0.0, length(d));
     gl_FragColor = vec4(texture2D(uTarget, vUv).xy + uForce * g, 0.0, 1.0);
+  }
+`;
+
+const TRACE = /* glsl */ `${HEAD}
+  uniform sampler2D uTrace; uniform sampler2D uVelocity; uniform float uDecay;
+  void main() {
+    // Low-pass copy of the velocity: decays slowly (half life about 3 s) and is clamped, W7 C tur 5.
+    vec2 t = texture2D(uTrace, vUv).xy * uDecay + texture2D(uVelocity, vUv).xy * 0.04;
+    gl_FragColor = vec4(clamp(t, -3.0, 3.0), 0.0, 1.0);
   }
 `;
 
@@ -89,7 +99,7 @@ const VORTICITY = /* glsl */ `${HEAD}
     force *= uCurlStrength * C;
     force.y *= -1.0;
     vec2 velocity = texture2D(uVelocity, vUv).xy + force * uDt;
-    gl_FragColor = vec4(clamp(velocity, -1000.0, 1000.0), 0.0, 1.0);
+    gl_FragColor = vec4(clamp(velocity, -4.0, 4.0), 0.0, 1.0);
   }
 `;
 
@@ -127,8 +137,8 @@ const GRADIENT = /* glsl */ `${HEAD}
   }
 `;
 
-function makeTarget(size: number): WebGLRenderTarget {
-  return new WebGLRenderTarget(size, size, {
+function makeTarget(width: number, height: number): WebGLRenderTarget {
+  return new WebGLRenderTarget(width, height, {
     type: HalfFloatType,
     format: RGBAFormat,
     minFilter: LinearFilter,
@@ -141,7 +151,7 @@ function makeTarget(size: number): WebGLRenderTarget {
 class Pair {
   read: WebGLRenderTarget;
   write: WebGLRenderTarget;
-  constructor(size: number) { this.read = makeTarget(size); this.write = makeTarget(size); }
+  constructor(width: number, height: number) { this.read = makeTarget(width, height); this.write = makeTarget(width, height); }
   swap() { const t = this.read; this.read = this.write; this.write = t; }
   dispose() { this.read.dispose(); this.write.dispose(); }
 }
@@ -152,16 +162,20 @@ export class FluidSim {
   private readonly quad: Mesh;
   private readonly velocity: Pair;
   private readonly pressure: Pair;
+  private readonly trace: Pair;
   private readonly curl: WebGLRenderTarget;
   private readonly divergence: WebGLRenderTarget;
-  private readonly programs: Record<"splat" | "advect" | "curl" | "vorticity" | "divergence" | "pressure" | "gradient", ShaderMaterial>;
+  private readonly programs: Record<"splat" | "trace" | "advect" | "curl" | "vorticity" | "divergence" | "pressure" | "gradient", ShaderMaterial>;
 
-  constructor(private readonly size = FLUID_PARAMS.grid) {
-    const texel = new Vector2(1 / size, 1 / size);
+  constructor(aspect = 1) {
+    const width = FLUID_PARAMS.grid;
+    const height = Math.max(32, Math.floor(FLUID_PARAMS.grid / Math.max(0.5, aspect)));
+    const texel = new Vector2(1 / width, 1 / height);
     const make = (fragmentShader: string, uniforms: Record<string, { value: unknown }>) =>
       new ShaderMaterial({ vertexShader: FULLSCREEN_VERTEX, fragmentShader, uniforms: { uTexel: { value: texel }, ...uniforms }, depthTest: false, depthWrite: false });
     this.programs = {
       splat: make(SPLAT, { uTarget: { value: null }, uPoint: { value: new Vector2() }, uForce: { value: new Vector2() }, uAspect: { value: 1 }, uRadius: { value: FLUID_PARAMS.splatRadius } }),
+      trace: make(TRACE, { uTrace: { value: null }, uVelocity: { value: null }, uDecay: { value: 1 } }),
       advect: make(ADVECT, { uVelocity: { value: null }, uDt: { value: 0 }, uDissipation: { value: 1 } }),
       curl: make(CURL, { uVelocity: { value: null } }),
       vorticity: make(VORTICITY, { uVelocity: { value: null }, uCurl: { value: null }, uCurlStrength: { value: 0 }, uDt: { value: 0 } }),
@@ -172,13 +186,16 @@ export class FluidSim {
     this.quad = new Mesh(new PlaneGeometry(2, 2), this.programs.splat);
     this.quad.frustumCulled = false;
     this.scene.add(this.quad);
-    this.velocity = new Pair(size);
-    this.pressure = new Pair(size);
-    this.curl = makeTarget(size);
-    this.divergence = makeTarget(size);
+    this.velocity = new Pair(width, height);
+    this.pressure = new Pair(width, height);
+    this.trace = new Pair(width, height);
+    this.curl = makeTarget(width, height);
+    this.divergence = makeTarget(width, height);
   }
 
   get texture(): Texture { return this.velocity.read.texture; }
+  /** Slowly fading, accumulated copy of the flow: the wordmark keeps bending long after the swirl itself has died. */
+  get traceTexture(): Texture { return this.trace.read.texture; }
 
   private pass(renderer: WebGLRenderer, program: ShaderMaterial, target: WebGLRenderTarget) {
     this.quad.material = program;
@@ -187,7 +204,7 @@ export class FluidSim {
   }
 
   /** One solver step; `splat` is the pointer position (uv) and its velocity in texels per second. */
-  step(renderer: WebGLRenderer, dt: number, aspect: number, splat: { x: number; y: number; vx: number; vy: number } | null) {
+  step(renderer: WebGLRenderer, dt: number, aspect: number, splat: { x: number; y: number; vx: number; vy: number; radius: number } | null) {
     const previousTarget = renderer.getRenderTarget();
     const previousAutoClear = renderer.autoClear;
     const previousShadow = renderer.shadowMap.autoUpdate;
@@ -200,6 +217,7 @@ export class FluidSim {
       p.splat.uniforms.uPoint.value.set(splat.x, splat.y);
       p.splat.uniforms.uForce.value.set(splat.vx, splat.vy);
       p.splat.uniforms.uAspect.value = aspect;
+      p.splat.uniforms.uRadius.value = splat.radius;
       this.pass(renderer, p.splat, this.velocity.write);
       this.velocity.swap();
     }
@@ -210,8 +228,8 @@ export class FluidSim {
     p.vorticity.uniforms.uVelocity.value = this.velocity.read.texture;
     p.vorticity.uniforms.uCurl.value = this.curl.texture;
     // The reference curl value (0.02) is in its own units; this scale keeps the swirl visible at our force.
-    p.vorticity.uniforms.uCurlStrength.value = FLUID_PARAMS.curl * 1500;
-    p.vorticity.uniforms.uDt.value = dt;
+    p.vorticity.uniforms.uCurlStrength.value = FLUID_PARAMS.curl;
+    p.vorticity.uniforms.uDt.value = dt * 60;
     this.pass(renderer, p.vorticity, this.velocity.write);
     this.velocity.swap();
 
@@ -233,10 +251,16 @@ export class FluidSim {
     this.velocity.swap();
 
     p.advect.uniforms.uVelocity.value = this.velocity.read.texture;
-    p.advect.uniforms.uDt.value = dt;
+    p.advect.uniforms.uDt.value = dt * 60;
     p.advect.uniforms.uDissipation.value = Math.pow(FLUID_PARAMS.dissipation, dt * 60);
     this.pass(renderer, p.advect, this.velocity.write);
     this.velocity.swap();
+
+    p.trace.uniforms.uTrace.value = this.trace.read.texture;
+    p.trace.uniforms.uVelocity.value = this.velocity.read.texture;
+    p.trace.uniforms.uDecay.value = Math.pow(0.9965, dt * 60);
+    this.pass(renderer, p.trace, this.trace.write);
+    this.trace.swap();
 
     renderer.setRenderTarget(previousTarget);
     renderer.autoClear = previousAutoClear;
@@ -244,7 +268,7 @@ export class FluidSim {
   }
 
   dispose() {
-    this.velocity.dispose(); this.pressure.dispose(); this.curl.dispose(); this.divergence.dispose();
+    this.velocity.dispose(); this.pressure.dispose(); this.trace.dispose(); this.curl.dispose(); this.divergence.dispose();
     this.quad.geometry.dispose();
     Object.values(this.programs).forEach((program) => program.dispose());
   }
@@ -260,7 +284,7 @@ export function MouseFluid({ active }: { active: boolean }) {
   const size = useThree((state) => state.size);
   const invalidate = useThree((state) => state.invalidate);
   const sim = useRef<FluidSim | null>(null);
-  const pointer = useRef({ x: 0.5, y: 0.5, lastX: 0.5, lastY: 0.5, moved: false, lastMove: -10 });
+  const pointer = useRef({ x: 0.5, y: 0.5, lastX: 0.5, lastY: 0.5, moved: false, lastMove: -10, cx: 0.5, cy: 0.5, ax: 0, ay: 0 });
   const supported = useMemo(() => {
     const context = gl.getContext();
     return Boolean(gl.capabilities.isWebGL2 && (context.getExtension("EXT_color_buffer_float") || context.getExtension("EXT_color_buffer_half_float")));
@@ -291,30 +315,46 @@ export function MouseFluid({ active }: { active: boolean }) {
     sim.current?.dispose();
     sim.current = null;
     fluidShared.texture = null;
+    fluidShared.trace = null;
     fluidShared.mix = 0;
   }, []);
 
   useFrame((state, delta) => {
     if (!active || !supported) return;
     if (!sim.current) {
-      sim.current = new FluidSim();
+      sim.current = new FluidSim(size.width / Math.max(1, size.height));
       fluidShared.texture = sim.current.texture;
     }
     const dt = Math.min(0.05, Math.max(1 / 240, delta));
     const pointerState = pointer.current;
-    let splat: { x: number; y: number; vx: number; vy: number } | null = null;
-    if (pointerState.moved) {
-      const dx = pointerState.x - pointerState.lastX;
-      const dy = pointerState.y - pointerState.lastY;
-      if (dx !== 0 || dy !== 0) {
-        splat = { x: pointerState.x, y: pointerState.y, vx: dx * FLUID_PARAMS.splatForce, vy: dy * FLUID_PARAMS.splatForce };
-      }
-      pointerState.lastX = pointerState.x;
-      pointerState.lastY = pointerState.y;
-      pointerState.moved = false;
+    let splat: { x: number; y: number; vx: number; vy: number; radius: number } | null = null;
+    // W7 F5: the brush follows an eased pointer; its velocity (signed power 1.6) accumulates, halves each frame,
+    // is clamped to +-1 and scaled by 30 (force clamped to +-2 texels per frame).
+    const aspect = size.width / Math.max(1, size.height);
+    const follow = Math.min(1, dt * 10);
+    const vx = pointerState.x - pointerState.cx;
+    const vy = pointerState.y - pointerState.cy;
+    pointerState.cx += vx * follow;
+    pointerState.cy += vy * follow;
+    const power = (v: number) => Math.sign(v) * Math.pow(Math.abs(v * 100), 1.6);
+    pointerState.ax = Math.max(-1, Math.min(1, (pointerState.ax + power(vx)) * 0.5));
+    pointerState.ay = Math.max(-1, Math.min(1, (pointerState.ay + power(vy)) * 0.5));
+    const speed = Math.hypot(pointerState.ax, pointerState.ay);
+    if (speed > 1e-4) {
+      const pv = Math.min(1, Math.max(0, (speed - 0.01) / 0.99));
+      const eased = pv * pv * (3 - 2 * pv);
+      splat = {
+        x: pointerState.cx,
+        y: pointerState.cy,
+        vx: Math.max(-2, Math.min(2, pointerState.ax * 30)),
+        vy: Math.max(-2, Math.min(2, pointerState.ay * 30)) * aspect,
+        radius: (0.01 + 0.1 * Math.min(0.5, eased)) * 1.85 * 0.85, // W7 F4 (C tur 5: x0.85): FWHM 31 -> about 57 px
+      };
     }
-    sim.current.step(state.gl, dt, size.width / Math.max(1, size.height), splat);
+    pointerState.moved = false;
+    sim.current.step(state.gl, dt, aspect, splat);
     fluidShared.texture = sim.current.texture;
+    fluidShared.trace = sim.current.traceTexture;
     fluidShared.mix = 1;
     // Keep drawing until the swirl has died down after the last movement.
     if (performance.now() / 1000 - pointerState.lastMove < 4) invalidate();
