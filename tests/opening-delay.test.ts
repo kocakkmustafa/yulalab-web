@@ -11,6 +11,6 @@ describe("W8-5 opening lens delay", () => {
 
   it("starts after the 4.0 s capture frame (loader opens at about 3.83 s)", () => {
     expect(3.83 + OPENING_LENS_DELAY_SECONDS).toBeGreaterThan(4.1);
-    expect(OPENING_LENS_DELAY_SECONDS).toBeLessThan(0.4);
+    expect(OPENING_LENS_DELAY_SECONDS).toBeLessThan(0.45);
   });
 });

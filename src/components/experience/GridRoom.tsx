@@ -193,7 +193,7 @@ const GROUND_GLSL = /* glsl */ `
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     // W8-7: phones keep the opening ground dark (reference cell mean about 9, was 38); desktop keeps x0.35 only below 1.5.
-    tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.15, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
+    tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.10, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
