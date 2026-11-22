@@ -115,8 +115,8 @@ const FRAGMENT = /* glsl */ `
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
     // W8-10: contrast of the bent background (grid lines read through the letter); W8-9: a touch less colour.
     // W8-20: contrast 1.7 to 2.4 for interior detail; W8-18: the saturation mix drops 0.85 to 0.6 so saturated pixels stay near the reference share.
-    c = max(vec3(0.3) + (c - vec3(0.3)) * 2.4, vec3(0.0));
-    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.6);
+    c = max(vec3(0.15) + (c - vec3(0.15)) * 2.4, vec3(0.0)); // pivot 0.3 to 0.15: dark tiles no longer clip to black
+    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.5);
 
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
