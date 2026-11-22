@@ -1,6 +1,7 @@
 "use client";
 
-import { heroSlot, heroWordmarkWidth } from "./hero-slot";
+import { heroWordmarkWidth } from "./hero-slot";
+import { WORDMARK_SDF_SIZE, WORDMARK_SDF_SPREAD } from "./wordmark-sdf-meta";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -8,6 +9,10 @@ import {
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
+  DataTexture,
+  NoColorSpace,
+  RedFormat,
+  UnsignedByteType,
   Color,
   LinearFilter,
   LinearMipmapLinearFilter,
@@ -413,39 +418,19 @@ const BACKDROP_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
-function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasTexture {
+function makeWordmarkTexture(label: string): CanvasTexture {
   const canvas = document.createElement("canvas");
-  const textureScale = skipFirstLetter ? 4 : 1;
-  canvas.width = 1024 * textureScale;
-  canvas.height = 512 * textureScale;
+  canvas.width = 1024;
+  canvas.height = 512;
   const context = canvas.getContext("2d");
 
   if (context) {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = "#ffffff";
-    context.font = `600 ${340 * textureScale}px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif`;
+    context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textBaseline = "middle";
-    const centreY = canvas.height / 2 + 12 * textureScale;
-    const maxWidth = canvas.width * 0.92;
-    if (skipFirstLetter) {
-      // Same layout as the whole word, but the first letter is left empty for the glass Y.
-      const full = context.measureText(label).width;
-      const firstWidth = context.measureText(label.slice(0, 1)).width;
-      const fit = Math.min(1, maxWidth / full);
-      const start = (canvas.width - full * fit) / 2;
-      context.textAlign = "left";
-      context.fillText(label.slice(1), start + firstWidth * fit, centreY, (full - firstWidth) * fit);
-      const cap = context.measureText("U");
-      heroSlot.x = (start + (firstWidth * fit) / 2 - canvas.width / 2) / canvas.width;
-      // Metrics are relative to the "middle" line the text was drawn on.
-      const capTop = centreY - cap.actualBoundingBoxAscent;
-      const capBottom = centreY + cap.actualBoundingBoxDescent;
-      heroSlot.cap = (capBottom - capTop) / canvas.height;
-      heroSlot.y = (canvas.height / 2 - (capTop + capBottom) / 2) / canvas.height;
-    } else {
-      context.textAlign = "center";
-      context.fillText(label, canvas.width / 2, centreY, maxWidth);
-    }
+    context.textAlign = "center";
+    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
   }
 
   const texture = new CanvasTexture(canvas);
@@ -455,6 +440,34 @@ function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasText
   texture.minFilter = LinearMipmapLinearFilter;
   texture.magFilter = LinearFilter;
   texture.needsUpdate = true;
+  return texture;
+}
+
+/**
+ * W8-14: the hero "ULA" is a single-channel signed distance field baked from the site's Hanken Grotesk
+ * (scripts/build-wordmark-sdf.py), 2560x1280 R8 = 3.1 MB. The fragment shader turns it into coverage, so the
+ * edge stays one pixel wide at any scale. Filled asynchronously from /experience/yula-wordmark-sdf.bin.
+ */
+const WORDMARK_SDF_URL = "/experience/yula-wordmark-sdf.bin";
+
+function makeYulaSdfTexture(): DataTexture {
+  const { width, height } = WORDMARK_SDF_SIZE;
+  const texture = new DataTexture(new Uint8Array(width * height), width, height, RedFormat, UnsignedByteType);
+  texture.colorSpace = NoColorSpace;
+  texture.minFilter = texture.magFilter = LinearFilter;
+  texture.generateMipmaps = false;
+  texture.unpackAlignment = 1;
+  texture.needsUpdate = true;
+  if (typeof fetch === "function") {
+    void fetch(WORDMARK_SDF_URL)
+      .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject(new Error(String(response.status)))))
+      .then((buffer) => {
+        if (buffer.byteLength !== width * height) return;
+        (texture.image.data as Uint8Array).set(new Uint8Array(buffer));
+        texture.needsUpdate = true;
+      })
+      .catch(() => undefined);
+  }
   return texture;
 }
 
@@ -574,7 +587,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
-  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA", true), []);
+  const yulaWordmark = useMemo(() => makeYulaSdfTexture(), []);
   const worksWordmark = useMemo(() => makeWordmarkTexture(wallTitles.works), [wallTitles.works]);
   const serviceWordmark = useMemo(() => makeWordmarkTexture(wallTitles.service), [wallTitles.service]);
   const gridMaterial = useMemo(
@@ -663,7 +676,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform sampler2D uTrace; uniform float uFluidMix; uniform vec2 uFlowRes;")
       .replace(
         "#include <map_fragment>",
-        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // W7 C6: fine, grainy bend (2 px cells) with a dead zone: slow residual flow leaves the letters clean, only a real sweep bends them (shift = k * max(0, |v| - v0), peak capped at 0.022 uv). No R/B split on the letters.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 2.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float eff = min(max(0.0, shiftLen - 0.06) * 1.3, 0.022);\n    flowShift = flowDir * eff;\n    vec2 wUv = vMapUv - flowShift;\n    vec4 sampledDiffuseColor = vec4(1.0, 1.0, 1.0, texture2D(map, wUv).a);\n    diffuseColor *= sampledDiffuseColor;",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // W7 C6: fine, grainy bend (2 px cells) with a dead zone: slow residual flow leaves the letters clean, only a real sweep bends them (shift = k * max(0, |v| - v0), peak capped at 0.022 uv). No R/B split on the letters.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 2.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float eff = min(max(0.0, shiftLen - 0.06) * 1.3, 0.022);\n    flowShift = flowDir * eff;\n    vec2 wUv = vMapUv - flowShift;\n    // W8-14: SDF coverage; the edge width comes from the unbent uv so the 2 px bend cells never widen it.\n    float sdfD = texture2D(map, wUv).r;\n    float sdfW = clamp(0.5 * fwidth(texture2D(map, vMapUv).r), 0.002, 0.5);\n    vec4 sampledDiffuseColor = vec4(1.0, 1.0, 1.0, smoothstep(0.5 - sdfW, 0.5 + sdfW, sdfD));\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
 

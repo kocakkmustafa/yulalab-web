@@ -1,3 +1,5 @@
+import { WORDMARK_SLOT } from "./wordmark-sdf-meta";
+
 /**
  * W1D: the opening word reads "[Y]ULA" where the glass Y stands in for the first letter. The wordmark
  * texture leaves that slot empty and records where it is (fractions of the plane), so the glass Y can
@@ -24,4 +26,5 @@ export function heroWordmarkWidth(mobileMix: number, aspect: number): number {
   return 14.2 * (1 - mobileMix) + mobileWidth * mobileMix;
 }
 
-export const heroSlot: HeroSlot = { x: -0.31, y: 0.02, cap: 0.47 };
+/** Baked together with the SDF texture (scripts/build-wordmark-sdf.py). */
+export const heroSlot: HeroSlot = { ...WORDMARK_SLOT };
