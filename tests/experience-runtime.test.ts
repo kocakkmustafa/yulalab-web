@@ -489,20 +489,20 @@ describe("deterministic capture parameters", () => {
 });
 
 describe("opening loader choreography", () => {
-  it("orders construction, refraction and the late handoff deterministically", () => {
+  it("orders construction, emblem outline and the pure-black late handoff deterministically", () => {
     const construction = resolveLoaderFrame(0.35);
     expect(construction.flat).toBeGreaterThan(0.75);
     expect(construction.depth).toBeGreaterThan(0);
     expect(construction.flash).toBe(0);
     expect(construction.exit).toBe(0);
 
-    const refraction = resolveLoaderFrame(0.68);
-    expect(refraction.reveal).toBeGreaterThan(0.8);
-    expect(refraction.flash).toBeGreaterThan(0.9);
-    expect(refraction.exit).toBe(0);
+    const outline = resolveLoaderFrame(0.78);
+    expect(outline.reveal).toBeGreaterThan(0.8);
+    expect(outline.flash).toBe(0);
+    expect(outline.exit).toBe(0);
 
     const held = resolveLoaderFrame(0.88);
-    expect(held.flash).toBeGreaterThan(0);
+    expect(held.flash).toBe(0);
     expect(held.exit).toBe(0);
 
     const complete = resolveLoaderFrame(1);

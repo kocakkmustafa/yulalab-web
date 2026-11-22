@@ -884,7 +884,7 @@ export function PortfolioField({
   }, [assetPaths]);
 
   return (
-    <group ref={fieldGroup} visible={fieldOpacity > 0.001}>
+    <group ref={fieldGroup} visible={fieldOpacity > 0.001} userData={{ skipRefractCapture: true }}>
       {products.slice(0, SCENE_PRODUCT_COUNT).map((product, index) => {
         const mediaComposition = product.developmentPreviews?.length
           ? developmentViewportComposition(interpolateViewportCamera(frame.progress, viewport.width, mode), viewport.width, viewport.height, -1.25 - frame.productFloat * CARD_DEPTH_STEP)

@@ -9,6 +9,7 @@ import { MouseFluid } from "./MouseFluid";
 import { GridRoom, type WallTitles } from "./GridRoom";
 import { LightformerEnvironment } from "./LightformerEnvironment";
 import { PortfolioField } from "./PortfolioField";
+import { OpeningDirector, OpeningIris, SceneBackgroundPass } from "./opening";
 import { evaluateTimeline } from "./timeline";
 import type {
   ExperienceMode,
@@ -34,6 +35,7 @@ export type ExperienceWorldProps = {
   tier: QualityTier;
   onAssetsSettled: () => void;
   wallTitles?: WallTitles;
+  sceneOpened?: boolean;
 };
 
 function WorldTheme({ frame }: { frame: TimelineFrame }) {
@@ -77,6 +79,7 @@ export function ExperienceWorld({
   tier,
   onAssetsSettled,
   wallTitles,
+  sceneOpened = true,
 }: ExperienceWorldProps) {
   const frame = useMemo(
     () => applyExperienceTheme(evaluateTimeline(progress, mode), displayTheme),
@@ -89,12 +92,13 @@ export function ExperienceWorld({
   return (
     <>
       <WorldTheme frame={frame} />
+      <OpeningDirector sceneOpened={sceneOpened} />
       <CameraRig mode={mode} progress={progress} />
       <MouseFluid active={mode === "desktop" && tier !== "low" && !prefersReducedMotion()} />
 
       <ambientLight intensity={0.28 + frame.world.themeMix * 0.72} />
       <directionalLight
-        castShadow={tier !== "low" && progress >= 0.065}
+        castShadow={tier !== "low" && frame.progress >= 0.085}
         color={frame.world.themeMix > 0.5 ? "#fffaf0" : "#ffffff"}
         intensity={2.2}
         position={[6, 9, 8]}
@@ -160,6 +164,8 @@ export function ExperienceWorld({
       {frame.progress < VALUES_ROOM_START ? (
         <ValueDioramas frame={frame} tier={tier} mediaTextures={mediaTextures} />
       ) : null}
+      <SceneBackgroundPass active={false} />
+      <OpeningIris />
     </>
   );
 }

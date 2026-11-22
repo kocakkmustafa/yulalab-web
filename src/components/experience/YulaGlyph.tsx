@@ -24,6 +24,7 @@ import { glyphReadingVisibility, smoothstep, segmentProgress, STAGES } from "./t
 import { timelineProgressForScroll } from "./storyboard";
 import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
+import { openingShared } from "./opening";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
 import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot, heroWordmarkWidth } from "./hero-slot";
@@ -291,7 +292,6 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   );
   // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
   const slotMix = heroSlotMix(frame.progress);
-  const opening = useRef({ sawLoader: false, started: 0 });
   const slotPose = useMemo(() => {
     const planeWidth = heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
@@ -424,13 +424,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.base.setFromEuler(r.euler);
     if (glyphGroup.current) {
       glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
-      const card = document.querySelector('[data-yula-experience]');
-      if (card?.getAttribute("data-loader-visible") === "true") opening.current.sawLoader = true;
-      if (opening.current.sawLoader && card?.getAttribute("data-loader-visible") === "false" && !opening.current.started) opening.current.started = performance.now();
-      const t = opening.current.started ? Math.min(1, (performance.now() - opening.current.started) / 1000) : 1;
-      const grow = 1 + (1 - t * t * (3 - 2 * t)) * 0.3 * slotMix;
-      glyphGroup.current.scale.set(glyphScaleXYZ[0] * grow, glyphScaleXYZ[1] * grow, glyphScaleXYZ[2] * grow);
-      if (t < 1) invalidate();
+      // W8 T5: subtle depth settle as the hero opens from close-up into its resting plane.
+      const openZ = frame.progress < 0.085 ? (1 - openingShared.eased) * 0.55 : 0;
+      glyphGroup.current.position.set(position[0], position[1], position[2] + openZ);
     }
     // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
     const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;
@@ -470,10 +466,11 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       position={position}
       rotation={rotation}
       scale={glyphScaleXYZ}
+      userData={{ skipRefractCapture: true }}
       visible={closingVisibility > 0.001}
     >
       <mesh
-        castShadow={tier !== "low"}
+        castShadow={tier !== "low" && frame.progress >= 0.085}
         geometry={geometry}
         receiveShadow
         visible={!glassVisible}
@@ -498,7 +495,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         />
       </mesh>
 
-      <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
+      <RefractGlass
+        geometry={geometry}
+        inHero={frame.progress < 0.085}
+        opacity={bodyOpacity * frame.glyph.glassMix}
+        visible={glassVisible}
+      />
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
         <lineBasicMaterial

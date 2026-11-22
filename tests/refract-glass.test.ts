@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { GLASS_PARAMS } from "@/components/experience/RefractGlass";
+import { LOADER_TEXT_CHAR_MS, LOADER_TEXT_DELAY_MS, openingSigmoid, resolveLoaderChars } from "@/components/experience/loader";
 import { dwellFloat } from "@/components/experience/timeline";
 import { evaluateTimeline } from "@/components/experience/timeline";
 import { stageWordFrame } from "@/components/experience/instruments";
@@ -14,6 +15,24 @@ describe("W1D-D glass material (REA section 3)", () => {
     expect(GLASS_PARAMS.f0).toBe(0.1);
     expect(GLASS_PARAMS.output).toBe(1.2);
     expect(GLASS_PARAMS.samples).toBe(8);
+  });
+});
+
+describe("W8 opening loader text and curve", () => {
+  it("resolves loader characters at 40 ms per character after a 300 ms delay", () => {
+    expect(LOADER_TEXT_DELAY_MS).toBe(300);
+    expect(LOADER_TEXT_CHAR_MS).toBe(40);
+    expect(resolveLoaderChars("Yula", 200).every((item) => item.opacity === 0)).toBe(true);
+    const mid = resolveLoaderChars("Yula", 360);
+    expect(mid[0]).toEqual({ char: "Y", opacity: 1 });
+    expect(mid[2].opacity).toBe(0.3);
+    const done = resolveLoaderChars("Yula", 600);
+    expect(done.map((item) => item.char).join("")).toBe("Yula");
+  });
+  it("normalises the opening sigmoid to 0..1", () => {
+    expect(openingSigmoid(0)).toBeCloseTo(0, 6);
+    expect(openingSigmoid(1)).toBeCloseTo(1, 6);
+    expect(openingSigmoid(0.5)).toBeCloseTo(0.5, 6);
   });
 });
 

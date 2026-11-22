@@ -19,33 +19,68 @@ function smoothstep(value: number): number {
   return x * x * (3 - 2 * x);
 }
 
-function pulse(
-  progress: number,
-  start: number,
-  peak: number,
-  end: number,
-): number {
-  if (progress <= start || progress >= end) return 0;
-  if (progress <= peak) {
-    return smoothstep((progress - start) / (peak - start));
+function easeOutQuad(value: number): number {
+  const x = clamp01(value);
+  return 1 - (1 - x) * (1 - x);
+}
+
+export const LOADER_TEXT_DELAY_MS = 300;
+export const LOADER_TEXT_CHAR_MS = 40;
+const SCRAMBLE_ALPHABET = "YULA";
+
+export type LoaderCharState = {
+  char: string;
+  opacity: number;
+};
+
+/**
+ * W8 T2: single-line character-by-character scramble in the reference cadence
+ * (300 ms initial delay, 40 ms per character, unrevealed glyphs at 0.3 opacity).
+ */
+export function resolveLoaderChars(text: string, elapsedMs: number): LoaderCharState[] {
+  const safeElapsed = Number.isFinite(elapsedMs) ? Math.max(0, elapsedMs) : 0;
+  if (safeElapsed < LOADER_TEXT_DELAY_MS) {
+    return Array.from(text, (ch) => ({ char: ch, opacity: 0 }));
   }
-  return smoothstep((end - progress) / (end - peak));
+  const tick = Math.floor(safeElapsed / 32);
+  return Array.from(text, (ch, index) => {
+    if (ch.trim() === "") {
+      return { char: ch, opacity: 0 };
+    }
+    const revealAt = LOADER_TEXT_DELAY_MS + index * LOADER_TEXT_CHAR_MS;
+    if (safeElapsed >= revealAt) {
+      return { char: ch, opacity: 1 };
+    }
+    const glyphIndex = Math.abs((index * 7 + tick * 3 + 1) % SCRAMBLE_ALPHABET.length);
+    return { char: SCRAMBLE_ALPHABET[glyphIndex], opacity: 0.3 };
+  });
+}
+
+/**
+ * W8 T4: normalized sigmoid(6) curve used by the 3.0 s circular lens & camera opening.
+ */
+export function openingSigmoid(value: number): number {
+  const x = clamp01(value);
+  const s = (t: number) => 1 / (1 + Math.exp(-6 * (t * 2 - 1)));
+  const s0 = s(0);
+  const s1 = s(1);
+  return (s(x) - s0) / (s1 - s0);
 }
 
 /**
  * Pure opening phase contract used by both runtime animation and deterministic
- * capture. Construction resolves first, refraction flashes second, and the
- * opaque loader does not release the live scene until the final ten percent.
+ * capture. Construction lines draw first, the thin Y outline appears mid-card,
+ * flash stays zero (W8 T3: pure black loader), and exit fades with power2.out.
  */
 export function resolveLoaderFrame(value: number): LoaderFrame {
   const progress = clamp01(value);
   return {
     progress,
-    flat: smoothstep(progress / 0.4),
-    depth: smoothstep((progress - 0.2) / 0.46),
-    reveal: smoothstep((progress - 0.3) / 0.36),
-    flash: pulse(progress, 0.52, 0.68, 0.94),
-    exit: smoothstep((progress - 0.9) / 0.1),
+    flat: smoothstep(progress / 0.45),
+    depth: smoothstep((progress - 0.18) / 0.46),
+    reveal: smoothstep((progress - 0.45) / 0.4),
+    flash: 0,
+    exit: easeOutQuad((progress - 0.9) / 0.1),
   };
 }
 

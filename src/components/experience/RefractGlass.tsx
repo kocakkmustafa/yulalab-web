@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { FLUID_PARAMS, fluidShared } from "./MouseFluid";
+import { openingShared } from "./opening";
 import {
   type BufferGeometry,
   LinearFilter,
@@ -138,9 +139,13 @@ export type RefractGlassProps = {
   geometry: BufferGeometry;
   opacity: number;
   visible: boolean;
+  /** True while the hero stage is on screen: the glass fades in with the opening clock. */
+  inHero?: boolean;
 };
 
-export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) {
+export function RefractGlass({ geometry, opacity, visible, inHero = false }: RefractGlassProps) {
+  const entrance = useRef({ opacity, inHero });
+  entrance.current = { opacity, inHero };
   const mesh = useRef<Mesh>(null);
   const texture = useRef<WebGLRenderTarget | null>(null);
   const size = useMemo(() => new Vector2(), []);
@@ -171,6 +176,7 @@ export function RefractGlass({ geometry, opacity, visible }: RefractGlassProps) 
       const gl = renderer.getContext();
       if (!("blitFramebuffer" in gl)) return;
       renderer.getDrawingBufferSize(size);
+      material.uniforms.uOpacity.value = entrance.current.opacity * (entrance.current.inHero ? openingShared.glyphOpacity : 1);
       const width = Math.max(1, Math.floor(size.x));
       const height = Math.max(1, Math.floor(size.y));
       let current = texture.current;
