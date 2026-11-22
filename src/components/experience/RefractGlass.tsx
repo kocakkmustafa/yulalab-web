@@ -114,8 +114,9 @@ const FRAGMENT = /* glsl */ `
     }
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
     // W8-10: contrast of the bent background (grid lines read through the letter); W8-9: a touch less colour.
-    c = max(vec3(0.3) + (c - vec3(0.3)) * 1.7, vec3(0.0));
-    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.85);
+    // W8-20: contrast 1.7 to 2.4 for interior detail; W8-18: the saturation mix drops 0.85 to 0.6 so saturated pixels stay near the reference share.
+    c = max(vec3(0.3) + (c - vec3(0.3)) * 2.4, vec3(0.0));
+    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.6);
 
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
@@ -129,14 +130,15 @@ const FRAGMENT = /* glsl */ `
     // W7 CY15: the flow no longer tints the glass.
     c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
-    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
+    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 2.4 + normal.x * 0.35 + vLocal.y * 0.5 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
     // W8-9: the spectral band is confined to the last few pixels of the rim and a thin white line closes it.
-    c += spectrum * smoothstep(0.3, 0.85, rim) * 0.7;
+    // W8-18/19: weaker (0.7 to 0.3) and pushed to the rim tip so the colour parts into a thin rainbow edge, not a wall tint.
+    c += spectrum * smoothstep(0.55, 0.9, rim) * 0.3;
     c += vec3(smoothstep(0.84, 0.96, rim)) * 0.9;
     c += vec3(min(spec, 1.5));
     // A restrained violet transmission makes the clear face legible even over dark tiles.
-    c += vec3(0.055, 0.025, 0.13) * (1.0 - rim);
+    c += vec3(0.0275, 0.0125, 0.065) * (1.0 - rim); // W8-18: halved
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior

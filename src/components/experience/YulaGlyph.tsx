@@ -210,7 +210,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       curveSegments: high ? 12 : medium ? 8 : 4,
       bevelEnabled: true,
       bevelThickness: 0.075,
-      bevelSize: 0.065,
+      bevelSize: 0.03,
       bevelOffset: 0,
       bevelSegments: high ? 6 : medium ? 4 : 2,
     });
