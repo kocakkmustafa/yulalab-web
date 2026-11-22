@@ -1,6 +1,7 @@
 "use client";
 
 import { heroWordmarkWidth } from "./hero-slot";
+import { flipSdfRows } from "./wordmark-sdf-rows";
 import { WORDMARK_SDF_SIZE, WORDMARK_SDF_SPREAD } from "./wordmark-sdf-meta";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
@@ -463,7 +464,7 @@ function makeYulaSdfTexture(): DataTexture {
       .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject(new Error(String(response.status)))))
       .then((buffer) => {
         if (buffer.byteLength !== width * height) return;
-        (texture.image.data as Uint8Array).set(new Uint8Array(buffer));
+        flipSdfRows(new Uint8Array(buffer), texture.image.data as Uint8Array, width, height);
         texture.needsUpdate = true;
       })
       .catch(() => undefined);
