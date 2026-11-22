@@ -1709,6 +1709,13 @@
       "candidateSha256": "65ea7942a8ada1fcdfc2a1c551f46f0e434dca4577910d39f4f3ee832441755a",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "W1D-W2 (3): cam saydam, karo mozaigi, fare akiskani, portfoy simgesi"
+    },
+    {
+      "path": "public/projects/braavolabs/icon.png",
+      "publishedSha256": "8283301fe2bf552f0b865468606b992005d3abd60b1637ca758324c625ddaaff",
+      "candidateSha256": "b21637b92e69489da81b50376424e235b59a9a7a0f320dd37d1eaac222f6d67c",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "W8-15: gercek uygulama simgesi (aslindan); Braavolabs simgesi yuksek cozunurluklu asıl dosyayla degistirildi"
     }
   ]
 }
