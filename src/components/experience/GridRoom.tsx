@@ -372,6 +372,11 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     float cornerLines = mix(1.0, 0.2, smoothstep(0.55, 0.95, length((screenUv - 0.5) * 1.414)));
     vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12) * cornerLines;
     vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
+    // W8-20: fine dot matrix (7.11 device px pitch, the reference backdrop texture); mean-neutral, about +-5 levels, faded toward the corners.
+    float dotCell = 1.0 - smoothstep(0.28, 0.48, length(fract(gl_FragCoord.xy / 7.11) - 0.5));
+    // The dots fade out where the ground is near black (negative half would clip and lift the mean).
+    float dotGate = smoothstep(0.004, 0.04, dot(ground, vec3(0.3, 0.5, 0.2)));
+    ground += vec3((dotCell - 0.45) * 0.0195) * dotGate * (1.0 - uGroundLight * 0.6);
     gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>
   }

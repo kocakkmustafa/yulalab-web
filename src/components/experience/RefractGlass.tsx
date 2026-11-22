@@ -33,7 +33,7 @@ export const GLASS_PARAMS = {
 } as const;
 
 /** W8-10: the copy of the drawn frame the glass bends; 1024 keeps grid lines crisp through the letter (was 512). */
-const BACKDROP_SIZE = 1024;
+const BACKDROP_SIZE = 1024; // fallback only; the copy now follows the drawing buffer 1:1 (W8-20)
 
 const VERTEX = /* glsl */ `
   varying vec3 vViewNormal;
@@ -130,15 +130,15 @@ const FRAGMENT = /* glsl */ `
     // W7 CY15: the flow no longer tints the glass.
     c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
-    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 2.4 + normal.x * 0.35 + vLocal.y * 0.5 + vec3(0.0, 0.33, 0.67)));
+    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 3.5 + normal.x * 0.35 + vLocal.y * 0.5 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
     // W8-9: the spectral band is confined to the last few pixels of the rim and a thin white line closes it.
     // W8-18/19: weaker (0.7 to 0.3) and pushed to the rim tip so the colour parts into a thin rainbow edge, not a wall tint.
-    c += spectrum * smoothstep(0.55, 0.9, rim) * 0.3;
+    c += spectrum * smoothstep(0.7, 0.95, rim) * 0.8;
     c += vec3(smoothstep(0.84, 0.96, rim)) * 0.9;
     c += vec3(min(spec, 1.5));
     // A restrained violet transmission makes the clear face legible even over dark tiles.
-    c += vec3(0.0275, 0.0125, 0.065) * (1.0 - rim); // W8-18: halved
+    c += vec3(0.0275, 0.0125, 0.065) * (1.0 - rim) * (1.0 - smoothstep(0.4, 0.75, rim)); // W8-18: halved
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
@@ -193,8 +193,14 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       const width = Math.max(1, Math.floor(size.x));
       const height = Math.max(1, Math.floor(size.y));
       let current = texture.current;
+      // W8-20: 1:1 copy of the drawn frame so the 7 px dot matrix keeps its resolution through the glass.
+      if (current && (current.width !== width || current.height !== height)) {
+        current.dispose();
+        current = null;
+        texture.current = null;
+      }
       if (!current) {
-        current = new WebGLRenderTarget(BACKDROP_SIZE, BACKDROP_SIZE, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
+        current = new WebGLRenderTarget(width || BACKDROP_SIZE, height || BACKDROP_SIZE, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
         texture.current = current;
         material.uniforms.uBackground.value = current.texture;
       }
@@ -209,7 +215,7 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       renderer.setRenderTarget(null);
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, destination);
-      gl.blitFramebuffer(0, 0, width, height, 0, 0, BACKDROP_SIZE, BACKDROP_SIZE, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+      gl.blitFramebuffer(0, 0, width, height, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
     };
     return () => {
