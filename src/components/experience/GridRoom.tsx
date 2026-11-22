@@ -201,6 +201,8 @@ const GROUND_GLSL = /* glsl */ `
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     // W8-7: phones keep the opening ground dark (reference cell mean about 9, was 38); desktop keeps x0.35 only below 1.5.
     tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.10, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
+    // W8-25: desktop side strips x0.92 (42.4 -> <=39); the tile curve alone moved them only 0.7 percent.
+    tiled *= mix(0.92, 1.0, smoothstep(0.7, 1.1, 1.0 / max(uMosaicAspect, 0.01)));
     // W8-22: phones x0.9 more (cell mean 15.6 -> <=15; corners stay <=20).
     tiled *= mix(1.0, 0.9, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);

@@ -215,14 +215,14 @@
 .journey[data-opening-stage="entering"] .scrollCue { transition-delay: 1000ms; }
 
 /* W8-23: menu, sound bar and glyph control stay at opacity 0 through the loader's fade-out and the lens opening
-   (reference: absent until ~5.6 s); they start at ~5.2 s (release at ~3.95 s + 1.25 s) and are fully in by ~5.8 s. */
+   (reference: absent until ~5.6 s); they start at ~5.2 s (release at ~3.95 s + 1.4 s) and are fully in by ~5.8 s. */
 .journey[data-opening-stage="loading"] :is(.experienceHeader, .soundButton, .glyphControl) {
   opacity: 0;
   pointer-events: none;
 }
 
 .journey[data-opening-stage="entering"] :is(.experienceHeader, .soundButton, .glyphControl) {
-  animation: openingUiIn 600ms cubic-bezier(0.16, 1, 0.3, 1) 1250ms backwards;
+  animation: openingUiIn 600ms cubic-bezier(0.16, 1, 0.3, 1) 1400ms backwards;
 }
 
 @keyframes openingUiIn {
