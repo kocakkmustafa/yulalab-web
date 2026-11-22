@@ -22,12 +22,13 @@ import {
  */
 const BACKDROP_SIZE = 512;
 
-export const OPENING_DURATION_SECONDS = 4.0;
+export const OPENING_DURATION_SECONDS = 3.3;
 /**
- * W8-5: the lens stays dark for the first part of the clock so the frame brightness through the loader
- * window (0.5 to 4.0 s) stays at the reference level; the clock still ends at 4.0 s, so the settled time is kept.
+ * W8-5 / W8-24: the lens stays dark for the first part of the clock so the frame brightness through the loader
+ * window stays at the reference level; W8-24 moves its start from ~4.2 s to ~4.8-5.2 s (reference 5.0 s). The clock
+ * ends at 3.3 s (was 4.0) so the eased curve settles at ~5.8 s as before.
  */
-export const OPENING_LENS_DELAY_SECONDS = 0.40;
+export const OPENING_LENS_DELAY_SECONDS = 1.0;
 
 export function openingLinear(rawTime: number): number {
   const span = OPENING_DURATION_SECONDS - OPENING_LENS_DELAY_SECONDS;

@@ -1,6 +1,6 @@
 "use client";
 
-import { heroWordmarkWidth } from "./hero-slot";
+import { heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
 import { flipSdfRows } from "./wordmark-sdf-rows";
 import { WORDMARK_SDF_SIZE, WORDMARK_SDF_SPREAD } from "./wordmark-sdf-meta";
 import { useFrame, useThree } from "@react-three/fiber";
@@ -145,7 +145,8 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z06 t4: the colour is a screen-space light field (patternLight); a tile only moves its brightness by about
     // +-20 % and keeps a thin grid line. The stripes ignore the tiles. No tile is lit in a colour of its own.
     float stripeOnly = step(0.5, pat) * step(pat, 1.5);
-    float tileGain = mix((0.35 + 1.3 * lum) * mix(0.72, 1.0, seam), 1.0, stripeOnly);
+    // W8-25: desktop middle band 42.4 -> <=39 and p10 6 -> <=4: mean x0.92, dark tiles darker (lum^1.5 keeps the bright tiles).
+    float tileGain = mix((0.26 + 1.66 * pow(lum, 1.5)) * mix(0.72, 1.0, seam), 1.0, stripeOnly);
     litTone = vec3(0.0);
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
@@ -200,6 +201,8 @@ const GROUND_GLSL = /* glsl */ `
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
     // W8-7: phones keep the opening ground dark (reference cell mean about 9, was 38); desktop keeps x0.35 only below 1.5.
     tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.10, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
+    // W8-22: phones x0.9 more (cell mean 15.6 -> <=15; corners stay <=20).
+    tiled *= mix(1.0, 0.9, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
@@ -584,6 +587,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
   const wordmarkWidth = heroWordmarkWidth(viewportMobileMix(viewportWidth), viewport.width / Math.max(1, viewport.height));
+  const wordmarkHeight = heroWordmarkHeight(viewportMobileMix(viewportWidth), viewport.width / Math.max(1, viewport.height));
   const roomColors = useMemo(() => ({
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
@@ -789,7 +793,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       </mesh>
 
       <mesh position={[0, 0.1 + heroLift, wordmarkZ]} renderOrder={-2}>
-        <planeGeometry args={[wordmarkWidth, 5.2]} />
+        <planeGeometry args={[wordmarkWidth, wordmarkHeight]} />
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest

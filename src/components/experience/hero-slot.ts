@@ -28,3 +28,12 @@ export function heroWordmarkWidth(mobileMix: number, aspect: number): number {
 
 /** Baked together with the SDF texture (scripts/build-wordmark-sdf.py). */
 export const heroSlot: HeroSlot = { ...WORDMARK_SLOT };
+
+/** W8-17: phones keep the letters' proportions (U width/height about 0.7, was 0.5 on a 1.25:1 plane). */
+const MOBILE_PLANE_ASPECT = 1.9;
+
+/** Plane height: desktop keeps 5.2; phones shrink it so the squeezed word is no longer tall and narrow. */
+export function heroWordmarkHeight(mobileMix: number, aspect: number): number {
+  const mobileHeight = Math.min(HERO_PLANE_HEIGHT, heroWordmarkWidth(1, aspect) / MOBILE_PLANE_ASPECT);
+  return HERO_PLANE_HEIGHT * (1 - mobileMix) + mobileHeight * mobileMix;
+}

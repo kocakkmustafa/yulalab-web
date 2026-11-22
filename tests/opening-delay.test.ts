@@ -9,8 +9,11 @@ describe("W8-5 opening lens delay", () => {
     expect(openingLinear(OPENING_DURATION_SECONDS)).toBe(1);
   });
 
-  it("starts after the 4.0 s capture frame (loader opens at about 3.83 s)", () => {
-    expect(3.83 + OPENING_LENS_DELAY_SECONDS).toBeGreaterThan(4.1);
-    expect(OPENING_LENS_DELAY_SECONDS).toBeLessThan(0.45);
+  it("W8-24: lens starts at 4.8-5.2 s (loader opens at about 3.83 s) and the eased curve settles near 5.8 s", () => {
+    const start = 3.83 + OPENING_LENS_DELAY_SECONDS;
+    expect(start).toBeGreaterThanOrEqual(4.8);
+    expect(start).toBeLessThanOrEqual(5.2);
+    const settled = 3.83 + OPENING_LENS_DELAY_SECONDS + 0.436 * (OPENING_DURATION_SECONDS - OPENING_LENS_DELAY_SECONDS);
+    expect(Math.abs(settled - 5.8)).toBeLessThanOrEqual(0.2);
   });
 });

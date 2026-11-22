@@ -587,7 +587,8 @@ function IdentityPlane({ product, opacity, map }: { product: ExperienceProduct; 
     <group userData={{ presentationKind: product.developmentPreviews?.length ? "development" : "identity" }}>
       {map && (
         <mesh>
-          <planeGeometry args={[2.6, 2.6]} />
+          {/* W8-26: 2.45 (was 2.6) keeps the on-stage icon <= 512 CSS px (was 540), so the 1024 px master stays >= 2x. */}
+          <planeGeometry args={[2.45, 2.45]} />
           <meshBasicMaterial map={map} alphaMap={mask} opacity={opacity} transparent depthWrite={opacity > 0.85} toneMapped={false} fog={false} />
         </mesh>
       )}

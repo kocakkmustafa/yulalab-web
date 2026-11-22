@@ -27,7 +27,7 @@ import { RefractGlass } from "./RefractGlass";
 import { openingShared } from "./opening";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
-import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot, heroWordmarkWidth } from "./hero-slot";
+import { HERO_PLANE_Z, heroSlot, heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 // W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
@@ -296,8 +296,9 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const planeWidth = heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
     // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
+    const planeHeight = heroWordmarkHeight(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     const planeX = heroSlot.x * planeWidth;
-    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
+    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * planeHeight;
     const gz = frame.glyph.position[2];
     const basis = (pos: readonly number[], target: readonly number[]) => {
       const f = new Vector3(target[0] - pos[0], target[1] - pos[1], target[2] - pos[2]).normalize();
@@ -313,7 +314,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const df = d.dot(hb.f);
     const heroS = (gz - heroPos[2]) / d.z;
     const heroDepth = heroS * df;
-    const heroScale = (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
+    const heroScale = (0.95 * heroSlot.cap * planeHeight * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
     const cb = basis(frame.camera.position, frame.camera.target);
     // W7 CY5 (BT t2): the screen position is fov dependent (the camera narrows 39 to 35), so the lateral parts and the
     // size carry tan(fov / 2) / tan(heroFov / 2) to keep the same screen spot and height.
