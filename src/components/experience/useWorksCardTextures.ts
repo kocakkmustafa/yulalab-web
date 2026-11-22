@@ -54,10 +54,13 @@ export function useWorksCardTextures(products: readonly ExperienceProduct[], ena
   const productsRef = useRef(products);
   productsRef.current = products;
   useEffect(() => { if (enabled) setRequested(true); }, [enabled]);
+  // The set currently handed out. A new set replaces it first and only then is the old one disposed, so `loaded` never
+  // holds disposed textures while the next set is still loading; unmount disposes what is left.
+  const currentRef = useRef<(Texture | null)[]>([]);
+  useEffect(() => () => { currentRef.current.forEach((texture) => texture?.dispose()); currentRef.current = []; }, []);
   useEffect(() => {
     if (!requested) return;
     let active = true;
-    let owned: (Texture | null)[] = [];
     const requests = productsRef.current.map((product) => new Promise<HTMLImageElement | null>((resolve) => {
       const path = worksCardPath(product);
       if (!path) { resolve(null); return; }
@@ -68,10 +71,13 @@ export function useWorksCardTextures(products: readonly ExperienceProduct[], ena
     }));
     void Promise.all(requests).then((images) => {
       if (!active) return;
-      owned = images.map((image) => (image ? cardTexture(image) : null));
-      setLoaded(owned);
+      const next = images.map((image) => (image ? cardTexture(image) : null));
+      const previous = currentRef.current;
+      currentRef.current = next;
+      setLoaded(next);
+      previous.forEach((texture) => texture?.dispose());
     });
-    return () => { active = false; owned.forEach((texture) => texture?.dispose()); };
+    return () => { active = false; };
   }, [requested, key]);
   return loaded;
 }
