@@ -5,10 +5,13 @@ import { STATUS_PILL_KEY } from "@/components/common/StatusPill";
 import { localized } from "@/lib/localized";
 import type { Locale, ProjectConfig } from "@/lib/types";
 
+/** Apps whose real iOS icon ships as a lossless 512 px WebP (>= 2x the 200 px card); others fall back to icon.png. */
+const STRIP_ICON_SLUGS: ReadonlySet<string> = new Set(["ostinato", "lissom", "gravita", "jablab", "choreia", "lifeos", "braavolabs"]);
+
 /**
  * LK0 — the horizontal project strip at the top of a product page, drawn after the reference site's "Works"
- * rail. Founder decision W3-3 "a: Büyük parlak simge": every card is the home journey's K1 bright icon
- * (`icon-bright.webp`, rendered once from icon-presentation.ts), about 200 px on desktop with 40 px gaps and
+ * rail. Founder decision W8 "b: gerçek simge": every card is the app's real icon, unaltered (icon-512.webp,
+ * a lossless 512 px of the iOS 1024 px master), squircle-masked, about 200 px on desktop with 40 px gaps and
  * about 120 px on mobile, then the reference's two text lines: mono 11 px "status · category" and the 14 px
  * name. The rail slides sideways and bleeds to both viewport edges; the current project is highlighted, never
  * removed, so the strip keeps one order on every page. Status is plain text here, not a pill: the product's own
@@ -44,12 +47,13 @@ export function ProjectStrip({
                 className="group block w-[120px] focusable lg:w-[200px]"
               >
                 <span
-                  className={`block rounded-[22.4%] transition-[opacity,box-shadow] ${
+                  className={`block overflow-hidden rounded-[22.37%] transition-[opacity,box-shadow] ${
                     current ? "shadow-[0_0_0_2px_rgba(255,255,255,0.85)]" : "opacity-70 group-hover:opacity-100"
                   }`}
                 >
                   <Image
-                    src={`/projects/${o.slug}/icon-bright.webp`}
+                    src={STRIP_ICON_SLUGS.has(o.slug) ? `/projects/${o.slug}/icon-512.webp` : `/projects/${o.slug}/icon.png`}
+                    unoptimized
                     alt=""
                     width={200}
                     height={200}
