@@ -47,7 +47,7 @@ describe("W8-14 YULA wordmark SDF", () => {
     while (x0 < width && !inkCol(x0)) x0 += 1;
     let x1 = x0;
     while (x1 < width && inkCol(x1)) x1 += 1;
-    let firstRow = height;
+    let firstRow: number = height;
     let lastRow = 0;
     for (let y = 0; y < height; y += 1) {
       for (let x = x0; x < x1; x += 1) {
