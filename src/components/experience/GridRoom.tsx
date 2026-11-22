@@ -192,7 +192,8 @@ const GROUND_GLSL = /* glsl */ `
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
-    tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01)));
+    // W8-7: phones keep the opening ground dark (reference cell mean about 9, was 38); desktop keeps x0.35 only below 1.5.
+    tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.15, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
@@ -356,7 +357,9 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
-    vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12);
+    // W8-8: the grid line work fades toward the screen corners (reference corners are near black).
+    float cornerLines = mix(1.0, 0.2, smoothstep(0.55, 0.95, length((screenUv - 0.5) * 1.414)));
+    vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12) * cornerLines;
     vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
     gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>

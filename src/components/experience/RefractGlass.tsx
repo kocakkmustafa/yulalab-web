@@ -32,6 +32,9 @@ export const GLASS_PARAMS = {
   output: 1.2,
 } as const;
 
+/** W8-10: the copy of the drawn frame the glass bends; 1024 keeps grid lines crisp through the letter (was 512). */
+const BACKDROP_SIZE = 1024;
+
 const VERTEX = /* glsl */ `
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
@@ -61,7 +64,10 @@ const FRAGMENT = /* glsl */ `
   const float F0 = ${GLASS_PARAMS.f0.toFixed(3)};
 
   float hash(vec2 p) {
-    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+    // W8-10: sine-free hash; the sine hash left horizontal line banding inside the glass.
+    vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+    p3 += dot(p3, p3.yzx + 33.33);
+    return fract((p3.x + p3.y) * p3.z);
   }
   float ggx(float nh, float a) {
     float a2 = a * a;
@@ -107,6 +113,9 @@ const FRAGMENT = /* glsl */ `
       transmitted += sampleColor * ${GLASS_PARAMS.sampleGain.toFixed(1)};
     }
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
+    // W8-10: contrast of the bent background (grid lines read through the letter); W8-9: a touch less colour.
+    c = max(vec3(0.3) + (c - vec3(0.3)) * 1.7, vec3(0.0));
+    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.85);
 
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
@@ -122,7 +131,9 @@ const FRAGMENT = /* glsl */ `
     float rim = pow(1.0 - nv, 2.6);
     vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 1.3 + normal.x * 0.35 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
-    c += spectrum * pow(rim, 0.6) * 1.15;
+    // W8-9: the spectral band is confined to the last few pixels of the rim and a thin white line closes it.
+    c += spectrum * smoothstep(0.3, 0.85, rim) * 0.7;
+    c += vec3(smoothstep(0.84, 0.96, rim)) * 0.9;
     c += vec3(min(spec, 1.5));
     // A restrained violet transmission makes the clear face legible even over dark tiles.
     c += vec3(0.055, 0.025, 0.13) * (1.0 - rim);
@@ -181,7 +192,7 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       const height = Math.max(1, Math.floor(size.y));
       let current = texture.current;
       if (!current) {
-        current = new WebGLRenderTarget(512, 512, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
+        current = new WebGLRenderTarget(BACKDROP_SIZE, BACKDROP_SIZE, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
         texture.current = current;
         material.uniforms.uBackground.value = current.texture;
       }
@@ -196,7 +207,7 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       renderer.setRenderTarget(null);
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, destination);
-      gl.blitFramebuffer(0, 0, width, height, 0, 0, 512, 512, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+      gl.blitFramebuffer(0, 0, width, height, 0, 0, BACKDROP_SIZE, BACKDROP_SIZE, gl.COLOR_BUFFER_BIT, gl.LINEAR);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
     };
     return () => {

@@ -23,6 +23,16 @@ import {
 const BACKDROP_SIZE = 512;
 
 export const OPENING_DURATION_SECONDS = 4.0;
+/**
+ * W8-5: the lens stays dark for the first part of the clock so the frame brightness through the loader
+ * window (0.5 to 4.0 s) stays at the reference level; the clock still ends at 4.0 s, so the settled time is kept.
+ */
+export const OPENING_LENS_DELAY_SECONDS = 0.34;
+
+export function openingLinear(rawTime: number): number {
+  const span = OPENING_DURATION_SECONDS - OPENING_LENS_DELAY_SECONDS;
+  return Math.min(1, Math.max(0, (rawTime - OPENING_LENS_DELAY_SECONDS) / span));
+}
 
 /**
  * Shared non-reactive opening state driven in useFrame so the 3.0 s opening
@@ -98,12 +108,12 @@ export function OpeningDirector({ sceneOpened = true }: { sceneOpened?: boolean 
     }
     const dt = Math.min(1 / 20, Math.max(0, delta));
     openingShared.rawTime = Math.min(OPENING_DURATION_SECONDS, openingShared.rawTime + dt);
-    const linear = openingShared.rawTime / OPENING_DURATION_SECONDS;
+    const linear = openingLinear(openingShared.rawTime);
     openingShared.progress = linear;
     openingShared.eased = openingCurve(linear);
     // W8 T5: the glass Y fades in over 1.0 s during the opening instead of waiting pre-baked behind the loader.
-    openingShared.glyphOpacity = smoothstep01((openingShared.rawTime - 0.08) / 1.0);
-    if (linear < 1) {
+    openingShared.glyphOpacity = smoothstep01((openingShared.rawTime - OPENING_LENS_DELAY_SECONDS - 0.08) / 1.0);
+    if (openingShared.rawTime < OPENING_DURATION_SECONDS) {
       invalidate();
     } else {
       activeOpening.current = false;
