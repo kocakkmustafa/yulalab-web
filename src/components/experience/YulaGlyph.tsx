@@ -36,6 +36,10 @@ import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 const WORKS_INTRO_START = timelineProgressForScroll(131 / 21750);
 const WORKS_MAIN_START = timelineProgressForScroll(1189 / 21750);
 
+/** W8-31/32: the glass Y stands at x 50 percent, y 45.2 percent of the screen and is 70 percent of its height tall (reference 1440x900). */
+const HERO_GLASS_Y = 0.49;
+const HERO_GLASS_SCALE = 2.55;
+
 export type YulaGlyphProps = {
   frame: TimelineFrame;
   interactionRotation?: Vec3;
@@ -332,7 +336,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const position = useMemo(
     () => [
       lerp(frame.glyph.position[0] + viewportPose.offset[0], 0, slotMix),
-      lerp(frame.glyph.position[1] + viewportPose.offset[1], 0.1, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], HERO_GLASS_Y, slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
     [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
@@ -341,7 +345,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
-  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * 2.3, slotMix);
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * HERO_GLASS_SCALE, slotMix);
   const glyphScaleXYZ = [glyphScale, glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
