@@ -115,13 +115,13 @@ const FRAGMENT = /* glsl */ `
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
     // W8-10: contrast of the bent background (grid lines read through the letter); W8-9: a touch less colour.
     // W8-20: contrast 1.7 to 2.4 for interior detail; W8-18: the saturation mix drops 0.85 to 0.6 so saturated pixels stay near the reference share.
-    c = max(vec3(0.15) + (c - vec3(0.15)) * 2.4, vec3(0.0)); // pivot 0.3 to 0.15: dark tiles no longer clip to black
-    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.66);
-    // W8-43/44: the white wordmark behind the glass clipped to flat white blocks (U-L rectangles, a hard seam at the
-    // letter edges) and the body read lavender-white. A tinted ceiling keeps the letters readable and the body saturated.
-    vec3 ceilColor = vec3(0.485, 0.44, 0.85);
-    vec3 kneeColor = ceilColor * 0.6;
-    c = min(c, kneeColor) + (ceilColor - kneeColor) * (vec3(1.0) - exp(-max(c - kneeColor, vec3(0.0)) / (ceilColor - kneeColor)));
+    // W8-49: contrast only on the dark tones; bright samples (the white wordmark behind the glass) keep a soft shoulder to white,
+    // so the U right arm and the L stem read white through the glass instead of a lavender ceiling. Smooth blend, no hard seam.
+    float rawLum = dot(c, vec3(0.3, 0.5, 0.2));
+    float brightMask = smoothstep(0.55, 0.85, rawLum);
+    vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(2.0, 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
+    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, 0.66);
+    c = mix(c, vec3(0.82), 0.85 * brightMask); // W8-49: soft knee toward white (x1.2 output lands at 1.0 only on the wordmark)
     // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference.
     c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.11 * vec3(1.0, 0.9, 1.0);
 

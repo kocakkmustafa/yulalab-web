@@ -62,11 +62,12 @@ describe("W1D-D opening sequence", () => {
   });
 });
 
-describe("W8-43 glass backdrop ceiling", () => {
-  it("compresses the bent backdrop below a tinted ceiling so the wordmark never clips to flat white blocks", async () => {
+describe("W8-49 glass backdrop soft knee", () => {
+  it("applies contrast to dark tones only and eases bright samples toward white (no tinted ceiling)", async () => {
     const { readFileSync } = await import("node:fs");
     const source = readFileSync("src/components/experience/RefractGlass.tsx", "utf8");
-    expect(source).toContain("vec3 ceilColor");
-    expect(source.indexOf("ceilColor")).toBeLessThan(source.indexOf("float fresnel"));
+    expect(source).toContain("brightMask");
+    expect(source).not.toContain("vec3 ceilColor");
+    expect(source.indexOf("brightMask")).toBeLessThan(source.indexOf("float fresnel"));
   });
 });
