@@ -15,10 +15,9 @@ import {
 
 /**
  * W1D-D H1-c: the glass Y as a refraction shader of our own, with the measured values of the reference
- * (REA section 3): refract power 0.1, per-channel slide x1 / x2 / x4 (0.005 + random * 0.007), eight jittered
- * taps at 0.9, roughness 0.1, Fresnel f0 0.1, output x1.2. The background is the frame drawn so far, copied
- * right before the Y is drawn (a framebuffer copy), so the grid and the purple light bend through the letter.
- * Written from the parameter table, no code taken from the reference.
+ * (REA section 3): refract power 0.1, per-channel slide x1 / x2 / x4, eight roughness-jittered
+ * taps, Fresnel f0 0.1 and output x1.2. The already drawn frame is copied before the Y is rendered.
+ * The reference uses noise and environment textures; this implementation approximates those sources.
  */
 export const GLASS_PARAMS = {
   refractPower: 0.1,
@@ -32,14 +31,16 @@ export const GLASS_PARAMS = {
   output: 1.2,
 } as const;
 
-/** W8-10: the copy of the drawn frame the glass bends; 1024 keeps grid lines crisp through the letter (was 512). */
-const BACKDROP_SIZE = 1024; // fallback only; the copy now follows the drawing buffer 1:1 (W8-20)
+/** The reference samples a 512 × 512 copy of the already drawn frame. */
+const BACKDROP_SIZE = 512;
 
 const VERTEX = /* glsl */ `
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
   varying vec3 vLocal;
+  varying vec2 vUv;
   void main() {
+    vUv = uv;
     vLocal = position;
     vec4 viewPosition = modelViewMatrix * vec4(position, 1.0);
     vViewPosition = viewPosition.xyz;
@@ -58,6 +59,7 @@ const FRAGMENT = /* glsl */ `
   varying vec3 vViewNormal;
   varying vec3 vViewPosition;
   varying vec3 vLocal;
+  varying vec2 vUv;
 
   const float REFRACT_POWER = ${GLASS_PARAMS.refractPower.toFixed(3)};
   const float ROUGHNESS = ${GLASS_PARAMS.roughness.toFixed(3)};
@@ -69,8 +71,21 @@ const FRAGMENT = /* glsl */ `
     p3 += dot(p3, p3.yzx + 33.33);
     return fract((p3.x + p3.y) * p3.z);
   }
+  // Smooth value noise stands in for the reference's unavailable animated noise texture.
+  float noise2d(vec2 p) {
+    vec2 cell = floor(p);
+    vec2 f = fract(p);
+    f = f * f * (3.0 - 2.0 * f);
+    return mix(mix(hash(cell), hash(cell + vec2(1.0, 0.0)), f.x),
+               mix(hash(cell + vec2(0.0, 1.0)), hash(cell + vec2(1.0)), f.x), f.y);
+  }
+  float refRandom(vec2 p) {
+    return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453);
+  }
   float ggx(float nh, float a) {
     float a2 = a * a;
+    a2 *= a2;
+    if (nh <= 0.0) return 0.0;
     float d = nh * nh * (a2 - 1.0) + 1.0;
     return a2 / (3.14159265 * d * d);
   }
@@ -98,18 +113,20 @@ const FRAGMENT = /* glsl */ `
     float flowAmount = length(flow);
     vec3 flowTint = 0.5 + 0.5 * cos(6.2832 * (atan(flow.y, flow.x) / 6.2832 + vec3(0.0, 0.33, 0.67)));
     vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) + flow * 0.06;
-    // W7 BT9 CY7: the colour channels part only toward the rim (grazing normals); flat faces and the body stay one colour.
-    float rimSplit = smoothstep(0.2, 0.6, 1.0 - clamp(dot(normal, viewDir), 0.0, 1.0));
+    // The reference warps a second noise lookup with a 9x lookup. Its source texture is
+    // not available here, so use smooth procedural noise at the same UV scales.
+    vec2 noiseWarp = vec2(noise2d(vUv * 9.0), noise2d(vUv * 9.0 + 17.0));
+    float roughness = smoothstep(0.3, 0.8, noise2d(vUv + (noiseWarp - 0.5) * 2.0)) * ROUGHNESS;
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      vec2 jitter = (vec2(hash(gl_FragCoord.xy + fi * 3.1), hash(gl_FragCoord.yx + fi * 5.7)) - 0.5) / uResolution * 0.75; // W7 BT3-3: tight jitter 0.02 (was 0.3, about 20 px blur) so grid lines survive inside the letter
-      vec2 base = uv - refractNormal * REFRACT_POWER + jitter;
+      float slide = ${GLASS_PARAMS.slideBase.toFixed(3)} + refRandom(uv + fi * 0.2) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
+      vec2 roughnessDir = vec2(refRandom(uv + fi * 0.1) - 0.5, refRandom(uv + fi * 0.2) - 0.5) * roughness * 0.3;
+      vec2 base = uv + roughnessDir - refractNormal * REFRACT_POWER;
       vec3 sampleColor;
-      sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[0].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).r;
+      sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[0].toFixed(1)}, 0.0, 1.0)).r;
       sampleColor.g = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[1].toFixed(1)}, 0.0, 1.0)).g;
-      sampleColor.b = texture2D(uBackground, clamp(base - refractNormal * slide * (${GLASS_PARAMS.slide[1].toFixed(1)} + (${GLASS_PARAMS.slide[2].toFixed(1)} - ${GLASS_PARAMS.slide[1].toFixed(1)}) * rimSplit), 0.0, 1.0)).b;
+      sampleColor.b = texture2D(uBackground, clamp(base - refractNormal * slide * ${GLASS_PARAMS.slide[2].toFixed(1)}, 0.0, 1.0)).b;
       transmitted += sampleColor * ${GLASS_PARAMS.sampleGain.toFixed(1)};
     }
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
@@ -147,11 +164,9 @@ const FRAGMENT = /* glsl */ `
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
     vec3 reflected = studio(reflect(-viewDir, normal));
     vec3 lightDir = normalize(vec3(-1.0, 0.8, 1.0));
-    float spec = ggx(clamp(dot(normal, normalize(lightDir + viewDir)), 0.0, 1.0), 0.003 + ROUGHNESS * 0.4);
-    // The letter is clear glass: what shows is the bent background. The Fresnel term and a thin spectral
-    // rim ride on top at the grazing edges only (the first version added the background to itself, which
-    // read as an opaque lilac solid).
-    c = mix(c, reflected, fresnel * 0.9);
+    float spec = ggx(clamp(dot(normal, normalize(lightDir + viewDir)), 0.0, 1.0), 0.003 + roughness * 0.4);
+    // Reference adds the Fresnel-weighted reflection to the transmitted colour.
+    c += mix(c, reflected, fresnel * 0.9) * (1.0 - fresnel);
     // W7 CY15: the flow no longer tints the glass.
     c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
@@ -226,14 +241,14 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       const width = Math.max(1, Math.floor(size.x));
       const height = Math.max(1, Math.floor(size.y));
       let current = texture.current;
-      // W8-20: 1:1 copy of the drawn frame so the 7 px dot matrix keeps its resolution through the glass.
-      if (current && (current.width !== width || current.height !== height)) {
+      // Keep the framebuffer copy at the reference texture resolution.
+      if (current && (current.width !== BACKDROP_SIZE || current.height !== BACKDROP_SIZE)) {
         current.dispose();
         current = null;
         texture.current = null;
       }
       if (!current) {
-        current = new WebGLRenderTarget(width || BACKDROP_SIZE, height || BACKDROP_SIZE, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
+        current = new WebGLRenderTarget(BACKDROP_SIZE, BACKDROP_SIZE, { minFilter: LinearFilter, magFilter: LinearFilter, depthBuffer: false });
         texture.current = current;
         material.uniforms.uBackground.value = current.texture;
       }
@@ -248,7 +263,7 @@ export function RefractGlass({ geometry, opacity, visible, inHero = false }: Ref
       renderer.setRenderTarget(null);
       gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, destination);
-      gl.blitFramebuffer(0, 0, width, height, 0, 0, width, height, gl.COLOR_BUFFER_BIT, gl.LINEAR);
+      gl.blitFramebuffer(0, 0, width, height, 0, 0, BACKDROP_SIZE, BACKDROP_SIZE, gl.COLOR_BUFFER_BIT, gl.LINEAR);
       gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
     };
     return () => {
