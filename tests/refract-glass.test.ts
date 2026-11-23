@@ -70,4 +70,13 @@ describe("W8-49 glass backdrop soft knee", () => {
     expect(source).not.toContain("vec3 ceilColor");
     expect(source.indexOf("brightMask")).toBeLessThan(source.indexOf("float fresnel"));
   });
+
+  it("carries the reference domain-warped frost noise, quartic GGX, full-surface slide, and inner crystal bevel", async () => {
+    const { readFileSync } = await import("node:fs");
+    const source = readFileSync("src/components/experience/RefractGlass.tsx", "utf8");
+    expect(source).toContain("glassUv * 9.0");
+    expect(source).toContain("a2 = a2 * a2;");
+    expect(source).toContain("yCrystalHeight");
+    expect(source).not.toContain("rimSplit");
+  });
 });
