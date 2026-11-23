@@ -38,7 +38,11 @@ const WORKS_MAIN_START = timelineProgressForScroll(1189 / 21750);
 
 /** W8-31/32: the glass Y stands at x 50 percent, y 45.2 percent of the screen and is 70 percent of its height tall (reference 1440x900). */
 const HERO_GLASS_Y = 0.49;
-const HERO_GLASS_SCALE = 2.55;
+/** W8-37: phones (390x844): 96.7vw x 38.7vh, centre y 43.9 percent; no horizontal squeeze any more. */
+const HERO_GLASS_Y_MOBILE = 1.08;
+/** Reference plane height the glass size is derived from (desktop 5.2 x 2.55; phones 9.65, from the pose model). */
+const HERO_GLASS_REF_HEIGHT = 5.2 * 2.55;
+const HERO_GLASS_REF_HEIGHT_MOBILE = 9.65;
 
 export type YulaGlyphProps = {
   frame: TimelineFrame;
@@ -318,7 +322,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const df = d.dot(hb.f);
     const heroS = (gz - heroPos[2]) / d.z;
     const heroDepth = heroS * df;
-    const heroScale = (0.95 * heroSlot.cap * planeHeight * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
+    const glassHeight = lerp(HERO_GLASS_REF_HEIGHT, HERO_GLASS_REF_HEIGHT_MOBILE, viewportMobileMix(viewportSize.width));
+    const heroScale = (0.95 * heroSlot.cap * glassHeight * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
     const cb = basis(frame.camera.position, frame.camera.target);
     // W7 CY5 (BT t2): the screen position is fov dependent (the camera narrows 39 to 35), so the lateral parts and the
     // size carry tan(fov / 2) / tan(heroFov / 2) to keep the same screen spot and height.
@@ -336,16 +341,16 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   const position = useMemo(
     () => [
       lerp(frame.glyph.position[0] + viewportPose.offset[0], 0, slotMix),
-      lerp(frame.glyph.position[1] + viewportPose.offset[1], HERO_GLASS_Y, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], lerp(HERO_GLASS_Y, HERO_GLASS_Y_MOBILE, viewportMobileMix(viewportSize.width)), slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
+    [frame.glyph.position, viewportPose.offset, viewportSize.width, slotMix],
   );
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
-  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * HERO_GLASS_SCALE, slotMix);
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
   const glyphScaleXYZ = [glyphScale, glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({

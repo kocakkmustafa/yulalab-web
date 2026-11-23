@@ -139,6 +139,10 @@ const FRAGMENT = /* glsl */ `
     c += vec3(min(spec, 1.5));
     // A restrained violet transmission makes the clear face legible even over dark tiles.
     c += vec3(0.0275, 0.0125, 0.065) * (1.0 - rim) * (1.0 - smoothstep(0.4, 0.75, rim)); // W8-18: halved
+    // W8-38: portrait phones bend a much darker backdrop (interior about 33,28,58 against the reference 98,87,169 on desktop);
+    // a violet interior lift (fades out toward the rim) brings the face to the reference colour.
+    float portrait = step(uResolution.x, uResolution.y);
+    c += vec3(0.19, 0.17, 0.32) * portrait * (1.0 - smoothstep(0.4, 0.75, rim));
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior

@@ -39,8 +39,10 @@ describe("W8 opening loader text and curve", () => {
 describe("W1D-D opening sequence", () => {
   it.each([[390, 844], [320, 900]])("fits the whole wordmark in a %i by %i phone frustum", (width, height) => {
     const visibleWidth = 2 * (13.8 - HERO_PLANE_Z) * Math.tan(26 * Math.PI / 180) * width / height;
-    expect(heroWordmarkWidth(1, width / height)).toBeLessThan(visibleWidth);
-    expect(heroWordmarkWidth(1, width / height)).toBeGreaterThan(visibleWidth * 0.9);
+    // W8-36: the plane is 1.18x the screen; the baked word fills 82 percent of it (94 percent of the screen).
+    const wordWidth = heroWordmarkWidth(1, width / height) * 0.82;
+    expect(wordWidth).toBeLessThan(visibleWidth);
+    expect(wordWidth).toBeGreaterThan(visibleWidth * 0.9);
   });
   it("dissolves the wordmark before the PROJECTS word and the portfolio card", () => {
     const early = evaluateTimeline(0.002, "desktop");
