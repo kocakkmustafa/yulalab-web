@@ -92,7 +92,7 @@ beforeEach(() => {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance", "Date"] });
   vi.setSystemTime(new Date("2026-10-19T12:00:00Z"));
   vi.spyOn(console, "error").mockImplementation(() => {});
-  vi.stubEnv("YULA_MAIL_FROM", "hello@yulalab.com");
+  vi.stubEnv("YULA_MAIL_FROM", "yula@yulalab.com");
   vi.stubEnv("YULA_FROM_NAME", "YULALAB");
   vi.stubEnv("YULA_REPLY_TO", "yula@yulalab.com");
   vi.stubEnv("YULA_LEADS_INTERNAL_ADDRESS", "yula@yulalab.com");
