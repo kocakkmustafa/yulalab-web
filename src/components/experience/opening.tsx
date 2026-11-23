@@ -4,6 +4,9 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
   Color,
+  CustomBlending,
+  OneFactor,
+  OneMinusSrcAlphaFactor,
   LinearFilter,
   type Mesh,
   type Object3D,
@@ -293,8 +296,11 @@ const IRIS_FRAGMENT = /* glsl */ `
     lensCol.r = texture2D(uBackground, clamp(lensUv - ring * uvShift * 0.0008, 0.01, 0.99)).r;
     lensCol.b = texture2D(uBackground, clamp(lensUv + ring * uvShift * 0.0010, 0.01, 0.99)).b;
     float edgeFade = smoothstep(0.0, 0.55, r);
-    vec3 col = lensCol * edgeFade;
-    float alpha = clamp((1.0 - edgeFade) + ring * 0.85 * edgeFade * (1.0 - smoothstep(0.86, 1.0, uLoaded)), 0.0, 1.0);
+    // W8-61: the rim adds light (premultiplied, blend ONE / ONE_MINUS_SRC_ALPHA) instead of covering the scene,
+    // so the white word is not greyed; alpha stays only for the not-yet-opened outside.
+    float rim = ring * 0.85 * edgeFade * (1.0 - smoothstep(0.86, 1.0, uLoaded));
+    vec3 col = lensCol * (edgeFade * (1.0 - edgeFade) + rim);
+    float alpha = clamp(1.0 - edgeFade, 0.0, 1.0);
     gl_FragColor = vec4(col, alpha);
   }
 `;
@@ -313,6 +319,9 @@ export function OpeningIris() {
           uAspect: { value: 1 },
         },
         transparent: true,
+        blending: CustomBlending,
+        blendSrc: OneFactor,
+        blendDst: OneMinusSrcAlphaFactor,
         depthTest: false,
         depthWrite: false,
         toneMapped: false,
