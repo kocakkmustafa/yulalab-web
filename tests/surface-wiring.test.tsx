@@ -171,7 +171,7 @@ describe("the emailed-a-copy claim follows the transport", () => {
   it("does not advertise mailed copy delivery for legacy-only identity config", async () => {
     process.env.LEADS_ENABLED = "1";
     process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
+    process.env.MAIL_FROM = "yula@yulalab.com";
     process.env.LEADS_INTERNAL_ADDRESS = "yula@yulalab.com";
 
     expect((await contactProps()).mailConfigured).toBe(false);

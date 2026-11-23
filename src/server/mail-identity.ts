@@ -18,7 +18,7 @@ export const MAIL_IDENTITY_ENV = Object.freeze({
 } as const);
 
 export const APPROVED_MAIL_IDENTITY = Object.freeze({
-  fromEmail: "hello@yulalab.com",
+  fromEmail: "yula@yulalab.com",
   fromName: "YULALAB",
   replyToEmail: "yula@yulalab.com",
   internalAddress: "yula@yulalab.com",

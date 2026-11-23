@@ -27,7 +27,7 @@ const message: MailMessage = {
 };
 
 const IDENTITY: MailIdentity = {
-  fromEmail: "hello@yulalab.com",
+  fromEmail: "yula@yulalab.com",
   fromName: "YULALAB",
   replyToEmail: "yula@yulalab.com",
 };
@@ -118,7 +118,7 @@ describe("the provider call", () => {
     const body = JSON.parse((init as RequestInit).body as string);
 
     expect(body.personalizations[0].to[0].email).toBe("ada@example.com");
-    expect(body.from).toEqual({ email: "hello@yulalab.com", name: "YULALAB" });
+    expect(body.from).toEqual({ email: "yula@yulalab.com", name: "YULALAB" });
     expect(body.reply_to).toEqual({ email: "yula@yulalab.com" });
     expect(body).not.toHaveProperty("reply_to_list");
     expect(body.personalizations[0].dynamic_template_data).toEqual({
@@ -192,7 +192,7 @@ describe("which transport this deployment gets", () => {
 
   it("does not accept the two legacy identity keys as fallback", () => {
     process.env.SENDGRID_API_KEY = "SG.key";
-    process.env.MAIL_FROM = "hello@yulalab.com";
+    process.env.MAIL_FROM = "yula@yulalab.com";
     process.env.LEADS_INTERNAL_ADDRESS = "yula@yulalab.com";
     expect(mailTransport().configured).toBe(false);
   });

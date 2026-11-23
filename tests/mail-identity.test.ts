@@ -38,7 +38,7 @@ describe("YULALAB mail identity", () => {
     expect(resolved.transport).toEqual({
       ready: true,
       value: {
-        fromEmail: "hello@yulalab.com",
+        fromEmail: "yula@yulalab.com",
         fromName: "YULALAB",
         replyToEmail: "yula@yulalab.com",
       },
@@ -87,7 +87,7 @@ describe("YULALAB mail identity", () => {
 
   it("ignores legacy-only variables instead of treating them as fallback identity", () => {
     const resolved = resolveMailIdentity({
-      MAIL_FROM: "hello@yulalab.com",
+      MAIL_FROM: "yula@yulalab.com",
       LEADS_INTERNAL_ADDRESS: "yula@yulalab.com",
     });
 
