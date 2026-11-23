@@ -118,10 +118,10 @@ const FRAGMENT = /* glsl */ `
     // W8-49: contrast only on the dark tones; bright samples (the white wordmark behind the glass) keep a soft shoulder to white,
     // so the U right arm and the L stem read white through the glass instead of a lavender ceiling. Smooth blend, no hard seam.
     float rawLum = dot(c, vec3(0.3, 0.5, 0.2));
-    float brightMask = smoothstep(0.55, 0.85, rawLum);
-    vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(2.0, 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
-    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, 0.66);
-    c = mix(c, vec3(0.82), 0.85 * brightMask); // W8-49: soft knee toward white (x1.2 output lands at 1.0 only on the wordmark)
+    float brightMask = smoothstep(0.65, 0.9, rawLum);
+    vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(2.4, 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
+    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, mix(0.95, 0.66, brightMask));
+    c = mix(c, vec3(0.82), 0.7 * brightMask); // W8-49: soft knee toward white (x1.2 output lands at 1.0 only on the wordmark)
     // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference.
     c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.11 * vec3(1.0, 0.9, 1.0);
 
@@ -150,7 +150,10 @@ const FRAGMENT = /* glsl */ `
     // a violet interior lift (fades out toward the rim) brings the face to the reference colour.
     float portrait = step(uResolution.x, uResolution.y);
     // W8-46: the reference phone glass is dark navy (saturated share about 6 percent), not violet: darken the face, no lift.
-    c *= 1.0 - 0.55 * portrait * (1.0 - smoothstep(0.4, 0.75, rim));
+    // W8-52: 0.55 to 0.30 darkening plus a navy floor (reference phone glass is dark navy, V about 0.25-0.40); it was invisible.
+    float faceMask = 1.0 - smoothstep(0.4, 0.75, rim);
+    c *= 1.0 - 0.30 * portrait * faceMask;
+    c += vec3(0.04, 0.05, 0.12) * portrait * faceMask;
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
