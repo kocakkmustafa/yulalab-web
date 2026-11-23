@@ -41,7 +41,9 @@ const HERO_GLASS_Y = 0.49;
 const HERO_GLASS_Y_MOBILE = 1.08;
 /** Reference plane height the glass size is derived from (desktop 5.2 x 2.55; phones 9.65, from the pose model). */
 const HERO_GLASS_REF_HEIGHT = 5.2 * 2.55;
-const HERO_GLASS_REF_HEIGHT_MOBILE = 9.65;
+const HERO_GLASS_REF_HEIGHT_MOBILE = 10.1; // W8-47: 9.65 to 10.1 (height 37 to 38.7 vh)
+/** W8-47: phones: the glass spans 97vw (was 85); the extra width is a horizontal stretch on top of the height scale. */
+const HERO_GLASS_X_STRETCH_MOBILE = 1.09;
 
 export type YulaGlyphProps = {
   frame: TimelineFrame;
@@ -350,7 +352,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
   const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
-  const glyphScaleXYZ = [glyphScale, glyphScale, glyphScale] as const;
+  const glyphScaleXYZ = [glyphScale * lerp(1, HERO_GLASS_X_STRETCH_MOBILE, viewportMobileMix(viewportSize.width) * slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },

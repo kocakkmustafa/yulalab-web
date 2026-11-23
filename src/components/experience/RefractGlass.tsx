@@ -116,14 +116,14 @@ const FRAGMENT = /* glsl */ `
     // W8-10: contrast of the bent background (grid lines read through the letter); W8-9: a touch less colour.
     // W8-20: contrast 1.7 to 2.4 for interior detail; W8-18: the saturation mix drops 0.85 to 0.6 so saturated pixels stay near the reference share.
     c = max(vec3(0.15) + (c - vec3(0.15)) * 2.4, vec3(0.0)); // pivot 0.3 to 0.15: dark tiles no longer clip to black
-    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.5);
+    c = mix(vec3(dot(c, vec3(0.3, 0.5, 0.2))), c, 0.66);
     // W8-43/44: the white wordmark behind the glass clipped to flat white blocks (U-L rectangles, a hard seam at the
     // letter edges) and the body read lavender-white. A tinted ceiling keeps the letters readable and the body saturated.
-    vec3 ceilColor = vec3(0.485, 0.425, 0.85);
+    vec3 ceilColor = vec3(0.485, 0.44, 0.85);
     vec3 kneeColor = ceilColor * 0.6;
     c = min(c, kneeColor) + (ceilColor - kneeColor) * (vec3(1.0) - exp(-max(c - kneeColor, vec3(0.0)) / (ceilColor - kneeColor)));
     // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference.
-    c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.09 * vec3(1.0, 0.9, 1.0);
+    c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.11 * vec3(1.0, 0.9, 1.0);
 
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
@@ -149,7 +149,8 @@ const FRAGMENT = /* glsl */ `
     // W8-38: portrait phones bend a much darker backdrop (interior about 33,28,58 against the reference 98,87,169 on desktop);
     // a violet interior lift (fades out toward the rim) brings the face to the reference colour.
     float portrait = step(uResolution.x, uResolution.y);
-    c += vec3(0.19, 0.17, 0.32) * portrait * (1.0 - smoothstep(0.4, 0.75, rim));
+    // W8-46: the reference phone glass is dark navy (saturated share about 6 percent), not violet: darken the face, no lift.
+    c *= 1.0 - 0.55 * portrait * (1.0 - smoothstep(0.4, 0.75, rim));
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
