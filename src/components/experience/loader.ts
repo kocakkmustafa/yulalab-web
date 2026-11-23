@@ -19,9 +19,9 @@ function smoothstep(value: number): number {
   return x * x * (3 - 2 * x);
 }
 
-function easeOutQuad(value: number): number {
+function easeOutCubic(value: number): number {
   const x = clamp01(value);
-  return 1 - (1 - x) * (1 - x);
+  return 1 - (1 - x) * (1 - x) * (1 - x);
 }
 
 export const LOADER_TEXT_DELAY_MS = 300;
@@ -80,7 +80,7 @@ export function resolveLoaderFrame(value: number): LoaderFrame {
     depth: smoothstep((progress - 0.18) / 0.46),
     reveal: smoothstep((progress - 0.45) / 0.4),
     flash: 0,
-    exit: easeOutQuad((progress - 0.9) / 0.1),
+    exit: easeOutCubic((progress - 0.9) / 0.1),
   };
 }
 
