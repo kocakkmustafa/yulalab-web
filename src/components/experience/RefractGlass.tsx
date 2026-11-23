@@ -162,9 +162,9 @@ const FRAGMENT = /* glsl */ `
     return c;
   }
 
-  // Exact mirror-folded distance to the Y boundary (outer wall + smooth V-notch ray, no junction seam).
+  // Smooth mirror-folded distance to the Y outer silhouette (hyperbolic x rounding removes any x = 0 vertical seam, W8-67).
   float yCrystalDist(vec2 p) {
-    float ax = abs(p.x);
+    float ax = sqrt(p.x * p.x + 0.0042);
     float dOuter = max(0.27 - ax, (0.27 - ax) * 0.821588 + (p.y + 0.08) * 0.570082);
     vec2 w = vec2(ax, p.y - 0.27);
     float tV = max(0.0, dot(w, vec2(0.563744, 0.825950)));
@@ -173,14 +173,25 @@ const FRAGMENT = /* glsl */ `
     return min(min(0.90 - p.y, p.y + 0.90), min(dOuter, dInnerV));
   }
 
-  // Cut-crystal prism profile: gentle 13 deg crown slope (magnifies the 7.1 px dot matrix ~1.45x without clipping letters)
-  // plus a razor-sharp <= 5 px recessed inner Y bevel frame (the Y counterpart of the reference inner triangle).
+  // Central sculpted V-shield crystal hollow (ic oyuk, W8-66/W8-68): the 35 deg arm planes continue straight inward
+  // to a clean crystal sill at y = -0.23 in the heart of Y (crossing U and L diagonally like the reference inner triangle),
+  // with zero vertical bars or rectangular contour on the Y foot.
+  float yCavityDist(vec2 p) {
+    float ax = sqrt(p.x * p.x + 0.0008);
+    float dSlant = (0.27 - ax) * 0.821588 + (p.y + 0.08) * 0.570082 - 0.098;
+    vec2 w = vec2(ax, p.y - 0.27);
+    float tV = max(0.0, dot(w, vec2(0.563744, 0.825950)));
+    float vSign = ax * 0.825950 - (p.y - 0.27) * 0.563744 < 0.0 ? -1.0 : 1.0;
+    float dInnerV = length(w - vec2(0.563744, 0.825950) * tV) * vSign - 0.098;
+    return min(min(0.56 - p.y, p.y + 0.22), min(dSlant, dInnerV));
+  }
+
+  // Cut-crystal prism profile: ~15 deg crown slope (magnifies the 7.1 px dot matrix ~1.5x) + recessed central hollow step.
   float yCrystalHeight(vec2 p, float innerWeight) {
     float d = max(yCrystalDist(p), 0.0);
-    // Localized V-bevel ridge around d = 0.108: steep normal inside a narrow 5 px band, zero net offset outside it.
-    float b = (d - 0.108) / 0.0088;
-    float bevelWave = b * exp(-b * b * 1.35) * innerWeight;
-    return d * 0.22 - bevelWave * 0.015;
+    float dc = yCavityDist(p);
+    float cavityStep = smoothstep(-0.010, 0.010, dc) * innerWeight;
+    return d * 0.27 - cavityStep * 0.025;
   }
 
   void main() {
@@ -190,28 +201,34 @@ const FRAGMENT = /* glsl */ `
     vec3 viewDir = normalize(-vViewPosition);
     vec2 uv = gl_FragCoord.xy / uResolution;
 
-    // Reference domain-warped noise roughness: uNoiseScale = 9.0, smoothstep(0.3, 0.8, noise2.y) * uRoughness.
-    // Clear windows (~38% of face) keep roughness = 0 so the magnified 7 px dot matrix shines through razor-sharp;
-    // frosted clouds (~62%) scatter 8 taps across a 6-10 px grainy band.
-    vec2 glassUv = vLocal.xy * 0.5 + 0.5;
+    // Rotated isotropic domain-warped cloud noise (W8-67: grainy clouds, never vertical brush streaks).
+    mat2 cloudRot = mat2(0.848048, -0.529919, 0.529919, 0.848048);
+    vec2 glassUv = cloudRot * (vLocal.xy * vec2(0.37, 0.38)) + 0.5;
     vec4 noise = texture2D(uNoise, glassUv * 9.0);
-    vec4 noise2 = texture2D(uNoise, glassUv + (noise.xy - 0.5) * 2.0);
-    float frostPatch = smoothstep(0.32, 0.80, noise2.y);
+    vec4 noise2 = texture2D(uNoise, glassUv * 1.35 + (noise.xy - 0.5) * 1.75);
+    float dcHere = yCavityDist(vLocal.xy);
+    float portraitHeart = smoothstep(-0.36, -0.06, vLocal.y) * (1.0 - smoothstep(0.16, 0.44, vLocal.y));
+    float innerWeight = mix(1.0, 0.12 + 0.95 * portraitHeart, portrait);
+    // Inside the central belly hollow (y < 0.26), frost clears partially so the deep violet window and dot matrix pop.
+    float bellyWindow = smoothstep(0.005, 0.024, dcHere) * (1.0 - smoothstep(0.16, 0.34, vLocal.y)) * innerWeight;
+    float cloudField = noise2.y + (hash(floor(gl_FragCoord.xy * 0.5) + 5.1) - 0.5) * 0.14;
+    float frostPatch = smoothstep(0.28, 0.74, cloudField) * (1.0 - 0.62 * bellyWindow);
     float roughness = frostPatch * ROUGHNESS;
 
-    // Portrait phones focus the inner bevel across the wordmark heart; desktop runs it cleanly through stem and arms.
-    float portraitHeart = smoothstep(-0.36, -0.06, vLocal.y) * (1.0 - smoothstep(0.16, 0.44, vLocal.y));
-    float innerWeight = mix(1.0, 0.16 + 0.96 * portraitHeart, portrait);
     float eps = 0.0018;
     float hx = yCrystalHeight(vLocal.xy + vec2(eps, 0.0), innerWeight) - yCrystalHeight(vLocal.xy - vec2(eps, 0.0), innerWeight);
     float hy = yCrystalHeight(vLocal.xy + vec2(0.0, eps), innerWeight) - yCrystalHeight(vLocal.xy - vec2(0.0, eps), innerWeight);
     vec2 crystalSlope = vec2(hx, hy) / (2.0 * eps);
-    vec2 frostRipple = (noise.zw - 0.5) * 0.14 * frostPatch * (1.0 - portrait * 0.88);
+    vec2 frostRipple = (cloudRot * (noise.zw - 0.5)) * 0.15 * frostPatch * (1.0 - portrait * 0.88);
     float faceFlatness = smoothstep(0.68, 0.96, abs(vLocalNormal.z));
     float crownScale = mix(1.0, 0.34 + 0.78 * portraitHeart, portrait);
     vec2 slopeXY = -(crystalSlope * crownScale + frostRipple) * faceFlatness;
     vec3 crystalNormal = normalize(vViewTanX * slopeXY.x + vViewTanY * slopeXY.y + meshNormal);
     vec3 normal = normalize(mix(meshNormal, crystalNormal, faceFlatness));
+
+    float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
+    float tilt = 1.0 - nv;
+    float bevelEdge = smoothstep(0.19, 0.46, tilt);
 
     // Mouse fluid bends the background gently beneath the glass.
     vec2 flow = texture2D(uFluid, uv).xy * ${(FLUID_PARAMS.displayScale / 2).toFixed(6)} * uFluidMix;
@@ -219,23 +236,22 @@ const FRAGMENT = /* glsl */ `
     vec2 refractNormal = normal.xy * (1.0 - normal.z * 0.7) * mix(1.0, 0.46, portrait) + flow * 0.06;
     vec2 aspectScale = vec2(min(1.0, uResolution.y / max(uResolution.x, 1.0)), min(1.0, uResolution.x / max(uResolution.y, 1.0)));
 
-    // Measure local white-wordmark proximity so letter edges always get organic frost break-up even in clear windows,
-    // while non-letter clear windows stay at zero jitter to preserve the crisp 7 px dot matrix.
     vec2 centerProbeUv = clamp(uv - refractNormal * REFRACT_POWER, 0.0, 1.0);
     float probeLum = dot(texture2D(uBackground, centerProbeUv).rgb, vec3(0.3, 0.5, 0.2));
-    float probeLumOff = dot(texture2D(uBackground, clamp(centerProbeUv + vec2(0.006, 0.006) * aspectScale, 0.0, 1.0)).rgb, vec3(0.3, 0.5, 0.2));
-    float nearLetterEdge = smoothstep(0.08, 0.35, abs(probeLum - probeLumOff));
+    float probeLumOff = dot(texture2D(uBackground, clamp(centerProbeUv + vec2(0.008, 0.008) * aspectScale, 0.0, 1.0)).rgb, vec3(0.3, 0.5, 0.2));
+    float nearLetterEdge = smoothstep(0.05, 0.30, abs(probeLum - probeLumOff));
 
-    // Reference 8-tap chromatic refraction: R x1.0, G x2.0, B x4.0 + UV-space roughnessDir (0.3 * roughness).
+    // Reference 8-tap chromatic refraction: R x1.0, G x2.0, B x4.0 (2.2x dispersion along rim/inner bevels, W8-66).
+    float rimSlideBoost = 1.0 + 1.25 * bevelEdge;
     vec3 transmitted = vec3(0.0);
     for (int i = 0; i < ${GLASS_PARAMS.samples}; i++) {
       float fi = float(i);
-      float slide = (1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)};
-      float effRough = max(roughness, 0.038 * nearLetterEdge * (1.0 - portrait * 0.25));
-      vec2 roughnessDir = (vec2(
-        hash(gl_FragCoord.xy + fi * 17.31),
-        hash(gl_FragCoord.yx + fi * 31.73)
-      ) - 0.5) * effRough * 0.31 * aspectScale;
+      float slide = ((1.0 + min(flowAmount, 1.0) * 0.5) * ${GLASS_PARAMS.slideBase.toFixed(3)} + hash(gl_FragCoord.xy * 0.37 + fi * 7.13) * ${GLASS_PARAMS.slideRandom.toFixed(3)}) * rimSlideBoost;
+      float effRough = max(roughness, 0.068 * nearLetterEdge * (1.0 - portrait * 0.38));
+      // Polar-jittered isotropic cloud taps prevent axis-aligned streaks (W8-67).
+      float ang = 6.283185 * hash(gl_FragCoord.xy + fi * 17.31);
+      float rad = sqrt(hash(gl_FragCoord.yx + fi * 31.73)) * mix(0.82, 0.60, portrait);
+      vec2 roughnessDir = vec2(cos(ang), sin(ang)) * rad * effRough * 0.42 * aspectScale;
       vec2 base = uv + roughnessDir;
       vec3 sampleColor;
       sampleColor.r = texture2D(uBackground, clamp(base - refractNormal * (REFRACT_POWER + slide * ${GLASS_PARAMS.slide[0].toFixed(1)}), 0.0, 1.0)).r;
@@ -245,64 +261,72 @@ const FRAGMENT = /* glsl */ `
     }
     vec3 c = transmitted / ${GLASS_PARAMS.samples.toFixed(1)};
 
-    // W8-49: soft knee for bright wordmark samples so interior letters reach pure white (255) on both desktop and phone,
-    // while 8-tap Monte Carlo frost naturally dithers the 6-10 px edge transition without a hard cut or tinted ceiling.
+    // W8-49 / W8-64: high desktop white knee keeps interior letter faces pure solid 255 white (zero grey blotches) while
+    // 8-tap cloud frost at the edges and the diagonal V-shield bevel cut continuous white columns to ~0.15 (ref 0.13).
     float rawLum = dot(c, vec3(0.3, 0.5, 0.2));
-    float brightMask = smoothstep(mix(0.55, 0.28, portrait), mix(0.81, 0.56, portrait), rawLum);
+    float brightMask = smoothstep(mix(0.81, 0.28, portrait), mix(0.910, 0.56, portrait), rawLum);
+    float frostTint = smoothstep(0.46, 0.74, cloudField) * (1.0 - portrait);
+    // Steep inner cavity bevel cuts crisply across the white wordmark like the reference inner triangle edge.
+    float innerCavityRim = exp(-pow(dcHere / 0.014, 2.0)) * innerWeight * (1.0 - portrait * 0.5);
 
-    // Calibrated violet-blue crystal transmission on desktop (Govde RGB ~107,90,166, Sat ~26.5%, Kollar Sat ~27.5%);
-    // portrait phones soften background grid contrast into deep navy crystal.
-    float darkScale = mix(0.77, 0.72, portrait);
-    float darkContrast = mix(1.22, 0.85, portrait);
+    // W8-62 / W8-63 / W8-65: calibrate desktop body/arm saturation to ~27% / ~28% and give upper arms a rich lavender
+    // crystal floor so they read as translucent lavender glass rather than empty dark corners.
+    float upperArm = smoothstep(0.05, 0.58, vLocal.y);
+    float darkScale = mix(0.76 * (1.0 - 0.26 * bellyWindow), 0.72, portrait);
+    float darkContrast = mix(1.24, 0.90, portrait);
     float pivot = mix(0.16, 0.04, portrait);
-    vec3 darkToned = max(vec3(pivot) + (c * darkScale - vec3(pivot)) * darkContrast, vec3(0.0));
-    float upperArm = smoothstep(0.10, 0.55, vLocal.y);
-    float satMix = mix(mix(0.909, 0.932, upperArm), 0.62, portrait);
+    vec3 trimmed = c * mix(vec3(1.0, 1.0, 0.982), vec3(1.0), portrait);
+    vec3 darkToned = max(vec3(pivot) + (trimmed * darkScale - vec3(pivot)) * darkContrast, vec3(0.0));
+    vec3 armLavender = vec3(0.072, 0.059, 0.136) * (0.24 + 0.76 * upperArm) * (1.0 - 0.75 * bellyWindow) * (1.0 - portrait);
+    darkToned += armLavender;
+    float satMix = mix(mix(0.9065, 0.865, upperArm), 0.62, portrait);
     vec3 darkCol = max(mix(vec3(dot(darkToned, vec3(0.3, 0.5, 0.2))), darkToned, satMix), vec3(0.0));
-    c = mix(darkCol, vec3(0.90), brightMask);
+    vec3 desktopWhite = mix(vec3(0.88), vec3(0.86, 0.752, 0.92), frostTint);
+    vec3 letterWhite = mix(desktopWhite, vec3(0.89), portrait);
+    c = mix(darkCol, letterWhite, brightMask * (1.0 - 0.80 * innerCavityRim));
 
-    // Crystalline frost stipple strictly inside frosted condensation clouds (calibrated to reference Laplace ~243 body / ~220 arms).
-    float grainAmp = mix(0.107, 0.071, upperArm) * frostPatch * (1.0 - portrait * 0.76) * (1.0 - brightMask);
-    float frostGrain = (hash(gl_FragCoord.xy * 0.89 + 2.3) - 0.5) * grainAmp;
+    // Stippled cloud micro-grain: desktop ~243 body / ~220 arms Laplace; portrait stem ~18.5 Laplace (ref 18.5).
+    float desktopGrain = mix(0.095, 0.066, upperArm) * (0.24 + 0.76 * frostPatch);
+    float portraitStem = 1.0 - smoothstep(-0.30, 0.05, vLocal.y);
+    float mobileGrain = mix(0.018, 0.071, portraitStem) * (0.35 + 0.65 * frostPatch);
+    float frostGrain = (hash(gl_FragCoord.xy * 0.89 + 2.3) - 0.5) * mix(desktopGrain, mobileGrain, portrait) * (1.0 - brightMask);
     c = max(c + frostGrain * vec3(0.96, 0.94, 1.04), vec3(0.0));
 
-    float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
-    float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
+    float fresnel = F0 + (1.0 - F0) * pow(tilt, 5.0);
     float grazing = clamp((fresnel - F0) / (1.0 - F0), 0.0, 1.0);
     vec3 reflected = studio(reflect(-viewDir, normal));
 
-    // Reference grazing light L = normalize(-1, 0.8, -1) + counter-rim light for razor-sharp 1-2 px white bevel lines.
     vec3 lightDirA = normalize(vec3(-1.0, 0.8, -1.0));
     vec3 lightDirB = normalize(vec3(0.95, 0.65, -0.85));
-    float specR = 0.003 + roughness * 0.32;
+    float specR = 0.003 + roughness * 0.30;
     float spec = ggx(clamp(dot(normal, normalize(lightDirA + viewDir)), 0.0, 1.0), specR)
-      + 0.75 * ggx(clamp(dot(normal, normalize(lightDirB + viewDir)), 0.0, 1.0), specR * 1.08);
+      + 0.78 * ggx(clamp(dot(normal, normalize(lightDirB + viewDir)), 0.0, 1.0), specR * 1.06);
 
-    // Grazing-only studio reflection keeps flat faces pure while framing inner and outer crystal bevels.
-    c = mix(c, reflected, grazing * 0.82 * (1.0 - brightMask * 0.82));
+    c = mix(c, reflected, clamp(grazing * 0.80 + innerCavityRim * 0.38, 0.0, 0.92) * (1.0 - brightMask * (0.78 - 0.55 * innerCavityRim)));
 
-    // Thin <= 6 px prismatic dispersion on steep inner/outer bevels (red/orange -> yellow -> electric cyan/blue) + 1-2 px white line.
-    float tilt = 1.0 - nv;
-    float dispPhase = tilt * 2.8 + normal.x * 0.52 - normal.y * 0.25;
-    vec3 prism = vec3(
-      0.5 + 0.5 * cos(6.2832 * (dispPhase + 0.00)),
-      0.5 + 0.5 * cos(6.2832 * (dispPhase - 0.15)),
-      0.5 + 0.5 * cos(6.2832 * (dispPhase - 0.56))
-    );
-    float prismBand = smoothstep(0.25, 0.50, tilt) * (1.0 - smoothstep(0.82, 0.96, tilt));
-    float prismGain = mix(0.46 + 0.34 * brightMask, (0.18 + 0.78 * brightMask) * (0.20 + 0.80 * portraitHeart), portrait);
+    // W8-66: vivid <= 6 px prismatic rainbow band (Red/Orange -> Golden Yellow -> Electric Cyan/Blue) along outer rim
+    // and inner hollow bevels, closed by a razor-thin 1-2 px white specular line.
+    float dispPhase = fract(tilt * 2.35 + normal.x * 0.45 - normal.y * 0.28);
+    vec3 colRed = vec3(1.00, 0.24, 0.08);
+    vec3 colYel = vec3(1.00, 0.88, 0.18);
+    vec3 colBlu = vec3(0.16, 0.68, 1.00);
+    vec3 prism = dispPhase < 0.36
+      ? mix(colRed, colYel, dispPhase / 0.36)
+      : (dispPhase < 0.72 ? mix(colYel, colBlu, (dispPhase - 0.36) / 0.36) : mix(colBlu, colRed, (dispPhase - 0.72) / 0.28));
+    float prismBand = smoothstep(0.22, 0.46, tilt) * (1.0 - smoothstep(0.84, 0.97, tilt));
+    float prismGain = mix(0.72 + 0.35 * brightMask, (0.24 + 0.82 * brightMask) * (0.22 + 0.78 * portraitHeart), portrait);
     c += prism * prismBand * prismGain;
-    // Thin 1-2 px white rim line: crisp on desktop, restrained on dark portrait edges except across the wordmark heart.
-    float whiteRim = smoothstep(0.84, 0.96, pow(tilt, 2.8));
-    c += vec3(whiteRim) * mix(0.82, 0.20 + 0.55 * portraitHeart, portrait);
-    c += vec3(min(spec, 1.55)) * mix(1.0, 0.28 + 0.72 * portraitHeart, portrait);
+
+    float whiteRim = smoothstep(0.84, 0.96, pow(tilt, 2.7));
+    c += vec3(whiteRim) * mix(0.88, 0.20 + 0.58 * portraitHeart, portrait);
+    c += vec3(min(spec, 1.60)) * mix(1.0, 0.30 + 0.70 * portraitHeart, portrait);
 
     // Portrait deep-navy crystal body (reference mobile: RGB ~21,21,55, body sat ~0.3%, arms sat ~6%, Laplace ~18).
     float bodyFace = 1.0 - smoothstep(0.24, 0.58, tilt);
     c *= 1.0 - 0.08 * portrait * bodyFace * (1.0 - brightMask);
-    float armPatch = smoothstep(0.18, 0.65, vLocal.y) * smoothstep(0.54, 0.78, noise2.x);
-    float stemPatch = (1.0 - smoothstep(-0.35, -0.05, vLocal.y)) * smoothstep(0.80, 0.95, noise2.x);
-    c += (vec3(0.011, 0.016, 0.112) + vec3(0.008, 0.014, 0.195) * (armPatch + stemPatch * 0.6)) * portrait * bodyFace * (1.0 - brightMask);
+    float armPatch = smoothstep(0.18, 0.65, vLocal.y) * smoothstep(0.56, 0.80, noise2.x);
+    float stemPatch = portraitStem * smoothstep(0.80, 0.95, noise2.x);
+    c += (vec3(0.011, 0.016, 0.110) + vec3(0.008, 0.014, 0.180) * (armPatch + stemPatch * 0.55)) * portrait * bodyFace * (1.0 - brightMask);
 
     c *= ${GLASS_PARAMS.output.toFixed(1)};
     gl_FragColor = vec4(min(c, vec3(1.0)), smoothstep(0.0, 0.25, uOpacity));
