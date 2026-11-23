@@ -290,7 +290,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width / Math.max(1, viewportSize.height),
     viewportSize.width,
   );
-  // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
+  // W8-30/31/33: in the opening the glass Y is its own object in the middle of the screen, in front of the white YULA.
   const slotMix = heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
     const planeWidth = heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
@@ -329,24 +329,20 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
   }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width, viewportSize.height]);
-  const referenceCamera = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("cam") === "ref";
   const position = useMemo(
     () => [
-      lerp(frame.glyph.position[0] + viewportPose.offset[0], referenceCamera ? 0 : slotPose.x, slotMix),
-      lerp(frame.glyph.position[1] + viewportPose.offset[1], referenceCamera ? 0.1 : slotPose.y, slotMix),
+      lerp(frame.glyph.position[0] + viewportPose.offset[0], 0, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], 0.1, slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset, slotPose, slotMix, referenceCamera],
+    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
   );
-  // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
-  // the Y takes the same horizontal squeeze while it stands in for the first letter.
-  const slotSqueeze = Math.min(1, heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height)) / 10.4);
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
-  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * (referenceCamera ? 2.3 : 1), slotMix);
-  const glyphScaleXYZ = [glyphScale * lerp(1, referenceCamera ? 1 : slotSqueeze, slotMix), glyphScale, glyphScale] as const;
+  const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale * 2.3, slotMix);
+  const glyphScaleXYZ = [glyphScale, glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },

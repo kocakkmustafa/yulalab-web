@@ -3,7 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import { heroSlot } from "../src/components/experience/hero-slot";
 import { flipSdfRows } from "../src/components/experience/wordmark-sdf-rows";
-import { WORDMARK_SDF_SIZE, WORDMARK_SLOT } from "../src/components/experience/wordmark-sdf-meta";
+import { WORDMARK_CAP, WORDMARK_SDF_SIZE } from "../src/components/experience/wordmark-sdf-meta";
 
 const SDF_PATH = path.join(process.cwd(), "public/experience/yula-wordmark-sdf.bin");
 
@@ -14,7 +14,7 @@ describe("W8-14 YULA wordmark SDF", () => {
     expect(bytes).toBeLessThanOrEqual(4 * 1024 * 1024);
   });
 
-  it("has inside (>0.5), outside (<0.5) and a soft edge band, with an empty Y slot", () => {
+  it("has inside (>0.5), outside (<0.5) and a soft edge band, with the Y included", () => {
     const data = readFileSync(SDF_PATH);
     const { width, height } = WORDMARK_SDF_SIZE;
     let inside = 0;
@@ -25,25 +25,29 @@ describe("W8-14 YULA wordmark SDF", () => {
     }
     expect(inside / data.length).toBeGreaterThan(0.03);
     expect(band).toBeGreaterThan(1000);
-    // Slot centre (fraction of the plane from its centre) must be far outside the letters.
-    const sx = Math.round((0.5 + WORDMARK_SLOT.x) * width);
-    const sy = Math.round((0.5 - WORDMARK_SLOT.y) * height);
-    expect(data[sy * width + sx]).toBeLessThan(60);
+    // W8-30: the white Y is part of the baked word, so the first letter's middle holds ink (stem).
+    const cy = Math.round((0.5 - WORDMARK_CAP.y) * height + WORDMARK_CAP.cap * height * 0.3);
+    let hit = 0;
+    for (let x = 0; x < width * 0.3; x += 1) if (data[cy * width + x] > 140) hit += 1;
+    expect(hit).toBeGreaterThan(0);
   });
 
-  it("hero slot comes from the baked meta", () => {
-    expect(heroSlot).toEqual(WORDMARK_SLOT);
+  it("hero reference comes from the baked meta (glass Y is centred, not in a slot)", () => {
+    expect(heroSlot).toEqual({ x: 0, ...WORDMARK_CAP });
   });
 
   it("W8-16: atlas top row is the letter top (U arms open upward) and the GL upload reverses rows", () => {
     const data = readFileSync(SDF_PATH);
     const { width, height } = WORDMARK_SDF_SIZE;
-    // U = first ink column run of ULA. Count its ink above/below the vertical middle of the ink rows.
+    // U = second ink column run of YULA. Count its ink above/below the vertical middle of the ink rows.
     const inkCol = (x: number) => {
       for (let y = 0; y < height; y += 1) if (data[y * width + x] > 128) return true;
       return false;
     };
+    // W8-30: the word is "YULA" now; skip the first ink run (Y) and read the second (U).
     let x0 = 0;
+    while (x0 < width && !inkCol(x0)) x0 += 1;
+    while (x0 < width && inkCol(x0)) x0 += 1;
     while (x0 < width && !inkCol(x0)) x0 += 1;
     let x1 = x0;
     while (x1 < width && inkCol(x1)) x1 += 1;

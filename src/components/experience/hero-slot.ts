@@ -1,12 +1,12 @@
-import { WORDMARK_SLOT } from "./wordmark-sdf-meta";
+import { WORDMARK_CAP } from "./wordmark-sdf-meta";
 
 /**
- * W1D: the opening word reads "[Y]ULA" where the glass Y stands in for the first letter. The wordmark
- * texture leaves that slot empty and records where it is (fractions of the plane), so the glass Y can
- * be placed there at the cap height of "ULA" without a second, white Y.
+ * W8-30/31: the opening word is the whole white "YULA"; the glass Y is a separate object standing in the middle
+ * of the screen in front of it. This records the cap height of the baked letters (fractions of the plane) that the
+ * glass Y's size is derived from.
  */
 export type HeroSlot = {
-  /** Slot centre, fraction of the plane width from its centre (-0.5..0.5). */
+  /** Reference centre, fraction of the plane width from its centre (the glass Y is centred, so 0). */
   x: number;
   /** Cap-height centre, fraction of the plane height above its centre. */
   y: number;
@@ -27,7 +27,7 @@ export function heroWordmarkWidth(mobileMix: number, aspect: number): number {
 }
 
 /** Baked together with the SDF texture (scripts/build-wordmark-sdf.py). */
-export const heroSlot: HeroSlot = { ...WORDMARK_SLOT };
+export const heroSlot: HeroSlot = { x: 0, ...WORDMARK_CAP };
 
 /** W8-17: phones keep the letters' proportions (U width/height about 0.7, was 0.5 on a 1.25:1 plane). */
 const MOBILE_PLANE_ASPECT = 1.9;
