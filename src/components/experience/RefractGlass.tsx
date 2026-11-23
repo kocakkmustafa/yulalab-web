@@ -117,13 +117,17 @@ const FRAGMENT = /* glsl */ `
     // W8-20: contrast 1.7 to 2.4 for interior detail; W8-18: the saturation mix drops 0.85 to 0.6 so saturated pixels stay near the reference share.
     // W8-49: contrast only on the dark tones; bright samples (the white wordmark behind the glass) keep a soft shoulder to white,
     // so the U right arm and the L stem read white through the glass instead of a lavender ceiling. Smooth blend, no hard seam.
+    // W8-55: portrait phones see the wordmark dimmer through the glass, so the white knee starts lower (0.45-0.7 instead of 0.65-0.9).
+    float portrait = step(uResolution.x, uResolution.y);
     float rawLum = dot(c, vec3(0.3, 0.5, 0.2));
-    float brightMask = smoothstep(0.65, 0.9, rawLum);
-    vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(2.4, 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
-    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, mix(0.95, 0.66, brightMask));
-    c = mix(c, vec3(0.82), 0.7 * brightMask); // W8-49: soft knee toward white (x1.2 output lands at 1.0 only on the wordmark)
-    // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference.
-    c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.11 * vec3(1.0, 0.9, 1.0);
+    float brightMask = smoothstep(mix(0.65, 0.45, portrait), mix(0.9, 0.7, portrait), rawLum);
+    // W8-56: portrait glass is a navy body: weaker grid contrast and a low colour mix away from the white letters.
+    vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(mix(2.4, 1.5, portrait), 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
+    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, mix(mix(0.95, 0.3, portrait), 0.66, brightMask));
+    // W8-57: the knee ends on one full white tone (x1.2 output clamps to 1.0), no 240/255 ceiling inside the glass.
+    c = mix(c, vec3(0.86), brightMask);
+    // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference; W8-57: none on the white letter face.
+    c += (hash(gl_FragCoord.xy * 0.91) - 0.5) * 0.11 * vec3(1.0, 0.9, 1.0) * (1.0 - brightMask);
 
     float nv = clamp(dot(normal, viewDir), 0.0, 1.0);
     float fresnel = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
@@ -148,12 +152,11 @@ const FRAGMENT = /* glsl */ `
     c += vec3(0.0275, 0.0125, 0.065) * (1.0 - rim) * (1.0 - smoothstep(0.4, 0.75, rim)); // W8-18: halved
     // W8-38: portrait phones bend a much darker backdrop (interior about 33,28,58 against the reference 98,87,169 on desktop);
     // a violet interior lift (fades out toward the rim) brings the face to the reference colour.
-    float portrait = step(uResolution.x, uResolution.y);
     // W8-46: the reference phone glass is dark navy (saturated share about 6 percent), not violet: darken the face, no lift.
     // W8-52: 0.55 to 0.30 darkening plus a navy floor (reference phone glass is dark navy, V about 0.25-0.40); it was invisible.
     float faceMask = 1.0 - smoothstep(0.4, 0.75, rim);
     c *= 1.0 - 0.30 * portrait * faceMask;
-    c += vec3(0.04, 0.05, 0.12) * portrait * faceMask;
+    c += vec3(0.02, 0.03, 0.07) * portrait * faceMask * (1.0 - brightMask); // W8-56: navy floor, less blue
     // W7 CY9/CY11: lift the bent background so the grid shows through the letter (interior ~64 of 255).
 
     c *= 1.0 + 0.05 * smoothstep(0.0, 0.4, vLocal.x) * smoothstep(0.0, 0.4, vLocal.y); // W7 BT6: top right interior
