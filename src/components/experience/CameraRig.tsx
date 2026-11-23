@@ -48,7 +48,7 @@ export function CameraRig({ progress, mode }: CameraRigProps) {
     target.set(...pose.target);
     camera.lookAt(target);
 
-    const effectiveFov = openScale >= 0.9999
+    const effectiveFov = Math.abs(openScale - 1) < 1e-4
       ? pose.fov
       : Math.min(170, (Math.atan(Math.tan((pose.fov * Math.PI) / 360) / Math.max(0.02, openScale)) * 360) / Math.PI);
 
