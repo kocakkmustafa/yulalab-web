@@ -61,3 +61,12 @@ describe("W1D-D opening sequence", () => {
     expect(dwellFloat(0)).toBe(0);
   });
 });
+
+describe("W8-43 glass backdrop ceiling", () => {
+  it("compresses the bent backdrop below a tinted ceiling so the wordmark never clips to flat white blocks", async () => {
+    const { readFileSync } = await import("node:fs");
+    const source = readFileSync("src/components/experience/RefractGlass.tsx", "utf8");
+    expect(source).toContain("vec3 ceilColor");
+    expect(source.indexOf("ceilColor")).toBeLessThan(source.indexOf("float fresnel"));
+  });
+});
