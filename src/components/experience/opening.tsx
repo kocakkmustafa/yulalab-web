@@ -20,7 +20,7 @@ import {
  * The glass material itself lives in RefractGlass.tsx; this file only owns the shared opening clock,
  * the low-resolution backdrop pass the iris samples, and the iris overlay.
  */
-const BACKDROP_SIZE = 1024;
+const BACKDROP_SIZE = 512;
 
 export const OPENING_DURATION_SECONDS = 2.66;
 /**
@@ -293,8 +293,7 @@ const IRIS_FRAGMENT = /* glsl */ `
     lensCol.r = texture2D(uBackground, clamp(lensUv - ring * uvShift * 0.0008, 0.01, 0.99)).r;
     lensCol.b = texture2D(uBackground, clamp(lensUv + ring * uvShift * 0.0010, 0.01, 0.99)).b;
     float edgeFade = smoothstep(0.0, 0.55, r);
-    // W8-61: the colour stays the lens colour; multiplying it by edgeFade greyed the white scene behind the rim.
-    vec3 col = lensCol;
+    vec3 col = lensCol * edgeFade;
     float alpha = clamp((1.0 - edgeFade) + ring * 0.85 * edgeFade * (1.0 - smoothstep(0.86, 1.0, uLoaded)), 0.0, 1.0);
     gl_FragColor = vec4(col, alpha);
   }
