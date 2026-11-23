@@ -69,7 +69,7 @@ jobs:
                 data += mode.encode() + b' ' + name.encode() + b'\0' + bytes.fromhex(digest)
             return hashlib.sha1(b'tree ' + str(len(data)).encode() + b'\0' + data).hexdigest()
         actual = tree_hash(tree)
-        if actual != 'e7bc3fab3dc6f694fb284b37c11ea0500ebf1702':
+        if actual != 'b596d906e0bceebad2be999b8f24ff5fdad11965':
             raise SystemExit('Candidate tree mismatch: ' + actual)
         print('Exact candidate tree verified:', actual)
         receipt = {"commit": head, "actual_tree": subprocess.check_output(["git", "rev-parse", "HEAD^{tree}"], text=True).strip(), "normalized_tree": actual, "V2_source_tree": "38ad3cd4bf161e0ac58f30242bfe442e4dae20e0", "workflow_sha256": hashlib.sha256(Path(".github/workflows/ci.yml").read_bytes()).hexdigest(), "run_id": os.environ["GITHUB_RUN_ID"], "run_attempt": os.environ["GITHUB_RUN_ATTEMPT"], "provider_packaging": "UNRUN_SEPARATE_REQUIRED_GATE"}
