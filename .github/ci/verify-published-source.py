@@ -77,7 +77,7 @@ REVIEWED_A3_SOURCE_HASHES = {
     "tests/locale-pages.test.tsx": "19e2e854be5bae33a799f2b4e6664c0b643ea1cc87b74d05c1a381b4ff52d87d",
     "tests/locale-routing.test.ts": "641ad8764ad75667bb481a5114c9e5f1272c01eebbbecaccfb45bacca54aba7e",
     "tests/locale-switcher.test.tsx": "7f02382ba1b685adc83508c026db3265ea7049c47c2bbbd83b8db5099d001b27",
-    "tests/mail-budget.test.ts": "bef4a1f7a86c28c4ce048e7b4dd14cd6594793a82de0454e20aefa444074f5a8",
+    "tests/mail-budget.test.ts": "50a629ba387ed119aa77c9d673a803babe34bdbf1088afb176965293cef0730f",
     "tests/privacy-rights-copy.test.tsx": "0fc6bebd2cb228c441edbe79299dfd2e25e2614df0ef70188bbe3b7ba0745fa6",
     "src/components/projects/DevelopmentPreviewSection.tsx": "bcf341219391618be4da8cc01dd45a91c594424344a9ca6f3c1347c1be047dae",
     "src/data/product-presentations.ts": "3afc2bee62a05257c3b9eae622d090ebb9b9b1d430f46ff62cd895995041819c",

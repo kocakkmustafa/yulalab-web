@@ -1048,7 +1048,7 @@
     {
       "path": "tests/mail-budget.test.ts",
       "publishedSha256": null,
-      "candidateSha256": "bef4a1f7a86c28c4ce048e7b4dd14cd6594793a82de0454e20aefa444074f5a8",
+      "candidateSha256": "50a629ba387ed119aa77c9d673a803babe34bdbf1088afb176965293cef0730f",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "2026-10-20 approved A3 candidate receipt alignment: user-authorized eight-locale UI and lead/mail correctness source/test delta; exact bytes recorded in workspace/implementation-01-2026-10-19/ci-correctness-source-snapshot.json. This aligns the reviewed source receipt only; it does not establish publication, provider, real-device, live-database or security acceptance. Root owns final staged exact-tree and event-head verification."
     },
@@ -1391,7 +1391,7 @@
     {
       "path": "tests/surface-wiring.test.tsx",
       "publishedSha256": "a2360e3fd62bf7328b44d79067c6a722cce79f131ba5db05101c5fafcef54cf2",
-      "candidateSha256": "5a4a0e4761322aaa857aa4afd3732e40e984588667ee56aedd8e88dab1f82ae6",
+      "candidateSha256": "c1de9ea8db9efac761d3204a3e944940bcc80cc2a218ef1db1105268e1da967b",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "WEB-P0-02b header/footer/mobile menu: nav-config, 14-language header keys, locale switcher target size WEB-KOD-02 ve KOD-04"
     },
@@ -1709,6 +1709,34 @@
       "candidateSha256": "422db3bdc580ef470bb2195aa2032ae924b093c0058d687b2229cd823b28bc06",
       "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
       "reason": "W1D-W2 (3): cam saydam, karo mozaigi, fare akiskani, portfoy simgesi"
+    },
+    {
+      "path": ".env.example",
+      "publishedSha256": "04f3083a04e239543509ddf888a3f9df900204047b6fff598729fa5429ebf921",
+      "candidateSha256": "39b386ae98c1ae9a86f3401be675d86c1e43dee5d3024b0c2281b4e75ac6f350",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-11-23 kurucu sözü: gönderen adresi tüm projeler için yula@yulalab.com; yalnız fromEmail sabiti, örnek ortam değeri ve ilgili test beklentileri."
+    },
+    {
+      "path": "src/server/mail-identity.ts",
+      "publishedSha256": "c8131201e20557e20021b3d1d42a94f6144295b4a214c54df16d4f23a0c76537",
+      "candidateSha256": "837047aa34ac5790aa50f77ce574bebcf39922b2e363fb383a0cb12cd19adb22",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-11-23 kurucu sözü: gönderen adresi tüm projeler için yula@yulalab.com; yalnız fromEmail sabiti, örnek ortam değeri ve ilgili test beklentileri."
+    },
+    {
+      "path": "tests/mail-identity.test.ts",
+      "publishedSha256": "9e9fc2b31b46420164555102123dc08c49c56e07869446b2bb06570ac71c17c7",
+      "candidateSha256": "f0172bc891f0fb83b75dd28be1f96bd7553c9cb15545d91490811325db200356",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-11-23 kurucu sözü: gönderen adresi tüm projeler için yula@yulalab.com; yalnız fromEmail sabiti, örnek ortam değeri ve ilgili test beklentileri."
+    },
+    {
+      "path": "tests/mail-transport.test.ts",
+      "publishedSha256": "c353607b83aed1c817ed1f51fe22bde8aa0516897c5761a387d5e20e91afd13d",
+      "candidateSha256": "498e754959a2d5513c2f13211ab14eb0584ffbbbd4293c02126f61214e6a6028",
+      "evidenceClass": "CANDIDATE_ONLY_NOT_PUBLICATION_EVIDENCE",
+      "reason": "2026-11-23 kurucu sözü: gönderen adresi tüm projeler için yula@yulalab.com; yalnız fromEmail sabiti, örnek ortam değeri ve ilgili test beklentileri."
     }
   ]
 }
