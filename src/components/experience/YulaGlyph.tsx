@@ -518,6 +518,17 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
           transparent
         />
       </lineLoop>
+      {/* W8-59: second, inset contour on the front face (the reference body shows an inner triangle outline). */}
+      <lineLoop geometry={contour} position={[0, 0.03, 0.217]} renderOrder={5} scale={0.74}>
+        <lineBasicMaterial
+          color={outlineColor}
+          depthTest={false}
+          depthWrite={false}
+          opacity={outlineOpacity * 0.7}
+          toneMapped={false}
+          transparent
+        />
+      </lineLoop>
       <lineLoop geometry={contour} position={[0, 0, -0.216]} renderOrder={5}>
         <lineBasicMaterial
           color={outlineColor}

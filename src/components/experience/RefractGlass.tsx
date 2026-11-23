@@ -121,9 +121,23 @@ const FRAGMENT = /* glsl */ `
     float portrait = step(uResolution.x, uResolution.y);
     float rawLum = dot(c, vec3(0.3, 0.5, 0.2));
     float brightMask = smoothstep(mix(0.65, 0.45, portrait), mix(0.9, 0.7, portrait), rawLum);
+    // W8-58: frost at the letter edge. Six wide taps (about 8 px) measure how much of the neighbourhood is white; where the share is
+    // partial the white knee is dithered by a per-pixel hash, so the letter breaks up into grain across a 6-10 px band instead of one hard cut.
+    // Inside the letter (share 1) and outside (share 0) nothing changes.
+    vec2 frostBase = uv - refractNormal * REFRACT_POWER;
+    float frostHits = 0.0;
+    for (int k = 0; k < 6; k++) {
+      float ka = float(k) * 1.0472 + hash(gl_FragCoord.xy * 0.53) * 1.2;
+      vec2 off = vec2(cos(ka), sin(ka)) * (4.0 + 4.0 * hash(gl_FragCoord.xy + float(k) * 9.1)) / uResolution;
+      vec3 tapC = texture2D(uBackground, clamp(frostBase + off, 0.0, 1.0)).rgb;
+      frostHits += step(mix(0.65, 0.45, portrait) + 0.1, dot(tapC, vec3(0.3, 0.5, 0.2)));
+    }
+    float frostShare = frostHits / 6.0;
+    float frostEdge = 4.0 * frostShare * (1.0 - frostShare);
+    brightMask = mix(brightMask, step(hash(gl_FragCoord.xy * 0.73 + 3.7), frostShare), frostEdge);
     // W8-56: portrait glass is a navy body: weaker grid contrast and a low colour mix away from the white letters.
     vec3 contrasted = max(vec3(0.15) + (c - vec3(0.15)) * mix(mix(2.4, 1.5, portrait), 1.0, brightMask), vec3(0.0)); // pivot 0.15: dark tiles no longer clip to black
-    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, mix(mix(0.95, 0.3, portrait), 0.66, brightMask));
+    c = mix(vec3(dot(contrasted, vec3(0.3, 0.5, 0.2))), contrasted, mix(mix(0.95, 0.3, portrait), 0.66, brightMask) * (1.0 - 0.2 * smoothstep(0.1, 0.3, vLocal.y))); // W8-60: arms 20 percent less colour
     // W8-57: the knee ends on one full white tone (x1.2 output clamps to 1.0), no 240/255 ceiling inside the glass.
     c = mix(c, vec3(0.86), brightMask);
     // W8-45: fixed fine grain (no time term, no flicker) gives the glass the gritty interior of the reference; W8-57: none on the white letter face.
@@ -141,7 +155,8 @@ const FRAGMENT = /* glsl */ `
     // W7 CY15: the flow no longer tints the glass.
     c += flowTint * flowAmount * 0.0;
     float rim = pow(1.0 - nv, 2.6);
-    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 3.5 + normal.x * 0.35 + vLocal.y * 0.5 + vec3(0.0, 0.33, 0.67)));
+    // W8-59: spectrum phase from normal.x 0.35 to 0.6 so the body facets read as a second contour.
+    vec3 spectrum = 0.5 + 0.5 * cos(6.2832 * (rim * 3.5 + normal.x * 0.6 + vLocal.y * 0.5 + vec3(0.0, 0.33, 0.67)));
     // W7 CY7: no spectrum band on the glass rim.
     // W8-9: the spectral band is confined to the last few pixels of the rim and a thin white line closes it.
     // W8-18/19: weaker (0.7 to 0.3) and pushed to the rim tip so the colour parts into a thin rainbow edge, not a wall tint.

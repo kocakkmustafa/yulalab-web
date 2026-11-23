@@ -93,7 +93,7 @@ function writeLinearScroll(y: number, href: string): void {
 const MOBILE_SCENE_QUERY = "(max-width: 767px)";
 const PHONE_SCENE_DELAY_MS = 0;
 const LOADER_DRAW_DURATION_MS = 3_200;
-const LOADER_EXIT_DURATION_MS = 750;
+const LOADER_EXIT_DURATION_MS = 400; // W8-61: was 750; the black curtain was still half over the wordmark at t=5 s (grey letters)
 const LOADER_CANVAS_TIMEOUT_MS = LOADER_DRAW_DURATION_MS + 6_000;
 const LOADER_HOLD_PROGRESS = 0.9;
 const LOADER_OPEN_PROGRESS = 0.91;
