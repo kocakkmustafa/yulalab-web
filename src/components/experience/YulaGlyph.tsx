@@ -24,7 +24,6 @@ import { glyphReadingVisibility, smoothstep, segmentProgress, STAGES } from "./t
 import { timelineProgressForScroll } from "./storyboard";
 import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
-import { openingShared } from "./opening";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
 import { HERO_PLANE_Z, heroSlot, heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
@@ -430,9 +429,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     r.base.setFromEuler(r.euler);
     if (glyphGroup.current) {
       glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
-      // W8 T5: subtle depth settle as the hero opens from close-up into its resting plane.
-      const openZ = frame.progress < 0.085 ? (1 - openingShared.eased) * 0.55 : 0;
-      glyphGroup.current.position.set(position[0], position[1], position[2] + openZ);
+      // W8-39: no separate depth settle; the glass rides the scene dolly of the camera rig.
+      glyphGroup.current.position.set(position[0], position[1], position[2]);
     }
     // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
     const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;

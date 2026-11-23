@@ -30,6 +30,49 @@ export const OPENING_DURATION_SECONDS = 2.66;
  */
 export const OPENING_LENS_DELAY_SECONDS = 1.2;
 
+/**
+ * W8-39: scene dolly of the opening (glass and wordmark move together, as one scene camera). Knots are the reference's
+ * normalised wordmark scale against the opening clock (clock 0 = loader window end - 3.65 s): 0.05 at 4.88 s, 1.03 at
+ * 5.38 s, 1.16 at 5.6-6.0 s, 1.0 at 7.0 s.
+ */
+export const OPENING_DOLLY_END_SECONDS = 3.35;
+const OPENING_DOLLY_KNOTS: ReadonlyArray<readonly [number, number]> = [
+  [1.23, 0.05],
+  [1.48, 0.58],
+  [1.73, 1.03],
+  [1.97, 1.16],
+  [2.35, 1.16],
+  [2.75, 1.05],
+  [3.35, 1.0],
+];
+
+/** Monotone cubic Hermite through the knots (Fritsch-Carlson), so the peak does not overshoot the 1.16 knots. */
+export function openingScale(rawTime: number): number {
+  const k = OPENING_DOLLY_KNOTS;
+  const n = k.length;
+  if (rawTime <= k[0][0]) return k[0][1];
+  if (rawTime >= k[n - 1][0]) return k[n - 1][1];
+  const d: number[] = [];
+  for (let i = 0; i < n - 1; i += 1) d.push((k[i + 1][1] - k[i][1]) / (k[i + 1][0] - k[i][0]));
+  const m: number[] = [d[0]];
+  for (let i = 1; i < n - 1; i += 1) m.push(d[i - 1] * d[i] <= 0 ? 0 : (d[i - 1] + d[i]) / 2);
+  m.push(d[n - 2]);
+  for (let i = 0; i < n - 1; i += 1) {
+    if (d[i] === 0) { m[i] = 0; m[i + 1] = 0; continue; }
+    const a = m[i] / d[i];
+    const b = m[i + 1] / d[i];
+    const h = Math.hypot(a, b);
+    if (h > 3) { m[i] = (3 * a / h) * d[i]; m[i + 1] = (3 * b / h) * d[i]; }
+  }
+  let i = 0;
+  while (i < n - 2 && rawTime > k[i + 1][0]) i += 1;
+  const w = k[i + 1][0] - k[i][0];
+  const t = (rawTime - k[i][0]) / w;
+  const t2 = t * t;
+  const t3 = t2 * t;
+  return (2 * t3 - 3 * t2 + 1) * k[i][1] + (t3 - 2 * t2 + t) * w * m[i] + (-2 * t3 + 3 * t2) * k[i + 1][1] + (t3 - t2) * w * m[i + 1];
+}
+
 export function openingLinear(rawTime: number): number {
   const span = OPENING_DURATION_SECONDS - OPENING_LENS_DELAY_SECONDS;
   return Math.min(1, Math.max(0, (rawTime - OPENING_LENS_DELAY_SECONDS) / span));
@@ -40,10 +83,11 @@ export function openingLinear(rawTime: number): number {
  * runs at 60 fps without triggering React tree re-renders.
  */
 export const openingShared = {
-  rawTime: OPENING_DURATION_SECONDS,
+  rawTime: OPENING_DOLLY_END_SECONDS,
   progress: 1,
   eased: 1,
   glyphOpacity: 1,
+  scale: 1,
 };
 
 export const sceneBackgroundShared: {
@@ -79,14 +123,16 @@ export function OpeningDirector({ sceneOpened = true }: { sceneOpened?: boolean 
       openingShared.progress = 0;
       openingShared.eased = 0;
       openingShared.glyphOpacity = 0;
+      openingShared.scale = openingScale(0);
       invalidate();
       return;
     }
     if (wasOpenedOnMount.current && !activeOpening.current) {
-      openingShared.rawTime = OPENING_DURATION_SECONDS;
+      openingShared.rawTime = OPENING_DOLLY_END_SECONDS;
       openingShared.progress = 1;
       openingShared.eased = 1;
       openingShared.glyphOpacity = 1;
+      openingShared.scale = 1;
       return;
     }
     invalidate();
@@ -98,28 +144,32 @@ export function OpeningDirector({ sceneOpened = true }: { sceneOpened?: boolean 
       openingShared.progress = 0;
       openingShared.eased = 0;
       openingShared.glyphOpacity = 0;
+      openingShared.scale = openingScale(0);
       return;
     }
     if (!activeOpening.current) {
-      openingShared.rawTime = OPENING_DURATION_SECONDS;
+      openingShared.rawTime = OPENING_DOLLY_END_SECONDS;
       openingShared.progress = 1;
       openingShared.eased = 1;
       openingShared.glyphOpacity = 1;
+      openingShared.scale = 1;
       return;
     }
     const dt = Math.min(1 / 20, Math.max(0, delta));
-    openingShared.rawTime = Math.min(OPENING_DURATION_SECONDS, openingShared.rawTime + dt);
+    openingShared.rawTime = Math.min(OPENING_DOLLY_END_SECONDS, openingShared.rawTime + dt);
     const linear = openingLinear(openingShared.rawTime);
     openingShared.progress = linear;
     openingShared.eased = openingCurve(linear);
     // W8 T5: the glass Y fades in over 1.0 s during the opening instead of waiting pre-baked behind the loader.
     openingShared.glyphOpacity = smoothstep01((openingShared.rawTime - OPENING_LENS_DELAY_SECONDS - 0.08) / 1.0);
-    if (openingShared.rawTime < OPENING_DURATION_SECONDS) {
+    openingShared.scale = openingScale(openingShared.rawTime);
+    if (openingShared.rawTime < OPENING_DOLLY_END_SECONDS) {
       invalidate();
     } else {
       activeOpening.current = false;
       openingShared.eased = 1;
       openingShared.glyphOpacity = 1;
+      openingShared.scale = 1;
     }
   }, -60);
 

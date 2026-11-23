@@ -41,20 +41,16 @@ export function CameraRig({ progress, mode }: CameraRigProps) {
     state.offsetY += (state.y * 0.5 * weight - state.offsetY) * ease;
     if (Math.abs(state.x * 0.5 * weight - state.offsetX) + Math.abs(state.y * 0.5 * weight - state.offsetY) > 0.002) invalidate();
 
-    const openEase = progress < 0.085 ? openingShared.eased : 1;
-    const zApproach = (1 - openEase) * 0.9;
-    camera.position.set(
-      pose.position[0] + state.offsetX,
-      pose.position[1] + state.offsetY,
-      pose.position[2] - zApproach,
-    );
+    // W8-39: the opening is one scene dolly (glass and wordmark together): the camera stays on the hero pose and the
+    // view narrows/widens by the shared opening scale (0.05 -> 1.16 -> 1.0), so no separate glass or text motion.
+    const openScale = progress < 0.085 ? openingShared.scale : 1;
+    camera.position.set(pose.position[0] + state.offsetX, pose.position[1] + state.offsetY, pose.position[2]);
     target.set(...pose.target);
     camera.lookAt(target);
 
-    const zoomScale = 0.58 + 0.42 * openEase;
-    const effectiveFov = openEase >= 0.9999
+    const effectiveFov = openScale >= 0.9999
       ? pose.fov
-      : (Math.atan(Math.tan((pose.fov * Math.PI) / 360) * zoomScale) * 360) / Math.PI;
+      : Math.min(170, (Math.atan(Math.tan((pose.fov * Math.PI) / 360) / Math.max(0.02, openScale)) * 360) / Math.PI);
 
     if (camera instanceof PerspectiveCamera && Math.abs(camera.fov - effectiveFov) > 1e-4) {
       camera.fov = effectiveFov;
