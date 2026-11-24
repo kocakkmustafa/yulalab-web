@@ -16,6 +16,7 @@ import type {
   Vec3,
 } from "./types";
 import { ExperienceWorld } from "./ExperienceWorld";
+import { loadWordmarkSdf } from "./wordmark-sdf-load";
 import type { WallTitles } from "./GridRoom";
 import type { ResolvedTheme } from "@/lib/theme";
 
@@ -176,8 +177,27 @@ export function ExperienceCanvas({
   // therefore depends only on a committed WebGL frame; later capture points
   // still wait for every media asset that PortfolioField actually requests.
   const heroDefersPortfolioMedia = progress < PORTFOLIO_MEDIA_ENTRY_PROGRESS;
-  const assetsSettled = heroDefersPortfolioMedia
-    || (assetState.key === assetKey && assetState.settled);
+  // W8-62: the hero wordmark atlas is fetched at runtime; until it is in memory the wordmark is fully transparent,
+  // so the scene must not report ready. A cold connection simply keeps the loader up (the loader's own canvas
+  // timeout falls back to the document); two failed attempts take the same fallback instead of a wordmark-less hero.
+  const [wordmarkSdf, setWordmarkSdf] = useState<"loading" | "ready" | "failed">("loading");
+  const onContextLostRef = useRef(onContextLost);
+  useEffect(() => {
+    onContextLostRef.current = onContextLost;
+  }, [onContextLost]);
+  useEffect(() => {
+    let active = true;
+    void loadWordmarkSdf().then((bytes) => {
+      if (!active) return;
+      setWordmarkSdf(bytes ? "ready" : "failed");
+      if (!bytes) onContextLostRef.current();
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  const assetsSettled = wordmarkSdf === "ready"
+    && (heroDefersPortfolioMedia || (assetState.key === assetKey && assetState.settled));
 
   const requestDowngrade = useCallback(() => {
     const nextTier = downgradeTier(tier);

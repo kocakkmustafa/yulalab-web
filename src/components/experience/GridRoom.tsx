@@ -2,6 +2,7 @@
 
 import { heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
 import { flipSdfRows } from "./wordmark-sdf-rows";
+import { loadWordmarkSdf } from "./wordmark-sdf-load";
 import { WORDMARK_SDF_SIZE, WORDMARK_SDF_SPREAD } from "./wordmark-sdf-meta";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
@@ -459,7 +460,6 @@ function makeWordmarkTexture(label: string): CanvasTexture {
  * (scripts/build-wordmark-sdf.py), 2560x1280 R8 = 3.1 MB. The fragment shader turns it into coverage, so the
  * edge stays one pixel wide at any scale. Filled asynchronously from /experience/yula-wordmark-sdf.bin.
  */
-const WORDMARK_SDF_URL = "/experience/yula-wordmark-sdf.bin";
 
 function makeYulaSdfTexture(): DataTexture {
   const { width, height } = WORDMARK_SDF_SIZE;
@@ -469,16 +469,12 @@ function makeYulaSdfTexture(): DataTexture {
   texture.generateMipmaps = false;
   texture.unpackAlignment = 1;
   texture.needsUpdate = true;
-  if (typeof fetch === "function") {
-    void fetch(WORDMARK_SDF_URL)
-      .then((response) => (response.ok ? response.arrayBuffer() : Promise.reject(new Error(String(response.status)))))
-      .then((buffer) => {
-        if (buffer.byteLength !== width * height) return;
-        flipSdfRows(new Uint8Array(buffer), texture.image.data as Uint8Array, width, height);
-        texture.needsUpdate = true;
-      })
-      .catch(() => undefined);
-  }
+  // W8-62: one shared request (wordmark-sdf-load.ts); ExperienceCanvas holds the loader until it settles.
+  void loadWordmarkSdf().then((bytes) => {
+    if (!bytes) return;
+    flipSdfRows(bytes, texture.image.data as Uint8Array, width, height);
+    texture.needsUpdate = true;
+  });
   return texture;
 }
 

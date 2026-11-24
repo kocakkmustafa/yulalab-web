@@ -98,6 +98,25 @@ vi.mock("@react-three/drei", () => ({
   },
 }));
 
+// W8-62: the wordmark atlas request is faked. "ready" and "failed" settle synchronously (a thenable) so the existing
+// act()-driven frame tests need no await; "pending" hands the test a release function.
+const wordmarkSdfHarness = vi.hoisted(() => ({
+  mode: "ready" as "ready" | "failed" | "pending",
+  release: (_bytes: Uint8Array | null) => {},
+}));
+
+vi.mock("@/components/experience/wordmark-sdf-load", () => ({
+  loadWordmarkSdf: () => {
+    if (wordmarkSdfHarness.mode === "pending") {
+      return new Promise<Uint8Array | null>((resolve) => {
+        wordmarkSdfHarness.release = resolve;
+      });
+    }
+    const bytes = wordmarkSdfHarness.mode === "ready" ? new Uint8Array(1) : null;
+    return { then: (callback: (value: Uint8Array | null) => void) => { callback(bytes); } };
+  },
+}));
+
 vi.mock("@/components/experience/ExperienceWorld", () => ({
   ExperienceWorld: (props: Record<string, unknown>) => {
     experienceCanvasHarness.worldProps = props;
@@ -231,6 +250,7 @@ function setScrollGeometry(scrollY: number) {
 }
 
 afterEach(() => {
+  wordmarkSdfHarness.mode = "ready";
   window.history.replaceState({}, "", "/");
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -436,6 +456,54 @@ describe("experience Canvas runtime contract", () => {
     expect(onReady).not.toHaveBeenCalled();
     act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
     expect(onReady).toHaveBeenCalledTimes(1);
+  });
+
+  it("W8-62: holds the loader until the wordmark atlas has arrived, then commits the hero", async () => {
+    resetExperienceCanvasHarness();
+    wordmarkSdfHarness.mode = "pending";
+    const onReady = vi.fn();
+    const onContextLost = vi.fn();
+    render(createElement(ExperienceCanvas, {
+      products: [],
+      progress: 0,
+      mode: "desktop",
+      tier: "low",
+      onTierChange: vi.fn(),
+      onReady,
+      onContextLost,
+    }));
+
+    act(() => runCanvasFrame(-100, 0, 1 / 60));
+    act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
+    act(() => runCanvasFrame(-100, 2 / 60, 1 / 60));
+    expect(onReady).not.toHaveBeenCalled();
+
+    await act(async () => wordmarkSdfHarness.release(new Uint8Array(1)));
+    act(() => runCanvasFrame(-100, 3 / 60, 1 / 60));
+    act(() => runCanvasFrame(-100, 4 / 60, 1 / 60));
+    expect(onReady).toHaveBeenCalledTimes(1);
+    expect(onContextLost).not.toHaveBeenCalled();
+  });
+
+  it("W8-62: a wordmark atlas that cannot be loaded takes the document fallback instead of a bare hero", () => {
+    resetExperienceCanvasHarness();
+    wordmarkSdfHarness.mode = "failed";
+    const onReady = vi.fn();
+    const onContextLost = vi.fn();
+    render(createElement(ExperienceCanvas, {
+      products: [],
+      progress: 0,
+      mode: "desktop",
+      tier: "low",
+      onTierChange: vi.fn(),
+      onReady,
+      onContextLost,
+    }));
+
+    expect(onContextLost).toHaveBeenCalledTimes(1);
+    act(() => runCanvasFrame(-100, 0, 1 / 60));
+    act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
+    expect(onReady).not.toHaveBeenCalled();
   });
 });
 
