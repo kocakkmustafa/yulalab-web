@@ -1,6 +1,9 @@
 "use client";
 
-import { heroSlot } from "./hero-slot";
+import { heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
+import { flipSdfRows } from "./wordmark-sdf-rows";
+import { loadWordmarkSdf } from "./wordmark-sdf-load";
+import { WORDMARK_SDF_SIZE, WORDMARK_SDF_SPREAD } from "./wordmark-sdf-meta";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import {
@@ -8,8 +11,13 @@ import {
   BufferAttribute,
   BufferGeometry,
   CanvasTexture,
+  DataTexture,
+  NoColorSpace,
+  RedFormat,
+  UnsignedByteType,
   Color,
   LinearFilter,
+  LinearMipmapLinearFilter,
   ShaderMaterial,
   SRGBColorSpace,
   Vector3,
@@ -50,7 +58,7 @@ const BG_FREEZE: number | null = (() => {
   // 3.5, not 3: at a whole second the 0.12 s black-out window is open and would dim the frozen frame for good.
   return Number.isFinite(value) && value > 1 ? value : 3.5;
 })();
-const KV_FADE = [0, 0.3, 3][Math.floor(Math.random() * 3)];
+const KV_FADE = 3;
 const FLUID_DISPLAY = FLUID_PARAMS.displayScale.toFixed(6);
 const GROUND_GLSL = /* glsl */ `
   uniform float uMosaic; uniform float uMosaicGrey; uniform float uMosaicAspect; uniform float uMosaicTime; uniform float uKvFade;
@@ -77,6 +85,7 @@ const GROUND_GLSL = /* glsl */ `
     return vec2(block * 4.0 + j, (local - start) / len);
   }
   float groundPattern(float slot) {
+    if (slot < 1.0) return 0.0;
     float cur = floor(mosaicHash(vec2(slot, 7.0)) * 3.0);
     float prev = floor(mosaicHash(vec2(slot - 1.0, 7.0)) * 3.0);
     if (slot > 0.5 && cur == prev) cur = mod(cur + 1.0 + floor(mosaicHash(vec2(slot, 19.0)) * 2.0), 3.0);
@@ -86,7 +95,7 @@ const GROUND_GLSL = /* glsl */ `
   // p2: high contrast diagonal stripes (white about #d9d9d9, black below #101010); p3: a wide gradient
   // purple, ice blue, orange (#350FFD, #B2EDFF, #FD5F0C) that drifts slowly.
   vec3 patternLight(float pat, vec2 suv, vec2 p, float t) {
-    if (pat < 0.5) return pow(vec3(0.3, 0.4, 0.6) * 2.0, vec3(2.2)); // W7 Z06 t5: the reference value is a display colour, no grey mix
+    if (pat < 0.5) return pow(vec3(0.34, 0.29, 0.57) * 2.0, vec3(2.2));
     if (pat < 1.5) {
       float band = step(0.5, fract(dot(p, vec2(0.7, -0.7)) * 9.0 + floor(t * 0.67) * 0.37));
       return vec3(mix(0.004, 0.7, band));
@@ -137,7 +146,8 @@ const GROUND_GLSL = /* glsl */ `
     // W7 Z06 t4: the colour is a screen-space light field (patternLight); a tile only moves its brightness by about
     // +-20 % and keeps a thin grid line. The stripes ignore the tiles. No tile is lit in a colour of its own.
     float stripeOnly = step(0.5, pat) * step(pat, 1.5);
-    float tileGain = mix((1.0 + 0.18 * (lum - 0.5)) * (1.0 + 0.05 * (1.0 - seam)), 1.0, stripeOnly); // W7 Z06 t5: +-9 % brightness, grid line +5 %
+    // W8-25: desktop middle band 42.4 -> <=39 and p10 6 -> <=4: mean x0.92, dark tiles darker (lum^1.5 keeps the bright tiles).
+    float tileGain = mix((0.26 + 1.66 * pow(lum, 1.5)) * mix(0.72, 1.0, seam), 1.0, stripeOnly);
     litTone = vec3(0.0);
     return vec4(tone * tileGain, (0.5 + 0.5 * smoothstep(0.0, 0.8, lum) + 1.3 * smoothstep(0.8, 1.0, lum)) * mix(0.5, 1.0, seam));
   }
@@ -185,11 +195,17 @@ const GROUND_GLSL = /* glsl */ `
     vec3 tiled = steadyUsed * (${MOSAIC.flat.toFixed(3)} + ${MOSAIC.swing.toFixed(3)} * mosaic.a) * steadyWeight + tiles
       + litTone * (${MOSAIC.lit.toFixed(3)} * (groundPat > 1.5 ? 1.0 : 0.65)) * (1.0 + stir * 3.0) + vec3(0.0);
     // W7 Z07: hero corners fall to near black (bottom right <= #060310, right middle ~ #0a0818).
-    float cornerFall = smoothstep(0.56, 0.20, length(uv - 0.5)); // W7 A1T8 Z07: 0.66 to 0.56, no blue-green remnant in the corner
+    float cornerFall = smoothstep(0.54, 0.16, length(uv - 0.5)); // W7 A1T8 Z07: 0.66 to 0.56, no blue-green remnant in the corner
     // W7 Z07 (tur 5): the right half falls further (bottom right about -5, right middle about -15 per channel).
     cornerFall *= mix(1.0, 0.4, smoothstep(0.55, 0.95, uv.x));
     cornerFall *= mix(1.0, 0.5, smoothstep(0.55, 0.9, uv.x) * smoothstep(0.45, 0.1, uv.y)); // W7 A1T6 Z07: bottom right x0.5 more (room and backdrop share this)
     // W7 A1T7 Z07: the corners fall on all three patterns (the reference corner is about #000 in every pattern).
+    // W8-7: phones keep the opening ground dark (reference cell mean about 9, was 38); desktop keeps x0.35 only below 1.5.
+    tiled *= mix(1.0, 0.35, smoothstep(0.7, 1.5, 1.0 / max(uMosaicAspect, 0.01))) * mix(1.0, 0.10, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
+    // W8-25: desktop side strips x0.92 (42.4 -> <=39); the tile curve alone moved them only 0.7 percent.
+    tiled *= mix(0.92, 1.0, smoothstep(0.7, 1.1, 1.0 / max(uMosaicAspect, 0.01)));
+    // W8-22: phones x0.9 more (cell mean 15.6 -> <=15; corners stay <=20).
+    tiled *= mix(1.0, 0.9, smoothstep(1.3, 1.9, 1.0 / max(uMosaicAspect, 0.01)));
     tiled *= 1.0 - groundBlackOut(uMosaicTime);
     tiled = mix(steady * 0.3, tiled, uKvFade);
     // W7 A1T10: the extra p3 corner fall of A1T9 is gone (it dimmed the orange; the real corner already passes).
@@ -335,6 +351,8 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     // Divide interpolated clip coordinates in the fragment, so the reading
     // column matches in both full-size and scaled transmission render targets.
     vec2 screenUv = vClipPosition.xy / vClipPosition.w * 0.5 + 0.5;
+    float edgeShade = smoothstep(0.72, 0.25, length((screenUv - 0.5) * 1.414));
+    color *= mix(1.0, edgeShade, uHeroMix);
     float readingColumn = smoothstep(0.53, 0.66, screenUv.x) * (1.0 - smoothstep(0.94, 1.0, screenUv.x));
     float readingHeight = smoothstep(0.10, 0.22, screenUv.y) * (1.0 - smoothstep(0.86, 0.96, screenUv.y));
     color *= 1.0 - readingColumn * readingHeight * uReadingMix * max(max(uGalleryMix, uProjectionMix), uHeroMix * 0.75) * 0.8;
@@ -351,8 +369,15 @@ const ROOM_FRAGMENT_SHADER = /* glsl */ `
     vec3 gDark = groundColor(screenUv, uGEdge, uGMid, uGPeak, uGCenter, uGSpread);
     vec3 gLight = groundColor(screenUv, uGEdgeL, uGMidL, uGPeakL, uGCenterL, uGSpreadL);
     // Line work and crosses stay faintly visible on top of the ground light.
-    vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12);
+    // W8-8: the grid line work fades toward the screen corners (reference corners are near black).
+    float cornerLines = mix(1.0, 0.2, smoothstep(0.55, 0.95, length((screenUv - 0.5) * 1.414)));
+    vec3 lines = vec3(fine * 0.012 + major * 0.05 + cross * 0.12) * cornerLines;
     vec3 ground = mix(gDark, gLight, uGroundLight) + lines * (1.0 - uGroundLight * 0.6);
+    // W8-20: fine dot matrix (7.11 device px pitch, the reference backdrop texture); mean-neutral, about +-5 levels, faded toward the corners.
+    float dotCell = 1.0 - smoothstep(0.28, 0.48, length(fract(gl_FragCoord.xy / 7.11) - 0.5));
+    // The dots fade out where the ground is near black (negative half would clip and lift the mean).
+    float dotGate = smoothstep(0.004, 0.04, dot(ground, vec3(0.3, 0.5, 0.2)));
+    ground += vec3((dotCell - 0.45) * 0.0195) * dotGate * (1.0 - uGroundLight * 0.6);
     gl_FragColor = vec4(mix(base, ground, uGroundMix), 1.0);
     #include <colorspace_fragment>
   }
@@ -405,7 +430,7 @@ const BACKDROP_FRAGMENT_SHADER = /* glsl */ `
   }
 `;
 
-function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasTexture {
+function makeWordmarkTexture(label: string): CanvasTexture {
   const canvas = document.createElement("canvas");
   canvas.width = 1024;
   canvas.height = 512;
@@ -416,35 +441,40 @@ function makeWordmarkTexture(label: string, skipFirstLetter = false): CanvasText
     context.fillStyle = "#ffffff";
     context.font = "600 340px ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif";
     context.textBaseline = "middle";
-    const centreY = canvas.height / 2 + 12;
-    const maxWidth = canvas.width * 0.92;
-    if (skipFirstLetter) {
-      // Same layout as the whole word, but the first letter is left empty for the glass Y.
-      const full = context.measureText(label).width;
-      const firstWidth = context.measureText(label.slice(0, 1)).width;
-      const fit = Math.min(1, maxWidth / full);
-      const start = (canvas.width - full * fit) / 2;
-      context.textAlign = "left";
-      context.fillText(label.slice(1), start + firstWidth * fit, centreY, (full - firstWidth) * fit);
-      const cap = context.measureText("U");
-      heroSlot.x = (start + (firstWidth * fit) / 2 - canvas.width / 2) / canvas.width;
-      // Metrics are relative to the "middle" line the text was drawn on.
-      const capTop = centreY - cap.actualBoundingBoxAscent;
-      const capBottom = centreY + cap.actualBoundingBoxDescent;
-      heroSlot.cap = (capBottom - capTop) / canvas.height;
-      heroSlot.y = (canvas.height / 2 - (capTop + capBottom) / 2) / canvas.height;
-    } else {
-      context.textAlign = "center";
-      context.fillText(label, canvas.width / 2, centreY, maxWidth);
-    }
+    context.textAlign = "center";
+    context.fillText(label, canvas.width / 2, canvas.height / 2 + 12, canvas.width * 0.92);
   }
 
   const texture = new CanvasTexture(canvas);
   texture.colorSpace = SRGBColorSpace;
-  texture.generateMipmaps = false;
-  texture.minFilter = LinearFilter;
+  texture.generateMipmaps = true;
+  texture.anisotropy = 8;
+  texture.minFilter = LinearMipmapLinearFilter;
   texture.magFilter = LinearFilter;
   texture.needsUpdate = true;
+  return texture;
+}
+
+/**
+ * W8-14: the hero "ULA" is a single-channel signed distance field baked from the site's Hanken Grotesk
+ * (scripts/build-wordmark-sdf.py), 2560x1280 R8 = 3.1 MB. The fragment shader turns it into coverage, so the
+ * edge stays one pixel wide at any scale. Filled asynchronously from /experience/yula-wordmark-sdf.bin.
+ */
+
+function makeYulaSdfTexture(): DataTexture {
+  const { width, height } = WORDMARK_SDF_SIZE;
+  const texture = new DataTexture(new Uint8Array(width * height), width, height, RedFormat, UnsignedByteType);
+  texture.colorSpace = NoColorSpace;
+  texture.minFilter = texture.magFilter = LinearFilter;
+  texture.generateMipmaps = false;
+  texture.unpackAlignment = 1;
+  texture.needsUpdate = true;
+  // W8-62: one shared request (wordmark-sdf-load.ts); ExperienceCanvas holds the loader until it settles.
+  void loadWordmarkSdf().then((bytes) => {
+    if (!bytes) return;
+    flipSdfRows(bytes, texture.image.data as Uint8Array, width, height);
+    texture.needsUpdate = true;
+  });
   return texture;
 }
 
@@ -559,12 +589,13 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
   const viewport = useThree((state) => state.size);
   const viewportWidth = viewport.width;
   const heroLift = glyphViewportPose(frame.progress, viewport.width / Math.max(1, viewport.height), viewport.width).offset[1] * frame.overlay.hero;
-  const wordmarkWidth = 14.2 * (1 - viewportMobileMix(viewportWidth) * 0.56);
+  const wordmarkWidth = heroWordmarkWidth(viewportMobileMix(viewportWidth), viewport.width / Math.max(1, viewport.height));
+  const wordmarkHeight = heroWordmarkHeight(viewportMobileMix(viewportWidth), viewport.width / Math.max(1, viewport.height));
   const roomColors = useMemo(() => ({
     dark: new Color(WORLD_DARK_COLOR),
     light: new Color(WORLD_LIGHT_COLOR),
   }), []);
-  const yulaWordmark = useMemo(() => makeWordmarkTexture("YULA", true), []);
+  const yulaWordmark = useMemo(() => makeYulaSdfTexture(), []);
   const worksWordmark = useMemo(() => makeWordmarkTexture(wallTitles.works), [wallTitles.works]);
   const serviceWordmark = useMemo(() => makeWordmarkTexture(wallTitles.service), [wallTitles.service]);
   const gridMaterial = useMemo(
@@ -653,7 +684,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       .replace("#include <map_pars_fragment>", "#include <map_pars_fragment>\nuniform sampler2D uFluid; uniform sampler2D uTrace; uniform float uFluidMix; uniform vec2 uFlowRes;")
       .replace(
         "#include <map_fragment>",
-        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // W7 C6: fine, grainy bend (2 px cells) with a dead zone: slow residual flow leaves the letters clean, only a real sweep bends them (shift = k * max(0, |v| - v0), peak capped at 0.022 uv). No R/B split on the letters.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 2.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float eff = min(max(0.0, shiftLen - 0.06) * 1.3, 0.022);\n    flowShift = flowDir * eff;\n    vec2 wUv = vMapUv - flowShift;\n    vec4 sampledDiffuseColor = vec4(1.0, 1.0, 1.0, texture2D(map, wUv).a);\n    diffuseColor *= sampledDiffuseColor;",
+        "vec2 flowUv = gl_FragCoord.xy / uFlowRes;\n    vec2 rawShift = (texture2D(uFluid, flowUv).xy * 0.0135 + texture2D(uTrace, flowUv).xy * 0.0036) * uFluidMix;\n    // W7 C6: fine, grainy bend (2 px cells) with a dead zone: slow residual flow leaves the letters clean, only a real sweep bends them (shift = k * max(0, |v| - v0), peak capped at 0.022 uv). No R/B split on the letters.\n    float grain = fract(sin(dot(floor(gl_FragCoord.xy / 2.0), vec2(12.9898, 78.233))) * 43758.5453);\n    vec2 flowShift = rawShift * (0.55 + 0.9 * grain);\n    float shiftLen = length(flowShift);\n    vec2 flowDir = flowShift / max(shiftLen, 1e-5);\n    float eff = min(max(0.0, shiftLen - 0.06) * 1.3, 0.022);\n    flowShift = flowDir * eff;\n    vec2 wUv = vMapUv - flowShift;\n    // W8-14: SDF coverage; the edge width comes from the unbent uv so the 2 px bend cells never widen it.\n    float sdfD = texture2D(map, wUv).r;\n    float sdfW = clamp(0.5 * fwidth(texture2D(map, vMapUv).r), 0.002, 0.5);\n    vec4 sampledDiffuseColor = vec4(1.0, 1.0, 1.0, smoothstep(0.5 - sdfW, 0.5 + sdfW, sdfD));\n    diffuseColor *= sampledDiffuseColor;",
       );
   }, [wordFlow]);
 
@@ -693,7 +724,7 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
     u.uMosaic.value = darkSum > 0.0001 ? mosaicShare / darkSum : 0;
     u.uMosaicGrey.value = mosaicShare > 0.0001 ? gw.portfolio * PORTFOLIO_MOSAIC / mosaicShare : 0;
     u.uMosaicAspect.value = viewport.width / Math.max(1, viewport.height);
-    u.uMosaicTime.value = BG_FREEZE === null ? state.clock.elapsedTime : BG_FREEZE; // W7 C6: ?bgFreeze=<s> holds the opening pattern cycle for measuring
+    u.uMosaicTime.value = BG_FREEZE === null ? Math.max(0.01, state.clock.elapsedTime - 10) : BG_FREEZE;
     // W7 Z06 kv fade: the opening ground comes in over 0, 0.3 or 3 s (one of three, drawn once per visit).
     u.uKvFade.value = KV_FADE <= 0 ? 1 : Math.min(1, state.clock.elapsedTime / KV_FADE);
     u.uFluid.value = fluidShared.texture;
@@ -765,12 +796,12 @@ export function GridRoom({ frame, tier, mediaTextures, worksTextures, wallTitles
       </mesh>
 
       <mesh position={[0, 0.1 + heroLift, wordmarkZ]} renderOrder={-2}>
-        <planeGeometry args={[wordmarkWidth, 5.2]} />
+        <planeGeometry args={[wordmarkWidth, wordmarkHeight]} />
         <meshBasicMaterial
           color={frame.world.themeMix > 0.5 ? "#26212b" : "#ffffff"}
           depthTest
-          depthWrite
-          alphaHash
+          depthWrite={false}
+          transparent
           map={yulaWordmark}
           onBeforeCompile={patchWordmark}
           customProgramCacheKey={() => "wordmark-flow"}

@@ -16,6 +16,7 @@ import type {
   Vec3,
 } from "./types";
 import { ExperienceWorld } from "./ExperienceWorld";
+import { loadWordmarkSdf } from "./wordmark-sdf-load";
 import type { WallTitles } from "./GridRoom";
 import type { ResolvedTheme } from "@/lib/theme";
 
@@ -30,6 +31,7 @@ export type ExperienceCanvasProps = {
   onReady: () => void;
   onContextLost: () => void;
   wallTitles?: WallTitles;
+  sceneOpened?: boolean;
   /**
    * Content pages hold the scene as a still backdrop: after the warmup and
    * any camera travel (driven by `progress`), no ambient frames are drawn.
@@ -42,7 +44,7 @@ export type ExperienceCanvasProps = {
 // DPR/shadows without remounting the Canvas and reloading portfolio textures.
 const IMMUTABLE_GL_OPTIONS = {
   alpha: false,
-  antialias: true,
+  antialias: false,
   logarithmicDepthBuffer: false,
   powerPreference: "high-performance" as const,
   outputColorSpace: SRGBColorSpace,
@@ -161,6 +163,7 @@ export function ExperienceCanvas({
   onReady,
   onContextLost,
   wallTitles,
+  sceneOpened = true,
 }: ExperienceCanvasProps) {
   const quality = QUALITY[tier];
   const assetKey = products
@@ -174,8 +177,27 @@ export function ExperienceCanvas({
   // therefore depends only on a committed WebGL frame; later capture points
   // still wait for every media asset that PortfolioField actually requests.
   const heroDefersPortfolioMedia = progress < PORTFOLIO_MEDIA_ENTRY_PROGRESS;
-  const assetsSettled = heroDefersPortfolioMedia
-    || (assetState.key === assetKey && assetState.settled);
+  // W8-62: the hero wordmark atlas is fetched at runtime; until it is in memory the wordmark is fully transparent,
+  // so the scene must not report ready. A cold connection simply keeps the loader up (the loader's own canvas
+  // timeout falls back to the document); two failed attempts take the same fallback instead of a wordmark-less hero.
+  const [wordmarkSdf, setWordmarkSdf] = useState<"loading" | "ready" | "failed">("loading");
+  const onContextLostRef = useRef(onContextLost);
+  useEffect(() => {
+    onContextLostRef.current = onContextLost;
+  }, [onContextLost]);
+  useEffect(() => {
+    let active = true;
+    void loadWordmarkSdf().then((bytes) => {
+      if (!active) return;
+      setWordmarkSdf(bytes ? "ready" : "failed");
+      if (!bytes) onContextLostRef.current();
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
+  const assetsSettled = wordmarkSdf === "ready"
+    && (heroDefersPortfolioMedia || (assetState.key === assetKey && assetState.settled));
 
   const requestDowngrade = useCallback(() => {
     const nextTier = downgradeTier(tier);
@@ -210,7 +232,7 @@ export function ExperienceCanvas({
         gl.shadowMap.type = PCFShadowMap;
         gl.transmissionResolutionScale = TRANSMISSION_RESOLUTION_SCALE[tier];
       }}
-      shadows={quality.shadows}
+      shadows={progress >= 0.085 ? quality.shadows : false}
       style={{ width: "100%", height: "100%", pointerEvents: "none" }}
     >
       <PerformanceMonitor
@@ -241,6 +263,7 @@ export function ExperienceCanvas({
           wallTitles={wallTitles}
           progress={progress}
           tier={tier}
+          sceneOpened={sceneOpened}
         />
       </PerformanceMonitor>
     </Canvas>

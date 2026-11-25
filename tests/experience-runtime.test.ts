@@ -98,6 +98,25 @@ vi.mock("@react-three/drei", () => ({
   },
 }));
 
+// W8-62: the wordmark atlas request is faked. "ready" and "failed" settle synchronously (a thenable) so the existing
+// act()-driven frame tests need no await; "pending" hands the test a release function.
+const wordmarkSdfHarness = vi.hoisted(() => ({
+  mode: "ready" as "ready" | "failed" | "pending",
+  release: (_bytes: Uint8Array | null) => {},
+}));
+
+vi.mock("@/components/experience/wordmark-sdf-load", () => ({
+  loadWordmarkSdf: () => {
+    if (wordmarkSdfHarness.mode === "pending") {
+      return new Promise<Uint8Array | null>((resolve) => {
+        wordmarkSdfHarness.release = resolve;
+      });
+    }
+    const bytes = wordmarkSdfHarness.mode === "ready" ? new Uint8Array(1) : null;
+    return { then: (callback: (value: Uint8Array | null) => void) => { callback(bytes); } };
+  },
+}));
+
 vi.mock("@/components/experience/ExperienceWorld", () => ({
   ExperienceWorld: (props: Record<string, unknown>) => {
     experienceCanvasHarness.worldProps = props;
@@ -231,6 +250,7 @@ function setScrollGeometry(scrollY: number) {
 }
 
 afterEach(() => {
+  wordmarkSdfHarness.mode = "ready";
   window.history.replaceState({}, "", "/");
   vi.restoreAllMocks();
   vi.unstubAllGlobals();
@@ -239,9 +259,9 @@ afterEach(() => {
 describe("experience quality policy", () => {
   it("contains only mutable Canvas settings and only downgrades", () => {
     expect(QUALITY).toEqual({
-      high: { dpr: [1, 1.75], shadows: "basic" },
+      high: { dpr: [1, 1.5], shadows: "basic" },
       medium: { dpr: [1, 1.5], shadows: false },
-      low: { dpr: 1, shadows: false },
+      low: { dpr: [1, 1.5], shadows: false },
     });
     expect(Object.keys(QUALITY.high).sort()).toEqual(["dpr", "shadows"]);
 
@@ -330,7 +350,8 @@ describe("experience Canvas runtime contract", () => {
       shadows: QUALITY.high.shadows,
     });
     const immutableGl = experienceCanvasHarness.canvasProps?.gl;
-    expect(immutableGl).toMatchObject({ antialias: true });
+    // A single-sample default framebuffer can be scaled into the glass copy.
+    expect(immutableGl).toMatchObject({ antialias: false });
     expect(experienceCanvasHarness.performanceProps).toMatchObject({
       iterations: 8,
       ms: 250,
@@ -436,6 +457,54 @@ describe("experience Canvas runtime contract", () => {
     act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
     expect(onReady).toHaveBeenCalledTimes(1);
   });
+
+  it("W8-62: holds the loader until the wordmark atlas has arrived, then commits the hero", async () => {
+    resetExperienceCanvasHarness();
+    wordmarkSdfHarness.mode = "pending";
+    const onReady = vi.fn();
+    const onContextLost = vi.fn();
+    render(createElement(ExperienceCanvas, {
+      products: [],
+      progress: 0,
+      mode: "desktop",
+      tier: "low",
+      onTierChange: vi.fn(),
+      onReady,
+      onContextLost,
+    }));
+
+    act(() => runCanvasFrame(-100, 0, 1 / 60));
+    act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
+    act(() => runCanvasFrame(-100, 2 / 60, 1 / 60));
+    expect(onReady).not.toHaveBeenCalled();
+
+    await act(async () => wordmarkSdfHarness.release(new Uint8Array(1)));
+    act(() => runCanvasFrame(-100, 3 / 60, 1 / 60));
+    act(() => runCanvasFrame(-100, 4 / 60, 1 / 60));
+    expect(onReady).toHaveBeenCalledTimes(1);
+    expect(onContextLost).not.toHaveBeenCalled();
+  });
+
+  it("W8-62: a wordmark atlas that cannot be loaded takes the document fallback instead of a bare hero", () => {
+    resetExperienceCanvasHarness();
+    wordmarkSdfHarness.mode = "failed";
+    const onReady = vi.fn();
+    const onContextLost = vi.fn();
+    render(createElement(ExperienceCanvas, {
+      products: [],
+      progress: 0,
+      mode: "desktop",
+      tier: "low",
+      onTierChange: vi.fn(),
+      onReady,
+      onContextLost,
+    }));
+
+    expect(onContextLost).toHaveBeenCalledTimes(1);
+    act(() => runCanvasFrame(-100, 0, 1 / 60));
+    act(() => runCanvasFrame(-100, 1 / 60, 1 / 60));
+    expect(onReady).not.toHaveBeenCalled();
+  });
 });
 
 describe("deterministic capture parameters", () => {
@@ -488,20 +557,20 @@ describe("deterministic capture parameters", () => {
 });
 
 describe("opening loader choreography", () => {
-  it("orders construction, refraction and the late handoff deterministically", () => {
+  it("orders construction, emblem outline and the pure-black late handoff deterministically", () => {
     const construction = resolveLoaderFrame(0.35);
     expect(construction.flat).toBeGreaterThan(0.75);
     expect(construction.depth).toBeGreaterThan(0);
     expect(construction.flash).toBe(0);
     expect(construction.exit).toBe(0);
 
-    const refraction = resolveLoaderFrame(0.68);
-    expect(refraction.reveal).toBeGreaterThan(0.8);
-    expect(refraction.flash).toBeGreaterThan(0.9);
-    expect(refraction.exit).toBe(0);
+    const outline = resolveLoaderFrame(0.78);
+    expect(outline.reveal).toBeGreaterThan(0.8);
+    expect(outline.flash).toBe(0);
+    expect(outline.exit).toBe(0);
 
     const held = resolveLoaderFrame(0.88);
-    expect(held.flash).toBeGreaterThan(0);
+    expect(held.flash).toBe(0);
     expect(held.exit).toBe(0);
 
     const complete = resolveLoaderFrame(1);

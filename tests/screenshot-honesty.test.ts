@@ -73,13 +73,13 @@ describe("the registry agrees with what the page can render", () => {
 
 
 describe("approved identity and development sources", () => {
-  it("keeps all five approved masters byte-identical in the site", () => {
+  it("keeps all five real iOS 1024 px app icons byte-identical in the site", () => {
     const expected = {
       ostinato: "6db03e9cdc6da965fc88ed28e6fd7f78aedf02a5d3fe4927bacffdd6b6a57b73",
-      jablab: "94e23e1069f0f5f78c6503b12fc2e8e6edab340cfecb3b301bf5976188f7d8c2",
-      choreia: "51148ac9504aed95bb952d3b1c67d6234708960ae2d667a8a4864218135659b4",
-      lissom: "0d6f1fb86078b14edf3e3bcd65deef5a2c35d3c98fd5865c20932ca5d5c4a242",
-      gravita: "d46a534d11c1c45dd5fde8c85bd8c02ab5d5cc205e502669d66a37c9d6190229",
+      jablab: "399b21552dfaec9310ff7a9423bd397ed4e83a027a4f1783c111f02f22e1869a",
+      choreia: "619dc97a0fe343dcc0ff9b3d6f3a9990fd6c1e4ef0325266d786cb47ec3c0659",
+      lissom: "d0d55a91f156e82af1abdb68252ab971e58f5f10e7b3e36eb3e067d19b8fe418",
+      gravita: "b79e16fc548008c72959e48d1ea33a2161a5c5ec37cba1032ad00d50c16d356a",
     };
     for (const [slug, hash] of Object.entries(expected)) {
       const project = projects.find((p) => p.slug === slug)!;

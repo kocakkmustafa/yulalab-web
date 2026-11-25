@@ -3,12 +3,12 @@
 import { useEffect, type CSSProperties } from "react";
 import { useTranslations } from "next-intl";
 import type { ExperienceCopy } from "./types";
-import { resolveLoaderFrame } from "./loader";
-import { scrambleFrame } from "@/lib/scramble";
+import { resolveLoaderChars, resolveLoaderFrame } from "./loader";
 import styles from "./Experience.module.css";
 
 type ExperienceLoaderProps = {
   lines: ExperienceCopy["loader"];
+  tagline?: string;
   progress: number;
   /** Fast-forwards the drawing phase; the exit and the scene hand-off are unchanged. */
   onSkip?: () => void;
@@ -19,39 +19,38 @@ type LoaderStyle = CSSProperties & {
   "--loader-reveal": number;
   "--loader-flat": number;
   "--loader-depth": number;
-  "--loader-flash": number;
   "--loader-exit": number;
 };
 
 /**
- * A self-running architectural title card, not an interaction gate.
- * Timing lives in YulaExperience so capture mode can provide an exact frame.
+ * Pure black architectural construction loader in the reference grammar:
+ * thin drafting rays, thin Y emblem outline, and a single character-resolved line.
  */
-export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderProps) {
+export function ExperienceLoader({ lines, tagline, progress, onSkip }: ExperienceLoaderProps) {
   const t = useTranslations("experience");
   useEffect(() => {
     if (!onSkip) return;
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && !event.defaultPrevented) onSkip();
     };
-    // window, not document: a Doors panel or menu that handles Escape on the
-    // document runs first and calls preventDefault, so one key does one thing.
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onSkip]);
+
   const frame = resolveLoaderFrame(progress);
   const clamped = frame.progress;
   const activeLine = Math.min(lines.length - 1, Math.floor(clamped * lines.length));
-  // The active readout line decodes from its own glyphs as the card runs; the
-  // stand-ins are a pure function of progress, so capture frames are exact.
-  const lineProgress = clamped * lines.length - activeLine;
-  const decodeTick = Math.floor(clamped * 240);
+  const elapsedMs = clamped <= 0.9
+    ? (clamped / 0.9) * 3_200
+    : 3_200 + ((clamped - 0.9) / 0.1) * 750;
+  const displayLine = tagline ?? lines[lines.length - 1] ?? lines[0] ?? "";
+  const chars = resolveLoaderChars(displayLine, elapsedMs);
+
   const style: LoaderStyle = {
     "--loader-progress": clamped,
     "--loader-reveal": frame.reveal,
     "--loader-flat": frame.flat,
     "--loader-depth": frame.depth,
-    "--loader-flash": frame.flash,
     "--loader-exit": frame.exit,
   };
 
@@ -62,42 +61,61 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
       data-yula-loader="true"
       data-loader-progress={clamped.toFixed(3)}
     >
-      <div className={styles.loaderBurst} aria-hidden="true">
-        <i />
-        <i />
-        <span />
-      </div>
+      <svg
+        className={styles.loaderBackdropLines}
+        viewBox="0 0 1440 900"
+        preserveAspectRatio="xMidYMid slice"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="yula-loader-hfade" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0" />
+            <stop offset="16%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="84%" stopColor="#ffffff" stopOpacity="1" />
+            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <g className={styles.loaderDraftRays}>
+          {/* Parallel construction rays extending along the Y arms across the full frame */}
+          <path d="M298 -40L972 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M312 -40L986 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M352 -40L1026 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M1142 -40L468 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M1128 -40L454 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M1088 -40L414 940" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M480 0V900" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M960 0V900" pathLength="1" vectorEffect="non-scaling-stroke" />
+        </g>
+        <g className={styles.loaderDraftRules} stroke="url(#yula-loader-hfade)">
+          <path d="M140 212H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M140 356H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M140 536H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M140 582H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M140 594H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+          <path d="M140 612H1300" pathLength="1" vectorEffect="non-scaling-stroke" />
+        </g>
+      </svg>
+
       <div className={styles.loaderField} aria-hidden="true">
         <svg className={styles.loaderBlueprint} viewBox="0 0 1000 700">
-          <g className={styles.loaderAxes}>
-            <path d="M80 350H920" pathLength="1" />
-            <path d="M500 62V638" pathLength="1" />
-            <circle cx="500" cy="350" r="248" pathLength="1" />
-            <circle cx="500" cy="350" r="164" pathLength="1" />
-            <path d="M250 184L750 516M750 184L250 516" pathLength="1" />
+          <g className={styles.loaderCircles}>
+            <circle cx="500" cy="350" r="248" vectorEffect="non-scaling-stroke" />
+            <circle cx="500" cy="350" r="148" vectorEffect="non-scaling-stroke" />
+            <path d="M500 92V608" pathLength="1" vectorEffect="non-scaling-stroke" />
           </g>
-          <g className={styles.loaderGlyphWire}>
-            <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />
-            <path d="M435 328H565V588H435Z" />
-            <path d="M500 348L613 230L548 178L500 230L452 178L387 230Z" />
-          </g>
-          <g className={styles.loaderGlyphDepth}>
-            <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />
-            <path d="M435 328H565V588H435Z" />
-          </g>
-          <g className={styles.loaderGlyphGlass}>
-            <path d="M318 162L500 348L682 162L613 112L500 230L387 112Z" />
-            <path d="M435 328H565V588H435Z" />
-          </g>
-          <g className={styles.loaderTicks}>
-            {Array.from({ length: 18 }, (_, index) => {
-              const x = 95 + index * 47.65;
-              return <path key={index} d={`M${x} 340V360`} />;
-            })}
+          <g className={styles.loaderGlyphOutline}>
+            <path
+              d="M318 148H402L500 288L598 148H682L544 344V556H456V344Z"
+              pathLength="1"
+              vectorEffect="non-scaling-stroke"
+            />
+            <path
+              d="M336 160H395L500 310L605 160H664L532 348V544H468V348Z"
+              pathLength="1"
+              vectorEffect="non-scaling-stroke"
+            />
           </g>
         </svg>
-        <span className={styles.loaderCorner}>YL / SYS / 001</span>
-        <span className={styles.loaderPercent}>{Math.round(clamped * 100).toString().padStart(3, "0")}</span>
       </div>
 
       <div
@@ -107,24 +125,21 @@ export function ExperienceLoader({ lines, progress, onSkip }: ExperienceLoaderPr
         aria-atomic="true"
       >
         <span className={styles.srOnly}>{lines[activeLine]}</span>
-        <ol aria-hidden="true">
-          {lines.map((line, index) => (
-            <li key={line} data-active={index === activeLine ? "true" : "false"}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {index === activeLine ? scrambleFrame(line, lineProgress * 1.8, decodeTick) : line}
-            </li>
+        <p className={styles.loaderLine} aria-hidden="true">
+          {chars.map((item, index) => (
+            <span key={index} style={{ opacity: item.opacity }}>
+              {item.char}
+            </span>
           ))}
-        </ol>
-        <div className={styles.loaderTrack} aria-hidden="true">
-          <span />
-        </div>
+        </p>
       </div>
+
       {onSkip ? (
         <button
           type="button"
           onClick={onSkip}
           data-yula-loader-skip="true"
-          className="focusable absolute bottom-[calc(40px+var(--safe-bottom))] right-[calc(40px+var(--safe-right))] z-10 min-h-[44px] rounded-full border border-white/40 px-5 text-sm font-medium text-white/90 hover:border-white hover:text-white"
+          className={`focusable ${styles.loaderSkip}`}
         >
           {t("loaderSkip")}
         </button>

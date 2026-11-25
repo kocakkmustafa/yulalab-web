@@ -26,7 +26,7 @@ import { composeGlyphRotation } from "./instruments";
 import { RefractGlass } from "./RefractGlass";
 import { holoRibbonState } from "./HoloRibbon";
 import { glyphViewportPose, heroSlotMix, viewportMobileMix } from "./layout";
-import { HERO_PLANE_HEIGHT, HERO_PLANE_Z, heroSlot } from "./hero-slot";
+import { HERO_PLANE_Z, heroSlot, heroWordmarkHeight, heroWordmarkWidth } from "./hero-slot";
 import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 
 // W7 BT8: reference storyboard boundaries (114 px works_intro, 1032 px works of a 6422 px works_outro) laid on our
@@ -34,6 +34,16 @@ import type { QualityTier, TimelineFrame, Vec3 } from "./types";
 // on the weaker works return force from about 1190 px.
 const WORKS_INTRO_START = timelineProgressForScroll(131 / 21750);
 const WORKS_MAIN_START = timelineProgressForScroll(1189 / 21750);
+
+/** W8-31/32: the glass Y stands at x 50 percent, y 45.2 percent of the screen and is 70 percent of its height tall (reference 1440x900). */
+const HERO_GLASS_Y = 0.49;
+/** W8-37: phones (390x844): 96.7vw x 38.7vh, centre y 43.9 percent; no horizontal squeeze any more. */
+const HERO_GLASS_Y_MOBILE = 1.08;
+/** Reference plane height the glass size is derived from (desktop 5.2 x 2.55; phones 9.65, from the pose model). */
+const HERO_GLASS_REF_HEIGHT = 5.2 * 2.55;
+const HERO_GLASS_REF_HEIGHT_MOBILE = 10.1; // W8-47: 9.65 to 10.1 (height 37 to 38.7 vh)
+/** W8-47: phones: the glass spans 97vw (was 85); the extra width is a horizontal stretch on top of the height scale. */
+const HERO_GLASS_X_STRETCH_MOBILE = 1.09;
 
 export type YulaGlyphProps = {
   frame: TimelineFrame;
@@ -209,7 +219,7 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       curveSegments: high ? 12 : medium ? 8 : 4,
       bevelEnabled: true,
       bevelThickness: 0.075,
-      bevelSize: 0.065,
+      bevelSize: 0.03,
       bevelOffset: 0,
       bevelSegments: high ? 6 : medium ? 4 : 2,
     });
@@ -289,14 +299,15 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     viewportSize.width / Math.max(1, viewportSize.height),
     viewportSize.width,
   );
-  // W1D: in the opening the glass Y is the first letter of the word: same cap height, same slot.
+  // W8-30/31/33: in the opening the glass Y is its own object in the middle of the screen, in front of the white YULA.
   const slotMix = heroSlotMix(frame.progress);
   const slotPose = useMemo(() => {
-    const planeWidth = 14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56);
+    const planeWidth = heroWordmarkWidth(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     // W7 CY5: the slot is a fixed screen position. Its direction is taken in the hero camera's frame and carried
     // into the current camera's frame, so the Y keeps the same screen spot and height while the camera moves.
+    const planeHeight = heroWordmarkHeight(viewportMobileMix(viewportSize.width), viewportSize.width / Math.max(1, viewportSize.height));
     const planeX = heroSlot.x * planeWidth;
-    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * HERO_PLANE_HEIGHT;
+    const planeY = 0.1 + viewportPose.offset[1] * frame.overlay.hero + heroSlot.y * planeHeight;
     const gz = frame.glyph.position[2];
     const basis = (pos: readonly number[], target: readonly number[]) => {
       const f = new Vector3(target[0] - pos[0], target[1] - pos[1], target[2] - pos[2]).normalize();
@@ -312,7 +323,8 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     const df = d.dot(hb.f);
     const heroS = (gz - heroPos[2]) / d.z;
     const heroDepth = heroS * df;
-    const heroScale = (0.95 * heroSlot.cap * HERO_PLANE_HEIGHT * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
+    const glassHeight = lerp(HERO_GLASS_REF_HEIGHT, HERO_GLASS_REF_HEIGHT_MOBILE, viewportMobileMix(viewportSize.width));
+    const heroScale = (0.95 * heroSlot.cap * glassHeight * ((heroPos[2] - gz) / (heroPos[2] - HERO_PLANE_Z))) / 1.8;
     const cb = basis(frame.camera.position, frame.camera.target);
     // W7 CY5 (BT t2): the screen position is fov dependent (the camera narrows 39 to 35), so the lateral parts and the
     // size carry tan(fov / 2) / tan(heroFov / 2) to keep the same screen spot and height.
@@ -326,24 +338,21 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       y: frame.camera.position[1] + dir.y * sCur,
       scale: heroScale * ((sCur * df) / heroDepth) * fovK,
     };
-  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width]);
+  }, [frame.camera.position, frame.camera.target, frame.camera.fov, frame.glyph.position, frame.overlay.hero, viewportPose.offset, viewportSize.width, viewportSize.height]);
   const position = useMemo(
     () => [
-      lerp(frame.glyph.position[0] + viewportPose.offset[0], slotPose.x, slotMix),
-      lerp(frame.glyph.position[1] + viewportPose.offset[1], slotPose.y, slotMix),
+      lerp(frame.glyph.position[0] + viewportPose.offset[0], 0, slotMix),
+      lerp(frame.glyph.position[1] + viewportPose.offset[1], lerp(HERO_GLASS_Y, HERO_GLASS_Y_MOBILE, viewportMobileMix(viewportSize.width)), slotMix),
       frame.glyph.position[2] + viewportPose.offset[2],
     ] as const,
-    [frame.glyph.position, viewportPose.offset, slotPose, slotMix],
+    [frame.glyph.position, viewportPose.offset, viewportSize.width, slotMix],
   );
-  // The wordmark plane squeezes the letters on narrow viewports (plane narrower than the 2:1 texture):
-  // the Y takes the same horizontal squeeze while it stands in for the first letter.
-  const slotSqueeze = Math.min(1, (14.2 * (1 - viewportMobileMix(viewportSize.width) * 0.56)) / 10.4);
   // W1D-D H1-a: once free of the slot the glass Y grows in the middle of the screen while it turns, then settles
   // back to the portfolio hand-off scale.
   // W7 CY5: no growth in the middle of the screen (founder decision "a").
   const heroGrow = 1;
   const glyphScale = lerp(frame.glyph.scale * viewportPose.scaleMultiplier * heroGrow, slotPose.scale, slotMix);
-  const glyphScaleXYZ = [glyphScale * lerp(1, slotSqueeze, slotMix), glyphScale, glyphScale] as const;
+  const glyphScaleXYZ = [glyphScale * lerp(1, HERO_GLASS_X_STRETCH_MOBILE, viewportMobileMix(viewportSize.width) * slotMix), glyphScale, glyphScale] as const;
   const causticUniforms = useMemo(
     () => ({
       uTime: { value: 0 },
@@ -420,7 +429,11 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
     // W7 CY2: no idle sway; the hero pose and the single-letter placement stay as the base rotation under q.
     r.euler.set(rotation[0], rotation[1], rotation[2]);
     r.base.setFromEuler(r.euler);
-    if (glyphGroup.current) glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+    if (glyphGroup.current) {
+      glyphGroup.current.quaternion.copy(r.q).multiply(r.base);
+      // W8-39: no separate depth settle; the glass rides the scene dolly of the camera rig.
+      glyphGroup.current.position.set(position[0], position[1], position[2]);
+    }
     // Measurement hook (no effect unless a test page installs the array): per-frame rotation terms for the BT9 comparison.
     const rigLog = typeof window === "undefined" ? undefined : (window as unknown as { __yulaRigLog?: number[][] }).__yulaRigLog;
     if (rigLog && glyphGroup.current) {
@@ -459,13 +472,14 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
       position={position}
       rotation={rotation}
       scale={glyphScaleXYZ}
+      userData={{ skipRefractCapture: true }}
       visible={closingVisibility > 0.001}
     >
       <mesh
-        castShadow={tier !== "low"}
+        castShadow={tier !== "low" && frame.progress >= 0.085}
         geometry={geometry}
         receiveShadow
-        visible={tier === "low" || !glassVisible}
+        visible={!glassVisible}
       >
         <meshPhysicalMaterial
           attenuationColor="#ffffff"
@@ -487,9 +501,12 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
         />
       </mesh>
 
-      {tier !== "low" ? (
-        <RefractGlass geometry={geometry} opacity={bodyOpacity * frame.glyph.glassMix} visible={glassVisible} />
-      ) : null}
+      <RefractGlass
+        geometry={geometry}
+        inHero={frame.progress < 0.085}
+        opacity={bodyOpacity * frame.glyph.glassMix}
+        visible={glassVisible}
+      />
 
       <lineLoop geometry={contour} position={[0, 0, 0.216]} renderOrder={5}>
         <lineBasicMaterial
@@ -497,6 +514,17 @@ export function YulaGlyph({ frame, tier, portalTexture = null, interactionRotati
           depthTest={false}
           depthWrite={false}
           opacity={outlineOpacity}
+          toneMapped={false}
+          transparent
+        />
+      </lineLoop>
+      {/* W8-59: second, inset contour on the front face (the reference body shows an inner triangle outline). */}
+      <lineLoop geometry={contour} position={[0, 0.03, 0.217]} renderOrder={5} scale={0.74}>
+        <lineBasicMaterial
+          color={outlineColor}
+          depthTest={false}
+          depthWrite={false}
+          opacity={outlineOpacity * 0.7}
           toneMapped={false}
           transparent
         />

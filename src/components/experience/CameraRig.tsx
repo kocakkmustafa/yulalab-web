@@ -4,6 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { PerspectiveCamera, Vector3 } from "three";
 import { interpolateViewportCamera, segmentProgress, smoothstep } from "./timeline";
+import { openingShared } from "./opening";
 import type { ExperienceMode } from "./types";
 
 export type CameraRigProps = {
@@ -40,12 +41,19 @@ export function CameraRig({ progress, mode }: CameraRigProps) {
     state.offsetY += (state.y * 0.5 * weight - state.offsetY) * ease;
     if (Math.abs(state.x * 0.5 * weight - state.offsetX) + Math.abs(state.y * 0.5 * weight - state.offsetY) > 0.002) invalidate();
 
+    // W8-39: the opening is one scene dolly (glass and wordmark together): the camera stays on the hero pose and the
+    // view narrows/widens by the shared opening scale (0.05 -> 1.16 -> 1.0), so no separate glass or text motion.
+    const openScale = progress < 0.085 ? openingShared.scale : 1;
     camera.position.set(pose.position[0] + state.offsetX, pose.position[1] + state.offsetY, pose.position[2]);
     target.set(...pose.target);
     camera.lookAt(target);
 
-    if (camera instanceof PerspectiveCamera && camera.fov !== pose.fov) {
-      camera.fov = pose.fov;
+    const effectiveFov = Math.abs(openScale - 1) < 1e-4
+      ? pose.fov
+      : Math.min(170, (Math.atan(Math.tan((pose.fov * Math.PI) / 360) / Math.max(0.02, openScale)) * 360) / Math.PI);
+
+    if (camera instanceof PerspectiveCamera && Math.abs(camera.fov - effectiveFov) > 1e-4) {
+      camera.fov = effectiveFov;
       camera.updateProjectionMatrix();
     }
   }, -50);
